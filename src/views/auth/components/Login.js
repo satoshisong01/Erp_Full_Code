@@ -1,25 +1,27 @@
 import React from "react";
 
-import UiValidate from "../../../common/forms/validation/UiValidate";
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default class Login extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			id: '',
-			password: '',
-			userSe: 'USR'
+			form: {
+				id: '',
+				password: '',
+				userSe: 'USR'
+			}
 		};
 	}
 
+	handleChange(e) {
+		const {name, value} = e.target;
+		this.setState({ ...this.state.form, [name]: value });
+	};
+
 	handleSubmit(e) {
-		let userInfo = {
-			id: this.state.id,
-			password: this.state.password,
-			userSe: this.state.userSe,
-		}
+		console.log("this.state.form > ", this.state.form);
+
 
 		// const SERVER_URL = "http://192.168.0.123:8080" //전역변수로 바꾸기
 		const SERVER_URL = "http://localhost:8080"
@@ -29,17 +31,17 @@ export default class Login extends React.Component {
 			headers: {
 				'Content-type': 'application/json'
 			},
-			body: JSON.stringify(userInfo)
+			body: JSON.stringify(...this.state.form)
 		}
 
-		console.log(" userInfo >>>> ", userInfo);
 		fetch(SERVER_URL + loginUrl, requestOptions)
 			.then(res => {
 				return res.json();
 			})
 			.then((resp) => {
 				if (Number(resp.resultCode) === 200) {
-					//alert("Login Alert"); //라우터파일에 /admin/으로 시작하는 URL은 모두 인증없이 접근 할 때 경고창이 나오도록 조치했기 때문에 제외했음.
+					alert("Login Alert🌞");
+					//라우터파일에 /admin/으로 시작하는 URL은 모두 인증없이 접근 할 때 경고창이 나오도록 조치했기 때문에 제외했음.
 					// sessionStorage.setItem('loginUser', JSON.stringify({"id":""}));
 					// window.location.href = URL.LOGIN;
 					return false;
@@ -78,10 +80,9 @@ export default class Login extends React.Component {
 						<div className="row">
 							<div className="col-xs-12 col-sm-12 col-md-5 col-lg-5" style={{ margin: "0 auto", float: 'unset'}}>
 								<div className="well no-padding">
-									<UiValidate>
 										<form
 											// action="#/dashboard"
-											action="#/tables/jquery-tables"
+											action="#/tables/easy-tables"
 											id="login-form"
 											className="smart-form client-form"
 											onSubmit={this.handleSubmit.bind(this)}
@@ -95,12 +96,12 @@ export default class Login extends React.Component {
 														<i className="icon-append fa fa-user" />
 														<input
 															type="text"
-															name="loginId"
+															name="id"
 															data-smart-validate-input=""
 															data-required=""
 															data-message-required="Please enter your id"
 															data-message-id="Please enter a VALID id" //형식이 틀릴때 나오는 메세지
-															onChange={(e) => this.setState({ id: e.target.value})}
+															onChange={this.handleChange.bind(this)}
 														/>
 														{/* tooltip 안됨 */}
 														<b className="tooltip tooltip-top-right">
@@ -122,7 +123,7 @@ export default class Login extends React.Component {
 															data-minlength="3"
 															data-maxnlength="20"
 															data-message="Please enter your password"
-															onChange={(e) => this.setState({ password : e.target.value })}
+															onChange={this.handleChange.bind(this)}
 														/>
 														<b className="tooltip tooltip-top-right">
 															<i className="fa fa-lock txt-color-teal" />
@@ -155,7 +156,6 @@ export default class Login extends React.Component {
 												</button>
 											</footer>
 										</form>
-									</UiValidate>
 								</div>
 							</div>
 						{/* row */}

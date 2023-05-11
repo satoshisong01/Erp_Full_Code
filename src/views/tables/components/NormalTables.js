@@ -1,7 +1,5 @@
 import React from "react";
 
-import { Alert } from "react-bootstrap";
-
 import {
   Stats,
   BigBreadcrumbs,
@@ -97,7 +95,15 @@ export default class NormalTables extends React.Component {
                 </div>
               </JarvisWidget>
 
-              <JarvisWidget id="wid-id-1" editbutton={false} color="darken">
+
+
+
+
+
+
+
+
+              {/* <JarvisWidget id="wid-id-1" editbutton={false} color="darken">
                 <header>
                   <span className="widget-icon">
                     
@@ -171,10 +177,10 @@ export default class NormalTables extends React.Component {
                     </div>
                   </div>
                 </div>
-              </JarvisWidget>
+              </JarvisWidget> */}
             </article>
 
-            <article className="col-sm-12 col-md-12 col-lg-6">
+            {/* <article className="col-sm-12 col-md-12 col-lg-6">
               <JarvisWidget id="wid-id-2" editbutton={false} color="greenDark">
                 <header>
                   <span className="widget-icon">
@@ -236,9 +242,9 @@ export default class NormalTables extends React.Component {
                   </div>
                 </div>
               </JarvisWidget>
-            </article>
+            </article> */}
 
-            <article className="col-sm-12 col-md-12 col-lg-6">
+            {/* <article className="col-sm-12 col-md-12 col-lg-6">
               <JarvisWidget id="wid-id-3" editbutton={false} color="greenLight">
                 <header>
                   <span className="widget-icon">
@@ -308,9 +314,9 @@ export default class NormalTables extends React.Component {
                   </div>
                 </div>
               </JarvisWidget>
-            </article>
+            </article> */}
           </div>
-          <div className="row">
+          {/* <div className="row">
             <article className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
               <JarvisWidget id="wid-id-4" editbutton={false}>
                 <header>
@@ -454,7 +460,7 @@ export default class NormalTables extends React.Component {
                 </div>
               </JarvisWidget>
             </article>
-          </div>
+          </div> */}
         </WidgetGrid>
       </div>
     );

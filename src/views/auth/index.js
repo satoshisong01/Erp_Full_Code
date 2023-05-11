@@ -6,11 +6,6 @@ const Login = Loadable({
   loading: Loading
 });
 
-const LockedScreen = Loadable({
-  loader: () => import("./components/LockedScreen"),
-  loading: Loading
-});
-
 const Register = Loadable({
   loader: () => import("./components/Register"),
   loading: Loading
@@ -27,12 +22,6 @@ export const routes = [
     exact: true,
     component: Login,
     name: "Login"
-  },
-  {
-    path: "/lock",
-    exact: true,
-    component: LockedScreen,
-    name: "Locked Screen"
   },
   {
     path: "/register",

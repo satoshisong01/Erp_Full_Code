@@ -2,13 +2,9 @@ import React from "react";
 
 import FullScreen from "./FullScreen";
 import ToggleMenu from "./ToggleMenu";
-import SpeechButton from "../../voice-control/components/SpeechButton";
-import SearchMobile from "./SearchMobile";
-
-import { Activities } from "../../activities";
-import { LanguageSelector } from "../../i18n";
 
 import RecentProjects from "./RecentProjects";
+import { Msg } from "../../i18n";
 
 export default class Header extends React.Component {
   render() {
@@ -16,91 +12,26 @@ export default class Header extends React.Component {
       <header id="header">
         <div id="logo-group">
           <span id="logo">
-            <img
-              src="assets/img/logo.png" // place your logo here
-              alt="SmartAdmin"
-            />
+            <a href="/">
+              <img
+                src="assets/img/logo.png" // place your logo here
+                alt="SmartAdmin"
+              />
+            </a>
           </span>
-          {/* Note: The activity badge color changes when clicked and resets the number to 0
-         Suggestion: You may want to set a flag when this happens to tick off all checked messages / notifications */}
-
-          <Activities />
         </div>
 
-        <RecentProjects />
+        <RecentProjects title="사전원가"/>
+        <RecentProjects title="시스템 관리"/>
+
         <div className="pull-right" /*pulled right: nav area*/>
+
+          {/* 사용자 정보 */}
+          <Msg phrase="시스템 관리자님 로그인"/>
+
           <ToggleMenu
             className="btn-header pull-right" /* collapse menu button */
           />
-
-          {/* #MOBILE */}
-          {/*  Top menu profile link : this shows only when top menu is active */}
-          <ul
-            id="mobile-profile-img"
-            className="header-dropdown-list hidden-xs padding-5"
-          >
-            <li className="">
-              <a href="#/"
-                className="dropdown-toggle no-margin userdropdown"
-                data-toggle="dropdown"
-              >
-                <img
-                  src="assets/img/avatars/sunny.png"
-                  alt="John Doe"
-                  className="online"
-                />
-              </a>
-              <ul className="dropdown-menu pull-right">
-                <li>
-                  <a href="#/" className="padding-10 padding-top-0 padding-bottom-0">
-                    <i className="fa fa-cog" /> Setting
-                  </a>
-                </li>
-                <li className="divider" />
-                <li>
-                  <a
-                    href="#/views/profile"
-                    className="padding-10 padding-top-0 padding-bottom-0"
-                  >
-                    <i className="fa fa-user" />
-                    <u>P</u>rofile
-                  </a>
-                </li>
-                <li className="divider" />
-                <li>
-                  <a href="#/"
-                    className="padding-10 padding-top-0 padding-bottom-0"
-                    data-action="toggleShortcut"
-                  >
-                    <i className="fa fa-arrow-down" /> <u>S</u>hortcut
-                  </a>
-                </li>
-                <li className="divider" />
-                <li>
-                  <a href="#/"
-                    className="padding-10 padding-top-0 padding-bottom-0"
-                    data-action="launchFullscreen"
-                  >
-                    <i className="fa fa-arrows-alt" /> Full
-                    <u>S</u>creen
-                  </a>
-                </li>
-                <li className="divider" />
-                <li>
-                  <a
-                    href="#/login"
-                    className="padding-10 padding-top-5 padding-bottom-5"
-                    data-action="userLogout"
-                  >
-                    <i className="fa fa-sign-out fa-lg" />
-                    <strong>
-                      <u>L</u>ogout
-                    </strong>
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
 
           {/* logout button */}
           <div id="logout" className="btn-header transparent pull-right">
@@ -115,34 +46,8 @@ export default class Header extends React.Component {
             </span>
           </div>
 
-          {/* search mobile button (this is hidden till mobile view port) */}
-          <SearchMobile className="btn-header transparent pull-right" />
-
-          {/* input: search field */}
-          <form
-            action="#/misc/search.html"
-            className="header-search pull-right"
-          >
-            <input
-              id="search-fld"
-              type="text"
-              name="param"
-              placeholder="Find reports and more"
-            />
-            <button type="submit">
-              <i className="fa fa-search" />
-            </button>
-            <a href="$" id="cancel-search-js" title="Cancel Search">
-              <i className="fa fa-times" />
-            </a>
-          </form>
-
-          <SpeechButton className="btn-header transparent pull-right hidden-sm hidden-xs" />
-
           <FullScreen className="btn-header transparent pull-right" />
 
-          {/* multiple lang dropdown : find all flags in the flags page */}
-          <LanguageSelector />
         </div>
         {/* end pulled right: nav area */}
       </header>

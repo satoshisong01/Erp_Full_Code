@@ -11,6 +11,11 @@ const NormalTables = Loadable({
   loading: Loading
 });
 
+const EasyTables = Loadable({
+  loader: () => import("./components/EasyTables"),
+  loading: Loading
+});
+
 export const routes = [
   {
     path: "/tables/datatables",
@@ -18,11 +23,17 @@ export const routes = [
     component: Datatables,
     name: "Datatables"
   },
-
   {
     path: "/tables/normal-tables",
     exact: true,
     component: NormalTables,
     name: "NormalTables"
-  }
+  },
+  {
+    path: "/tables/easy-tables",
+    exact: true,
+    component: EasyTables,
+    name: "EasyTables"
+  },
+
 ];

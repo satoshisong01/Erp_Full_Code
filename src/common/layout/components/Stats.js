@@ -1,7 +1,5 @@
 import React from "react";
 
-import { Sparkline } from "../../graphs/inline";
-
 export default class Stats extends React.Component {
   getStats() {
     return {
@@ -45,10 +43,6 @@ export default class Stats extends React.Component {
               My Income
               <span className="txt-color-blue"> {stats.income.total}</span>
             </h5>
-            <Sparkline
-              values={stats.income.values}
-              className="txt-color-blue hidden-mobile hidden-md hidden-sm"
-            />
           </li>
           <li className="sparks-info">
             <h5 className="m-0">
@@ -57,10 +51,6 @@ export default class Stats extends React.Component {
                 <i className="fa fa-arrow-circle-up" /> {stats.traffic.total}
               </span>
             </h5>
-            <Sparkline
-              values={stats.traffic.values}
-              className="txt-color-purple hidden-mobile hidden-md hidden-sm"
-            />
           </li>
           <li className="sparks-info">
             <h5 className="m-0">
@@ -69,10 +59,6 @@ export default class Stats extends React.Component {
                 <i className="fa fa-shopping-cart" /> {stats.orders.total}
               </span>
             </h5>
-            <Sparkline
-              values={stats.orders.values}
-              className="txt-color-greenDark hidden-mobile hidden-md hidden-sm"
-            />
           </li>
         </ul>
       </div>

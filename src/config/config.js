@@ -228,6 +228,10 @@ if (SmartadminConfig.voice_command) {
       type: "navigate",
       payload: "/tables/datatables"
     },
+    "show easy table": {
+      type: "navigate",
+      payload: "/tables/easy"
+    },
     "show form": {
       type: "navigate",
       payload: "/forms/elements"

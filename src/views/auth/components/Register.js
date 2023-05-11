@@ -29,62 +29,6 @@ export default class Register extends React.Component {
           {/* MAIN CONTENT */}
           <div id="content" className="container">
             <div className="row">
-              <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7 hidden-xs hidden-sm">
-                <h1 className="txt-color-red login-header-big">SmartAdmin</h1>
-                <div className="hero">
-                  <div className="pull-left login-desc-box-l">
-                    <h4 className="paragraph-header">
-                      It's Okay to be Smart. Experience the simplicity of
-                      SmartAdmin, everywhere you go!
-                    </h4>
-                    <div className="login-app-icons">
-                      <a
-                        href="#/dashboard/analytics"
-                        className="btn btn-danger btn-sm"
-                      >
-                        Frontend Template
-                      </a>
-                      <span> </span>
-                      <a
-                        href="#/smartadmin/different-versions.html"
-                        className="btn btn-danger btn-sm"
-                      >
-                        Find out more
-                      </a>
-                    </div>
-                  </div>
-
-                  <img
-                    src="assets/img/demo/iphoneview.png"
-                    alt=""
-                    className="pull-right display-image"
-                    style={{ width: "210px" }}
-                  />
-                </div>
-
-                <div className="row">
-                  <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                    <h5 className="about-heading">
-                      About SmartAdmin - Are you up to date?
-                    </h5>
-                    <p>
-                      Sed ut perspiciatis unde omnis iste natus error sit
-                      voluptatem accusantium doloremque laudantium, totam rem
-                      aperiam, eaque ipsa.
-                    </p>
-                  </div>
-                  <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                    <h5 className="about-heading">
-                      Not just your average template!
-                    </h5>
-                    <p>
-                      Et harum quidem rerum facilis est et expedita distinctio.
-                      Nam libero tempore, cum soluta nobis est eligendi
-                      voluptatem accusantium!
-                    </p>
-                  </div>
-                </div>
-              </div>
               <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
                 <div className="well no-padding">
                   <form
