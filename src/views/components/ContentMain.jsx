@@ -1,6 +1,6 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
-import "../ContentMain.css";
+import "./ContentMain.css";
 import {
     DataGrid,
     GridColumn,
@@ -14,10 +14,9 @@ import {
 } from "rc-easyui";
 
 import { Stats, BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
-import ContentName from "../ContentName";
-import Header from "../Header";
-import Search from "../Search";
-import HeaderDetail from "../HeaderDetail";
+import ContentName from "./ContentName";
+import Header from "./Header";
+import Search from "./Search";
 
 const withCheckbox = (WrappedComponent) => {
     class CheckGrid extends React.Component {
@@ -164,40 +163,18 @@ const withCheckbox = (WrappedComponent) => {
 };
 const CheckGrid = withCheckbox(DataGrid);
 
-export default class ErrorlogManagement extends React.Component {
+export default class ContentMain extends React.Component {
     constructor(props) {
         super(props);
         const data = this.getData();
         this.state = {
-            pageSize: 20,
             data: data,
-            pageOptions: {
-                layout: [
-                    "list",
-                    "sep",
-                    "first",
-                    "prev",
-                    "next",
-                    "last",
-                    "sep",
-                    "refresh",
-                    "sep",
-                    "manual",
-                    "info",
-                ],
-            },
-            //data: data,
             dateValue: new Date(), //오늘날짜가들어감
-            values: [], // 체크된값
             S_minDates: "",
             startDate: "",
             endDate: "",
             selection: [],
         };
-    }
-
-    handleChange5() {
-        this.setState({ values: [...this.state.values] });
     }
 
     handleChange3 = (value) => {
@@ -367,21 +344,17 @@ export default class ErrorlogManagement extends React.Component {
                                             ></div>
                                         </div>
                                         <div className="table-responsive">
-                                            <Header
-                                                iconName="fa fa-table"
-                                                titleName="에러로그 관리"
-                                            />
-                                            <Search searchTitle="검색" />
+                                            <Header />
+                                            <Search />
+                                            <ContentName />
                                             <CheckGrid
-                                                pagination
-                                                {...this.state}
                                                 filterable //필터선언
                                                 columnResizing
                                                 ref={(ref) =>
                                                     (this.datagrid = ref)
                                                 }
                                                 style={{
-                                                    height: "35vh",
+                                                    height: "70vh",
                                                 }}
                                                 selection={this.state.selection}
                                                 onSelectionChange={(
@@ -399,7 +372,7 @@ export default class ErrorlogManagement extends React.Component {
                                                             padding: 4,
                                                         }}
                                                     >
-                                                        {/*<LinkButton
+                                                        <LinkButton
                                                             iconCls="icon-add"
                                                             plain
                                                             onClick={this.handleAdd.bind(
@@ -407,8 +380,8 @@ export default class ErrorlogManagement extends React.Component {
                                                             )}
                                                         >
                                                             추가
-                                                        </LinkButton>*/}
-                                                        {/*<LinkButton
+                                                        </LinkButton>
+                                                        <LinkButton
                                                             iconCls="icon-save"
                                                             plain
                                                             disabled={
@@ -420,8 +393,8 @@ export default class ErrorlogManagement extends React.Component {
                                                             }
                                                         >
                                                             저장
-                                                        </LinkButton>*/}
-                                                        {/*<LinkButton
+                                                        </LinkButton>
+                                                        <LinkButton
                                                             iconCls="icon-cancel"
                                                             plain
                                                             disabled={
@@ -433,7 +406,7 @@ export default class ErrorlogManagement extends React.Component {
                                                             }
                                                         >
                                                             취소
-                                                        </LinkButton>*/}
+                                                        </LinkButton>
                                                         <LinkButton
                                                             plain
                                                             disabled={
@@ -459,6 +432,66 @@ export default class ErrorlogManagement extends React.Component {
                                                 )}
                                             >
                                                 <GridColumn
+                                                    filter={() => (
+                                                        <DateBox
+                                                            format="yyyy-MM-dd"
+                                                            panelStyle={{
+                                                                width: 300,
+                                                                height: 300,
+                                                            }}
+                                                            value={
+                                                                this.state
+                                                                    .dateValue
+                                                            }
+                                                            onChange={this.handleChange.bind(
+                                                                this
+                                                            )} //온체인지가 있어야 ADD후 검색 다시 ADD 가 가능
+                                                        />
+                                                    )}
+                                                    field="minDates"
+                                                    title="등록일"
+                                                    editable
+                                                    sortable
+                                                    align="center"
+                                                    editor={(row) => (
+                                                        <DateBox
+                                                            format="yyyy-MM-dd"
+                                                            panelStyle={{
+                                                                width: 300,
+                                                                height: 300,
+                                                            }}
+                                                            value={
+                                                                row.row.minDates
+                                                            }
+                                                            onChange={this.handleChange.bind(
+                                                                console.log(
+                                                                    "온체인지:",
+                                                                    row.row
+                                                                        .minDates
+                                                                ),
+                                                                row.row.minDates
+                                                            )}
+                                                        ></DateBox>
+                                                    )}
+                                                    render={(row) => (
+                                                        <p>
+                                                            {this.formatDate(
+                                                                row.row.minDates
+                                                            )}
+                                                            {/*{this.filterRange.map(
+                                                                (item) =>
+                                                                    this.formatDate(
+                                                                        item
+                                                                    )
+                                                            )}*/}
+                                                            {/*{
+                                                                this.state.data
+                                                                    .minDates
+                                                            }*/}
+                                                        </p>
+                                                    )}
+                                                ></GridColumn>
+                                                <GridColumn
                                                     field="projectName"
                                                     align="center"
                                                     title={
@@ -467,9 +500,10 @@ export default class ErrorlogManagement extends React.Component {
                                                                 color: "red",
                                                             }}
                                                         >
-                                                            ID
+                                                            프로젝트명
                                                         </span>
                                                     }
+                                                    editable
                                                     editRules={["required"]}
                                                     editor={({
                                                         row,
@@ -491,127 +525,227 @@ export default class ErrorlogManagement extends React.Component {
                                                 <GridColumn
                                                     field="orderingDepartment"
                                                     align="center"
-                                                    title="Phase"
+                                                    title="수주부서"
+                                                    editable
                                                     sortable
                                                 />
                                                 <GridColumn
-                                                    field="etc"
+                                                    field="salesDepartment"
                                                     align="center"
-                                                    title="System"
+                                                    title="매출부서"
+                                                    editable
                                                     sortable
                                                 />
                                                 <GridColumn
-                                                    field="etc"
+                                                    field="PM"
                                                     align="center"
-                                                    title="Server Name"
+                                                    title={
+                                                        <span
+                                                            style={{
+                                                                color: "red",
+                                                            }}
+                                                        >
+                                                            PM
+                                                        </span>
+                                                    }
+                                                    editable
+                                                    sortable
+                                                />
+
+                                                <GridColumn
+                                                    field="referenceYear"
+                                                    title={
+                                                        <span
+                                                            style={{
+                                                                color: "red",
+                                                            }}
+                                                        >
+                                                            참조연도
+                                                        </span>
+                                                    }
+                                                    align="center"
+                                                    editable
+                                                    editor={({ row }) => (
+                                                        <NumberBox
+                                                            value={
+                                                                row.referenceYear
+                                                            }
+                                                        ></NumberBox>
+                                                    )}
                                                     sortable
                                                 />
                                                 <GridColumn
-                                                    field="etc"
+                                                    filter={() => (
+                                                        <DateBox
+                                                            format="yyyy-MM-dd"
+                                                            panelStyle={{
+                                                                width: 300,
+                                                                height: 300,
+                                                            }}
+                                                            value={
+                                                                this.state
+                                                                    .dateValue
+                                                            }
+                                                            onChange={this.handleChange.bind(
+                                                                this
+                                                            )} //온체인지가 있어야 ADD후 검색 다시 ADD 가 가능
+                                                        />
+                                                    )}
+                                                    field="startDate"
+                                                    title={
+                                                        <span
+                                                            style={{
+                                                                color: "red",
+                                                            }}
+                                                        >
+                                                            시작일
+                                                        </span>
+                                                    }
+                                                    editable
+                                                    sortable
                                                     align="center"
-                                                    title="Host Name"
+                                                    editor={(row) => (
+                                                        <DateBox
+                                                            format="yyyy-MM-dd"
+                                                            panelStyle={{
+                                                                width: 300,
+                                                                height: 300,
+                                                            }}
+                                                            value={
+                                                                row.row.minDates
+                                                            }
+                                                            onChange={this.handleChange.bind(
+                                                                console.log(
+                                                                    "온체인지:",
+                                                                    row.row
+                                                                        .minDates
+                                                                ),
+                                                                row.row.minDates
+                                                            )}
+                                                        ></DateBox>
+                                                    )}
+                                                    render={(row) => <p></p>}
+                                                ></GridColumn>
+                                                <GridColumn
+                                                    filter={() => (
+                                                        <DateBox
+                                                            format="yyyy-MM-dd"
+                                                            panelStyle={{
+                                                                width: 300,
+                                                                height: 300,
+                                                            }}
+                                                            value={
+                                                                this.state
+                                                                    .dateValue
+                                                            }
+                                                            onChange={this.handleChange.bind(
+                                                                this
+                                                            )} //온체인지가 있어야 ADD후 검색 다시 ADD 가 가능
+                                                        />
+                                                    )}
+                                                    field="endDate"
+                                                    title={
+                                                        <span
+                                                            style={{
+                                                                color: "red",
+                                                            }}
+                                                        >
+                                                            종료일
+                                                        </span>
+                                                    }
+                                                    editable
+                                                    sortable
+                                                    align="center"
+                                                    editor={(row) => (
+                                                        <DateBox
+                                                            format="yyyy-MM-dd"
+                                                            panelStyle={{
+                                                                width: 300,
+                                                                height: 300,
+                                                            }}
+                                                            value={
+                                                                row.row.minDates
+                                                            }
+                                                            onChange={this.handleChange.bind(
+                                                                console.log(
+                                                                    "온체인지:",
+                                                                    row.row
+                                                                        .minDates
+                                                                ),
+                                                                row.row.minDates
+                                                            )}
+                                                        ></DateBox>
+                                                    )}
+                                                    render={(row) => <p></p>}
+                                                ></GridColumn>
+                                                <GridColumn
+                                                    field="selfServiceUnitPrice"
+                                                    title="자체용역단가"
+                                                    align="center"
+                                                    editable
+                                                    editor={({ row }) => (
+                                                        <NumberBox
+                                                            value={
+                                                                row.selfServiceUnitPrice
+                                                            }
+                                                        ></NumberBox>
+                                                    )}
                                                     sortable
                                                 />
                                                 <GridColumn
-                                                    field="etc"
+                                                    field="outsourcingUnitPrice"
+                                                    title="외주단가"
                                                     align="center"
-                                                    title="URL"
+                                                    editable
+                                                    editor={({ row }) => (
+                                                        <NumberBox
+                                                            value={
+                                                                row.outsourcingUnitPrice
+                                                            }
+                                                        ></NumberBox>
+                                                    )}
                                                     sortable
                                                 />
                                                 <GridColumn
-                                                    field="etc"
-                                                    align="center"
-                                                    title="Message"
+                                                    field="SW_HW_UnitPrice"
+                                                    title="SW/HW/단가"
+                                                    align="right"
+                                                    editable
+                                                    editor={({ row }) => (
+                                                        <NumberBox
+                                                            value={
+                                                                row.SW_HW_UnitPrice
+                                                            }
+                                                        ></NumberBox>
+                                                    )}
                                                     sortable
                                                 />
                                                 <GridColumn
+                                                    field="PdfPrint"
+                                                    title="PDF출력"
+                                                    align="center"
+                                                    filterable={false}
+                                                    render={() => (
+                                                        <p
+                                                            className="pdf"
+                                                            style={{
+                                                                height: "100%",
+                                                                margin: "auto",
+                                                                padding: "0px",
+                                                            }}
+                                                        >
+                                                            출력
+                                                        </p>
+                                                    )}
+                                                ></GridColumn>
+                                                <GridColumn
                                                     field="etc"
                                                     align="center"
-                                                    title="Time"
+                                                    title="비고"
+                                                    editable
                                                     sortable
                                                 />
                                             </CheckGrid>
-                                            <div
-                                                style={{ marginTop: "30px" }}
-                                            />
-                                            <HeaderDetail
-                                                iconName="fa fa-desktop"
-                                                titleName="Stack Trace"
-                                            />
-                                            <DataGrid
-                                                style={{
-                                                    height: "35vh",
-                                                }}
-                                            >
-                                                <div
-                                                    style={{
-                                                        height: "90vh",
-                                                        border:
-                                                            "1px solid gray",
-                                                    }}
-                                                >
-                                                    <p>123123</p>
-                                                    <p>123123</p>
-                                                    <p>123123</p>
-                                                    <p>123123</p>
-                                                    <p>123123</p>
-                                                </div>
-                                                <HeaderDetail
-                                                    iconName="fa fa-exclamation-circle"
-                                                    titleName="에러 메세지"
-                                                />
-                                                <div
-                                                    style={{
-                                                        height: "10vh",
-                                                        border:
-                                                            "1px solid gray",
-                                                    }}
-                                                >
-                                                    <p>123123</p>
-                                                    <p>123123</p>
-                                                </div>
-                                                <HeaderDetail
-                                                    iconName="fa fa-exclamation-circle"
-                                                    titleName="요청 매개변수 정보"
-                                                />
-                                                <div
-                                                    style={{
-                                                        height: "5vh",
-                                                        border:
-                                                            "1px solid gray",
-                                                    }}
-                                                >
-                                                    <p>123123</p>
-                                                </div>
-                                                <HeaderDetail
-                                                    iconName="fa fa-exclamation-circle"
-                                                    titleName="요청 헤더 정보"
-                                                />
-                                                <div
-                                                    style={{
-                                                        height: "20vh",
-                                                        border:
-                                                            "1px solid gray",
-                                                    }}
-                                                >
-                                                    <p>123123</p>
-                                                    <p>123123</p>
-                                                </div>
-                                                <HeaderDetail
-                                                    iconName="fa fa-exclamation-circle"
-                                                    titleName="요청 사용자 정보"
-                                                />
-                                                <div
-                                                    style={{
-                                                        height: "40vh",
-                                                        border:
-                                                            "1px solid gray",
-                                                    }}
-                                                >
-                                                    <p>123123</p>
-                                                    <p>123123</p>
-                                                </div>
-                                            </DataGrid>
                                         </div>
                                     </div>
                                 </div>

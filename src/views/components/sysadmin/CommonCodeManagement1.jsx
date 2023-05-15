@@ -13,7 +13,12 @@ import {
     //SearchBox,
 } from "rc-easyui";
 
-import { Stats, BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
+import {
+    Stats,
+    BigBreadcrumbs,
+    WidgetGrid,
+    JarvisWidget,
+} from "../../../common";
 import ContentName from "../ContentName";
 import Header from "../Header";
 import Search from "../Search";

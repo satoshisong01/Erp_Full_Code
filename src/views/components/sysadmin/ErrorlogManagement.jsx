@@ -13,10 +13,16 @@ import {
     //SearchBox,
 } from "rc-easyui";
 
-import { Stats, BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
+import {
+    Stats,
+    BigBreadcrumbs,
+    WidgetGrid,
+    JarvisWidget,
+} from "../../../common";
 import ContentName from "../ContentName";
 import Header from "../Header";
 import Search from "../Search";
+import HeaderDetail from "../HeaderDetail";
 
 const withCheckbox = (WrappedComponent) => {
     class CheckGrid extends React.Component {
@@ -163,12 +169,29 @@ const withCheckbox = (WrappedComponent) => {
 };
 const CheckGrid = withCheckbox(DataGrid);
 
-export default class CommonCodeManagement2 extends React.Component {
+export default class ErrorlogManagement extends React.Component {
     constructor(props) {
         super(props);
         const data = this.getData();
         this.state = {
+            pageSize: 20,
             data: data,
+            pageOptions: {
+                layout: [
+                    "list",
+                    "sep",
+                    "first",
+                    "prev",
+                    "next",
+                    "last",
+                    "sep",
+                    "refresh",
+                    "sep",
+                    "manual",
+                    "info",
+                ],
+            },
+            //data: data,
             dateValue: new Date(), //오늘날짜가들어감
             values: [], // 체크된값
             S_minDates: "",
@@ -351,18 +374,19 @@ export default class CommonCodeManagement2 extends React.Component {
                                         <div className="table-responsive">
                                             <Header
                                                 iconName="fa fa-table"
-                                                titleName="공통코드관리2"
+                                                titleName="에러로그 관리"
                                             />
                                             <Search searchTitle="검색" />
-                                            <ContentName tableTitle="코드 목록" />
                                             <CheckGrid
+                                                pagination
+                                                {...this.state}
                                                 filterable //필터선언
                                                 columnResizing
                                                 ref={(ref) =>
                                                     (this.datagrid = ref)
                                                 }
                                                 style={{
-                                                    height: "70vh",
+                                                    height: "35vh",
                                                 }}
                                                 selection={this.state.selection}
                                                 onSelectionChange={(
@@ -380,7 +404,7 @@ export default class CommonCodeManagement2 extends React.Component {
                                                             padding: 4,
                                                         }}
                                                     >
-                                                        <LinkButton
+                                                        {/*<LinkButton
                                                             iconCls="icon-add"
                                                             plain
                                                             onClick={this.handleAdd.bind(
@@ -388,8 +412,8 @@ export default class CommonCodeManagement2 extends React.Component {
                                                             )}
                                                         >
                                                             추가
-                                                        </LinkButton>
-                                                        <LinkButton
+                                                        </LinkButton>*/}
+                                                        {/*<LinkButton
                                                             iconCls="icon-save"
                                                             plain
                                                             disabled={
@@ -401,8 +425,8 @@ export default class CommonCodeManagement2 extends React.Component {
                                                             }
                                                         >
                                                             저장
-                                                        </LinkButton>
-                                                        <LinkButton
+                                                        </LinkButton>*/}
+                                                        {/*<LinkButton
                                                             iconCls="icon-cancel"
                                                             plain
                                                             disabled={
@@ -414,7 +438,7 @@ export default class CommonCodeManagement2 extends React.Component {
                                                             }
                                                         >
                                                             취소
-                                                        </LinkButton>
+                                                        </LinkButton>*/}
                                                         <LinkButton
                                                             plain
                                                             disabled={
@@ -448,10 +472,9 @@ export default class CommonCodeManagement2 extends React.Component {
                                                                 color: "red",
                                                             }}
                                                         >
-                                                            분류코드
+                                                            ID
                                                         </span>
                                                     }
-                                                    editable
                                                     editRules={["required"]}
                                                     editor={({
                                                         row,
@@ -473,95 +496,127 @@ export default class CommonCodeManagement2 extends React.Component {
                                                 <GridColumn
                                                     field="orderingDepartment"
                                                     align="center"
-                                                    title="분류명"
-                                                    editable
-                                                    sortable
-                                                />
-                                                <GridColumn
-                                                    field="PM"
-                                                    align="center"
-                                                    title={<span>코드</span>}
-                                                    editable
+                                                    title="Phase"
                                                     sortable
                                                 />
                                                 <GridColumn
                                                     field="etc"
                                                     align="center"
-                                                    title="코드값"
-                                                    editable
-                                                    sortable
-                                                />
-                                                <GridColumn
-                                                    field="referenceYear"
-                                                    title={<span>정렬</span>}
-                                                    align="center"
-                                                    editable
-                                                    editor={({ row }) => (
-                                                        <NumberBox
-                                                            value={
-                                                                row.referenceYear
-                                                            }
-                                                        ></NumberBox>
-                                                    )}
-                                                    sortable
-                                                />
-                                                {/*<GridColumn
-                                                    field="etc"
-                                                    align="center"
-                                                    title="사용여부"
-                                                    editable
-                                                    sortable
-                                                    render={({ row }) => (*/}
-                                                <GridColumn
-                                                    title="사용여부"
-                                                    align="center"
-                                                    sortable
-                                                    //filterable={false}
-                                                    render={() => (
-                                                        <CheckBox
-                                                            multiple
-                                                            onChange={this.handleChange5.bind(
-                                                                this
-                                                            )}
-                                                        />
-                                                    )}
-                                                ></GridColumn>
-                                                <GridColumn
-                                                    field="etc"
-                                                    align="center"
-                                                    title="비고"
-                                                    editable
+                                                    title="System"
                                                     sortable
                                                 />
                                                 <GridColumn
                                                     field="etc"
                                                     align="center"
-                                                    title="데이터1"
-                                                    editable
+                                                    title="Server Name"
                                                     sortable
                                                 />
                                                 <GridColumn
                                                     field="etc"
                                                     align="center"
-                                                    title="데이터2"
-                                                    editable
+                                                    title="Host Name"
                                                     sortable
                                                 />
                                                 <GridColumn
                                                     field="etc"
                                                     align="center"
-                                                    title="데이터3"
-                                                    editable
+                                                    title="URL"
                                                     sortable
                                                 />
                                                 <GridColumn
                                                     field="etc"
                                                     align="center"
-                                                    title="데이터4"
-                                                    editable
+                                                    title="Message"
+                                                    sortable
+                                                />
+                                                <GridColumn
+                                                    field="etc"
+                                                    align="center"
+                                                    title="Time"
                                                     sortable
                                                 />
                                             </CheckGrid>
+                                            <div
+                                                style={{ marginTop: "30px" }}
+                                            />
+                                            <HeaderDetail
+                                                iconName="fa fa-desktop"
+                                                titleName="Stack Trace"
+                                            />
+                                            <DataGrid
+                                                style={{
+                                                    height: "35vh",
+                                                }}
+                                            >
+                                                <div
+                                                    style={{
+                                                        height: "90vh",
+                                                        border:
+                                                            "1px solid gray",
+                                                    }}
+                                                >
+                                                    <p>123123</p>
+                                                    <p>123123</p>
+                                                    <p>123123</p>
+                                                    <p>123123</p>
+                                                    <p>123123</p>
+                                                </div>
+                                                <HeaderDetail
+                                                    iconName="fa fa-exclamation-circle"
+                                                    titleName="에러 메세지"
+                                                />
+                                                <div
+                                                    style={{
+                                                        height: "10vh",
+                                                        border:
+                                                            "1px solid gray",
+                                                    }}
+                                                >
+                                                    <p>123123</p>
+                                                    <p>123123</p>
+                                                </div>
+                                                <HeaderDetail
+                                                    iconName="fa fa-exclamation-circle"
+                                                    titleName="요청 매개변수 정보"
+                                                />
+                                                <div
+                                                    style={{
+                                                        height: "5vh",
+                                                        border:
+                                                            "1px solid gray",
+                                                    }}
+                                                >
+                                                    <p>123123</p>
+                                                </div>
+                                                <HeaderDetail
+                                                    iconName="fa fa-exclamation-circle"
+                                                    titleName="요청 헤더 정보"
+                                                />
+                                                <div
+                                                    style={{
+                                                        height: "20vh",
+                                                        border:
+                                                            "1px solid gray",
+                                                    }}
+                                                >
+                                                    <p>123123</p>
+                                                    <p>123123</p>
+                                                </div>
+                                                <HeaderDetail
+                                                    iconName="fa fa-exclamation-circle"
+                                                    titleName="요청 사용자 정보"
+                                                />
+                                                <div
+                                                    style={{
+                                                        height: "40vh",
+                                                        border:
+                                                            "1px solid gray",
+                                                    }}
+                                                >
+                                                    <p>123123</p>
+                                                    <p>123123</p>
+                                                </div>
+                                            </DataGrid>
                                         </div>
                                     </div>
                                 </div>
