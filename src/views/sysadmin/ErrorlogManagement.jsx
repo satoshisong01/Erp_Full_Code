@@ -1,6 +1,6 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
-import "../ContentMain.css";
+import "../../common/tableHeader/ContentMain.css";
 import {
     DataGrid,
     GridColumn,
@@ -13,16 +13,11 @@ import {
     //SearchBox,
 } from "rc-easyui";
 
-import {
-    Stats,
-    BigBreadcrumbs,
-    WidgetGrid,
-    JarvisWidget,
-} from "../../../common";
-import ContentName from "../ContentName";
-import Header from "../Header";
-import Search from "../Search";
-import HeaderDetail from "../HeaderDetail";
+import { Stats, BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
+import ContentName from "../../common/tableHeader/ContentName";
+import Header from "../../common/tableHeader/Header";
+import Search from "../../common/tableHeader/Search";
+import HeaderDetail from "../../common/tableHeader/HeaderDetail";
 
 const withCheckbox = (WrappedComponent) => {
     class CheckGrid extends React.Component {
@@ -539,15 +534,16 @@ export default class ErrorlogManagement extends React.Component {
                                             <div
                                                 style={{ marginTop: "30px" }}
                                             />
-                                            <HeaderDetail
-                                                iconName="fa fa-desktop"
-                                                titleName="Stack Trace"
-                                            />
+
                                             <DataGrid
                                                 style={{
                                                     height: "35vh",
                                                 }}
                                             >
+                                                <HeaderDetail
+                                                    iconName="fa fa-desktop"
+                                                    titleName="Stack Trace"
+                                                />
                                                 <div
                                                     style={{
                                                         height: "90vh",

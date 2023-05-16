@@ -8,7 +8,9 @@ export default function ContentName(props) {
                 style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    margin: "20px 0 20px 0",
+                    padding: "20px 0 20px 15px",
+                    backgroundColor: "#ECF0F5",
+                    //height: "10vh",
                 }}
             >
                 <div

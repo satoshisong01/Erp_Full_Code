@@ -5,12 +5,17 @@ import { Provider } from "react-redux";
 import store from "./store/configureStore";
 import { authRoutes } from "./routes";
 import { Layout } from "./common/layout";
-import CommonCodeManagement1 from "./views/components/sysadmin/CommonCodeManagement1";
-import CommonCodeManagement2 from "./views/components/sysadmin/CommonCodeManagement2";
-import ProgramManagement from "./views/components/sysadmin/ProgramManagement";
-import ErrorlogManagement from "./views/components/sysadmin/ErrorlogManagement";
-import UserManagement from "./views/components/sysadmin/UserManagement";
-import UserManagementInfo from "./views/components/sysadmin/UserManagementInfo";
+import ModalTest from "./views/sysadmin/modal";
+import ClientManagement from "./views/sysadmin/ClientManagement";
+import TreeView, { TreeViewItem } from "./common/ui/components/TreeView";
+
+import { newid } from "../src/common/utils/functions";
+import classnames from "classnames";
+import HtmlRender from "../src/common/utils/components/HtmlRender";
+import { findDOMNode } from "react-dom";
+import $ from "jquery";
+import MenuManagement from "./views/sysadmin/MenuManagement";
+import Test from "./views/sysadmin/Test";
 
 class App extends Component {
     render() {
@@ -35,12 +40,18 @@ class App extends Component {
             //  </HashRouter>
             //</Provider>
             <>
-                <CommonCodeManagement1 />
+                {/*<CommonCodeManagement1 />
                 <CommonCodeManagement2 />
                 <ProgramManagement />
                 <ErrorlogManagement />
                 <UserManagement />
-                <UserManagementInfo />
+                <UserManagementInfo />*/}
+                {/*<ModalTest />*/}
+                {/*<ClientManagement />*/}
+                {/*<TreeView />*/}
+                {/*<TreeViewItem />*/}
+                <Test />
+                {/*<MenuManagement />*/}
             </>
         );
     }

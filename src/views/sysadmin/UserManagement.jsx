@@ -1,6 +1,6 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
-import "../ContentMain.css";
+import "../../common/tableHeader/ContentMain.css";
 import {
     DataGrid,
     GridColumn,
@@ -13,15 +13,10 @@ import {
     //SearchBox,
 } from "rc-easyui";
 
-import {
-    Stats,
-    BigBreadcrumbs,
-    WidgetGrid,
-    JarvisWidget,
-} from "../../../common";
-import ContentName from "../ContentName";
-import Header from "../Header";
-import Search from "../Search";
+import { Stats, BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
+import ContentName from "../../common/tableHeader/ContentName";
+import Header from "../../common/tableHeader/Header";
+import Search from "../../common/tableHeader/Search";
 import UserManagementInfo from "./UserManagementInfo";
 
 const withCheckbox = (WrappedComponent) => {

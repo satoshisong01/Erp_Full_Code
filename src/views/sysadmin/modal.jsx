@@ -1,6 +1,6 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
-import "../ContentMain.css";
+import "../../common/tableHeader/ContentMain.css";
 import {
     DataGrid,
     GridColumn,
@@ -13,15 +13,12 @@ import {
     //SearchBox,
 } from "rc-easyui";
 
-import {
-    Stats,
-    BigBreadcrumbs,
-    WidgetGrid,
-    JarvisWidget,
-} from "../../../common";
-import ContentName from "../ContentName";
-import Header from "../Header";
-import Search from "../Search";
+import { Stats, BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
+import ContentName from "../../common/tableHeader/ContentName";
+import Header from "../../common/tableHeader/Header";
+import Search from "../../common/tableHeader/Search";
+import UserManagementInfo from "./UserManagementInfo";
+import ModalSearch from "../../common/tableHeader/ModalSearch";
 
 const withCheckbox = (WrappedComponent) => {
     class CheckGrid extends React.Component {
@@ -168,7 +165,7 @@ const withCheckbox = (WrappedComponent) => {
 };
 const CheckGrid = withCheckbox(DataGrid);
 
-export default class CommonCodeManagement2 extends React.Component {
+export default class ModalTest extends React.Component {
     constructor(props) {
         super(props);
         const data = this.getData();
@@ -356,9 +353,9 @@ export default class CommonCodeManagement2 extends React.Component {
                                         <div className="table-responsive">
                                             <Header
                                                 iconName="fa fa-table"
-                                                titleName="공통코드관리2"
+                                                titleName="재료비 내역"
                                             />
-                                            <Search searchTitle="검색" />
+                                            <ModalSearch searchTitle="검색" />
                                             <ContentName tableTitle="코드 목록" />
                                             <CheckGrid
                                                 filterable //필터선언
@@ -448,13 +445,7 @@ export default class CommonCodeManagement2 extends React.Component {
                                                     field="projectName"
                                                     align="center"
                                                     title={
-                                                        <span
-                                                            style={{
-                                                                color: "red",
-                                                            }}
-                                                        >
-                                                            분류코드
-                                                        </span>
+                                                        <span>프로젝트명</span>
                                                     }
                                                     editable
                                                     editRules={["required"]}
@@ -478,91 +469,52 @@ export default class CommonCodeManagement2 extends React.Component {
                                                 <GridColumn
                                                     field="orderingDepartment"
                                                     align="center"
-                                                    title="분류명"
+                                                    title={
+                                                        <span
+                                                            style={{
+                                                                color: "red",
+                                                            }}
+                                                        >
+                                                            품목
+                                                        </span>
+                                                    }
                                                     editable
                                                     sortable
                                                 />
                                                 <GridColumn
                                                     field="PM"
                                                     align="center"
-                                                    title={<span>코드</span>}
+                                                    title={
+                                                        <span
+                                                            style={{
+                                                                color: "red",
+                                                            }}
+                                                        >
+                                                            구분
+                                                        </span>
+                                                    }
                                                     editable
                                                     sortable
                                                 />
                                                 <GridColumn
                                                     field="etc"
                                                     align="center"
-                                                    title="코드값"
+                                                    title={
+                                                        <span
+                                                            style={{
+                                                                color: "red",
+                                                            }}
+                                                        >
+                                                            금액
+                                                        </span>
+                                                    }
                                                     editable
                                                     sortable
                                                 />
-                                                <GridColumn
-                                                    field="referenceYear"
-                                                    title={<span>정렬</span>}
-                                                    align="center"
-                                                    editable
-                                                    editor={({ row }) => (
-                                                        <NumberBox
-                                                            value={
-                                                                row.referenceYear
-                                                            }
-                                                        ></NumberBox>
-                                                    )}
-                                                    sortable
-                                                />
-                                                {/*<GridColumn
-                                                    field="etc"
-                                                    align="center"
-                                                    title="사용여부"
-                                                    editable
-                                                    sortable
-                                                    render={({ row }) => (*/}
-                                                <GridColumn
-                                                    title="사용여부"
-                                                    align="center"
-                                                    sortable
-                                                    //filterable={false}
-                                                    render={() => (
-                                                        <CheckBox
-                                                            multiple
-                                                            onChange={this.handleChange5.bind(
-                                                                this
-                                                            )}
-                                                        />
-                                                    )}
-                                                ></GridColumn>
                                                 <GridColumn
                                                     field="etc"
                                                     align="center"
                                                     title="비고"
-                                                    editable
-                                                    sortable
-                                                />
-                                                <GridColumn
-                                                    field="etc"
-                                                    align="center"
-                                                    title="데이터1"
-                                                    editable
-                                                    sortable
-                                                />
-                                                <GridColumn
-                                                    field="etc"
-                                                    align="center"
-                                                    title="데이터2"
-                                                    editable
-                                                    sortable
-                                                />
-                                                <GridColumn
-                                                    field="etc"
-                                                    align="center"
-                                                    title="데이터3"
-                                                    editable
-                                                    sortable
-                                                />
-                                                <GridColumn
-                                                    field="etc"
-                                                    align="center"
-                                                    title="데이터4"
                                                     editable
                                                     sortable
                                                 />

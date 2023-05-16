@@ -4,6 +4,7 @@ export default function Header(props) {
     //let headerName = props.title;
     let headerName = props.titleName;
     let iconName = props.iconName;
+    let btnNon = props.btnNon;
     return (
         <div
             style={{
@@ -41,29 +42,33 @@ export default function Header(props) {
                     {headerName}
                 </span>
             </div>
-            <button
-                className="btn sa-btn-primary"
-                style={{
-                    display: "flex",
-                    background: "#3276B1",
-                    height: "40px",
-                    color: "white",
-                    margin: "5px",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-                type="button"
-            >
-                <i className="fa fa-search">
-                    <span
-                        style={{
-                            marginLeft: "5px",
-                        }}
-                    >
-                        조회
-                    </span>
-                </i>
-            </button>
+            {btnNon ? (
+                <></>
+            ) : (
+                <button
+                    className="btn sa-btn-primary"
+                    style={{
+                        display: "flex",
+                        background: "#3276B1",
+                        height: "40px",
+                        color: "white",
+                        margin: "5px",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                    type="button"
+                >
+                    <i className="fa fa-search">
+                        <span
+                            style={{
+                                marginLeft: "5px",
+                            }}
+                        >
+                            조회
+                        </span>
+                    </i>
+                </button>
+            )}
         </div>
     );
 }

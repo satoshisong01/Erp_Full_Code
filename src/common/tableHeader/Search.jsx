@@ -20,7 +20,7 @@ export default function Search(props) {
                     style={{
                         display: "flex",
                         padding: "7px",
-                        width: "100px",
+                        width: "15rem",
                         height: "40px",
                         justifyContent: "center",
                         alignItems: "center",
