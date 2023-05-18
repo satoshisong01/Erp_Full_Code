@@ -23,59 +23,74 @@ export default function ModalPage({ onClose, changeColor }) {
     }
 
     return (
-        <article className="product-modal" style={{}}>
-            <div className="product-modal-bg"></div>
+        <div className="modal-dialog demo-modal">
+            <div className="modal-content">
+                <article className="product-modal">
+                    <div className="product-modal-bg"></div>
 
-            <div className="product-modal-inner">
-                <div className="product-modal-header">
-                    <span className="product-modal-title">
-                        {/*{data
-                            ? "Product 수정하기"
-                            : "새로운 Product 추가하기"}*/}
-                    </span>
-                    {/*<img
-                        className="product-modal-close-btn"
-                        src={Icons.png.close}
-                        alt="modal close btn"
-                    />*/}
-                    <div className="product-modal-close-btn" onClick={onClose}>
-                        <i
-                            style={{
-                                fontSize: "3rem",
-                                padding: "0.5rem",
-                                backgroundColor: "gray",
-                                borderRadius: "15%",
-                            }}
-                            className="fa fa-times"
-                        />
+                    <div className="product-modal-inner">
+                        <div className="product-modal-header">
+                            <div
+                                className="modal-header"
+                                style={{ border: "none" }}
+                            >
+                                <h4 className="modal-title">프로젝트 목록</h4>
+                            </div>
+                            <div
+                                className="product-modal-close-btn"
+                                onClick={onClose}
+                            >
+                                <i
+                                    style={{
+                                        fontSize: "2rem",
+                                        //padding: "0.5rem",
+                                        color: "#CCCCCC",
+                                        borderRadius: "15%",
+                                    }}
+                                    className="fa fa-times"
+                                />
+                            </div>
+                        </div>
+                        <form className="product-modal-body">
+                            <Search searchTitle="검색어 입력" />
+                            <div
+                                className="submitProduct"
+                                style={{ marginTop: "30px" }}
+                            >
+                                <DataGrid data={data} style={{ width: "100%" }}>
+                                    <GridColumn
+                                        field="projectcode"
+                                        title="프로젝트 코드"
+                                        align="center"
+                                    />
+                                    <GridColumn
+                                        field="projectname"
+                                        title="프로젝트명"
+                                        align="center"
+                                    />
+                                </DataGrid>
+
+                                <div className="modal-footer">
+                                    <button
+                                        type="button"
+                                        className="btn btn-default"
+                                        data-dismiss="modal"
+                                        onClick={onClose}
+                                    >
+                                        Close
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary modal-btn-close"
+                                    >
+                                        Save changes
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </div>
-                <form className="product-modal-body">
-                    <Header
-                        iconName="fa fa-cog"
-                        titleName="프로젝트 목록"
-                        btnNon="none"
-                    />
-                    <Search searchTitle="검색어 입력" />
-                    <div className="submitProduct">
-                        <DataGrid data={data} style={{ width: "100%" }}>
-                            <GridColumn
-                                field="projectcode"
-                                title="프로젝트 코드"
-                                align="center"
-                            />
-                            <GridColumn
-                                field="projectname"
-                                title="프로젝트명"
-                                align="center"
-                            />
-                        </DataGrid>
-                        <button className="submitBtn" type="submit">
-                            <span className="btnText">등 록</span>
-                        </button>
-                    </div>
-                </form>
+                </article>
             </div>
-        </article>
+        </div>
     );
 }

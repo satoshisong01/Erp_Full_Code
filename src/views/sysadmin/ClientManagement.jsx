@@ -244,20 +244,71 @@ export default class ClientManagement extends React.Component {
     getData() {
         //목데이터
         return [
-            //{
-            //    //timeTable: {
-            //    //    dates: new Date(),
-            //    //    //dateString: this.formatDate,
-            //    //},
-            //    dates: new Date(),
-            //    code: "NI-NI-01",
-            //    name: "Koi",
-            //    unitcost: 10.0,
-            //    status: false,
-            //    listprice: 36.5,
-            //    attr: "Large",
-            //    itemid: "EST-1",
-            //},
+            {
+                //timeTable: {
+                //    dates: new Date(),
+                //    //dateString: this.formatDate,
+                //},
+                dates: new Date(),
+                code: "NI-NI-01",
+                name: "Koi",
+                businessname: "삼성SDS",
+                littlename: "SDS",
+                clinentnumber: "11-2222-33",
+                businessclassification: "반도체",
+                ceoname: "이재용",
+                companyname: "삼성",
+                postnumber: "21351-51511-5253",
+                address: "기흥동 머시기 203-2",
+                detailaddress: "B동 421호실",
+                unitcost: 10.0,
+                status: false,
+                listprice: 36.5,
+                attr: "Large",
+                itemid: "EST-1",
+            },
+            {
+                dates: new Date(),
+                code: "NI-NI-01",
+                name: "Koi",
+                businessname: "엘지SDS",
+                littlename: "SDS",
+                clinentnumber: "11-2222-33",
+                businessclassification: "반도체",
+                ceoname: "구본무",
+                companyname: "엘지",
+                postnumber: "21351-51511-5253",
+                address: "기흥동 머시기 203-2",
+                detailaddress: "B동 421호실",
+                unitcost: 10.0,
+                status: false,
+                listprice: 36.5,
+                attr: "Large",
+                itemid: "EST-1",
+            },
+            {
+                //timeTable: {
+                //    dates: new Date(),
+                //    //dateString: this.formatDate,
+                //},
+                dates: new Date(),
+                code: "NI-NI-01",
+                name: "Koi",
+                businessname: "현대SDS",
+                littlename: "SDS",
+                clinentnumber: "11-2222-33",
+                businessclassification: "반도체",
+                ceoname: "정몽주",
+                companyname: "현대",
+                postnumber: "21351-51511-5253",
+                address: "기흥동 머시기 203-2",
+                detailaddress: "B동 421호실",
+                unitcost: 10.0,
+                status: false,
+                listprice: 36.5,
+                attr: "Large",
+                itemid: "EST-1",
+            },
         ];
     }
     handleAdd() {
@@ -474,6 +525,9 @@ export default class ClientManagement extends React.Component {
                                                         </Tooltip>
                                                     )}
                                                     sortable
+                                                    render={(row) => (
+                                                        <p>{row.row.code}</p>
+                                                    )}
                                                 />
                                                 <GridColumn
                                                     field="orderingDepartment"
@@ -489,6 +543,14 @@ export default class ClientManagement extends React.Component {
                                                     }
                                                     editable
                                                     sortable
+                                                    render={(row) => (
+                                                        <p>
+                                                            {
+                                                                row.row
+                                                                    .businessname
+                                                            }
+                                                        </p>
+                                                    )}
                                                 />
                                                 <GridColumn
                                                     field="PM"
@@ -500,6 +562,11 @@ export default class ClientManagement extends React.Component {
                                                     }
                                                     editable
                                                     sortable
+                                                    render={(row) => (
+                                                        <p>
+                                                            {row.row.littlename}
+                                                        </p>
+                                                    )}
                                                 />
 
                                                 <GridColumn
@@ -519,6 +586,14 @@ export default class ClientManagement extends React.Component {
                                                         ></NumberBox>
                                                     )}
                                                     sortable
+                                                    render={(row) => (
+                                                        <p>
+                                                            {
+                                                                row.row
+                                                                    .clinentnumber
+                                                            }
+                                                        </p>
+                                                    )}
                                                 />
                                                 <GridColumn
                                                     field="etc"
@@ -526,6 +601,9 @@ export default class ClientManagement extends React.Component {
                                                     title="대표자명"
                                                     editable
                                                     sortable
+                                                    render={(row) => (
+                                                        <p>{row.row.ceoname}</p>
+                                                    )}
                                                 />
                                                 <GridColumn
                                                     field="etc"
@@ -533,6 +611,14 @@ export default class ClientManagement extends React.Component {
                                                     title="사업장명"
                                                     editable
                                                     sortable
+                                                    render={(row) => (
+                                                        <p>
+                                                            {
+                                                                row.row
+                                                                    .companyname
+                                                            }
+                                                        </p>
+                                                    )}
                                                 />
                                                 <GridColumn
                                                     field="etc"
@@ -540,6 +626,11 @@ export default class ClientManagement extends React.Component {
                                                     title="우편번호"
                                                     editable
                                                     sortable
+                                                    render={(row) => (
+                                                        <p>
+                                                            {row.row.postnumber}
+                                                        </p>
+                                                    )}
                                                 />
                                                 <GridColumn
                                                     field="etc"
@@ -547,6 +638,9 @@ export default class ClientManagement extends React.Component {
                                                     title="주소"
                                                     editable
                                                     sortable
+                                                    render={(row) => (
+                                                        <p>{row.row.address}</p>
+                                                    )}
                                                 />
                                                 <GridColumn
                                                     field="etc"
@@ -554,6 +648,14 @@ export default class ClientManagement extends React.Component {
                                                     title="상세주소"
                                                     editable
                                                     sortable
+                                                    render={(row) => (
+                                                        <p>
+                                                            {
+                                                                row.row
+                                                                    .detailaddress
+                                                            }
+                                                        </p>
+                                                    )}
                                                 />
                                                 <GridColumn
                                                     field="etc"
