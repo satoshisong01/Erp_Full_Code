@@ -3,6 +3,7 @@
   "version": "2.0.4",
   "private": true,
   "dependencies": {
+    "antd": "^5.5.0",
     "bootstrap": "3",
     "bootstrap-colorpicker": "2.5.2",
     "bootstrap-duallistbox": "^3.0.6",

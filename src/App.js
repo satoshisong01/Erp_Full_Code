@@ -18,6 +18,7 @@ import MenuManagement from "./views/sysadmin/MenuManagement";
 import Test from "./views/sysadmin/Test";
 import CommonCodeManagement1 from "./views/sysadmin/CommonCodeManagement1";
 import ContentMain from "./common/tableHeader/ContentMain";
+import Testing from "./views/Testing";
 
 class App extends Component {
     render() {
@@ -48,12 +49,13 @@ class App extends Component {
                 <UserManagement />
                 <UserManagementInfo />*/}
                 {/*<ContentMain />*/}
-                <ModalTest />
+                {/*<ModalTest />*/}
                 {/*<ClientManagement />*/}
                 {/*<TreeView />*/}
                 {/*<TreeViewItem />*/}
                 {/*<Test />*/}
                 {/*<MenuManagement />*/}
+                <Testing />
             </>
         );
     }
