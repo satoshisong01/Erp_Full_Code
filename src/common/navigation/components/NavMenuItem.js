@@ -7,6 +7,9 @@ import {Msg} from '../../i18n'
 
 import SmartMenuList from './NavMenuList'
 
+import store from '../../../store/configureStore';
+import { onTabAdd } from '../../tabs/TabsActions.js';
+
 
 export default class SmartMenuItem extends React.Component {
 
@@ -15,6 +18,11 @@ export default class SmartMenuItem extends React.Component {
   };
 
   onLinkClick = (e)=>{
+    // console.log("*Nav onLinkClick: *", this, e);
+    console.log("*Nav onLinkClick: props *", this.props);
+    
+    store.dispatch(onTabAdd(this.props.item.title))
+
     const $body = $("body");
     const $html = $("html");
 
@@ -35,8 +43,9 @@ export default class SmartMenuItem extends React.Component {
 
 
   render() {
-    const item = this.props.item;
+    console.log("*3* NavMenuItem.item: ", this.props.item);
 
+    const item = this.props.item;
 
     const title = !item.parent ?
       <span className="menu-item-parent"><Msg phrase={item.title}/></span> :

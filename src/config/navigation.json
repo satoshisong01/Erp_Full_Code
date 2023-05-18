@@ -45,31 +45,31 @@
       "items": [
         {
           "title": "거래처 관리",
-          "route": "/"
+          "route": "/aaa"
         },
         {
           "title": "공통코드관리1",
-          "route": "/"
+          "route": "/sysadmin/commonCodeManagement1"
         },
         {
           "title": "공통코드관리2",
-          "route": "/"
+          "route": "/sysadmin/commonCodeManagement2"
         },
         {
           "title": "메뉴 관리",
-          "route": "/"
+          "route": "/sysadmin/Test"
         },
         {
           "title": "사용자 관리",
-          "route": "/"
+          "route": "/sysadmin/userManagement"
         },
         {
           "title": "에러로그 관리",
-          "route": "/"
+          "route": "/sysadmin/errorlogManagement"
         },
         {
           "title": "급별 단가(경비/인건비) 내역",
-          "route": "/"
+          "route": "/sysadmin/Test"
         }
       ]
     },

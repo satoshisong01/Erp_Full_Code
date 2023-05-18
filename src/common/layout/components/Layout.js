@@ -10,7 +10,8 @@ import Header from "./Header";
 import Footer from "./Footer";
 
 import { routes } from "../../../routes";
-//import TopTabs from "./TopTabs";
+
+import TabView from "../../tabs/components/TabView.jsx";
 
 class Layout extends React.Component {
     render() {
@@ -25,6 +26,8 @@ class Layout extends React.Component {
                     {/* Ribbon -> Home */}
                     <Ribbon />
 
+                    <TabView />
+
                     <Switch>
                         {routes.map((route, idx) => {
                             return route.component ? (
@@ -33,11 +36,8 @@ class Layout extends React.Component {
                                     path={route.path}
                                     exact={route.exact}
                                     name={route.name}
-                                    // render={props => <route.component {...props}/>}
                                     render={(props) => (
-                                        //<TopTabs name={route.name}>
                                         <route.component {...props} />
-                                        //</TopTabs>
                                     )}
                                 />
                             ) : null;
