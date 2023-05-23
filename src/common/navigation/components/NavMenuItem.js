@@ -1,86 +1,76 @@
-import $ from 'jquery'
-import React from 'react'
-import PropTypes from 'prop-types'
-import { NavLink } from 'react-router-dom';
+import { Button, Tabs } from "antd";
+import React, { createContext, useContext, useState } from "react";
+import { Msg } from "../../i18n";
 
-import {Msg} from '../../i18n'
+import SmartMenuList from "./NavMenuList";
+import { TitleNameContext } from "../../../context/TitleNameContext";
 
-import SmartMenuList from './NavMenuList'
+import store from "../../../store/configureStore";
+import { onTabAdd } from "../../tabs/TabsActions.js";
 
-import store from '../../../store/configureStore';
-import { onTabAdd } from '../../tabs/TabsActions.js';
+const MyContext = createContext;
 
+const SmartMenuItem = ({ item, parentFn, value }) => {
+    const [text, setText] = useState("");
 
-export default class SmartMenuItem extends React.Component {
+    const handleClick = (e) => {
+        const data = e.target.innerText;
+        setText("55555555");
 
-  static contextTypes = {
-    router: PropTypes.object.isRequired
-  };
+        if (typeof parentFn === "function") {
+            parentFn(e.target.innerText);
+            console.log("성공?");
+        } else {
+            console.log("함수가 아니였다");
+        }
 
-  onLinkClick = (e)=>{
-    // console.log("*Nav onLinkClick: *", this, e);
-    console.log("*Nav onLinkClick: props *", this.props);
-    
-    store.dispatch(onTabAdd(this.props.item.title))
+        if (!parentFn) {
+            console.log("가즈아");
+        } else {
+            parentFn(e.target.innerText);
+            console.log("가즈아2");
+        }
 
-    const $body = $("body");
-    const $html = $("html");
+        //store.dispatch(onTabAdd(e.target.innerText));
+    };
 
-    if (!$body.hasClass("menu-on-top")) {
-      $html.removeClass("hidden-menu-mobile-lock");
-      $body.removeClass("hidden-menu");
-      $body.removeClass("minified");
-    } else if (
-      $body.hasClass("menu-on-top") &&
-      $body.hasClass("mobile-view-activated")
-    ) {
-      $html.removeClass("hidden-menu-mobile-lock");
-      $body.removeClass("hidden-menu");
-      $body.removeClass("minified");
-    }
-    
-  }
+    const title = !item.parent ? (
+        <div>
+            <span className="menu-item-parent">
+                <Msg phrase={item.title} />
+            </span>
+        </div>
+    ) : (
+        <Msg phrase={item.title} />
+    );
 
-
-  render() {
-    console.log("*3* NavMenuItem.item: ", this.props.item);
-
-    const item = this.props.item;
-
-    const title = !item.parent ?
-      <span className="menu-item-parent"><Msg phrase={item.title}/></span> :
-      <Msg phrase={item.title}/>;
-
-    const badge = item.badge ? <span className={item.badge.class}>{item.badge.label || ''}</span> : null;
-    const childItems = item.items ? <SmartMenuList items={item.items}/> : null;
-
-    const icon = item.icon ? (
-      item.counter ? <i className={item.icon}><em>{item.counter}</em></i> : <i className={item.icon}/>
+    const badge = item.badge ? (
+        <span className={item.badge.class}>{item.badge.label || ""}</span>
+    ) : null;
+    const childItems = item.items ? (
+        <SmartMenuList items={item.items} parentFn={parentFn} />
     ) : null;
 
+    const icon = item.icon ? (
+        item.counter ? (
+            <i className={item.icon}>
+                <em>{item.counter}</em>
+            </i>
+        ) : (
+            <i className={item.icon} />
+        )
+    ) : null;
 
-    const liClassName = isItemActive(item, this.context.router.route) ? 'active' : '';
+    const liClassName = "active";
 
-    const link = item.route ?
-      <NavLink to={item.route} title={item.title} activeClassName="active" onClick={this.onLinkClick}>
-        {icon} {title} {badge}
-      </NavLink> :
-      <a href={item.href || '#'}  title={item.title}>
-        {icon} {title} {badge}
-      </a>;
+    return (
+        <li className={liClassName}>
+            <a title={item.title} onClick={handleClick}>
+                {icon} {title} {badge}
+            </a>
+            {childItems}
+        </li>
+    );
+};
 
-
-    return <li className={liClassName}>{link}{childItems}</li>
-  }
-}
-
-
-function isItemActive(item, route){
-  if(item.route){
-    return item.route === route.location.pathname
-  } else if (item.items) {  
-    return item.items.some(_ => isItemActive(_, route))
-  } else {
-    return false
-  }
-}
+export default SmartMenuItem;

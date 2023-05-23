@@ -4,13 +4,7 @@ import "../../common/tableHeader/ContentMain.css";
 import {
     DataGrid,
     GridColumn,
-    NumberBox,
     CheckBox,
-    TextBox,
-    Tooltip,
-    LinkButton,
-    DateBox,
-    //SearchBox,
     Tree,
     Menu,
     MenuItem,
@@ -29,7 +23,6 @@ const withCheckbox = (WrappedComponent) => {
             this.state = {
                 clicked: false,
                 data: this.getData(),
-                //data: this.props.data,
                 selectedRows: [],
                 selection: null,
             };
@@ -45,88 +38,6 @@ const withCheckbox = (WrappedComponent) => {
                 this.setState({ data: this.props.data });
             }
         }
-        //체크부분
-        //isChecked(row) {
-        //    if (this.props.idField) {
-        //        const index = this.state.selectedRows.findIndex(
-        //            (s) => s[this.props.idField] === row[this.props.idField]
-        //        );
-        //        if (index >= 0) {
-        //            return true;
-        //        }
-        //    } else {
-        //        const index = this.state.selectedRows.indexOf(row);
-        //        if (index >= 0) {
-        //            return true;
-        //        }
-        //    }
-        //    return false;
-        //}
-        //isAllChecked() {
-        //    const { selectedRows, data } = this.state;
-        //    if (selectedRows.length && selectedRows.length === data.length) {
-        //        return true;
-        //    }
-        //    return false;
-        //}
-        //handleRowCheck(row, checked) {
-        //    if (this.state.clicked) {
-        //        return;
-        //    }
-        //    const index = this.state.data.indexOf(row);
-        //    console.log("선택된 번호는:", index);
-
-        //    const data = this.state.data.slice();
-        //    data.splice(index, 1, Object.assign({}, row));
-        //    this.setState({ data: data });
-        //    if (checked) {
-        //        this.setState({
-        //            selectedRows: [...this.state.selectedRows, data[index]],
-        //        });
-        //        console.log("선택된 값은?:", this.state.selectedRows);
-        //    } else {
-        //        const selection = this.state.selectedRows.filter((r) => {
-        //            if (this.props.idField) {
-        //                if (r[this.props.idField] !== row[this.props.idField]) {
-        //                    return true;
-        //                }
-        //            } else {
-        //                if (r !== row) {
-        //                    return true;
-        //                }
-        //            }
-        //            return false;
-        //        });
-        //        this.setState({
-        //            selectedRows: selection,
-        //        });
-        //    }
-        //    this.setState({ clicked: true }, () => {
-        //        setTimeout(() => this.setState({ clicked: false }));
-        //        if (this.props.onSelectionChange) {
-        //            this.props.onSelectionChange(this.state.selectedRows);
-        //        }
-        //    });
-        //}
-        //handleAllCheck(checked) {
-        //    if (this.state.clicked) {
-        //        return;
-        //    }
-        //    const data = this.state.data.map((row) => Object.assign({}, row));
-        //    this.setState(
-        //        {
-        //            data: data,
-        //            selectedRows: checked ? data : [],
-        //            clicked: true,
-        //        },
-        //        () => {
-        //            setTimeout(() => this.setState({ clicked: false }));
-        //            if (this.props.onSelectionChange) {
-        //                this.props.onSelectionChange(this.state.selectedRows);
-        //            }
-        //        }
-        //    );
-        //}
         handleSelectionChange(selection) {
             this.setState({ selection: selection });
         }
@@ -214,12 +125,9 @@ export default class MenuManagement extends React.Component {
         const filteredDates = this.state.data
             .map((item) => item.minDates)
             .filter((date) => date >= startDate && date <= endDate);
-
-        //console.log(filteredDates.map((item) => this.formatDate(item)));
         this.setState({
             S_minDates: filteredDates.map((item) => this.formatDate(item)),
         });
-        //return filteredDates.map((item) => this.formatDate(item));
     }
 
     formatDate(date) {
@@ -235,24 +143,17 @@ export default class MenuManagement extends React.Component {
 
             return `${y}-${formatMonth}-${formatDay}`;
         }
-        //return `${y}년${m}월${d}일`;
     }
 
     handleChange = (value) => {
         this.setState({ dateValue: value }); //클릭한 값으로 변경됨
-        //this.filterRange(this.state.startDate, this.state.endDate);
+
         console.log(this.state.dateValue);
-        //console.log("dateValue ->", this.state.dateValue);
-        //console.log("이값은? value", value);
-        //console.log(this.state.data);
     };
 
     handleChange2 = (value) => {
         this.setState({ endDate: value }); //클릭한 값으로 변경됨
         this.filterRange(this.state.startDate, this.state.endDate);
-        //console.log("dateValue ->", this.state.dateValue);
-        //console.log("이값은? value", value);
-        //console.log(this.state.data);
     };
 
     getData() {
@@ -318,65 +219,6 @@ export default class MenuManagement extends React.Component {
             },
         ];
     }
-    //handleAdd() {
-    //    console.log(this.state.data);
-
-    //    if (!this.datagrid.datagrid.endEdit()) {
-    //        return;
-    //    }
-    //    let data = this.state.data.slice();
-    //    data.unshift({
-    //        minDates: this.state.value,
-    //        maxDates: this.state.value,
-    //        minDatesString: this.formatDate(this.state.value),
-    //        maxDatesString: this.formatDate(this.state.value),
-    //        status: false,
-    //        _new: true,
-    //        id: uuidv4(),
-    //    });
-    //    this.setState({ data: data }, () => {
-    //        this.datagrid.datagrid.beginEdit(data[0]);
-    //    });
-    //    console.log(this.state.data);
-    //}
-    //handleRowEditEnd(event) {
-    //    if (event.row._new) {
-    //        event.row._new = undefined;
-    //        const data = this.state.data.slice();
-    //        this.setState({ data: data });
-    //    }
-    //}
-    //handleRowEditCancel(event) {
-    //    if (event.row._new) {
-    //        console.log(event);
-    //        console.log(event.row);
-    //        console.log(event.row._new);
-    //        const data = this.state.data.filter((row) => row !== event.row);
-    //        this.setState({ data: data });
-    //    }
-    //}
-    //deleteRow() {
-    //    const selectId = [];
-    //    let abc = this.state.data[0].maxDates < this.state.data.minDates;
-    //    console.log(this.state.data[0].maxDates);
-    //    console.log(this.state.data[0].minDates);
-    //    console.log(abc);
-    //    //selectId = this.state.selection.map((s) => s.id).join(", ");
-    //    selectId.push(this.state.selection.map((s) => s.id));
-    //    console.log(selectId);
-    //    console.log(selectId[0]);
-    //    console.log(this.state.selection);
-    //    this.setState({
-    //        data: this.state.data.filter(
-    //            (item) => !selectId[0].includes(item.id)
-    //        ),
-    //    });
-    //    this.selectId = [];
-    //}
-    //handleClick() {
-    //    console.log("클릭");
-    //    console.log(22);
-    //}
     render() {
         const { selection } = this.state;
         return (

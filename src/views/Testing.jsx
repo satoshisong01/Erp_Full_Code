@@ -1,7 +1,12 @@
 import { Button, Tabs } from "antd";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import CommonCodeManagement1 from "./sysadmin/CommonCodeManagement1";
 import ClientManagement from "./sysadmin/ClientManagement";
+import CommonCodeManagement2 from "./sysadmin/CommonCodeManagement2";
+import MenuManagement from "./sysadmin/MenuManagement";
+import UserManagement from "./sysadmin/UserManagement";
+import ErrorlogManagement from "./sysadmin/ErrorlogManagement";
+
 const defaultPanes = new Array(1).fill(null).map((_, index) => {
     const id = String(index + 1);
     return {
@@ -10,15 +15,20 @@ const defaultPanes = new Array(1).fill(null).map((_, index) => {
         key: id,
     };
 });
-const Testing = () => {
+
+const Testing = (props) => {
+    const title = props.text;
+
     const [activeKey, setActiveKey] = useState(defaultPanes[0].key);
     const [items, setItems] = useState(defaultPanes);
     const newTabIndex = useRef(0);
+
     const onChange = (key) => {
         setActiveKey(key);
     };
-    const add = () => {
-        const existingTab = items.find((tab) => tab.label === "공통코드관리1");
+
+    const addTab = (label, content) => {
+        const existingTab = items.find((tab) => tab.label === label);
         if (existingTab) {
             setActiveKey(existingTab.key);
         } else {
@@ -26,32 +36,32 @@ const Testing = () => {
             setItems([
                 ...items,
                 {
-                    label: "공통코드관리1",
-                    children: <CommonCodeManagement1 />,
+                    label: label,
+                    children: content,
                     key: newActiveKey,
                 },
             ]);
             setActiveKey(newActiveKey);
         }
     };
-    const add2 = () => {
-        const existingTab = items.find((tab) => tab.label === "거래처 목록");
-        if (existingTab) {
-            setActiveKey(existingTab.key);
-        } else {
-            const newActiveKey = `newTab${newTabIndex.current++}`;
-            setItems([
-                ...items,
-                {
-                    label: "거래처 목록",
-                    children: <ClientManagement />,
-                    key: newActiveKey,
-                },
-            ]);
-            setActiveKey(newActiveKey);
+
+    useEffect(() => {
+        if (title === "공통코드관리1") {
+            addTab("공통코드관리1", <CommonCodeManagement1 />);
+        } else if (title === "거래처 관리") {
+            addTab("거래처 관리", <ClientManagement />);
+        } else if (title === "공통코드관리2") {
+            addTab("공통코드관리2", <CommonCodeManagement2 />);
+        } else if (title === "메뉴 관리") {
+            addTab("메뉴 관리", <MenuManagement />);
+        } else if (title === "사용자 관리") {
+            addTab("사용자 관리", <UserManagement />);
+        } else if (title === "에러로그 관리") {
+            addTab("에러로그 관리", <ErrorlogManagement />);
         }
-    };
-    const remove = (targetKey) => {
+    }, [title]);
+
+    const removeTab = (targetKey) => {
         const targetIndex = items.findIndex((pane) => pane.key === targetKey);
         const newPanes = items.filter((pane) => pane.key !== targetKey);
         if (newPanes.length && targetKey === activeKey) {
@@ -62,34 +72,52 @@ const Testing = () => {
         }
         setItems(newPanes);
     };
+
     const onEdit = (targetKey, action) => {
         if (action === "add") {
-            add();
+            if (title === "공통코드관리1") {
+                addTab("공통코드관리1", <CommonCodeManagement1 />);
+            } else if (title === "거래처 관리") {
+                addTab("거래처 관리", <ClientManagement />);
+            } else if (title === "공통코드관리2") {
+                addTab("공통코드관리2", <CommonCodeManagement2 />);
+            } else if (title === "메뉴 관리") {
+                addTab("메뉴 관리", <MenuManagement />);
+            } else if (title === "사용자 관리") {
+                addTab("사용자 관리", <UserManagement />);
+            } else if (title === "에러로그 관리") {
+                addTab("에러로그 관리", <ErrorlogManagement />);
+            }
         } else {
-            remove(targetKey);
+            removeTab(targetKey);
             if (targetKey === activeKey) {
                 setActiveKey(items[items.length - 1].key);
             }
         }
     };
+
     return (
         <div>
-            <div style={{ display: "flex" }}>
-                <div
-                    style={{
-                        marginBottom: 16,
-                    }}
-                >
-                    <Button onClick={add}>공통코드관리1</Button>
+            {/*<div style={{ display: "flex" }}>
+                <div style={{ marginBottom: 16 }}>
+                    <Button
+                        onClick={() =>
+                            addTab("공통코드관리1", <CommonCodeManagement1 />)
+                        }
+                    >
+                        공통코드관리1
+                    </Button>
                 </div>
-                <div
-                    style={{
-                        marginBottom: 16,
-                    }}
-                >
-                    <Button onClick={add2}>거래처 목록</Button>
+                <div style={{ marginBottom: 16 }}>
+                    <Button
+                        onClick={() =>
+                            addTab("거래처 관리", <ClientManagement />)
+                        }
+                    >
+                        거래처 관리
+                    </Button>
                 </div>
-            </div>
+            </div>*/}
             <Tabs
                 hideAdd
                 onChange={onChange}
@@ -101,4 +129,5 @@ const Testing = () => {
         </div>
     );
 };
+
 export default Testing;

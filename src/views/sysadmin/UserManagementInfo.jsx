@@ -81,9 +81,10 @@ export default function UserManagementInfo(props) {
                                         display: "flex",
                                         width: "160px",
                                         height: "40px",
-                                        backgroundColor: "#F7F7F7",
+                                        border: "1px solid #D8D8D8",
                                         marginRight: "3px",
-                                        marginLeft: "3px",
+
+                                        backgroundColor: "#F7F7F7",
                                         justifyContent: "center",
                                         alignItems: "center",
                                     }}
@@ -429,7 +430,7 @@ export default function UserManagementInfo(props) {
                             display: "flex",
                             width: "100%",
                             backgroundColor: "#F9F9F9",
-                            padding: "5px 0 5px 0",
+                            //padding: "5px 0 5px 0",
                         }}
                     >
                         <span

@@ -165,17 +165,10 @@ export default class NavMenu extends React.Component {
     }
 
     render() {
-        return (
-            <>
-                {navItems ? (
-                    <NavMenuList
-                        items={navItems}
-                        parentFn={this.props.parentFn}
-                    />
-                ) : (
-                    this.props.children
-                )}
-            </>
+        return navItems ? (
+            <NavMenuList items={navItems} parentFn={this.props.parentFn} />
+        ) : (
+            this.props.children
         );
     }
 }
@@ -187,7 +180,7 @@ NavMenu.propTypes = {
     openedSign: PropTypes.string,
 };
 
-// ensure item have id
+// emsure item have id
 function addId(item) {
     if (item.items) {
         item.items = item.items.map(addId);
