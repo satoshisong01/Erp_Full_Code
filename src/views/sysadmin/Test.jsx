@@ -14,7 +14,7 @@ import { WidgetGrid, JarvisWidget } from "../../common";
 import ContentName from "../../common/tableHeader/ContentName";
 import Header from "../../common/tableHeader/Header";
 import Search from "../../common/tableHeader/Search";
-import UserManagementInfo from "./UserManagementInfo";
+import UserManagementInfo from "./UserManagementInfo copy";
 import MenuUi from "./MenuUi";
 
 const withCheckbox = (WrappedComponent) => {

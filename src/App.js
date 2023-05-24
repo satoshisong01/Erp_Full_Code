@@ -16,6 +16,7 @@ import { findDOMNode } from "react-dom";
 import $ from "jquery";
 import MenuManagement from "./views/sysadmin/MenuManagement";
 import Test from "./views/sysadmin/Test";
+import ModalSearch from "./common/tableHeader/ModalSearch";
 
 class App extends Component {
     render() {
@@ -41,6 +42,7 @@ class App extends Component {
                     </Switch>
                 </HashRouter>
             </Provider>
+            //<ModalSearch />
         );
     }
 }

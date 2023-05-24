@@ -16,6 +16,7 @@ export default function ModalSearch(props) {
                     borderTop: "solid #DDDDDD 1px",
                     borderBottom: "solid #DDDDDD 1px",
                     marginLeft: "auto",
+                    height: "40px",
                     backgroundColor: "white",
                 }}
             >

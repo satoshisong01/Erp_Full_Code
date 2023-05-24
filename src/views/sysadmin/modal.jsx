@@ -17,7 +17,7 @@ import { Stats, BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
 import ContentName from "../../common/tableHeader/ContentName";
 import Header from "../../common/tableHeader/Header";
 import Search from "../../common/tableHeader/Search";
-import UserManagementInfo from "./UserManagementInfo";
+import UserManagementInfo from "./UserManagementInfo copy";
 import ModalSearch from "../../common/tableHeader/ModalSearch";
 
 const withCheckbox = (WrappedComponent) => {
