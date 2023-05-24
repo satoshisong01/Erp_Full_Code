@@ -136,22 +136,22 @@ const withCheckbox = (WrappedComponent) => {
                             width={50}
                             align="center"
                             field="ck"
-                            render={({ row }) => (
-                                <CheckBox
-                                    checked={this.isChecked(row)}
-                                    onChange={(checked) =>
-                                        this.handleRowCheck(row, checked)
-                                    }
-                                ></CheckBox>
-                            )}
-                            header={() => (
-                                <CheckBox
-                                    checked={this.isAllChecked()}
-                                    onChange={(checked) =>
-                                        this.handleAllCheck(checked)
-                                    }
-                                ></CheckBox>
-                            )}
+                            //render={({ row }) => (
+                            //    <CheckBox
+                            //        checked={this.isChecked(row)}
+                            //        onChange={(checked) =>
+                            //            this.handleRowCheck(row, checked)
+                            //        }
+                            //    ></CheckBox>
+                            //)}
+                            //header={() => (
+                            //    <CheckBox
+                            //        checked={this.isAllChecked()}
+                            //        onChange={(checked) =>
+                            //            this.handleAllCheck(checked)
+                            //        }
+                            //    ></CheckBox>
+                            //)}
                             filter={() => <span></span>}
                         />
                         {this.props.children}
@@ -322,7 +322,7 @@ export default class UserManagement extends React.Component {
     }
     render() {
         return (
-            <div id="content">
+            <div id="content" style={{ padding: "0" }}>
                 <WidgetGrid>
                     <div className="row">
                         <article className="col-sm-12">
@@ -363,228 +363,262 @@ export default class UserManagement extends React.Component {
                                                 >
                                                     <div
                                                         style={{
-                                                            marginRight: "10px",
+                                                            //marginRight: "10px",
                                                             overflow: "auto",
+                                                            borderRight:
+                                                                "solid 2px #CCCCCC",
                                                         }}
                                                     >
                                                         <ContentName tableTitle="사용자 목록" />
-                                                        <DataGrid
-                                                            filterable //필터선언
-                                                            columnResizing
-                                                            ref={(ref) =>
-                                                                (this.datagrid = ref)
-                                                            }
+                                                        <div
                                                             style={{
-                                                                height: "80vh",
-                                                                width: "45vw",
+                                                                padding:
+                                                                    "0 15px",
+                                                                backgroundColor:
+                                                                    "#ECF0F5",
                                                             }}
-                                                            selection={
-                                                                this.state
-                                                                    .selection
-                                                            }
-                                                            onSelectionChange={(
-                                                                selection
-                                                            ) =>
-                                                                this.setState({
-                                                                    selection,
-                                                                })
-                                                            }
-                                                            data={
-                                                                this.state.data
-                                                            }
-                                                            clickToEdit
-                                                            fitColumns={true}
-                                                            editMode="row"
-                                                            //toolbar={({
-                                                            //    editingItem,
-                                                            //}) => (
-                                                            //    <div
-                                                            //        style={{
-                                                            //            padding: 4,
-                                                            //        }}
-                                                            //    >
-                                                            //        <LinkButton
-                                                            //            iconCls="icon-add"
-                                                            //            plain
-                                                            //            onClick={this.handleAdd.bind(
-                                                            //                this
-                                                            //            )}
-                                                            //        >
-                                                            //            추가
-                                                            //        </LinkButton>
-                                                            //        <LinkButton
-                                                            //            iconCls="icon-save"
-                                                            //            plain
-                                                            //            disabled={
-                                                            //                editingItem ==
-                                                            //                null
-                                                            //            }
-                                                            //            onClick={() =>
-                                                            //                this.datagrid.datagrid.endEdit()
-                                                            //            }
-                                                            //        >
-                                                            //            저장
-                                                            //        </LinkButton>
-                                                            //        <LinkButton
-                                                            //            iconCls="icon-cancel"
-                                                            //            plain
-                                                            //            disabled={
-                                                            //                editingItem ==
-                                                            //                null
-                                                            //            }
-                                                            //            onClick={() =>
-                                                            //                this.datagrid.datagrid.cancelEdit()
-                                                            //            }
-                                                            //        >
-                                                            //            취소
-                                                            //        </LinkButton>
-                                                            //        <LinkButton
-                                                            //            plain
-                                                            //            disabled={
-                                                            //                editingItem ==
-                                                            //                null
-                                                            //            }
-                                                            //            onClick={(
-                                                            //                row
-                                                            //            ) =>
-                                                            //                this.deleteRow(
-                                                            //                    row
-                                                            //                )
-                                                            //            }
-                                                            //        >
-                                                            //            <i className="glyphicon glyphicon-trash" />{" "}
-                                                            //            삭제
-                                                            //        </LinkButton>
-                                                            //    </div>
-                                                            //)}
-                                                            //onEditEnd={this.handleRowEditEnd.bind(
-                                                            //    this
-                                                            //)}
-                                                            //onEditCancel={this.handleRowEditCancel.bind(
-                                                            //    this
-                                                            //)}
                                                         >
-                                                            <GridColumn
-                                                                field="projectName"
-                                                                align="center"
-                                                                title={
-                                                                    <span
-                                                                        style={{
-                                                                            color:
-                                                                                "red",
-                                                                        }}
-                                                                    >
-                                                                        아이디
-                                                                    </span>
+                                                            <DataGrid
+                                                                filterable //필터선언
+                                                                columnResizing
+                                                                ref={(ref) =>
+                                                                    (this.datagrid = ref)
                                                                 }
-                                                                editable
-                                                                editRules={[
-                                                                    "required",
-                                                                ]}
-                                                                editor={({
-                                                                    row,
-                                                                    error,
-                                                                }) => (
-                                                                    <Tooltip
-                                                                        content={
-                                                                            error
+                                                                style={{
+                                                                    height:
+                                                                        "86vh",
+                                                                    width:
+                                                                        "100%",
+                                                                }}
+                                                                selection={
+                                                                    this.state
+                                                                        .selection
+                                                                }
+                                                                onSelectionChange={(
+                                                                    selection
+                                                                ) =>
+                                                                    this.setState(
+                                                                        {
+                                                                            selection,
                                                                         }
-                                                                        tracking
-                                                                    >
-                                                                        <TextBox
-                                                                            value={
-                                                                                row.projectName
+                                                                    )
+                                                                }
+                                                                data={
+                                                                    this.state
+                                                                        .data
+                                                                }
+                                                                clickToEdit
+                                                                fitColumns={
+                                                                    true
+                                                                }
+                                                                editMode="row"
+                                                                //toolbar={({
+                                                                //    editingItem,
+                                                                //}) => (
+                                                                //    <div
+                                                                //        style={{
+                                                                //            padding: 4,
+                                                                //        }}
+                                                                //    >
+                                                                //        <LinkButton
+                                                                //            iconCls="icon-add"
+                                                                //            plain
+                                                                //            onClick={this.handleAdd.bind(
+                                                                //                this
+                                                                //            )}
+                                                                //        >
+                                                                //            추가
+                                                                //        </LinkButton>
+                                                                //        <LinkButton
+                                                                //            iconCls="icon-save"
+                                                                //            plain
+                                                                //            disabled={
+                                                                //                editingItem ==
+                                                                //                null
+                                                                //            }
+                                                                //            onClick={() =>
+                                                                //                this.datagrid.datagrid.endEdit()
+                                                                //            }
+                                                                //        >
+                                                                //            저장
+                                                                //        </LinkButton>
+                                                                //        <LinkButton
+                                                                //            iconCls="icon-cancel"
+                                                                //            plain
+                                                                //            disabled={
+                                                                //                editingItem ==
+                                                                //                null
+                                                                //            }
+                                                                //            onClick={() =>
+                                                                //                this.datagrid.datagrid.cancelEdit()
+                                                                //            }
+                                                                //        >
+                                                                //            취소
+                                                                //        </LinkButton>
+                                                                //        <LinkButton
+                                                                //            plain
+                                                                //            disabled={
+                                                                //                editingItem ==
+                                                                //                null
+                                                                //            }
+                                                                //            onClick={(
+                                                                //                row
+                                                                //            ) =>
+                                                                //                this.deleteRow(
+                                                                //                    row
+                                                                //                )
+                                                                //            }
+                                                                //        >
+                                                                //            <i className="glyphicon glyphicon-trash" />{" "}
+                                                                //            삭제
+                                                                //        </LinkButton>
+                                                                //    </div>
+                                                                //)}
+                                                                //onEditEnd={this.handleRowEditEnd.bind(
+                                                                //    this
+                                                                //)}
+                                                                //onEditCancel={this.handleRowEditCancel.bind(
+                                                                //    this
+                                                                //)}
+                                                            >
+                                                                <GridColumn
+                                                                    field="projectName"
+                                                                    align="center"
+                                                                    title={
+                                                                        <span
+                                                                            style={{
+                                                                                color:
+                                                                                    "red",
+                                                                            }}
+                                                                        >
+                                                                            아이디
+                                                                        </span>
+                                                                    }
+                                                                    editable
+                                                                    editRules={[
+                                                                        "required",
+                                                                    ]}
+                                                                    editor={({
+                                                                        row,
+                                                                        error,
+                                                                    }) => (
+                                                                        <Tooltip
+                                                                            content={
+                                                                                error
                                                                             }
-                                                                        ></TextBox>
-                                                                    </Tooltip>
-                                                                )}
-                                                                sortable
-                                                            />
-                                                            <GridColumn
-                                                                field="orderingDepartment"
-                                                                align="center"
-                                                                title="사용자 명"
-                                                                editable
-                                                                sortable
-                                                            />
-                                                            <GridColumn
-                                                                field="PM"
-                                                                align="center"
-                                                                title="언어"
-                                                                editable
-                                                                sortable
-                                                            />
-                                                            <GridColumn
-                                                                title="사용여부"
-                                                                align="center"
-                                                                sortable
-                                                                render={() => (
-                                                                    <CheckBox
-                                                                        multiple
-                                                                        onChange={this.handleChange5.bind(
-                                                                            this
-                                                                        )}
-                                                                    />
-                                                                )}
-                                                            ></GridColumn>
-                                                        </DataGrid>
+                                                                            tracking
+                                                                        >
+                                                                            <TextBox
+                                                                                value={
+                                                                                    row.projectName
+                                                                                }
+                                                                            ></TextBox>
+                                                                        </Tooltip>
+                                                                    )}
+                                                                    sortable
+                                                                />
+                                                                <GridColumn
+                                                                    field="orderingDepartment"
+                                                                    align="center"
+                                                                    title="사용자 명"
+                                                                    editable
+                                                                    sortable
+                                                                />
+                                                                <GridColumn
+                                                                    field="PM"
+                                                                    align="center"
+                                                                    title="언어"
+                                                                    editable
+                                                                    sortable
+                                                                />
+                                                                <GridColumn
+                                                                    title="사용여부"
+                                                                    align="center"
+                                                                    sortable
+                                                                    render={() => (
+                                                                        <CheckBox
+                                                                            multiple
+                                                                            onChange={this.handleChange5.bind(
+                                                                                this
+                                                                            )}
+                                                                        />
+                                                                    )}
+                                                                ></GridColumn>
+                                                            </DataGrid>
+                                                        </div>
                                                     </div>
                                                     <div
                                                         style={{
                                                             width: "51%",
+                                                            backgroundColor:
+                                                                "#ECF0F5",
                                                         }}
                                                     >
                                                         <ContentName tableTitle="사용자 정보" />
                                                         <UserManagementInfo />
-                                                        <CheckGrid
-                                                            columnResizing
-                                                            ref={(ref) =>
-                                                                (this.datagrid = ref)
-                                                            }
+                                                        <div
                                                             style={{
-                                                                height:
-                                                                    "36.5vh",
+                                                                padding:
+                                                                    "0 15px",
+                                                                backgroundColor:
+                                                                    "#ECF0F5",
                                                             }}
-                                                            selection={
-                                                                this.state
-                                                                    .selection
-                                                            }
-                                                            onSelectionChange={(
-                                                                selection
-                                                            ) =>
-                                                                this.setState({
-                                                                    selection,
-                                                                })
-                                                            }
-                                                            data={
-                                                                this.state.data
-                                                            }
-                                                            clickToEdit
-                                                            fitColumns={true}
-                                                            editMode="row"
-                                                            onEditEnd={this.handleRowEditEnd.bind(
-                                                                this
-                                                            )}
-                                                            onEditCancel={this.handleRowEditCancel.bind(
-                                                                this
-                                                            )}
                                                         >
-                                                            <GridColumn
-                                                                width="10vw"
-                                                                field="orderingDepartment"
-                                                                align="center"
-                                                                title="역할 코드"
-                                                                sortable
-                                                            />
-                                                            <GridColumn
-                                                                width="10vw"
-                                                                field="salesDepartment"
-                                                                align="center"
-                                                                title="역할 명"
-                                                                sortable
-                                                            />
-                                                            <GridColumn width="20vw" />
-                                                        </CheckGrid>
+                                                            <CheckGrid
+                                                                columnResizing
+                                                                ref={(ref) =>
+                                                                    (this.datagrid = ref)
+                                                                }
+                                                                style={{
+                                                                    height:
+                                                                        "36.5vh",
+                                                                }}
+                                                                selection={
+                                                                    this.state
+                                                                        .selection
+                                                                }
+                                                                onSelectionChange={(
+                                                                    selection
+                                                                ) =>
+                                                                    this.setState(
+                                                                        {
+                                                                            selection,
+                                                                        }
+                                                                    )
+                                                                }
+                                                                data={
+                                                                    this.state
+                                                                        .data
+                                                                }
+                                                                clickToEdit
+                                                                fitColumns={
+                                                                    true
+                                                                }
+                                                                editMode="row"
+                                                                onEditEnd={this.handleRowEditEnd.bind(
+                                                                    this
+                                                                )}
+                                                                onEditCancel={this.handleRowEditCancel.bind(
+                                                                    this
+                                                                )}
+                                                            >
+                                                                <GridColumn
+                                                                    width="10vw"
+                                                                    field="orderingDepartment"
+                                                                    align="center"
+                                                                    title="역할 코드"
+                                                                    sortable
+                                                                />
+                                                                <GridColumn
+                                                                    width="10vw"
+                                                                    field="salesDepartment"
+                                                                    align="center"
+                                                                    title="역할 명"
+                                                                    sortable
+                                                                />
+                                                                <GridColumn width="20vw" />
+                                                            </CheckGrid>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </CheckGrid>
