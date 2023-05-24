@@ -20,39 +20,27 @@ import Test from "./views/sysadmin/Test";
 class App extends Component {
     render() {
         return (
-            //<Provider store={store}>
-            //  <HashRouter>
-            //    <Switch>
-            //      {authRoutes.map((route, idx) => {
-            //        return route.component ? (
-            //          <Route
-            //            key={idx}
-            //            path={route.path}
-            //            exact={route.exact}
-            //            name={route.name}
-            //            render={props => <route.component {...props} />}
-            //          />
-            //        ) : null;
-            //      })}
+            <Provider store={store}>
+                <HashRouter>
+                    <Switch>
+                        {authRoutes.map((route, idx) => {
+                            return route.component ? (
+                                <Route
+                                    key={idx}
+                                    path={route.path}
+                                    exact={route.exact}
+                                    name={route.name}
+                                    render={(props) => (
+                                        <route.component {...props} />
+                                    )}
+                                />
+                            ) : null;
+                        })}
 
-            //      <Route path="/" name="Home" component={Layout} />
-            //    </Switch>
-            //  </HashRouter>
-            //</Provider>
-            <>
-                {/*<CommonCodeManagement1 />
-                <CommonCodeManagement2 />
-                <ProgramManagement />
-                <ErrorlogManagement />
-                <UserManagement />
-                <UserManagementInfo />*/}
-                {/*<ModalTest />*/}
-                {/*<ClientManagement />*/}
-                {/*<TreeView />*/}
-                {/*<TreeViewItem />*/}
-                <Test />
-                {/*<MenuManagement />*/}
-            </>
+                        <Route path="/" name="Home" component={Layout} />
+                    </Switch>
+                </HashRouter>
+            </Provider>
         );
     }
 }

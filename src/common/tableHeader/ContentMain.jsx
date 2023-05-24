@@ -344,9 +344,12 @@ export default class ContentMain extends React.Component {
                                             ></div>
                                         </div>
                                         <div className="table-responsive">
-                                            <Header />
-                                            <Search />
-                                            <ContentName />
+                                            <Header
+                                                iconName="fa fa-table"
+                                                titleName="프로젝트 등록"
+                                            />
+                                            <Search searchTitle="프로젝트 명" />
+                                            <ContentName tableTitle="프로젝트 목록" />
                                             <CheckGrid
                                                 filterable //필터선언
                                                 columnResizing

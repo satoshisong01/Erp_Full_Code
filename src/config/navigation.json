@@ -1,121 +1,116 @@
 {
-  "items": [
-    {
-      "title": "사전원가",
-      "icon": "fa fa-lg fa-fw fa-table",
-      "items": [
+    "items": [
         {
-          "title": "프로젝트 등록",
-          "route": "/"
+            "title": "사전원가",
+            "icon": "fa fa-lg fa-fw fa-table",
+            "items": [
+                {
+                    "title": "프로젝트 등록",
+                    "route": "/"
+                },
+                {
+                    "title": "재료비 내역",
+                    "route": "/"
+                },
+                {
+                    "title": "개별 외주비 내역",
+                    "route": "/"
+                },
+                {
+                    "title": "월별 인건비 계획",
+                    "route": "/"
+                },
+                {
+                    "title": "경비 내역(관리자)",
+                    "route": "/"
+                },
+                {
+                    "title": "경비 내역(사용자)",
+                    "route": "/"
+                },
+                {
+                    "title": "급별 단가(경비/인건비) 내역",
+                    "route": "/"
+                },
+                {
+                    "title": "사전원가지표",
+                    "route": "/"
+                }
+            ]
         },
         {
-          "title": "재료비 내역",
-          "route": "/"
+            "title": "시스템 관리",
+            "icon": "fa fa-lg fa-fw fa-table",
+            "items": [
+                {
+                    "title": "거래처 관리",
+                    "route": "/"
+                },
+                {
+                    "title": "공통코드관리1",
+                    "route": "/"
+                },
+                {
+                    "title": "공통코드관리2",
+                    "route": "/"
+                },
+                {
+                    "title": "메뉴 관리",
+                    "route": "/"
+                },
+                {
+                    "title": "사용자 관리",
+                    "route": "/"
+                },
+                {
+                    "title": "에러로그 관리",
+                    "route": "/"
+                }
+            ]
         },
         {
-          "title": "개별 외주비 내역",
-          "route": "/"
+            "title": "Tables",
+            "icon": "fa fa-lg fa-fw fa-table",
+            "items": [
+                {
+                    "title": "Easy Tables",
+                    "route": "/tables/easy-tables"
+                },
+                {
+                    "title": "Normal Tables",
+                    "route": "/tables/normal-tables"
+                },
+                {
+                    "title": "Data Tables",
+                    "route": "/tables/datatables",
+                    "badge": {
+                        "label": "v1.10",
+                        "class": "badge inbox-badge bg-color-greenLight"
+                    }
+                }
+            ]
         },
         {
-          "title": "월별 인건비 계획",
-          "route": "/"
-        },
-        {
-          "title": "경비 내역(관리자)",
-          "route": "/"
-        },
-        {
-          "title": "경비 내역(사용자)",
-          "route": "/"
-
-        },
-        {
-          "title": "급별 단가(경비/인건비) 내역",
-          "route": "/"
-        },
-        {
-          "title": "사전원가지표",
-          "route": "/"
+            "title": "Miscellaneous",
+            "icon": "fa fa-lg fa-fw fa-windows",
+            "items": [
+                {
+                    "title": "Login",
+                    "route": "/login"
+                },
+                {
+                    "title": "Register",
+                    "route": "/register"
+                },
+                {
+                    "title": "Error 404",
+                    "route": "/misc/404"
+                },
+                {
+                    "title": "Error 500",
+                    "route": "/misc/500"
+                }
+            ]
         }
-      ]
-    },
-    {
-      "title": "시스템 관리",
-      "icon": "fa fa-lg fa-fw fa-table",
-      "items": [
-        {
-          "title": "거래처 관리",
-          "route": "/"
-        },
-        {
-          "title": "공통코드관리1",
-          "route": "/"
-        },
-        {
-          "title": "공통코드관리2",
-          "route": "/"
-        },
-        {
-          "title": "메뉴 관리",
-          "route": "/"
-        },
-        {
-          "title": "사용자 관리",
-          "route": "/"
-        },
-        {
-          "title": "에러로그 관리",
-          "route": "/"
-        },
-        {
-          "title": "급별 단가(경비/인건비) 내역",
-          "route": "/"
-        }
-      ]
-    },
-    {
-      "title": "Tables",
-      "icon": "fa fa-lg fa-fw fa-table",
-      "items": [
-        {
-          "title": "Easy Tables",
-          "route": "/tables/easy-tables"
-        },
-        {
-          "title": "Normal Tables",
-          "route": "/tables/normal-tables"
-        },
-        {
-          "title": "Data Tables",
-          "route": "/tables/datatables",
-          "badge": {
-            "label": "v1.10",
-            "class": "badge inbox-badge bg-color-greenLight"
-          }
-        }
-      ]
-    },
-    {
-      "title": "Miscellaneous",
-      "icon": "fa fa-lg fa-fw fa-windows",
-      "items": [
-        {
-          "title": "Login",
-          "route": "/login"
-        },
-        {
-          "title": "Register",
-          "route": "/register"
-        },
-        {
-          "title": "Error 404",
-          "route": "/misc/404"
-        },
-        {
-          "title": "Error 500",
-          "route": "/misc/500"
-        }
-      ]
-    }
-  ]
+    ]
 }

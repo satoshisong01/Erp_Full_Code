@@ -10,22 +10,39 @@ import Header from "./Header";
 import Footer from "./Footer";
 
 import { routes } from "../../../routes";
+import Testing from "../../../views/Testing";
 //import TopTabs from "./TopTabs";
 
 class Layout extends React.Component {
+    state = {
+        titleData: null,
+    };
+
+    handleBackData = (data) => {
+        console.log(data);
+        this.setState({ titleData: data });
+    };
+
     render() {
         return (
             <div>
                 <Header />
-                <Navigation />
+                <Navigation onDataReceived={this.handleBackData} />
                 <div id="main" role="main">
-                    {/* LayoutSwitcher -> Layout Options */}
                     <LayoutSwitcher />
-
-                    {/* Ribbon -> Home */}
                     <Ribbon />
+                    <Testing title={this.state.titleData} />
+                </div>
+                <Footer />
+            </div>
+        );
+    }
+}
 
-                    <Switch>
+export default Layout;
+
+{
+    /*<Switch>
                         {routes.map((route, idx) => {
                             return route.component ? (
                                 <Route
@@ -43,13 +60,5 @@ class Layout extends React.Component {
                             ) : null;
                         })}
                         <Redirect from="/" to="/misc/404" />
-                    </Switch>
-                </div>
-
-                <Footer />
-            </div>
-        );
-    }
+                    </Switch>*/
 }
-
-export default Layout;

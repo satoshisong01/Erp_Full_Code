@@ -1,26 +1,21 @@
 import React from "react";
-import { v4 as uuidv4 } from "uuid";
-import "../../common/tableHeader/ContentMain.css";
 import {
-    DataGrid,
-    GridColumn,
-    NumberBox,
-    CheckBox,
-    TextBox,
-    Tooltip,
-    LinkButton,
-    DateBox,
-    //SearchBox,
     Tree,
     Menu,
     MenuItem,
+    DataGrid,
+    GridColumn,
+    CheckBox,
+    Tooltip,
+    TextBox,
 } from "rc-easyui";
 
-import { Stats, BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
+import { WidgetGrid, JarvisWidget } from "../../common";
 import ContentName from "../../common/tableHeader/ContentName";
 import Header from "../../common/tableHeader/Header";
 import Search from "../../common/tableHeader/Search";
 import UserManagementInfo from "./UserManagementInfo";
+import MenuUi from "./MenuUi";
 
 const withCheckbox = (WrappedComponent) => {
     class CheckGrid extends React.Component {
@@ -28,7 +23,6 @@ const withCheckbox = (WrappedComponent) => {
             super(props);
             this.state = {
                 clicked: false,
-                data: this.getData(),
                 //data: this.props.data,
                 selectedRows: [],
                 selection: null,
@@ -44,96 +38,6 @@ const withCheckbox = (WrappedComponent) => {
             if (this.props.data !== prevProps.data) {
                 this.setState({ data: this.props.data });
             }
-        }
-        //체크부분
-        //isChecked(row) {
-        //    if (this.props.idField) {
-        //        const index = this.state.selectedRows.findIndex(
-        //            (s) => s[this.props.idField] === row[this.props.idField]
-        //        );
-        //        if (index >= 0) {
-        //            return true;
-        //        }
-        //    } else {
-        //        const index = this.state.selectedRows.indexOf(row);
-        //        if (index >= 0) {
-        //            return true;
-        //        }
-        //    }
-        //    return false;
-        //}
-        //isAllChecked() {
-        //    const { selectedRows, data } = this.state;
-        //    if (selectedRows.length && selectedRows.length === data.length) {
-        //        return true;
-        //    }
-        //    return false;
-        //}
-        //handleRowCheck(row, checked) {
-        //    if (this.state.clicked) {
-        //        return;
-        //    }
-        //    const index = this.state.data.indexOf(row);
-        //    console.log("선택된 번호는:", index);
-
-        //    const data = this.state.data.slice();
-        //    data.splice(index, 1, Object.assign({}, row));
-        //    this.setState({ data: data });
-        //    if (checked) {
-        //        this.setState({
-        //            selectedRows: [...this.state.selectedRows, data[index]],
-        //        });
-        //        console.log("선택된 값은?:", this.state.selectedRows);
-        //    } else {
-        //        const selection = this.state.selectedRows.filter((r) => {
-        //            if (this.props.idField) {
-        //                if (r[this.props.idField] !== row[this.props.idField]) {
-        //                    return true;
-        //                }
-        //            } else {
-        //                if (r !== row) {
-        //                    return true;
-        //                }
-        //            }
-        //            return false;
-        //        });
-        //        this.setState({
-        //            selectedRows: selection,
-        //        });
-        //    }
-        //    this.setState({ clicked: true }, () => {
-        //        setTimeout(() => this.setState({ clicked: false }));
-        //        if (this.props.onSelectionChange) {
-        //            this.props.onSelectionChange(this.state.selectedRows);
-        //        }
-        //    });
-        //}
-        //handleAllCheck(checked) {
-        //    if (this.state.clicked) {
-        //        return;
-        //    }
-        //    const data = this.state.data.map((row) => Object.assign({}, row));
-        //    this.setState(
-        //        {
-        //            data: data,
-        //            selectedRows: checked ? data : [],
-        //            clicked: true,
-        //        },
-        //        () => {
-        //            setTimeout(() => this.setState({ clicked: false }));
-        //            if (this.props.onSelectionChange) {
-        //                this.props.onSelectionChange(this.state.selectedRows);
-        //            }
-        //        }
-        //    );
-        //}
-        handleSelectionChange(selection) {
-            this.setState({ selection: selection });
-        }
-        handleContextMenu({ node, originalEvent }) {
-            originalEvent.preventDefault();
-            this.setState({ selection: node });
-            this.menu.showContextMenu(originalEvent.pageX, originalEvent.pageY);
         }
 
         render() {
@@ -158,12 +62,13 @@ const withCheckbox = (WrappedComponent) => {
                                 ></CheckBox>
                             )}
                             header={() => (
-                                <CheckBox
-                                    checked={this.isAllChecked()}
-                                    onChange={(checked) =>
-                                        this.handleAllCheck(checked)
-                                    }
-                                ></CheckBox>
+                                <></>
+                                //<CheckBox
+                                //    checked={this.isAllChecked()}
+                                //    onChange={(checked) =>
+                                //        this.handleAllCheck(checked)
+                                //    }
+                                //></CheckBox>
                             )}
                             filter={() => <span></span>}
                         />
@@ -177,210 +82,105 @@ const withCheckbox = (WrappedComponent) => {
 };
 const CheckGrid = withCheckbox(DataGrid);
 
-export default class MenuManagement extends React.Component {
+class MenuManagement extends React.Component {
     constructor(props) {
         super(props);
-        const data = this.getData();
         this.state = {
-            data: data,
-            dateValue: new Date(), //오늘날짜가들어감
-            values: [], // 체크된값
-            S_minDates: "",
-            startDate: "",
-            endDate: "",
+            data: this.getData(),
             selection: null,
         };
     }
-
-    handleChange5() {
-        this.setState({ values: [...this.state.values] });
-    }
-
-    handleChange3 = (value) => {
-        this.setState({
-            startDate: value,
-        });
-        console.log("(핸들 체인지)스타트 ->>>>>", this.state.startDate);
-    };
-
-    handleChange4 = (value) => {
-        this.setState({
-            endDate: value,
-        });
-        console.log("(핸들 체인지4)스타트 ->>>>>>", this.state.endDate);
-    };
-
-    filterRange(startDate, endDate) {
-        const filteredDates = this.state.data
-            .map((item) => item.minDates)
-            .filter((date) => date >= startDate && date <= endDate);
-
-        //console.log(filteredDates.map((item) => this.formatDate(item)));
-        this.setState({
-            S_minDates: filteredDates.map((item) => this.formatDate(item)),
-        });
-        //return filteredDates.map((item) => this.formatDate(item));
-    }
-
-    formatDate(date) {
-        if (date == null || "" || undefined) {
-            return;
-        } else {
-            let y = date.getFullYear();
-            let m = date.getMonth() + 1;
-            let d = date.getDate();
-
-            const formatMonth = m < 10 ? `0${m}` : m;
-            const formatDay = d < 10 ? `0${d}` : d;
-
-            return `${y}-${formatMonth}-${formatDay}`;
-        }
-        //return `${y}년${m}월${d}일`;
-    }
-
-    handleChange = (value) => {
-        this.setState({ dateValue: value }); //클릭한 값으로 변경됨
-        //this.filterRange(this.state.startDate, this.state.endDate);
-        console.log(this.state.dateValue);
-        //console.log("dateValue ->", this.state.dateValue);
-        //console.log("이값은? value", value);
-        //console.log(this.state.data);
-    };
-
-    handleChange2 = (value) => {
-        this.setState({ endDate: value }); //클릭한 값으로 변경됨
-        this.filterRange(this.state.startDate, this.state.endDate);
-        //console.log("dateValue ->", this.state.dateValue);
-        //console.log("이값은? value", value);
-        //console.log(this.state.data);
-    };
-
     getData() {
         return [
             {
                 id: 1,
-                text: "My Documents",
+                text: "원가관리 시스템",
                 children: [
                     {
                         id: 11,
-                        text: "Photos",
+                        text: "사전원가",
                         state: "closed",
                         children: [
                             {
                                 id: 111,
-                                text: "Friend",
+                                text: "프로젝트 등록",
                             },
                             {
                                 id: 112,
-                                text: "Wife",
+                                text: "재료비 내역",
                             },
                             {
                                 id: 113,
-                                text: "Company",
+                                text: "월별 인건비 계획",
+                            },
+                            {
+                                id: 114,
+                                text: "경비 내역(관리자)",
+                            },
+                            {
+                                id: 115,
+                                text: "경비 내역(사용자)",
+                            },
+                            {
+                                id: 116,
+                                text: "급별 단가 (경비/인건비) 내역",
+                            },
+                            {
+                                id: 117,
+                                text: "사전원가지표",
                             },
                         ],
                     },
                     {
                         id: 12,
-                        text: "Program Files",
+                        text: "시스템 관리",
                         children: [
                             {
                                 id: 121,
-                                text: "Intel",
+                                text: "거래처 관리",
                             },
                             {
                                 id: 122,
-                                text: "Java",
+                                text: "공통코드 관리1",
                             },
                             {
                                 id: 123,
-                                text: "Microsoft Office",
+                                text: "공통코드 관리2",
                             },
                             {
                                 id: 124,
-                                text: "Games",
+                                text: "프로그램 관리",
+                            },
+                            {
+                                id: 125,
+                                text: "메뉴 관리",
+                            },
+                            {
+                                id: 126,
+                                text: "사용자 관리",
+                            },
+                            {
+                                id: 127,
+                                text: "에러로그 관리",
                             },
                         ],
-                    },
-                    {
-                        id: 13,
-                        text: "index.html",
-                    },
-                    {
-                        id: 14,
-                        text: "about.html",
-                    },
-                    {
-                        id: 15,
-                        text: "welcome.html",
                     },
                 ],
             },
         ];
     }
-    //handleAdd() {
-    //    console.log(this.state.data);
-
-    //    if (!this.datagrid.datagrid.endEdit()) {
-    //        return;
-    //    }
-    //    let data = this.state.data.slice();
-    //    data.unshift({
-    //        minDates: this.state.value,
-    //        maxDates: this.state.value,
-    //        minDatesString: this.formatDate(this.state.value),
-    //        maxDatesString: this.formatDate(this.state.value),
-    //        status: false,
-    //        _new: true,
-    //        id: uuidv4(),
-    //    });
-    //    this.setState({ data: data }, () => {
-    //        this.datagrid.datagrid.beginEdit(data[0]);
-    //    });
-    //    console.log(this.state.data);
-    //}
-    //handleRowEditEnd(event) {
-    //    if (event.row._new) {
-    //        event.row._new = undefined;
-    //        const data = this.state.data.slice();
-    //        this.setState({ data: data });
-    //    }
-    //}
-    //handleRowEditCancel(event) {
-    //    if (event.row._new) {
-    //        console.log(event);
-    //        console.log(event.row);
-    //        console.log(event.row._new);
-    //        const data = this.state.data.filter((row) => row !== event.row);
-    //        this.setState({ data: data });
-    //    }
-    //}
-    //deleteRow() {
-    //    const selectId = [];
-    //    let abc = this.state.data[0].maxDates < this.state.data.minDates;
-    //    console.log(this.state.data[0].maxDates);
-    //    console.log(this.state.data[0].minDates);
-    //    console.log(abc);
-    //    //selectId = this.state.selection.map((s) => s.id).join(", ");
-    //    selectId.push(this.state.selection.map((s) => s.id));
-    //    console.log(selectId);
-    //    console.log(selectId[0]);
-    //    console.log(this.state.selection);
-    //    this.setState({
-    //        data: this.state.data.filter(
-    //            (item) => !selectId[0].includes(item.id)
-    //        ),
-    //    });
-    //    this.selectId = [];
-    //}
-    //handleClick() {
-    //    console.log("클릭");
-    //    console.log(22);
-    //}
+    handleSelectionChange(selection) {
+        this.setState({ selection: selection });
+    }
+    handleContextMenu({ node, originalEvent }) {
+        originalEvent.preventDefault();
+        this.setState({ selection: node });
+        this.menu.showContextMenu(originalEvent.pageX, originalEvent.pageY);
+    }
     render() {
         const { selection } = this.state;
         return (
-            <div id="content">
+            <div>
                 <WidgetGrid>
                     <div className="row">
                         <article className="col-sm-12">
@@ -410,7 +210,7 @@ export default class MenuManagement extends React.Component {
                                         <div className="table-responsive">
                                             <Header
                                                 iconName="fa fa-table"
-                                                titleName="사용자 관리"
+                                                titleName="메뉴 관리"
                                             />
                                             <Search searchTitle="검색" />
                                             <CheckGrid>
@@ -421,63 +221,75 @@ export default class MenuManagement extends React.Component {
                                                 >
                                                     <div
                                                         style={{
-                                                            marginRight: "10px",
+                                                            //marginRight: "10px",
                                                             overflow: "auto",
+                                                            backgroundColor:
+                                                                "#ECF0F5",
                                                         }}
                                                     >
                                                         <ContentName tableTitle="메뉴 목록" />
-                                                        <Tree
-                                                            data={
-                                                                this.state.data
-                                                            }
-                                                            selection={
-                                                                this.state
-                                                                    .selection
-                                                            }
-                                                            onSelectionChange={this.handleSelectionChange.bind(
-                                                                this
-                                                            )}
-                                                            onNodeContextMenu={this.handleContextMenu.bind(
-                                                                this
-                                                            )}
-                                                        />
-                                                        <Menu
-                                                            ref={(ref) =>
-                                                                (this.menu = ref)
-                                                            }
+                                                        <div
+                                                            style={{
+                                                                width: "19vw",
+                                                                backgroundColor:
+                                                                    "white",
+                                                                height: "95vh",
+                                                            }}
                                                         >
-                                                            <MenuItem text="Append"></MenuItem>
-                                                            <MenuItem text="Remove"></MenuItem>
-                                                            <MenuItem text="Expand"></MenuItem>
-                                                            <MenuItem text="Collapse"></MenuItem>
-                                                        </Menu>
-                                                        {this.state
-                                                            .selection && (
-                                                            <p>
-                                                                Selected:{" "}
-                                                                {
+                                                            <Tree
+                                                                data={
+                                                                    this.state
+                                                                        .data
+                                                                }
+                                                                selection={
                                                                     this.state
                                                                         .selection
-                                                                        .text
                                                                 }
-                                                            </p>
-                                                        )}
+                                                                onSelectionChange={this.handleSelectionChange.bind(
+                                                                    this
+                                                                )}
+                                                                onNodeContextMenu={this.handleContextMenu.bind(
+                                                                    this
+                                                                )}
+                                                            />
+                                                            <Menu
+                                                                ref={(ref) =>
+                                                                    (this.menu = ref)
+                                                                }
+                                                            >
+                                                                <MenuItem text="Append"></MenuItem>
+                                                                <MenuItem text="Remove"></MenuItem>
+                                                                <MenuItem text="Expand"></MenuItem>
+                                                                <MenuItem text="Collapse"></MenuItem>
+                                                            </Menu>
+                                                            {this.state
+                                                                .selection && (
+                                                                <p>
+                                                                    Selected:{" "}
+                                                                    {
+                                                                        this
+                                                                            .state
+                                                                            .selection
+                                                                            .text
+                                                                    }
+                                                                </p>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                     <div
                                                         style={{
-                                                            width: "51%",
+                                                            width: "80%",
                                                         }}
                                                     >
-                                                        <ContentName tableTitle="사용자 정보" />
-                                                        <UserManagementInfo />
+                                                        <ContentName tableTitle="프로그램 설정" />
+                                                        <MenuUi programColor="true" />
                                                         <CheckGrid
                                                             columnResizing
                                                             ref={(ref) =>
                                                                 (this.datagrid = ref)
                                                             }
                                                             style={{
-                                                                height:
-                                                                    "36.5vh",
+                                                                height: "70vh",
                                                             }}
                                                             selection={
                                                                 this.state
@@ -496,28 +308,242 @@ export default class MenuManagement extends React.Component {
                                                             clickToEdit
                                                             fitColumns={true}
                                                             editMode="row"
-                                                            onEditEnd={this.handleRowEditEnd.bind(
-                                                                this
-                                                            )}
-                                                            onEditCancel={this.handleRowEditCancel.bind(
-                                                                this
-                                                            )}
                                                         >
                                                             <GridColumn
-                                                                width="10vw"
-                                                                field="orderingDepartment"
+                                                                field="projectName"
                                                                 align="center"
-                                                                title="역할 코드"
+                                                                title={
+                                                                    <span>
+                                                                        권한그룹
+                                                                        코드
+                                                                    </span>
+                                                                }
+                                                                editable
+                                                                editRules={[
+                                                                    "required",
+                                                                ]}
+                                                                editor={({
+                                                                    row,
+                                                                    error,
+                                                                }) => (
+                                                                    <Tooltip
+                                                                        content={
+                                                                            error
+                                                                        }
+                                                                        tracking
+                                                                    >
+                                                                        <TextBox
+                                                                            value={
+                                                                                row.projectName
+                                                                            }
+                                                                        ></TextBox>
+                                                                    </Tooltip>
+                                                                )}
                                                                 sortable
                                                             />
                                                             <GridColumn
-                                                                width="10vw"
-                                                                field="salesDepartment"
+                                                                field="orderingDepartment"
                                                                 align="center"
-                                                                title="역할 명"
+                                                                title="권한그룹 명"
+                                                                editable
                                                                 sortable
                                                             />
-                                                            <GridColumn width="20vw" />
+                                                            <GridColumn
+                                                                title="권한적용"
+                                                                align="center"
+                                                                sortable
+                                                                //filterable={false}
+                                                                render={() => (
+                                                                    <CheckBox
+                                                                        multiple
+                                                                        onChange={this.handleChange5.bind(
+                                                                            this
+                                                                        )}
+                                                                    />
+                                                                )}
+                                                            />
+                                                            <GridColumn
+                                                                title="조회"
+                                                                align="center"
+                                                                sortable
+                                                                //filterable={false}
+                                                                render={() => (
+                                                                    <CheckBox
+                                                                        multiple
+                                                                        onChange={this.handleChange5.bind(
+                                                                            this
+                                                                        )}
+                                                                    />
+                                                                )}
+                                                            />
+                                                            <GridColumn
+                                                                title="저장"
+                                                                align="center"
+                                                                sortable
+                                                                //filterable={false}
+                                                                render={() => (
+                                                                    <p
+                                                                        className="pdf"
+                                                                        style={{
+                                                                            height:
+                                                                                "100%",
+                                                                            margin:
+                                                                                "auto",
+                                                                            padding:
+                                                                                "0px",
+                                                                        }}
+                                                                    >
+                                                                        Y
+                                                                    </p>
+                                                                )}
+                                                            />
+                                                            <GridColumn
+                                                                title="엑셀"
+                                                                align="center"
+                                                                sortable
+                                                                //filterable={false}
+                                                                render={() => (
+                                                                    <p
+                                                                        className="pdf"
+                                                                        style={{
+                                                                            height:
+                                                                                "100%",
+                                                                            margin:
+                                                                                "auto",
+                                                                            padding:
+                                                                                "0px",
+                                                                        }}
+                                                                    >
+                                                                        Y
+                                                                    </p>
+                                                                )}
+                                                            />
+                                                            <GridColumn
+                                                                title="삭제"
+                                                                align="center"
+                                                                sortable
+                                                                //filterable={false}
+                                                                render={() => (
+                                                                    <p
+                                                                        className="pdf"
+                                                                        style={{
+                                                                            height:
+                                                                                "100%",
+                                                                            margin:
+                                                                                "auto",
+                                                                            padding:
+                                                                                "0px",
+                                                                        }}
+                                                                    >
+                                                                        N
+                                                                    </p>
+                                                                )}
+                                                            />
+                                                            <GridColumn
+                                                                title="FN1"
+                                                                align="center"
+                                                                sortable
+                                                                //filterable={false}
+                                                                render={() => (
+                                                                    <p
+                                                                        className="pdf"
+                                                                        style={{
+                                                                            height:
+                                                                                "100%",
+                                                                            margin:
+                                                                                "auto",
+                                                                            padding:
+                                                                                "0px",
+                                                                        }}
+                                                                    >
+                                                                        N
+                                                                    </p>
+                                                                )}
+                                                            />
+                                                            <GridColumn
+                                                                title="FN2"
+                                                                align="center"
+                                                                sortable
+                                                                //filterable={false}
+                                                                render={() => (
+                                                                    <p
+                                                                        className="pdf"
+                                                                        style={{
+                                                                            height:
+                                                                                "100%",
+                                                                            margin:
+                                                                                "auto",
+                                                                            padding:
+                                                                                "0px",
+                                                                        }}
+                                                                    >
+                                                                        N
+                                                                    </p>
+                                                                )}
+                                                            />
+                                                            <GridColumn
+                                                                title="FN3"
+                                                                align="center"
+                                                                sortable
+                                                                //filterable={false}
+                                                                render={() => (
+                                                                    <p
+                                                                        className="pdf"
+                                                                        style={{
+                                                                            height:
+                                                                                "100%",
+                                                                            margin:
+                                                                                "auto",
+                                                                            padding:
+                                                                                "0px",
+                                                                        }}
+                                                                    >
+                                                                        N
+                                                                    </p>
+                                                                )}
+                                                            />
+                                                            <GridColumn
+                                                                title="FN4"
+                                                                align="center"
+                                                                sortable
+                                                                //filterable={false}
+                                                                render={() => (
+                                                                    <p
+                                                                        className="pdf"
+                                                                        style={{
+                                                                            height:
+                                                                                "100%",
+                                                                            margin:
+                                                                                "auto",
+                                                                            padding:
+                                                                                "0px",
+                                                                        }}
+                                                                    >
+                                                                        N
+                                                                    </p>
+                                                                )}
+                                                            />
+                                                            <GridColumn
+                                                                title="FN5"
+                                                                align="center"
+                                                                sortable
+                                                                //filterable={false}
+                                                                render={() => (
+                                                                    <p
+                                                                        className="pdf"
+                                                                        style={{
+                                                                            height:
+                                                                                "100%",
+                                                                            margin:
+                                                                                "auto",
+                                                                            padding:
+                                                                                "0px",
+                                                                        }}
+                                                                    >
+                                                                        N
+                                                                    </p>
+                                                                )}
+                                                            />
                                                         </CheckGrid>
                                                     </div>
                                                 </div>
@@ -534,3 +560,5 @@ export default class MenuManagement extends React.Component {
         );
     }
 }
+
+export default MenuManagement;

@@ -165,9 +165,8 @@ export default class NavMenu extends React.Component {
     }
 
     render() {
-        const { onDataReceived } = this.props;
         return navItems ? (
-            <NavMenuList items={navItems} onDataReceived={onDataReceived} />
+            <NavMenuList items={navItems} parentFn={this.props.parentFn} />
         ) : (
             this.props.children
         );
