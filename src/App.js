@@ -19,10 +19,10 @@ import Test from "./views/sysadmin/Test";
 import ModalPage from "./common/tableHeader/ModalPage";
 import ModalSearch from "./common/tableHeader/ModalSearch";
 import MaterialCostDetails from "./views/pre-cost/MaterialCostDetails";
-import OutsourcingCostDetails from "./views/pre-cost/OutsourcingCostDetails";
-import ProductList from "./views/tables/ProductList";
+//import OutsourcingCostDetails from "./views/pre-cost/OutsourcingCostDetails";
+//import ProductList from "./views/tables/ProductList";
 //import TestTable from "./views/pre-cost/testtable";
-import TestTable2 from "./views/pre-cost/TestTable2";
+//import TestTable2 from "./views/pre-cost/TestTable2";
 import ErrorlogManagement from "./views/sysadmin/ErrorlogManagement";
 
 class App extends Component {

@@ -6,7 +6,7 @@ import CommonCodeManagement2 from "./sysadmin/CommonCodeManagement2";
 import MenuManagement from "./sysadmin/MenuManagement";
 import UserManagement from "./sysadmin/UserManagement";
 import ErrorlogManagement from "./sysadmin/ErrorlogManagement";
-import ContentMain from "./pre-cost/ContentMain";
+import ContentMain from "../common/tableHeader/ContentMain";
 
 const defaultPanes = new Array(1).fill(null).map((_, index) => {
     const id = String(index + 1);
