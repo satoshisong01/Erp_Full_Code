@@ -244,20 +244,47 @@ export default class CommonCodeManagement1 extends React.Component {
     getData() {
         //목데이터
         return [
-            //{
-            //    //timeTable: {
-            //    //    dates: new Date(),
-            //    //    //dateString: this.formatDate,
-            //    //},
-            //    dates: new Date(),
-            //    code: "NI-NI-01",
-            //    name: "Koi",
-            //    unitcost: 10.0,
-            //    status: false,
-            //    listprice: 36.5,
-            //    attr: "Large",
-            //    itemid: "EST-1",
-            //},
+            {
+                //timeTable: {
+                //    dates: new Date(),
+                //    //dateString: this.formatDate,
+                //},
+                //dates: new Date(),
+                commoncode: "ABCD",
+                codedetail: "ABCD_0001",
+                namedetail: "아브라",
+                codename: "알파벳 상태",
+                etc: "알파벳의 기원",
+                sortnumber: 0,
+                usingcheck: true,
+            },
+            {
+                commoncode: "ABCD",
+                codedetail: "ABCD_0001",
+                namedetail: "카다브라",
+                codename: "메카테크",
+                etc: "테스트",
+                sortnumber: 0,
+                usingcheck: true,
+            },
+            {
+                commoncode: "BBBB",
+                codedetail: "BBBB_0001",
+                namedetail: "아브라",
+                codename: "코드코드",
+                etc: "안녕하세요",
+                sortnumber: 0,
+                usingcheck: true,
+            },
+            {
+                commoncode: "BBBB",
+                codedetail: "BBBB_0001",
+                namedetail: "삼성",
+                codename: "삼성전자",
+                etc: "삼성의기운",
+                sortnumber: 0,
+                usingcheck: true,
+            },
         ];
     }
     handleAdd() {
@@ -321,7 +348,7 @@ export default class CommonCodeManagement1 extends React.Component {
     }
     render() {
         return (
-            <div id="content">
+            <div id="content" style={{ padding: "0" }}>
                 <WidgetGrid>
                     <div className="row">
                         <article className="col-sm-12">
@@ -621,12 +648,27 @@ export default class CommonCodeManagement1 extends React.Component {
                                                         >
                                                             <TextBox
                                                                 value={
-                                                                    row.projectName
+                                                                    row.commoncode
                                                                 }
                                                             ></TextBox>
                                                         </Tooltip>
                                                     )}
                                                     sortable
+                                                    //render={(row) => (
+                                                    //    <div>
+                                                    //        {Object.keys(
+                                                    //            row.row
+                                                    //        ).map((key) =>
+                                                    //            console.log(key)
+                                                    //        )}
+                                                    //    </div>
+                                                    //)}
+
+                                                    //render={(row) => (
+                                                    //    <p>
+                                                    //        {row.row.commoncode}
+                                                    //    </p>
+                                                    //)}
                                                 />
                                                 <GridColumn
                                                     field="orderingDepartment"

@@ -16,33 +16,45 @@ import { findDOMNode } from "react-dom";
 import $ from "jquery";
 import MenuManagement from "./views/sysadmin/MenuManagement";
 import Test from "./views/sysadmin/Test";
+import ModalPage from "./common/tableHeader/ModalPage";
 import ModalSearch from "./common/tableHeader/ModalSearch";
+import MaterialCostDetails from "./views/pre-cost/MaterialCostDetails";
+import OutsourcingCostDetails from "./views/pre-cost/OutsourcingCostDetails";
+import ProductList from "./views/tables/ProductList";
+//import TestTable from "./views/pre-cost/testtable";
+import TestTable2 from "./views/pre-cost/TestTable2";
+import ErrorlogManagement from "./views/sysadmin/ErrorlogManagement";
 
 class App extends Component {
     render() {
         return (
-            <Provider store={store}>
-                <HashRouter>
-                    <Switch>
-                        {authRoutes.map((route, idx) => {
-                            return route.component ? (
-                                <Route
-                                    key={idx}
-                                    path={route.path}
-                                    exact={route.exact}
-                                    name={route.name}
-                                    render={(props) => (
-                                        <route.component {...props} />
-                                    )}
-                                />
-                            ) : null;
-                        })}
+            //<Provider store={store}>
+            //    <HashRouter>
+            //        <Switch>
+            //            {authRoutes.map((route, idx) => {
+            //                return route.component ? (
+            //                    <Route
+            //                        key={idx}
+            //                        path={route.path}
+            //                        exact={route.exact}
+            //                        name={route.name}
+            //                        render={(props) => (
+            //                            <route.component {...props} />
+            //                        )}
+            //                    />
+            //                ) : null;
+            //            })}
 
-                        <Route path="/" name="Home" component={Layout} />
-                    </Switch>
-                </HashRouter>
-            </Provider>
+            //            <Route path="/" name="Home" component={Layout} />
+            //        </Switch>
+            //    </HashRouter>
+            //</Provider>
+            //<OutsourcingCostDetails />
+            <ErrorlogManagement />
+            //<TestTable2 />
+            //<ProductList />
             //<ModalSearch />
+            //<MaterialCostDetails />
         );
     }
 }
