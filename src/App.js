@@ -28,29 +28,29 @@ import ErrorlogManagement from "./views/sysadmin/ErrorlogManagement";
 class App extends Component {
     render() {
         return (
-            //<Provider store={store}>
-            //    <HashRouter>
-            //        <Switch>
-            //            {authRoutes.map((route, idx) => {
-            //                return route.component ? (
-            //                    <Route
-            //                        key={idx}
-            //                        path={route.path}
-            //                        exact={route.exact}
-            //                        name={route.name}
-            //                        render={(props) => (
-            //                            <route.component {...props} />
-            //                        )}
-            //                    />
-            //                ) : null;
-            //            })}
+            <Provider store={store}>
+                <HashRouter>
+                    <Switch>
+                        {authRoutes.map((route, idx) => {
+                            return route.component ? (
+                                <Route
+                                    key={idx}
+                                    path={route.path}
+                                    exact={route.exact}
+                                    name={route.name}
+                                    render={(props) => (
+                                        <route.component {...props} />
+                                    )}
+                                />
+                            ) : null;
+                        })}
 
-            //            <Route path="/" name="Home" component={Layout} />
-            //        </Switch>
-            //    </HashRouter>
-            //</Provider>
+                        <Route path="/" name="Home" component={Layout} />
+                    </Switch>
+                </HashRouter>
+            </Provider>
             //<OutsourcingCostDetails />
-            <ErrorlogManagement />
+            //<ErrorlogManagement />
             //<TestTable2 />
             //<ProductList />
             //<ModalSearch />

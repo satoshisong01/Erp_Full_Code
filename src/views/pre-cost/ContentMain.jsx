@@ -1,6 +1,6 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
-import "../pre-cost/ContentMain.css";
+import "./ContentMain.css";
 import {
     DataGrid,
     GridColumn,
@@ -17,7 +17,6 @@ import { Stats, BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
 import ContentName from "../../common/tableHeader/ContentName";
 import Header from "../../common/tableHeader/Header";
 import Search from "../../common/tableHeader/Search";
-import ModalSearch from "../../common/tableHeader/ModalSearch";
 
 const withCheckbox = (WrappedComponent) => {
     class CheckGrid extends React.Component {
@@ -164,23 +163,18 @@ const withCheckbox = (WrappedComponent) => {
 };
 const CheckGrid = withCheckbox(DataGrid);
 
-export default class MaterialCostDetails extends React.Component {
+export default class ContentMain extends React.Component {
     constructor(props) {
         super(props);
         const data = this.getData();
         this.state = {
             data: data,
             dateValue: new Date(), //오늘날짜가들어감
-            values: [], // 체크된값
             S_minDates: "",
             startDate: "",
             endDate: "",
             selection: [],
         };
-    }
-
-    handleChange5() {
-        this.setState({ values: [...this.state.values] });
     }
 
     handleChange3 = (value) => {
@@ -245,71 +239,20 @@ export default class MaterialCostDetails extends React.Component {
     getData() {
         //목데이터
         return [
-            {
-                //timeTable: {
-                //    dates: new Date(),
-                //    //dateString: this.formatDate,
-                //},
-                dates: new Date(),
-                code: "NI-NI-01",
-                name: "Koi",
-                businessname: "삼성SDS",
-                littlename: "SDS",
-                clinentnumber: "11-2222-33",
-                businessclassification: "반도체",
-                ceoname: "이재용",
-                companyname: "삼성",
-                postnumber: "515,115,253",
-                address: "기흥동 머시기 203-2",
-                detailaddress: "B동 421호실",
-                unitcost: 10.0,
-                status: false,
-                listprice: 36.5,
-                attr: "Large",
-                itemid: "EST-1",
-            },
-            {
-                dates: new Date(),
-                code: "NI-NI-01",
-                name: "Koi",
-                businessname: "엘지SDS",
-                littlename: "SDS",
-                clinentnumber: "11-2222-33",
-                businessclassification: "반도체",
-                ceoname: "구본무",
-                companyname: "엘지",
-                postnumber: "213,5151,253",
-                address: "기흥동 머시기 203-2",
-                detailaddress: "B동 421호실",
-                unitcost: 10.0,
-                status: false,
-                listprice: 36.5,
-                attr: "Large",
-                itemid: "EST-1",
-            },
-            {
-                //timeTable: {
-                //    dates: new Date(),
-                //    //dateString: this.formatDate,
-                //},
-                dates: new Date(),
-                code: "NI-NI-01",
-                name: "Koi",
-                businessname: "현대SDS",
-                littlename: "SDS",
-                clinentnumber: "11-2222-33",
-                businessclassification: "반도체",
-                ceoname: "정몽주",
-                companyname: "현대",
-                postnumber: "213,515,253",
-                address: "기흥동 머시기 203-2",
-                detailaddress: "B동 421호실",
-                unitcost: 10.0,
-                status: false,
-                listprice: 36.5,
-                attr: "Large",
-                itemid: "EST-1",
-            },
+            //{
+            //    //timeTable: {
+            //    //    dates: new Date(),
+            //    //    //dateString: this.formatDate,
+            //    //},
+            //    dates: new Date(),
+            //    code: "NI-NI-01",
+            //    name: "Koi",
+            //    unitcost: 10.0,
+            //    status: false,
+            //    listprice: 36.5,
+            //    attr: "Large",
+            //    itemid: "EST-1",
+            //},
         ];
     }
     handleAdd() {
@@ -403,20 +346,10 @@ export default class MaterialCostDetails extends React.Component {
                                         <div className="table-responsive">
                                             <Header
                                                 iconName="fa fa-table"
-                                                titleName="재료비 내역"
+                                                titleName="프로젝트 등록"
                                             />
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    borderTop:
-                                                        "solid #DDDDDD 1px",
-                                                    borderBottom:
-                                                        "solid #DDDDDD 1px",
-                                                }}
-                                            >
-                                                <ModalSearch searchTitle="프로젝트 명" />
-                                            </div>
-                                            <ContentName tableTitle="재료비 목록" />
+                                            <Search searchTitle="프로젝트 명" />
+                                            <ContentName tableTitle="프로젝트 목록" />
                                             <CheckGrid
                                                 filterable //필터선언
                                                 columnResizing
@@ -502,11 +435,78 @@ export default class MaterialCostDetails extends React.Component {
                                                 )}
                                             >
                                                 <GridColumn
+                                                    filter={() => (
+                                                        <DateBox
+                                                            format="yyyy-MM-dd"
+                                                            panelStyle={{
+                                                                width: 300,
+                                                                height: 300,
+                                                            }}
+                                                            value={
+                                                                this.state
+                                                                    .dateValue
+                                                            }
+                                                            onChange={this.handleChange.bind(
+                                                                this
+                                                            )} //온체인지가 있어야 ADD후 검색 다시 ADD 가 가능
+                                                        />
+                                                    )}
+                                                    field="minDates"
+                                                    title="등록일"
+                                                    editable
+                                                    sortable
+                                                    align="center"
+                                                    editor={(row) => (
+                                                        <DateBox
+                                                            format="yyyy-MM-dd"
+                                                            panelStyle={{
+                                                                width: 300,
+                                                                height: 300,
+                                                            }}
+                                                            value={
+                                                                row.row.minDates
+                                                            }
+                                                            onChange={this.handleChange.bind(
+                                                                console.log(
+                                                                    "온체인지:",
+                                                                    row.row
+                                                                        .minDates
+                                                                ),
+                                                                row.row.minDates
+                                                            )}
+                                                        ></DateBox>
+                                                    )}
+                                                    render={(row) => (
+                                                        <p>
+                                                            {this.formatDate(
+                                                                row.row.minDates
+                                                            )}
+                                                            {/*{this.filterRange.map(
+                                                                (item) =>
+                                                                    this.formatDate(
+                                                                        item
+                                                                    )
+                                                            )}*/}
+                                                            {/*{
+                                                                this.state.data
+                                                                    .minDates
+                                                            }*/}
+                                                        </p>
+                                                    )}
+                                                ></GridColumn>
+                                                <GridColumn
                                                     field="projectName"
                                                     align="center"
                                                     title={
-                                                        <span>프로젝트 명</span>
+                                                        <span
+                                                            style={{
+                                                                color: "red",
+                                                            }}
+                                                        >
+                                                            프로젝트명
+                                                        </span>
                                                     }
+                                                    editable
                                                     editRules={["required"]}
                                                     editor={({
                                                         row,
@@ -524,32 +524,20 @@ export default class MaterialCostDetails extends React.Component {
                                                         </Tooltip>
                                                     )}
                                                     sortable
-                                                    render={(row) => (
-                                                        <p>{row.row.code}</p>
-                                                    )}
                                                 />
                                                 <GridColumn
                                                     field="orderingDepartment"
                                                     align="center"
-                                                    title={
-                                                        <span
-                                                            style={{
-                                                                color: "red",
-                                                            }}
-                                                        >
-                                                            품목
-                                                        </span>
-                                                    }
+                                                    title="수주부서"
                                                     editable
                                                     sortable
-                                                    render={(row) => (
-                                                        <p>
-                                                            {
-                                                                row.row
-                                                                    .businessname
-                                                            }
-                                                        </p>
-                                                    )}
+                                                />
+                                                <GridColumn
+                                                    field="salesDepartment"
+                                                    align="center"
+                                                    title="매출부서"
+                                                    editable
+                                                    sortable
                                                 />
                                                 <GridColumn
                                                     field="PM"
@@ -560,16 +548,11 @@ export default class MaterialCostDetails extends React.Component {
                                                                 color: "red",
                                                             }}
                                                         >
-                                                            구분
+                                                            PM
                                                         </span>
                                                     }
                                                     editable
                                                     sortable
-                                                    render={(row) => (
-                                                        <p>
-                                                            {row.row.littlename}
-                                                        </p>
-                                                    )}
                                                 />
 
                                                 <GridColumn
@@ -580,7 +563,7 @@ export default class MaterialCostDetails extends React.Component {
                                                                 color: "red",
                                                             }}
                                                         >
-                                                            단가
+                                                            참조연도
                                                         </span>
                                                     }
                                                     align="center"
@@ -593,15 +576,171 @@ export default class MaterialCostDetails extends React.Component {
                                                         ></NumberBox>
                                                     )}
                                                     sortable
-                                                    render={(row) => (
-                                                        <p>
-                                                            {
-                                                                row.row
-                                                                    .clinentnumber
+                                                />
+                                                <GridColumn
+                                                    filter={() => (
+                                                        <DateBox
+                                                            format="yyyy-MM-dd"
+                                                            panelStyle={{
+                                                                width: 300,
+                                                                height: 300,
+                                                            }}
+                                                            value={
+                                                                this.state
+                                                                    .dateValue
                                                             }
+                                                            onChange={this.handleChange.bind(
+                                                                this
+                                                            )} //온체인지가 있어야 ADD후 검색 다시 ADD 가 가능
+                                                        />
+                                                    )}
+                                                    field="startDate"
+                                                    title={
+                                                        <span
+                                                            style={{
+                                                                color: "red",
+                                                            }}
+                                                        >
+                                                            시작일
+                                                        </span>
+                                                    }
+                                                    editable
+                                                    sortable
+                                                    align="center"
+                                                    editor={(row) => (
+                                                        <DateBox
+                                                            format="yyyy-MM-dd"
+                                                            panelStyle={{
+                                                                width: 300,
+                                                                height: 300,
+                                                            }}
+                                                            value={
+                                                                row.row.minDates
+                                                            }
+                                                            onChange={this.handleChange.bind(
+                                                                console.log(
+                                                                    "온체인지:",
+                                                                    row.row
+                                                                        .minDates
+                                                                ),
+                                                                row.row.minDates
+                                                            )}
+                                                        ></DateBox>
+                                                    )}
+                                                    render={(row) => <p></p>}
+                                                ></GridColumn>
+                                                <GridColumn
+                                                    filter={() => (
+                                                        <DateBox
+                                                            format="yyyy-MM-dd"
+                                                            panelStyle={{
+                                                                width: 300,
+                                                                height: 300,
+                                                            }}
+                                                            value={
+                                                                this.state
+                                                                    .dateValue
+                                                            }
+                                                            onChange={this.handleChange.bind(
+                                                                this
+                                                            )} //온체인지가 있어야 ADD후 검색 다시 ADD 가 가능
+                                                        />
+                                                    )}
+                                                    field="endDate"
+                                                    title={
+                                                        <span
+                                                            style={{
+                                                                color: "red",
+                                                            }}
+                                                        >
+                                                            종료일
+                                                        </span>
+                                                    }
+                                                    editable
+                                                    sortable
+                                                    align="center"
+                                                    editor={(row) => (
+                                                        <DateBox
+                                                            format="yyyy-MM-dd"
+                                                            panelStyle={{
+                                                                width: 300,
+                                                                height: 300,
+                                                            }}
+                                                            value={
+                                                                row.row.minDates
+                                                            }
+                                                            onChange={this.handleChange.bind(
+                                                                console.log(
+                                                                    "온체인지:",
+                                                                    row.row
+                                                                        .minDates
+                                                                ),
+                                                                row.row.minDates
+                                                            )}
+                                                        ></DateBox>
+                                                    )}
+                                                    render={(row) => <p></p>}
+                                                ></GridColumn>
+                                                <GridColumn
+                                                    field="selfServiceUnitPrice"
+                                                    title="자체용역단가"
+                                                    align="center"
+                                                    editable
+                                                    editor={({ row }) => (
+                                                        <NumberBox
+                                                            value={
+                                                                row.selfServiceUnitPrice
+                                                            }
+                                                        ></NumberBox>
+                                                    )}
+                                                    sortable
+                                                />
+                                                <GridColumn
+                                                    field="outsourcingUnitPrice"
+                                                    title="외주단가"
+                                                    align="center"
+                                                    editable
+                                                    editor={({ row }) => (
+                                                        <NumberBox
+                                                            value={
+                                                                row.outsourcingUnitPrice
+                                                            }
+                                                        ></NumberBox>
+                                                    )}
+                                                    sortable
+                                                />
+                                                <GridColumn
+                                                    field="SW_HW_UnitPrice"
+                                                    title="SW/HW/단가"
+                                                    align="right"
+                                                    editable
+                                                    editor={({ row }) => (
+                                                        <NumberBox
+                                                            value={
+                                                                row.SW_HW_UnitPrice
+                                                            }
+                                                        ></NumberBox>
+                                                    )}
+                                                    sortable
+                                                />
+                                                <GridColumn
+                                                    field="PdfPrint"
+                                                    title="PDF출력"
+                                                    align="center"
+                                                    filterable={false}
+                                                    render={() => (
+                                                        <p
+                                                            className="pdf"
+                                                            style={{
+                                                                height: "100%",
+                                                                margin: "auto",
+                                                                padding: "0px",
+                                                            }}
+                                                        >
+                                                            출력
                                                         </p>
                                                     )}
-                                                />
+                                                ></GridColumn>
                                                 <GridColumn
                                                     field="etc"
                                                     align="center"
