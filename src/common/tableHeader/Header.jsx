@@ -26,7 +26,7 @@ export default function Header(props) {
                     style={{
                         fontSize: "3.5rem",
                         padding: "0.8rem",
-                        backgroundColor: "#ECF0F5",
+                        //backgroundColor: "#ECF0F5",
                         color: "black",
                         borderRadius: "20%",
                         marginRight: "0.5rem",
