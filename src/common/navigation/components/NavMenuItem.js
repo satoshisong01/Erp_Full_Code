@@ -7,6 +7,9 @@ import { Msg } from "../../i18n";
 
 import SmartMenuList from "./NavMenuList";
 
+import store from '../../../store/configureStore'; //tabs
+import { tabActive } from '../../tabs/TabsActions.js';
+
 export default class SmartMenuItem extends React.Component {
     static contextTypes = {
         router: PropTypes.object.isRequired,
@@ -19,6 +22,8 @@ export default class SmartMenuItem extends React.Component {
     };
 
     onLinkClick = (e) => {
+        store.dispatch(tabActive(this.props.item.title)) //tab
+
         const $body = $("body");
         const $html = $("html");
 

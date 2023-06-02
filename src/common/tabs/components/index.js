@@ -1,5 +1,5 @@
-import TabView from "./TabView.jsx";
+import TabPanes from "./TabPanes.jsx";
 
 export {
-	TabView
+	TabPanes
 }

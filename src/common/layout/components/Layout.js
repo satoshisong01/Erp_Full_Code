@@ -1,18 +1,14 @@
 import React from "react";
 
-import { Redirect, Route, Switch } from "react-router-dom";
-
 import { Navigation } from "../../navigation";
 import Ribbon from "./Ribbon";
 import LayoutSwitcher from "./LayoutSwitcher";
 
 import Header from "./Header";
 import Footer from "./Footer";
+import { TabPanes } from "../../tabs";
 
-import { routes } from "../../../routes";
-import Testing from "../../../views/Testing";
-//import Testing2 from "../../../views/Testing2";
-//import TopTabs from "./TopTabs";
+// import Testing from "../../../views/Testing";
 
 class Layout extends React.Component {
     state = {
@@ -32,8 +28,8 @@ class Layout extends React.Component {
                 <div id="main" role="main">
                     <LayoutSwitcher />
                     <Ribbon />
-                    <Testing title={this.state.titleData} />
-                    {/*<Testing2 title={this.state.titleData}/>*/}
+                    <TabPanes />
+                    {/* <Testing title={this.state.titleData} /> */}
                 </div>
                 <Footer />
             </div>
