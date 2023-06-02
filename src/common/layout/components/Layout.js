@@ -11,6 +11,7 @@ import Footer from "./Footer";
 
 import { routes } from "../../../routes";
 import Testing from "../../../views/Testing";
+//import Testing2 from "../../../views/Testing2";
 //import TopTabs from "./TopTabs";
 
 class Layout extends React.Component {
@@ -32,6 +33,7 @@ class Layout extends React.Component {
                     <LayoutSwitcher />
                     <Ribbon />
                     <Testing title={this.state.titleData} />
+                    {/*<Testing2 title={this.state.titleData}/>*/}
                 </div>
                 <Footer />
             </div>

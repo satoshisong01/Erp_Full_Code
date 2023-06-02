@@ -24,33 +24,31 @@ import MaterialCostDetails from "./views/pre-cost/MaterialCostDetails";
 //import TestTable2 from "./views/pre-cost/TestTable2";
 import ErrorlogManagement from "./views/sysadmin/ErrorlogManagement";
 import ResizableTable from "./views/tables/ResizableTable";
-import DataTable from "./views/tables/DataTable";
 
 class App extends Component {
     render() {
         return (
-            //<Provider store={store}>
-            //    <HashRouter>
-            //        <Switch>
-            //            {authRoutes.map((route, idx) => {
-            //                return route.component ? (
-            //                    <Route
-            //                        key={idx}
-            //                        path={route.path}
-            //                        exact={route.exact}
-            //                        name={route.name}
-            //                        render={(props) => (
-            //                            <route.component {...props} />
-            //                        )}
-            //                    />
-            //                ) : null;
-            //            })}
+            <Provider store={store}>
+                <HashRouter>
+                    <Switch>
+                        {authRoutes.map((route, idx) => {
+                            return route.component ? (
+                                <Route
+                                    key={idx}
+                                    path={route.path}
+                                    exact={route.exact}
+                                    name={route.name}
+                                    render={(props) => (
+                                        <route.component {...props} />
+                                    )}
+                                />
+                            ) : null;
+                        })}
 
-            //            <Route path="/" name="Home" component={Layout} />
-            //        </Switch>
-            //    </HashRouter>
-            //</Provider>
-            <DataTable />
+                        <Route path="/" name="Home" component={Layout} />
+                    </Switch>
+                </HashRouter>
+            </Provider>
             //<ResizableTable />
             //<OutsourcingCostDetails />
             //<ErrorlogManagement />
