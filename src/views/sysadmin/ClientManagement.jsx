@@ -527,16 +527,21 @@ export default class ClientManagement extends React.Component {
                                                         </th>
                                                     </tr>
                                                 </thead>
-                                                <tbody
-                                                    onClick={() =>
-                                                        this.setState({
-                                                            modalOpen: true,
-                                                        })
-                                                    }
-                                                >
-                                                    <tr>
+                                                <tbody>
+                                                    <tr
+                                                        onClick={() =>
+                                                            this.setState({
+                                                                modalOpen: true,
+                                                            })
+                                                        }
+                                                    >
                                                         <td>
-                                                            <input type="checkbox" />
+                                                            <input
+                                                                onClick={(e) =>
+                                                                    e.stopPropagation()
+                                                                }
+                                                                type="checkbox"
+                                                            />
                                                         </td>
                                                         <td>
                                                             <div>
