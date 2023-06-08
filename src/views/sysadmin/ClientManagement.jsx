@@ -1,6 +1,10 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
 import "../../common/tableHeader/ContentMain.css";
+import $ from "jquery";
+import "datatables.net-dt/css/jquery.dataTables.css";
+import "datatables.net-dt/js/dataTables.dataTables";
+import "./Test.css";
 import {
     DataGrid,
     GridColumn,
@@ -17,6 +21,7 @@ import { Stats, BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
 import ContentName from "../../common/tableHeader/ContentName";
 import Header from "../../common/tableHeader/Header";
 import Search from "../../common/tableHeader/Search";
+import ModalPage from "../../common/tableHeader/ModalPage";
 
 const withCheckbox = (WrappedComponent) => {
     class CheckGrid extends React.Component {
@@ -166,6 +171,7 @@ const CheckGrid = withCheckbox(DataGrid);
 export default class ClientManagement extends React.Component {
     constructor(props) {
         super(props);
+        this.tableRef = React.createRef();
         const data = this.getData();
         this.state = {
             data: data,
@@ -175,8 +181,78 @@ export default class ClientManagement extends React.Component {
             startDate: "",
             endDate: "",
             selection: [],
+            modalOpen: false,
+            searchValues: [],
         };
     }
+
+    componentDidMount() {
+        const table = $(this.tableRef.current).DataTable();
+
+        // 컬럼별 검색 이벤트 처리
+        $(this.tableRef.current)
+            .find('thead input[type="search"]')
+            .on("keyup change", function() {
+                const columnIndex = $(this)
+                    .closest("th")
+                    .index();
+                this.setState((prevState) => {
+                    const newSearchValues = [...prevState.searchValues];
+                    newSearchValues[columnIndex] = $(this).val();
+                    return { searchValues: newSearchValues };
+                });
+            });
+
+        // 최상단 체크박스 이벤트 처리
+        $(this.tableRef.current)
+            .find('thead th:first-child input[type="checkbox"]')
+            .on("change", function() {
+                const isChecked = $(this).is(":checked");
+                table
+                    .column(0)
+                    .nodes()
+                    .to$()
+                    .find('input[type="checkbox"]')
+                    .prop("checked", isChecked);
+            });
+    }
+
+    handleSearch = () => {
+        const table = $(this.tableRef.current).DataTable();
+
+        // 이전 검색 조건 초기화
+        table
+            .columns()
+            .search("")
+            .draw();
+
+        // 각 컬럼에 대한 검색어 설정
+        this.state.searchValues.forEach((searchValue, columnIndex) => {
+            if (searchValue) {
+                table.column(columnIndex).search(searchValue);
+            }
+        });
+
+        // 검색 결과 테이블 다시 그리기
+        table.draw();
+    };
+
+    handleDelete = () => {
+        const table = $(this.tableRef.current).DataTable();
+        const checkedRows = table
+            .column(0)
+            .nodes()
+            .to$()
+            .find('input[type="checkbox"]:checked')
+            .closest("tr");
+
+        checkedRows.each(function() {
+            table
+                .row($(this))
+                .remove()
+                .draw(false);
+        });
+    };
 
     handleChange5() {
         this.setState({ values: [...this.state.values] });
@@ -371,6 +447,7 @@ export default class ClientManagement extends React.Component {
         console.log(22);
     }
     render() {
+        const { modalOpen } = this.state;
         return (
             <div id="content" style={{ padding: "0" }}>
                 <WidgetGrid>
@@ -402,7 +479,7 @@ export default class ClientManagement extends React.Component {
                                         <div className="table-responsive">
                                             <Header
                                                 iconName="fa fa-table"
-                                                titleName="거래처 목록"
+                                                titleName="거래처 관리"
                                             />
                                             <div
                                                 style={{
@@ -417,254 +494,100 @@ export default class ClientManagement extends React.Component {
                                                 <Search searchTitle="사업자등록번호" />
                                             </div>
                                             <ContentName tableTitle="거래처 목록" />
-                                            <CheckGrid
-                                                filterable //필터선언
-                                                columnResizing
-                                                ref={(ref) =>
-                                                    (this.datagrid = ref)
-                                                }
-                                                style={{
-                                                    height: "70vh",
-                                                }}
-                                                selection={this.state.selection}
-                                                onSelectionChange={(
-                                                    selection
-                                                ) =>
-                                                    this.setState({ selection })
-                                                }
-                                                data={this.state.data}
-                                                clickToEdit
-                                                fitColumns={true}
-                                                editMode="row"
-                                                toolbar={({ editingItem }) => (
-                                                    <div
-                                                        style={{
-                                                            padding: 4,
-                                                        }}
-                                                    >
-                                                        <LinkButton
-                                                            iconCls="icon-add"
-                                                            plain
-                                                            onClick={this.handleAdd.bind(
-                                                                this
-                                                            )}
-                                                        >
-                                                            추가
-                                                        </LinkButton>
-                                                        <LinkButton
-                                                            iconCls="icon-save"
-                                                            plain
-                                                            disabled={
-                                                                editingItem ==
-                                                                null
-                                                            }
-                                                            onClick={() =>
-                                                                this.datagrid.datagrid.endEdit()
-                                                            }
-                                                        >
-                                                            저장
-                                                        </LinkButton>
-                                                        <LinkButton
-                                                            iconCls="icon-cancel"
-                                                            plain
-                                                            disabled={
-                                                                editingItem ==
-                                                                null
-                                                            }
-                                                            onClick={() =>
-                                                                this.datagrid.datagrid.cancelEdit()
-                                                            }
-                                                        >
-                                                            취소
-                                                        </LinkButton>
-                                                        <LinkButton
-                                                            plain
-                                                            disabled={
-                                                                editingItem ==
-                                                                null
-                                                            }
-                                                            onClick={(row) =>
-                                                                this.deleteRow(
-                                                                    row
-                                                                )
-                                                            }
-                                                        >
-                                                            <i className="glyphicon glyphicon-trash" />{" "}
-                                                            삭제
-                                                        </LinkButton>
-                                                    </div>
-                                                )}
-                                                onEditEnd={this.handleRowEditEnd.bind(
-                                                    this
-                                                )}
-                                                onEditCancel={this.handleRowEditCancel.bind(
-                                                    this
-                                                )}
+                                            <table
+                                                id="tableBody"
+                                                ref={this.tableRef}
                                             >
-                                                <GridColumn
-                                                    field="projectName"
-                                                    align="center"
-                                                    title={
-                                                        <span>고객 코드</span>
+                                                {modalOpen && (
+                                                    <ModalPage
+                                                        onClose={() => {
+                                                            this.setState({
+                                                                modalOpen: false,
+                                                            });
+                                                            // refetch();
+                                                        }}
+                                                    />
+                                                )}
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            <input type="checkbox" />
+                                                        </th>
+                                                        <th>
+                                                            <input
+                                                                type="search"
+                                                                placeholder="이름 검색"
+                                                            />
+                                                        </th>
+                                                        <th>
+                                                            <input
+                                                                type="search"
+                                                                placeholder="나이 검색"
+                                                            />
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody
+                                                    onClick={() =>
+                                                        this.setState({
+                                                            modalOpen: true,
+                                                        })
                                                     }
-                                                    editable
-                                                    editRules={["required"]}
-                                                    editor={({
-                                                        row,
-                                                        error,
-                                                    }) => (
-                                                        <Tooltip
-                                                            content={error}
-                                                            tracking
-                                                        >
-                                                            <TextBox
-                                                                value={
-                                                                    row.projectName
+                                                >
+                                                    <tr>
+                                                        <td>
+                                                            <input type="checkbox" />
+                                                        </td>
+                                                        <td>
+                                                            <div>
+                                                                <p>홍길동</p>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div>25</div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <input type="checkbox" />
+                                                        </td>
+                                                        <td>김철수</td>
+                                                        <td>30</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <input type="checkbox" />
+                                                        </td>
+                                                        <td>이영희</td>
+                                                        <td>35</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th>
+                                                            <button
+                                                                onClick={
+                                                                    this
+                                                                        .handleSearch
                                                                 }
-                                                            ></TextBox>
-                                                        </Tooltip>
-                                                    )}
-                                                    sortable
-                                                    render={(row) => (
-                                                        <p>{row.row.code}</p>
-                                                    )}
-                                                />
-                                                <GridColumn
-                                                    field="orderingDepartment"
-                                                    align="center"
-                                                    title={
-                                                        <span
-                                                            style={{
-                                                                color: "red",
-                                                            }}
-                                                        >
-                                                            거래처명
-                                                        </span>
-                                                    }
-                                                    editable
-                                                    sortable
-                                                    render={(row) => (
-                                                        <p>
-                                                            {
-                                                                row.row
-                                                                    .businessname
-                                                            }
-                                                        </p>
-                                                    )}
-                                                />
-                                                <GridColumn
-                                                    field="PM"
-                                                    align="center"
-                                                    title={
-                                                        <span>
-                                                            거래처명 약어
-                                                        </span>
-                                                    }
-                                                    editable
-                                                    sortable
-                                                    render={(row) => (
-                                                        <p>
-                                                            {row.row.littlename}
-                                                        </p>
-                                                    )}
-                                                />
-
-                                                <GridColumn
-                                                    field="referenceYear"
-                                                    title={
-                                                        <span>
-                                                            사업자등록번호
-                                                        </span>
-                                                    }
-                                                    align="center"
-                                                    editable
-                                                    editor={({ row }) => (
-                                                        <NumberBox
-                                                            value={
-                                                                row.referenceYear
-                                                            }
-                                                        ></NumberBox>
-                                                    )}
-                                                    sortable
-                                                    render={(row) => (
-                                                        <p>
-                                                            {
-                                                                row.row
-                                                                    .clinentnumber
-                                                            }
-                                                        </p>
-                                                    )}
-                                                />
-                                                <GridColumn
-                                                    field="etc"
-                                                    align="center"
-                                                    title="대표자명"
-                                                    editable
-                                                    sortable
-                                                    render={(row) => (
-                                                        <p>{row.row.ceoname}</p>
-                                                    )}
-                                                />
-                                                <GridColumn
-                                                    field="etc"
-                                                    align="center"
-                                                    title="사업장명"
-                                                    editable
-                                                    sortable
-                                                    render={(row) => (
-                                                        <p>
-                                                            {
-                                                                row.row
-                                                                    .companyname
-                                                            }
-                                                        </p>
-                                                    )}
-                                                />
-                                                <GridColumn
-                                                    field="etc"
-                                                    align="center"
-                                                    title="우편번호"
-                                                    editable
-                                                    sortable
-                                                    render={(row) => (
-                                                        <p>
-                                                            {row.row.postnumber}
-                                                        </p>
-                                                    )}
-                                                />
-                                                <GridColumn
-                                                    field="etc"
-                                                    align="center"
-                                                    title="주소"
-                                                    editable
-                                                    sortable
-                                                    render={(row) => (
-                                                        <p>{row.row.address}</p>
-                                                    )}
-                                                />
-                                                <GridColumn
-                                                    field="etc"
-                                                    align="center"
-                                                    title="상세주소"
-                                                    editable
-                                                    sortable
-                                                    render={(row) => (
-                                                        <p>
-                                                            {
-                                                                row.row
-                                                                    .detailaddress
-                                                            }
-                                                        </p>
-                                                    )}
-                                                />
-                                                <GridColumn
-                                                    field="etc"
-                                                    align="center"
-                                                    title="비고"
-                                                    editable
-                                                    sortable
-                                                />
-                                            </CheckGrid>
+                                                            >
+                                                                검색
+                                                            </button>
+                                                        </th>
+                                                        <th></th>
+                                                        <th>
+                                                            <button
+                                                                onClick={
+                                                                    this
+                                                                        .handleDelete
+                                                                }
+                                                            >
+                                                                삭제
+                                                            </button>
+                                                        </th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>

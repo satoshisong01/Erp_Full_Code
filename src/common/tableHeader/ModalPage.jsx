@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./ModalSearch.css";
-import Header from "./Header";
+//import Header from "./Header";
 import Search from "./Search";
 import { DataGrid, GridColumn } from "rc-easyui";
 
@@ -23,8 +23,8 @@ export default function ModalPage({ onClose, changeColor }) {
     }
 
     return (
-        <div className="modal-dialog demo-modal">
-            <div className="modal-content">
+        <div className="modal-dialog demo-modal" style={{ margin: "0" }}>
+            <div className="modal-content" style={{ border: "0" }}>
                 <article className="product-modal">
                     <div className="product-modal-bg"></div>
 

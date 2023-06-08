@@ -30,25 +30,25 @@ class App extends Component {
     render() {
         return (
             <Provider store={store}>
-                <HashRouter>
-                    <Switch>
-                        {authRoutes.map((route, idx) => {
-                            return route.component ? (
-                                <Route
-                                    key={idx}
-                                    path={route.path}
-                                    exact={route.exact}
-                                    name={route.name}
-                                    render={(props) => (
-                                        <route.component {...props} />
-                                    )}
-                                />
-                            ) : null;
-                        })}
+               <HashRouter>
+                   <Switch>
+                       {authRoutes.map((route, idx) => {
+                           return route.component ? (
+                               <Route
+                                   key={idx}
+                                   path={route.path}
+                                   exact={route.exact}
+                                   name={route.name}
+                                   render={(props) => (
+                                       <route.component {...props} />
+                                   )}
+                               />
+                           ) : null;
+                       })}
 
-                        <Route path="/" name="Home" component={Layout} />
-                    </Switch>
-                </HashRouter>
+                       <Route path="/" name="Home" component={Layout} />
+                   </Switch>
+               </HashRouter>
             </Provider>
             //<DataTable />
             //<ResizableTable />

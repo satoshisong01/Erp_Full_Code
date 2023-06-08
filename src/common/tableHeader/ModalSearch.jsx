@@ -13,8 +13,8 @@ export default function ModalSearch(props) {
                 style={{
                     display: "flex",
                     alignItems: "center",
-                    borderTop: "solid #DDDDDD 1px",
-                    borderBottom: "solid #DDDDDD 1px",
+                    //borderTop: "solid #DDDDDD 1px",
+                    //borderBottom: "solid #DDDDDD 1px",
                     marginLeft: "auto",
                     height: "40px",
                     backgroundColor: "white",
@@ -41,7 +41,6 @@ export default function ModalSearch(props) {
                 />
                 {modalOpen && (
                     <ModalPage
-                        changeColor="#999999"
                         onClose={() => {
                             setModalOpen(false);
                             //refetch();
