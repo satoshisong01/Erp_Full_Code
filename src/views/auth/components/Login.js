@@ -22,7 +22,7 @@ export default class Login extends React.Component {
 	handleSubmit(e) {
 		console.log("this.state.form: ", this.state.form);
 
-		const SERVER_URL = "http://192.168.0.113:8080" //전역변수로 바꾸기
+		// const SERVER_URL = "http://192.168.0.113:3000" //전역변수로 바꾸기
 		const loginUrl = "/api/actionLoginJWT.do"
 		const requestOptions = {
 			method: "POST",
@@ -32,7 +32,7 @@ export default class Login extends React.Component {
 			body: JSON.stringify(this.state.form)
 		}
 
-		fetch(SERVER_URL + loginUrl, requestOptions)
+		fetch( loginUrl, requestOptions)
 			.then(res => {
 				return res.json();
 			})
