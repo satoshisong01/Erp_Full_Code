@@ -7,38 +7,37 @@ export default class Login extends React.Component {
 		super(props);
 		this.state = {
 			form: {
-				id: '',
-				password: '',
-				userSe: 'USR'
+				id: '', //webmaster
+				pw: '', //rhdxhd12
+				// userSe: 'USR'
 			}
 		};
 	}
 
 	handleChange(e) {
 		const {name, value} = e.target;
-		this.setState({ ...this.state.form, [name]: value });
+		this.setState({ form: { ...this.state.form, [name]: value } });
 	};
 
 	handleSubmit(e) {
-		console.log("this.state.form > ", this.state.form);
+		console.log("this.state.form: ", this.state.form);
 
-
-		// const SERVER_URL = "http://192.168.0.123:8080" //전역변수로 바꾸기
-		const SERVER_URL = "http://localhost:8080"
-		const loginUrl = "/uat/uia/actionLoginJWT.do"
+		// const SERVER_URL = "http://192.168.0.113:3000" //전역변수로 바꾸기
+		const loginUrl = "/api/actionLoginJWT.do"
 		const requestOptions = {
 			method: "POST",
 			headers: {
 				'Content-type': 'application/json'
 			},
-			body: JSON.stringify(...this.state.form)
+			body: JSON.stringify(this.state.form)
 		}
 
-		fetch(SERVER_URL + loginUrl, requestOptions)
+		fetch( loginUrl, requestOptions)
 			.then(res => {
 				return res.json();
 			})
 			.then((resp) => {
+				console.log("resultCode: ", resp.resultCode)
 				if (Number(resp.resultCode) === 200) {
 					alert("Login Alert🌞");
 					//라우터파일에 /admin/으로 시작하는 URL은 모두 인증없이 접근 할 때 경고창이 나오도록 조치했기 때문에 제외했음.
@@ -82,7 +81,7 @@ export default class Login extends React.Component {
 								<div className="well no-padding">
 										<form
 											// action="#/dashboard"
-											action="#/tables/easy-tables"
+											// action="#/tables/easy-tables"
 											id="login-form"
 											className="smart-form client-form"
 											onSubmit={this.handleSubmit.bind(this)}
