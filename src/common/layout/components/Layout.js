@@ -7,6 +7,7 @@ import LayoutSwitcher from "./LayoutSwitcher";
 import Header from "./Header";
 import Footer from "./Footer";
 import { TabPanes } from "../../tabs";
+import TabTest from "../../tabs/components/TabTest";
 
 // import Testing from "../../../views/Testing";
 
@@ -28,7 +29,8 @@ class Layout extends React.Component {
                 <div id="main" role="main">
                     <LayoutSwitcher />
                     <Ribbon />
-                    <TabPanes />
+                    {/*<TabPanes />*/}
+                    <TabTest />
                     {/* <Testing title={this.state.titleData} /> */}
                 </div>
                 <Footer />

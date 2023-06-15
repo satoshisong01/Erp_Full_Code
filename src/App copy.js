@@ -1,167 +1,129 @@
-import React, { Component } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import $ from "jquery";
-import "datatables.net";
-import "datatables.net-dt";
 import "datatables.net-dt/css/jquery.dataTables.css";
-import "datatables.net-select";
-import "./DataTable.css";
+import "datatables.net-dt/js/dataTables.dataTables";
+import "./Test.css";
+import ModalPage from "./common/tableHeader/ModalPage";
 
-class App extends Component {
-    constructor(props) {
-        super(props);
-        this.tableRef = React.createRef();
-        this.selectedRows = []; // 선택된 행의 정보를 저장할 배열
-        this.activeRow = null; // 활성화된 행을 추적하기 위한 변수
-    }
+const MyDataTable = () => {
+    const tableRef = useRef(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [searchValues, setSearchValues] = useState([]);
 
-    componentDidMount() {
-        const table = $(this.tableRef.current).DataTable({
-            select: {
-                style: "multi",
-            },
-            columnDefs: [
-                {
-                    orderable: false,
-                    className: "dt-body-center",
-                    targets: 0,
-                    render: function(data, type, full, meta) {
-                        if (type === "display") {
-                            return '<input type="checkbox" class="row-select">';
-                        }
-                        return data;
-                    },
-                },
-            ],
-        });
+    useEffect(() => {
+        const table = $(tableRef.current).DataTable();
 
-        const self = this;
+        // 컬럼별 검색 이벤트 처리
+        $(tableRef.current)
+            .find('thead input[type="search"]')
+            .on("keyup change", function() {
+                const columnIndex = $(this)
+                    .closest("th")
+                    .index();
+                setSearchValues((prevSearchValues) => {
+                    const newSearchValues = [...prevSearchValues];
+                    newSearchValues[columnIndex] = $(this).val();
+                    return newSearchValues;
+                });
+            });
 
-        // 전체 선택 체크박스 이벤트 처리
-        $(document).on("change", "#selectAll", function() {
-            const isChecked = this.checked;
-            $("input.row-select").prop("checked", isChecked);
-            table.rows().select();
+        // 최상단 체크박스 이벤트 처리
+        $(tableRef.current)
+            .find('thead th:first-child input[type="checkbox"]')
+            .on("change", function() {
+                const isChecked = $(this).is(":checked");
+                table
+                    .column(0)
+                    .nodes()
+                    .to$()
+                    .find('input[type="checkbox"]')
+                    .prop("checked", isChecked);
+            });
+    }, []);
 
-            if (!isChecked) {
-                table.rows().deselect();
-            }
+    const handleSearch = () => {
+        const table = $(tableRef.current).DataTable();
 
-            self.updateSelectedRows(table);
-        });
+        // 이전 검색 조건 초기화
+        table
+            .columns()
+            .search("")
+            .draw();
 
-        // 개별 선택 체크박스 이벤트 처리
-        table.on("change", "input.row-select", function() {
-            const isChecked = this.checked;
-
-            if (!isChecked) {
-                $("#selectAll").prop("checked", false);
-            }
-
-            self.updateSelectedRows(table);
-        });
-
-        // 셀 클릭 시 편집 가능한 input 요소로 변경
-        table.on("click", "td:not(:first-child)", function() {
-            const cell = table.cell(this);
-            const columnIndex = cell.index().column;
-            const columnIndexWithoutSelect = columnIndex - 1; // 첫 번째 열은 체크박스이므로 인덱스 조정
-
-            if (columnIndexWithoutSelect >= 0) {
-                $(this).html(
-                    '<input type="text" class="edit-input" value="' +
-                        cell.data() +
-                        '">'
-                );
-                $(".edit-input")
-                    .focus()
-                    .blur(function() {
-                        const newValue = $(this).val();
-                        table.cell(this.parentNode).data(newValue);
-                    });
+        // 각 컬럼에 대한 검색어 설정
+        searchValues.forEach((searchValue, columnIndex) => {
+            if (searchValue) {
+                table.column(columnIndex).search(searchValue);
             }
         });
 
-        // 저장 버튼 클릭 시 수정된 데이터 저장
-        $("#saveButton").on("click", function() {
-            self.saveModifiedData(table);
-        });
-    }
+        // 검색 결과 테이블 다시 그리기
+        table.draw();
+    };
 
-    // 선택된 행 정보 업데이트
-    updateSelectedRows(table) {
-        this.selectedRows = table
-            .rows({ selected: true })
-            .data()
-            .toArray();
-        console.log(this.selectedRows);
-    }
+    return (
+        <table id="tableBody" ref={tableRef}>
+            {modalOpen && (
+                <ModalPage
+                    onClose={() => {
+                        setModalOpen(false);
+                        // refetch();
+                    }}
+                />
+            )}
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" />
+                    </th>
+                    <th>
+                        <input type="search" placeholder="이름 검색" />
+                    </th>
+                    <th>
+                        <input type="search" placeholder="나이 검색" />
+                    </th>
+                </tr>
+            </thead>
+            <tbody onClick={() => setModalOpen(true)}>
+                <tr>
+                    <td>
+                        <input type="checkbox" />
+                    </td>
+                    <td>
+                        <div>
+                            <p>홍길동</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div>25</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" />
+                    </td>
+                    <td>김철수</td>
+                    <td>30</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" />
+                    </td>
+                    <td>이영희</td>
+                    <td>35</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>
+                        <button onClick={handleSearch}>검색</button>
+                    </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+    );
+};
 
-    // 수정된 데이터 저장
-    saveModifiedData(table) {
-        table.rows().every(function() {
-            const rowData = this.data();
-            // rowData를 서버로 보내어 저장하는 로직을 구현하세요.
-            console.log("Save data:", rowData);
-            return null; // 값을 반환하도록 수정
-        });
-    }
-
-    render() {
-        return (
-            <div>
-                <table ref={this.tableRef}>
-                    <thead>
-                        <tr id="table-border111">
-                            <th> </th>
-                            <th>Name</th>
-                            <th style={{ borderBottom: "none" }}>Position</th>
-                            <th>Office</th>
-                            <th>Age</th>
-                            <th>Start date</th>
-                            <th>Salary</th>
-                        </tr>
-                        <tr>
-                            <th>
-                                <input type="checkbox" id="selectAll" />
-                            </th>
-                            <th>Name</th>
-                            <th>Position</th>
-                            <th>Office</th>
-                            <th>Age</th>
-                            <th>Start date</th>
-                            <th>Salary</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input type="checkbox" className="row-select" />
-                            </td>
-                            <td>Tiger Nixon</td>
-                            <td>System Architect</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td>2011/04/25</td>
-                            <td>$320,800</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="checkbox" className="row-select" />
-                            </td>
-                            <td>Tiger Nixon</td>
-                            <td>System Architect</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td>2011/04/25</td>
-                            <td>$320,800</td>
-                        </tr>
-                        {/* 나머지 행들 */}
-                    </tbody>
-                </table>
-                <button id="saveButton">Save</button>
-            </div>
-        );
-    }
-}
-
-export default App;
+export default MyDataTable;
