@@ -24,39 +24,53 @@ import MaterialCostDetails from "./views/pre-cost/MaterialCostDetails";
 //import TestTable2 from "./views/pre-cost/TestTable2";
 import ErrorlogManagement from "./views/sysadmin/ErrorlogManagement";
 import ResizableTable from "./views/tables/ResizableTable";
-import DataTable from "./views/tables/DataTable";
+import DataTable from "./views/sysadmin/DataTable";
+import Test11111 from "./DateTest";
+import FetchTest from "./FetchTest";
+import AxiosTest from "./AxiosTest";
+import XlsxTest from "./views/sysadmin/XlsxTest";
+import MyDataTable from "./views/sysadmin/MyDataTable";
+import YourComponent from "./views/sysadmin/YourComponent";
 
 class App extends Component {
     render() {
         return (
-            <Provider store={store}>
-                <HashRouter>
-                    <Switch>
-                        {authRoutes.map((route, idx) => {
-                            return route.component ? (
-                                <Route
-                                    key={idx}
-                                    path={route.path}
-                                    exact={route.exact}
-                                    name={route.name}
-                                    render={(props) => (
-                                        <route.component {...props} />
-                                    )}
-                                />
-                            ) : null;
-                        })}
-
-                        <Route path="/" name="Home" component={Layout} />
-                    </Switch>
-                </HashRouter>
-            </Provider>
+            //<Test11111 />
+            //<FetchTest />
+            <>
+                {/*<AxiosTest />*/}
+                {/*<DataTable />*/}
+                {/*<XlsxTest />*/}
+                {/*<MyDataTable />*/}
+                {/*<YourComponent />*/}
+                <Provider store={store}>
+                    <HashRouter>
+                        <Switch>
+                            {authRoutes.map((route, idx) => {
+                                return route.component ? (
+                                    <Route
+                                        key={idx}
+                                        path={route.path}
+                                        exact={route.exact}
+                                        name={route.name}
+                                        render={(props) => (
+                                            <route.component {...props} />
+                                        )}
+                                    />
+                                ) : null;
+                            })}
+                            <Route path="/" name="Home" component={Layout} />
+                        </Switch>
+                    </HashRouter>
+                </Provider>
+            </>
+            //<ModalSearch />
             //<DataTable />
             //<ResizableTable />
             //<OutsourcingCostDetails />
             //<ErrorlogManagement />
             //<TestTable2 />
             //<ProductList />
-            //<ModalSearch />
             //<MaterialCostDetails />
         );
     }

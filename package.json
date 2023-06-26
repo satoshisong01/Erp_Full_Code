@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "antd": "^5.5.1",
+    "axios": "^1.4.0",
     "bootstrap": "3",
     "bootstrap-colorpicker": "2.5.2",
     "bootstrap-duallistbox": "^3.0.6",
@@ -27,6 +28,7 @@
     "dropzone": "^5.5.1",
     "dygraphs": "^2.1.0",
     "easyui": "^8.0.0",
+    "file-saver": "^2.0.5",
     "fuelux": "^3.17.0",
     "he": "^1.2.0",
     "highcharts": "^6.1.1",
@@ -49,6 +51,8 @@
     "react": "^16.6.3",
     "react-bootstrap": "^0.32.1",
     "react-cropper": "^1.0.1",
+    "react-csv": "^2.2.2",
+    "react-data-table-component": "^7.5.3",
     "react-dom": "^16.6.3",
     "react-google-maps": "^9.4.5",
     "react-loadable": "^5.4.0",
@@ -69,7 +73,11 @@
     "summernote": "^0.8.10",
     "then-request": "^6.0.0",
     "to-markdown": "^3.1.1",
-    "x-editable": "^1.5.1"
+    "x-editable": "^1.5.1",
+    "xlsx": "^0.18.5",
+    "xlsx-js-style": "^1.2.0",
+    "xlsx-populate": "^1.21.0",
+    "xlsx-style": "^0.8.13"
   },
   "scripts": {
     "start": "react-scripts start",
