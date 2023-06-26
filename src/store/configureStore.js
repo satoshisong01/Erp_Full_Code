@@ -16,6 +16,7 @@ import { navigationReducer } from "../common/navigation";
 import { todoReducer } from "../common/todo";
 import { i18nReducer, i18nInit } from "../common/i18n";
 import { tabsReducer } from "../common/tabs";
+import loginReducer from "../views/auth/loginReducer";
 
 
 
@@ -25,7 +26,8 @@ export const rootReducer = combineReducers({
   user: userReducer,
   todo: todoReducer,
   i18n: i18nReducer,
-  tabs: tabsReducer
+  tabs: tabsReducer,
+  login: loginReducer,
 });
 
 const store = createStore(

@@ -1,10 +1,13 @@
 import Loadable from "react-loadable";
 import { Loading } from "../../common/navigation";
 
-const Login = Loadable({
-  loader: () => import("./components/Login"),
-  loading: Loading
-});
+export * from './LoginActions.js';
+export * from './loginReducer';
+
+// const Login = Loadable({
+//   loader: () => import("./components/Login"),
+//   loading: Loading
+// });
 
 const Register = Loadable({
   loader: () => import("./components/Register"),
@@ -17,12 +20,12 @@ const Forgot = Loadable({
 });
 
 export const routes = [
-  {
-    path: "/login",
-    exact: true,
-    component: Login,
-    name: "Login"
-  },
+  // {
+  //   path: "/login",
+  //   exact: true,
+  //   component: Login,
+  //   name: "Login"
+  // },
   {
     path: "/register",
     exact: true,
