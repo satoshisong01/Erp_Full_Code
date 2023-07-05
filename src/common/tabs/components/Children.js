@@ -2,7 +2,7 @@ import React from "react";
 
 import CommonCodeManagement1 from "../../../views/sysadmin/CommonCodeManagement1";
 import CommonCodeManagement2 from "../../../views/sysadmin/CommonCodeManagement2";
-import ClientManagement from "../../../views/sysadmin/ClientManagement";
+import ClassificationCode from "../../../views/sysadmin/ClassificationCode";
 import ErrorlogManagement from "../../../views/sysadmin/ErrorlogManagement";
 import MenuUi from "../../../views/sysadmin/MenuUi";
 import UserManagementInfo from "../../../views/sysadmin/UserManagementInfo";
@@ -11,6 +11,12 @@ import DataTableTest from "../../../views/tables/DataTable";
 import DatatablesOrg from "../../../views/tables/components/Datatables";
 import NormalTables from "../../../views/tables/components/NormalTables";
 import EasyTables from "../../../views/tables/components/EasyTables";
+
+const data = {
+    clCode: "clCode",
+    groupCode: "groupCode",
+    detailCode: "detailCode",
+};
 
 export const Children = [
     /** 사전 원가 */
@@ -75,8 +81,8 @@ export const Children = [
     {
         title: "시스템 관리",
         path: "/",
-        component: <ClientManagement />,
-        label: "거래처 관리",
+        component: <ClassificationCode Urls={data.clCode} />,
+        label: "분류코드 관리",
         activeKey: 8,
     },
     {

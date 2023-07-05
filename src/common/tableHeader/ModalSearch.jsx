@@ -5,7 +5,6 @@ import ModalPage from "./ModalPage";
 
 export default function ModalSearch(props) {
     const [modalOpen, setModalOpen] = useState(false);
-    let searchName = props.searchTitle;
     return (
         <div className="col-12 userTable" style={{ height: "100%" }}>
             <div
@@ -31,7 +30,7 @@ export default function ModalSearch(props) {
                         backgroundColor: "#E3E3E3",
                     }}
                 >
-                    {searchName}
+                    {/*{searchName}*/}
                 </span>
                 <input
                     onClick={() => setModalOpen(true)}
@@ -45,6 +44,7 @@ export default function ModalSearch(props) {
                             setModalOpen(false);
                             //refetch();
                         }}
+                        datas={123}
                     />
                 )}
             </div>

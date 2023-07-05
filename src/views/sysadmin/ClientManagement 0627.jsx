@@ -3,12 +3,16 @@ import "../../common/tableHeader/ContentMain.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
-import "./Test22.css";
+import "./defaultSearchBar.css";
 import ModalPage from "../../common/tableHeader/ModalPage";
 import { BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
 import XLSX from "xlsx-js-style";
 import axios from "axios";
-import PersonnelInfo from "../detailComponents/PersonnelInfo";
+import ModalSearch from "../../common/tableHeader/ModalSearch";
+import "./sysadminCss/ClientManagement.css";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+//import PersonnelInfo from "../detailComponents/PersonnelInfo";
 
 const ClientManagement = () => {
     const dataTableRef = useRef(null);
@@ -19,6 +23,10 @@ const ClientManagement = () => {
     const [detailData, setDetailData] = useState(null);
     const [selectedData, setSelectedData] = useState([]);
     const [check, setCheck] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [formattedDate, setFormattedDate] = useState("");
+    const [isCalendarVisible, setCalendarVisible] = useState(false);
+    const inputRef = useRef(null);
 
     useEffect(() => {
         // DataTable 인스턴스 초기화
@@ -40,8 +48,13 @@ const ClientManagement = () => {
 
     console.log(data);
     console.log(selectedData);
-    console.log(selectedData.map((item) => item.dpmCd));
-    console.log(parseInt(selectedData.map((item) => item.dpmCd)));
+    //console.log(selectedData.map((item) => item.dpmCd));
+    //console.log(
+    //    selectedData
+    //        .map((item) => item.dpmCd)
+    //        .map((value) => parseInt(value, 10))
+    //);
+    const changeInt = selectedData.map((item) => item.dpmCd);
 
     const keys = data.length > 0 ? Object.keys(data[0]) : [];
 
@@ -57,6 +70,37 @@ const ClientManagement = () => {
         }
         setDetailData(item);
     };
+
+    const handleInputClick = () => {
+        setCalendarVisible(true);
+    };
+
+    const handleOutsideClick = (event) => {
+        if (inputRef.current && !inputRef.current.contains(event.target)) {
+            setCalendarVisible(false);
+        }
+    };
+
+    const handleDateClick = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date
+            .getDate()
+            .toString()
+            .padStart(2, "0");
+        const formatted = `${year}${month}${day}`;
+
+        setSelectedDate(date);
+        setFormattedDate(formatted);
+        setCalendarVisible(false);
+    };
+
+    useEffect(() => {
+        document.addEventListener("click", handleOutsideClick);
+        return () => {
+            document.removeEventListener("click", handleOutsideClick);
+        };
+    }, []);
 
     const handleItemCheck = (item, e) => {
         const isChecked = e.target.checked;
@@ -92,8 +136,55 @@ const ClientManagement = () => {
         });
     };
 
+    const handleModalClick = (e, item) => {
+        //console.log(e);
+        console.log(item);
+        setModalOpen(true);
+        //return <ModalSearch data={item} />;
+    };
+
+    const handlePrint2 = () => {
+        window.print();
+    };
+
+    const handlePrint = () => {
+        const table = $(dataTableRef.current).DataTable();
+        const tableData = table
+            .rows()
+            .data()
+            .toArray();
+
+        const printWindow = window.open("", "_blank");
+        printWindow.document.open();
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Print Table</title>
+              <style>
+                /* 원하는 스타일을 지정하세요 */
+              </style>
+            </head>
+            <body>
+              <table>
+                <thead>
+                  <tr>
+                    안녕하세요
+                  </tr>
+                </thead>
+                <tbody>
+                  <td>
+                    안녕
+                  </td>
+                </tbody>
+              </table>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    };
+
     const handleDelete = async () => {
-        //const dataTable = $(dataTableRef.current).DataTable();
         //const checkedRows = dataTable
         //    .column(0)
         //    .nodes()
@@ -108,20 +199,21 @@ const ClientManagement = () => {
         //        .draw(false);
         //});
         try {
-            const data = {
-                dpmCd: parseInt(selectedData.map((item) => item.dpmCd)),
-            };
+            const data = changeInt.map((value) => {
+                return { dpmCd: value };
+            });
 
             const response = await axios.delete(
-                "http://192.168.0.113:8080/dummy/remove",
+                "http://192.168.0.113:8080/dummy/remove/all",
                 {
                     data: data,
                 }
             );
-
             console.log(response.data);
         } catch (error) {
             console.error(error);
+        } finally {
+            fetchData();
         }
     };
 
@@ -137,7 +229,7 @@ const ClientManagement = () => {
             console.log(response.data.data);
             setData(response.data.data);
         } catch (error) {
-            console.error("에럽니다 삐융삐융", error);
+            console.error("에럽니다", error);
         } finally {
             setIsLoading(false);
             $(dataTableRef.current).DataTable();
@@ -155,7 +247,7 @@ const ClientManagement = () => {
             fetchData();
             setInputValue("");
         } catch (error) {
-            console.error("에럽니다 삐융삐융", error);
+            console.error("에럽니다", error);
         }
     };
 
@@ -253,7 +345,10 @@ const ClientManagement = () => {
                                         ) : (
                                             // 실제 데이터 표시
                                             <>
-                                                {/*<table ref={dataTableRef}>
+                                                {/*<table
+                                                    ref={dataTableRef}
+                                                    className="searchTable"
+                                                >
                                                     <thead>
                                                         <tr>
                                                             <th>
@@ -280,7 +375,138 @@ const ClientManagement = () => {
                                                         </tr>
                                                     </thead>
                                                 </table>*/}
+                                                <div className="searchMain">
+                                                    <p className="searchTitle">
+                                                        그룹코드 관리
+                                                    </p>
+                                                    <div className="searchLine" />
+                                                    <div className="searchDivParent">
+                                                        <div className="searchDiv">
+                                                            <div>등록일</div>
+                                                            <div
+                                                                style={{
+                                                                    position:
+                                                                        "relative",
+                                                                }}
+                                                            >
+                                                                <input
+                                                                    type="text"
+                                                                    value={
+                                                                        formattedDate
+                                                                    }
+                                                                    onClick={
+                                                                        handleInputClick
+                                                                    }
+                                                                    readOnly
+                                                                    ref={
+                                                                        inputRef
+                                                                    }
+                                                                />
+                                                                {isCalendarVisible && (
+                                                                    <div
+                                                                        style={{
+                                                                            position:
+                                                                                "absolute",
+                                                                            top:
+                                                                                "100%",
+                                                                            left: 0,
+                                                                            zIndex: 999,
+                                                                        }}
+                                                                    >
+                                                                        <Calendar
+                                                                            onClickDay={
+                                                                                handleDateClick
+                                                                            }
+                                                                        />
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <div className="searchDiv">
+                                                            <div>검색어</div>
+                                                            <input type="text"></input>
+                                                        </div>
+                                                        <div className="searchDiv">
+                                                            <div>검색어</div>
+                                                            <input type="text"></input>
+                                                        </div>
+                                                        <div className="searchDiv">
+                                                            <div>검색어</div>
+                                                            <input type="text"></input>
+                                                        </div>
+                                                        <div className="searchDiv">
+                                                            <div>검색어</div>
+                                                            <input type="text"></input>
+                                                        </div>
+                                                        <div className="searchDiv">
+                                                            <div>검색어</div>
+                                                            <input type="text"></input>
+                                                        </div>
+                                                    </div>
+                                                    <div className="searchDivParent">
+                                                        <div className="searchDiv">
+                                                            <div>검색어</div>
+                                                            <input type="text"></input>
+                                                        </div>
+                                                        <div className="searchDiv">
+                                                            <div>검색어</div>
+                                                            <input type="text"></input>
+                                                        </div>
+                                                        <div className="searchDiv">
+                                                            <div>검색어</div>
+                                                            <input type="text"></input>
+                                                        </div>
+                                                        <div className="searchDiv">
+                                                            <div>검색어</div>
+                                                            <input type="text"></input>
+                                                        </div>
+                                                        <div className="searchDiv">
+                                                            <div>검색어</div>
+                                                            <input type="text"></input>
+                                                        </div>
+                                                        <div className="searchDiv">
+                                                            <div>검색어</div>
+                                                            <input type="text"></input>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        justifyContent: "right",
+                                                    }}
+                                                >
+                                                    <button
+                                                        onClick={(e) =>
+                                                            handleModalClick(e)
+                                                        }
+                                                    >
+                                                        추가
+                                                    </button>
 
+                                                    <button
+                                                        onClick={handleDelete}
+                                                    >
+                                                        삭제
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => {
+                                                            // STEP 4: Write Excel file to browser (Specify the file name in the second argument)
+                                                            XLSX.writeFile(
+                                                                wb,
+                                                                "table-demo.xlsx"
+                                                            );
+                                                        }}
+                                                    >
+                                                        Download Excel (.xlsx)
+                                                    </button>
+                                                    <button
+                                                        onClick={handlePrint}
+                                                    >
+                                                        Print
+                                                    </button>
+                                                </div>
                                                 <table
                                                     ref={dataTableRef}
                                                     className="table table-bordered"
@@ -288,7 +514,23 @@ const ClientManagement = () => {
                                                 >
                                                     <thead>
                                                         <tr>
-                                                            <th>
+                                                            <th
+                                                                style={{
+                                                                    display:
+                                                                        "flex",
+                                                                    justifyContent:
+                                                                        "center",
+                                                                    alignItems:
+                                                                        "center",
+                                                                }}
+                                                            >
+                                                                <p
+                                                                    style={{
+                                                                        margin: 0,
+                                                                    }}
+                                                                >
+                                                                    All
+                                                                </p>
                                                                 <input
                                                                     type="checkbox"
                                                                     //onClick={(
@@ -365,12 +607,20 @@ const ClientManagement = () => {
                                                                             key
                                                                         ) => (
                                                                             <td
+                                                                                //onClick={(
+                                                                                //    e
+                                                                                //) =>
+                                                                                //    handleItemCheck(
+                                                                                //        item,
+                                                                                //        e
+                                                                                //    )
+                                                                                //}
                                                                                 onClick={(
                                                                                     e
                                                                                 ) =>
-                                                                                    handleItemCheck(
-                                                                                        item,
-                                                                                        e
+                                                                                    handleModalClick(
+                                                                                        e,
+                                                                                        item
                                                                                     )
                                                                                 }
                                                                                 key={
@@ -389,41 +639,6 @@ const ClientManagement = () => {
                                                             )
                                                         )}
                                                     </tbody>
-
-                                                    <tfoot>
-                                                        <tr>
-                                                            <th></th>
-                                                            <th>
-                                                                <button>
-                                                                    추가
-                                                                </button>
-                                                            </th>
-                                                            <th>
-                                                                <button
-                                                                    onClick={
-                                                                        handleDelete
-                                                                    }
-                                                                >
-                                                                    삭제
-                                                                </button>
-                                                            </th>
-                                                            <th>
-                                                                <button
-                                                                    onClick={() => {
-                                                                        // STEP 4: Write Excel file to browser (Specify the file name in the second argument)
-                                                                        XLSX.writeFile(
-                                                                            wb,
-                                                                            "table-demo.xlsx"
-                                                                        );
-                                                                    }}
-                                                                >
-                                                                    Download
-                                                                    Excel
-                                                                    (.xlsx)
-                                                                </button>
-                                                            </th>
-                                                        </tr>
-                                                    </tfoot>
                                                 </table>
                                             </>
                                         )}
@@ -442,7 +657,7 @@ const ClientManagement = () => {
                 />
             )}
             {/*<div>{JSON.stringify(detailData)}</div>*/}
-            {detailData && <PersonnelInfo data={detailData} />}
+            {/*{detailData && <PersonnelInfo data={detailData} />}*/}
         </>
     );
 };

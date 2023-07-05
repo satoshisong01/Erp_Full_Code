@@ -45,6 +45,7 @@ function TabTest(props) {
     }, [title, props.isActive]);
 
     const removeTab = (targetKey) => {
+        if (items.length === 1) return;
         const targetIndex = items.length - 1;
         const newPanes = items.filter((tab) => tab.key !== targetKey);
 

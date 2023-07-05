@@ -6,7 +6,7 @@ import store from "./store/configureStore";
 import { authRoutes } from "./routes";
 import { Layout } from "./common/layout";
 import ModalTest from "./views/sysadmin/modal";
-import ClientManagement from "./views/sysadmin/ClientManagement";
+import ClassificationCode from "./views/sysadmin/ClassificationCode";
 import TreeView, { TreeViewItem } from "./common/ui/components/TreeView";
 
 import { newid } from "../src/common/utils/functions";
@@ -31,6 +31,16 @@ import AxiosTest from "./AxiosTest";
 import XlsxTest from "./views/sysadmin/XlsxTest";
 import MyDataTable from "./views/sysadmin/MyDataTable";
 import YourComponent from "./views/sysadmin/YourComponent";
+import InputTest from "./InputTest";
+import PrintTest from "./views/tables/PrintTest";
+import Modal from "./views/sysadmin/modal";
+import EditData from "./common/tableHeader/EditData";
+import SearchComponent from "./views/sysadmin/SearchComponent";
+import CopyButton from "./views/sysadmin/CopyTest";
+import DataTableComponent from "./views/sysadmin/DataTableComponent";
+import DataTableComponent2Mook from "./views/sysadmin/DataTableComponent2mook";
+import GroupCode from "./views/sysadmin/GroupCode";
+import ToggleButton from "./views/utils/ToggleButton";
 
 class App extends Component {
     render() {
@@ -43,6 +53,17 @@ class App extends Component {
                 {/*<XlsxTest />*/}
                 {/*<MyDataTable />*/}
                 {/*<YourComponent />*/}
+                {/*<InputTest />*/}
+                {/*<PrintTest />*/}
+                {/*<Modal />*/}
+                {/*<ModalSearch />*/}
+                {/*<EditData />*/}
+                {/*<SearchComponent />*/}
+                {/*<CopyButton />*/}
+                {/*<DataTableComponent />*/}
+                {/*<DataTableComponent2Mook />*/}
+                {/*<GroupCode />*/}
+                {/*<ToggleButton />*/}
                 <Provider store={store}>
                     <HashRouter>
                         <Switch>

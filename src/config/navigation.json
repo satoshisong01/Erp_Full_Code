@@ -43,7 +43,7 @@
             "icon": "fa fa-lg fa-fw fa-table",
             "items": [
                 {
-                    "title": "거래처 관리",
+                    "title": "분류코드 관리",
                     "route": "/"
                 },
                 {
