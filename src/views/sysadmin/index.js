@@ -24,13 +24,46 @@ const AuthorManage = Loadable({
 });
 
 const ConHistory = Loadable({
-  loader: () => import("../systemManagement/ConnectionHistory/ConHistory"),
-  loading: Loading,
+    loader: () => import("../systemManagement/ConnectionHistory/ConHistory"),
+    loading: Loading,
 });
 
-const UserManage = Loadable({
-  loader: () => import("../systemManagement/UserManage/UserManage"),
-  loading: Loading,
+const EmployMembers = Loadable({
+    loader: () =>
+        import(
+            "../referenceInfoManage/UserManagement/Employ_Member/EmployMembers"
+        ),
+    loading: Loading,
+});
+
+const GeneralMembers = Loadable({
+    loader: () =>
+        import(
+            "../referenceInfoManage/UserManagement/GeneralMember/GeneralMembers"
+        ),
+    loading: Loading,
+});
+
+const EntrprsMembers = Loadable({
+    loader: () =>
+        import(
+            "../referenceInfoManage/UserManagement/EntrprsMember/EntrprsMembers"
+        ),
+    loading: Loading,
+});
+
+const AuthorGroups = Loadable({
+    loader: () =>
+        import(
+            "../referenceInfoManage/UserManagement/AuthorGroup/AuthorGroups"
+        ),
+    loading: Loading,
+});
+
+const OrgNzts = Loadable({
+    loader: () =>
+        import("../referenceInfoManage/UserManagement/OrgNzt/OrgNzts"),
+    loading: Loading,
 });
 
 const CommonCodeManagement1 = Loadable({
@@ -74,88 +107,115 @@ const UserManagementInfo = Loadable({
 });
 
 export const routes = [
-         {
-           path: "/aaa",
-           exact: true,
-           component: ClCode,
-           name: "ClCode",
-         },
-         {
-           path: "/aaa11",
-           exact: true,
-           component: GroupCode,
-           name: "GroupCode",
-         },
-         {
-           path: "/aaa22",
-           exact: true,
-           component: DetailCode,
-           name: "DetailCode",
-         },
-         {
-           path: "/bbb",
-           exact: true,
-           component: AuthorManage,
-           name: "AuthorManage",
-         },
-         {
-           path: "/ccc",
-           exact: true,
-           component: ConHistory,
-           name: "ConHistory",
-         },
-         {
-           path: "/ddd",
-           exact: true,
-           component: UserManage,
-           name: "UserManage",
-         },
-         {
-           path: "/sysadmin/commonCodeManagement1",
-           exact: true,
-           component: CommonCodeManagement1,
-           name: "CommonCodeManagement1",
-         },
-         {
-           path: "/sysadmin/commonCodeManagement2",
-           exact: true,
-           component: CommonCodeManagement2,
-           name: "CommonCodeManagement2",
-         },
-         {
-           path: "/sysadmin/errorlogManagement",
-           exact: true,
-           component: ErrorlogManagement,
-           name: "ErrorlogManagement",
-         },
-         {
-           path: "/sysadmin/menuUi",
-           exact: true,
-           component: MenuUi,
-           name: "MenuUi",
-         },
-         {
-           path: "/sysadmin/programManagement",
-           exact: true,
-           component: ProgramManagement,
-           name: "ProgramManagement",
-         },
-         {
-           path: "/sysadmin/test",
-           exact: true,
-           component: Test,
-           name: "Test",
-         },
-         {
-           path: "/sysadmin/userManagement",
-           exact: true,
-           component: UserManagement,
-           name: "UserManagement",
-         },
-         {
-           path: "/sysadmin/userManagementInfo",
-           exact: true,
-           component: UserManagementInfo,
-           name: "UserManagementInfo",
-         },
-       ];
+    {
+        path: "/aaa",
+        exact: true,
+        component: ClCode,
+        name: "ClCode",
+    },
+    {
+        path: "/aaa11",
+        exact: true,
+        component: GroupCode,
+        name: "GroupCode",
+    },
+    {
+        path: "/aaa22",
+        exact: true,
+        component: DetailCode,
+        name: "DetailCode",
+    },
+    {
+        path: "/bbb",
+        exact: true,
+        component: AuthorManage,
+        name: "AuthorManage",
+    },
+    {
+        path: "/ccc",
+        exact: true,
+        component: ConHistory,
+        name: "ConHistory",
+    },
+    {
+        path: "/ddd",
+        exact: true,
+        component: EmployMembers,
+        name: "EmployMembers",
+    },
+
+    {
+        path: "/ddd",
+        exact: true,
+        component: GeneralMembers,
+        name: "GeneralMembers",
+    },
+
+    {
+        path: "/ddd",
+        exact: true,
+        component: EntrprsMembers,
+        name: "EntrprsMembers",
+    },
+    {
+        path: "/ddd",
+        exact: true,
+        component: AuthorGroups,
+        name: "AuthorGroups",
+    },
+    {
+        path: "/ddd",
+        exact: true,
+        component: OrgNzts,
+        name: "OrgNzts",
+    },
+
+    {
+        path: "/sysadmin/commonCodeManagement1",
+        exact: true,
+        component: CommonCodeManagement1,
+        name: "CommonCodeManagement1",
+    },
+    {
+        path: "/sysadmin/commonCodeManagement2",
+        exact: true,
+        component: CommonCodeManagement2,
+        name: "CommonCodeManagement2",
+    },
+    {
+        path: "/sysadmin/errorlogManagement",
+        exact: true,
+        component: ErrorlogManagement,
+        name: "ErrorlogManagement",
+    },
+    {
+        path: "/sysadmin/menuUi",
+        exact: true,
+        component: MenuUi,
+        name: "MenuUi",
+    },
+    {
+        path: "/sysadmin/programManagement",
+        exact: true,
+        component: ProgramManagement,
+        name: "ProgramManagement",
+    },
+    {
+        path: "/sysadmin/test",
+        exact: true,
+        component: Test,
+        name: "Test",
+    },
+    {
+        path: "/sysadmin/userManagement",
+        exact: true,
+        component: UserManagement,
+        name: "UserManagement",
+    },
+    {
+        path: "/sysadmin/userManagementInfo",
+        exact: true,
+        component: UserManagementInfo,
+        name: "UserManagementInfo",
+    },
+];

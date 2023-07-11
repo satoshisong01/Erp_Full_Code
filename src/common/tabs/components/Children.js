@@ -15,8 +15,12 @@ import AuthorManage from "../../../views/systemManagement/AuthorManage/AuthorMan
 import ClCode from "../../../views/systemManagement/CodeManage/ClassificationCode/ClCode";
 import GroupCode from "../../../views/systemManagement/CodeManage/GroupCode/GroupCode";
 import DetailCode from "../../../views/systemManagement/CodeManage/DetailCode/DetailCode";
-import UserManage from "../../../views/systemManagement/UserManage/UserManage";
+import EmployMembers from "../../../views/referenceInfoManage/UserManagement/Employ_Member/EmployMembers";
 import ConHistory from "../../../views/systemManagement/ConnectionHistory/ConHistory";
+import GeneralMembers from "../../../views/referenceInfoManage/UserManagement/GeneralMember/GeneralMembers";
+import EntrprsMembers from "../../../views/referenceInfoManage/UserManagement/EntrprsMember/EntrprsMembers";
+import AuthorGroups from "../../../views/referenceInfoManage/UserManagement/AuthorGroup/AuthorGroups";
+import OrgNzts from "../../../views/referenceInfoManage/UserManagement/OrgNzt/OrgNzts";
 
 export const Children = [
     /** 사전 원가 */
@@ -73,9 +77,37 @@ export const Children = [
     {
         title: "사용자 관리",
         path: "/4111",
-        component: <UserManage />,
-        label: "사용자 관리",
+        component: <EmployMembers />,
+        label: "업무 회원 관리",
         activeKey: 20,
+    },
+    {
+        title: "사용자 관리",
+        path: "/4111",
+        component: <GeneralMembers />,
+        label: "일반 회원 관리",
+        activeKey: 21,
+    },
+    {
+        title: "사용자 관리",
+        path: "/4111",
+        component: <EntrprsMembers />,
+        label: "기업 회원 관리",
+        activeKey: 22,
+    },
+    {
+        title: "사용자 관리",
+        path: "/4111",
+        component: <AuthorGroups />,
+        label: "권한 그룹 정보 관리",
+        activeKey: 23,
+    },
+    {
+        title: "사용자 관리",
+        path: "/4111",
+        component: <OrgNzts />,
+        label: "조직 부서 정보 관리",
+        activeKey: 24,
     },
 
     /** 코드 관리 */
@@ -84,21 +116,21 @@ export const Children = [
         path: "/5111",
         component: <ClCode />,
         label: "분류코드 관리",
-        activeKey: 21,
+        activeKey: 25,
     },
     {
         title: "코드 관리",
         path: "/5222",
         component: <GroupCode />,
         label: "그룹코드 관리",
-        activeKey: 5,
+        activeKey: 26,
     },
     {
         title: "코드 관리",
         path: "/5333",
         component: <DetailCode />,
         label: "상세코드 관리",
-        activeKey: 6,
+        activeKey: 27,
     },
 
     /** 접속 이력관리 */
@@ -107,22 +139,22 @@ export const Children = [
         path: "/6111",
         component: <ConHistory />,
         label: "접속이력 관리",
-        activeKey: 7,
+        activeKey: 28,
     },
 
     {
         component: <DataTableTest />,
         label: "Easy Tables",
-        activeKey: 8,
+        activeKey: 29,
     },
     {
         component: <DatatablesOrg />,
         label: "Data Tables",
-        activeKey: 9,
+        activeKey: 30,
     },
     {
         component: <NormalTables />,
         label: "Normal Tables",
-        activeKey: 10,
+        activeKey: 31,
     },
 ];

@@ -72,7 +72,6 @@ const ClCode = () => {
             };
 
             const response = await axios.post(
-                //`http://localhost:8080/api/system/code/${urlName}/listAll.do`,
                 `http://192.168.0.113:8080/api/system/code/${urlName}/listAll.do`,
                 { useAt: "Y", searchKeyword, searchCondition },
                 options

@@ -72,8 +72,9 @@ const GroupCode = () => {
             };
 
             const response = await axios.post(
-                `http://192.168.0.113:8080/api/system/code/${urlName}/listAll.do`,
-                //`http://localhost:8080/api/system/code/${urlName}/listAll.do`,
+                //`http://192.168.0.113:8080/api/system/code/${urlName}/listAll.do`,
+
+                `http://localhost:8080/api/system/code/${urlName}/listAll.do`,
                 { useAt: "Y", searchKeyword, searchCondition },
                 options
             );
@@ -82,7 +83,7 @@ const GroupCode = () => {
             //console.log(
             //    response.data.result.resultData.data[0].cmmnClCode.clCode
             //);
-            setData(response.data.result.resultData.data);
+            setData(response.data.result.resultData);
         } catch (error) {
             console.error("에럽니다", error);
             alert("서버와 연결할 수 없습니다");

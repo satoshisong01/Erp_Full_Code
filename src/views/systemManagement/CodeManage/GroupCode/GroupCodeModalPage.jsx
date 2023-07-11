@@ -19,11 +19,11 @@ export default function GroupCodeModalPage({
         codeId: "",
         codeIdNm: "",
         codeIdDc: "",
-        clCode: "",
+        clCode: clickData.clCode,
         clCodeNm: "",
         cmmnClCode: {
-            clCode: "",
-            clCodeNm: "",
+            clCode: clickData.cmmnClCode.clCode,
+            clCodeNm: clickData.cmmnClCode.clCodeNm,
         },
     });
 
@@ -78,6 +78,7 @@ export default function GroupCodeModalPage({
 
             const response = await axios.put(
                 //`http://192.168.0.113:8080/api/system/code/${urlName}/edit.do`,
+
                 `http://localhost:8080/api/system/code/${urlName}/edit.do`,
                 modifiedData, // 수정된 복제 데이터를 전송
                 options
@@ -134,13 +135,13 @@ export default function GroupCodeModalPage({
                                 style={{ marginTop: "30px" }}
                             >
                                 <>
-                                    {/*분류코드:
+                                    분류코드:
                                     <input
                                         type="text"
-                                        name="cmmnClCode.clCode"
-                                        value={data.cmmnClCode.clCode}
-                                        onChange={inputChange2}
-                                    />*/}
+                                        name="clCode"
+                                        value={clickData.cmmnClCode.clCode}
+                                        onChange={inputChange}
+                                    />
                                     그룹코드:
                                     <input
                                         type="text"
