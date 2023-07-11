@@ -9,15 +9,41 @@ import axios from "axios";
 export default function ModalPage({ onClose, clickData, refresh, urlName }) {
     //const [data] = useState(getData());
     const dataTableRef = useRef(null); //dataTable 테이블 명시
-    const [data, setData] = useState({
-        clCode: "",
-        clCodeNm: "",
-        clCodeDc: "",
-        createIdBy: "",
-        createDate: "",
-        lastModifiedIdBy: "",
-        lastModifyDate: "",
-    });
+    const [data, setData] = useState({});
+    if (urlName === "clCode") {
+        setData({
+            clCode: "",
+            clCodeNm: "",
+            clCodeDc: "",
+            createIdBy: "",
+            createDate: "",
+            lastModifiedIdBy: "",
+            lastModifyDate: "",
+        });
+    } else if (urlName === "groupCode") {
+        setData({
+            clCodeNm: "",
+            codeId: "",
+            codeIdNm: "",
+            codeIdDc: "",
+            createIdBy: "",
+            createDate: "",
+            lastModifiedIdBy: "",
+            lastModifyDate: "",
+        });
+    } else if (urlName === "detailCode") {
+        setData({
+            codeId: "",
+            codeIdNm: "",
+            code: "",
+            codeNm: "",
+            codeDc: "",
+            createIdBy: "",
+            createDate: "",
+            lastModifiedIdBy: "",
+            lastModifyDate: "",
+        });
+    }
 
     console.log(data, "기본으로 받은값");
 
@@ -37,7 +63,8 @@ export default function ModalPage({ onClose, clickData, refresh, urlName }) {
         try {
             const response = await axios.put(
                 `http://192.168.0.113:8080/api/system/code/${urlName}/edit.do`,
-                data
+                data,
+                console.log(data)
             );
             console.log(response, "보낸값?");
             refresh();
@@ -90,36 +117,95 @@ export default function ModalPage({ onClose, clickData, refresh, urlName }) {
                                 className="submitProduct"
                                 style={{ marginTop: "30px" }}
                             >
-                                {/*<div style={{ backgroundColor: "aqua" }}>
-                                    <div>코드:{data.clCode}</div>
-                                    <div>코드명:{data.clCodeNm}</div>
-                                    <div>코드설명:{data.clCodeDc}</div>
-                                    <div>작성자:{data.createIdBy}</div>
-                                    <div>작성일:{data.createDate}</div>
-                                    <div>수정자:{data.lastModifiedIdBy}</div>
-                                    <div>수정일:{data.lastModifyDate}</div>
-                                </div>*/}
-                                분류코드ID:
-                                <input
-                                    type="text"
-                                    name="clCode"
-                                    value={data.clCode}
-                                    onChange={inputChange}
-                                />
-                                분류코드명:
-                                <input
-                                    type="text"
-                                    name="clCodeNm"
-                                    value={data.clCodeNm}
-                                    onChange={inputChange}
-                                />
-                                분류코드 설명 :
-                                <input
-                                    type="text"
-                                    name="clCodeDc"
-                                    value={data.clCodeDc}
-                                    onChange={inputChange}
-                                />
+                                {urlName === "clCode" && (
+                                    <>
+                                        분류코드ID:
+                                        <input
+                                            type="text"
+                                            name="clCode"
+                                            value={data.clCode}
+                                            onChange={inputChange}
+                                        />
+                                        분류코드명:
+                                        <input
+                                            type="text"
+                                            name="clCodeNm"
+                                            value={data.clCodeNm}
+                                            onChange={inputChange}
+                                        />
+                                        분류코드 설명 :
+                                        <input
+                                            type="text"
+                                            name="clCodeDc"
+                                            value={data.clCodeDc}
+                                            onChange={inputChange}
+                                        />
+                                    </>
+                                )}
+                                {urlName === "groupCode" && (
+                                    <>
+                                        분류코드명:
+                                        <input
+                                            type="text"
+                                            name="clCodeNm"
+                                            value={data.clCodeNm}
+                                            onChange={inputChange}
+                                        />
+                                        그룹코드:
+                                        <input
+                                            type="text"
+                                            name="codeId"
+                                            value={data.codeId}
+                                            onChange={inputChange}
+                                        />
+                                        그룹코드명:
+                                        <input
+                                            type="text"
+                                            name="codeIdNm"
+                                            value={data.codeIdNm}
+                                            onChange={inputChange}
+                                        />
+                                        그룹코드설명:
+                                        <input
+                                            type="text"
+                                            name="codeIdDc"
+                                            value={data.codeIdDc}
+                                            onChange={inputChange}
+                                        />
+                                    </>
+                                )}
+                                {urlName === "detailCode" && (
+                                    <>
+                                        그룹코드
+                                        <input
+                                            type="text"
+                                            name="codeId"
+                                            value={data.codeId}
+                                            onChange={inputChange}
+                                        />
+                                        상세코드ID:
+                                        <input
+                                            type="text"
+                                            name="code"
+                                            value={data.code}
+                                            onChange={inputChange}
+                                        />
+                                        상세코드명:
+                                        <input
+                                            type="text"
+                                            name="codeNm"
+                                            value={data.codeNm}
+                                            onChange={inputChange}
+                                        />
+                                        상세코드설명:
+                                        <input
+                                            type="text"
+                                            name="codeDc"
+                                            value={data.codeDc}
+                                            onChange={inputChange}
+                                        />
+                                    </>
+                                )}
                                 <div className="modal-footer">
                                     <button
                                         type="button"

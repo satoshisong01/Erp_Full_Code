@@ -1,19 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import "../../common/tableHeader/ContentMain.css";
+import "../../../../common/tableHeader/ContentMain.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
-import "./defaultSearchBar.css";
-import ModalPage from "../../common/tableHeader/ModalPage";
-import { BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
+import "../../../sysadmin/defaultSearchBar.css";
+import { BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../../../common";
 import axios from "axios";
-import "./sysadminCss/ClassificationCode.css";
+import "../../css/Code.css";
 import "react-calendar/dist/Calendar.css";
-import UtilBtn from "../utils/UtilBtn";
-import Search from "../../common/tableHeader/Search";
-import TableSearchBar from "./TableSearchBar";
+import Search from "../../../../common/tableHeader/Search";
+import ClCodeModalPage from "./ClCodeModalPage";
+import ClCodeUtilBtn from "./ClCodeUtilBtn";
+import ClCodeTableSearchBar from "./ClCodeTableSearchBar";
 
-const DetailCodeManagement = () => {
+const ClCode = () => {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창
     //const [postModalOpen, setPostModalOpen] = useState(false); // 클릭 추가 모달창
@@ -27,9 +27,7 @@ const DetailCodeManagement = () => {
     const [searchCondition, setSearchCondition] = useState("0"); //검색 종류명시 int값
     const [selectedOption, setSelectedOption] = useState("option2"); //삭제된 항목 & 삭제되지 않은 항목(디폴트)
 
-    const urlName = "detailCode";
-
-    //const [searchValue, setSearchKeyword] = useState("");
+    const urlName = "clCode";
 
     //키워드값 받아오기
     const handleSearch = (value) => {
@@ -46,6 +44,7 @@ const DetailCodeManagement = () => {
 
     //새로고침 클릭 핸들러
     const handleRefreshClick = async () => {
+        console.log(urlName);
         setSearchKeyword("");
         setSearchCondition("");
         if (dataTableRef.current) {
@@ -54,18 +53,33 @@ const DetailCodeManagement = () => {
                 .destroy();
         }
         setIsLoading(true); // 로딩 상태 활성화
-        await fetchData();
+        await fetchData(urlName);
     };
+
+    let Api_key = process.env.REACT_APP_POST;
+
+    console.log(Api_key);
+
+    const headers = {
+        Authorization: process.env.REACT_APP_POST,
+    };
+    console.log(searchCondition, searchKeyword, selectedOption);
 
     const fetchData = async () => {
         try {
+            const options = {
+                headers: headers,
+            };
+
             const response = await axios.post(
+                //`http://localhost:8080/api/system/code/${urlName}/listAll.do`,
                 `http://192.168.0.113:8080/api/system/code/${urlName}/listAll.do`,
-                { useAt: "Y", searchKeyword, searchCondition }
+                { useAt: "Y", searchKeyword, searchCondition },
+                options
             );
             console.log(response);
-            console.log(response.data.result.resultData.content);
-            setData(response.data.result.resultData.content);
+            console.log(response.data.result.resultData.data);
+            setData(response.data.result.resultData.data);
         } catch (error) {
             console.error("에럽니다", error);
             alert("서버와 연결할 수 없습니다");
@@ -104,9 +118,9 @@ const DetailCodeManagement = () => {
         }
     }, [isLoading]);
 
-    console.log(searchKeyword);
-    console.log(searchCondition);
-    console.log(selectedOption);
+    //console.log(searchKeyword);
+    //console.log(searchCondition);
+    //console.log(selectedOption);
 
     //테이블 초기화 및 기능 명시
     const initializeDataTable = () => {
@@ -179,6 +193,7 @@ const DetailCodeManagement = () => {
 
     // 모달 클릭 핸들러(수정 모달창)
     const handleModalClick = (e, item) => {
+        console.log("클릭이되고있습니까");
         console.log(e);
         console.log(item);
         setModalItem(item);
@@ -190,7 +205,7 @@ const DetailCodeManagement = () => {
             <div id="content">
                 <div className="row">
                     <BigBreadcrumbs
-                        items={["Tables", "Normal Tables"]}
+                        items={["시스템 관리", "분류코드 관리"]}
                         icon="fa fa-fw fa-table"
                         className="col-xs-12 col-sm-7 col-md-7 col-lg-4"
                     />
@@ -204,7 +219,7 @@ const DetailCodeManagement = () => {
                     }}
                 >
                     <Search searchTitle="프로젝트명" />
-                    <TableSearchBar
+                    <ClCodeTableSearchBar
                         fetchData={fetchData}
                         onSearch={handleSearch}
                         onSearchLv={handleSearchLv}
@@ -226,12 +241,13 @@ const DetailCodeManagement = () => {
                                         <i className="fa fa-table" />
                                     </span>
                                 </header>
-                                <UtilBtn
+                                <ClCodeUtilBtn
                                     initialData={data}
                                     refresh={fetchData}
                                     changeInt={changeInt}
                                     selectedData={selectedData}
                                     urlName={urlName}
+                                    headers={headers}
                                 />
                                 <div className="tableBody">
                                     <div className="widget-body">
@@ -246,10 +262,6 @@ const DetailCodeManagement = () => {
                                                         ref={dataTableRef}
                                                         className="table table-bordered"
                                                         id="dataTable"
-                                                        style={{
-                                                            backgroundColor:
-                                                                "#fff",
-                                                        }}
                                                     >
                                                         <thead>
                                                             <tr>
@@ -284,10 +296,15 @@ const DetailCodeManagement = () => {
                                                                         All
                                                                     </p>
                                                                 </th>
-                                                                <th>코드</th>
-                                                                <th>코드명</th>
                                                                 <th>
-                                                                    코드 설명
+                                                                    분류코드
+                                                                </th>
+                                                                <th>
+                                                                    분류코드명
+                                                                </th>
+                                                                <th>
+                                                                    분류코드
+                                                                    설명
                                                                 </th>
                                                                 <th>작성자</th>
                                                                 <th>작성일</th>
@@ -331,8 +348,8 @@ const DetailCodeManagement = () => {
                                                                             "clCodeNm",
                                                                             "clCodeDc",
                                                                             "createIdBy",
-                                                                            "lastModifiedIdBy",
                                                                             "createDate",
+                                                                            "lastModifiedIdBy",
                                                                             "lastModifyDate",
                                                                         ].map(
                                                                             (
@@ -379,17 +396,18 @@ const DetailCodeManagement = () => {
                 </WidgetGrid>
             </div>
             {modalOpen && (
-                <ModalPage
+                <ClCodeModalPage
                     onClose={() => {
                         setModalOpen(false);
                     }}
                     refresh={fetchData}
                     clickData={modalItem}
                     urlName={urlName}
+                    headers={headers}
                 />
             )}
         </>
     );
 };
 
-export default DetailCodeManagement;
+export default ClCode;

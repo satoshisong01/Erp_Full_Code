@@ -1,19 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import "../../common/tableHeader/ContentMain.css";
+import "../../../../common/tableHeader/ContentMain.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
-import "./defaultSearchBar.css";
-import ModalPage from "../../common/tableHeader/ModalPage";
-import { BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
+import "../../../sysadmin/defaultSearchBar.css";
+import { BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../../../common";
 import axios from "axios";
-import "./sysadminCss/ClassificationCode.css";
+import "../../css/Code.css";
 import "react-calendar/dist/Calendar.css";
-import UtilBtn from "../utils/UtilBtn";
-import Search from "../../common/tableHeader/Search";
-import TableSearchBar from "./TableSearchBar";
+import Search from "../../../../common/tableHeader/Search";
+import GroupCodeModalPage from "./GroupCodeModalPage";
+import GroupCodeUtilBtn from "./GroupCodeUtilBtn";
+import GroupCodeTableSearchBar from "./GroupCodeTableSearchBar";
 
-const ClassificationCode = ({ Urls }) => {
+const GroupCode = () => {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창
     //const [postModalOpen, setPostModalOpen] = useState(false); // 클릭 추가 모달창
@@ -27,9 +27,13 @@ const ClassificationCode = ({ Urls }) => {
     const [searchCondition, setSearchCondition] = useState("0"); //검색 종류명시 int값
     const [selectedOption, setSelectedOption] = useState("option2"); //삭제된 항목 & 삭제되지 않은 항목(디폴트)
 
-    const urlName = Urls;
+    const urlName = "groupCode";
+
+    const API_KEY_NUMBER = process.env.REACT_APP_AUTH_KEY;
 
     //const [searchValue, setSearchKeyword] = useState("");
+
+    //console.log(modalItem, "넘겨주는 데이터");
 
     //키워드값 받아오기
     const handleSearch = (value) => {
@@ -46,6 +50,7 @@ const ClassificationCode = ({ Urls }) => {
 
     //새로고침 클릭 핸들러
     const handleRefreshClick = async () => {
+        console.log(urlName);
         setSearchKeyword("");
         setSearchCondition("");
         if (dataTableRef.current) {
@@ -56,16 +61,28 @@ const ClassificationCode = ({ Urls }) => {
         setIsLoading(true); // 로딩 상태 활성화
         await fetchData();
     };
+    const headers = {
+        Authorization: process.env.REACT_APP_POST,
+    };
 
     const fetchData = async () => {
         try {
+            const options = {
+                headers: headers,
+            };
+
             const response = await axios.post(
                 `http://192.168.0.113:8080/api/system/code/${urlName}/listAll.do`,
-                { useAt: "Y", searchKeyword, searchCondition }
+                //`http://localhost:8080/api/system/code/${urlName}/listAll.do`,
+                { useAt: "Y", searchKeyword, searchCondition },
+                options
             );
             console.log(response);
-            console.log(response.data.result.resultData.content);
-            setData(response.data.result.resultData.content);
+            console.log(response.data.result.resultData.data);
+            //console.log(
+            //    response.data.result.resultData.data[0].cmmnClCode.clCode
+            //);
+            setData(response.data.result.resultData.data);
         } catch (error) {
             console.error("에럽니다", error);
             alert("서버와 연결할 수 없습니다");
@@ -104,9 +121,9 @@ const ClassificationCode = ({ Urls }) => {
         }
     }, [isLoading]);
 
-    console.log(searchKeyword);
-    console.log(searchCondition);
-    console.log(selectedOption);
+    //console.log(searchKeyword);
+    //console.log(searchCondition);
+    //console.log(selectedOption);
 
     //테이블 초기화 및 기능 명시
     const initializeDataTable = () => {
@@ -125,7 +142,7 @@ const ClassificationCode = ({ Urls }) => {
     };
 
     //체크된 아이템의 clCode 숫자만 저장
-    const changeInt = selectedData.map((item) => item.clCode);
+    const changeInt = selectedData.map((item) => item.codeId);
 
     //const keys = data.length > 0 ? Object.keys(data[0]) : [];
 
@@ -151,16 +168,16 @@ const ClassificationCode = ({ Urls }) => {
                 // 이미 선택된 데이터인지 확인 후 중복 추가 방지
                 if (
                     !prevSelectedData.find(
-                        (selectedItem) => selectedItem.clCode === item.clCode
+                        (selectedItem) => selectedItem.codeId === item.codeId
                     )
                 ) {
                     const sortedData = [...prevSelectedData, item].sort(
                         (a, b) => {
-                            // clCode 속성을 기준으로 데이터 정렬
-                            if (a.clCode < b.clCode) {
+                            // codeId 속성을 기준으로 데이터 정렬
+                            if (a.codeId < b.codeId) {
                                 return -1;
                             }
-                            if (a.clCode > b.clCode) {
+                            if (a.codeId > b.codeId) {
                                 return 1;
                             }
                             return 0;
@@ -170,7 +187,7 @@ const ClassificationCode = ({ Urls }) => {
                 }
             } else {
                 return prevSelectedData.filter(
-                    (selectedItem) => selectedItem.clCode !== item.clCode
+                    (selectedItem) => selectedItem.codeId !== item.codeId
                 );
             }
             return prevSelectedData; // 체크가 풀리지 않았거나 중복 데이터인 경우 이전 상태 그대로 반환
@@ -179,8 +196,8 @@ const ClassificationCode = ({ Urls }) => {
 
     // 모달 클릭 핸들러(수정 모달창)
     const handleModalClick = (e, item) => {
-        console.log(e);
-        console.log(item);
+        //console.log(e);
+        //console.log(item);
         setModalItem(item);
         setModalOpen(true);
     };
@@ -190,7 +207,7 @@ const ClassificationCode = ({ Urls }) => {
             <div id="content">
                 <div className="row">
                     <BigBreadcrumbs
-                        items={["Tables", "Normal Tables"]}
+                        items={["시스템 관리", "그룹코드 관리"]}
                         icon="fa fa-fw fa-table"
                         className="col-xs-12 col-sm-7 col-md-7 col-lg-4"
                     />
@@ -204,7 +221,7 @@ const ClassificationCode = ({ Urls }) => {
                     }}
                 >
                     <Search searchTitle="프로젝트명" />
-                    <TableSearchBar
+                    <GroupCodeTableSearchBar
                         fetchData={fetchData}
                         onSearch={handleSearch}
                         onSearchLv={handleSearchLv}
@@ -226,12 +243,13 @@ const ClassificationCode = ({ Urls }) => {
                                         <i className="fa fa-table" />
                                     </span>
                                 </header>
-                                <UtilBtn
+                                <GroupCodeUtilBtn
                                     initialData={data}
                                     refresh={fetchData}
                                     changeInt={changeInt}
                                     selectedData={selectedData}
                                     urlName={urlName}
+                                    headers={headers}
                                 />
                                 <div className="tableBody">
                                     <div className="widget-body">
@@ -284,10 +302,17 @@ const ClassificationCode = ({ Urls }) => {
                                                                         All
                                                                     </p>
                                                                 </th>
-                                                                <th>코드</th>
-                                                                <th>코드명</th>
                                                                 <th>
-                                                                    코드 설명
+                                                                    분류코드명
+                                                                </th>
+                                                                <th>
+                                                                    그룹코드
+                                                                </th>
+                                                                <th>
+                                                                    그룹코드명
+                                                                </th>
+                                                                <th>
+                                                                    그룹코드설명
                                                                 </th>
                                                                 <th>작성자</th>
                                                                 <th>작성일</th>
@@ -297,15 +322,8 @@ const ClassificationCode = ({ Urls }) => {
                                                         </thead>
                                                         <tbody>
                                                             {data.map(
-                                                                (
-                                                                    item,
-                                                                    index
-                                                                ) => (
-                                                                    <tr
-                                                                        key={
-                                                                            index
-                                                                        }
-                                                                    >
+                                                                (item, a) => (
+                                                                    <tr key={a}>
                                                                         <td>
                                                                             <input
                                                                                 type="checkbox"
@@ -313,8 +331,8 @@ const ClassificationCode = ({ Urls }) => {
                                                                                     (
                                                                                         selectedItem
                                                                                     ) =>
-                                                                                        selectedItem.clCode ===
-                                                                                        item.clCode
+                                                                                        selectedItem.codeId ===
+                                                                                        item.codeId
                                                                                 )}
                                                                                 onChange={(
                                                                                     e
@@ -326,13 +344,36 @@ const ClassificationCode = ({ Urls }) => {
                                                                                 }
                                                                             />
                                                                         </td>
+                                                                        <td
+                                                                            className="tableWidth"
+                                                                            style={
+                                                                                tdStyle
+                                                                            }
+                                                                            onClick={(
+                                                                                e
+                                                                            ) =>
+                                                                                handleModalClick(
+                                                                                    e,
+                                                                                    item
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            {item.cmmnClCode &&
+                                                                            item
+                                                                                .cmmnClCode
+                                                                                .clCode
+                                                                                ? item
+                                                                                      .cmmnClCode
+                                                                                      .clCode
+                                                                                : ""}
+                                                                        </td>
                                                                         {[
-                                                                            "clCode",
-                                                                            "clCodeNm",
-                                                                            "clCodeDc",
+                                                                            "codeId",
+                                                                            "codeIdNm",
+                                                                            "codeIdDc",
                                                                             "createIdBy",
-                                                                            "lastModifiedIdBy",
                                                                             "createDate",
+                                                                            "lastModifiedIdBy",
                                                                             "lastModifyDate",
                                                                         ].map(
                                                                             (
@@ -379,17 +420,19 @@ const ClassificationCode = ({ Urls }) => {
                 </WidgetGrid>
             </div>
             {modalOpen && (
-                <ModalPage
+                <GroupCodeModalPage
                     onClose={() => {
                         setModalOpen(false);
                     }}
                     refresh={fetchData}
+                    data11={data}
                     clickData={modalItem}
                     urlName={urlName}
+                    headers={headers}
                 />
             )}
         </>
     );
 };
 
-export default ClassificationCode;
+export default GroupCode;

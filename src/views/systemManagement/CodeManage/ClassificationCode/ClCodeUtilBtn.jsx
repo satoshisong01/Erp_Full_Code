@@ -1,24 +1,20 @@
 import React, { useRef, useState } from "react";
-import excelImg from "../img/excel_img.png";
-import copyImg from "../img/copy_img.png";
-import printImg from "../img/print_img.png";
-import deleteImg from "../img/delete_img.png";
-import plusImg from "../img/plus_img.png";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
 import XLSX from "xlsx-js-style";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import ModalPagePost from "../../common/tableHeader/ModalPagePost";
-import "../utils/UtilBtn.css";
+import "../../css/CodeUtilBtn.css";
 import axios from "axios";
+import ClCodeModalPagePost from "./ClCodeModalPagePost";
 
-export default function UtilBtn({
+export default function ClCodeUtilBtn({
     initialData,
     refresh,
     changeInt,
     selectedData,
     urlName,
+    headers,
 }) {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [clCode, setClCode] = useState(1); //키 값 넘버자동 1씩추가
@@ -231,11 +227,15 @@ export default function UtilBtn({
 
     const handleDelete = async () => {
         try {
+            const options = {
+                headers: headers,
+            };
             const response = await axios.delete(
                 `http://192.168.0.113:8080/api/system/code/${urlName}/removeAll.do`,
                 {
                     data: changeInt,
-                }
+                },
+                options
             );
             console.log(response.data);
         } catch (error) {
@@ -320,7 +320,6 @@ export default function UtilBtn({
                             XLSX.writeFile(wb, "table-demo.xlsx");
                         }}
                     >
-                        <img className="btnImg" src={excelImg} />
                         <i className="fa fa-file-excel-o utilIcon" />
                         CSV
                     </button>
@@ -369,13 +368,14 @@ export default function UtilBtn({
             </div>
 
             {postModalOpen && (
-                <ModalPagePost
+                <ClCodeModalPagePost
                     onClose={() => {
                         setPostModalOpen(false);
                     }}
                     refresh={refresh}
                     countClCode={clCode}
                     urlName={urlName}
+                    headers={headers}
                 />
             )}
         </div>

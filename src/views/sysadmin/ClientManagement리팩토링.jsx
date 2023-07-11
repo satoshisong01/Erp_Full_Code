@@ -7,13 +7,13 @@ import "./defaultSearchBar.css";
 import ModalPage from "../../common/tableHeader/ModalPage";
 import { BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
 import axios from "axios";
-import "./sysadminCss/ClassificationCode.css";
+//import "./sysadminCss/ClCode.css";
 import "react-calendar/dist/Calendar.css";
 import UtilBtn from "../utils/UtilBtn";
 import Search from "../../common/tableHeader/Search";
 import TableSearchBar from "./TableSearchBar";
 
-const ClassificationCode = ({ Urls }) => {
+const ClCode = ({ Urls }) => {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창
     //const [postModalOpen, setPostModalOpen] = useState(false); // 클릭 추가 모달창
@@ -470,4 +470,4 @@ const ClassificationCode = ({ Urls }) => {
     );
 };
 
-export default ClassificationCode;
+export default ClCode;

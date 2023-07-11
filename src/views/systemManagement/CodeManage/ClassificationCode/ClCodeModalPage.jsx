@@ -1,65 +1,65 @@
-import React, { useRef, useState } from "react";
-import "./ModalSearch.css";
-import $ from "jquery";
+import React, { useEffect, useRef, useState } from "react";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
-//import { v4 as uuidv4 } from "uuid";
+import $ from "jquery";
+import "../../../../common/tableHeader/ModalSearch.css";
 import axios from "axios";
+//import Header from "./Header";
 
-export default function ModalPagePost({
+export default function ClCodeModalPage({
     onClose,
+    clickData,
     refresh,
-    countClCode,
     urlName,
+    headers,
 }) {
+    //const [data] = useState(getData());
     const dataTableRef = useRef(null); //dataTable 테이블 명시
-    const [clCode, setClCode] = useState(countClCode);
     const [data, setData] = useState({
         clCode: "",
         clCodeNm: "",
         clCodeDc: "",
+        createIdBy: "",
+        createDate: "",
+        lastModifiedIdBy: "",
+        lastModifyDate: "",
     });
 
-    console.log(countClCode);
+    console.log(data, "기본으로 받은값");
+
+    useEffect(() => {
+        setData(clickData);
+    }, [clickData]);
 
     const inputChange = (e) => {
         const { name, value } = e.target;
-        setData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
+        setData((prevData) => ({ ...prevData, [name]: value }));
+        console.log(data, "변경후값");
     };
 
-    const onAdd = async (e) => {
+    const onModify = async (e) => {
         e.preventDefault();
 
-        const newClCode = countClCode + 1;
-        setClCode(newClCode);
-
-        const newData = {
-            ...data,
-            clCode: newClCode,
-        };
-
-        console.log(clCode);
-
         try {
-            const response = await axios.post(
-                `http://192.168.0.113:8080/api/system/code/${urlName}/add.do`,
-                newData
+            const options = { headers: headers };
+
+            const response = await axios.put(
+                //`http://192.168.0.113:8080/api/system/code/${urlName}/edit.do`,
+                `http://localhost:8080/api/system/code/${urlName}/edit.do`,
+                data,
+                options
             );
-            console.log(response, "추가한 값");
+            console.log(response, "보낸값?");
             refresh();
-            onClose();
         } catch (error) {
-            console.log(error, "추가 에러입니다");
+            console.log(error, "수정 에러입니다");
         } finally {
+            alert("수정 되었습니다");
             $(dataTableRef.current).DataTable({
                 paging: true,
                 searching: true,
                 ordering: true,
             });
-            alert("추가 되었습니다");
         }
     };
 
@@ -102,14 +102,21 @@ export default function ModalPagePost({
                             >
                                 {urlName === "clCode" && (
                                     <>
-                                        분류코드 명:
+                                        분류코드ID:
+                                        <input
+                                            type="text"
+                                            name="clCode"
+                                            value={data.clCode}
+                                            onChange={inputChange}
+                                        />
+                                        분류코드명:
                                         <input
                                             type="text"
                                             name="clCodeNm"
                                             value={data.clCodeNm}
                                             onChange={inputChange}
                                         />
-                                        분류코드 설명:
+                                        분류코드 설명 :
                                         <input
                                             type="text"
                                             name="clCodeDc"
@@ -120,7 +127,7 @@ export default function ModalPagePost({
                                 )}
                                 {urlName === "groupCode" && (
                                     <>
-                                        분류코드 명:
+                                        분류코드명:
                                         <input
                                             type="text"
                                             name="clCodeNm"
@@ -134,14 +141,14 @@ export default function ModalPagePost({
                                             value={data.codeId}
                                             onChange={inputChange}
                                         />
-                                        그룹코드 명:
+                                        그룹코드명:
                                         <input
                                             type="text"
                                             name="codeIdNm"
                                             value={data.codeIdNm}
                                             onChange={inputChange}
                                         />
-                                        그룹코드 설명:
+                                        그룹코드설명:
                                         <input
                                             type="text"
                                             name="codeIdDc"
@@ -152,28 +159,28 @@ export default function ModalPagePost({
                                 )}
                                 {urlName === "detailCode" && (
                                     <>
-                                        그룹코드명:
+                                        그룹코드
                                         <input
                                             type="text"
-                                            name="codeIdNm"
-                                            value={data.codeIdNm}
+                                            name="codeId"
+                                            value={data.codeId}
                                             onChange={inputChange}
                                         />
-                                        상세코드:
+                                        상세코드ID:
                                         <input
                                             type="text"
                                             name="code"
                                             value={data.code}
                                             onChange={inputChange}
                                         />
-                                        상세코드 명:
+                                        상세코드명:
                                         <input
                                             type="text"
                                             name="codeNm"
                                             value={data.codeNm}
                                             onChange={inputChange}
                                         />
-                                        상세코드 설명:
+                                        상세코드설명:
                                         <input
                                             type="text"
                                             name="codeDc"
@@ -198,9 +205,9 @@ export default function ModalPagePost({
                                         }}
                                         type="button"
                                         className="btn btn-primary modal-btn-close"
-                                        onClick={onAdd}
+                                        onClick={onModify}
                                     >
-                                        ADD
+                                        Save changes
                                     </button>
                                 </div>
                             </div>

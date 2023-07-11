@@ -1,0 +1,72 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.btn-primary {
+    margin: 10px 10px 10px 0;
+    /*padding: 10px;*/
+    /*width: 100%;*/
+}
+
+
+
+.tableBtn {
+    display: flex;
+    justify-content: right;
+    /*margin-top: px;*/
+}
+
+#utilBtn {
+    padding: 5px;
+    max-width: 100px;
+    z-index: 999;
+    border-radius: 5px;
+}
+
+.csvIcon, .copyIcon, .printIcon{
+    background-color: #fff;
+    color: #4279C5;
+    transition: all 0.2s;
+}
+
+.csvIcon:hover, .copyIcon:hover, .printIcon:hover{
+    background-color: #4279C5;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+
+
+
+.delIcon{
+    background-color: #FD3D6B;
+    border: none;
+    transition: all 0.2s;
+}
+
+.delIcon:hover{
+    background-color: #FD3D6B;
+    transform: scale(1.05);
+}
+
+.addIcon{
+    background-color: #0B75C5;
+    border: none;
+    transition: all 0.2s;
+}
+
+.addIcon:hover{
+    background-color: #0B75C5;
+    transform: scale(1.05);
+}
+
+.btnImg {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.utilIcon{
+    margin-right: 5px;
+}

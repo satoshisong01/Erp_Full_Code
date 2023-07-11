@@ -7,7 +7,7 @@ import "./defaultSearchBar.css";
 import ModalPage from "../../common/tableHeader/ModalPage";
 import { BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
 import axios from "axios";
-import "./sysadminCss/ClassificationCode.css";
+//import "./sysadminCss/ClassificationCode.css";
 import "react-calendar/dist/Calendar.css";
 import UtilBtn from "../utils/UtilBtn";
 import Search from "../../common/tableHeader/Search";
@@ -30,6 +30,7 @@ const GroupCode = () => {
 
     const urlName = "groupCode";
 
+    console.log(urlName);
     //const [searchValue, setSearchKeyword] = useState("");
 
     //키워드값 받아오기
@@ -191,7 +192,7 @@ const GroupCode = () => {
             <div id="content">
                 <div className="row">
                     <BigBreadcrumbs
-                        items={["Tables", "Normal Tables"]}
+                        items={["시스템 관리", "그룹코드 관리"]}
                         icon="fa fa-fw fa-table"
                         className="col-xs-12 col-sm-7 col-md-7 col-lg-4"
                     />
@@ -210,7 +211,7 @@ const GroupCode = () => {
                         onSearch={handleSearch}
                         onSearchLv={handleSearchLv}
                         onOption={handleOption}
-                        refresh={handleRefreshClick}
+                        //refresh={handleRefreshClick}
                         urlName={urlName}
                     />
                 </div>
@@ -298,7 +299,7 @@ const GroupCode = () => {
                                                                 <th>작성자</th>
                                                                 <th>작성일</th>
                                                                 <th>수정자</th>
-                                                                {/*<th>수정일</th>*/}
+                                                                <th>수정일</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -334,11 +335,12 @@ const GroupCode = () => {
                                                                         </td>
                                                                         {[
                                                                             "clCode",
-                                                                            "clCodeNm",
-                                                                            "clCodeDc",
+                                                                            "codeId",
+                                                                            "codeIdNm",
+                                                                            "codeIdDc",
                                                                             "createIdBy",
-                                                                            "lastModifiedIdBy",
                                                                             "createDate",
+                                                                            "lastModifiedIdBy",
                                                                             "lastModifyDate",
                                                                         ].map(
                                                                             (

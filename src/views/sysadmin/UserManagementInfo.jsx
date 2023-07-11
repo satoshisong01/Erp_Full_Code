@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import "./UserManagementInfo.css";
 
 let borderCss = "3px solid #CCCCCC";
 let userBackgroundColor = "#ECF0F5";
 
-export default function UserManagementInfo(props) {
+export default function UserManagementInfo({ detailData }) {
     const [phoneNumber, setPhoneNumber] = useState("");
-    const colors = props.programColor;
+
+    console.log(detailData, "뭐가나올까");
 
     const formatPhoneNumber = (value) => {
         // 입력된 값에서 숫자만 추출
@@ -36,440 +38,179 @@ export default function UserManagementInfo(props) {
 
     return (
         <>
-            <div
-                style={{
-                    width: "100%",
-                    display: "flex",
-                    boxSizing: "border-box",
-                    padding: "1.5rem",
-                    flexDirection: "column",
-                    backgroundColor: `${userBackgroundColor}`,
-                }}
-            >
-                <div style={{ width: "100%", backgroundColor: "#F9F9F9" }}>
-                    <div
-                        style={{
-                            display: "flex",
-                        }}
-                    >
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                            }}
-                        >
-                            {colors ? (
-                                <span
-                                    className=""
-                                    style={{
-                                        display: "flex",
-                                        width: "160px",
-                                        height: "40px",
-                                        backgroundColor: "#F9F9F9",
-                                        border: "1px solid #D8D8D8",
-                                        marginRight: "3px",
-
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    프로그램 코드
-                                </span>
-                            ) : (
-                                <span
-                                    style={{
-                                        display: "flex",
-                                        width: "160px",
-                                        height: "40px",
-                                        border: "1px solid #D8D8D8",
-                                        marginRight: "3px",
-
-                                        backgroundColor: "#F7F7F7",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    사용자 명
-                                </span>
-                            )}
-                            {/*<span
-                            style={{
-                                display: "flex",
-                                width: "160px",
-                                height: "40px",
-                                backgroundColor: "#F7F7F7",
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
-                        >
-                            사용자 명
-                        </span>*/}
+            <div className="InfoBody">
+                <h2 style={{ marginTop: "0" }}>업무 회원 정보</h2>
+                <div className="TopInfoBox">
+                    <div className="TopItemLine">
+                        <div className="TopItem">
+                            <span className="InfoName">이름</span>
                             <input
-                                style={{
-                                    padding: "5px",
-                                    border: `${borderCss}`,
-                                    //borderBottom: "none",
-                                }}
+                                className="InfoInput"
                                 type="text"
-                            ></input>
+                                value={detailData.empNm}
+                            />
                         </div>
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                            }}
-                        >
-                            <span
-                                style={{
-                                    display: "flex",
-                                    width: "160px",
-                                    height: "40px",
-                                    border: "1px solid #D8D8D8",
-                                    marginRight: "3px",
-                                    marginLeft: "3px",
-                                    backgroundColor: "#F7F7F7",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                아이디
-                            </span>
+                        <div className="TopItem">
+                            <span className="InfoName">업무회원 아이디</span>
                             <input
-                                style={{
-                                    padding: "5px",
-                                    border: `${borderCss}`,
-                                }}
+                                className="InfoInput"
                                 type="text"
-                            ></input>
+                                value={detailData.empId}
+                            />
                         </div>
                     </div>
-                    <div
-                        style={{
-                            display: "flex",
-                        }}
-                    >
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                            }}
-                        >
-                            <span
-                                style={{
-                                    display: "flex",
-                                    width: "160px",
-                                    height: "40px",
-                                    border: "1px solid #D8D8D8",
-                                    marginRight: "3px",
-
-                                    backgroundColor: "#F7F7F7",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                비밀번호
-                            </span>
-                            <input
-                                style={{
-                                    padding: "5px",
-                                    border: `${borderCss}`,
-                                }}
-                                type="password"
-                            ></input>
+                    <div style={{ display: "flex" }}>
+                        <div className="TopItemLine">
+                            <div className="TopItem">
+                                <span className="InfoName">비밀번호</span>
+                                <input
+                                    className="InfoInput"
+                                    type="password"
+                                    value={detailData.password}
+                                />
+                            </div>
+                            <div className="TopItem">
+                                <span className="InfoName">비밀번호 확인</span>
+                                <input className="InfoInput" type="password" />
+                            </div>
                         </div>
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                            }}
+                        <button
+                            className="btn btn-primary"
+                            style={{ margin: "0 0 0 10px" }}
                         >
-                            <span
-                                style={{
-                                    display: "flex",
-                                    width: "160px",
-                                    height: "40px",
-                                    border: "1px solid #D8D8D8",
-                                    marginRight: "3px",
-                                    marginLeft: "3px",
-                                    backgroundColor: "#F7F7F7",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                비밀번호 확인
-                            </span>
-                            <input
-                                style={{
-                                    padding: "5px",
-                                    border: `${borderCss}`,
-                                }}
-                                type="password"
-                            ></input>
-                        </div>
+                            변경
+                        </button>
                     </div>
-                    <div
-                        style={{
-                            display: "flex",
-                        }}
-                    >
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                            }}
-                        >
-                            <span
-                                style={{
-                                    display: "flex",
-                                    width: "160px",
-                                    height: "40px",
-                                    border: "1px solid #D8D8D8",
-                                    marginRight: "3px",
-
-                                    backgroundColor: "#F7F7F7",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                이메일
-                            </span>
+                    <div className="TopItemLine">
+                        <div className="TopItem">
+                            <span className="InfoName">이메일</span>
                             <input
-                                style={{
-                                    padding: "5px",
-                                    border: `${borderCss}`,
-                                }}
+                                className="InfoInput"
                                 type="email"
-                            ></input>
+                                value={detailData.emailAdr}
+                            />
                         </div>
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                            }}
-                        >
-                            <span
-                                style={{
-                                    display: "flex",
-                                    width: "160px",
-                                    height: "40px",
-                                    backgroundColor: "#F7F7F7",
-                                    border: "1px solid #D8D8D8",
-                                    marginRight: "3px",
-                                    marginLeft: "3px",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                휴대폰 번호
-                            </span>
+                        <div className="TopItem">
+                            <span className="InfoName">휴대폰 번호</span>
                             <input
-                                style={{
-                                    padding: "5px",
-                                    border: `${borderCss}`,
-                                }}
+                                className="InfoInput"
                                 type="tel"
-                                value={phoneNumber}
+                                value={detailData.mbTelNm}
                                 onChange={handlePhoneNumberChange}
                                 placeholder="휴대전화 번호를 입력하세요"
-                            ></input>
+                            />
                         </div>
                     </div>
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                        }}
-                    >
-                        <span
-                            style={{
-                                display: "flex",
-                                width: "160px",
-                                height: "40px",
-                                backgroundColor: "#F7F7F7",
-                                border: "1px solid #D8D8D8",
-                                marginRight: "3px",
-
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
-                        >
-                            언어
-                        </span>
-                        <select
-                            style={{
-                                width: "188px",
-                                padding: "5px",
-                                border: `${borderCss}`,
-                            }}
-                            name="languages"
-                        >
-                            <option value="korean">한국어</option>
-                            <option value="english">영어</option>
-                        </select>
-                    </div>
-                    <div
-                        style={{
-                            display: "flex",
-                        }}
-                    >
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                            }}
-                        >
-                            <span
-                                style={{
-                                    display: "flex",
-                                    width: "160px",
-                                    height: "40px",
-                                    backgroundColor: "#F7F7F7",
-                                    border: "1px solid #D8D8D8",
-                                    marginRight: "3px",
-
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                사용여부
-                            </span>
-                            <select
-                                style={{
-                                    width: "188px",
-                                    padding: "5px",
-                                    border: `${borderCss}`,
-                                }}
-                                name="languages"
-                            >
-                                <option value="use">사용</option>
-                                <option value="notUse">사용안함</option>
-                            </select>
+                    <div className="TopItemLine">
+                        <div style={{ display: "flex", width: "16.3%" }}>
+                            <span className="InfoName InfoAddress">주소</span>
                         </div>
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                            }}
-                        >
-                            <span
-                                style={{
-                                    display: "flex",
-                                    width: "160px",
-                                    height: "40px",
-                                    backgroundColor: "#F7F7F7",
-                                    border: "1px solid #D8D8D8",
-                                    marginRight: "3px",
-                                    marginLeft: "3px",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                            >
-                                계정상태
-                            </span>
-                            <select
-                                style={{
-                                    width: "188px",
-                                    padding: "5px",
-                                    border: `${borderCss}`,
-                                }}
-                                name="languages"
-                            >
-                                <option value="active">활성</option>
-                                <option value="locked">잠김</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                        }}
-                    >
-                        <span
-                            style={{
-                                display: "flex",
-                                width: "160px",
-                                height: "40px",
-                                backgroundColor: "#F7F7F7",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                border: "1px solid #D8D8D8",
-                                marginRight: "3px",
-                            }}
-                        >
-                            비고
-                        </span>
                         <input
-                            style={{
-                                width: "70%",
-                                padding: "5px",
-                                border: `${borderCss}`,
-                            }}
-                            type="email"
-                        ></input>
+                            className="InfoInput AddressInput"
+                            type="text"
+                            value={detailData.address}
+                        />
+                    </div>
+                    <div className="TopItemLine">
+                        <div className="TopItem">
+                            <span className="InfoName">성별</span>
+                            <select className="InfoInput" name="male">
+                                <option value="locked">남</option>
+                                <option value="active">여</option>
+                            </select>
+                        </div>
+                        <div className="TopItem">
+                            <span className="InfoName">나이</span>
+                            <input
+                                className="InfoInput"
+                                type="number"
+                                value={detailData.birthday}
+                            />
+                        </div>
+                    </div>
+                    <div className="TopItemLine">
+                        <div className="TopItem">
+                            <span className="InfoName">소속기관</span>
+                            <input
+                                className="InfoInput"
+                                type="text"
+                                value={detailData.aflOrgCd}
+                            />
+                        </div>
+                        <div className="TopItem">
+                            <span className="InfoName">직위</span>
+                            <input
+                                className="InfoInput"
+                                type="text"
+                                value={detailData.posNm}
+                            />
+                        </div>
                     </div>
                 </div>
-                <p
-                    style={{
-                        fontSize: "1.5em",
-                        padding: "1em",
-                        background: "#ECF0F5",
-                        width: "100%",
-                    }}
-                >
-                    메뉴 그룹 설정
-                </p>
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                    }}
-                >
-                    <div
-                        style={{
-                            display: "flex",
-                            width: "100%",
-                            backgroundColor: "#F9F9F9",
-                            //padding: "5px 0 5px 0",
-                        }}
-                    >
-                        <span
-                            style={{
-                                display: "flex",
-                                width: "160px",
-                                height: "40px",
-                                backgroundColor: "#F7F7F7",
-                                border: "1px solid #D8D8D8",
-                                marginRight: "3px",
-
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}
-                        >
-                            메뉴 그룹
-                        </span>
-                        <select
-                            style={{
-                                padding: "5px",
-                                border: `${borderCss}`,
-                            }}
-                            name="languages"
-                        >
-                            <option value="locked">사용자 그룹</option>
-                            <option value="active">시스템 관리자 그룹</option>
+                <div className="BottomInfoBox">
+                    <div className="TopItemLine">
+                        <div className="TopItem">
+                            <span className="InfoName">가입일</span>
+                            <input
+                                className="InfoInput"
+                                type="text"
+                                value={detailData.joinDt}
+                            />
+                        </div>
+                        <div className="TopItem">
+                            <span className="InfoName">권한</span>
+                            <input className="InfoInput" type="text" />
+                        </div>
+                    </div>
+                    <div className="TopItemLine">
+                        <div className="TopItem">
+                            <span className="InfoName">입사일</span>
+                            <input
+                                className="InfoInput"
+                                type="text"
+                                value={detailData.joiningDt}
+                            />
+                        </div>
+                        <div className="TopItem">
+                            <span className="InfoName">잠금여부</span>
+                            <input
+                                className="InfoInput"
+                                type="text"
+                                value={detailData.lockAt}
+                            />
+                        </div>
+                    </div>
+                    <div className="TopItemLine">
+                        <div className="TopItem">
+                            <span className="InfoName">작성일</span>
+                            <input className="InfoInput" type="text" />
+                        </div>
+                        <div className="TopItem">
+                            <span className="InfoName">작성자</span>
+                            <input className="InfoInput" type="text" />
+                        </div>
+                    </div>
+                    <div className="TopItemLine">
+                        <div className="TopItem">
+                            <span className="InfoName">수정일</span>
+                            <input className="InfoInput" type="text" />
+                        </div>
+                        <div className="TopItem">
+                            <span className="InfoName">수정자</span>
+                            <input className="InfoInput" type="text" />
+                        </div>
+                    </div>
+                </div>
+                <h2>권한 설정</h2>
+                <div className="TopItemLine">
+                    <div className="TopItem2">
+                        <span className="InfoName">권한 그룹</span>
+                        <select className="InfoInput" name="male">
+                            <option value="locked">관리자</option>
+                            <option value="active">사용자</option>
                         </select>
                     </div>
                 </div>
-                <p
-                    style={{
-                        fontSize: "1.5em",
-                        padding: "1em",
-                        background: "#ECF0F5",
-                        width: "100%",
-                    }}
-                >
-                    역할 설정
-                </p>
             </div>
         </>
     );

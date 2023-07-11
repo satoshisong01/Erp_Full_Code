@@ -6,7 +6,6 @@ import store from "./store/configureStore";
 import { authRoutes } from "./routes";
 import { Layout } from "./common/layout";
 import ModalTest from "./views/sysadmin/modal";
-import ClassificationCode from "./views/sysadmin/ClassificationCode";
 import TreeView, { TreeViewItem } from "./common/ui/components/TreeView";
 
 import { newid } from "../src/common/utils/functions";
@@ -41,6 +40,10 @@ import DataTableComponent from "./views/sysadmin/DataTableComponent";
 import DataTableComponent2Mook from "./views/sysadmin/DataTableComponent2mook";
 import GroupCode from "./views/sysadmin/GroupCode";
 import ToggleButton from "./views/utils/ToggleButton";
+import ClCode from "./views/systemManagement/CodeManage/ClassificationCode/ClCode";
+import UserManagement from "./views/sysadmin/UserManagement";
+import UserManagementInfo from "./views/sysadmin/UserManagementInfo";
+import TableExample from "./views/sysadmin/TableTestPopup(브라우저안)";
 
 class App extends Component {
     render() {
@@ -64,6 +67,10 @@ class App extends Component {
                 {/*<DataTableComponent2Mook />*/}
                 {/*<GroupCode />*/}
                 {/*<ToggleButton />*/}
+                {/*<ClCode />*/}
+                {/* <UserManagement/> */}
+                {/* <UserManagementInfo /> */}
+                {/*<TableExample />*/}
                 <Provider store={store}>
                     <HashRouter>
                         <Switch>

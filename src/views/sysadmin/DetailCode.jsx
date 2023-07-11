@@ -7,13 +7,13 @@ import "./defaultSearchBar.css";
 import ModalPage from "../../common/tableHeader/ModalPage";
 import { BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
 import axios from "axios";
-//import "./sysadminCss/ClCode.css";
+//import "./sysadminCss/ClassificationCode.css";
 import "react-calendar/dist/Calendar.css";
 import UtilBtn from "../utils/UtilBtn";
 import Search from "../../common/tableHeader/Search";
 import TableSearchBar from "./TableSearchBar";
 
-const LaborCostManagement = ({ Urls }) => {
+const DetailCode = () => {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창
     //const [postModalOpen, setPostModalOpen] = useState(false); // 클릭 추가 모달창
@@ -27,7 +27,7 @@ const LaborCostManagement = ({ Urls }) => {
     const [searchCondition, setSearchCondition] = useState("0"); //검색 종류명시 int값
     const [selectedOption, setSelectedOption] = useState("option2"); //삭제된 항목 & 삭제되지 않은 항목(디폴트)
 
-    const urlName = Urls;
+    const urlName = "detailCode";
 
     //const [searchValue, setSearchKeyword] = useState("");
 
@@ -45,17 +45,17 @@ const LaborCostManagement = ({ Urls }) => {
     };
 
     //새로고침 클릭 핸들러
-    const handleRefreshClick = async () => {
-        setSearchKeyword("");
-        setSearchCondition("");
-        if (dataTableRef.current) {
-            $(dataTableRef.current)
-                .DataTable()
-                .destroy();
-        }
-        setIsLoading(true); // 로딩 상태 활성화
-        await fetchData();
-    };
+    //const handleRefreshClick = async () => {
+    //    setSearchKeyword("");
+    //    setSearchCondition("");
+    //    if (dataTableRef.current) {
+    //        $(dataTableRef.current)
+    //            .DataTable()
+    //            .destroy();
+    //    }
+    //    setIsLoading(true); // 로딩 상태 활성화
+    //    await fetchData();
+    //};
 
     const fetchData = async () => {
         try {
@@ -64,8 +64,8 @@ const LaborCostManagement = ({ Urls }) => {
                 { useAt: "Y", searchKeyword, searchCondition }
             );
             console.log(response);
-            console.log(response.data.result.resultData.content);
-            setData(response.data.result.resultData.content);
+            console.log(response.data.result.resultData.data);
+            setData(response.data.result.resultData.data);
         } catch (error) {
             console.error("에럽니다", error);
             alert("서버와 연결할 수 없습니다");
@@ -178,13 +178,19 @@ const LaborCostManagement = ({ Urls }) => {
     };
 
     // 모달 클릭 핸들러(수정 모달창)
+    const handleModalClick = (e, item) => {
+        console.log(e);
+        console.log(item);
+        setModalItem(item);
+        setModalOpen(true);
+    };
 
     return (
         <>
             <div id="content">
                 <div className="row">
                     <BigBreadcrumbs
-                        items={["Tables", "Normal Tables"]}
+                        items={["시스템 관리", "상세코드 관리"]}
                         icon="fa fa-fw fa-table"
                         className="col-xs-12 col-sm-7 col-md-7 col-lg-4"
                     />
@@ -198,14 +204,14 @@ const LaborCostManagement = ({ Urls }) => {
                     }}
                 >
                     <Search searchTitle="프로젝트명" />
-                    {/*<TableSearchBar
+                    <TableSearchBar
                         fetchData={fetchData}
                         onSearch={handleSearch}
                         onSearchLv={handleSearchLv}
                         onOption={handleOption}
-                        refresh={handleRefreshClick}
+                        //refresh={handleRefreshClick}
                         urlName={urlName}
-                    />*/}
+                    />
                 </div>
                 <WidgetGrid>
                     <div className="row">
@@ -220,13 +226,13 @@ const LaborCostManagement = ({ Urls }) => {
                                         <i className="fa fa-table" />
                                     </span>
                                 </header>
-                                {/*<UtilBtn
+                                <UtilBtn
                                     initialData={data}
                                     refresh={fetchData}
                                     changeInt={changeInt}
                                     selectedData={selectedData}
                                     urlName={urlName}
-                                />*/}
+                                />
                                 <div className="tableBody">
                                     <div className="widget-body">
                                         {isLoading ? (
@@ -236,7 +242,7 @@ const LaborCostManagement = ({ Urls }) => {
                                             // 실제 데이터 표시
                                             <>
                                                 <div className="tableBox">
-                                                    {/*<table
+                                                    <table
                                                         ref={dataTableRef}
                                                         className="table table-bordered"
                                                         id="dataTable"
@@ -278,20 +284,15 @@ const LaborCostManagement = ({ Urls }) => {
                                                                         All
                                                                     </p>
                                                                 </th>
-                                                                <th>사원번호</th>
-                                                                <th>성명</th>
+                                                                <th>코드</th>
+                                                                <th>코드명</th>
                                                                 <th>
-                                                                    영문명
+                                                                    코드 설명
                                                                 </th>
-                                                                <th>직급</th>
-                                                                <th>직책</th>
-                                                                <th>부서</th>
-                                                                <th>입사일</th>
-                                                                <th>퇴사일</th>
-                                                                <th>핸드폰</th>
-                                                                <th>이메일</th>
-                                                                <th>주소</th>
-                                                                <th>구분</th>
+                                                                <th>작성자</th>
+                                                                <th>작성일</th>
+                                                                <th>수정자</th>
+                                                                <th>수정일</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -366,10 +367,7 @@ const LaborCostManagement = ({ Urls }) => {
                                                                 )
                                                             )}
                                                         </tbody>
-                                                    </table>*/}
-                                                    <div>
-                                                        <div></div>
-                                                    </div>
+                                                    </table>
                                                 </div>
                                             </>
                                         )}
@@ -380,7 +378,7 @@ const LaborCostManagement = ({ Urls }) => {
                     </div>
                 </WidgetGrid>
             </div>
-            {/*{modalOpen && (
+            {modalOpen && (
                 <ModalPage
                     onClose={() => {
                         setModalOpen(false);
@@ -389,9 +387,9 @@ const LaborCostManagement = ({ Urls }) => {
                     clickData={modalItem}
                     urlName={urlName}
                 />
-            )}*/}
+            )}
         </>
     );
 };
 
-export default LaborCostManagement;
+export default DetailCode;

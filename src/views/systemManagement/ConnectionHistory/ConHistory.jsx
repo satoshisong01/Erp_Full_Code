@@ -1,19 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import "../../common/tableHeader/ContentMain.css";
+import "../../../common/tableHeader/ContentMain.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
-import "./defaultSearchBar.css";
-import ModalPage from "../../common/tableHeader/ModalPage";
-import { BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../common";
+import "../../sysadmin/defaultSearchBar.css";
+import { BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../../common";
 import axios from "axios";
-//import "./sysadminCss/ClCode.css";
+import "../css/Code.css";
 import "react-calendar/dist/Calendar.css";
-import UtilBtn from "../utils/UtilBtn";
-import Search from "../../common/tableHeader/Search";
-import TableSearchBar from "./TableSearchBar";
+import Search from "../../../common/tableHeader/Search";
+import ConHistoryModalPage from "./ConHistoryModalPage";
+import ConHistoryUtilBtn from "./ConHistoryUtilBtn";
+import ConHistoryTableSearchBar from "./ConHistoryTableSearchBar";
 
-const LaborCostManagement = ({ Urls }) => {
+const ConHistory = () => {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창
     //const [postModalOpen, setPostModalOpen] = useState(false); // 클릭 추가 모달창
@@ -27,9 +27,7 @@ const LaborCostManagement = ({ Urls }) => {
     const [searchCondition, setSearchCondition] = useState("0"); //검색 종류명시 int값
     const [selectedOption, setSelectedOption] = useState("option2"); //삭제된 항목 & 삭제되지 않은 항목(디폴트)
 
-    const urlName = Urls;
-
-    //const [searchValue, setSearchKeyword] = useState("");
+    const urlName = "author";
 
     //키워드값 받아오기
     const handleSearch = (value) => {
@@ -46,6 +44,7 @@ const LaborCostManagement = ({ Urls }) => {
 
     //새로고침 클릭 핸들러
     const handleRefreshClick = async () => {
+        console.log(urlName);
         setSearchKeyword("");
         setSearchCondition("");
         if (dataTableRef.current) {
@@ -54,18 +53,32 @@ const LaborCostManagement = ({ Urls }) => {
                 .destroy();
         }
         setIsLoading(true); // 로딩 상태 활성화
-        await fetchData();
+        await fetchData(urlName);
     };
+
+    const headers = {
+        Authorization: process.env.REACT_APP_POST,
+    };
+    console.log(searchCondition, searchKeyword);
 
     const fetchData = async () => {
         try {
+            const options = {
+                headers: headers,
+            };
+
             const response = await axios.post(
                 `http://192.168.0.113:8080/api/system/code/${urlName}/listAll.do`,
-                { useAt: "Y", searchKeyword, searchCondition }
+                {
+                    useAt: "Y",
+                    searchKeyword,
+                    searchCondition,
+                },
+                options
             );
             console.log(response);
-            console.log(response.data.result.resultData.content);
-            setData(response.data.result.resultData.content);
+            console.log(response.data.result.resultData.data);
+            setData(response.data.result.resultData.data);
         } catch (error) {
             console.error("에럽니다", error);
             alert("서버와 연결할 수 없습니다");
@@ -104,9 +117,9 @@ const LaborCostManagement = ({ Urls }) => {
         }
     }, [isLoading]);
 
-    console.log(searchKeyword);
-    console.log(searchCondition);
-    console.log(selectedOption);
+    //console.log(searchKeyword);
+    //console.log(searchCondition);
+    //console.log(selectedOption);
 
     //테이블 초기화 및 기능 명시
     const initializeDataTable = () => {
@@ -124,8 +137,8 @@ const LaborCostManagement = ({ Urls }) => {
         cursor: "pointer",
     };
 
-    //체크된 아이템의 clCode 숫자만 저장
-    const changeInt = selectedData.map((item) => item.clCode);
+    //체크된 아이템의 ConHistoryManage 숫자만 저장
+    const changeInt = selectedData.map((item) => item.ConHistoryManage);
 
     //const keys = data.length > 0 ? Object.keys(data[0]) : [];
 
@@ -151,16 +164,18 @@ const LaborCostManagement = ({ Urls }) => {
                 // 이미 선택된 데이터인지 확인 후 중복 추가 방지
                 if (
                     !prevSelectedData.find(
-                        (selectedItem) => selectedItem.clCode === item.clCode
+                        (selectedItem) =>
+                            selectedItem.ConHistoryManage ===
+                            item.ConHistoryManage
                     )
                 ) {
                     const sortedData = [...prevSelectedData, item].sort(
                         (a, b) => {
-                            // clCode 속성을 기준으로 데이터 정렬
-                            if (a.clCode < b.clCode) {
+                            // ConHistoryManage 속성을 기준으로 데이터 정렬
+                            if (a.ConHistoryManage < b.ConHistoryManage) {
                                 return -1;
                             }
-                            if (a.clCode > b.clCode) {
+                            if (a.ConHistoryManage > b.ConHistoryManage) {
                                 return 1;
                             }
                             return 0;
@@ -170,7 +185,8 @@ const LaborCostManagement = ({ Urls }) => {
                 }
             } else {
                 return prevSelectedData.filter(
-                    (selectedItem) => selectedItem.clCode !== item.clCode
+                    (selectedItem) =>
+                        selectedItem.ConHistoryManage !== item.ConHistoryManage
                 );
             }
             return prevSelectedData; // 체크가 풀리지 않았거나 중복 데이터인 경우 이전 상태 그대로 반환
@@ -178,13 +194,19 @@ const LaborCostManagement = ({ Urls }) => {
     };
 
     // 모달 클릭 핸들러(수정 모달창)
+    const handleModalClick = (e, item) => {
+        console.log(e);
+        console.log(item);
+        setModalItem(item);
+        setModalOpen(true);
+    };
 
     return (
         <>
             <div id="content">
                 <div className="row">
                     <BigBreadcrumbs
-                        items={["Tables", "Normal Tables"]}
+                        items={["시스템 관리", "접속이력 관리"]}
                         icon="fa fa-fw fa-table"
                         className="col-xs-12 col-sm-7 col-md-7 col-lg-4"
                     />
@@ -198,14 +220,14 @@ const LaborCostManagement = ({ Urls }) => {
                     }}
                 >
                     <Search searchTitle="프로젝트명" />
-                    {/*<TableSearchBar
+                    <ConHistoryTableSearchBar
                         fetchData={fetchData}
                         onSearch={handleSearch}
                         onSearchLv={handleSearchLv}
                         onOption={handleOption}
                         refresh={handleRefreshClick}
                         urlName={urlName}
-                    />*/}
+                    />
                 </div>
                 <WidgetGrid>
                     <div className="row">
@@ -220,13 +242,14 @@ const LaborCostManagement = ({ Urls }) => {
                                         <i className="fa fa-table" />
                                     </span>
                                 </header>
-                                {/*<UtilBtn
+                                <ConHistoryUtilBtn
                                     initialData={data}
                                     refresh={fetchData}
                                     changeInt={changeInt}
                                     selectedData={selectedData}
                                     urlName={urlName}
-                                />*/}
+                                    headers={headers}
+                                />
                                 <div className="tableBody">
                                     <div className="widget-body">
                                         {isLoading ? (
@@ -236,7 +259,7 @@ const LaborCostManagement = ({ Urls }) => {
                                             // 실제 데이터 표시
                                             <>
                                                 <div className="tableBox">
-                                                    {/*<table
+                                                    <table
                                                         ref={dataTableRef}
                                                         className="table table-bordered"
                                                         id="dataTable"
@@ -278,20 +301,20 @@ const LaborCostManagement = ({ Urls }) => {
                                                                         All
                                                                     </p>
                                                                 </th>
-                                                                <th>사원번호</th>
-                                                                <th>성명</th>
                                                                 <th>
-                                                                    영문명
+                                                                    분류코드
                                                                 </th>
-                                                                <th>직급</th>
-                                                                <th>직책</th>
-                                                                <th>부서</th>
-                                                                <th>입사일</th>
-                                                                <th>퇴사일</th>
-                                                                <th>핸드폰</th>
-                                                                <th>이메일</th>
-                                                                <th>주소</th>
-                                                                <th>구분</th>
+                                                                <th>
+                                                                    분류코드명
+                                                                </th>
+                                                                <th>
+                                                                    분류코드
+                                                                    설명
+                                                                </th>
+                                                                <th>작성자</th>
+                                                                <th>작성일</th>
+                                                                <th>수정자</th>
+                                                                <th>수정일</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -312,8 +335,8 @@ const LaborCostManagement = ({ Urls }) => {
                                                                                     (
                                                                                         selectedItem
                                                                                     ) =>
-                                                                                        selectedItem.clCode ===
-                                                                                        item.clCode
+                                                                                        selectedItem.ConHistoryManage ===
+                                                                                        item.ConHistoryManage
                                                                                 )}
                                                                                 onChange={(
                                                                                     e
@@ -330,8 +353,8 @@ const LaborCostManagement = ({ Urls }) => {
                                                                             "clCodeNm",
                                                                             "clCodeDc",
                                                                             "createIdBy",
-                                                                            "lastModifiedIdBy",
                                                                             "createDate",
+                                                                            "lastModifiedIdBy",
                                                                             "lastModifyDate",
                                                                         ].map(
                                                                             (
@@ -366,10 +389,7 @@ const LaborCostManagement = ({ Urls }) => {
                                                                 )
                                                             )}
                                                         </tbody>
-                                                    </table>*/}
-                                                    <div>
-                                                        <div></div>
-                                                    </div>
+                                                    </table>
                                                 </div>
                                             </>
                                         )}
@@ -380,18 +400,19 @@ const LaborCostManagement = ({ Urls }) => {
                     </div>
                 </WidgetGrid>
             </div>
-            {/*{modalOpen && (
-                <ModalPage
+            {modalOpen && (
+                <ConHistoryModalPage
                     onClose={() => {
                         setModalOpen(false);
                     }}
                     refresh={fetchData}
                     clickData={modalItem}
                     urlName={urlName}
+                    headers={headers}
                 />
-            )}*/}
+            )}
         </>
     );
 };
 
-export default LaborCostManagement;
+export default ConHistory;

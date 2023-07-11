@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import "./TableSearchBar.css";
+import "../../css/CodeTableSearchBar.css";
 
-export default function TableSearchBar({
+export default function GroupCodeTableSearchBar({
     fetchData,
     onSearch,
     onSearchLv,
     onOption,
-    //refresh,
+    refresh,
     urlName,
 }) {
     const [inputValue, setInputValue] = useState("");
@@ -42,9 +42,9 @@ export default function TableSearchBar({
         setOption("option2");
     };
 
-    const handleRefresh = () => {
-        window.location.reload();
-    };
+    //const handleRefresh = () => {
+    //    window.location.reload();
+    //};
 
     return (
         <div style={{ height: "50px" }}>
@@ -58,7 +58,7 @@ export default function TableSearchBar({
                     <div className="topMenuBtn">
                         <button
                             className="btn btn-primary refreshIcon"
-                            onClick={handleRefresh}
+                            onClick={refresh}
                         >
                             <i className="fa fa-refresh" />
                         </button>

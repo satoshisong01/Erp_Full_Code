@@ -1,16 +1,17 @@
 import React, { useRef, useState } from "react";
-import "./ModalSearch.css";
+import "../../../../common/tableHeader/ModalSearch.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
 //import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
-export default function ModalPagePost({
+export default function ClCodeModalPagePost({
     onClose,
     refresh,
     countClCode,
     urlName,
+    headers,
 }) {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [clCode, setClCode] = useState(countClCode);
@@ -33,6 +34,10 @@ export default function ModalPagePost({
     const onAdd = async (e) => {
         e.preventDefault();
 
+        const options = {
+            headers: headers,
+        };
+
         const newClCode = countClCode + 1;
         setClCode(newClCode);
 
@@ -46,7 +51,8 @@ export default function ModalPagePost({
         try {
             const response = await axios.post(
                 `http://192.168.0.113:8080/api/system/code/${urlName}/add.do`,
-                newData
+                newData,
+                options
             );
             console.log(response, "추가한 값");
             refresh();
