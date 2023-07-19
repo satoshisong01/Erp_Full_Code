@@ -3,31 +3,23 @@ import thunk from "redux-thunk";
 
 import { composeWithDevTools } from "redux-devtools-extension";
 
-// import { config } from "../config/config";
 import {
   handleBodyClasses,
   dumpLayoutToStorage,
   layoutReducer,
   layoutInit
-} from "../common/layout";
+} from "../smartadmin/layout";
 
-import { userReducer, requestUserInfo } from "../common/user";
-import { navigationReducer } from "../common/navigation";
-import { todoReducer } from "../common/todo";
-import { i18nReducer, i18nInit } from "../common/i18n";
-import { tabsReducer } from "../common/tabs";
-import loginReducer from "../views/auth/loginReducer";
-
+import { tabsReducer } from "components/tabs/tabsReducer";
+import { navigationReducer } from "smartadmin/navigation";
+import { todoReducer } from "smartadmin/todo";
 
 
 export const rootReducer = combineReducers({
-  layout: layoutReducer,
   navigation: navigationReducer,
-  user: userReducer,
+  layout: layoutReducer,
   todo: todoReducer,
-  i18n: i18nReducer,
-  tabs: tabsReducer,
-  login: loginReducer,
+  tabs: tabsReducer
 });
 
 const store = createStore(
@@ -42,9 +34,5 @@ const store = createStore(
 );
 
 store.dispatch(layoutInit());
-
-store.dispatch(requestUserInfo());
-
-store.dispatch(i18nInit());
 
 export default store;
