@@ -14,7 +14,7 @@ function ElectronicTaxInvoice() {
 						<ul>
 							<li><Link to="" className="home">Home</Link></li>
 							<li><Link to="/sales">영업관리</Link></li>
-							<li>전자세금계산서</li>
+							<li>전자세금계산서관리</li>
 						</ul>
                		 </div>
                 	{/* <!--// Location --> */}
@@ -26,7 +26,7 @@ function ElectronicTaxInvoice() {
 
 						{/* <!-- 본문 --> */}
 						<div className="contents" id="contents">
-							<div> 전자세금계산서 </div>
+							<div> 전자세금계산서관리 </div>
 						</div>
 						{/* <!--// 본문 --> */}
 					</div>

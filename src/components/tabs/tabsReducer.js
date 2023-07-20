@@ -1,10 +1,10 @@
-import { ACTIVE_TAB } from "./TabsActions";
+import { ACTIVE_TAB, SELECT_TAB, SELECT_HEADER } from "./TabsActions";
 
 export function tabsReducer(
     state = {
         label: "",
-        //score: 0,
-        isActive: false,
+        selectLabel: "",
+        header: ""
     },
     action
 ) {
@@ -13,8 +13,20 @@ export function tabsReducer(
             return {
                 ...state,
                 label: action.label,
-                //score: state.score + 1,
-                isActive: !state.isActive,
+                selectLabel: ""
+            };
+
+        case SELECT_TAB:
+            return {
+                ...state,
+                selectLabel: action.label,
+                label: ""
+            };
+
+        case SELECT_HEADER:
+            return {
+                ...state,
+                header: action.header,
             };
 
         default:

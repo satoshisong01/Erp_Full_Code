@@ -1,7 +1,8 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-
 import AntTabs from 'components/tabs/AntTabs';
+import { connect } from 'react-redux';
+import store from 'store/configureStore';
 
 import EgovLeftNavReference from 'components/leftmenu/EgovLeftNavReference';
 import EgovLeftNavSales from 'components/leftmenu/EgovLeftNavSales';
@@ -9,22 +10,17 @@ import EgovLeftNavExecution from 'components/leftmenu/EgovLeftNavExecution';
 import EgovLeftNavSystem from 'components/leftmenu/EgovLeftNavSystem';
 
 function TabContainer(props) {
-    console.group("TabContainer");
-    console.log("[Start] TabContainer ------------------------------");
-    console.log("TabContainer [props] : ", props);
-
-    const location = useLocation();
-    console.log("TabContainer [location] : ", location);
-
-    console.log("------------------------------TabContainer [End]");
-    console.groupEnd("TabContainer");
+    const { header } = props;
 
     return (
         <div className="container T_MAIN">
             <div className="c_wrap">
                     <div className="colbox">
                         <div className="left_col">
-                            <EgovLeftNavSystem />
+                            {header === '기준정보관리' && <EgovLeftNavReference />}
+                            {header === '영업관리' && <EgovLeftNavSales />}
+                            {header === '실행관리' && <EgovLeftNavExecution />}
+                            {header === '시스템관리' && <EgovLeftNavSystem />}
                         </div>
 
                         <div className="right_col">
@@ -37,4 +33,5 @@ function TabContainer(props) {
     );
 }
 
-export default TabContainer;
+const mapStateToProps = data => data.tabs
+export default connect(mapStateToProps)(TabContainer);

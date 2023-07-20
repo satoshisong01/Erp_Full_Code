@@ -1,36 +1,51 @@
-import React, { useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import * as EgovNet from 'api/egovFetch';
-
 import URL from 'constants/url';
 import CODE from 'constants/code';
-
 import store from 'store/configureStore';
-import { tabActive } from './tabs/TabsActions';
+import { tabActive, headerSelect } from './tabs/TabsActions';
+import { connect } from 'react-redux';
+import { system, execution, reference, sales } from './tabs/Children';
+import NavLinkTabs from './tabs/NavLinkTabs';
 
 /** 대,중,소 카데고리 Link가 걸려 있는 헤더 */
-function EgovHeader({ loginUser, onChangeLogin }) {
+function EgovHeader({ loginUser, onChangeLogin, label, selectLabel }) {
     console.group("EgovHeader");
     console.log("[Start] EgovHeader ------------------------------");
     console.log("EgovHeader >>> onChangeLogin :", onChangeLogin);
 
-    const [activeMenu, setActiveMenu] = useState('');
-
     const sessionUser = sessionStorage.getItem('loginUser');
-    const sessionUserId =    JSON.parse(sessionUser)?.id;
+    const sessionUserId = JSON.parse(sessionUser)?.id;
     const sessionUserName = JSON.parse(sessionUser)?.name;
-    const sessionUserSe =    JSON.parse(sessionUser)?.userSe;
+    const sessionUserSe = JSON.parse(sessionUser)?.userSe;
+
+    const [activeLabel, setActiveLabel] = useState('');
+
+    /** 라벨 선택 시 CSS 활성화 */
+    useEffect(() => {
+        const tabs = { 시스템관리: system, 실행관리: execution, 기준정보관리: reference, 영업관리: sales }; //tabLabel: tabItems
+      
+        const activeTab = Object.entries(tabs).find(([tabLabel, tabItems]) =>
+            tabItems.some((item) => item.label === (selectLabel || label))
+        );
+
+        if (activeTab) {
+          const [tabLabel] = activeTab;
+          setActiveLabel(tabLabel);
+          store.dispatch(headerSelect(tabLabel)); //header
+        }
+    }, [label, selectLabel]);
 
     const navigate = useNavigate();
 
     const logInHandler = () => { // 로그인 정보 없을 시
         navigate(URL.LOGIN);
-		// PC와 Mobile 열린메뉴 닫기: 2023.04.13(목) 김일국 추가
-		document.querySelector('.all_menu.WEB').classList.add('closed');
+        // PC와 Mobile 열린메뉴 닫기: 2023.04.13(목) 김일국 추가
+        document.querySelector('.all_menu.WEB').classList.add('closed');
         document.querySelector('.btnAllMenu').classList.remove('active');
         document.querySelector('.btnAllMenu').title = '전체메뉴 닫힘';
-		document.querySelector('.all_menu.Mobile').classList.add('closed');
+        document.querySelector('.all_menu.Mobile').classList.add('closed');
     }
     const logOutHandler = () => {// 로그인 정보 존재할 때
         const logOutUrl = '/uat/uia/actionLogoutAPI.do';
@@ -45,23 +60,21 @@ function EgovHeader({ loginUser, onChangeLogin }) {
                     sessionStorage.setItem('loginUser', JSON.stringify({"id":""}));
                     window.alert("로그아웃되었습니다!");
                     navigate(URL.MAIN);
-					// PC와 Mobile 열린메뉴 닫기: 2023.04.13(목) 김일국 추가
-					document.querySelector('.all_menu.WEB').classList.add('closed');
-	                document.querySelector('.btnAllMenu').classList.remove('active');
-	                document.querySelector('.btnAllMenu').title = '전체메뉴 닫힘';
-					document.querySelector('.all_menu.Mobile').classList.add('closed');
+                    // PC와 Mobile 열린메뉴 닫기: 2023.04.13(목) 김일국 추가
+                    document.querySelector('.all_menu.WEB').classList.add('closed');
+                    document.querySelector('.btnAllMenu').classList.remove('active');
+                    document.querySelector('.btnAllMenu').title = '전체메뉴 닫힘';
+                    document.querySelector('.all_menu.Mobile').classList.add('closed');
                 }
             }
         );
     }
 
-    // const menuClick = (label) => {
-    //     store.dispatch(tabActive(label)); //tab
-    //     setActiveMenu(label)
-    // }
-    const menuClick = (e) => {
-        store.dispatch(tabActive(e.target.innerText)); //tab
-        setActiveMenu(e.target.innerText)
+    const menuClick = (e, header) => {
+        const selectedMenu = e.target.innerText;
+        store.dispatch(tabActive(selectedMenu)); //label
+        setActiveLabel(selectedMenu);
+        store.dispatch(headerSelect(header)); //header
     }
 
     console.log("------------------------------EgovHeader [End]");
@@ -78,13 +91,15 @@ function EgovHeader({ loginUser, onChangeLogin }) {
                 <div className="gnb">
                     <h2 className="blind">주메뉴</h2>
                     <ul>
-                        <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")}>기준정보관리</NavLink></li>
-                        <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")}>영업관리</NavLink></li>
-                        <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")}>실행관리</NavLink></li>
-                        <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")}>시스템관리</NavLink></li>
-                        {sessionUserSe ==='USR' &&
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")}>관리자페이지</NavLink></li>
-                        }
+                        <li><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel} header="기준정보관리">
+                            기준정보관리
+                        </NavLinkTabs></li>
+                        <li><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel} header="영업관리">영업관리</NavLinkTabs></li>
+                        <li><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel} header="실행관리">실행관리</NavLinkTabs></li>
+                        <li><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel} header="시스템관리">시스템관리</NavLinkTabs></li>
+                        {sessionUserSe === 'USR' && (
+                            <li><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}  header="관리자페이지">관리자페이지</NavLinkTabs></li>
+                        )}
                     </ul>
                 </div>
 
@@ -118,57 +133,33 @@ function EgovHeader({ loginUser, onChangeLogin }) {
                     <div className="col">
                         <h3>기준정보관리</h3>
                         <ul>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>품목그룹관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>품목상세관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>고객사</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>협력사</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>사업장관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>업무회원관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>일반회원관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>기업회원관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>권한그룹정보관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>조직부서정보관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>인건비요율</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>급별단가(인건비)</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>급별단가(경비)</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>사전원가지표</NavLink></li>
-                        </ul>
-                    </div>
-                    <div className="col">
-                        <h3>영업관리</h3>
-                        <ul>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>수주관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>영업비용</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>견적서관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>세금계산서발행관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>전자세금계산서</NavLink></li>
-                        </ul>
-                    </div>
-                    <div className="col">
-                        <h3>실행관리</h3>
-                        <ul>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>실행원가</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>인건비관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>경비관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>구매관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>전자결재</NavLink></li>
-
-                        </ul>
-                    </div>
-                    <div className="col">
-                        <h3>시스템관리</h3>
-                        <ul>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>권한관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>메뉴정보관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>프로그램목록관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>게시물관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>게시판마스터관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>댓글관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>게시판열람권한관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>분류코드관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>그룹코드관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>상세코드관리</NavLink></li>
-                            <li><NavLink to={URL.TABS} className={({ isActive }) => (isActive ? "cur" : "")} onClick={menuClick}>접속이력관리</NavLink></li>
+                            {reference.map((item) => (
+                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                            ))}
+                        </ul> 
+                    </div> 
+                    <div className="col"> 
+                        <h3>영업관리</h3> 
+                        <ul> 
+                            {sales.map((item) => (
+                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                            ))}
+                        </ul> 
+                    </div> 
+                    <div className="col"> 
+                        <h3>실행관리</h3> 
+                        <ul> 
+                            {execution.map((item) => (
+                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                            ))}
+                        </ul> 
+                    </div> 
+                    <div className="col"> 
+                        <h3>시스템관리</h3> 
+                        <ul> 
+                            {system.map((item) => (
+                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                            ))}
                         </ul>
                     </div>
                     {sessionUserSe ==='USR' &&
@@ -178,9 +169,6 @@ function EgovHeader({ loginUser, onChangeLogin }) {
                     }
                 </div>
             </div>
-
-
-
 
             {/* <!-- All menu : mobile --> */}
             <div className="all_menu Mobile closed">
@@ -200,48 +188,41 @@ function EgovHeader({ loginUser, onChangeLogin }) {
                     <button className="btn noscript close" type="button">전체메뉴 닫기</button>
                 </div>
                 <div className="menu">
-                    <h3><Link to={URL.INTRO}>기준정보관리</Link></h3>
+                    <h3><Link to={URL.TABS}>기준정보관리</Link></h3>
                     <div className="submenu closed">
                         <ul>
-                            <li><NavLink to={URL.ItemMgmt}      className={({ isActive }) => (isActive ? "cur" : "")}>품목관리</NavLink></li>
-                            <li><NavLink to={URL.VendorMgmt}    className={({ isActive }) => (isActive ? "cur" : "")}>거래처관리</NavLink></li>
-                            <li><NavLink to={URL.BusinessMgmt}  className={({ isActive }) => (isActive ? "cur" : "")}>사업장관리</NavLink></li>
-                            <li><NavLink to={URL.UserMgmt}      className={({ isActive }) => (isActive ? "cur" : "")}>사용자관리</NavLink></li>
-                            <li><NavLink to={URL.CostMgmt}      className={({ isActive }) => (isActive ? "cur" : "")}>원가기준관리</NavLink></li>
-                        </ul>
+                            {reference.map((item) => (
+                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                            ))}
+                        </ul> 
                     </div>
-                    <h3><Link to={URL.SUPPORT}>영업관리</Link></h3>
+                    <h3><Link to={URL.TABS}>영업관리</Link></h3>
                     <div className="submenu closed">
                         <ul>
-                            <li><NavLink to={URL.OrderMgmt}     className={({ isActive }) => (isActive ? "cur" : "")}>수주관리</NavLink></li>
-                            <li><NavLink to={URL.SalesExpenses} className={({ isActive }) => (isActive ? "cur" : "")}>영업비용</NavLink></li>
-                            <li><NavLink to={URL.Quotation}     className={({ isActive }) => (isActive ? "cur" : "")}>견적서관리</NavLink></li>
-                            <li><NavLink to={URL.ElectronicTaxInvoice} className={({ isActive }) => (isActive ? "cur" : "")}>전자세금계산서관리</NavLink></li>
-                        </ul>
+                            {sales.map((item) => (
+                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                            ))}
+                        </ul> 
                     </div>
-                    <h3><Link to={URL.INFORM}>실행관리</Link></h3>
+                    <h3><Link to={URL.TABS}>실행관리</Link></h3>
                     <div className="submenu closed">
                         <ul>
-                            <li><NavLink to={URL.ExecutionCost}  className={({ isActive }) => (isActive ? "cur" : "")}>실행원가</NavLink></li>
-                            <li><NavLink to={URL.LaborCostMgmt}  className={({ isActive }) => (isActive ? "cur" : "")}>인건비관리</NavLink></li>
-                            <li><NavLink to={URL.PurchasingMgmt} className={({ isActive }) => (isActive ? "cur" : "")}>경비관리</NavLink></li>
-                            <li><NavLink to={URL.ExpenseMgmt}    className={({ isActive }) => (isActive ? "cur" : "")}>구매관리</NavLink></li>
-                            <li><NavLink to={URL.Approval}       className={({ isActive }) => (isActive ? "cur" : "")}>전자결재</NavLink></li>
-                        </ul>
+                            {execution.map((item) => (
+                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                            ))}
+                        </ul> 
                     </div>
-                    <h3><Link to={URL.INFORM}>시스템관리</Link></h3>
+                    <h3><Link to={URL.TABS}>시스템관리</Link></h3>
                     <div className="submenu closed">
                         <ul>
-                            <li><NavLink to={URL.AuthorizationMgmt} className={({ isActive }) => (isActive ? "cur" : "")}>권한관리</NavLink></li>
-                            <li><NavLink to={URL.MenuMgmt}          className={({ isActive }) => (isActive ? "cur" : "")}>메뉴관리</NavLink></li>
-                            <li><NavLink to={URL.BoardMgmt}         className={({ isActive }) => (isActive ? "cur" : "")}>게시판관리</NavLink></li>
-                            <li><NavLink to={URL.CodeMgmt}          className={({ isActive }) => (isActive ? "cur" : "")}>코드관리</NavLink></li>
-                            <li><NavLink to={URL.AccessHistoryMgmt} className={({ isActive }) => (isActive ? "cur" : "")}>접속이력관리</NavLink></li>
-                        </ul>
+                            {system.map((item) => (
+                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                            ))}
+                        </ul> 
                     </div>
                     {sessionUserSe ==='USR' &&
                         <>
-                            <h3><Link to={URL.ADMIN}>사이트관리</Link></h3>
+                            <h3><Link to={URL.TABS}>관리자페이지</Link></h3>
                         </>
                     }
                 </div>
@@ -252,4 +233,11 @@ function EgovHeader({ loginUser, onChangeLogin }) {
     );
 }
 
-export default EgovHeader;
+
+const mapStateToProps = (data) => ({
+    label: data.tabs.label,
+    selectLabel: data.tabs.selectLabel
+});
+
+
+export default connect(mapStateToProps)(EgovHeader);

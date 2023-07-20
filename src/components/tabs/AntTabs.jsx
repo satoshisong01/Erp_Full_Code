@@ -3,50 +3,58 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Children } from "./Children.js";
 
-const item = Children.find((item) => item.activeKey === 0);
+import store from 'store/configureStore';
+import { tabSelect } from "components/tabs/TabsActions";
+
+const tab = Children.find((tab) => tab.activeKey === 0);
 
 const defaultPanes = [
     {
-        label: item.label,
-        children: item.component,
-        key: item.activeKey,
+        label: tab.label,
+        children: tab.component,
+        key: tab.activeKey,
     },
 ];
 
-/** nav 클릭 시 해당하는 화면(컴포넌트) children 으로 보여줌 */
+/** nav, header 클릭 시  label props로 전달 & 해당하는 화면(컴포넌트) children 으로 보여줌 */
 const AntTabs = (props) => {
-    //nav 클릭 시 label props로 전달 됨
-    const title = props.label ? props.label : defaultPanes[0].label;
+    
     const [activeKey, setActiveKey] = useState(defaultPanes[0].key); // 프로젝트 등록 키 0번(활성화)
     const [items, setItems] = useState(defaultPanes);
 
+    /** title이 변경 될 때(navigation 클릭 시) 실행 되는 함수 */
+    useEffect(() => {
+        const tab = Children.find((item) => item.label === props.label);
+        if (!tab) return; 
+        addTab(tab);
+    }, [props.label]);
+
     const onChange = (key) => {
         setActiveKey(key);
-    };
-
-    const addTab = (item) => {
-        const existingTab = items.find((tab) => tab.label === item.label);
-        if (existingTab) {
-            setActiveKey(existingTab.key);
-        } else {
-            setItems([
-                ...items,
-                {
-                    label: item.label,
-                    children: item.component,
-                    key: item.activeKey,
-                },
-            ]);
-            setActiveKey(item.activeKey);
+        const selectedTab = items.find((item) => item.key === key);
+        if (selectedTab) {
+            store.dispatch(tabSelect(selectedTab.label));
         }
     };
 
-    /** title이 변경 될 때(navigation 클릭 시) 실행 되는 함수 */
-    useEffect(() => {
-        const item = Children.find((item) => item.label === title);
-        if (!item) return; 
-        addTab(item);
-    }, [title, props.isActive]);
+    const addTab = (addTab) => {
+        const existingTab = items.find((item) => item.label === addTab.label);
+        if (existingTab) { //선택한 라벨(이름)이 있으면 해당하는 라벨(이름)의 컴포넌트로
+            setActiveKey(existingTab.key);
+        } else { //없으면 기존 탭에 + 새로운탭 출력
+            setItems([
+                ...items,
+                {
+                    label: addTab.label,
+                    children: addTab.component,
+                    key: addTab.activeKey,
+                },
+            ]);
+            setActiveKey(addTab.activeKey);
+        }
+    };
+
+
 
     const removeTab = (targetKey) => {
         console.log(targetKey);
@@ -62,8 +70,9 @@ const AntTabs = (props) => {
         setItems(newPanes);
 
         if (items.length === 1) { //모든 탭 종료시 디폴트
-            setItems([...defaultPanes]);
-            setActiveKey(defaultPanes.key);
+            setItems([]);
+            // setItems([...defaultPanes]);
+            // setActiveKey(defaultPanes.key);
         }
     };
 
@@ -85,8 +94,7 @@ const AntTabs = (props) => {
 
 //const mapStateToProps = data => data.tabs //tabs 전체 불러오기
 const mapStateToProps = (data) => ({
-    label: data.tabs.label,
-    isActive: data.tabs.isActive,
+    label: data.tabs.label
 });
 
 /** store와 props 연결 */

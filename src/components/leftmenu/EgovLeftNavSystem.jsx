@@ -1,44 +1,63 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import URL from 'constants/url';
-import { system } from 'components/tabs/Children';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { tabActive } from 'components/tabs/TabsActions';
+import NavLinkTabs from 'components/tabs/NavLinkTabs';
 import store from 'store/configureStore';
-import { tabActive } from "components/tabs/TabsActions";
 
-function EgovLeftNavSystem() {
+function EgovLeftNavSystem(props) {
+    const { label, selectLabel } = props;
+    const [activeName, setActiveName] = useState('');
+
+    useEffect(() => {
+        setActiveName(selectLabel || label);
+    }, [label, selectLabel]);
+
+    const clickHandle = (e, label) => {
+        const tabLabel = label || e.target.innerText;
+        store.dispatch(tabActive(tabLabel));
+    };
+
+    const menuItems = [
+        { label: '권한관리',     subMenus: [] },
+        { label: '메뉴관리',     subMenus: [{ label: '메뉴정보관리' }, { label: '프로그램목록관리' }] },
+        { label: '게시판관리',   subMenus: [{ label: '게시물관리' }, { label: '게시판마스터관리' }, { label: '게시판열람권한관리' }] },
+        { label: '코드관리',     subMenus: [{ label: '분류코드관리' }, { label: '그룹코드관리' }, { label: '상세코드관리' }] },
+        { label: '접속이력관리', subMenus: [] },
+    ];
+
     return (
         <div className="layout">
             <div className="nav">
                 <div className="inner">
                     <h2>시스템관리</h2>
                     <ul className="menu4">
-                        {/* {system.map((item) => (
-                            <li key={item.title}>
-                            <Link to={URL.TABS[item.title]} className={({ isActive }) => (isActive ? 'cur' : '')}>{item.label}</Link>
+                        {menuItems.map((menuItem) => (
+                            <li key={menuItem.label}>
+                                <NavLinkTabs
+                                    to="#"
+                                    onClick={(e) => clickHandle(e, menuItem.subMenus[0].label || menuItem.label)}
+                                    activeName={activeName}
+                                >
+                                    {menuItem.label}
+                                </NavLinkTabs>
+
+                                {menuItem.subMenus.length > 0 && (
+                                    <ul className="menu7">
+                                        {menuItem.subMenus.map((subMenu) => (
+                                            <li key={subMenu.label}>
+                                                <NavLinkTabs
+                                                    to="#"
+                                                    onClick={(e) => clickHandle(e, subMenu.label)}
+                                                    activeName={activeName}
+                                                >
+                                                    {subMenu.label}
+                                                </NavLinkTabs>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
                             </li>
-                        ))} */}
-                        <li><Link onClick={(e) => store.dispatch(tabActive('권한관리'))} >권한관리</Link></li>
-                        <li><Link onClick={(e) => store.dispatch(tabActive('메뉴정보관리'))} >메뉴관리</Link>
-                            <ul className="menu7">
-                                <li><Link onClick={(e) => store.dispatch(tabActive('메뉴정보관리'))} >메뉴정보관리</Link></li>
-                                <li><Link onClick={(e) => store.dispatch(tabActive('프로그램목록관리'))} >프로그램목록관리</Link></li>
-                            </ul>
-                        </li>
-                        <li><Link onClick={(e) => store.dispatch(tabActive('게시물관리'))} >게시판관리</Link>
-                            <ul className="menu7">
-                                <li><Link onClick={(e) => store.dispatch(tabActive('게시물관리'))} >게시물관리</Link></li>
-                                <li><Link onClick={(e) => store.dispatch(tabActive('게시판마스터관리'))} >게시판마스터관리</Link></li>
-                                <li><Link onClick={(e) => store.dispatch(tabActive('게시판열람권한관리'))} >게시판열람권한관리</Link></li>
-                            </ul>
-                        </li>
-                        <li><Link onClick={(e) => store.dispatch(tabActive('분류코드관리'))} >코드관리</Link>
-                            <ul className="menu7">
-                                <li><Link onClick={(e) => store.dispatch(tabActive('분류코드관리'))} >분류코드관리</Link></li>
-                                <li><Link onClick={(e) => store.dispatch(tabActive('그룹코드관리'))} >그룹코드관리</Link></li>
-                                <li><Link onClick={(e) => store.dispatch(tabActive('상세코드관리'))} >상세코드관리</Link></li>
-                            </ul>
-                        </li>
-                        <li><Link onClick={(e) => store.dispatch(tabActive('접속이력관리'))} >접속이력관리</Link></li>
+                        ))}
                     </ul>
                 </div>
             </div>
@@ -46,4 +65,9 @@ function EgovLeftNavSystem() {
     );
 }
 
-export default EgovLeftNavSystem;
+const mapStateToProps = (data) => ({
+  label: data.tabs.label,
+  selectLabel: data.tabs.selectLabel,
+});
+
+export default connect(mapStateToProps)(EgovLeftNavSystem);

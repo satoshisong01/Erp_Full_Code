@@ -146,7 +146,7 @@ export const sales = [ //영업관리
         title: "OrderMgmt",
         path: URL.OrderMgmt,
         component: <OrderMgmt />,
-        label: "수주관리",
+        label: "수주(사업)관리",
         activeKey: 14,
     },
     {
@@ -174,7 +174,7 @@ export const sales = [ //영업관리
         title: "ElectronicTaxInvoice",
         path: URL.ElectronicTaxInvoice,
         component: <ElectronicTaxInvoice />,
-        label: "전자세금계산서",
+        label: "전자세금계산서관리",
         activeKey: 18,
     }
 ];

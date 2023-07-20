@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { tabActive } from 'components/tabs/TabsActions';
+import NavLinkTabs from 'components/tabs/NavLinkTabs';
+import store from 'store/configureStore';
 
-import { NavLink } from 'react-router-dom';
-import URL from 'constants/url';
+function EgovLeftNavExecution(props) {
+    const { label, selectLabel } = props;
+    const [activeName, setActiveName] = useState('');
 
-function EgovLeftNavExecution() {
+    useEffect(() => {
+        setActiveName(selectLabel || label);
+    }, [label, selectLabel]);
+
+    const clickHandle = (e, label) => {
+        const tabLabel = label || e.target.innerText;
+        store.dispatch(tabActive(tabLabel));
+    };
+
+    const menuItems = [
+        { label: '실행원가' }, { label: '인건비관리' }, { label: '경비관리' }, { label: '구매관리' }, { label: '전자결재' },
+    ];
     
     return (
         <div className="layout">
@@ -11,11 +27,17 @@ function EgovLeftNavExecution() {
                 <div className="inner">
                     <h2>실행관리</h2>
                     <ul className="menu4">
-                        <li><NavLink to={URL.ExecutionCost} className={({ isActive }) => (isActive ? "cur" : "")}>실행원가</NavLink></li>
-                        <li><NavLink to={URL.LaborCostMgmt} className={({ isActive }) => (isActive ? "cur" : "")}>인건비관리</NavLink></li>
-                        <li><NavLink to={URL.ExpenseMgmt} className={({ isActive }) => (isActive ? "cur" : "")}>경비관리</NavLink></li>
-                        <li><NavLink to={URL.PurchasingMgmt} className={({ isActive }) => (isActive ? "cur" : "")}>구매관리</NavLink></li>
-                        <li><NavLink to={URL.Approval} className={({ isActive }) => (isActive ? "cur" : "")}>전자결재</NavLink></li>
+                        {menuItems.map((menuItem) => (
+                            <li key={menuItem.label}>
+                                <NavLinkTabs
+                                    to="#"
+                                    onClick={(e) => clickHandle(e, menuItem.label)}
+                                    activeName={activeName}
+                                >
+                                    {menuItem.label}
+                                </NavLinkTabs>
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </div>
@@ -23,4 +45,6 @@ function EgovLeftNavExecution() {
     );
 }
 
-export default EgovLeftNavExecution;
+const mapStateToProps = data => data.tabs
+
+export default connect(mapStateToProps)(EgovLeftNavExecution);
