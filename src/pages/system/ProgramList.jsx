@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import store from "store/configureStore";
 import { tabActive } from "components/tabs/TabsActions";
+import ProgramLists from "./menuMgmt/ProgramList/ProgramLists";
 
 /** 시스템관리-게시판관리-프로그램목록관리 */
 function ProgramList() {
@@ -26,6 +27,7 @@ function ProgramList() {
                     <li>프로그램목록관리</li>
                 </ul>
             </div>
+            <ProgramLists />
         </>
     );
 }

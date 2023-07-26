@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import "../../../css/componentCss/CodeTableSearchBar.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRotateRight } from "@fortawesome/free-solid-svg-icons";
 
 export default function AuthorTableSearchBar({
     searchBtn,
@@ -51,26 +54,56 @@ export default function AuthorTableSearchBar({
             <div className="searchMain">
                 <form name="searchForm" id="searchForm" onSubmit={handleSearch}>
                     <div className="topMenuBtn">
-                        <button
-                            className="btn btn-primary refreshIcon"
-                            onClick={refresh}>
-                            <i className="fa fa-refresh" />
-                        </button>
-                        <button
-                            className="btn btn-primary clearIcon"
-                            onClick={handleResetClick}>
-                            초기화
-                        </button>
-                        <button
-                            onClick={() => {
-                                handleSearchClick();
-                                handleLvClick();
-                                handleOption();
-                            }}
-                            type="submit"
-                            className="btn btn-primary searchIcon">
-                            <i className="fa fa-search" />
-                        </button>
+                        <div className="box">
+                            <div className="radioBtn">
+                                <label className="radioLabel">
+                                    <input
+                                        className="inputRadio"
+                                        type="radio"
+                                        value="option1"
+                                        checked={option === "option1"}
+                                        onChange={(e) =>
+                                            setOption(e.target.value)
+                                        }
+                                    />
+                                    삭제 항목
+                                </label>
+                                <label className="radioLabel">
+                                    <input
+                                        className="inputRadio"
+                                        type="radio"
+                                        value="option2"
+                                        checked={option === "option2"}
+                                        onChange={(e) =>
+                                            setOption(e.target.value)
+                                        }
+                                    />
+                                    미삭제 항목
+                                </label>
+                            </div>
+                        </div>
+                        <div className="buttonTool">
+                            <button
+                                className="btn btn-primary refreshIcon"
+                                onClick={refresh}>
+                                <FontAwesomeIcon icon={faArrowRotateRight} />
+                            </button>
+                            <button
+                                className="btn btn-primary clearIcon"
+                                onClick={handleResetClick}>
+                                초기화
+                            </button>
+                            <button
+                                onClick={() => {
+                                    handleSearchClick();
+                                    handleLvClick();
+                                    handleOption();
+                                }}
+                                type="submit"
+                                className="btn btn-primary searchIcon">
+                                <FontAwesomeIcon icon={faMagnifyingGlass} />
+                            </button>
+                        </div>
                     </div>
                     {/*<div className="searchLine" />*/}
                     <div className="box">
