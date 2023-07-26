@@ -1,0 +1,413 @@
+.tableMain{
+  margin: 0;
+  /*margin-top: 50px;*/
+  /*background-color: aquamarine;*/
+  width: 100%;
+}
+
+.tableBody{
+  width: 100%;
+  /*background-color: antiquewhite;*/
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.detailCost{
+  width: 90%;
+  /*background-color: antiquewhite;*/
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.tableTr, .tableTrDetail{
+  width: 90%;
+  margin: auto;
+  display: flex;
+}
+
+.tableTrDetail{
+  width: 100%;
+}
+
+.tableTr2{
+  height: 100px;
+}
+.tableTr3{
+  width: 90%;
+}
+
+.tbodyTd{
+  text-align: center;
+  flex: 0.5;
+}
+
+.tdBtn{
+  /*width: 100%;*/
+  margin: 10px;
+}
+
+.table2-1{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 30px;
+  font-size: large;
+  text-align: center;
+  background-color: #e3ecf8;
+  border: 1px solid gray;
+}
+
+.table2-1-2{
+  height: 100%;
+}
+
+.table2-2{
+  /*flex: 5;*/
+  display: flex;
+  /*margin-left: 20px;*/
+  /*padding-left: 20px;*/
+  justify-content: flex-start;
+  align-items: center;
+  border: 1px solid gray;
+}
+
+
+.table4-2{
+  flex: 2;
+  display: flex;
+  /*padding-left: 20px;*/
+  align-items: center;
+  justify-content: center;
+  border: 1px solid gray;
+}
+
+.table4-3, .table4-3F{
+  flex: 2;
+  display: flex;
+  /*padding-left: 20px;*/
+  align-items: center;
+  justify-content: center;
+  border: 1px solid gray;
+  background-color: #e3ecf8;
+}
+
+.table4-3, .table4-3F{
+  /*flex: 1;*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /*width: 150px;*/
+  /*height: 50px;*/
+  font-size: large;
+  text-align: center;
+  background-color: #e3ecf8;
+  border: 1px solid gray;
+}
+
+.tableRedPercent, .tableRedPercentF{
+  display: flex;
+  width: 50px;
+  height: 30px;
+  justify-content: center;
+  align-items: center;
+  font-size: large;
+  text-align: center;
+  color: red;
+  background-color: #e3ecf8;
+  border: 1px solid gray;
+}
+
+.tableRedPercentW, .tableRedPercentWF{
+  display: flex;
+  width: 50px;
+  height: 30px;
+  justify-content: center;
+  align-items: center;
+  font-size: large;
+  text-align: center;
+  background-color: #fff;
+  border: 1px solid gray;
+}
+
+.table4-3White, .table4-3WhiteBlue, .tableWhiteDetail, .table4-3WhiteF, .table4-3WhiteF2{
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /*width: 150px;*/
+  /*height: 50px;*/
+  font-size: large;
+  text-align: center;
+  background-color: #fff;
+  border: 1px solid gray;
+}
+
+.table4-3F{
+  flex: 1;
+}
+
+.tableRedPercentF{
+  flex: 0.2;
+}
+
+.table4-3WhiteBlue{
+  color: blue;
+}
+
+
+
+.table4-3WhiteF{
+  flex: 1;
+}
+
+.tableRedPercentWF{
+  flex: 0.2;
+}
+
+.table4-3WhiteF2{
+  flex: 2.22;
+}
+
+
+
+
+.table8-1{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 30px;
+  font-size: large;
+  text-align: center;
+  background-color: #e3ecf8;
+  border: 1px solid gray;
+  
+}
+
+.table8-2{
+  flex: 1.5;
+  display: flex;
+  /*margin-left: 20px;*/
+  padding-left: 20px;
+  align-items: center;
+  border: 1px solid gray;
+}
+
+.thTitle1, .thTitle2{
+  text-align: center;
+  margin-right: 0;
+}
+
+.inputTh{
+  width: auto;
+  height: 3vh;
+  display: flex;
+  justify-content: center;
+  margin: 0 5px;
+}
+
+
+.working{
+  /*width: 70px;*/
+  /*height: 30px;*/
+  padding: 3px;
+  color: green;
+  /*background-color: aliceblue;*/
+  margin: 0;
+  border: 2px solid green;
+  border-radius: 10px;
+}
+
+.bucket{
+  display: flex;
+  align-items: center;
+}
+
+.fa-list-ul{
+  font-size:large;
+}
+
+.textAreaWidth{
+  width: 100%;
+  height: 100%;
+}
+
+
+.titleName{
+  margin-left: 20px;
+  font-size: large;
+  font-weight: 600;
+}
+
+.arrowBtn {
+  height: 100%;
+  transition: transform 300ms ease-in;
+}
+
+.arrowBtn.clicked {
+  transform: rotate(180deg);
+}
+
+.titleMain{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title{
+  width: 90%;
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: solid 1px gray;
+}
+
+.TableBucket{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.hideTable, .hideTable2, .hideTable3, .hideDiv, .hideDiv2 {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px);
+  transition: opacity 300ms ease-in, transform 300ms ease-in;
+  margin-top: 20px;
+  background-color: aquamarine;
+  height: 100%;
+  width: 100%;
+  margin: auto;
+  margin: 0;
+}
+
+
+.hideTable.clicked, .hideTable2.clicked, .hideTable3.clicked, .hideDiv.clicked, .hideDiv2.clicked {
+  height: 100%;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  margin: 0;
+}
+
+.hideDiv, .hideDiv2{
+  height: 200px;
+}
+
+.hideDiv.clicked, .hideDiv2.clicked{
+  height: 200px;
+}
+
+.hideDiv2{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.div5Span{
+  color: gray;
+}
+
+#content5{
+  margin-bottom: 30px;
+}
+
+
+.tableHead{
+  width: 90%;
+  /*background-color: antiquewhite;*/
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.TableBucket > .dataTables_wrapper{
+  width: 90%;
+  margin: auto;
+}
+
+.headerH2> .spanCss{
+  height: 30px;
+  /*line-height: -100px;*/
+  margin-left: 10px;
+  margin-bottom: 20px;
+}
+
+.spanCss{
+  margin-left: 20px;
+}
+
+.jarviswidget>header{
+  line-height: 30px;
+}
+
+
+.jarviswidget > .table-responsive{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  padding-bottom: 20px;
+  padding: 0;
+}
+
+.jarviswidget{
+  margin: 0;
+}
+
+.TableBucket > #content{
+  width: 90%;
+  margin: auto;
+  margin-bottom: 30px;
+  padding: 0;
+}
+
+.tableMain2{
+  width: 25vw;
+}
+
+.tableTrTotal{
+  display: flex;
+  justify-content: flex-start;
+}
+
+.totalCount{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid gray;
+}
+
+.btnWrap{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.tbodyTd{
+  width: 15px;
+}
+
+table.dataTable {
+  border-collapse: collapse;
+}
+
+.sorting_1{
+  width: 20px;
+}
+
+
+.tableHeaderTh{
+  width: 50px;
+}

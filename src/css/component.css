@@ -5,8 +5,8 @@
 .skip_navi:focus {position: static;}
 
 /* Go template link */
-.lnk_go_template {position: absolute; left: 50px; top: 20px; width: 26px; height: 26px; background: url(css/images/ico_question.png) no-repeat;}
-
+.lnk_go_template {position: absolute; left: 50px; top: 20px; width: 26px; height: 26px; background: url(images/ico_question.png) no-repeat;}
+ 
 
 /* Button */
 .btn {display: inline-block; vertical-align: top;}
@@ -20,13 +20,13 @@
 
 .btn_upload {position: relative; width: 180px; height: 46px; border-radius: 5px; color: #fff; font-size: 16px; line-height: 46px; text-align: center; background: #169bd5;}
 .btn_upload span {display: inline-block; height: 46px; line-height: 46px;}
-.btn_upload span::before {content: ""; display: inline-block; width: 16px; height: 16px; margin-right: 10px; background: url(css/images/ico_v.png) no-repeat; background-size: contain; vertical-align: -2px;}
+.btn_upload span::before {content: ""; display: inline-block; width: 16px; height: 16px; margin-right: 10px; background: url(images/ico_v.png) no-repeat; background-size: contain; vertical-align: -2px;}
 
 .btn_down {position: relative; width: 160px; height: 46px; border-radius: 5px; color: #005b82; font-size: 16px; line-height: 46px; text-align: center; background: #daedf5;}
 .btn_down span {display: inline-block; height: 46px; line-height: 46px;}
-.btn_down span::before {content: ""; display: inline-block; width: 15px; height: 16px; margin-right: 10px; background: url(css/images/ico_down.png) no-repeat; background-size: contain; vertical-align: -2px;}
+.btn_down span::before {content: ""; display: inline-block; width: 15px; height: 16px; margin-right: 10px; background: url(images/ico_down.png) no-repeat; background-size: contain; vertical-align: -2px;}
 
-.btn_calendar {width: 46px; height: 46px; font-size: 0; background: url(css/images/bg_btn_calendar.png) no-repeat;}
+.btn_calendar {width: 46px; height: 46px; font-size: 0; background: url(images/bg_btn_calendar.png) no-repeat;}
 
 
 /* Board */
@@ -37,7 +37,7 @@
 .board_list .result .list_item > div {display: table-cell; padding: 18px 0 20px 0; border-bottom: 1px solid #dde2e5; color: #666; font-size: 16px; text-align: center; vertical-align: middle;}
 .board_list .result .list_item > div.al {padding: 18px 30px 20px 30px; text-align: left;}
 .board_list .result .list_item > div.reply {position: relative; padding: 18px 30px 20px 52px;}
-.board_list .result .list_item > div.reply::before {content: ""; display: block; position: absolute; left: 27px; top: 24px; width: 22px; height: 14px; background: url(css/images/ico_reply.png) no-repeat;}
+.board_list .result .list_item > div.reply::before {content: ""; display: block; position: absolute; left: 27px; top: 24px; width: 22px; height: 14px; background: url(images/ico_reply.png) no-repeat;}
 .board_list .no_data {height: 60px; border-bottom: 1px solid #dde2e5; color: #666; font-size: 16px; line-height: 60px; text-align: center;}
 
 .board_bot {margin-top: 40px;}
@@ -46,10 +46,10 @@
 .paging .btn {margin-top: 0;}
 .paging .btn + .btn {margin-left: 5px;}
 .paging .btn button {display: inline-block; width: 42px; height: 42px; border: 1px solid #dde2e5; border-radius: 5px; font-size: 0;}
-.paging .first {background: url(css/images/ico_prev.png) no-repeat center; vertical-align: top; }
-.paging .prev {margin-right: 26px; background: url(css/images/ico_arrow_r_gray_9x15.png) no-repeat center; vertical-align: top; transform: rotate(180deg);}
-.paging .next {margin-left: 26px; background: url(css/images/ico_arrow_r_gray_9x15.png) no-repeat center; vertical-align: top;}
-.paging .last {background: url(css/images/ico_prev.png) no-repeat center; vertical-align: top; transform: rotate(180deg);}
+.paging .first {background: url(images/ico_prev.png) no-repeat center; vertical-align: top; }
+.paging .prev {margin-right: 26px; background: url(images/ico_arrow_r_gray_9x15.png) no-repeat center; vertical-align: top; transform: rotate(180deg);}
+.paging .next {margin-left: 26px; background: url(images/ico_arrow_r_gray_9x15.png) no-repeat center; vertical-align: top;}
+.paging .last {background: url(images/ico_prev.png) no-repeat center; vertical-align: top; transform: rotate(180deg);}
 .paging ul {display: inline-block; vertical-align: top;}
 .paging ul li {display: inline-block; margin-top: 4px; vertical-align: top;}
 .paging ul li button {display: block; width: 34px; height: 34px; color: #888; font-size: 16px; line-height: 34px; text-align: center; background: white;}
@@ -75,7 +75,7 @@
 .board_attach dl dt {width: 102px; padding-left: 30px; color: #000;}
 .board_attach dl dd > span {display: block;}
 .board_attach dl dd > span + span {margin-top: 5px;}
-.board_attach dl dd a {display: inline-block; padding-left: 29px; color: #169bd5; vertical-align: top; background: url(css/images/ico_file.png) no-repeat;}
+.board_attach dl dd a {display: inline-block; padding-left: 29px; color: #169bd5; vertical-align: top; background: url(images/ico_file.png) no-repeat;}
 .board_attach dl dd a:hover {text-decoration: underline;}
 .board_attach dl dd a span {color: #666;}
 
@@ -93,7 +93,7 @@
 .board_view2 dl {display: table; width: 100%; table-layout: fixed; border-bottom: 1px solid #dde2e5;}
 .board_view2 dl > * {display: table-cell; table-layout: fixed; vertical-align: middle;}
 .board_view2 dl dt {width: 176px; padding: 12px 25px; color: #000; font-size: 18px; letter-spacing: -2px; background: #f5f6f7; word-break: break-all;}
-.board_view2 dl dt .req {display: inline-block; width: 7px; height: 7px; margin-left: 2px; font-size: 0; background: url(css/images/ico_req.png) no-repeat; vertical-align: 17px;}
+.board_view2 dl dt .req {display: inline-block; width: 7px; height: 7px; margin-left: 2px; font-size: 0; background: url(images/ico_req.png) no-repeat; vertical-align: 17px;}
 .board_view2 dl dd {padding: 12px 15px; color: #222; font-size: 16px; font-weight: 300;}
 .board_view2 .file_add {margin-top: 5px;}
 .board_view2 .f_select,
@@ -137,7 +137,7 @@
 .qna_a ul li:last-child {border-bottom: 0;}
 .qna_a ul li span {display: block;}
 .qna_a ul li .delete {position: absolute; right: 20px; bottom: 11px; color: #222; font-size: 16px; font-weight: 300;}
-.qna_a ul li .delete::before {content: ""; display: inline-block; width: 18px; height: 18px; margin-right: 5px; background: url(css/images/ico_delete.png) no-repeat; background-size: contain; vertical-align: -2px;}
+.qna_a ul li .delete::before {content: ""; display: inline-block; width: 18px; height: 18px; margin-right: 5px; background: url(images/ico_delete.png) no-repeat; background-size: contain; vertical-align: -2px;}
 
 .replay {display: table; table-layout: fixed; width: 100%; padding: 18px 0; border: 2px solid #dde2e5; border-radius: 10px;}
 .replay > * {display: table-cell; vertical-align: top;}
@@ -153,7 +153,7 @@
 .bottom_navi dl {display: table; width: 100%; table-layout: fixed; border-bottom: 1px solid #dde2e5;}
 .bottom_navi dl > * {display: table-cell; height: 60px; line-height: 60px; font-size: 16px;}
 .bottom_navi dl dt {position: relative; width: 166px; padding-left: 30px; color: #000;}
-.bottom_navi dl dt::after {content: ""; display: block; position: absolute; right: 48px; top: 50%; transform: translateY(-50%); width: 16px; height: 9px; background: url(css/images/ico_arrow_up_gray_16x9.png) no-repeat; background-size: contain;}
+.bottom_navi dl dt::after {content: ""; display: block; position: absolute; right: 48px; top: 50%; transform: translateY(-50%); width: 16px; height: 9px; background: url(images/ico_arrow_up_gray_16x9.png) no-repeat; background-size: contain;}
 .bottom_navi dl:nth-child(2) dt::after {transform: translateY(-50%) rotate(180deg);}
 .bottom_navi dl dd {width: auto; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
 .bottom_navi dl dd a {color: #666; font-weight: 300;}
@@ -161,8 +161,8 @@
 
 .file_attach {display: block;}
 .file_attach + .file_attach {margin-top: 5px;}
-.file_attach a {display: inline-block; padding-left: 29px; color: #169bd5; vertical-align: top; background: url(css/images/ico_file.png) no-repeat;}
-.file_attach .btn_delete {display: inline-block; height: 28px; margin-left: 15px; padding-left: 33px; color: #222; font-size: 16px; font-weight: 300; line-height: 28px; background: url(css/images/ico_delete.png) no-repeat; background-size: contain;}
+.file_attach a {display: inline-block; padding-left: 29px; color: #169bd5; vertical-align: top; background: url(images/ico_file.png) no-repeat;}
+.file_attach .btn_delete {display: inline-block; height: 28px; margin-left: 15px; padding-left: 33px; color: #222; font-size: 16px; font-weight: 300; line-height: 28px; background: url(images/ico_delete.png) no-repeat; background-size: contain;}
 
 
 /* Condition */
@@ -170,8 +170,8 @@
 .condition > ul,
 .condition > ul li {display: inline-block; vertical-align: top;}
 .condition > ul li + li {margin-left: 20px;}
-.condition > ul .prev {display: inline-block; width: 46px; height: 46px; border: 1px solid #dde2e5; border-radius: 5px; background: #fff url(css/images/ico_prev.png) no-repeat center;}
-.condition > ul .next {display: inline-block; width: 46px; height: 46px; border: 1px solid #dde2e5; border-radius: 5px; background: #fff url(css/images/ico_prev.png) no-repeat center; transform: rotate(180deg);}
+.condition > ul .prev {display: inline-block; width: 46px; height: 46px; border: 1px solid #dde2e5; border-radius: 5px; background: #fff url(images/ico_prev.png) no-repeat center;}
+.condition > ul .next {display: inline-block; width: 46px; height: 46px; border: 1px solid #dde2e5; border-radius: 5px; background: #fff url(images/ico_prev.png) no-repeat center; transform: rotate(180deg);}
 .condition > ul li .prev + span {display: inline-block; height: 46px; margin: 0 10px; padding: 0 30px; border-radius: 5px; font-size: 16px; line-height: 46px; background: #f7f7f7; vertical-align: top;}
 .condition .lb {display: inline-block; height: 46px; margin-right: 20px; color: #222; font-size: 16px; font-weight: 300; line-height: 46px; vertical-align: top;}
 
@@ -206,18 +206,18 @@ select {font-family: 'NotoSans', sans-serif; font-weight: 400;
     appearance:none;}
 select::-ms-expand {display:none;}
 
-.f_chk {display: inline-block; position: relative; min-width: 30px; height: 30px; border: 0; line-height: 30px; background: url(css/images/bg_form_chk.png) no-repeat; vertical-align: top;}
-.f_chk.on {background: url(css/images/bg_form_chk_on.png) no-repeat;}
+.f_chk {display: inline-block; position: relative; min-width: 30px; height: 30px; border: 0; line-height: 30px; background: url(images/bg_form_chk.png) no-repeat; vertical-align: top;}
+.f_chk.on {background: url(images/bg_form_chk_on.png) no-repeat;}
 .f_chk input {position: absolute; opacity: 0;}
 
-.f_rdo {display: inline-block; position: relative; min-width: 22px; height: 22px; border: 0; line-height: 30px; background: url(css/images/bg_form_rdo.png) no-repeat; vertical-align: top;}
+.f_rdo {display: inline-block; position: relative; min-width: 22px; height: 22px; border: 0; line-height: 30px; background: url(images/bg_form_rdo.png) no-repeat; vertical-align: top;}
 .f_rdo + .f_rdo {margin-left: 30px;}
 .f_rdo em {display: inline-block; height: 22px; margin-left: 32px; line-height: 22px; vertical-align: top;}
-.f_rdo.on {background: url(css/images/bg_form_rdo_on.png) no-repeat;}
+.f_rdo.on {background: url(images/bg_form_rdo_on.png) no-repeat;}
 .f_rdo input {position: absolute; top: -9999px;}
 
 .f_select {display: inline-block; position: relative; height: 46px; border: 0; border-radius: 5px; background: #f7f7f7;}
-.f_select::after {content: ""; display: block; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 15px; height: 9px; background: url(css/images/ico_arrow_gray_15x9.png) no-repeat;}
+.f_select::after {content: ""; display: block; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 15px; height: 9px; background: url(images/ico_arrow_gray_15x9.png) no-repeat;}
 .f_select select {width: 100%; height: 100%; padding: 0 40px 0 20px; border: 0; color: #222; font-size: 16px; background: transparent;}
 
 .f_input {height: 46px; padding: 0 20px; border: 0; border-radius: 5px; color: #222; font-size: 16px; background: #f7f7f7;}
@@ -230,11 +230,11 @@ select::-ms-expand {display:none;}
 
 .f_search {display: inline-block; position: relative;}
 .f_search input[type=text] {width: 100%; height: 46px; padding: 0 55px 0 20px; border: 0; border-radius: 5px; color: #222; font-size: 16px; background: #f7f7f7;}
-.f_search input[type=text] + button {display: block; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); width: 25px; height: 27px; font-size: 0; background: url(css/images/ico_search_b.png) no-repeat; background-size: contain;}
+.f_search input[type=text] + button {display: block; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); width: 25px; height: 27px; font-size: 0; background: url(images/ico_search_b.png) no-repeat; background-size: contain;}
 
 .f_search2 {display: inline-block; position: relative;}
 .f_search2 input[type=text] {width: 100%; height: 46px; padding: 0 55px 0 20px; border: 1px solid #dde2e5; border-radius: 5px; color: #222; font-size: 16px; background: #fff;}
-.f_search2 input[type=text] + button {display: block; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); width: 25px; height: 27px; font-size: 0; background: url(css/images/ico_search_b.png) no-repeat; background-size: contain;}
+.f_search2 input[type=text] + button {display: block; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); width: 25px; height: 27px; font-size: 0; background: url(images/ico_search_b.png) no-repeat; background-size: contain;}
 
 
 /* Title */

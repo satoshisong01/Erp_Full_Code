@@ -24,17 +24,17 @@
     .all_menu.Mobile.closed { transform: translateX(-800px); }
     .user_info_m {display: block; position: relative; height: 70px; padding: 0 20px; color: #666; font-size: 12px; line-height: 70px; background: #fff;}
     .user_info_m .person {color: #169bd5; font-weight: 700; letter-spacing: -1px;}
-    .user_info_m .person::before {content: ""; display: inline-block; width: 22px; height: 22px; margin-right: 9px; background: url(css/images/ico_person.png) no-repeat; background-size: contain; vertical-align: -6px;}
+    .user_info_m .person::before {content: ""; display: inline-block; width: 22px; height: 22px; margin-right: 9px; background: url(images/ico_person.png) no-repeat; background-size: contain; vertical-align: -6px;}
     .user_info_m .login {width: 85px; height: 30px; margin-top: 20px; border-radius: 15px; color: #fff; font-size: 12px; line-height: 30px; text-align: center; background: #169bd5;}
     /* Mobile 로그아웃 버튼 디자인 이쁘게 적용: 2023.04.13(목) 김일국 추가 */
     .user_info_m .logout {width: 80px; height: 25px; color: #222; font-weight: 700; border-radius: 15px; color: #fff; font-size: 13px; line-height: 20px; background: #169bd5; vertical-align: middle;}
-    .user_info_m .close {display: block; position: absolute; right: 20px; top: 24px; width: 21px; height: 21px; background: url(css/images/ico_close_black44.png) no-repeat; background-size: contain;}
+    .user_info_m .close {display: block; position: absolute; right: 20px; top: 24px; width: 21px; height: 21px; background: url(images/ico_close_black44.png) no-repeat; background-size: contain;}
 
     .all_menu.Mobile .menu {border-top: 10px solid #f5f6f7;}
     .all_menu.Mobile .menu h3 {position: relative;}
     .all_menu.Mobile .menu h3::after {content: ""; display: block; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px; background: #eee;}
     .all_menu.Mobile h3 a {display: block; position: relative; padding: 20px; color: #222; font-size: 15px; background: #fff;}
-    .all_menu.Mobile h3 a::after {content: ""; display: block; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 18px; height: 10px; background: url(css/images/ico_arrow_black_36x20.png) no-repeat; background-size: contain;}
+    .all_menu.Mobile h3 a::after {content: ""; display: block; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 18px; height: 10px; background: url(images/ico_arrow_black_36x20.png) no-repeat; background-size: contain;}
     .all_menu.Mobile h3 a.active::after {transform: translateY(-50%) rotate(180deg);}
     .all_menu.Mobile .submenu { overflow: hidden; transition: height .2s ease-in-out, padding .2s ease-in-out; }
     .all_menu.Mobile .submenu.closed { height: 0; }
@@ -458,7 +458,7 @@
     .SITE_CONTACT_US .way h3 {padding-bottom: 18px; font-size: 14px;}
     .SITE_CONTACT_US .way dl > * {font-size: 12px;}
     .SITE_CONTACT_US .way .left_col dl dt {width: 85px; letter-spacing: -1px;}
-    .SITE_CONTACT_US .way .left_col dl dt::before {top: 0; width: 14px; height: 18px; background: url(css/images/ico_subway.png) no-repeat; background-size: contain;}
+    .SITE_CONTACT_US .way .left_col dl dt::before {top: 0; width: 14px; height: 18px; background: url(images/ico_subway.png) no-repeat; background-size: contain;}
     .SITE_CONTACT_US .way .right_col {margin-top: 28px;}
     .SITE_CONTACT_US .way .right_col dl dt.call::before {top: 2px;}
     .SITE_CONTACT_US .way .right_col dl dt.email::before {top: 3px;}

@@ -1,47 +1,48 @@
-import React from 'react';
-import URL from 'constants/url';
+import React from "react";
+import URL from "constants/url";
 
 //기준정보관리
-import ItemGroupMgmt from 'pages/reference/ItemGroupMgmt';
-import ItemDetailMgmt from 'pages/reference/ItemDetailMgmt';
-import CustomerMgmt from 'pages/reference/CustomerMgmt';
-import PartnerMgmt from 'pages/reference/PartnerMgmt';
-import BusinessMgmt from 'pages/reference/BusinessMgmt';
-import WorkMemberMgmt from 'pages/reference/WorkMemberMgmt';
-import RegularMemberMgmt from 'pages/reference/RegularMemberMgmt';
-import EnterpriseMemberMgmt from 'pages/reference/EnterpriseMemberMgmt';
-import PermissionGroupMgmt from 'pages/reference/PermissionGroupMgmt';
-import OrganizationMgmt from 'pages/reference/OrganizationMgmt';
-import LaborRate from 'pages/reference/LaborRate';
-import GradeWageLaborCost from 'pages/reference/GradeWageLaborCost';
-import GradeWageExpense from 'pages/reference/GradeWageExpense';
-import CostIndex from 'pages/reference/CostIndex';
+import ItemGroupMgmt from "pages/reference/ItemGroupMgmt";
+import ItemDetailMgmt from "pages/reference/ItemDetailMgmt";
+import CustomerMgmt from "pages/reference/CustomerMgmt";
+import PartnerMgmt from "pages/reference/PartnerMgmt";
+import BusinessMgmt from "pages/reference/BusinessMgmt";
+import WorkMemberMgmt from "pages/reference/WorkMemberMgmt";
+import RegularMemberMgmt from "pages/reference/RegularMemberMgmt";
+import EnterpriseMemberMgmt from "pages/reference/EnterpriseMemberMgmt";
+import PermissionGroupMgmt from "pages/reference/PermissionGroupMgmt";
+import OrganizationMgmt from "pages/reference/OrganizationMgmt";
+import LaborRate from "pages/reference/LaborRate";
+import GradeWageLaborCost from "pages/reference/GradeWageLaborCost";
+import GradeWageExpense from "pages/reference/GradeWageExpense";
+import CostIndex from "pages/reference/CostIndex";
 //영업관리
-import OrderMgmt from 'pages/sales/OrderMgmt';            
-import SalesExpenses from 'pages/sales/SalesExpenses';        
-import Quotation from 'pages/sales/Quotation';            
-import InvoiceMgmt from 'pages/sales/InvoiceMgmt';          
-import ElectronicTaxInvoice from 'pages/sales/ElectronicTaxInvoice'; 
+import OrderMgmt from "pages/sales/OrderMgmt";
+import SalesExpenses from "pages/sales/SalesExpenses";
+import Quotation from "pages/sales/Quotation";
+//import InvoiceMgmt from 'pages/sales/InvoiceMgmt';
+//import ElectronicTaxInvoice from 'pages/sales/ElectronicTaxInvoice';
 //실행관리
-import ExecutionCost from 'pages/execution/ExecutionCost';        
-import LaborCostMgmt from 'pages/execution/LaborCostMgmt';        
-import PurchasingMgmt from 'pages/execution/PurchasingMgmt';       
-import ExpenseMgmt from 'pages/execution/ExpenseMgmt';          
-import Approval from 'pages/execution/Approval';   
-//시스템관리          
-import AuthorizationMgmt from 'pages/system/AuthorizationMgmt/AuthorizationMgmt';    
-import MenuInfo from 'pages/system/menuMgmt/MenuInfo';           
-import ProgramList from 'pages/system/ProgramList';          
-import PostMgmt from 'pages/system/PostMgmt';             
-import BoardMaster from 'pages/system/BoardMaster';          
-import Comment from 'pages/system/Comment';              
-import BoardViewing from 'pages/system/BoardViewing';         
-import CategoryCode from 'pages/system/CategoryCode';         
-import GroupCode from 'pages/system/GroupCode';            
-import DetailCode from 'pages/system/DetailCode';           
-import AccessHistoryMgmt from 'pages/system/AccessHistoryMgmt';    
+import ExecutionCost from "pages/execution/ExecutionCost";
+import LaborCostMgmt from "pages/execution/LaborCostMgmt";
+import PurchasingMgmt from "pages/execution/PurchasingMgmt";
+import ExpenseMgmt from "pages/execution/ExpenseMgmt";
+import Approval from "pages/execution/Approval";
+//시스템관리
+import MenuInfo from "pages/system/menuMgmt/MenuInfo";
+import ProgramList from "pages/system/ProgramList";
+import PostMgmt from "pages/system/PostMgmt";
+import BoardMaster from "pages/system/BoardMaster";
+import Comment from "pages/system/Comment";
+import BoardViewing from "pages/system/BoardViewing";
+import CategoryCode from "pages/system/CategoryCode";
+import GroupCode from "pages/system/GroupCode";
+import DetailCode from "pages/system/DetailCode";
+import AccessHistoryMgmt from "pages/system/AccessHistoryMgmt";
+import AuthorizationMgmt from "pages/system/AuthorizationMgmt";
 
-export const  reference = [ //기준정보관리
+export const reference = [
+    //기준정보관리
     {
         title: "ItemGroupMgmt",
         path: URL.ItemGroupMgmt,
@@ -139,9 +140,10 @@ export const  reference = [ //기준정보관리
         component: <CostIndex />,
         label: "사전원가지표",
         activeKey: 13,
-    }
+    },
 ];
-export const sales = [ //영업관리
+export const sales = [
+    //영업관리
     {
         title: "OrderMgmt",
         path: URL.OrderMgmt,
@@ -163,22 +165,23 @@ export const sales = [ //영업관리
         label: "견적서관리",
         activeKey: 16,
     },
-    {
-        title: "InvoiceMgmt",
-        path: URL.InvoiceMgmt,
-        component: <InvoiceMgmt />,
-        label: "세금계산서발행관리",
-        activeKey: 17,
-    },
-    {
-        title: "ElectronicTaxInvoice",
-        path: URL.ElectronicTaxInvoice,
-        component: <ElectronicTaxInvoice />,
-        label: "전자세금계산서관리",
-        activeKey: 18,
-    }
+    //{
+    //    title: "InvoiceMgmt",
+    //    path: URL.InvoiceMgmt,
+    //    component: <InvoiceMgmt />,
+    //    label: "세금계산서발행관리",
+    //    activeKey: 17,
+    //},
+    //{
+    //    title: "ElectronicTaxInvoice",
+    //    path: URL.ElectronicTaxInvoice,
+    //    component: <ElectronicTaxInvoice />,
+    //    label: "전자세금계산서관리",
+    //    activeKey: 18,
+    //}
 ];
-export const execution = [ //실행관리
+export const execution = [
+    //실행관리
     {
         title: "ExecutionCost",
         path: URL.ExecutionCost,
@@ -213,9 +216,10 @@ export const execution = [ //실행관리
         component: <Approval />,
         label: "전자결재",
         activeKey: 23,
-    }
+    },
 ];
-export const system = [ //시스템관리
+export const system = [
+    //시스템관리
     {
         title: "AuthorizationMgmt",
         path: URL.AuthorizationMgmt,
@@ -292,12 +296,7 @@ export const system = [ //시스템관리
         component: <AccessHistoryMgmt />,
         label: "접속이력관리",
         activeKey: 34,
-    }
+    },
 ];
 
-export const Children = [
-    ...reference,
-    ...sales,
-    ...execution,
-    ...system
-]
+export const Children = [...reference, ...sales, ...execution, ...system];

@@ -1,0 +1,120 @@
+*{
+  box-sizing: border-box;
+  margin: 0px;
+}
+
+.EstimateHeader{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  font-size: xx-large;
+  font-weight: 700;
+  background-color: #17375e;
+  color: white;
+  height: 50px;
+}
+
+.EstimateBody{
+  width: 90%;
+  margin: auto;
+  /*display: flex;*/
+  /*justify-content: space-between;*/
+}
+
+.spanBody > span {
+  font-size: larger;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.spanBody3, .titleRight, .titleLeft{
+  flex: 1;
+}
+
+.titleRight{
+  min-width: 300px;
+  max-width: 310px;
+  margin-right: 9%;
+}
+
+.titleLeft{
+  min-width: 300px;
+  max-width: 310px;
+  margin-left: 10%;
+}
+
+.titleTotal{
+  display: flex;
+}
+
+.spanBodyFooter{
+  position: relative;
+}
+
+.spanBodyFooter > h2{
+  font-weight: 700;
+}
+
+.spanBody{
+  margin-top: 10px;
+}
+
+.spanBody3{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mecca{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+  margin-top: 70px;
+  padding:auto;
+}
+
+.footerTitle{
+  z-index: 10;
+  font-weight: 700;
+}
+
+.signImg{
+  z-index: 1;
+  position: absolute;
+  right: 0px;
+  bottom:0px;
+}
+
+.SumCount{
+  text-align: center;
+  margin-top: 80px;
+  font-weight: 700;
+}
+
+.condition{
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 50px;
+}
+
+.conditionSpan{
+  display: flex;
+  flex-direction: column;
+}
+
+.conditionSpan > span{
+  font-size: large;
+  font-weight: 600;
+}
+
+.projectName{
+  margin-top: 50px;
+  margin-left: 10%;
+  font-weight: 600;
+}
