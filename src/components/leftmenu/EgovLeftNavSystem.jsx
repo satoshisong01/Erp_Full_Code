@@ -6,15 +6,36 @@ import store from 'store/configureStore';
 
 function EgovLeftNavSystem(props) {
     const { label, selectLabel } = props;
-    const [activeName, setActiveName] = useState('');
+    const [activeSub, setActiveSub] = useState('');
+    const [activeLabel, setActiveLabel] = useState('');
 
+    /* header 또는 tabs에서 선택된 라벨을 저장  */
     useEffect(() => {
-        setActiveName(selectLabel || label);
+        const propsLabel = selectLabel || label;
+        let parentLabel = '';
+
+        for (const item of menuItems) {
+            if (item.label === propsLabel) {
+                parentLabel = item.label;
+                break;
+            }
+        
+            for (const subMenu of item.subMenus) {
+                if (subMenu.label === propsLabel) {
+                    parentLabel = item.label;
+                    break;
+                }
+            }
+        }
+        setActiveSub(selectLabel || label);
+        if(activeLabel !== parentLabel) setActiveLabel(parentLabel);
     }, [label, selectLabel]);
 
-    const clickHandle = (e, label) => {
-        const tabLabel = label || e.target.innerText;
-        store.dispatch(tabActive(tabLabel));
+
+    const clickHandle = (label, sub) => {
+        setActiveSub(sub)
+        setActiveLabel(label)
+        store.dispatch(tabActive(sub));
     };
 
     const menuItems = [
@@ -35,8 +56,8 @@ function EgovLeftNavSystem(props) {
                             <li key={menuItem.label}>
                                 <NavLinkTabs
                                     to="#"
-                                    onClick={(e) => clickHandle(e, menuItem.subMenus[0].label || menuItem.label)}
-                                    activeName={activeName}
+                                    onClick={(e) => clickHandle(menuItem.label, menuItem.subMenus.length > 0 ? menuItem.subMenus[0].label : menuItem.label)}
+                                    activeName={activeLabel === menuItem.label ? menuItem.label : null}
                                 >
                                     {menuItem.label}
                                 </NavLinkTabs>
@@ -47,8 +68,8 @@ function EgovLeftNavSystem(props) {
                                             <li key={subMenu.label}>
                                                 <NavLinkTabs
                                                     to="#"
-                                                    onClick={(e) => clickHandle(e, subMenu.label)}
-                                                    activeName={activeName}
+                                                    onClick={(e) => clickHandle(subMenu.label, subMenu.label)}
+                                                    activeName={activeSub}
                                                 >
                                                     {subMenu.label}
                                                 </NavLinkTabs>

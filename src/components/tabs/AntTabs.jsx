@@ -57,9 +57,7 @@ const AntTabs = (props) => {
 
 
     const removeTab = (targetKey) => {
-        console.log(targetKey);
         const targetIndex = items.findIndex((tab) => tab.key === targetKey);
-        console.log(items.length - 1);
         const newPanes = items.filter((tab) => tab.key !== targetKey);
         if (newPanes.length && targetKey === activeKey) {
             const { key } = newPanes[
