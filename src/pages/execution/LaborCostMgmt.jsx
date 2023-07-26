@@ -1,40 +1,36 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-
-import { default as EgovLeftNav } from 'components/leftmenu/EgovLeftNavExecution';
+import React from "react";
+import { Link } from "react-router-dom";
+import store from "store/configureStore";
+import { tabActive } from "components/tabs/TabsActions";
+import { default as EgovLeftNav } from "components/leftmenu/EgovLeftNavExecution";
+import PersonnelMgmts from "./personnelMgmt/PersonnelMgmts";
 
 /** 실행관리-인건비관리 */
 function LaborCostMgmt() {
-	return (
-		<>
-			<div className="container">
-				<div className="c_wrap">
-					{/* <!-- Location --> */}
-					<div className="location">
-						<ul>
-							<li><Link to="" className="home">Home</Link></li>
-							<li><Link to="/execution">실행관리</Link></li>
-							<li>인건비관리</li>
-						</ul>
-               		 </div>
-                	{/* <!--// Location --> */}
-
-					<div className="layout">
-						{/* <!-- Navigation --> */}
-						<EgovLeftNav></EgovLeftNav>
-                    	{/* <!--// Navigation --> */}
-
-						{/* <!-- 본문 --> */}
-						<div className="contents" id="contents">
-							<div> 인건비관리 </div>
-						</div>
-						{/* <!--// 본문 --> */}
-					</div>
-
-				</div>
-			</div>
-		</>
-	);
+    return (
+        <>
+            <div className="location">
+                <ul>
+                    <li>
+                        <Link to="" className="home">
+                            Home
+                        </Link>
+                    </li>
+                    <li>
+                        <Link
+                            to=""
+                            onClick={(e) =>
+                                store.dispatch(tabActive("실행원가"))
+                            }>
+                            실행관리
+                        </Link>
+                    </li>
+                    <li>인건비관리</li>
+                </ul>
+            </div>
+            <PersonnelMgmts />
+        </>
+    );
 }
 
 export default LaborCostMgmt;
