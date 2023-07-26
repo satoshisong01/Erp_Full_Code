@@ -234,20 +234,10 @@ const GroupCodes = () => {
                                         <table
                                             ref={dataTableRef}
                                             className="table table-bordered"
-                                            id="dataTable"
-                                            style={{
-                                                backgroundColor: "#fff",
-                                            }}>
+                                            id="dataTable">
                                             <thead>
                                                 <tr>
-                                                    <th
-                                                        style={{
-                                                            display: "flex",
-                                                            justifyContent:
-                                                                "center",
-                                                            alignItems:
-                                                                "center",
-                                                        }}>
+                                                    <th className="tableHeaderTh">
                                                         <input
                                                             type="checkbox"
                                                             checked={check}
@@ -255,12 +245,6 @@ const GroupCodes = () => {
                                                                 handleClick(e)
                                                             }
                                                         />
-                                                        <p
-                                                            style={{
-                                                                margin: 0,
-                                                            }}>
-                                                            All
-                                                        </p>
                                                     </th>
                                                     <th>분류코드명</th>
                                                     <th>그룹코드</th>

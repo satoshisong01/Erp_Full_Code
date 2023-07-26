@@ -231,13 +231,10 @@ const DetailCodes = () => {
                                             <table
                                                 ref={dataTableRef}
                                                 className="table table-bordered"
-                                                id="dataTable"
-                                                style={{
-                                                    backgroundColor: "#fff",
-                                                }}>
+                                                id="dataTable">
                                                 <thead>
                                                     <tr>
-                                                        <th className="theadThCss">
+                                                        <th className="tableHeaderTh">
                                                             <input
                                                                 type="checkbox"
                                                                 checked={check}
@@ -247,12 +244,6 @@ const DetailCodes = () => {
                                                                     )
                                                                 }
                                                             />
-                                                            <p
-                                                                style={{
-                                                                    margin: 0,
-                                                                }}>
-                                                                All
-                                                            </p>
                                                         </th>
                                                         <th>그룹코드</th>
                                                         <th>그룹코드명</th>

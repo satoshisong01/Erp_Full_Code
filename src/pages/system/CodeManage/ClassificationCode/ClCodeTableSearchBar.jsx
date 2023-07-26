@@ -55,11 +55,7 @@ export default function ClCodeTableSearchBar({
     return (
         <div style={{ height: "50px" }}>
             <div className="searchMain">
-                <form
-                    name="searchForm"
-                    id="searchForm"
-                    role="form"
-                    onSubmit={handleSearch}>
+                <form name="searchForm" id="searchForm" onSubmit={handleSearch}>
                     <div className="topMenuBtn">
                         <div className="box">
                             <div className="radioBtn">
@@ -170,55 +166,6 @@ export default function ClCodeTableSearchBar({
                                 onChange={(e) => setInputValue(e.target.value)}
                             />
                         </div>
-                        {/*<div className="box2">
-                            <label
-                                htmlFor="searchCondition"
-                                className="box_search">
-                                검색조건
-                            </label>
-                            {urlName === "clCode" && (
-                                <select
-                                    id="searchCondition"
-                                    name="searchCondition"
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        setInputLv(e.target.value)
-                                    }>
-                                    <option value="0">전체</option>
-                                    <option value="1">분류코드</option>
-                                    <option value="2">분류코드명</option>
-                                    <option value="3">분류코드 설명</option>
-                                </select>
-                            )}
-                            {urlName === "groupCode" && (
-                                <select
-                                    id="searchCondition"
-                                    name="searchCondition"
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        setInputLv(e.target.value)
-                                    }>
-                                    <option value="0">전체</option>
-                                    <option value="1">그룹코드</option>
-                                    <option value="2">그룹코드명</option>
-                                    <option value="3">그룹코드 설명</option>
-                                </select>
-                            )}
-                            {urlName === "detailCode" && (
-                                <select
-                                    id="searchCondition"
-                                    name="searchCondition"
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        setInputLv(e.target.value)
-                                    }>
-                                    <option value="0">전체</option>
-                                    <option value="1">상세코드</option>
-                                    <option value="2">상세코드명</option>
-                                    <option value="3">상세코드 설명</option>
-                                </select>
-                            )}
-                        </div>*/}
                     </div>
                 </form>
             </div>

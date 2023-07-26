@@ -55,11 +55,7 @@ export default function BoardViewingTableSearchBar({
     return (
         <div style={{ height: "50px" }}>
             <div className="searchMain">
-                <form
-                    name="searchForm"
-                    id="searchForm"
-                    role="form"
-                    onSubmit={handleSearch}>
+                <form name="searchForm" id="searchForm" onSubmit={handleSearch}>
                     <div className="topMenuBtn">
                         <div className="box">
                             <div className="radioBtn">

@@ -49,23 +49,16 @@ export default function CalReceiveTableSearchBar({
     return (
         <div style={{ height: "50px" }}>
             <div className="searchMain">
-                <form
-                    name="searchForm"
-                    id="searchForm"
-                    role="form"
-                    onSubmit={handleSearch}
-                >
+                <form name="searchForm" id="searchForm" onSubmit={handleSearch}>
                     <div className="topMenuBtn">
                         <button
                             className="btn btn-primary refreshIcon"
-                            onClick={refresh}
-                        >
+                            onClick={refresh}>
                             <i className="fa fa-refresh" />
                         </button>
                         <button
                             className="btn btn-primary clearIcon"
-                            onClick={handleResetClick}
-                        >
+                            onClick={handleResetClick}>
                             초기화
                         </button>
                         <button
@@ -75,8 +68,7 @@ export default function CalReceiveTableSearchBar({
                                 handleOption();
                             }}
                             type="submit"
-                            className="btn btn-primary searchIcon"
-                        >
+                            className="btn btn-primary searchIcon">
                             <i className="fa fa-search" />
                         </button>
                     </div>
@@ -85,8 +77,7 @@ export default function CalReceiveTableSearchBar({
                         <div className="box1">
                             <label
                                 htmlFor="searchKeyword"
-                                className="box_search"
-                            >
+                                className="box_search">
                                 검색어
                             </label>
                             <input
@@ -100,8 +91,7 @@ export default function CalReceiveTableSearchBar({
                         <div className="box2">
                             <label
                                 htmlFor="searchCondition"
-                                className="box_search"
-                            >
+                                className="box_search">
                                 검색조건
                             </label>
                             {urlName === "productGroup" && (
@@ -109,8 +99,9 @@ export default function CalReceiveTableSearchBar({
                                     id="searchCondition"
                                     name="searchCondition"
                                     className="form-control"
-                                    onChange={(e) => setInputLv(e.target.value)}
-                                >
+                                    onChange={(e) =>
+                                        setInputLv(e.target.value)
+                                    }>
                                     <option value="0">전체</option>
                                     <option value="1">분류코드</option>
                                     <option value="2">분류코드명</option>
@@ -122,8 +113,9 @@ export default function CalReceiveTableSearchBar({
                                     id="searchCondition"
                                     name="searchCondition"
                                     className="form-control"
-                                    onChange={(e) => setInputLv(e.target.value)}
-                                >
+                                    onChange={(e) =>
+                                        setInputLv(e.target.value)
+                                    }>
                                     <option value="0">전체</option>
                                     <option value="1">그룹코드</option>
                                     <option value="2">그룹코드명</option>
@@ -135,8 +127,9 @@ export default function CalReceiveTableSearchBar({
                                     id="searchCondition"
                                     name="searchCondition"
                                     className="form-control"
-                                    onChange={(e) => setInputLv(e.target.value)}
-                                >
+                                    onChange={(e) =>
+                                        setInputLv(e.target.value)
+                                    }>
                                     <option value="0">전체</option>
                                     <option value="1">상세코드</option>
                                     <option value="2">상세코드명</option>

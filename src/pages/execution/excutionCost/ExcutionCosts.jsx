@@ -252,12 +252,6 @@ const ExcutionCosts = () => {
                                                                         )
                                                                     }
                                                                 />
-                                                                <p
-                                                                    style={{
-                                                                        margin: 0,
-                                                                    }}>
-                                                                    All
-                                                                </p>
                                                             </th>
                                                             {[
                                                                 "ID",

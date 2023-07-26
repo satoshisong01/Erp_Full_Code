@@ -251,12 +251,6 @@ const ProductGroups = () => {
                                                                         )
                                                                     }
                                                                 />
-                                                                <p
-                                                                    style={{
-                                                                        margin: 0,
-                                                                    }}>
-                                                                    All
-                                                                </p>
                                                             </th>
                                                             {[
                                                                 "품목그룹명",

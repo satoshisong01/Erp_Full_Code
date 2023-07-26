@@ -252,12 +252,6 @@ const Businesses = () => {
                                                                         )
                                                                     }
                                                                 />
-                                                                <p
-                                                                    style={{
-                                                                        margin: 0,
-                                                                    }}>
-                                                                    All
-                                                                </p>
                                                             </th>
                                                             {[
                                                                 "프로젝트명",

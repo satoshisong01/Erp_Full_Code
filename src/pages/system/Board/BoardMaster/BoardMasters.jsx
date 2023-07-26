@@ -250,9 +250,6 @@ const BoardMasters = () => {
                                                                     )
                                                                 }
                                                             />
-                                                            {/*<p className="checkTest">
-                                                                All
-                                                            </p>*/}
                                                         </th>
                                                         <th>분류코드</th>
                                                         <th>분류코드명</th>
