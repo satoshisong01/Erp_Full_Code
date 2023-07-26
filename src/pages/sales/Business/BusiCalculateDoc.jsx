@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
-import "../css/PersonnelPopup.css";
+import "../../../css/componentCss/PersonnelPopup.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
@@ -22,19 +22,13 @@ const BusiCalculateDoc = () => {
 
     useEffect(() => {
         if ($.fn.DataTable.isDataTable(dataTableRef.current)) {
-            $(dataTableRef.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef.current).DataTable().destroy();
         }
         if ($.fn.DataTable.isDataTable(dataTableRef2.current)) {
-            $(dataTableRef2.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef2.current).DataTable().destroy();
         }
         if ($.fn.DataTable.isDataTable(dataTableRef3.current)) {
-            $(dataTableRef3.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef3.current).DataTable().destroy();
         }
         $(dataTableRef.current).DataTable({
             paging: true,
@@ -241,24 +235,21 @@ const BusiCalculateDoc = () => {
         <div
             style={{
                 backgroundColor: "white",
-            }}
-        >
+            }}>
             <div>
                 <div
                     style={{
                         padding: "50px",
                         display: "flex",
                         justifyContent: "center",
-                    }}
-                >
+                    }}>
                     <span
                         style={{
                             fontSize: "32px",
                             margin: 0,
                             fontWeight: "700",
                             borderBottom: "1px solid black",
-                        }}
-                    >
+                        }}>
                         사후 정산서
                     </span>
                 </div>
@@ -600,8 +591,7 @@ const BusiCalculateDoc = () => {
                                         style={{
                                             width: "100%",
                                             margin: "auto",
-                                        }}
-                                    >
+                                        }}>
                                         <h6>[재료비]</h6>
                                         <tr className="tableTrDetail">
                                             <td className="table4-3">품목</td>

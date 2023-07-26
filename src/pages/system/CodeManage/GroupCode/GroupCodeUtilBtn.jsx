@@ -4,7 +4,7 @@ import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
 import XLSX from "xlsx-js-style";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import "../../css/CodeUtilBtn.css";
+import "../../../../css/componentCss/CodeUtilBtn.css";
 import axios from "axios";
 import GroupCodeModalPagePost from "./GroupCodeModalPagePost";
 
@@ -187,10 +187,7 @@ export default function GroupCodeUtilBtn({
 
     const handlePrint = () => {
         const table = $(dataTableRef.current).DataTable();
-        table
-            .rows()
-            .data()
-            .toArray();
+        table.rows().data().toArray();
 
         const printWindow = window.open("", "_blank");
         printWindow.document.open();
@@ -273,8 +270,7 @@ export default function GroupCodeUtilBtn({
                         onClick={() => {
                             // STEP 4: Write Excel file to browser (Specify the file name in the second argument)
                             XLSX.writeFile(wb, "table-demo.xlsx");
-                        }}
-                    >
+                        }}>
                         <i className="fa fa-file-excel-o utilIcon" />
                         CSV
                     </button>
@@ -283,8 +279,7 @@ export default function GroupCodeUtilBtn({
                     <CopyToClipboard text="Copy Table" onCopy={tableCopyBtn}>
                         <button
                             id="utilBtn"
-                            className="btn btn-primary copyIcon"
-                        >
+                            className="btn btn-primary copyIcon">
                             <i className="fa fa-copy utilIcon" />
                             Copy
                         </button>
@@ -294,8 +289,7 @@ export default function GroupCodeUtilBtn({
                     <button
                         id="utilBtn"
                         className="btn btn-primary printIcon"
-                        onClick={handlePrint}
-                    >
+                        onClick={handlePrint}>
                         <i className="fa fa-print utilIcon" />
                         Print
                     </button>
@@ -304,8 +298,7 @@ export default function GroupCodeUtilBtn({
                     <button
                         id="utilBtn"
                         className="btn btn-primary delIcon"
-                        onClick={handleDelete}
-                    >
+                        onClick={handleDelete}>
                         <i className="fa fa-trash-o utilIcon" />
                         삭제
                     </button>
@@ -314,8 +307,7 @@ export default function GroupCodeUtilBtn({
                     <button
                         className="btn btn-primary addIcon"
                         id="utilBtn"
-                        onClick={(e) => handleModalPostClick(e)}
-                    >
+                        onClick={(e) => handleModalPostClick(e)}>
                         <i className="fa fa-plus utilIcon" />
                         추가
                     </button>

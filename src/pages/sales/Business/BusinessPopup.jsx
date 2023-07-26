@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
-import "../css/PersonnelPopup.css";
+import "../../../css/componentCss/PersonnelPopup.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
@@ -24,29 +24,19 @@ const BusinessPopup = () => {
 
     useEffect(() => {
         if ($.fn.DataTable.isDataTable(dataTableRef.current)) {
-            $(dataTableRef.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef.current).DataTable().destroy();
         }
         if ($.fn.DataTable.isDataTable(dataTableRef2.current)) {
-            $(dataTableRef2.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef2.current).DataTable().destroy();
         }
         if ($.fn.DataTable.isDataTable(dataTableRef3.current)) {
-            $(dataTableRef3.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef3.current).DataTable().destroy();
         }
         if ($.fn.DataTable.isDataTable(dataTableRef4.current)) {
-            $(dataTableRef4.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef4.current).DataTable().destroy();
         }
         if ($.fn.DataTable.isDataTable(dataTableRef5.current)) {
-            $(dataTableRef5.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef5.current).DataTable().destroy();
         }
         $(dataTableRef.current).DataTable({
             paging: true,
@@ -289,8 +279,7 @@ const BusinessPopup = () => {
         <div
             style={{
                 backgroundColor: "white",
-            }}
-        >
+            }}>
             <div>
                 <div style={{ display: "flex", justifyContent: "right" }}>
                     <button className="btn btn-primary">결제선</button>
@@ -305,15 +294,13 @@ const BusinessPopup = () => {
                         position: "relative",
                         marginBottom: "50px",
                         marginTop: "20px",
-                    }}
-                >
+                    }}>
                     <div
                         style={{
                             position: "absolute",
                             top: "50%",
                             transform: "translateY(-50%)",
-                        }}
-                    >
+                        }}>
                         <h1 style={{ margin: 0 }}>수주 계획</h1>
                     </div>
 
@@ -322,8 +309,7 @@ const BusinessPopup = () => {
                         style={{
                             display: "flex",
                             marginLeft: "auto",
-                        }}
-                    >
+                        }}>
                         <div
                             style={{
                                 writingMode: "vertical-rl",
@@ -333,21 +319,18 @@ const BusinessPopup = () => {
                                 justifyContent: "center",
                                 alignItems: "center",
                                 textAlign: "center",
-                            }}
-                        >
+                            }}>
                             <h3
                                 style={{
                                     transform: "translateX(-10%)",
-                                }}
-                            >
+                                }}>
                                 발신부서
                             </h3>
                         </div>
                         <div
                             style={{
                                 width: "100px",
-                            }}
-                        >
+                            }}>
                             <div
                                 style={{
                                     backgroundColor: "#e3ecf8",
@@ -356,8 +339,7 @@ const BusinessPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 팀원
                             </div>
                             <div
@@ -367,16 +349,14 @@ const BusinessPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 유지수
                             </div>
                         </div>
                         <div
                             style={{
                                 width: "100px",
-                            }}
-                        >
+                            }}>
                             <div
                                 style={{
                                     backgroundColor: "#e3ecf8",
@@ -385,8 +365,7 @@ const BusinessPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 PM
                             </div>
                             <div
@@ -396,8 +375,7 @@ const BusinessPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 손영훈
                             </div>
                         </div>
@@ -412,8 +390,7 @@ const BusinessPopup = () => {
                                     <select
                                         name=""
                                         id=""
-                                        style={{ marginLeft: "7%" }}
-                                    >
+                                        style={{ marginLeft: "7%" }}>
                                         <option value="">
                                             ----------------------- 선택
                                             -----------------------
@@ -560,8 +537,7 @@ const BusinessPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header className="headerH2">
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -575,14 +551,12 @@ const BusinessPopup = () => {
                                         border="1"
                                         style={{
                                             width: "100%",
-                                        }}
-                                    >
+                                        }}>
                                         <thead>
                                             <tr className="tableTr3">
                                                 <th
                                                     className="thTitle1"
-                                                    rowSpan={"2"}
-                                                >
+                                                    rowSpan={"2"}>
                                                     <div className="inputTh">
                                                         <input
                                                             type="checkbox"
@@ -595,38 +569,32 @@ const BusinessPopup = () => {
                                                 </th>
                                                 <th
                                                     className="thTitle1"
-                                                    rowSpan={"2"}
-                                                >
+                                                    rowSpan={"2"}>
                                                     품목그룹명
                                                 </th>
                                                 <th
                                                     className="thTitle1"
-                                                    rowSpan={"2"}
-                                                >
+                                                    rowSpan={"2"}>
                                                     연월
                                                 </th>
                                                 <th
                                                     className="thTitle1"
-                                                    rowSpan={"2"}
-                                                >
+                                                    rowSpan={"2"}>
                                                     M/M계
                                                 </th>
                                                 <th
                                                     className="thTitle1"
-                                                    rowSpan={"2"}
-                                                >
+                                                    rowSpan={"2"}>
                                                     인건비계
                                                 </th>
                                                 <th
                                                     className="thTitle1"
-                                                    colSpan={"7"}
-                                                >
+                                                    colSpan={"7"}>
                                                     일반
                                                 </th>
                                                 <th
                                                     className="thTitle1"
-                                                    colSpan={"6"}
-                                                >
+                                                    colSpan={"6"}>
                                                     프로젝트팀원
                                                 </th>
                                             </tr>
@@ -677,8 +645,7 @@ const BusinessPopup = () => {
                                             {tableRunRows.map((row) => (
                                                 <tr
                                                     className="tableTr3"
-                                                    key={row.id}
-                                                >
+                                                    key={row.id}>
                                                     {/* 테이블 셀들의 값들을 적절하게 지정하세요 */}
                                                     <td className="tbodyTd">
                                                         <div className="inputTh">
@@ -692,8 +659,7 @@ const BusinessPopup = () => {
                                                                     <option
                                                                         value={
                                                                             row.품목그룹명
-                                                                        }
-                                                                    >
+                                                                        }>
                                                                         {
                                                                             row.품목그룹명
                                                                         }
@@ -757,8 +723,7 @@ const BusinessPopup = () => {
                                     </table>
                                     <button
                                         className="btn btn-primary tdBtn"
-                                        onClick={handleAddRunRow}
-                                    >
+                                        onClick={handleAddRunRow}>
                                         추가
                                     </button>
                                     <table className="tableMain2">
@@ -787,8 +752,7 @@ const BusinessPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -871,16 +835,14 @@ const BusinessPopup = () => {
                                                 display: "flex",
                                                 width: "100%",
                                                 justifyContent: "center",
-                                            }}
-                                        >
+                                            }}>
                                             <button
                                                 style={{
                                                     width: "100%",
                                                     margin: "10px",
                                                 }}
                                                 className="btn btn-primary tdBtn"
-                                                onClick={handleAddRow}
-                                            >
+                                                onClick={handleAddRow}>
                                                 추가
                                             </button>
                                         </div>
@@ -906,8 +868,7 @@ const BusinessPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -995,16 +956,14 @@ const BusinessPopup = () => {
                                                 display: "flex",
                                                 width: "100%",
                                                 justifyContent: "center",
-                                            }}
-                                        >
+                                            }}>
                                             <button
                                                 style={{
                                                     width: "100%",
                                                     margin: "10px",
                                                 }}
                                                 className="btn btn-primary tdBtn"
-                                                onClick={handleAddRow}
-                                            >
+                                                onClick={handleAddRow}>
                                                 추가
                                             </button>
                                         </div>
@@ -1030,8 +989,7 @@ const BusinessPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -1084,16 +1042,14 @@ const BusinessPopup = () => {
                                                 display: "flex",
                                                 width: "100%",
                                                 justifyContent: "center",
-                                            }}
-                                        >
+                                            }}>
                                             <button
                                                 style={{
                                                     width: "100%",
                                                     margin: "10px",
                                                 }}
                                                 className="btn btn-primary tdBtn"
-                                                onClick={handleAddRow}
-                                            >
+                                                onClick={handleAddRow}>
                                                 추가
                                             </button>
                                         </div>
@@ -1108,8 +1064,7 @@ const BusinessPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -1162,16 +1117,14 @@ const BusinessPopup = () => {
                                                 display: "flex",
                                                 width: "100%",
                                                 justifyContent: "center",
-                                            }}
-                                        >
+                                            }}>
                                             <button
                                                 style={{
                                                     width: "100%",
                                                     margin: "10px",
                                                 }}
                                                 className="btn btn-primary tdBtn"
-                                                onClick={handleAddRow}
-                                            >
+                                                onClick={handleAddRow}>
                                                 추가
                                             </button>
                                         </div>
@@ -1197,8 +1150,7 @@ const BusinessPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -1249,16 +1201,14 @@ const BusinessPopup = () => {
                                                 display: "flex",
                                                 width: "100%",
                                                 justifyContent: "center",
-                                            }}
-                                        >
+                                            }}>
                                             <button
                                                 style={{
                                                     width: "100%",
                                                     margin: "10px",
                                                 }}
                                                 className="btn btn-primary tdBtn"
-                                                onClick={handleAddRow}
-                                            >
+                                                onClick={handleAddRow}>
                                                 추가
                                             </button>
                                         </div>
@@ -1272,8 +1222,7 @@ const BusinessPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -1286,12 +1235,10 @@ const BusinessPopup = () => {
                                         className={`hideDiv ${
                                             isClicked4 ? "" : "clicked"
                                         }`}
-                                        border="1"
-                                    >
+                                        border="1">
                                         <textarea
                                             className="textAreaWidth"
-                                            placeholder="내용을 입력하세요."
-                                        ></textarea>
+                                            placeholder="내용을 입력하세요."></textarea>
                                     </div>
                                 </div>
                             </JarvisWidget>
@@ -1302,8 +1249,7 @@ const BusinessPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -1316,8 +1262,7 @@ const BusinessPopup = () => {
                                         className={`hideDiv2 ${
                                             isClicked5 ? "" : "clicked"
                                         }`}
-                                        border="1"
-                                    >
+                                        border="1">
                                         <span className="div5Span">
                                             이곳에 파일을 드래그하세요.
                                         </span>

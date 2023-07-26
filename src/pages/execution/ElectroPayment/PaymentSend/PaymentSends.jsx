@@ -5,9 +5,9 @@ import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "../../../../views/sysadmin/defaultSearchBar.css";
 import { BigBreadcrumbs, WidgetGrid, JarvisWidget } from "../../../../common";
-import "../../css/UserManage.css";
+import "../../../../css/componentCss/UserManage.css";
 import axios from "axios";
-import "../../css/Code.css";
+import "../../../../css/componentCss/Code.css";
 import "react-calendar/dist/Calendar.css";
 import Search from "../../../../common/tableHeader/Search";
 import PaymentSendModalPage from "./PaymentSendModalPage";
@@ -54,9 +54,7 @@ const PaymentSends = () => {
             dataTableRef.current &&
             $.fn.DataTable.isDataTable(dataTableRef.current)
         ) {
-            $(dataTableRef.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef.current).DataTable().destroy();
         }
         setIsSearching(!isSearching); // 로딩 상태 활성화
         await fetchAllData(urlName);
@@ -131,9 +129,7 @@ const PaymentSends = () => {
     useEffect(() => {
         if (!isSearching && searchedData.length > 0) {
             if ($.fn.DataTable.isDataTable(dataTableRef.current)) {
-                $(dataTableRef.current)
-                    .DataTable()
-                    .destroy();
+                $(dataTableRef.current).DataTable().destroy();
             }
             $(dataTableRef.current).DataTable({
                 paging: true,
@@ -233,8 +229,7 @@ const PaymentSends = () => {
                                     <JarvisWidget
                                         id="wid-id-0"
                                         editbutton={true}
-                                        color="blueDark"
-                                    >
+                                        color="blueDark">
                                         <header>
                                             <span className="widget-icon">
                                                 <i className="fa fa-table" />
@@ -269,11 +264,10 @@ const PaymentSends = () => {
                                                                 style={{
                                                                     backgroundColor:
                                                                         "#fff",
-                                                                }}
-                                                            >
+                                                                }}>
                                                                 <thead>
                                                                     <tr>
-                                                                        <th className="theadThCss">
+                                                                        <th className="tableHeaderTh">
                                                                             <input
                                                                                 type="checkbox"
                                                                                 checked={
@@ -290,8 +284,7 @@ const PaymentSends = () => {
                                                                             <p
                                                                                 style={{
                                                                                     margin: 0,
-                                                                                }}
-                                                                            >
+                                                                                }}>
                                                                                 All
                                                                             </p>
                                                                         </th>
@@ -308,8 +301,7 @@ const PaymentSends = () => {
                                                                                 <th
                                                                                     key={
                                                                                         index
-                                                                                    }
-                                                                                >
+                                                                                    }>
                                                                                     {
                                                                                         item
                                                                                     }
@@ -327,8 +319,7 @@ const PaymentSends = () => {
                                                                             <tr
                                                                                 key={
                                                                                     index
-                                                                                }
-                                                                            >
+                                                                                }>
                                                                                 <td>
                                                                                     <input
                                                                                         type="checkbox"
@@ -370,8 +361,7 @@ const PaymentSends = () => {
                                                                                             }
                                                                                             key={
                                                                                                 key
-                                                                                            }
-                                                                                        >
+                                                                                            }>
                                                                                             {
                                                                                                 item[
                                                                                                     key

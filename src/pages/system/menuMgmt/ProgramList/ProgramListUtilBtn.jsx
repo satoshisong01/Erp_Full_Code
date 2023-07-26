@@ -4,11 +4,11 @@ import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
 import XLSX from "xlsx-js-style";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import "../../../css/componentCss/CodeUtilBtn.css";
+import "../../../../css/componentCss/CodeUtilBtn.css";
 import axios from "axios";
-import ExcutionCostModalPagePost from "./ExcutionCostModalPagePost";
+import ProgramListModalPagePost from "./ProgramListModalPagePost";
 
-export default function ExcutionCostUtilBtn({
+export default function ProgramListUtilBtn({
     initialData,
     refresh,
     changeInt,
@@ -17,12 +17,12 @@ export default function ExcutionCostUtilBtn({
     headers,
 }) {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
-    const [ExcutionCost, setExcutionCost] = useState(1); //키 값 넘버자동 1씩추가
+    const [ProgramList, setProgramList] = useState(1); //키 값 넘버자동 1씩추가
     const [postModalOpen, setPostModalOpen] = useState(false); // 클릭 추가 모달창
 
     //버튼 활성화 (코드관리에서는 엑셀버튼은 비활성화)
     const showExcelBtn =
-        urlName === "productGroup" ||
+        urlName === "ProgramList" ||
         urlName === "groupCode" ||
         urlName === "detailCode"
             ? false
@@ -37,7 +37,7 @@ export default function ExcutionCostUtilBtn({
 
     //setSelectedData(selectedData2);
 
-    //const changeInt = selectedData.map((item) => item.clCode); //체크된 데이터 배열로 담아서 저장
+    //const changeInt = selectedData.map((item) => item.ProgramList); //체크된 데이터 배열로 담아서 저장
     //console.log(changeInt);
 
     //------------------------------- Excel 파일 다운로드 --------------------------------------
@@ -73,9 +73,9 @@ export default function ExcutionCostUtilBtn({
     // STEP 3: 바디 생성
     const body = selectedData.map((item) =>
         [
-            { v: item.clCode, t: "s" },
-            { v: item.clCodeNm, t: "s" },
-            { v: item.clCodeDc, t: "s" },
+            { v: item.ProgramList, t: "s" },
+            { v: item.ProgramListNm, t: "s" },
+            { v: item.ProgramListDc, t: "s" },
             { v: item.createIdBy, t: "s" },
             { v: item.createDate, t: "s" },
             { v: item.lastModifiedIdBy, t: "s" },
@@ -104,7 +104,7 @@ export default function ExcutionCostUtilBtn({
         let headers;
         let fields;
 
-        if (urlName === "productGroup") {
+        if (urlName === "ProgramList") {
             headers = [
                 "코드",
                 "코드명",
@@ -115,9 +115,9 @@ export default function ExcutionCostUtilBtn({
                 "수정일",
             ];
             fields = [
-                "clCode",
-                "clCodeNm",
-                "clCodeDc",
+                "ProgramList",
+                "ProgramListNm",
+                "ProgramListDc",
                 "createIdBy",
                 "createDate",
                 "lastModifiedIdBy",
@@ -135,7 +135,7 @@ export default function ExcutionCostUtilBtn({
                 "수정일",
             ];
             fields = [
-                "clCodeNm",
+                "ProgramListNm",
                 "codeId",
                 "codeIdNm",
                 "codeIdDc",
@@ -226,16 +226,15 @@ export default function ExcutionCostUtilBtn({
         try {
             const options = {
                 headers: headers,
+                data: changeInt,
             };
+            console.log(changeInt, "삭제시 나오는값");
             const response = await axios.delete(
-                //`http://192.168.0.113:8080/api/bsinMngmn/product/${urlName}/removeAll.do`,
-                `http://localhost:8080/api/bsinMngmn/product/${urlName}/removeAll.do`,
-                {
-                    data: changeInt,
-                },
+                `http://192.168.0.113:8080/api/system/code/ProgramList/removeAll.do`,
+                //`http://localhost:8080/api/system/code/ProgramList/removeAll.do`,
                 options
             );
-            console.log(response.data);
+            console.log(response.data, "이게머냐고");
         } catch (error) {
             console.error(error);
         } finally {
@@ -253,55 +252,11 @@ export default function ExcutionCostUtilBtn({
 
     //---------------------------------- 모달창 수정  ------------------------------------------
 
-    const handleCalculate = (e) => {
-        //console.log(e);
-        //console.log(item);
-        //setModalItem(item);
-        //setExcutionCost(ExcutionCost + 1);
-        //setPostModalOpen(true);
-    };
-
-    //---------------------------------- 모달창 수정  ------------------------------------------
-
-    //---------------------------------- 모달창 수정  ------------------------------------------
-
-    const handleSubmit = (e) => {
-        console.log(e);
-        //console.log(item);
-        //setModalItem(item);
-        //setExcutionCost(ExcutionCost + 1);
-        //setPostModalOpen(true);
-    };
-
-    //---------------------------------- 모달창 수정  ------------------------------------------
-
-    //---------------------------------- 모달창 수정  ------------------------------------------
-
-    const handlePlan = (e) => {
-        //console.log(e);
-        //console.log(item);
-        //setModalItem(item);
-        //setExcutionCost(ExcutionCost + 1);
-        //setPostModalOpen(true);
-    };
-
-    //---------------------------------- 모달창 수정  ------------------------------------------
-
-    //---------------------------------- 모달창 수정  ------------------------------------------
-
-    const handlePayment = (e) => {
-        console.log(e);
-        //console.log(item);
-        //setModalItem(item);
-        //setExcutionCost(ExcutionCost + 1);
-        //setPostModalOpen(true);
-    };
-
     const handleModalPostClick = (e) => {
         console.log(e);
         //console.log(item);
         //setModalItem(item);
-        setExcutionCost(ExcutionCost + 1);
+        setProgramList(ProgramList + 1);
         setPostModalOpen(true);
     };
 
@@ -309,59 +264,7 @@ export default function ExcutionCostUtilBtn({
 
     return (
         <div>
-            {/*<div className="tableBtn">
-                <button
-                    className="btn btn-primary"
-                    id="utilBtn"
-                    onClick={() => {
-                        // STEP 4: Write Excel file to browser (Specify the file name in the second argument)
-                        XLSX.writeFile(wb, "table-demo.xlsx");
-                    }}
-                >
-                    <img className="btnImg" src={excelImg} />
-                    CSV
-                </button>
-                <CopyToClipboard text="Copy Table" onCopy={tableCopyBtn}>
-                    <button id="utilBtn" className="btn btn-primary">
-                        <img className="btnImg" src={copyImg} />
-                        Copy
-                    </button>
-                </CopyToClipboard>
-                <button
-                    id="utilBtn"
-                    className="btn btn-primary"
-                    onClick={handlePrint}
-                >
-                    <img className="btnImg" src={printImg} />
-                    Print
-                </button>
-                <button
-                    id="utilBtn"
-                    className="btn btn-primary"
-                    onClick={handleDelete}
-                >
-                    <img className="btnImg" src={deleteImg} />
-                    삭제
-                </button>
-                <button
-                    className="btn btn-primary"
-                    id="utilBtn"
-                    onClick={(e) => handleModalPostClick(e)}
-                >
-                    <img className="btnImg" src={plusImg} />
-                    추가
-                </button>
-            </div>*/}
             <div className="tableBtn">
-                {showExcelBtn && (
-                    <button
-                        className="btn btn-primary csvIcon"
-                        id="utilBtn"
-                        onClick={handleCalculate}>
-                        <i className="fa fa-file-excel-o utilIcon" />
-                        사후 정산서
-                    </button>
-                )}
                 {showExcelBtn && (
                     <button
                         className="btn btn-primary csvIcon"
@@ -393,33 +296,6 @@ export default function ExcutionCostUtilBtn({
                         Print
                     </button>
                 )}
-                {showPrintBtn && (
-                    <button
-                        id="utilBtn"
-                        className="btn btn-primary printIcon"
-                        onClick={handlePlan}>
-                        <i className="fa fa-print utilIcon" />
-                        계획등록
-                    </button>
-                )}
-                {showPrintBtn && (
-                    <button
-                        id="utilBtn"
-                        className="btn btn-primary printIcon"
-                        onClick={handleSubmit}>
-                        <i className="fa fa-print utilIcon" />
-                        실행등록
-                    </button>
-                )}
-                {showPrintBtn && (
-                    <button
-                        id="utilBtn"
-                        className="btn btn-primary printIcon"
-                        onClick={handlePayment}>
-                        <i className="fa fa-print utilIcon" />
-                        전자결제
-                    </button>
-                )}
                 {showDeleteBtn && (
                     <button
                         id="utilBtn"
@@ -441,15 +317,14 @@ export default function ExcutionCostUtilBtn({
             </div>
 
             {postModalOpen && (
-                <ExcutionCostModalPagePost
+                <ProgramListModalPagePost
                     onClose={() => {
                         setPostModalOpen(false);
                     }}
                     refresh={refresh}
-                    countExcutionCost={ExcutionCost}
+                    countProgramList={ProgramList}
                     urlName={urlName}
                     headers={headers}
-                    initialData={initialData}
                 />
             )}
         </div>

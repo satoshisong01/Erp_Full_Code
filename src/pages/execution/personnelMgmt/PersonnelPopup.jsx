@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
-import "../css/PersonnelPopup.css";
+import "../../../css/componentCss/PersonnelPopup.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
@@ -22,19 +22,13 @@ const PersonnelPopup = () => {
 
     useEffect(() => {
         if ($.fn.DataTable.isDataTable(dataTableRef.current)) {
-            $(dataTableRef.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef.current).DataTable().destroy();
         }
         if ($.fn.DataTable.isDataTable(dataTableRef2.current)) {
-            $(dataTableRef2.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef2.current).DataTable().destroy();
         }
         if ($.fn.DataTable.isDataTable(dataTableRef3.current)) {
-            $(dataTableRef3.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef3.current).DataTable().destroy();
         }
         $(dataTableRef.current).DataTable({
             paging: true,
@@ -241,8 +235,7 @@ const PersonnelPopup = () => {
         <div
             style={{
                 backgroundColor: "white",
-            }}
-        >
+            }}>
             {/*<button onClick={openPopup}>팝업열기</button>*/}
             <table>
                 <thead>
@@ -276,15 +269,13 @@ const PersonnelPopup = () => {
                         position: "relative",
                         marginBottom: "50px",
                         marginTop: "20px",
-                    }}
-                >
+                    }}>
                     <div
                         style={{
                             position: "absolute",
                             top: "50%",
                             transform: "translateY(-50%)",
-                        }}
-                    >
+                        }}>
                         <h1 style={{ margin: 0 }}>인건비 계획</h1>
                     </div>
 
@@ -293,8 +284,7 @@ const PersonnelPopup = () => {
                         style={{
                             display: "flex",
                             marginLeft: "auto",
-                        }}
-                    >
+                        }}>
                         <div
                             style={{
                                 writingMode: "vertical-rl",
@@ -304,21 +294,18 @@ const PersonnelPopup = () => {
                                 justifyContent: "center",
                                 alignItems: "center",
                                 textAlign: "center",
-                            }}
-                        >
+                            }}>
                             <h3
                                 style={{
                                     transform: "translateX(-10%)",
-                                }}
-                            >
+                                }}>
                                 발신부서
                             </h3>
                         </div>
                         <div
                             style={{
                                 width: "100px",
-                            }}
-                        >
+                            }}>
                             <div
                                 style={{
                                     backgroundColor: "#e3ecf8",
@@ -327,8 +314,7 @@ const PersonnelPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 팀원
                             </div>
                             <div
@@ -338,16 +324,14 @@ const PersonnelPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 유지수
                             </div>
                         </div>
                         <div
                             style={{
                                 width: "100px",
-                            }}
-                        >
+                            }}>
                             <div
                                 style={{
                                     backgroundColor: "#e3ecf8",
@@ -356,8 +340,7 @@ const PersonnelPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 PM
                             </div>
                             <div
@@ -367,8 +350,7 @@ const PersonnelPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 손영훈
                             </div>
                         </div>
@@ -500,8 +482,7 @@ const PersonnelPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header className="headerH2">
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -513,14 +494,12 @@ const PersonnelPopup = () => {
                                         border="1"
                                         style={{
                                             width: "100%",
-                                        }}
-                                    >
+                                        }}>
                                         <thead>
                                             <tr className="tableTr3">
                                                 <th
                                                     className="thTitle1"
-                                                    rowSpan={"2"}
-                                                >
+                                                    rowSpan={"2"}>
                                                     <div className="inputTh">
                                                         <input
                                                             type="checkbox"
@@ -533,38 +512,32 @@ const PersonnelPopup = () => {
                                                 </th>
                                                 <th
                                                     className="thTitle1"
-                                                    rowSpan={"2"}
-                                                >
+                                                    rowSpan={"2"}>
                                                     품목그룹명
                                                 </th>
                                                 <th
                                                     className="thTitle1"
-                                                    rowSpan={"2"}
-                                                >
+                                                    rowSpan={"2"}>
                                                     연월
                                                 </th>
                                                 <th
                                                     className="thTitle1"
-                                                    rowSpan={"2"}
-                                                >
+                                                    rowSpan={"2"}>
                                                     M/M계
                                                 </th>
                                                 <th
                                                     className="thTitle1"
-                                                    rowSpan={"2"}
-                                                >
+                                                    rowSpan={"2"}>
                                                     인건비계
                                                 </th>
                                                 <th
                                                     className="thTitle1"
-                                                    colSpan={"7"}
-                                                >
+                                                    colSpan={"7"}>
                                                     일반
                                                 </th>
                                                 <th
                                                     className="thTitle1"
-                                                    colSpan={"6"}
-                                                >
+                                                    colSpan={"6"}>
                                                     프로젝트팀원
                                                 </th>
                                             </tr>
@@ -615,8 +588,7 @@ const PersonnelPopup = () => {
                                             {tableRows.map((row) => (
                                                 <tr
                                                     className="tableTr3"
-                                                    key={row.id}
-                                                >
+                                                    key={row.id}>
                                                     {/* 테이블 셀들의 값들을 적절하게 지정하세요 */}
                                                     <td className="tbodyTd">
                                                         <div className="inputTh">
@@ -630,8 +602,7 @@ const PersonnelPopup = () => {
                                                                     <option
                                                                         value={
                                                                             row.품목그룹명
-                                                                        }
-                                                                    >
+                                                                        }>
                                                                         {
                                                                             row.품목그룹명
                                                                         }
@@ -695,8 +666,7 @@ const PersonnelPopup = () => {
                                     </table>
                                     <button
                                         className="btn btn-primary tdBtn"
-                                        onClick={handleAddRow}
-                                    >
+                                        onClick={handleAddRow}>
                                         추가
                                     </button>
                                     <table className="tableMain2">

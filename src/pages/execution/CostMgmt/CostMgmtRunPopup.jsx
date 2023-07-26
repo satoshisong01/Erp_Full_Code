@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
-import "../css/PersonnelPopup.css";
+import "../../../css/componentCss/PersonnelPopup.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
@@ -22,19 +22,13 @@ const CostMgmtRunPopup = () => {
 
     useEffect(() => {
         if ($.fn.DataTable.isDataTable(dataTableRef.current)) {
-            $(dataTableRef.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef.current).DataTable().destroy();
         }
         if ($.fn.DataTable.isDataTable(dataTableRef2.current)) {
-            $(dataTableRef2.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef2.current).DataTable().destroy();
         }
         if ($.fn.DataTable.isDataTable(dataTableRef3.current)) {
-            $(dataTableRef3.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef3.current).DataTable().destroy();
         }
         $(dataTableRef.current).DataTable({
             paging: true,
@@ -269,8 +263,7 @@ const CostMgmtRunPopup = () => {
         <div
             style={{
                 backgroundColor: "white",
-            }}
-        >
+            }}>
             {/*<button onClick={openPopup}>팝업열기</button>*/}
             <table>
                 <thead>
@@ -304,15 +297,13 @@ const CostMgmtRunPopup = () => {
                         position: "relative",
                         marginBottom: "50px",
                         marginTop: "20px",
-                    }}
-                >
+                    }}>
                     <div
                         style={{
                             position: "absolute",
                             top: "50%",
                             transform: "translateY(-50%)",
-                        }}
-                    >
+                        }}>
                         <h1 style={{ margin: 0 }}>경비 실행</h1>
                     </div>
 
@@ -321,8 +312,7 @@ const CostMgmtRunPopup = () => {
                         style={{
                             display: "flex",
                             marginLeft: "auto",
-                        }}
-                    >
+                        }}>
                         <div
                             style={{
                                 writingMode: "vertical-rl",
@@ -332,21 +322,18 @@ const CostMgmtRunPopup = () => {
                                 justifyContent: "center",
                                 alignItems: "center",
                                 textAlign: "center",
-                            }}
-                        >
+                            }}>
                             <h3
                                 style={{
                                     transform: "translateX(-10%)",
-                                }}
-                            >
+                                }}>
                                 발신부서
                             </h3>
                         </div>
                         <div
                             style={{
                                 width: "100px",
-                            }}
-                        >
+                            }}>
                             <div
                                 style={{
                                     backgroundColor: "#e3ecf8",
@@ -355,8 +342,7 @@ const CostMgmtRunPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 팀원
                             </div>
                             <div
@@ -366,16 +352,14 @@ const CostMgmtRunPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 유지수
                             </div>
                         </div>
                         <div
                             style={{
                                 width: "100px",
-                            }}
-                        >
+                            }}>
                             <div
                                 style={{
                                     backgroundColor: "#e3ecf8",
@@ -384,8 +368,7 @@ const CostMgmtRunPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 PM
                             </div>
                             <div
@@ -395,8 +378,7 @@ const CostMgmtRunPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 손영훈
                             </div>
                         </div>
@@ -526,8 +508,7 @@ const CostMgmtRunPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -621,8 +602,7 @@ const CostMgmtRunPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -713,8 +693,7 @@ const CostMgmtRunPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header className="headerH2">
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -728,26 +707,22 @@ const CostMgmtRunPopup = () => {
                                         border="1"
                                         style={{
                                             width: "100%",
-                                        }}
-                                    >
+                                        }}>
                                         <thead>
                                             <tr className="tableTr3">
                                                 <th
                                                     className="thTitle1"
-                                                    colSpan={2}
-                                                >
+                                                    colSpan={2}>
                                                     계획 경비 비용
                                                 </th>
                                                 <th
                                                     className="thTitle1"
-                                                    colSpan={2}
-                                                >
+                                                    colSpan={2}>
                                                     실행 경비 비용
                                                 </th>
                                                 <th
                                                     className="thTitle1"
-                                                    colSpan={1}
-                                                >
+                                                    colSpan={1}>
                                                     차액
                                                 </th>
                                             </tr>
@@ -756,26 +731,22 @@ const CostMgmtRunPopup = () => {
                                             <tr className="tableTr3">
                                                 <td
                                                     className="tbodyTd"
-                                                    colSpan={1}
-                                                >
+                                                    colSpan={1}>
                                                     9월
                                                 </td>
                                                 <td
                                                     className="tbodyTd"
-                                                    colSpan={1}
-                                                >
+                                                    colSpan={1}>
                                                     500,000
                                                 </td>
                                                 <td
                                                     className="tbodyTd"
-                                                    colSpan={1}
-                                                >
+                                                    colSpan={1}>
                                                     9월
                                                 </td>
                                                 <td
                                                     className="tbodyTd"
-                                                    colSpan={1}
-                                                >
+                                                    colSpan={1}>
                                                     300,000
                                                 </td>
                                                 <td
@@ -797,26 +768,22 @@ const CostMgmtRunPopup = () => {
                                             <tr className="tableTr3">
                                                 <td
                                                     className="tbodyTd"
-                                                    colSpan={1}
-                                                >
+                                                    colSpan={1}>
                                                     10월
                                                 </td>
                                                 <td
                                                     className="tbodyTd"
-                                                    colSpan={1}
-                                                >
+                                                    colSpan={1}>
                                                     300,000
                                                 </td>
                                                 <td
                                                     className="tbodyTd"
-                                                    colSpan={1}
-                                                >
+                                                    colSpan={1}>
                                                     10월
                                                 </td>
                                                 <td
                                                     className="tbodyTd"
-                                                    colSpan={1}
-                                                >
+                                                    colSpan={1}>
                                                     400,000
                                                 </td>
                                                 <td
@@ -838,26 +805,22 @@ const CostMgmtRunPopup = () => {
                                             <tr className="tableTr3">
                                                 <td
                                                     className="tbodyTd"
-                                                    colSpan={1}
-                                                >
+                                                    colSpan={1}>
                                                     합계
                                                 </td>
                                                 <td
                                                     className="tbodyTd"
-                                                    colSpan={1}
-                                                >
+                                                    colSpan={1}>
                                                     800,000
                                                 </td>
                                                 <td
                                                     className="tbodyTd"
-                                                    colSpan={1}
-                                                >
+                                                    colSpan={1}>
                                                     합계
                                                 </td>
                                                 <td
                                                     className="tbodyTd"
-                                                    colSpan={1}
-                                                >
+                                                    colSpan={1}>
                                                     700,000
                                                 </td>
                                                 <td
@@ -888,8 +851,7 @@ const CostMgmtRunPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -902,12 +864,10 @@ const CostMgmtRunPopup = () => {
                                         className={`hideDiv ${
                                             isClicked4 ? "" : "clicked"
                                         }`}
-                                        border="1"
-                                    >
+                                        border="1">
                                         <textarea
                                             className="textAreaWidth"
-                                            placeholder="내용을 입력하세요."
-                                        ></textarea>
+                                            placeholder="내용을 입력하세요."></textarea>
                                     </div>
                                 </div>
                             </JarvisWidget>
@@ -918,8 +878,7 @@ const CostMgmtRunPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -932,8 +891,7 @@ const CostMgmtRunPopup = () => {
                                         className={`hideDiv2 ${
                                             isClicked5 ? "" : "clicked"
                                         }`}
-                                        border="1"
-                                    >
+                                        border="1">
                                         <span className="div5Span">
                                             이곳에 파일을 드래그하세요.
                                         </span>

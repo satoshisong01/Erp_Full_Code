@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../css/CodeTableSearchBar.css";
+import "../../../../css/componentCss/CodeTableSearchBar.css";
 import searchIcon from "../../../img/search.svg";
 import searchIcon2 from "../../../img/search2.svg";
 import searchIcon3 from "../../../img/search2.svg";

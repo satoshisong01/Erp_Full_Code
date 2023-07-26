@@ -4,11 +4,11 @@ import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "../../../../smartadmin/css/defaultSearchBar.css";
-import "../../css/UserManage.css";
+import "../../../../css/componentCss/UserManage.css";
 import axios from "axios";
-import "../../css/Code.css";
+import "../../../../css/componentCss/Code.css";
 //import "react-calendar/dist/Calendar.css";
-import "../css/PersonnelPopup.css";
+import "../../../css/componentCss/PersonnelPopup.css";
 import CalReceiveModalPage from "./CalReceiveModalPage";
 import CalReceiveUtilBtn from "./CalReceiveUtilBtn";
 import CalReceiveTableSearchBar from "./CalReceiveTableSearchBar";
@@ -238,7 +238,7 @@ const CalReceives = () => {
                                                     }}>
                                                     <thead>
                                                         <tr>
-                                                            <th className="theadThCss">
+                                                            <th className="tableHeaderTh">
                                                                 <input
                                                                     type="checkbox"
                                                                     checked={

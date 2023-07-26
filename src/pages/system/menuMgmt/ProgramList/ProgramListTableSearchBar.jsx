@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRotateRight } from "@fortawesome/free-solid-svg-icons";
 
-export default function ClCodeTableSearchBar({
+export default function ProgramListTableSearchBar({
     searchBtn,
     onSearch,
     onSearchLv,

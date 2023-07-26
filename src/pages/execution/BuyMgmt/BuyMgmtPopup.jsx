@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
-import "../css/PersonnelPopup.css";
+import "../../../css/componentCss/PersonnelPopup.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
@@ -22,19 +22,13 @@ const BuyMgmtPopup = () => {
 
     useEffect(() => {
         if ($.fn.DataTable.isDataTable(dataTableRef.current)) {
-            $(dataTableRef.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef.current).DataTable().destroy();
         }
         if ($.fn.DataTable.isDataTable(dataTableRef2.current)) {
-            $(dataTableRef2.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef2.current).DataTable().destroy();
         }
         if ($.fn.DataTable.isDataTable(dataTableRef3.current)) {
-            $(dataTableRef3.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef3.current).DataTable().destroy();
         }
         $(dataTableRef.current).DataTable({
             paging: true,
@@ -241,8 +235,7 @@ const BuyMgmtPopup = () => {
         <div
             style={{
                 backgroundColor: "white",
-            }}
-        >
+            }}>
             {/*<button onClick={openPopup}>팝업열기</button>*/}
             <table>
                 <thead>
@@ -276,15 +269,13 @@ const BuyMgmtPopup = () => {
                         position: "relative",
                         marginBottom: "50px",
                         marginTop: "20px",
-                    }}
-                >
+                    }}>
                     <div
                         style={{
                             position: "absolute",
                             top: "50%",
                             transform: "translateY(-50%)",
-                        }}
-                    >
+                        }}>
                         <h1 style={{ margin: 0 }}>구매 계획</h1>
                     </div>
 
@@ -293,8 +284,7 @@ const BuyMgmtPopup = () => {
                         style={{
                             display: "flex",
                             marginLeft: "auto",
-                        }}
-                    >
+                        }}>
                         <div
                             style={{
                                 writingMode: "vertical-rl",
@@ -304,21 +294,18 @@ const BuyMgmtPopup = () => {
                                 justifyContent: "center",
                                 alignItems: "center",
                                 textAlign: "center",
-                            }}
-                        >
+                            }}>
                             <h3
                                 style={{
                                     transform: "translateX(-10%)",
-                                }}
-                            >
+                                }}>
                                 발신부서
                             </h3>
                         </div>
                         <div
                             style={{
                                 width: "100px",
-                            }}
-                        >
+                            }}>
                             <div
                                 style={{
                                     backgroundColor: "#e3ecf8",
@@ -327,8 +314,7 @@ const BuyMgmtPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 팀원
                             </div>
                             <div
@@ -338,16 +324,14 @@ const BuyMgmtPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 유지수
                             </div>
                         </div>
                         <div
                             style={{
                                 width: "100px",
-                            }}
-                        >
+                            }}>
                             <div
                                 style={{
                                     backgroundColor: "#e3ecf8",
@@ -356,8 +340,7 @@ const BuyMgmtPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 PM
                             </div>
                             <div
@@ -367,8 +350,7 @@ const BuyMgmtPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 손영훈
                             </div>
                         </div>
@@ -501,8 +483,7 @@ const BuyMgmtPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -597,16 +578,14 @@ const BuyMgmtPopup = () => {
                                                 display: "flex",
                                                 width: "100%",
                                                 justifyContent: "center",
-                                            }}
-                                        >
+                                            }}>
                                             <button
                                                 style={{
                                                     width: "100%",
                                                     margin: "10px",
                                                 }}
                                                 className="btn btn-primary tdBtn"
-                                                onClick={handleAddRow}
-                                            >
+                                                onClick={handleAddRow}>
                                                 추가
                                             </button>
                                         </div>

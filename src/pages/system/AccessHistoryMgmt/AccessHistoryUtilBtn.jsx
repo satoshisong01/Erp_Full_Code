@@ -4,7 +4,7 @@ import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
 import XLSX from "xlsx-js-style";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import "../css/CodeUtilBtn.css";
+import "../../../css/componentCss/CodeUtilBtn.css";
 import axios from "axios";
 import AccessHistoryModalPagePost from "./AccessHistoryModalPagePost";
 

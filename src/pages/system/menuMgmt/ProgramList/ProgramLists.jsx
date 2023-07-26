@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
-import "../../../smartadmin/tableHeader/ContentMain.css";
+import "../../../../smartadmin/tableHeader/ContentMain.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
-import "../../../smartadmin/css/defaultSearchBar.css";
+import "../../../../smartadmin/css/defaultSearchBar.css";
 import axios from "axios";
-import "../../../css/componentCss/Code.css";
+import "../../../../css/componentCss/Code.css";
 //import "react-calendar/dist/Calendar.css";
-import AuthorModalPage from "./AuthorModalPage";
-import AuthorUtilBtn from "./AuthorUtilBtn";
-import AuthorTableSearchBar from "./AuthorTableSearchBar";
+import ProgramListModalPage from "./ProgramListModalPage";
+import ProgramListUtilBtn from "./ProgramListUtilBtn";
+import ProgramListTableSearchBar from "./ProgramListTableSearchBar";
 
-const AuthorManages = () => {
+const ProgramLists = () => {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창
     //const [postModalOpen, setPostModalOpen] = useState(false); // 클릭 추가 모달창
@@ -25,19 +25,22 @@ const AuthorManages = () => {
     const [searchCondition, setSearchCondition] = useState("0"); //검색 종류명시 int값
     const [selectedOption, setSelectedOption] = useState("option2"); //삭제된 항목 & 삭제되지 않은 항목(디폴트)
 
-    const urlName = "author";
+    const urlName = "ProgramList";
 
     //키워드값 받아오기
     const handleSearch = (value) => {
         setSearchKeyword(value);
+        console.log(value, "키워드값 출력");
     };
     //검색 레벨 받아오기
     const handleSearchLv = (value) => {
         setSearchCondition(value);
+        console.log(searchCondition, "검색 레벨받아오기");
     };
     //옵션 받아오기
     const handleOption = (value) => {
         setSelectedOption(value);
+        console.log(selectedOption, "삭제 미삭제 받아오기");
     };
 
     //새로고침 클릭 핸들러
@@ -58,7 +61,6 @@ const AuthorManages = () => {
     const headers = {
         Authorization: process.env.REACT_APP_POST,
     };
-    //console.log(searchCondition, searchKeyword);
 
     const fetchAllData = async () => {
         try {
@@ -135,9 +137,13 @@ const AuthorManages = () => {
         }
     }, [searchedData, isSearching]);
 
-    //체크된 아이템의 AuthorManage 숫자만 저장
-    const changeInt = selectedData.map((item) => item.AuthorManage);
+    //테이블 초기화 및 기능 명시
 
+    //체크된 아이템의 ProgramList 숫자만 저장
+    const changeInt = selectedData.map((item) => item.ProgramList);
+
+    console.log(selectedData, "체크데이터");
+    console.log(changeInt, "받아오자값");
     //const keys = data.length > 0 ? Object.keys(data[0]) : [];
 
     // 전체 선택/해제 핸들러
@@ -163,16 +169,16 @@ const AuthorManages = () => {
                 if (
                     !prevSelectedData.find(
                         (selectedItem) =>
-                            selectedItem.AuthorManage === item.AuthorManage
+                            selectedItem.ProgramList === item.ProgramList
                     )
                 ) {
                     const sortedData = [...prevSelectedData, item].sort(
                         (a, b) => {
-                            // AuthorManage 속성을 기준으로 데이터 정렬
-                            if (a.AuthorManage < b.AuthorManage) {
+                            // ProgramList 속성을 기준으로 데이터 정렬
+                            if (a.ProgramList < b.ProgramList) {
                                 return -1;
                             }
-                            if (a.AuthorManage > b.AuthorManage) {
+                            if (a.ProgramList > b.ProgramList) {
                                 return 1;
                             }
                             return 0;
@@ -183,7 +189,7 @@ const AuthorManages = () => {
             } else {
                 return prevSelectedData.filter(
                     (selectedItem) =>
-                        selectedItem.AuthorManage !== item.AuthorManage
+                        selectedItem.ProgramList !== item.ProgramList
                 );
             }
             return prevSelectedData; // 체크가 풀리지 않았거나 중복 데이터인 경우 이전 상태 그대로 반환
@@ -192,6 +198,7 @@ const AuthorManages = () => {
 
     // 모달 클릭 핸들러(수정 모달창)
     const handleModalClick = (e, item) => {
+        console.log("클릭이되고있습니까");
         console.log(e);
         console.log(item);
         setModalItem(item);
@@ -203,7 +210,7 @@ const AuthorManages = () => {
             <div className="divBodySet">
                 <div id="content">
                     <div className="SearchDiv">
-                        <AuthorTableSearchBar
+                        <ProgramListTableSearchBar
                             onSearch={handleSearch}
                             onSearchLv={handleSearchLv}
                             onOption={handleOption}
@@ -211,7 +218,7 @@ const AuthorManages = () => {
                             urlName={urlName}
                             searchBtn={handleSearchData}
                         />
-                        <AuthorUtilBtn
+                        <ProgramListUtilBtn
                             initialData={searchedData}
                             refresh={fetchAllData}
                             changeInt={changeInt}
@@ -264,8 +271,8 @@ const AuthorManages = () => {
                                                                             (
                                                                                 selectedItem
                                                                             ) =>
-                                                                                selectedItem.AuthorManage ===
-                                                                                item.AuthorManage
+                                                                                selectedItem.ProgramList ===
+                                                                                item.ProgramList
                                                                         )}
                                                                         onChange={(
                                                                             e
@@ -278,9 +285,9 @@ const AuthorManages = () => {
                                                                     />
                                                                 </td>
                                                                 {[
-                                                                    "clCode",
-                                                                    "clCodeNm",
-                                                                    "clCodeDc",
+                                                                    "ProgramList",
+                                                                    "ProgramListNm",
+                                                                    "ProgramListDc",
                                                                     "createIdBy",
                                                                     "createDate",
                                                                     "lastModifiedIdBy",
@@ -320,7 +327,7 @@ const AuthorManages = () => {
                 </div>
             </div>
             {modalOpen && (
-                <AuthorModalPage
+                <ProgramListModalPage
                     onClose={() => {
                         setModalOpen(false);
                     }}
@@ -334,4 +341,4 @@ const AuthorManages = () => {
     );
 };
 
-export default AuthorManages;
+export default ProgramLists;

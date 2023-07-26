@@ -5,7 +5,7 @@ import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "../../../../smartadmin/css/defaultSearchBar.css";
 import axios from "axios";
-import "../../css/Code.css";
+import "../../../../css/componentCss/Code.css";
 //import "react-calendar/dist/Calendar.css";
 import ClCodeModalPage from "./ClCodeModalPage";
 import ClCodeUtilBtn from "./ClCodeUtilBtn";
@@ -249,13 +249,19 @@ const ClCode = () => {
                                                                 }
                                                             />
                                                         </th>
-                                                        <th>분류코드</th>
-                                                        <th>분류코드명</th>
-                                                        <th>분류코드 설명</th>
-                                                        <th>작성자</th>
-                                                        <th>작성일</th>
-                                                        <th>수정자</th>
-                                                        <th>수정일</th>
+                                                        {[
+                                                            "분류코드",
+                                                            "분류코드명",
+                                                            "분류코드설명",
+                                                            "작성자",
+                                                            "작성일",
+                                                            "수정자",
+                                                            "수정일",
+                                                        ].map((item, index) => (
+                                                            <th key={index}>
+                                                                {item}
+                                                            </th>
+                                                        ))}
                                                     </tr>
                                                 </thead>
                                                 <tbody>

@@ -21,6 +21,10 @@
     flex: 1;
 }
 
+.box11 {
+    flex: 4;
+}
+
 .buttonTool {
 }
 
@@ -99,6 +103,7 @@
 
 #searchKeyword {
     height: 25px;
+    width: 50%;
 }
 
 .radioBtn {

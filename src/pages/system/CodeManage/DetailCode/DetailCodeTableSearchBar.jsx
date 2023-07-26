@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../css/CodeTableSearchBar.css";
+import "../../../../css/componentCss/CodeTableSearchBar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRotateRight } from "@fortawesome/free-solid-svg-icons";
@@ -169,12 +169,15 @@ export default function DetailCodeTableSearchBar({
                             <label
                                 htmlFor="searchKeyword"
                                 className="box_search">
-                                정렬
+                                정&emsp;&emsp;렬
                             </label>
                             <select id="searchKeyword">
                                 <option>정렬</option>
                             </select>
                         </div>
+                        <div className="box1" />
+                        <div className="box1" />
+                        <div className="box1" />
                     </div>
                 </form>
             </div>
