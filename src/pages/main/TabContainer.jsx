@@ -8,6 +8,7 @@ import EgovLeftNavReference from 'components/leftmenu/EgovLeftNavReference';
 import EgovLeftNavSales from 'components/leftmenu/EgovLeftNavSales';
 import EgovLeftNavExecution from 'components/leftmenu/EgovLeftNavExecution';
 import EgovLeftNavSystem from 'components/leftmenu/EgovLeftNavSystem';
+import EgovLeftNavMenu from 'components/leftmenu/EgovLeftNavMenu';
 
 function TabContainer(props) {
     const { header } = props;
@@ -17,6 +18,7 @@ function TabContainer(props) {
             <div className="c_wrap">
                     <div className="colbox">
                         <div className="left_col">
+                            {!header && <EgovLeftNavReference /> }
                             {header === '기준정보관리' && <EgovLeftNavReference />}
                             {header === '영업관리' && <EgovLeftNavSales />}
                             {header === '실행관리' && <EgovLeftNavExecution />}
