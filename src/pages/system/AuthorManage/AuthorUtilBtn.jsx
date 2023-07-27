@@ -20,13 +20,15 @@ export default function AuthorUtilBtn({
     const [Author, setAuthor] = useState(1); //키 값 넘버자동 1씩추가
     const [postModalOpen, setPostModalOpen] = useState(false); // 클릭 추가 모달창
 
+    console.log(urlName);
+
     //버튼 활성화 (코드관리에서는 엑셀버튼은 비활성화)
     const showExcelBtn =
-        urlName === "Author" ||
+        urlName === "author" ||
         urlName === "groupCode" ||
         urlName === "detailCode"
-            ? false
-            : true;
+            ? true
+            : false;
     const showCopyBtn = true;
     const showPrintBtn = true;
     const showDeleteBtn = true;
@@ -274,7 +276,7 @@ export default function AuthorUtilBtn({
                     <img className="btnImg" src={excelImg} />
                     CSV
                 </button>
-                <CopyToClipboard text="Copy Table" onCopy={tableCopyBtn}>
+                <CopyToClipboard text={urlName} onCopy={tableCopyBtn}>
                     <button id="utilBtn" className="btn btn-primary">
                         <img className="btnImg" src={copyImg} />
                         Copy
@@ -319,7 +321,7 @@ export default function AuthorUtilBtn({
                     </button>
                 )}
                 {showCopyBtn && (
-                    <CopyToClipboard text="Copy Table" onCopy={tableCopyBtn}>
+                    <CopyToClipboard text={urlName} onCopy={tableCopyBtn}>
                         <button
                             id="utilBtn"
                             className="btn btn-primary copyIcon">

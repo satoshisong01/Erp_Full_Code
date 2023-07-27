@@ -25,8 +25,8 @@ export default function PostMgmtUtilBtn({
         urlName === "PostMgmt" ||
         urlName === "groupCode" ||
         urlName === "detailCode"
-            ? false
-            : true;
+            ? true
+            : false;
     const showCopyBtn = true;
     const showPrintBtn = true;
     const showDeleteBtn = true;
@@ -278,7 +278,7 @@ export default function PostMgmtUtilBtn({
                     </button>
                 )}
                 {showCopyBtn && (
-                    <CopyToClipboard text="Copy Table" onCopy={tableCopyBtn}>
+                    <CopyToClipboard text={urlName} onCopy={tableCopyBtn}>
                         <button
                             id="utilBtn"
                             className="btn btn-primary copyIcon">

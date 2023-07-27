@@ -25,8 +25,8 @@ export default function CalSendUtilBtn({
         urlName === "productGroup" ||
         urlName === "groupCode" ||
         urlName === "detailCode"
-            ? false
-            : true;
+            ? true
+            : false;
     const showCopyBtn = true;
     const showPrintBtn = true;
     const showDeleteBtn = true;
@@ -277,7 +277,7 @@ export default function CalSendUtilBtn({
                     <img className="btnImg" src={excelImg} />
                     CSV
                 </button>
-                <CopyToClipboard text="Copy Table" onCopy={tableCopyBtn}>
+                <CopyToClipboard text={urlName} onCopy={tableCopyBtn}>
                     <button id="utilBtn" className="btn btn-primary">
                         <img className="btnImg" src={copyImg} />
                         Copy
@@ -335,7 +335,7 @@ export default function CalSendUtilBtn({
                     </button>
                 )}
                 {showCopyBtn && (
-                    <CopyToClipboard text="Copy Table" onCopy={tableCopyBtn}>
+                    <CopyToClipboard text={urlName} onCopy={tableCopyBtn}>
                         <button
                             id="utilBtn"
                             className="btn btn-primary copyIcon">

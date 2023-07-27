@@ -25,8 +25,8 @@ export default function OrgNztUtilBtn({
         urlName === "orgNzt" ||
         urlName === "groupCode" ||
         urlName === "detailCode"
-            ? false
-            : true;
+            ? true
+            : false;
     const showCopyBtn = true;
     const showPrintBtn = true;
     const showDeleteBtn = true;
@@ -276,7 +276,7 @@ export default function OrgNztUtilBtn({
                     <img className="btnImg" src={excelImg} />
                     CSV
                 </button>
-                <CopyToClipboard text="Copy Table" onCopy={tableCopyBtn}>
+                <CopyToClipboard text={urlName} onCopy={tableCopyBtn}>
                     <button id="utilBtn" className="btn btn-primary">
                         <img className="btnImg" src={copyImg} />
                         Copy
@@ -321,7 +321,7 @@ export default function OrgNztUtilBtn({
                     </button>
                 )}
                 {showCopyBtn && (
-                    <CopyToClipboard text="Copy Table" onCopy={tableCopyBtn}>
+                    <CopyToClipboard text={urlName} onCopy={tableCopyBtn}>
                         <button
                             id="utilBtn"
                             className="btn btn-primary copyIcon">

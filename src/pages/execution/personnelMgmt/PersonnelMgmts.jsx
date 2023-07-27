@@ -28,7 +28,7 @@ const PersonnelMgmts = () => {
     const [selectedOption, setSelectedOption] = useState("option2"); //삭제된 항목 & 삭제되지 않은 항목(디폴트)
     //const [detailData, setDetailData] = useState(""); // 옆 컴포넌트에 세부정보 보내주기
 
-    const urlName = "excutionCost";
+    const urlName = "PersonnelMgmts";
 
     //키워드값 받아오기
     const handleSearch = (value) => {

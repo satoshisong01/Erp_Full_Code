@@ -22,11 +22,11 @@ export default function PaymentReceivedUtilBtn({
 
     //버튼 활성화 (코드관리에서는 엑셀버튼은 비활성화)
     const showExcelBtn =
-        urlName === "productGroup" ||
+        urlName === "PaymentReceiveds" ||
         urlName === "groupCode" ||
         urlName === "detailCode"
-            ? false
-            : true;
+            ? true
+            : false;
     const showCopyBtn = true;
     const showPrintBtn = true;
     const showDeleteBtn = true;
@@ -277,7 +277,7 @@ export default function PaymentReceivedUtilBtn({
                     <img className="btnImg" src={excelImg} />
                     CSV
                 </button>
-                <CopyToClipboard text="Copy Table" onCopy={tableCopyBtn}>
+                <CopyToClipboard text={urlName} onCopy={tableCopyBtn}>
                     <button id="utilBtn" className="btn btn-primary">
                         <img className="btnImg" src={copyImg} />
                         Copy
@@ -323,7 +323,7 @@ export default function PaymentReceivedUtilBtn({
                     </button>
                 )}
                 {showCopyBtn && (
-                    <CopyToClipboard text="Copy Table" onCopy={tableCopyBtn}>
+                    <CopyToClipboard text={urlName} onCopy={tableCopyBtn}>
                         <button
                             id="utilBtn"
                             className="btn btn-primary copyIcon">
