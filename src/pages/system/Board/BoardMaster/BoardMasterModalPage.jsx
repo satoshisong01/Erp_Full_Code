@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
 import $ from "jquery";
-import "../../../../smartadmin/css/ModalSearch.css";
+import "../../../../css/ModalSearch.css";
 import axios from "axios";
 //import Header from "./Header";
 

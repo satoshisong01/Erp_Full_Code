@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import "../../../smartadmin/tableHeader/ContentMain.css";
+import "../../../css/ContentMain.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
-import "../../../smartadmin/css/defaultSearchBar.css";
+import "../../../css/defaultSearchBar.css";
 import axios from "axios";
 import "../../../css/componentCss/Code.css";
 //import "react-calendar/dist/Calendar.css";

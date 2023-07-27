@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import "../../../../common/tableHeader/ModalSearch.css";
+import "../../../../css/ModalSearch.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
@@ -73,8 +73,7 @@ export default function ProductPriceModalPagePost({
     return (
         <div
             className="modal-dialog demo-modal"
-            style={{ margin: "0", zIndex: "9999" }}
-        >
+            style={{ margin: "0", zIndex: "9999" }}>
             <div className="modal-content" style={{ border: "0" }}>
                 <article className="product-modal">
                     <div className="product-modal-bg"></div>
@@ -83,14 +82,12 @@ export default function ProductPriceModalPagePost({
                         <div className="product-modal-header">
                             <div
                                 className="modal-header"
-                                style={{ border: "none" }}
-                            >
+                                style={{ border: "none" }}>
                                 <h4 className="modal-title">프로젝트 목록</h4>
                             </div>
                             <div
                                 className="product-modal-close-btn"
-                                onClick={onClose}
-                            >
+                                onClick={onClose}>
                                 <i
                                     style={{
                                         fontSize: "2rem",
@@ -105,8 +102,7 @@ export default function ProductPriceModalPagePost({
                         <form className="product-modal-body">
                             <div
                                 className="submitProduct"
-                                style={{ marginTop: "30px" }}
-                            >
+                                style={{ marginTop: "30px" }}>
                                 {urlName === "productInfo" && (
                                     <>
                                         분류코드 명:
@@ -194,8 +190,7 @@ export default function ProductPriceModalPagePost({
                                         type="button"
                                         className="btn btn-default"
                                         data-dismiss="modal"
-                                        onClick={onClose}
-                                    >
+                                        onClick={onClose}>
                                         Close
                                     </button>
                                     <button
@@ -205,8 +200,7 @@ export default function ProductPriceModalPagePost({
                                         }}
                                         type="button"
                                         className="btn btn-primary modal-btn-close"
-                                        onClick={onAdd}
-                                    >
+                                        onClick={onAdd}>
                                         ADD
                                     </button>
                                 </div>
