@@ -189,7 +189,7 @@ body {
     display: none;
 }
 
-.container {
+.egov-container {
     min-height: calc(100vh - 300px);
 }
 .c_wrap {
