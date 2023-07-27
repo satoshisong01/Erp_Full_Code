@@ -8,6 +8,8 @@ const URL = {
     LOGIN                       : "/login", //로그인
     ERROR                       : "/error", //로그인
 
+    ApprovalContainer           : "/approvalContainer", //전자결재 페이지
+
     //REFERENCE 기준정보관리
     Reference                   : "/reference", //기준정보관리
 
