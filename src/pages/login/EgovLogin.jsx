@@ -18,7 +18,7 @@ function EgovLogin(props) {
     console.groupEnd("EgovLogin");
 
     return (
-        <div className="container">
+        <div className="egov-container">
             <div className="c_wrap">
                 {/* <!-- Location --> */}
                 <div className="location">

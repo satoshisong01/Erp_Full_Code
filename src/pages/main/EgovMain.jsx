@@ -17,7 +17,7 @@ function EgovMain(props) {
     console.groupEnd("EgovMain");
 
     return (
-        <div className="container P_MAIN">
+        <div className="egov-container P_MAIN">
             <div className="c_wrap">
                     <div className="mini_board">
                         <div className="col" style={{height: '100%'}} >

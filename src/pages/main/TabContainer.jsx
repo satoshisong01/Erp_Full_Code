@@ -14,7 +14,7 @@ function TabContainer(props) {
     const { header } = props;
 
     return (
-        <div className="container T_MAIN">
+        <div className="egov-container T_MAIN">
             <div className="c_wrap">
                 <div className="colbox">
                     <div className="left_col">
