@@ -64,7 +64,7 @@ import DetailCode from "pages/system/DetailCode";
 //ADMIN
 
 import initPage from "js/ui";
-import ApprovalContainer from "pages/electronicApproval/ApprovalContainer";
+import ApprovalContainer from "pages/approval/ApprovalContainer";
 
 // 에러 페이지와 같은 상단(EgovHeader) 소스가 제외된 페이지에서 ui.js의 햄버거버튼 작동오류가 발생한다.
 // 즉, ui.js가 작동되지 않아서 재 로딩 해야 한다. 그래서, useRef객체를 사용하여 이전 페이지 URL을 구하는 코드 추가(아래)
