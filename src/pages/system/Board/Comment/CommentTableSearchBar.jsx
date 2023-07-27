@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "../../../../css/componentCss/CodeTableSearchBar.css";
-import searchIcon from "../../../img/search.svg";
-import searchIcon2 from "../../../img/search2.svg";
-import searchIcon3 from "../../../img/search2.svg";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRotateRight } from "@fortawesome/free-solid-svg-icons";
@@ -15,6 +14,72 @@ export default function CommentTableSearchBar({
     refresh,
     urlName,
 }) {
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate2, setSelectedDate2] = useState(new Date());
+    const inputRef = useRef(null);
+    const inputRef2 = useRef(null);
+
+    const [formattedDate, setFormattedDate] = useState("");
+    const [formattedDate2, setFormattedDate2] = useState("");
+    const [isCalendarVisible, setCalendarVisible] = useState(false);
+    const [isCalendarVisible2, setCalendarVisible2] = useState(false);
+
+    const handleInputClick = () => {
+        setCalendarVisible(true);
+    };
+
+    const handleInputClick2 = () => {
+        setCalendarVisible2(true);
+    };
+
+    const handleOutsideClick = (event) => {
+        if (inputRef.current && !inputRef.current.contains(event.target)) {
+            setCalendarVisible(false);
+        }
+    };
+
+    const handleOutsideClick2 = (event) => {
+        if (inputRef2.current && !inputRef2.current.contains(event.target)) {
+            setCalendarVisible2(false);
+        }
+    };
+
+    const handleDateClick = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        const formatted = `${year}${month}${day}`;
+
+        setSelectedDate(date);
+        setFormattedDate(formatted);
+        setCalendarVisible(false);
+    };
+
+    const handleDateClick2 = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        const formatted = `${year}${month}${day}`;
+
+        setSelectedDate2(date);
+        setFormattedDate2(formatted);
+        setCalendarVisible2(false);
+    };
+
+    useEffect(() => {
+        document.addEventListener("click", handleOutsideClick);
+        return () => {
+            document.removeEventListener("click", handleOutsideClick);
+        };
+    }, []);
+
+    useEffect(() => {
+        document.addEventListener("click", handleOutsideClick2);
+        return () => {
+            document.removeEventListener("click", handleOutsideClick2);
+        };
+    }, []);
+
     const [inputValue, setInputValue] = useState("");
     const [inputLv, setInputLv] = useState("0");
     const [option, setOption] = useState("option2");
@@ -109,12 +174,12 @@ export default function CommentTableSearchBar({
                         </div>
                     </div>
                     {/*<div className="searchLine" />*/}
-                    <div className="box">
-                        <div className="box1">
+                    <div className="boxDates">
+                        <div className="box2 box2-1">
                             <label
                                 htmlFor="searchKeyword"
                                 className="box_search">
-                                분류코드
+                                댓글명
                             </label>
                             <input
                                 type="text"
@@ -124,21 +189,58 @@ export default function CommentTableSearchBar({
                                 onChange={(e) => setInputValue(e.target.value)}
                             />
                         </div>
-                        <div className="box1">
-                            <label
-                                htmlFor="searchKeyword"
-                                className="box_search">
-                                분류코드명
-                            </label>
-                            <input
-                                type="text"
-                                name="searchKeyword"
-                                id="searchKeyword"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                            />
+                        <div className="box3">
+                            <div className="box3-1">
+                                <label
+                                    htmlFor="searchKeyword"
+                                    className="box_search">
+                                    기간검색
+                                </label>
+                                <select id="searchKeyword">
+                                    <option>작성일</option>
+                                </select>
+                            </div>
+                            <div className="box3-0">
+                                <div className="box3-1 boxDate">
+                                    <input
+                                        type="text"
+                                        id="searchKeyword"
+                                        value={formattedDate}
+                                        onClick={handleInputClick}
+                                        readOnly
+                                        ref={inputRef}
+                                    />
+                                    {isCalendarVisible && (
+                                        <div className="boxCalendar">
+                                            <Calendar
+                                                onClickDay={handleDateClick}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="box3-1">~</div>
+                                <div className="box3-1 boxDate">
+                                    <input
+                                        type="text"
+                                        id="searchKeyword"
+                                        value={formattedDate2}
+                                        onClick={handleInputClick2}
+                                        readOnly
+                                        ref={inputRef2}
+                                    />
+                                    {isCalendarVisible2 && (
+                                        <div className="boxCalendar">
+                                            <Calendar
+                                                onClickDay={handleDateClick2}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
-                        <div className="box1">
+                    </div>
+                    <div className="boxDates">
+                        <div className="box2 box2-1">
                             <label
                                 htmlFor="searchKeyword"
                                 className="box_search">
@@ -152,69 +254,25 @@ export default function CommentTableSearchBar({
                                 onChange={(e) => setInputValue(e.target.value)}
                             />
                         </div>
-                        <div className="box1">
-                            <label
-                                htmlFor="searchKeyword"
-                                className="box_search">
-                                수정자
-                            </label>
-                            <input
-                                type="text"
-                                name="searchKeyword"
-                                id="searchKeyword"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                            />
+                        <div className="box3">
+                            <div className="box3-1">
+                                <label
+                                    htmlFor="searchKeyword"
+                                    className="box_search">
+                                    &ensp;&ensp;수정자
+                                </label>
+                                <input
+                                    type="text"
+                                    name="searchKeyword"
+                                    id="searchKeyword"
+                                    value={inputValue}
+                                    onChange={(e) =>
+                                        setInputValue(e.target.value)
+                                    }
+                                />
+                            </div>
+                            <div className="box3-0"></div>
                         </div>
-                        {/*<div className="box2">
-                            <label
-                                htmlFor="searchCondition"
-                                className="box_search">
-                                검색조건
-                            </label>
-                            {urlName === "Comment" && (
-                                <select
-                                    id="searchCondition"
-                                    name="searchCondition"
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        setInputLv(e.target.value)
-                                    }>
-                                    <option value="0">전체</option>
-                                    <option value="1">분류코드</option>
-                                    <option value="2">분류코드명</option>
-                                    <option value="3">분류코드 설명</option>
-                                </select>
-                            )}
-                            {urlName === "groupCode" && (
-                                <select
-                                    id="searchCondition"
-                                    name="searchCondition"
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        setInputLv(e.target.value)
-                                    }>
-                                    <option value="0">전체</option>
-                                    <option value="1">그룹코드</option>
-                                    <option value="2">그룹코드명</option>
-                                    <option value="3">그룹코드 설명</option>
-                                </select>
-                            )}
-                            {urlName === "detailCode" && (
-                                <select
-                                    id="searchCondition"
-                                    name="searchCondition"
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        setInputLv(e.target.value)
-                                    }>
-                                    <option value="0">전체</option>
-                                    <option value="1">상세코드</option>
-                                    <option value="2">상세코드명</option>
-                                    <option value="3">상세코드 설명</option>
-                                </select>
-                            )}
-                        </div>*/}
                     </div>
                 </form>
             </div>

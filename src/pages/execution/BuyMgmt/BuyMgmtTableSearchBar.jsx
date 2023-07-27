@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../../../css/componentCss/CodeTableSearchBar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRotateRight } from "@fortawesome/free-solid-svg-icons";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 export default function BuyMgmtTableSearchBar({
     searchBtn,
@@ -12,6 +14,72 @@ export default function BuyMgmtTableSearchBar({
     refresh,
     urlName,
 }) {
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate2, setSelectedDate2] = useState(new Date());
+    const inputRef = useRef(null);
+    const inputRef2 = useRef(null);
+
+    const [formattedDate, setFormattedDate] = useState("");
+    const [formattedDate2, setFormattedDate2] = useState("");
+    const [isCalendarVisible, setCalendarVisible] = useState(false);
+    const [isCalendarVisible2, setCalendarVisible2] = useState(false);
+
+    const handleInputClick = () => {
+        setCalendarVisible(true);
+    };
+
+    const handleInputClick2 = () => {
+        setCalendarVisible2(true);
+    };
+
+    const handleOutsideClick = (event) => {
+        if (inputRef.current && !inputRef.current.contains(event.target)) {
+            setCalendarVisible(false);
+        }
+    };
+
+    const handleOutsideClick2 = (event) => {
+        if (inputRef2.current && !inputRef2.current.contains(event.target)) {
+            setCalendarVisible2(false);
+        }
+    };
+
+    const handleDateClick = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        const formatted = `${year}${month}${day}`;
+
+        setSelectedDate(date);
+        setFormattedDate(formatted);
+        setCalendarVisible(false);
+    };
+
+    const handleDateClick2 = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        const formatted = `${year}${month}${day}`;
+
+        setSelectedDate2(date);
+        setFormattedDate2(formatted);
+        setCalendarVisible2(false);
+    };
+
+    useEffect(() => {
+        document.addEventListener("click", handleOutsideClick);
+        return () => {
+            document.removeEventListener("click", handleOutsideClick);
+        };
+    }, []);
+
+    useEffect(() => {
+        document.addEventListener("click", handleOutsideClick2);
+        return () => {
+            document.removeEventListener("click", handleOutsideClick2);
+        };
+    }, []);
+
     const [inputValue, setInputValue] = useState("");
     const [inputLv, setInputLv] = useState("0");
     const [option, setOption] = useState("option2");
@@ -106,12 +174,12 @@ export default function BuyMgmtTableSearchBar({
                         </div>
                     </div>
                     {/*<div className="searchLine" />*/}
-                    <div className="box">
-                        <div className="box1">
+                    <div className="boxDates">
+                        <div className="box2 box2-1">
                             <label
                                 htmlFor="searchKeyword"
                                 className="box_search">
-                                검색어
+                                프로젝트명
                             </label>
                             <input
                                 type="text"
@@ -121,80 +189,146 @@ export default function BuyMgmtTableSearchBar({
                                 onChange={(e) => setInputValue(e.target.value)}
                             />
                         </div>
-                        <div className="box2">
+                        <div className="box3">
+                            <div className="box3-1">
+                                <label
+                                    htmlFor="searchKeyword"
+                                    className="box_search">
+                                    기간검색
+                                </label>
+                                <select id="searchKeyword">
+                                    <option>발주일</option>
+                                </select>
+                            </div>
+                            <div className="box3-0">
+                                <div className="box3-1 boxDate">
+                                    <input
+                                        type="text"
+                                        id="searchKeyword"
+                                        value={formattedDate}
+                                        onClick={handleInputClick}
+                                        readOnly
+                                        ref={inputRef}
+                                    />
+                                    {isCalendarVisible && (
+                                        <div className="boxCalendar">
+                                            <Calendar
+                                                onClickDay={handleDateClick}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="box3-1">~</div>
+                                <div className="box3-1 boxDate">
+                                    <input
+                                        type="text"
+                                        id="searchKeyword"
+                                        value={formattedDate2}
+                                        onClick={handleInputClick2}
+                                        readOnly
+                                        ref={inputRef2}
+                                    />
+                                    {isCalendarVisible2 && (
+                                        <div className="boxCalendar">
+                                            <Calendar
+                                                onClickDay={handleDateClick2}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="boxDates">
+                        <div className="box2 box2-1">
                             <label
-                                htmlFor="searchCondition"
+                                htmlFor="searchKeyword"
                                 className="box_search">
-                                검색조건
+                                품목그룹명
                             </label>
-                            {urlName === "productGroup" && (
-                                <select
-                                    id="searchCondition"
-                                    name="searchCondition"
-                                    className="form-control"
+                            <input
+                                type="text"
+                                name="searchKeyword"
+                                id="searchKeyword"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                            />
+                        </div>
+                        <div className="box3">
+                            <div className="box3-1">
+                                <label
+                                    htmlFor="searchKeyword"
+                                    className="box_search">
+                                    &ensp;&ensp;품목명
+                                </label>
+                                <input
+                                    type="text"
+                                    name="searchKeyword"
+                                    id="searchKeyword"
+                                    value={inputValue}
                                     onChange={(e) =>
-                                        setInputLv(e.target.value)
-                                    }>
-                                    <option value="0">전체</option>
-                                    <option value="1">분류코드</option>
-                                    <option value="2">분류코드명</option>
-                                    <option value="3">분류코드 설명</option>
-                                </select>
-                            )}
-                            {urlName === "groupCode" && (
-                                <select
-                                    id="searchCondition"
-                                    name="searchCondition"
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        setInputLv(e.target.value)
-                                    }>
-                                    <option value="0">전체</option>
-                                    <option value="1">그룹코드</option>
-                                    <option value="2">그룹코드명</option>
-                                    <option value="3">그룹코드 설명</option>
-                                </select>
-                            )}
-                            {urlName === "detailCode" && (
-                                <select
-                                    id="searchCondition"
-                                    name="searchCondition"
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        setInputLv(e.target.value)
-                                    }>
-                                    <option value="0">전체</option>
-                                    <option value="1">상세코드</option>
-                                    <option value="2">상세코드명</option>
-                                    <option value="3">상세코드 설명</option>
-                                </select>
-                            )}
-                            <div className="box">
-                                <div className="radioBtn">
-                                    <label className="radioLabel">
-                                        <input
-                                            className="inputRadio"
-                                            type="radio"
-                                            value="option1"
-                                            checked={option === "option1"}
-                                            onChange={(e) =>
-                                                setOption(e.target.value)
-                                            }
-                                        />
-                                        삭제된 항목
+                                        setInputValue(e.target.value)
+                                    }
+                                />
+                            </div>
+                            <div className="box3-0">
+                                <div className="box3-1">
+                                    <label
+                                        htmlFor="searchKeyword"
+                                        className="box_search">
+                                        구매거래처
                                     </label>
-                                    <label className="radioLabel">
-                                        <input
-                                            className="inputRadio"
-                                            type="radio"
-                                            value="option2"
-                                            checked={option === "option2"}
-                                            onChange={(e) =>
-                                                setOption(e.target.value)
-                                            }
-                                        />
-                                        삭제되지 않은 항목
+                                    <input
+                                        type="text"
+                                        name="searchKeyword"
+                                        id="searchKeyword"
+                                        value={inputValue}
+                                        onChange={(e) =>
+                                            setInputValue(e.target.value)
+                                        }
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="boxDates">
+                        <div className="box2 box2-1">
+                            <label
+                                htmlFor="searchKeyword"
+                                className="box_search">
+                                &ensp;&ensp;발주부서
+                            </label>
+                            <input
+                                type="text"
+                                name="searchKeyword"
+                                id="searchKeyword"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                            />
+                        </div>
+                        <div className="box3">
+                            <div className="box3-1">
+                                <label
+                                    htmlFor="searchKeyword"
+                                    className="box_search">
+                                    발주상태
+                                </label>
+                                <select id="searchKeyword">
+                                    <option>미발주</option>
+                                    <option>발주완료</option>
+                                </select>
+                            </div>
+                            <div className="box3-0">
+                                <div className="box3-1">
+                                    <label
+                                        htmlFor="searchKeyword"
+                                        className="box_search">
+                                        &ensp;&ensp;입고상태
                                     </label>
+                                    <select id="searchKeyword">
+                                        <option>미입고</option>
+                                        <option>입고완료</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>

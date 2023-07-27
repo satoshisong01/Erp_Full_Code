@@ -1146,17 +1146,17 @@
     transform: translate(-50%, -50%);
     width: 1050px;
 }
-.TEMPLATE_INTRO .pop_container .img {
+.TEMPLATE_INTRO .pop_egov-container .img {
     margin-top: 20px;
 }
-.TEMPLATE_INTRO .pop_container .img img {
+.TEMPLATE_INTRO .pop_egov-container .img img {
     max-width: 100%;
 }
-.TEMPLATE_INTRO .pop_container .btn_area {
+.TEMPLATE_INTRO .pop_egov-container .btn_area {
     margin-top: 30px;
     text-align: center;
 }
-.TEMPLATE_INTRO .pop_container .btn {
+.TEMPLATE_INTRO .pop_egov-container .btn {
     width: 320px;
 }
 

@@ -231,10 +231,7 @@ const CostMgmts = () => {
                                                 <table
                                                     ref={dataTableRef}
                                                     className="table table-bordered"
-                                                    id="dataTable"
-                                                    style={{
-                                                        backgroundColor: "#fff",
-                                                    }}>
+                                                    id="dataTable">
                                                     <thead>
                                                         <tr>
                                                             <th className="tableHeaderTh">
@@ -256,10 +253,6 @@ const CostMgmts = () => {
                                                                 "프로젝트명",
                                                                 "계획경비",
                                                                 "실행경비",
-                                                                "작성일",
-                                                                "작성자",
-                                                                "수정일",
-                                                                "수정자",
                                                             ].map(
                                                                 (
                                                                     item,
@@ -301,10 +294,6 @@ const CostMgmts = () => {
                                                                     </td>
                                                                     {[
                                                                         "orgId",
-                                                                        "orgNm",
-                                                                        "orgNm",
-                                                                        "orgNm",
-                                                                        "orgNm",
                                                                         "orgNm",
                                                                         "orgNm",
                                                                     ].map(
@@ -357,10 +346,7 @@ const CostMgmts = () => {
                                                 <table
                                                     ref={dataTableRef}
                                                     className="table table-bordered"
-                                                    id="dataTable"
-                                                    style={{
-                                                        backgroundColor: "#fff",
-                                                    }}>
+                                                    id="dataTable">
                                                     <thead>
                                                         <tr>
                                                             <th className="tableHeaderTh">

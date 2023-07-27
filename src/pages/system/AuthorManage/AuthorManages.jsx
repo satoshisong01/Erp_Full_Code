@@ -244,13 +244,16 @@ const AuthorManages = () => {
                                                                 }
                                                             />
                                                         </th>
-                                                        <th>분류코드</th>
-                                                        <th>분류코드명</th>
-                                                        <th>분류코드 설명</th>
-                                                        <th>작성자</th>
-                                                        <th>작성일</th>
-                                                        <th>수정자</th>
-                                                        <th>수정일</th>
+                                                        {[
+                                                            "권한코드",
+                                                            "권한명",
+                                                            "권한설명",
+                                                            "권한생성일",
+                                                        ].map((item, index) => (
+                                                            <th key={index}>
+                                                                {item}
+                                                            </th>
+                                                        ))}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -282,9 +285,6 @@ const AuthorManages = () => {
                                                                     "clCodeNm",
                                                                     "clCodeDc",
                                                                     "createIdBy",
-                                                                    "createDate",
-                                                                    "lastModifiedIdBy",
-                                                                    "lastModifyDate",
                                                                 ].map((key) => (
                                                                     <td
                                                                         className="tableWidth tdStyle"

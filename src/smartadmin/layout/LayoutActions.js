@@ -1,11 +1,11 @@
 import { config } from "smartadmin/config/config";
 import { SmartMessageBox } from "../utils/functions";
 import {
-  bodyAddClass,
-  bodyToggleClass,
-  bodyRemoveClass,
-  htmlToggleClass,
-  htmlRemoveClass
+    bodyAddClass,
+    bodyToggleClass,
+    bodyRemoveClass,
+    htmlToggleClass,
+    htmlRemoveClass,
 } from "../utils/functions";
 
 import $ from "jquery";
@@ -26,203 +26,206 @@ export const TOGGLE_COLLAPSE_MENU = "TOGGLE_COLLAPSE_MENU";
 export const FACTORY_RESET = "FACTORY_RESET";
 
 const layoutActionTypes = [
-  LAYOUT_INIT,
-  SMART_SKIN,
-  TOGGLE_FIXED_HEADER,
-  TOGGLE_FIXED_NAVIGATION,
-  TOGGLE_FIXED_RIBBON,
-  TOGGLE_FIXED_PAGE_FOOTER,
-  TOGGLE_INSIDE_CONTAINER,
-  TOGGLE_RTL,
-  TOGGLE_MENU_ON_TOP,
-  TOGGLE_COLORBLIND_FRIENDLY,
-  TOGGLE_MENU_MINIFIED,
-  TOGGLE_SHORTCUT,
-  TOGGLE_COLLAPSE_MENU,
-  FACTORY_RESET
+    LAYOUT_INIT,
+    SMART_SKIN,
+    TOGGLE_FIXED_HEADER,
+    TOGGLE_FIXED_NAVIGATION,
+    TOGGLE_FIXED_RIBBON,
+    TOGGLE_FIXED_PAGE_FOOTER,
+    TOGGLE_INSIDE_CONTAINER,
+    TOGGLE_RTL,
+    TOGGLE_MENU_ON_TOP,
+    TOGGLE_COLORBLIND_FRIENDLY,
+    TOGGLE_MENU_MINIFIED,
+    TOGGLE_SHORTCUT,
+    TOGGLE_COLLAPSE_MENU,
+    FACTORY_RESET,
 ];
 
 export function layoutInit() {
-  return {
-    type: LAYOUT_INIT
-  };
+    return {
+        type: LAYOUT_INIT,
+    };
 }
 
 export function onSmartSkin(skin) {
-  return {
-    type: SMART_SKIN,
-    payload: skin
-  };
+    return {
+        type: SMART_SKIN,
+        payload: skin,
+    };
 }
 
 export function onFixedHeader() {
-  return {
-    type: TOGGLE_FIXED_HEADER
-  };
+    return {
+        type: TOGGLE_FIXED_HEADER,
+    };
 }
 
 export function onFixedNavigation() {
-  return {
-    type: TOGGLE_FIXED_NAVIGATION
-  };
+    return {
+        type: TOGGLE_FIXED_NAVIGATION,
+    };
 }
 
 export function onFixedRibbon() {
-  return {
-    type: TOGGLE_FIXED_RIBBON
-  };
+    return {
+        type: TOGGLE_FIXED_RIBBON,
+    };
 }
 
 export function onFixedPageFooter() {
-  return {
-    type: TOGGLE_FIXED_PAGE_FOOTER
-  };
+    return {
+        type: TOGGLE_FIXED_PAGE_FOOTER,
+    };
 }
 
 export function onInsideContainer() {
-  return {
-    type: TOGGLE_INSIDE_CONTAINER
-  };
+    return {
+        type: TOGGLE_INSIDE_CONTAINER,
+    };
 }
 
 export function onRtl() {
-  return {
-    type: TOGGLE_RTL
-  };
+    return {
+        type: TOGGLE_RTL,
+    };
 }
 
 export function onMenuOnTop() {
-  return {
-    type: TOGGLE_MENU_ON_TOP
-  };
+    return {
+        type: TOGGLE_MENU_ON_TOP,
+    };
 }
 
 export function onColorblindFriendly() {
-  return {
-    type: TOGGLE_COLORBLIND_FRIENDLY
-  };
+    return {
+        type: TOGGLE_COLORBLIND_FRIENDLY,
+    };
 }
 
 export function toggleMenuMinified() {
-  return {
-    type: TOGGLE_MENU_MINIFIED
-  };
+    return {
+        type: TOGGLE_MENU_MINIFIED,
+    };
 }
 
 export function onCollapseMenu() {
-  return {
-    type: TOGGLE_COLLAPSE_MENU
-  };
+    return {
+        type: TOGGLE_COLLAPSE_MENU,
+    };
 }
 
 export function onToggleShortcut() {
-  return {
-    type: TOGGLE_SHORTCUT
-  };
+    return {
+        type: TOGGLE_SHORTCUT,
+    };
 }
 
-export const handleBodyClasses = store => next => action => {
-  const result = next(action);
+export const handleBodyClasses = (store) => (next) => (action) => {
+    const result = next(action);
 
-  // if(layoutActionTypes.indexOf(action.type)===-1) return result
+    // if(layoutActionTypes.indexOf(action.type)===-1) return result
 
-  const layout = store.getState().layout;
+    const layout = store.getState().layout;
 
-  bodyRemoveClass(layout.skins.map(it => it.name).join(" "));
-  if (layout.skin) {
-    bodyAddClass(layout.skin.name);
-    $("#logo img").attr("src", layout.skin.logo);
-  }
+    bodyRemoveClass(layout.skins.map((it) => it.name).join(" "));
+    if (layout.skin) {
+        bodyAddClass(layout.skin.name);
+        $("#logo img").attr("src", layout.skin.logo);
+    }
 
-  bodyToggleClass("fixed-header", layout.fixedHeader);
-  bodyToggleClass("fixed-navigation", layout.fixedNavigation);
-  bodyToggleClass("fixed-ribbon", layout.fixedRibbon);
-  bodyToggleClass("fixed-page-footer", layout.fixedPageFooter);
-  bodyToggleClass("container", layout.insideContainer);
-  bodyToggleClass("smart-rtl", layout.rtl);
-  bodyToggleClass("menu-on-top", layout.menuOnTop);
-  bodyToggleClass("colorblind-friendly", layout.colorblindFriendly);
-  bodyToggleClass("shortcut-on", layout.shortcutOpen);
+    bodyToggleClass("fixed-header", layout.fixedHeader);
+    bodyToggleClass("fixed-navigation", layout.fixedNavigation);
+    bodyToggleClass("fixed-ribbon", layout.fixedRibbon);
+    bodyToggleClass("fixed-page-footer", layout.fixedPageFooter);
+    bodyToggleClass("container", layout.insideContainer);
+    bodyToggleClass("smart-rtl", layout.rtl);
+    bodyToggleClass("menu-on-top", layout.menuOnTop);
+    bodyToggleClass("colorblind-friendly", layout.colorblindFriendly);
+    bodyToggleClass("shortcut-on", layout.shortcutOpen);
 
-  layout.mobileViewActivated = $(window).width() < 979;
-  bodyToggleClass("mobile-view-activated", layout.mobileViewActivated);
-  if (layout.mobileViewActivated) {
-    bodyRemoveClass("minified");
-  }
+    layout.mobileViewActivated = $(window).width() < 979;
+    bodyToggleClass("mobile-view-activated", layout.mobileViewActivated);
+    if (layout.mobileViewActivated) {
+        bodyRemoveClass("minified");
+    }
 
-  if (layout.isMobile) {
-    bodyAddClass("mobile-detected");
-  } else {
-    bodyAddClass("desktop-detected");
-  }
+    if (layout.isMobile) {
+        bodyAddClass("mobile-detected");
+    } else {
+        bodyAddClass("desktop-detected");
+    }
 
-  if (layout.menuOnTop) bodyRemoveClass("minified");
+    if (layout.menuOnTop) bodyRemoveClass("minified");
 
-  if (!layout.menuOnTop) {
-    htmlToggleClass("hidden-menu-mobile-lock", layout.menuCollapsed);
-    bodyToggleClass("hidden-menu", layout.menuCollapsed);
-    bodyRemoveClass("minified");
-  } else if (layout.menuOnTop && layout.mobileViewActivated) {
-    htmlToggleClass("hidden-menu-mobile-lock", layout.menuCollapsed);
-    bodyToggleClass("hidden-menu", layout.menuCollapsed);
-    bodyRemoveClass("minified");
-  }
+    if (!layout.menuOnTop) {
+        htmlToggleClass("hidden-menu-mobile-lock", layout.menuCollapsed);
+        bodyToggleClass("hidden-menu", layout.menuCollapsed);
+        bodyRemoveClass("minified");
+    } else if (layout.menuOnTop && layout.mobileViewActivated) {
+        htmlToggleClass("hidden-menu-mobile-lock", layout.menuCollapsed);
+        bodyToggleClass("hidden-menu", layout.menuCollapsed);
+        bodyRemoveClass("minified");
+    }
 
-  if (layout.menuMinified && !layout.menuOnTop && !layout.mobileViewActivated) {
-    bodyAddClass("minified");
-    bodyRemoveClass("hidden-menu");
-    htmlRemoveClass("hidden-menu-mobile-lock");
-  }
+    if (
+        layout.menuMinified &&
+        !layout.menuOnTop &&
+        !layout.mobileViewActivated
+    ) {
+        bodyAddClass("minified");
+        bodyRemoveClass("hidden-menu");
+        htmlRemoveClass("hidden-menu-mobile-lock");
+    }
 
-  return result;
+    return result;
 };
 
-export const dumpLayoutToStorage = store => next => action => {
-  const result = next(action);
+export const dumpLayoutToStorage = (store) => (next) => (action) => {
+    const result = next(action);
 
-  if (layoutActionTypes.indexOf(action.type) === -1) return result;
+    if (layoutActionTypes.indexOf(action.type) === -1) return result;
 
-  const layout = store.getState().layout;
-  localStorage.setItem("sm-skin", layout.smartSkin);
-  localStorage.setItem("sm-fixed-header", layout.fixedHeader);
-  localStorage.setItem("sm-fixed-navigation", layout.fixedNavigation);
-  localStorage.setItem("sm-fixed-ribbon", layout.fixedRibbon);
-  localStorage.setItem("sm-fixed-page-footer", layout.fixedPageFooter);
-  localStorage.setItem("sm-inside-container", layout.insideContainer);
-  localStorage.setItem("sm-rtl", layout.rtl);
-  localStorage.setItem("sm-menu-on-top", layout.menuOnTop);
-  localStorage.setItem("sm-colorblind-friendly", layout.colorblindFriendly);
-  return result;
+    const layout = store.getState().layout;
+    localStorage.setItem("sm-skin", layout.smartSkin);
+    localStorage.setItem("sm-fixed-header", layout.fixedHeader);
+    localStorage.setItem("sm-fixed-navigation", layout.fixedNavigation);
+    localStorage.setItem("sm-fixed-ribbon", layout.fixedRibbon);
+    localStorage.setItem("sm-fixed-page-footer", layout.fixedPageFooter);
+    localStorage.setItem("sm-inside-container", layout.insideContainer);
+    localStorage.setItem("sm-rtl", layout.rtl);
+    localStorage.setItem("sm-menu-on-top", layout.menuOnTop);
+    localStorage.setItem("sm-colorblind-friendly", layout.colorblindFriendly);
+    return result;
 };
 
 export function factoryReset() {
-  return dispatch => {
-    SmartMessageBox(
-      {
-        title:
-          "<i class='fa fa-refresh' style='color:green'></i> Clear Local Storage",
-        content:
-          "Would you like to RESET all your saved widgets and clear LocalStorage?",
-        buttons: "[No][Yes]"
-      },
-      ButtonPressed => {
-        if (ButtonPressed === "Yes" && localStorage) {
-          localStorage.clear();
-          window.location.reload();
-        }
-      }
-    );
-  };
+    return (dispatch) => {
+        SmartMessageBox(
+            {
+                title: "<i class='fa fa-refresh' style='color:green'></i> Clear Local Storage",
+                content:
+                    "Would you like to RESET all your saved widgets and clear LocalStorage?",
+                buttons: "[No][Yes]",
+            },
+            (ButtonPressed) => {
+                if (ButtonPressed === "Yes" && localStorage) {
+                    localStorage.clear();
+                    window.location.reload();
+                }
+            }
+        );
+    };
 }
 
 export function getSmartSkin() {
-  const lastConfigSkin = localStorage.getItem("sm-config-skin");
-  const smartSkin =
-    lastConfigSkin !== config.smartSkin
-      ? config.smartSkin
-      : localStorage.getItem("sm-skin") || config.smartSkin;
+    const lastConfigSkin = localStorage.getItem("sm-config-skin");
+    const smartSkin =
+        lastConfigSkin !== config.smartSkin
+            ? config.smartSkin
+            : localStorage.getItem("sm-skin") || config.smartSkin;
 
-  localStorage.setItem("sm-config-skin", config.smartSkin);
+    localStorage.setItem("sm-config-skin", config.smartSkin);
 
-  return smartSkin;
+    return smartSkin;
 }

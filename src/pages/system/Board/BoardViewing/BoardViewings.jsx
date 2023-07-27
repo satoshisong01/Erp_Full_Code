@@ -251,13 +251,19 @@ const BoardViewings = () => {
                                                                 }
                                                             />
                                                         </th>
-                                                        <th>분류코드</th>
-                                                        <th>분류코드명</th>
-                                                        <th>분류코드 설명</th>
-                                                        <th>작성자</th>
-                                                        <th>작성일</th>
-                                                        <th>수정자</th>
-                                                        <th>수정일</th>
+                                                        {[
+                                                            "게시판명",
+                                                            "권한명",
+                                                            "그룹권한명",
+                                                            "댓글",
+                                                            "수정일",
+                                                            "수정자",
+                                                            "사용여부",
+                                                        ].map((item, index) => (
+                                                            <th key={index}>
+                                                                {item}
+                                                            </th>
+                                                        ))}
                                                     </tr>
                                                 </thead>
                                                 <tbody>

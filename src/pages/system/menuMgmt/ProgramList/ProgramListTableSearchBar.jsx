@@ -114,6 +114,48 @@ export default function ProgramListTableSearchBar({
                             <label
                                 htmlFor="searchKeyword"
                                 className="box_search">
+                                한글명
+                            </label>
+                            <input
+                                type="text"
+                                name="searchKeyword"
+                                id="searchKeyword"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                            />
+                        </div>
+                        <div className="box1">
+                            <label
+                                htmlFor="searchKeyword"
+                                className="box_search">
+                                파일명
+                            </label>
+                            <input
+                                type="text"
+                                name="searchKeyword"
+                                id="searchKeyword"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                            />
+                        </div>
+                        <div className="box1">
+                            <label
+                                htmlFor="searchKeyword"
+                                className="box_search">
+                                URL
+                            </label>
+                            <input
+                                type="text"
+                                name="searchKeyword"
+                                id="searchKeyword"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                            />
+                        </div>
+                        <div className="box1">
+                            <label
+                                htmlFor="searchKeyword"
+                                className="box_search">
                                 분류코드
                             </label>
                             <input
@@ -124,11 +166,13 @@ export default function ProgramListTableSearchBar({
                                 onChange={(e) => setInputValue(e.target.value)}
                             />
                         </div>
+                    </div>
+                    <div className="box">
                         <div className="box1">
                             <label
                                 htmlFor="searchKeyword"
                                 className="box_search">
-                                분류코드명
+                                담당자
                             </label>
                             <input
                                 type="text"
@@ -142,7 +186,7 @@ export default function ProgramListTableSearchBar({
                             <label
                                 htmlFor="searchKeyword"
                                 className="box_search">
-                                작성자
+                                거래처
                             </label>
                             <input
                                 type="text"
@@ -152,20 +196,8 @@ export default function ProgramListTableSearchBar({
                                 onChange={(e) => setInputValue(e.target.value)}
                             />
                         </div>
-                        <div className="box1">
-                            <label
-                                htmlFor="searchKeyword"
-                                className="box_search">
-                                수정자
-                            </label>
-                            <input
-                                type="text"
-                                name="searchKeyword"
-                                id="searchKeyword"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                            />
-                        </div>
+                        <div className="box1"></div>
+                        <div className="box1"></div>
                     </div>
                 </form>
             </div>

@@ -232,11 +232,7 @@ const PersonnelMgmts = () => {
                                                     <table
                                                         ref={dataTableRef}
                                                         className="table table-bordered"
-                                                        id="dataTable"
-                                                        style={{
-                                                            backgroundColor:
-                                                                "#fff",
-                                                        }}>
+                                                        id="dataTable">
                                                         <thead>
                                                             <tr>
                                                                 <th className="tableHeaderTh">
@@ -256,7 +252,8 @@ const PersonnelMgmts = () => {
                                                                 </th>
                                                                 {[
                                                                     "프로젝트명",
-                                                                    "총 인건비",
+                                                                    "계획인건비",
+                                                                    "실행인건비",
                                                                 ].map(
                                                                     (
                                                                         item,
@@ -306,6 +303,7 @@ const PersonnelMgmts = () => {
                                                                         </td>
                                                                         {[
                                                                             "orgId",
+                                                                            "orgNm",
                                                                             "orgNm",
                                                                         ].map(
                                                                             (

@@ -1131,7 +1131,7 @@ select::-ms-expand {
 
 /* 리액트 관련 */
 .react-datepicker-wrapper,
-.react-datepicker__input-container {
+.react-datepicker__input-egov-container {
     display: inline-block;
     vertical-align: top;
     width: auto;

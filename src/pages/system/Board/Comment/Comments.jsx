@@ -249,13 +249,18 @@ const Comments = () => {
                                                                 }
                                                             />
                                                         </th>
-                                                        <th>분류코드</th>
-                                                        <th>분류코드명</th>
-                                                        <th>분류코드 설명</th>
-                                                        <th>작성자</th>
-                                                        <th>작성일</th>
-                                                        <th>수정자</th>
-                                                        <th>수정일</th>
+                                                        {[
+                                                            "댓글명",
+                                                            "댓글번호",
+                                                            "작성일",
+                                                            "작성자",
+                                                            "수정일",
+                                                            "수정자",
+                                                        ].map((item, index) => (
+                                                            <th key={index}>
+                                                                {item}
+                                                            </th>
+                                                        ))}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -289,7 +294,6 @@ const Comments = () => {
                                                                     "createIdBy",
                                                                     "createDate",
                                                                     "lastModifiedIdBy",
-                                                                    "lastModifyDate",
                                                                 ].map((key) => (
                                                                     <td
                                                                         className="tableWidth tdStyle"

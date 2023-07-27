@@ -244,13 +244,19 @@ const AccessHistorys = () => {
                                                                 }
                                                             />
                                                         </th>
-                                                        <th>분류코드</th>
-                                                        <th>분류코드명</th>
-                                                        <th>분류코드 설명</th>
-                                                        <th>작성자</th>
-                                                        <th>작성일</th>
-                                                        <th>수정자</th>
-                                                        <th>수정일</th>
+                                                        {[
+                                                            "접속 ID",
+                                                            "접속이름",
+                                                            "로그시간",
+                                                            "로그정보",
+                                                            "접속 IP",
+                                                            "최근접속일시",
+                                                            "결과",
+                                                        ].map((item, index) => (
+                                                            <th key={index}>
+                                                                {item}
+                                                            </th>
+                                                        ))}
                                                     </tr>
                                                 </thead>
                                                 <tbody>

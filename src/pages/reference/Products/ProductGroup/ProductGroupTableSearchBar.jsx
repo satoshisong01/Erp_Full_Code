@@ -111,7 +111,7 @@ export default function ProductGroupTableSearchBar({
                             <label
                                 htmlFor="searchKeyword"
                                 className="box_search">
-                                검색어
+                                품목그룹명
                             </label>
                             <input
                                 type="text"
@@ -121,83 +121,35 @@ export default function ProductGroupTableSearchBar({
                                 onChange={(e) => setInputValue(e.target.value)}
                             />
                         </div>
-                        <div className="box2">
+                        <div className="box1">
                             <label
-                                htmlFor="searchCondition"
+                                htmlFor="searchKeyword"
                                 className="box_search">
-                                검색조건
+                                품목구분코드
                             </label>
-                            {urlName === "productGroup" && (
-                                <select
-                                    id="searchCondition"
-                                    name="searchCondition"
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        setInputLv(e.target.value)
-                                    }>
-                                    <option value="0">전체</option>
-                                    <option value="1">분류코드</option>
-                                    <option value="2">분류코드명</option>
-                                    <option value="3">분류코드 설명</option>
-                                </select>
-                            )}
-                            {urlName === "groupCode" && (
-                                <select
-                                    id="searchCondition"
-                                    name="searchCondition"
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        setInputLv(e.target.value)
-                                    }>
-                                    <option value="0">전체</option>
-                                    <option value="1">그룹코드</option>
-                                    <option value="2">그룹코드명</option>
-                                    <option value="3">그룹코드 설명</option>
-                                </select>
-                            )}
-                            {urlName === "detailCode" && (
-                                <select
-                                    id="searchCondition"
-                                    name="searchCondition"
-                                    className="form-control"
-                                    onChange={(e) =>
-                                        setInputLv(e.target.value)
-                                    }>
-                                    <option value="0">전체</option>
-                                    <option value="1">상세코드</option>
-                                    <option value="2">상세코드명</option>
-                                    <option value="3">상세코드 설명</option>
-                                </select>
-                            )}
-                            <div className="box">
-                                <div className="radioBtn">
-                                    <label className="radioLabel">
-                                        <input
-                                            className="inputRadio"
-                                            type="radio"
-                                            value="option1"
-                                            checked={option === "option1"}
-                                            onChange={(e) =>
-                                                setOption(e.target.value)
-                                            }
-                                        />
-                                        삭제된 항목
-                                    </label>
-                                    <label className="radioLabel">
-                                        <input
-                                            className="inputRadio"
-                                            type="radio"
-                                            value="option2"
-                                            checked={option === "option2"}
-                                            onChange={(e) =>
-                                                setOption(e.target.value)
-                                            }
-                                        />
-                                        삭제되지 않은 항목
-                                    </label>
-                                </div>
-                            </div>
+                            <input
+                                type="text"
+                                name="searchKeyword"
+                                id="searchKeyword"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                            />
                         </div>
+                        <div className="box1">
+                            <label
+                                htmlFor="searchKeyword"
+                                className="box_search">
+                                작성자
+                            </label>
+                            <input
+                                type="text"
+                                name="searchKeyword"
+                                id="searchKeyword"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                            />
+                        </div>
+                        <div className="box1"></div>
                     </div>
                 </form>
             </div>

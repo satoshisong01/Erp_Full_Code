@@ -306,7 +306,7 @@ export default function AccessHistoryUtilBtn({
                 </button>
             </div>*/}
             <div className="tableBtn">
-                {showExcelBtn && (
+                {/*{showExcelBtn && (
                     <button
                         className="btn btn-primary csvIcon"
                         id="utilBtn"
@@ -354,7 +354,7 @@ export default function AccessHistoryUtilBtn({
                         <i className="fa fa-plus utilIcon" />
                         추가
                     </button>
-                )}
+                )}*/}
             </div>
 
             {postModalOpen && (

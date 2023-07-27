@@ -33,6 +33,7 @@
         "re-resizable": "^6.9.9",
         "react": "^18.2.0",
         "react-bootstrap": "^2.8.0",
+        "react-calendar": "^4.5.0",
         "react-copy-to-clipboard": "^5.1.0",
         "react-datepicker": "^4.8.0",
         "react-dom": "^18.2.0",

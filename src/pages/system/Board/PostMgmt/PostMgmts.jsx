@@ -250,13 +250,19 @@ const PostMgmts = () => {
                                                                 }
                                                             />
                                                         </th>
-                                                        <th>분류코드</th>
-                                                        <th>분류코드명</th>
-                                                        <th>분류코드 설명</th>
-                                                        <th>작성자</th>
-                                                        <th>작성일</th>
-                                                        <th>수정자</th>
-                                                        <th>수정일</th>
+                                                        {[
+                                                            "게시물명",
+                                                            "분류",
+                                                            "작성일",
+                                                            "작성자",
+                                                            "수정일",
+                                                            "수정자",
+                                                            "사용여부",
+                                                        ].map((item, index) => (
+                                                            <th key={index}>
+                                                                {item}
+                                                            </th>
+                                                        ))}
                                                     </tr>
                                                 </thead>
                                                 <tbody>

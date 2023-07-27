@@ -232,10 +232,7 @@ const Businesses = () => {
                                                 <table
                                                     ref={dataTableRef}
                                                     className="table table-bordered"
-                                                    id="dataTable"
-                                                    style={{
-                                                        backgroundColor: "#fff",
-                                                    }}>
+                                                    id="dataTable">
                                                     <thead>
                                                         <tr>
                                                             <th className="tableHeaderTh">
@@ -255,18 +252,15 @@ const Businesses = () => {
                                                             </th>
                                                             {[
                                                                 "프로젝트명",
-                                                                "수주번호",
-                                                                "사업단위",
+                                                                "프로젝트코드",
                                                                 "수주일",
-                                                                "수주구분",
                                                                 "통화",
-                                                                "부서",
                                                                 "거래처",
-                                                                "담장자",
+                                                                "담당자",
                                                                 "납기일",
-                                                                "수주금액계",
-                                                                "거래명세서 금액계",
-                                                                "매출금액계",
+                                                                "수주금액",
+                                                                "거래명세서",
+                                                                "상태",
                                                             ].map(
                                                                 (
                                                                     item,
@@ -308,9 +302,6 @@ const Businesses = () => {
                                                                     </td>
                                                                     {[
                                                                         "orgId",
-                                                                        "orgNm",
-                                                                        "orgNm",
-                                                                        "orgNm",
                                                                         "orgNm",
                                                                         "orgNm",
                                                                         "orgNm",

@@ -61,6 +61,7 @@
 .box_search {
     /*width: 100%;*/
     /*margin: auto;*/
+    max-width: 150px;
     padding: 5px;
 }
 
@@ -123,7 +124,6 @@
     /*box-shadow: 3px 3px 3px gray;*/
     border: 2px solid #f0f1f1;
     border-radius: 5px;
-    background-color: #f0f1f1 !important;
 }
 
 .widget-body {

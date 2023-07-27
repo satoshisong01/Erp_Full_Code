@@ -232,10 +232,7 @@ const ExcutionCosts = () => {
                                                 <table
                                                     ref={dataTableRef}
                                                     className="table table-bordered"
-                                                    id="dataTable"
-                                                    style={{
-                                                        backgroundColor: "#fff",
-                                                    }}>
+                                                    id="dataTable">
                                                     <thead>
                                                         <tr>
                                                             <th className="tableHeaderTh">
@@ -254,14 +251,14 @@ const ExcutionCosts = () => {
                                                                 />
                                                             </th>
                                                             {[
-                                                                "ID",
-                                                                "조직이름",
-                                                                "조직코드",
-                                                                "설명",
-                                                                "작성일",
-                                                                "작성자",
-                                                                "수정일",
-                                                                "수정자",
+                                                                "연도",
+                                                                "프로젝트명",
+                                                                "매출부서",
+                                                                "담당자",
+                                                                "시작일",
+                                                                "종료일",
+                                                                "비고",
+                                                                "수주상태",
                                                             ].map(
                                                                 (
                                                                     item,

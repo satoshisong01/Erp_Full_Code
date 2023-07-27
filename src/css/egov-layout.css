@@ -189,7 +189,7 @@ body {
     display: none;
 }
 
-.container {
+.egov-container {
     min-height: calc(100vh - 300px);
 }
 .c_wrap {
@@ -418,7 +418,7 @@ body {
     background: url(images/ico_close_black44.png) no-repeat;
     background-size: contain;
 }
-.pop_container {
+.pop_egov-container {
     padding: 40px;
     border-radius: 0 0 19px 19px;
     background: #fff;

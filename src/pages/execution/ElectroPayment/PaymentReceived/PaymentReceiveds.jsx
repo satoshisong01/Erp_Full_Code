@@ -232,10 +232,7 @@ const PaymentReceiveds = () => {
                                                 <table
                                                     ref={dataTableRef}
                                                     className="table table-bordered"
-                                                    id="dataTable"
-                                                    style={{
-                                                        backgroundColor: "#fff",
-                                                    }}>
+                                                    id="dataTable">
                                                     <thead>
                                                         <tr>
                                                             <th className="tableHeaderTh">
@@ -256,6 +253,8 @@ const PaymentReceiveds = () => {
                                                             {[
                                                                 "프로젝트명",
                                                                 "발신자",
+                                                                "발신일",
+                                                                "수신자",
                                                                 "수신일",
                                                                 "결재상태",
                                                             ].map(
@@ -299,6 +298,8 @@ const PaymentReceiveds = () => {
                                                                     </td>
                                                                     {[
                                                                         "orgId",
+                                                                        "orgNm",
+                                                                        "orgNm",
                                                                         "orgNm",
                                                                         "orgNm",
                                                                         "orgNm",

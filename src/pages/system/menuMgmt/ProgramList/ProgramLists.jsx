@@ -251,13 +251,22 @@ const ProgramLists = () => {
                                                                 }
                                                             />
                                                         </th>
-                                                        <th>분류코드</th>
-                                                        <th>분류코드명</th>
-                                                        <th>분류코드 설명</th>
-                                                        <th>작성자</th>
-                                                        <th>작성일</th>
-                                                        <th>수정자</th>
-                                                        <th>수정일</th>
+                                                        {[
+                                                            "프로그램ID",
+                                                            "파일명",
+                                                            "저장경로",
+                                                            "한글명",
+                                                            "설명",
+                                                            "URL",
+                                                            "분류코드",
+                                                            "변수",
+                                                            "최초등록시점",
+                                                            "최초수정시점",
+                                                        ].map((item, index) => (
+                                                            <th key={index}>
+                                                                {item}
+                                                            </th>
+                                                        ))}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -291,6 +300,9 @@ const ProgramLists = () => {
                                                                     "createIdBy",
                                                                     "createDate",
                                                                     "lastModifiedIdBy",
+                                                                    "lastModifyDate",
+                                                                    "lastModifyDate",
+                                                                    "lastModifyDate",
                                                                     "lastModifyDate",
                                                                 ].map((key) => (
                                                                     <td

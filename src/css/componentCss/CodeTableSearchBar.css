@@ -21,8 +21,43 @@
     flex: 1;
 }
 
-.box11 {
+.boxDate {
+    position: relative;
+}
+
+.boxCalendar {
+    position: absolute;
+    top: 100%;
+    left: -70%;
+    z-index: 999;
+}
+
+.boxDates {
+    display: flex;
+}
+
+.box2 {
+    flex: 2;
+}
+
+.box3 {
     flex: 4;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.box3-0 {
+    width: 40%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.box3-1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .buttonTool {
@@ -103,9 +138,15 @@
 
 #searchKeyword {
     height: 25px;
-    width: 50%;
+    width: 140px;
 }
 
 .radioBtn {
     margin: 0;
+}
+
+#searchKeyword {
+    appearance: auto;
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
 }

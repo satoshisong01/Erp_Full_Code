@@ -231,10 +231,7 @@ const ClientCompanys = () => {
                                                 <table
                                                     ref={dataTableRef}
                                                     className="table table-bordered"
-                                                    id="dataTable"
-                                                    style={{
-                                                        backgroundColor: "#fff",
-                                                    }}>
+                                                    id="dataTable">
                                                     <thead>
                                                         <tr>
                                                             <th className="tableHeaderTh">
