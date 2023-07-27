@@ -2,8 +2,6 @@ import React, { useState , onClose } from "react";
 
 const InnerForm = ({treeNode}) => {
 
-	console.log("🌠innerForm treeNode: ", treeNode);
-
 	const values = [
 		{
 			menuName: "메뉴1",
@@ -124,7 +122,6 @@ const InnerForm = ({treeNode}) => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log("🌠formData: ", formData);
 		onClose();
 	};
 

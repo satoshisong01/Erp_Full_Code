@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 import * as EgovNet from 'api/egovFetch';
 import URL from 'constants/url';
+import PopupButton from 'components/PopupButton';
 
 function EgovMain(props) {
     console.group("EgovMain");
@@ -19,8 +20,8 @@ function EgovMain(props) {
         <div className="container P_MAIN">
             <div className="c_wrap">
                     <div className="mini_board">
-                        <div className="col" style={{height: 150}} >
-                            <div >메인으로 보여줄 것</div>
+                        <div className="col" style={{height: '100%'}} >
+                            <PopupButton targetUrl={URL.ApprovalContainer} title="사전 원가 계획"/>
                         </div>
 
                         <div className="col">

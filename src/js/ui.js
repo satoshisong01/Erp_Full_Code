@@ -10,7 +10,6 @@ export default function initPage() {
 	// if(typeof sessionUserSe !== 'undefined' && sessionUserSe === 'USR'){ //usr:관리자
 	if(sessionUserSe === 'USR'){ //usr:관리자
 	    // Mobile 서브메뉴 항목 클릭시 메뉴 닫기
-        console.log("🌠 sessionUserSe === 'USR'");
         document.querySelectorAll('.all_menu.Mobile .submenu a')
 			.forEach(el => el.addEventListener('click', () =>  {
             	document.querySelector('.all_menu.Mobile').classList.add('closed');
@@ -38,22 +37,16 @@ export default function initPage() {
     /* 전체메뉴 */
         // 웹
         document.querySelector('.btnAllMenu').addEventListener('click', (e) => {
-        console.log("🌠 btnAllMenu. click ");
-
             const el = e.target;
+            const menu = document.querySelector('.all_menu.WEB');
     
             el.classList.toggle('active');
+            menu.classList.toggle('closed');
     
-            const menu = document.querySelector('.all_menu.WEB');
             if (menu.matches('.closed')) {
-                menu.classList.remove('closed');
                 el.title = '전체메뉴 닫힘';
-            console.log("🌠 btnAllMenu. click - 전체메뉴 닫힘");
             } else {
-                menu.classList.add('closed');
                 el.title = '전체메뉴 열림';
-            console.log("🌠 btnAllMenu. click - 전체메뉴 열림");
-
             }
         });
 

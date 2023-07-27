@@ -45,7 +45,7 @@ function EgovLeftNavExecution(props) {
         <div className="layout">
             <div className="nav">
                 <div className="inner">
-                    <h2>시스템관리</h2>
+                    <h2>실행관리</h2>
                     <ul className="menu4">
                         {menuItems.map((menuItem) => (
                             <li key={menuItem.label}>

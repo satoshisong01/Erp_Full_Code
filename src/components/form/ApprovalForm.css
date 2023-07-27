@@ -1,0 +1,76 @@
+.form-container {
+	/* position: relative;
+	margin-bottom: 50px;
+	margin-top: 20px;
+	display: flex;
+	justify-content: center; */
+}
+
+.header-row {
+	display: flex;
+	justify-content: center;
+	position: relative;
+	margin-bottom: 50px;
+	margin-top: 20px;
+}
+
+.form-button-group {
+	display: flex;
+	justify-content: right;
+}
+  
+.form-title {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.form-title > h1 {
+	margin: 0
+}
+  
+.area-container {
+	display: flex;
+	margin-left: auto;
+}
+  
+/* 발신부서 영역 */
+.area-container .department {
+	writing-mode: vertical-rl;
+	background-color: #e3ecf8;
+	border: 1px solid gray;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	/* transform: translateX(-10%); */
+}
+
+/* 발신부서 */
+.area-container .department > h3 {
+	/* transform: translateX(-10%); */
+}
+
+/* 박스 영역 */
+.area-container .area {
+	width: 100px;
+}
+  
+.area-container .area .top {
+	background-color: #e3ecf8;
+	border: 1px solid gray;
+	height: 20%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.area-container .area .bottom {
+	border: 1px solid gray;
+	height: 80%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+ 
