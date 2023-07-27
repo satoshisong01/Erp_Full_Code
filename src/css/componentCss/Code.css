@@ -139,3 +139,7 @@
     font-style: normal;
     color: gray;
 }
+
+#dataTable_length {
+    margin-bottom: 10px;
+}
