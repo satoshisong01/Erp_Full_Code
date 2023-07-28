@@ -219,127 +219,99 @@ const ProductGroups = () => {
                         headers={headers}
                     />
                 </div>
-                <div className="UserInfo">
-                    <div className="UserTable">
-                        <div className="row">
-                            <div className="tableBody">
-                                <div className="widget-body">
-                                    {isSearching && <div>Loading...</div>}
-                                    {!isSearching && (
-                                        <>
-                                            <div className="tableBox">
-                                                <table
-                                                    ref={dataTableRef}
-                                                    className="table table-bordered"
-                                                    id="dataTable">
-                                                    <thead>
-                                                        <tr>
-                                                            <th className="tableHeaderTh">
+
+                <div className="row">
+                    <div className="tableBody">
+                        <div className="widget-body">
+                            {isSearching && <div>Loading...</div>}
+                            {!isSearching && (
+                                <>
+                                    <div className="tableBox">
+                                        <table
+                                            ref={dataTableRef}
+                                            className="table table-bordered"
+                                            id="dataTable">
+                                            <thead>
+                                                <tr>
+                                                    <th className="tableHeaderTh">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={check}
+                                                            onChange={(e) =>
+                                                                handleClick(e)
+                                                            }
+                                                        />
+                                                    </th>
+                                                    {[
+                                                        "품목그룹명",
+                                                        "품목구분코드",
+                                                        "작성일",
+                                                        "작성자",
+                                                    ].map((item, index) => (
+                                                        <th key={index}>
+                                                            {item}
+                                                        </th>
+                                                    ))}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {searchedData.map(
+                                                    (item, index) => (
+                                                        <tr key={index}>
+                                                            <td>
                                                                 <input
                                                                     type="checkbox"
-                                                                    checked={
-                                                                        check
-                                                                    }
+                                                                    checked={selectedData.some(
+                                                                        (
+                                                                            selectedItem
+                                                                        ) =>
+                                                                            selectedItem.uniqId ===
+                                                                            item.uniqId
+                                                                    )}
                                                                     onChange={(
                                                                         e
                                                                     ) =>
-                                                                        handleClick(
+                                                                        handleItemCheck(
+                                                                            item,
                                                                             e
                                                                         )
                                                                     }
                                                                 />
-                                                            </th>
+                                                            </td>
                                                             {[
-                                                                "품목그룹명",
-                                                                "품목구분코드",
-                                                                "작성일",
-                                                                "작성자",
-                                                            ].map(
-                                                                (
-                                                                    item,
-                                                                    index
-                                                                ) => (
-                                                                    <th
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        {item}
-                                                                    </th>
-                                                                )
-                                                            )}
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {searchedData.map(
-                                                            (item, index) => (
-                                                                <tr key={index}>
-                                                                    <td>
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            checked={selectedData.some(
-                                                                                (
-                                                                                    selectedItem
-                                                                                ) =>
-                                                                                    selectedItem.uniqId ===
-                                                                                    item.uniqId
-                                                                            )}
-                                                                            onChange={(
-                                                                                e
-                                                                            ) =>
-                                                                                handleItemCheck(
-                                                                                    item,
-                                                                                    e
-                                                                                )
-                                                                            }
-                                                                        />
-                                                                    </td>
-                                                                    {[
-                                                                        "orgId",
-                                                                        "orgNm",
-                                                                        "createDate",
-                                                                        "createIdBy",
-                                                                    ].map(
-                                                                        (
-                                                                            key
-                                                                        ) => (
-                                                                            <td
-                                                                                className="tableWidth tdStyle"
-                                                                                onClick={(
-                                                                                    e
-                                                                                ) =>
-                                                                                    handleModalClick(
-                                                                                        e,
-                                                                                        item
-                                                                                    )
-                                                                                }
-                                                                                key={
-                                                                                    key
-                                                                                }>
-                                                                                {
-                                                                                    item[
-                                                                                        key
-                                                                                    ]
-                                                                                }
-                                                                            </td>
+                                                                "orgId",
+                                                                "orgNm",
+                                                                "createDate",
+                                                                "createIdBy",
+                                                            ].map((key) => (
+                                                                <td
+                                                                    className="tableWidth tdStyle"
+                                                                    onClick={(
+                                                                        e
+                                                                    ) =>
+                                                                        handleModalClick(
+                                                                            e,
+                                                                            item
                                                                         )
-                                                                    )}
-                                                                </tr>
-                                                            )
-                                                        )}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
+                                                                    }
+                                                                    key={key}>
+                                                                    {item[key]}
+                                                                </td>
+                                                            ))}
+                                                        </tr>
+                                                    )
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </>
+                            )}
                         </div>
-                    </div>
-                    <div>
-                        {/*<UserManagementInfo detailData={detailData} />*/}
                     </div>
                 </div>
             </div>
+            <div>{/*<UserManagementInfo detailData={detailData} />*/}</div>
+
             {modalOpen && (
                 <ProductGroupModalPage
                     onClose={() => {

@@ -2,11 +2,12 @@ import React, { useRef, useState } from "react";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
-import XLSX from "xlsx-js-style";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import "../../../css/componentCss/CodeUtilBtn.css";
 import axios from "axios";
 import BusinessModalPagePost from "./BusinessModalPagePost";
+import URL from "constants/url";
+import PopupButton from "components/PopupButton";
 
 export default function BusinessUtilBtn({
     initialData,
@@ -27,6 +28,9 @@ export default function BusinessUtilBtn({
         urlName === "detailCode"
             ? true
             : false;
+    const showPreCostPaper = true;
+    const showOrderPlan = true;
+    const showElecPayment = true;
     const showCopyBtn = true;
     const showPrintBtn = true;
     const showDeleteBtn = true;
@@ -183,6 +187,8 @@ export default function BusinessUtilBtn({
 
     //----------------------------------- Copy 버튼  -------------------------------------------
 
+    //----------------------------------- 사전원가서 버튼  -------------------------------------------
+
     //---------------------------------- Print 버튼  -------------------------------------------
 
     const handlePrint = () => {
@@ -309,7 +315,13 @@ export default function BusinessUtilBtn({
                 </button>
             </div>*/}
             <div className="tableBtn">
-                {showExcelBtn && (
+                {showPreCostPaper && (
+                    <PopupButton
+                        targetUrl={URL.ApprovalContainer}
+                        title={"전자결제"}
+                    />
+                )}
+                {showOrderPlan && (
                     <button
                         className="btn btn-primary csvIcon"
                         id="utilBtn"
@@ -318,9 +330,21 @@ export default function BusinessUtilBtn({
                         //    XLSX.writeFile(wb, "table-demo.xlsx");
                         //}}
                     >
-                        사후 정산서
+                        수주계획
                     </button>
                 )}
+                {/*{showElecPayment && (
+                    <button
+                        className="btn btn-primary csvIcon"
+                        id="utilBtn"
+                        //onClick={() => {
+                        //    // STEP 4: Write Excel file to browser (Specify the file name in the second argument)
+                        //    XLSX.writeFile(wb, "table-demo.xlsx");
+                        //}}
+                    >
+                        전자결제
+                    </button>
+                )}*/}
                 {showExcelBtn && (
                     <button
                         className="btn btn-primary csvIcon"

@@ -1,9 +1,10 @@
 import React from "react";
-import "./ApprovalForm.css"
-function ApprovalForm ({ title, children }) {
-	return (
+import "./ApprovalForm.css";
+import ModalSearch from "components/modal/ModalSearch";
+function ApprovalForm({ title, children }) {
+    return (
         <>
-            <div>
+            <div className="newBody">
                 <div className="form-button-group">
                     <button className="btn btn-primary">결제선</button>
                     <button className="btn btn-primary">결제요청</button>
@@ -14,45 +15,28 @@ function ApprovalForm ({ title, children }) {
                     <div className="form-title">
                         <h1>{title}</h1>
                     </div>
-
                     <div className="area-container">
                         <div className="department">
-                            <h3> 발신부서 </h3>
+                            <h3 className="titleH3"> 발신부서 </h3>
                         </div>
                         <div className="area">
                             <div className="top"> 팀원 </div>
                             <div className="bottom"> 유지수 </div>
                         </div>
                         <div className="area">
-							<div className="top"> PM </div>
+                            <div className="top"> PM </div>
                             <div className="bottom"> 손영훈 </div>
                         </div>
                     </div>
                 </div>
 
-				
                 <div className="TableBucket">
                     <table className="tableMain">
                         <tbody className="tableBody">
                             <tr className="tableTr">
                                 <td className="table2-1">프로젝트명</td>
-                                <td className="table2-2">
-                                    <select
-                                        name=""
-                                        id=""
-                                        style={{ marginLeft: "7%" }}
-                                    >
-                                        <option value="">
-                                            ----------------------- 선택
-                                            -----------------------
-                                        </option>
-                                        <option value="">
-                                            삼성전자 천안 C3 전력 FMCS 구축
-                                        </option>
-                                        <option value="">
-                                            엘지전자 평택 C7 전력 FMCS 설계
-                                        </option>
-                                    </select>
+                                <td className="table2-2 titleSelect">
+                                    <ModalSearch />
                                 </td>
                             </tr>
                             <tr className="tableTr">
@@ -68,8 +52,8 @@ function ApprovalForm ({ title, children }) {
                                 <td className="table4-2">
                                     <select name="" id="">
                                         <option value="">
-                                            ----------------------- 선택
-                                            -----------------------
+                                            -------------------- 선택
+                                            --------------------
                                         </option>
                                         <option value="">PS팀</option>
                                         <option value="">PA팀</option>
@@ -81,8 +65,8 @@ function ApprovalForm ({ title, children }) {
                                 <td className="table4-2">
                                     <select name="" id="">
                                         <option value="">
-                                            ----------------------- 선택
-                                            -----------------------
+                                            -------------------- 선택
+                                            --------------------
                                         </option>
                                         <option value="">유지수</option>
                                         <option value="">송경석</option>
@@ -92,8 +76,8 @@ function ApprovalForm ({ title, children }) {
                                 <td className="table4-2">
                                     <select name="" id="">
                                         <option value="">
-                                            ----------------------- 선택
-                                            -----------------------
+                                            -------------------- 선택
+                                            --------------------
                                         </option>
                                         <option value="">김유진</option>
                                         <option value="">양회빈</option>
@@ -137,13 +121,11 @@ function ApprovalForm ({ title, children }) {
                         </tbody>
                     </table>
 
-                    <div id="content">
-						{children}
-                    </div>
+                    <div id="content">{children}</div>
                 </div>
             </div>
         </>
     );
-};
+}
 
 export default ApprovalForm;

@@ -5,7 +5,6 @@ import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
 
-import { WidgetGrid, JarvisWidget } from "../../../common";
 import PaymentReceivedUtilBtn from "./PaymentReceivedUtilBtn";
 //import PopupTesting from "./PopupTesting";
 //import PopupWindow from "./PopupTesting";
@@ -22,19 +21,13 @@ const PaymentReceivedRunPopup = () => {
 
     useEffect(() => {
         if ($.fn.DataTable.isDataTable(dataTableRef.current)) {
-            $(dataTableRef.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef.current).DataTable().destroy();
         }
         if ($.fn.DataTable.isDataTable(dataTableRef2.current)) {
-            $(dataTableRef2.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef2.current).DataTable().destroy();
         }
         if ($.fn.DataTable.isDataTable(dataTableRef3.current)) {
-            $(dataTableRef3.current)
-                .DataTable()
-                .destroy();
+            $(dataTableRef3.current).DataTable().destroy();
         }
         $(dataTableRef.current).DataTable({
             paging: true,
@@ -269,8 +262,7 @@ const PaymentReceivedRunPopup = () => {
         <div
             style={{
                 backgroundColor: "white",
-            }}
-        >
+            }}>
             {/*<button onClick={openPopup}>팝업열기</button>*/}
 
             <div>
@@ -279,14 +271,12 @@ const PaymentReceivedRunPopup = () => {
                     <button className="btn btn-primary">결제요청</button>
                     <button
                         className="btn btn-primary"
-                        style={{ backgroundColor: "white", color: "black" }}
-                    >
+                        style={{ backgroundColor: "white", color: "black" }}>
                         임시저장
                     </button>
                     <button
                         className="btn btn-primary"
-                        style={{ backgroundColor: "white", color: "black" }}
-                    >
+                        style={{ backgroundColor: "white", color: "black" }}>
                         취소
                     </button>
                 </div>
@@ -297,15 +287,13 @@ const PaymentReceivedRunPopup = () => {
                         position: "relative",
                         marginBottom: "50px",
                         marginTop: "20px",
-                    }}
-                >
+                    }}>
                     <div
                         style={{
                             position: "absolute",
                             top: "50%",
                             transform: "translateY(-50%)",
-                        }}
-                    >
+                        }}>
                         <h1 style={{ margin: 0 }}>구매 실행</h1>
                     </div>
 
@@ -314,8 +302,7 @@ const PaymentReceivedRunPopup = () => {
                         style={{
                             display: "flex",
                             marginLeft: "auto",
-                        }}
-                    >
+                        }}>
                         <div
                             style={{
                                 writingMode: "vertical-rl",
@@ -325,21 +312,18 @@ const PaymentReceivedRunPopup = () => {
                                 justifyContent: "center",
                                 alignItems: "center",
                                 textAlign: "center",
-                            }}
-                        >
+                            }}>
                             <h3
                                 style={{
                                     transform: "translateX(-10%)",
-                                }}
-                            >
+                                }}>
                                 발신부서
                             </h3>
                         </div>
                         <div
                             style={{
                                 width: "100px",
-                            }}
-                        >
+                            }}>
                             <div
                                 style={{
                                     backgroundColor: "#e3ecf8",
@@ -348,8 +332,7 @@ const PaymentReceivedRunPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 팀원
                             </div>
                             <div
@@ -359,16 +342,14 @@ const PaymentReceivedRunPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 유지수
                             </div>
                         </div>
                         <div
                             style={{
                                 width: "100px",
-                            }}
-                        >
+                            }}>
                             <div
                                 style={{
                                     backgroundColor: "#e3ecf8",
@@ -377,8 +358,7 @@ const PaymentReceivedRunPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 PM
                             </div>
                             <div
@@ -388,8 +368,7 @@ const PaymentReceivedRunPopup = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                }}
-                            >
+                                }}>
                                 손영훈
                             </div>
                         </div>
@@ -519,8 +498,7 @@ const PaymentReceivedRunPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -623,8 +601,7 @@ const PaymentReceivedRunPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -738,8 +715,7 @@ const PaymentReceivedRunPopup = () => {
                                         <div className="btnWrap">
                                             <button
                                                 className="btn btn-primary tdBtn"
-                                                onClick={handleAddRunRow}
-                                            >
+                                                onClick={handleAddRunRow}>
                                                 추가
                                             </button>
                                         </div>
@@ -753,8 +729,7 @@ const PaymentReceivedRunPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header className="headerH2">
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -768,8 +743,7 @@ const PaymentReceivedRunPopup = () => {
                                         border="1"
                                         style={{
                                             width: "100%",
-                                        }}
-                                    >
+                                        }}>
                                         <thead>
                                             <tr className="tableTr3">
                                                 <th className="thTitle1">
@@ -803,8 +777,7 @@ const PaymentReceivedRunPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -817,12 +790,10 @@ const PaymentReceivedRunPopup = () => {
                                         className={`hideDiv ${
                                             isClicked4 ? "" : "clicked"
                                         }`}
-                                        border="1"
-                                    >
+                                        border="1">
                                         <textarea
                                             className="textAreaWidth"
-                                            placeholder="내용을 입력하세요."
-                                        ></textarea>
+                                            placeholder="내용을 입력하세요."></textarea>
                                     </div>
                                 </div>
                             </JarvisWidget>
@@ -833,8 +804,7 @@ const PaymentReceivedRunPopup = () => {
                             <JarvisWidget
                                 id="wid-id-0"
                                 editbutton={false}
-                                color="blueDark"
-                            >
+                                color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-list-ul" />
@@ -847,8 +817,7 @@ const PaymentReceivedRunPopup = () => {
                                         className={`hideDiv2 ${
                                             isClicked5 ? "" : "clicked"
                                         }`}
-                                        border="1"
-                                    >
+                                        border="1">
                                         <span className="div5Span">
                                             이곳에 파일을 드래그하세요.
                                         </span>

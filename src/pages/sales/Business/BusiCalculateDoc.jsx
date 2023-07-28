@@ -5,7 +5,6 @@ import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
 
-import { WidgetGrid, JarvisWidget } from "../../../common";
 import BusinessUtilBtn from "./BusinessUtilBtn";
 //import PopupTesting from "./PopupTesting";
 //import PopupWindow from "./PopupTesting";
@@ -260,29 +259,29 @@ const BusiCalculateDoc = () => {
                     <table className="tableMain">
                         <tbody className="tableBody">
                             <tr className="tableTr">
-                                <td className="table2-1">프로젝트명</td>
-                                <td className="table2-2">PS 하부서편</td>
-                                <td className="table2-1">프로젝트 코드</td>
-                                <td className="table2-2"></td>
+                                <td className="table3-1">프로젝트명</td>
+                                <td className="table3-2">PS 하부서편</td>
+                                <td className="table3-1">프로젝트 코드</td>
+                                <td className="table3-2"></td>
                             </tr>
                             <tr className="tableTr">
-                                <td className="table2-1">수주부서</td>
+                                <td className="table3-1">수주부서</td>
                                 <td className="table4-2">FMCS 그룹</td>
-                                <td className="table2-1">매출부서</td>
+                                <td className="table3-1">매출부서</td>
                                 <td className="table4-2">FMCS 그룹</td>
-                                <td className="table2-1">영업대표</td>
+                                <td className="table3-1">영업대표</td>
                                 <td className="table4-2">이수형 부장</td>
-                                <td className="table2-1">PM</td>
+                                <td className="table3-1">PM</td>
                                 <td className="table4-2">손영훈 부장</td>
                             </tr>
                             <tr className="tableTr">
-                                <td className="table2-1">연도</td>
+                                <td className="table3-1">연도</td>
                                 <td className="table4-2">2023</td>
-                                <td className="table2-1">시작일</td>
+                                <td className="table3-1">시작일</td>
                                 <td className="table4-2">2022/10/04</td>
-                                <td className="table2-1">종료일</td>
+                                <td className="table3-1">종료일</td>
                                 <td className="table4-2">2022/12/30</td>
-                                <td className="table2-1">상태</td>
+                                <td className="table3-1">상태</td>
                                 <td className="table4-2">
                                     <div className="working">실행중</div>
                                 </td>
@@ -586,7 +585,7 @@ const BusiCalculateDoc = () => {
                                 </h3>
                             </div>
                             <div className="detailCost">
-                                <div style={{ width: "49%" }}>
+                                <div style={{ width: "48%" }}>
                                     <div
                                         style={{
                                             width: "100%",
@@ -715,26 +714,22 @@ const BusiCalculateDoc = () => {
                                         </tr>
                                     </div>
                                 </div>
-                                <div style={{ width: "49%" }}>
+                                <div style={{ width: "48%" }}>
                                     <div style={{ width: "100%" }}>
                                         <h6>[경비]</h6>
                                         <tr className="tableTrDetail">
                                             <td className="table4-3F">
                                                 계정명
                                             </td>
-                                            <td className="tableRedPercentF"></td>
                                             <td className="table4-3F">
                                                 산출근거
                                             </td>
-                                            <td className="tableRedPercentF"></td>
-                                            <td className="table4-3F"></td>
                                             <td className="table4-3F">금액</td>
                                         </tr>
                                         <tr className="tableTrDetail">
                                             <td className="table4-3WhiteF">
                                                 인건비성복후비
                                             </td>
-                                            <td className="tableRedPercentWF"></td>
                                             <td className="table4-3WhiteF2">
                                                 자동계산(사용경비가 아님)
                                             </td>

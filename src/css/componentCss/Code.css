@@ -29,20 +29,10 @@
     /*width: 100%;*/
 }
 
-#utilBtn {
-    width: 100%;
-    /*padding: 10px;*/
-    z-index: 999;
-}
-
 .tableWidth {
     word-wrap: break-word;
     /*max-width: 300px;*/
     height: auto;
-}
-
-#utilBtn:hover {
-    cursor: pointer;
 }
 
 #searchCondition {
