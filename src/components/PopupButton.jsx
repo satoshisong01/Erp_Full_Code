@@ -1,12 +1,13 @@
 import React from "react";
 import "../css/componentCss/CodeUtilBtn.css";
 
-/* url와 title을 받아서 새창에 넘겨주는 버튼 */
-function PopupButton({ targetUrl, title }) {
+/* data를 새창에 넘겨주는 버튼 */
+function PopupButton({ targetUrl, data }) {
     const openPopup = () => {
-        const dataToSend = title; //새창에 타이틀 전달
-        const url = `${targetUrl}?data=${encodeURIComponent(dataToSend)}`;
-        const width = 1200;
+        const url = `${targetUrl}?data=${encodeURIComponent(
+            JSON.stringify(data)
+        )}`;
+        const width = 1100;
         const height = 700;
         const left = window.screen.width / 2 - width / 2;
         const top = window.screen.height / 2 - height / 2;
@@ -14,11 +15,7 @@ function PopupButton({ targetUrl, title }) {
         window.open(url, "newWindow", windowFeatures);
     };
 
-    return (
-        <button id="utilBtn2" className="btn btn-primary" onClick={openPopup}>
-            {title}
-        </button>
-    );
+    return <button onClick={openPopup}>{data.btnName}</button>;
 }
 
 export default PopupButton;
