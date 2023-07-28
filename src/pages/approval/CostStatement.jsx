@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import ApprovalForm from "components/form/ApprovalForm"; //기본 폼
 
-/* 전자결재 */
-function ApprovalContainer () {
+/* 사전 원가 계산서, 실행 원가 계산서 */
+const CostStatement = () => {
 	const [title, setTitle] = useState('')
 
 	useEffect(() => { // URL로 넘어온 파라미터 값 파싱
@@ -13,12 +12,10 @@ function ApprovalContainer () {
 	}, []);
 
 	return (
-		<div className="">
-			<ApprovalForm title={title}>
-				{/* 자식 컴포넌트 */}
-			</ApprovalForm>
-		</div>
+		<>
+			{title}
+		</>
 	);
-};
+}
 
-export default ApprovalContainer;
+export default CostStatement;

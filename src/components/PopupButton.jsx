@@ -1,10 +1,9 @@
 import React from "react";
 
-/* url와 title을 받아서 새창에 넘겨주는 버튼 */
-function PopupButton ({targetUrl, title}) {
+/* data를 새창에 넘겨주는 버튼 */
+function PopupButton ({targetUrl, data}) {
 	const openPopup = () => {
-		const dataToSend = title; //새창에 타이틀 전달
-		const url = `${targetUrl}?data=${encodeURIComponent(dataToSend)}`;
+		const url = `${targetUrl}?data=${encodeURIComponent(JSON.stringify(data))}`;
 		const width = 1100;
 		const height = 700;
 		const left = window.screen.width / 2 - width / 2;
@@ -14,7 +13,7 @@ function PopupButton ({targetUrl, title}) {
 	};
 	
 	return (
-		<button onClick={openPopup}>{title}</button>
+		<button onClick={openPopup}>{data.btnName}</button>
 	);
 };
 

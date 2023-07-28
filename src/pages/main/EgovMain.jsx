@@ -14,6 +14,9 @@ function EgovMain(props) {
     const location = useLocation();
     console.log("EgovMain [location] : ", location);
 
+    const popupBtnData1 = {title: '인건비 계획', btnName: '계획등록'}
+    const popupBtnData2 = {title: '사전 원가 계산서', btnName: '사전원가서'}
+
     console.log("------------------------------EgovMain [End]");
     console.groupEnd("EgovMain");
 
@@ -24,7 +27,11 @@ function EgovMain(props) {
                     <div className="col" style={{ height: "100%" }}>
                         <PopupButton
                             targetUrl={URL.ApprovalContainer}
-                            title="사전 원가 계획"
+                            data={popupBtnData1}
+                        />
+                        <PopupButton
+                            targetUrl={URL.CostStatement}
+                            data={popupBtnData2}
                         />
                     </div>
 
