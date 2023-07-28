@@ -40,6 +40,7 @@ import GroupCode from "pages/system/GroupCode";
 import DetailCode from "pages/system/DetailCode";
 import AccessHistoryMgmt from "pages/system/AccessHistoryMgmt";
 import AuthorizationMgmt from "pages/system/AuthorizationMgmt";
+import ClCode from "pages/system/CodeManage/ClassificationCode/ClCode";
 
 export const reference = [
     //기준정보관리
@@ -272,7 +273,8 @@ export const system = [
     {
         title: "CategoryCode",
         path: URL.CategoryCode,
-        component: <CategoryCode />,
+        component: <ClCode />,
+        // component: <CategoryCode />,
         label: "분류코드관리",
         activeKey: 31,
     },
