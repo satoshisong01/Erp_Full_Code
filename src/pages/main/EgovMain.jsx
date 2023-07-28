@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import * as EgovNet from "api/egovFetch";
 import URL from "constants/url";
 import PopupButton from "components/PopupButton";
+import CategoryCode from "pages/system/CategoryCode";
 
 function EgovMain(props) {
     console.group("EgovMain");
@@ -25,6 +26,10 @@ function EgovMain(props) {
                             targetUrl={URL.ApprovalContainer}
                             title="사전 원가 계획"
                         />
+                    </div>
+
+                    <div className="col">
+                        <CategoryCode />
                     </div>
 
                     <div className="col">
