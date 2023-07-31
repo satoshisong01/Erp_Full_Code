@@ -1,3 +1,7 @@
+:root {
+    --color-blue: #007bff;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -5,8 +9,14 @@
 
 .btn-primary {
     margin: 10px 10px 10px 0;
+    background-color: var(--color-blue);
+    transition: all 0.2s;
     /*padding: 10px;*/
     /*width: 100%;*/
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
 }
 
 .tableBtn {
@@ -23,7 +33,7 @@
     max-width: 100px;
     z-index: 3;
     border-radius: 5px;
-    border: 1px solid #4279c5;
+    /*border: 1px solid #4279c5;*/
 }
 
 #utilBtn:hover,
@@ -64,14 +74,16 @@
     transform: scale(1.05);
 }
 
+//#0b75c5
+
 .addIcon {
-    background-color: #0b75c5;
+    background-color: var(--color-blue);
     border: none;
     transition: all 0.2s;
 }
 
 .addIcon:hover {
-    background-color: #0b75c5;
+    background-color: var(--color-blue);
     transform: scale(1.05);
 }
 

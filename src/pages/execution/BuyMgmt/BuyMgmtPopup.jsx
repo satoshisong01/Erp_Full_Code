@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import ReactDOM from "react-dom";
+////import ReactDOM from "react-dom/client";
 import "../../../css/componentCss/PersonnelPopup.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
@@ -478,132 +478,104 @@ const BuyMgmtPopup = () => {
                     </div>
 
                     <div id="content">
-                        <WidgetGrid>
-                            <JarvisWidget
-                                id="wid-id-0"
-                                editbutton={false}
-                                color="blueDark">
-                                <header>
-                                    <span className="widget-icon">
-                                        <i className="fa fa-list-ul" />
-                                    </span>
-                                    <h2>구매 계획</h2>
-                                    <span className="spanCss">구매 계획</span>
-                                </header>
-                                <div className="table-responsive">
-                                    <div>
-                                        <table ref={dataTableRef} border="1">
-                                            <thead>
-                                                <tr className="tableTr3">
-                                                    <th className="tableHeaderTh">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={check}
-                                                            onChange={(e) =>
-                                                                handleClick(e)
-                                                            }
-                                                        />
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        그룹품목명
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        품명
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        규격
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        수량
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        단가
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        금액
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        구매예상일
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        비고
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr className="tableTr3">
-                                                    <td className="tbodyTd">
-                                                        <div className="inputTh">
-                                                            <input type="checkbox" />
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <select>
-                                                            <option>1</option>
-                                                            <option>2</option>
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <button>
-                                                            품목선택
-                                                        </button>
-                                                    </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>800,000</td>
-                                                    <td></td>
-                                                </tr>
-                                                <tr className="tableTr3">
-                                                    <td className="tbodyTd">
-                                                        <div className="inputTh">
-                                                            <input type="checkbox" />
-                                                        </div>
-                                                    </td>
-                                                    <td>10월</td>
-                                                    <td>PLC PANEL</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>300,000</td>
-                                                    <td></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                width: "100%",
-                                                justifyContent: "center",
-                                            }}>
-                                            <button
-                                                style={{
-                                                    width: "100%",
-                                                    margin: "10px",
-                                                }}
-                                                className="btn btn-primary tdBtn"
-                                                onClick={handleAddRow}>
-                                                추가
-                                            </button>
-                                        </div>
-                                        <table className="tableMain2">
-                                            <tbody className="tableBody2">
-                                                <tr className="tableTrTotal">
-                                                    <td className="table2-1">
-                                                        총 합계
-                                                    </td>
-                                                    <td className="totalCount">
-                                                        1,100,000₩
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                        <div className="table-responsive">
+                            <div>
+                                <table ref={dataTableRef} border="1">
+                                    <thead>
+                                        <tr className="tableTr3">
+                                            <th className="tableHeaderTh">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={check}
+                                                    onChange={(e) =>
+                                                        handleClick(e)
+                                                    }
+                                                />
+                                            </th>
+                                            <th className="thTitle1">
+                                                그룹품목명
+                                            </th>
+                                            <th className="thTitle1">품명</th>
+                                            <th className="thTitle1">규격</th>
+                                            <th className="thTitle1">수량</th>
+                                            <th className="thTitle1">단가</th>
+                                            <th className="thTitle1">금액</th>
+                                            <th className="thTitle1">
+                                                구매예상일
+                                            </th>
+                                            <th className="thTitle1">비고</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr className="tableTr3">
+                                            <td className="tbodyTd">
+                                                <div className="inputTh">
+                                                    <input type="checkbox" />
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <select>
+                                                    <option>1</option>
+                                                    <option>2</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button>품목선택</button>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>800,000</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr className="tableTr3">
+                                            <td className="tbodyTd">
+                                                <div className="inputTh">
+                                                    <input type="checkbox" />
+                                                </div>
+                                            </td>
+                                            <td>10월</td>
+                                            <td>PLC PANEL</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>300,000</td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        width: "100%",
+                                        justifyContent: "center",
+                                    }}>
+                                    <button
+                                        style={{
+                                            width: "100%",
+                                            margin: "10px",
+                                        }}
+                                        className="btn btn-primary tdBtn"
+                                        onClick={handleAddRow}>
+                                        추가
+                                    </button>
                                 </div>
-                            </JarvisWidget>
-                        </WidgetGrid>
+                                <table className="tableMain2">
+                                    <tbody className="tableBody2">
+                                        <tr className="tableTrTotal">
+                                            <td className="table2-1">
+                                                총 합계
+                                            </td>
+                                            <td className="totalCount">
+                                                1,100,000₩
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

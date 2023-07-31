@@ -2,6 +2,9 @@ import React from "react";
 import "./ApprovalForm.css";
 import ModalSearch from "components/modal/ModalSearch";
 function ApprovalForm({ title, children }) {
+    const handleClose = () => {
+        window.close();
+    };
     return (
         <>
             <div className="newBody">
@@ -9,7 +12,9 @@ function ApprovalForm({ title, children }) {
                     <button className="btn btn-primary">결제선</button>
                     <button className="btn btn-primary">결제요청</button>
                     <button className="btnW btn-primary">임시저장</button>
-                    <button className="btnW btn-primary">취소</button>
+                    <button className="btnR btn-primary" onClick={handleClose}>
+                        취소
+                    </button>
                 </div>
                 <div className="header-row">
                     <div className="form-title">
@@ -17,22 +22,24 @@ function ApprovalForm({ title, children }) {
                     </div>
                     <div className="area-container">
                         <div className="department">
-                            <h3 className="titleH3"> 발신부서 </h3>
+                            <h3 className="titleH3"> 발 신 부 서 </h3>
                         </div>
                         <div className="area">
-                            <div className="top"> 팀원 </div>
+                            <div className="top"> 팀 원 </div>
                             <div className="bottom"> 유지수 </div>
                         </div>
                         <div className="area">
-                            <div className="top"> PM </div>
+                            <div className="top"> P M </div>
                             <div className="bottom"> 손영훈 </div>
                         </div>
                     </div>
                 </div>
-
+                <h6 style={{ textAlign: "right", marginRight: "5%" }}>
+                    단위:₩(원)
+                </h6>
                 <div className="TableBucket">
-                    <table className="tableMain">
-                        <tbody className="tableBody">
+                    <table className="tableMain" border={1}>
+                        <tbody className="tableBody tableBodyTop">
                             <tr className="tableTr">
                                 <td className="table2-1">프로젝트명</td>
                                 <td className="table2-2 titleSelect">
@@ -94,8 +101,8 @@ function ApprovalForm({ title, children }) {
                             </tr>
                         </tbody>
                     </table>
-                    <table className="tableMain">
-                        <tbody className="tableBody">
+                    <table className="tableMain" border={1}>
+                        <tbody className="tableBody tableBodyBot">
                             <tr className="tableTr">
                                 <td className="table8-1">수주부서</td>
                                 <td className="table8-2">FMCS 그룹</td>
@@ -115,7 +122,11 @@ function ApprovalForm({ title, children }) {
                                 <td className="table8-2">2022/12/30</td>
                                 <td className="table8-1">상태</td>
                                 <td className="table8-2">
-                                    <div className="working">작성중</div>
+                                    <div>
+                                        <button className="working">
+                                            작성중
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>

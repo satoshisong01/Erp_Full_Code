@@ -7,6 +7,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import "../../../css/componentCss/CodeUtilBtn.css";
 import axios from "axios";
 import SalesCostModalPagePost from "./SalesCostModalPagePost";
+import PopupButton from "components/PopupButton";
 
 export default function SalesCostUtilBtn({
     initialData,
@@ -27,6 +28,7 @@ export default function SalesCostUtilBtn({
         urlName === "detailCode"
             ? true
             : false;
+    const showRunSubmit = true;
     const showCopyBtn = true;
     const showPrintBtn = true;
     const showDeleteBtn = true;
@@ -309,7 +311,7 @@ export default function SalesCostUtilBtn({
                 </button>
             </div>*/}
             <div className="tableBtn">
-                {showExcelBtn && (
+                {/*{showExcelBtn && (
                     <button
                         className="btn btn-primary csvIcon"
                         id="utilBtn"
@@ -343,8 +345,8 @@ export default function SalesCostUtilBtn({
                             Copy
                         </button>
                     </CopyToClipboard>
-                )}
-                {showPrintBtn && (
+                )}*/}
+                {/*{showPrintBtn && (
                     <button
                         id="utilBtn"
                         className="btn btn-primary printIcon"
@@ -352,7 +354,16 @@ export default function SalesCostUtilBtn({
                         <i className="fa fa-print utilIcon" />
                         Print
                     </button>
-                )}
+                )}*/}
+                {/*{showRunSubmit && (
+                    <PopupButton
+                        targetUrl={URL.CostStatement}
+                        data={{
+                            btnName: "전자결재",
+                            title: "사전 원가 계산서",
+                        }}
+                    />
+                )}*/}
                 {showDeleteBtn && (
                     <button
                         id="utilBtn"

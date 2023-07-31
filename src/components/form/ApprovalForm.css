@@ -20,6 +20,10 @@
     margin-top: 20px;
 }
 
+.top {
+    padding: 10px;
+}
+
 .form-button-group {
     display: flex;
     justify-content: right;
@@ -94,4 +98,29 @@
 
 .titleH3 {
     font-size: 20px;
+    padding: 15px 6px;
+    width: 100%;
+}
+
+.tableMain {
+    margin-bottom: 50px;
+}
+
+.tableBodyTop,
+.tableBodyBot {
+    border: 0;
+    margin: 0;
+}
+
+.btnW,
+.btnR {
+    background-color: #fff;
+    color: black;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+}
+
+.btnR {
+    color: #fff;
+    background-color: #fd3d6b;
 }

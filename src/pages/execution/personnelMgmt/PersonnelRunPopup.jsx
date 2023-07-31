@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import ReactDOM from "react-dom";
+//import ReactDOM from "react-dom/client";
 import "../../../css/componentCss/PersonnelPopup.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
@@ -501,569 +501,418 @@ const PersonnelRunPopup = () => {
                     </div>*/}
 
                     <div id="content">
-                        <WidgetGrid>
-                            <JarvisWidget
-                                id="wid-id-0"
-                                editbutton={false}
-                                color="blueDark">
-                                <header className="headerH2">
-                                    <span className="widget-icon">
-                                        <i className="fa fa-list-ul" />
-                                    </span>
-                                    <span className="spanCss">인건비 계획</span>
-                                </header>
-                                <div className="table-responsive">
-                                    <table
-                                        border="1"
-                                        style={{
-                                            width: "100%",
-                                        }}>
-                                        <thead>
-                                            <tr className="tableTr3">
-                                                <th
-                                                    className="thTitle1"
-                                                    rowSpan={"2"}>
-                                                    <div className="inputTh">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={check}
-                                                            onChange={(e) =>
-                                                                handleClick(e)
-                                                            }
-                                                        />
-                                                    </div>
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    rowSpan={"2"}>
-                                                    품목그룹명
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    rowSpan={"2"}>
-                                                    연월
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    rowSpan={"2"}>
-                                                    M/M계
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    rowSpan={"2"}>
-                                                    인건비계
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    colSpan={"7"}>
-                                                    일반
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    colSpan={"6"}>
-                                                    프로젝트팀원
-                                                </th>
-                                            </tr>
-                                            <tr className="tableTr3">
-                                                <th className="thTitle2">
-                                                    임원
-                                                </th>
-                                                <th className="thTitle2">
-                                                    특급기술사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    고급기술사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    중급기술사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    초급기술사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    중급기능사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    고급기능사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    부장
-                                                </th>
-                                                <th className="thTitle2">
-                                                    차장
-                                                </th>
-                                                <th className="thTitle2">
-                                                    과장
-                                                </th>
-                                                <th className="thTitle2">
-                                                    대리
-                                                </th>
-                                                <th className="thTitle2">
-                                                    주임
-                                                </th>
-                                                <th className="thTitle2">
-                                                    사원
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {/* tableRows 상태로부터 테이블 행을 렌더링합니다. */}
-                                            {tableRows.map((row) => (
-                                                <tr
-                                                    className="tableTr3"
-                                                    key={row.id}>
-                                                    {/* 테이블 셀들의 값들을 적절하게 지정하세요 */}
-                                                    <td className="tbodyTd">
-                                                        <div className="inputTh">
-                                                            <input type="checkbox" />
-                                                        </div>
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        <select>
-                                                            {tableRows.map(
-                                                                (row) => (
-                                                                    <option
-                                                                        value={
-                                                                            row.품목그룹명
-                                                                        }>
-                                                                        {
-                                                                            row.품목그룹명
-                                                                        }
-                                                                    </option>
-                                                                )
-                                                            )}
-                                                        </select>
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.연월}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.M_M계}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.인건비계}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.임원}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.특급기술사}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.고급기술사}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.중급기술사}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.초급기술사}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.중급기능사}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.고급기능사}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.부장}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.차장}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.과장}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.대리}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.주임}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.사원}
-                                                    </td>
-                                                    {/* 다른 셀들도 추가하세요 */}
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </JarvisWidget>
-                        </WidgetGrid>
+                        <header className="headerH2">
+                            <span className="widget-icon">
+                                <i className="fa fa-list-ul" />
+                            </span>
+                            <span className="spanCss">인건비 계획</span>
+                        </header>
+                        <div className="table-responsive">
+                            <table
+                                border="1"
+                                style={{
+                                    width: "100%",
+                                }}>
+                                <thead>
+                                    <tr className="tableTr3">
+                                        <th className="thTitle1" rowSpan={"2"}>
+                                            <div className="inputTh">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={check}
+                                                    onChange={(e) =>
+                                                        handleClick(e)
+                                                    }
+                                                />
+                                            </div>
+                                        </th>
+                                        <th className="thTitle1" rowSpan={"2"}>
+                                            품목그룹명
+                                        </th>
+                                        <th className="thTitle1" rowSpan={"2"}>
+                                            연월
+                                        </th>
+                                        <th className="thTitle1" rowSpan={"2"}>
+                                            M/M계
+                                        </th>
+                                        <th className="thTitle1" rowSpan={"2"}>
+                                            인건비계
+                                        </th>
+                                        <th className="thTitle1" colSpan={"7"}>
+                                            일반
+                                        </th>
+                                        <th className="thTitle1" colSpan={"6"}>
+                                            프로젝트팀원
+                                        </th>
+                                    </tr>
+                                    <tr className="tableTr3">
+                                        <th className="thTitle2">임원</th>
+                                        <th className="thTitle2">특급기술사</th>
+                                        <th className="thTitle2">고급기술사</th>
+                                        <th className="thTitle2">중급기술사</th>
+                                        <th className="thTitle2">초급기술사</th>
+                                        <th className="thTitle2">중급기능사</th>
+                                        <th className="thTitle2">고급기능사</th>
+                                        <th className="thTitle2">부장</th>
+                                        <th className="thTitle2">차장</th>
+                                        <th className="thTitle2">과장</th>
+                                        <th className="thTitle2">대리</th>
+                                        <th className="thTitle2">주임</th>
+                                        <th className="thTitle2">사원</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {/* tableRows 상태로부터 테이블 행을 렌더링합니다. */}
+                                    {tableRows.map((row) => (
+                                        <tr className="tableTr3" key={row.id}>
+                                            {/* 테이블 셀들의 값들을 적절하게 지정하세요 */}
+                                            <td className="tbodyTd">
+                                                <div className="inputTh">
+                                                    <input type="checkbox" />
+                                                </div>
+                                            </td>
+                                            <td className="tbodyTd">
+                                                <select>
+                                                    {tableRows.map((row) => (
+                                                        <option
+                                                            value={
+                                                                row.품목그룹명
+                                                            }>
+                                                            {row.품목그룹명}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.연월}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.M_M계}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.인건비계}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.임원}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.특급기술사}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.고급기술사}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.중급기술사}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.초급기술사}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.중급기능사}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.고급기능사}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.부장}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.차장}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.과장}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.대리}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.주임}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.사원}
+                                            </td>
+                                            {/* 다른 셀들도 추가하세요 */}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div style={{ marginRight: "4.5%" }}>
                         <PersonnelMgmtUtilBtn />
                     </div>
                     <div id="content">
-                        <WidgetGrid>
-                            <JarvisWidget
-                                id="wid-id-0"
-                                editbutton={false}
-                                color="blueDark">
-                                <header className="headerH2">
-                                    <span className="widget-icon">
-                                        <i className="fa fa-list-ul" />
-                                    </span>
-                                    <span className="spanCss">인건비 실행</span>
-                                </header>
-                                <div className="table-responsive">
-                                    <table
-                                        border="1"
-                                        style={{
-                                            width: "100%",
-                                        }}>
-                                        <thead>
-                                            <tr className="tableTr3">
-                                                <th
-                                                    className="thTitle1"
-                                                    rowSpan={"2"}>
-                                                    <div className="inputTh">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={check}
-                                                            onChange={(e) =>
-                                                                handleClick(e)
-                                                            }
-                                                        />
-                                                    </div>
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    rowSpan={"2"}>
-                                                    품목그룹명
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    rowSpan={"2"}>
-                                                    연월
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    rowSpan={"2"}>
-                                                    M/M계
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    rowSpan={"2"}>
-                                                    인건비계
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    colSpan={"7"}>
-                                                    일반
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    colSpan={"6"}>
-                                                    프로젝트팀원
-                                                </th>
-                                            </tr>
-                                            <tr className="tableTr3">
-                                                <th className="thTitle2">
-                                                    임원
-                                                </th>
-                                                <th className="thTitle2">
-                                                    특급기술사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    고급기술사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    중급기술사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    초급기술사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    중급기능사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    고급기능사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    부장
-                                                </th>
-                                                <th className="thTitle2">
-                                                    차장
-                                                </th>
-                                                <th className="thTitle2">
-                                                    과장
-                                                </th>
-                                                <th className="thTitle2">
-                                                    대리
-                                                </th>
-                                                <th className="thTitle2">
-                                                    주임
-                                                </th>
-                                                <th className="thTitle2">
-                                                    사원
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {/* tableRows 상태로부터 테이블 행을 렌더링합니다. */}
-                                            {tableRunRows.map((row) => (
-                                                <tr
-                                                    className="tableTr3"
-                                                    key={row.id}>
-                                                    {/* 테이블 셀들의 값들을 적절하게 지정하세요 */}
-                                                    <td className="tbodyTd">
-                                                        <div className="inputTh">
-                                                            <input type="checkbox" />
-                                                        </div>
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        <select>
-                                                            {tableRunRows.map(
-                                                                (row) => (
-                                                                    <option
-                                                                        value={
-                                                                            row.품목그룹명
-                                                                        }>
-                                                                        {
-                                                                            row.품목그룹명
-                                                                        }
-                                                                    </option>
-                                                                )
-                                                            )}
-                                                        </select>
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.연월}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.M_M계}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.인건비계}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.임원}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.특급기술사}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.고급기술사}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.중급기술사}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.초급기술사}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.중급기능사}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.고급기능사}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.부장}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.차장}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.과장}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.대리}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.주임}
-                                                    </td>
-                                                    <td className="tbodyTd">
-                                                        {row.사원}
-                                                    </td>
-                                                    {/* 다른 셀들도 추가하세요 */}
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                    <button
-                                        className="btn btn-primary tdBtn"
-                                        onClick={handleAddRunRow}>
-                                        추가
-                                    </button>
-                                </div>
-                            </JarvisWidget>
-                        </WidgetGrid>
+                        <header className="headerH2">
+                            <span className="widget-icon">
+                                <i className="fa fa-list-ul" />
+                            </span>
+                            <span className="spanCss">인건비 실행</span>
+                        </header>
+                        <div className="table-responsive">
+                            <table
+                                border="1"
+                                style={{
+                                    width: "100%",
+                                }}>
+                                <thead>
+                                    <tr className="tableTr3">
+                                        <th className="thTitle1" rowSpan={"2"}>
+                                            <div className="inputTh">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={check}
+                                                    onChange={(e) =>
+                                                        handleClick(e)
+                                                    }
+                                                />
+                                            </div>
+                                        </th>
+                                        <th className="thTitle1" rowSpan={"2"}>
+                                            품목그룹명
+                                        </th>
+                                        <th className="thTitle1" rowSpan={"2"}>
+                                            연월
+                                        </th>
+                                        <th className="thTitle1" rowSpan={"2"}>
+                                            M/M계
+                                        </th>
+                                        <th className="thTitle1" rowSpan={"2"}>
+                                            인건비계
+                                        </th>
+                                        <th className="thTitle1" colSpan={"7"}>
+                                            일반
+                                        </th>
+                                        <th className="thTitle1" colSpan={"6"}>
+                                            프로젝트팀원
+                                        </th>
+                                    </tr>
+                                    <tr className="tableTr3">
+                                        <th className="thTitle2">임원</th>
+                                        <th className="thTitle2">특급기술사</th>
+                                        <th className="thTitle2">고급기술사</th>
+                                        <th className="thTitle2">중급기술사</th>
+                                        <th className="thTitle2">초급기술사</th>
+                                        <th className="thTitle2">중급기능사</th>
+                                        <th className="thTitle2">고급기능사</th>
+                                        <th className="thTitle2">부장</th>
+                                        <th className="thTitle2">차장</th>
+                                        <th className="thTitle2">과장</th>
+                                        <th className="thTitle2">대리</th>
+                                        <th className="thTitle2">주임</th>
+                                        <th className="thTitle2">사원</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {/* tableRows 상태로부터 테이블 행을 렌더링합니다. */}
+                                    {tableRunRows.map((row) => (
+                                        <tr className="tableTr3" key={row.id}>
+                                            {/* 테이블 셀들의 값들을 적절하게 지정하세요 */}
+                                            <td className="tbodyTd">
+                                                <div className="inputTh">
+                                                    <input type="checkbox" />
+                                                </div>
+                                            </td>
+                                            <td className="tbodyTd">
+                                                <select>
+                                                    {tableRunRows.map((row) => (
+                                                        <option
+                                                            value={
+                                                                row.품목그룹명
+                                                            }>
+                                                            {row.품목그룹명}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.연월}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.M_M계}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.인건비계}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.임원}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.특급기술사}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.고급기술사}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.중급기술사}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.초급기술사}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.중급기능사}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.고급기능사}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.부장}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.차장}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.과장}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.대리}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.주임}
+                                            </td>
+                                            <td className="tbodyTd">
+                                                {row.사원}
+                                            </td>
+                                            {/* 다른 셀들도 추가하세요 */}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            <button
+                                className="btn btn-primary tdBtn"
+                                onClick={handleAddRunRow}>
+                                추가
+                            </button>
+                        </div>
                     </div>
                     <div id="content">
-                        <WidgetGrid>
-                            <JarvisWidget
-                                id="wid-id-0"
-                                editbutton={false}
-                                color="blueDark">
-                                <header className="headerH2">
-                                    <span className="widget-icon">
-                                        <i className="fa fa-list-ul" />
-                                    </span>
-                                    <span className="spanCss">
-                                        계획 실행 검토
-                                    </span>
-                                </header>
-                                <div className="table-responsive">
-                                    <table
-                                        border="1"
-                                        style={{
-                                            width: "100%",
-                                        }}>
-                                        <thead>
-                                            <tr className="tableTr3">
-                                                <th
-                                                    className="thTitle1"
-                                                    colSpan={2}>
-                                                    계획 인건비 비용
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    colSpan={2}>
-                                                    실행 인건비 비용
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    colSpan={1}>
-                                                    차액
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr className="tableTr3">
-                                                <td
-                                                    className="tbodyTd"
-                                                    colSpan={1}>
-                                                    9월
-                                                </td>
-                                                <td
-                                                    className="tbodyTd"
-                                                    colSpan={1}>
-                                                    500,000
-                                                </td>
-                                                <td
-                                                    className="tbodyTd"
-                                                    colSpan={1}>
-                                                    9월
-                                                </td>
-                                                <td
-                                                    className="tbodyTd"
-                                                    colSpan={1}>
-                                                    300,000
-                                                </td>
-                                                <td
-                                                    className="tbodyTd"
-                                                    colSpan={1}
-                                                    style={{
-                                                        color: "green",
-                                                    }}
-                                                    //style={{
-                                                    //    color:
-                                                    //        row.차액 >= 0
-                                                    //            ? "green"
-                                                    //            : "red",
-                                                    //}}
-                                                >
-                                                    200,000
-                                                </td>
-                                            </tr>
-                                            <tr className="tableTr3">
-                                                <td
-                                                    className="tbodyTd"
-                                                    colSpan={1}>
-                                                    10월
-                                                </td>
-                                                <td
-                                                    className="tbodyTd"
-                                                    colSpan={1}>
-                                                    300,000
-                                                </td>
-                                                <td
-                                                    className="tbodyTd"
-                                                    colSpan={1}>
-                                                    10월
-                                                </td>
-                                                <td
-                                                    className="tbodyTd"
-                                                    colSpan={1}>
-                                                    400,000
-                                                </td>
-                                                <td
-                                                    className="tbodyTd"
-                                                    colSpan={1}
-                                                    style={{
-                                                        color: "red",
-                                                    }}
-                                                    //style={{
-                                                    //    color:
-                                                    //        row.차액 >= 0
-                                                    //            ? "green"
-                                                    //            : "red",
-                                                    //}}
-                                                >
-                                                    -100,000
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </JarvisWidget>
-                        </WidgetGrid>
+                        <header className="headerH2">
+                            <span className="widget-icon">
+                                <i className="fa fa-list-ul" />
+                            </span>
+                            <span className="spanCss">계획 실행 검토</span>
+                        </header>
+                        <div className="table-responsive">
+                            <table
+                                border="1"
+                                style={{
+                                    width: "100%",
+                                }}>
+                                <thead>
+                                    <tr className="tableTr3">
+                                        <th className="thTitle1" colSpan={2}>
+                                            계획 인건비 비용
+                                        </th>
+                                        <th className="thTitle1" colSpan={2}>
+                                            실행 인건비 비용
+                                        </th>
+                                        <th className="thTitle1" colSpan={1}>
+                                            차액
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr className="tableTr3">
+                                        <td className="tbodyTd" colSpan={1}>
+                                            9월
+                                        </td>
+                                        <td className="tbodyTd" colSpan={1}>
+                                            500,000
+                                        </td>
+                                        <td className="tbodyTd" colSpan={1}>
+                                            9월
+                                        </td>
+                                        <td className="tbodyTd" colSpan={1}>
+                                            300,000
+                                        </td>
+                                        <td
+                                            className="tbodyTd"
+                                            colSpan={1}
+                                            style={{
+                                                color: "green",
+                                            }}
+                                            //style={{
+                                            //    color:
+                                            //        row.차액 >= 0
+                                            //            ? "green"
+                                            //            : "red",
+                                            //}}
+                                        >
+                                            200,000
+                                        </td>
+                                    </tr>
+                                    <tr className="tableTr3">
+                                        <td className="tbodyTd" colSpan={1}>
+                                            10월
+                                        </td>
+                                        <td className="tbodyTd" colSpan={1}>
+                                            300,000
+                                        </td>
+                                        <td className="tbodyTd" colSpan={1}>
+                                            10월
+                                        </td>
+                                        <td className="tbodyTd" colSpan={1}>
+                                            400,000
+                                        </td>
+                                        <td
+                                            className="tbodyTd"
+                                            colSpan={1}
+                                            style={{
+                                                color: "red",
+                                            }}
+                                            //style={{
+                                            //    color:
+                                            //        row.차액 >= 0
+                                            //            ? "green"
+                                            //            : "red",
+                                            //}}
+                                        >
+                                            -100,000
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <div id="content">
-                        <WidgetGrid>
-                            <JarvisWidget
-                                id="wid-id-0"
-                                editbutton={false}
-                                color="blueDark">
-                                <header>
-                                    <span className="widget-icon">
-                                        <i className="fa fa-list-ul" />
-                                    </span>
+                        <header>
+                            <span className="widget-icon">
+                                <i className="fa fa-list-ul" />
+                            </span>
 
-                                    <h2>비고</h2>
-                                </header>
-                                <div className="table-responsive">
-                                    <div
-                                        className={`hideDiv ${
-                                            isClicked4 ? "" : "clicked"
-                                        }`}
-                                        border="1">
-                                        <textarea
-                                            className="textAreaWidth"
-                                            placeholder="내용을 입력하세요."></textarea>
-                                    </div>
-                                </div>
-                            </JarvisWidget>
-                        </WidgetGrid>
+                            <h2>비고</h2>
+                        </header>
+                        <div className="table-responsive">
+                            <div
+                                className={`hideDiv ${
+                                    isClicked4 ? "" : "clicked"
+                                }`}
+                                border="1">
+                                <textarea
+                                    className="textAreaWidth"
+                                    placeholder="내용을 입력하세요."></textarea>
+                            </div>
+                        </div>
                     </div>
                     <div id="content">
-                        <WidgetGrid>
-                            <JarvisWidget
-                                id="wid-id-0"
-                                editbutton={false}
-                                color="blueDark">
-                                <header>
-                                    <span className="widget-icon">
-                                        <i className="fa fa-list-ul" />
-                                    </span>
+                        <header>
+                            <span className="widget-icon">
+                                <i className="fa fa-list-ul" />
+                            </span>
 
-                                    <h2>파일 업로드</h2>
-                                </header>
-                                <div className="table-responsive">
-                                    <div
-                                        className={`hideDiv2 ${
-                                            isClicked5 ? "" : "clicked"
-                                        }`}
-                                        border="1">
-                                        <span className="div5Span">
-                                            이곳에 파일을 드래그하세요.
-                                        </span>
-                                    </div>
-                                </div>
-                            </JarvisWidget>
-                        </WidgetGrid>
+                            <h2>파일 업로드</h2>
+                        </header>
+                        <div className="table-responsive">
+                            <div
+                                className={`hideDiv2 ${
+                                    isClicked5 ? "" : "clicked"
+                                }`}
+                                border="1">
+                                <span className="div5Span">
+                                    이곳에 파일을 드래그하세요.
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

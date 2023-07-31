@@ -1,8 +1,34 @@
+:root {
+    --color-blue: #007bff;
+    --background-white: #fff;
+}
+
+.popUpHomeBody {
+    background-color: var(--background-white);
+}
+
+.popUpFirstTable {
+    width: 100%;
+}
+
 .tableMain {
     margin: 0;
     /*margin-top: 50px;*/
     /*background-color: aquamarine;*/
     width: 100%;
+}
+
+.PopUpAddBtn {
+    width: 95%;
+    padding: 8px 0;
+    /*margin: auto;*/
+    border: 0;
+    margin: 10px 0;
+}
+
+.buttonParent {
+    display: flex;
+    justify-content: center;
 }
 
 .tableBody {
@@ -51,11 +77,12 @@
 .tbodyTd {
     text-align: center;
     flex: 0.5;
+    width: 15px;
 }
 
 .tdBtn {
     /*width: 100%;*/
-    margin: 10px;
+    /*margin: 10px;*/
 }
 
 .table2-1 {
@@ -238,6 +265,7 @@
 .thTitle2 {
     text-align: center;
     margin-right: 0;
+    font-size: small;
 }
 
 .inputTh {
@@ -248,14 +276,21 @@
     margin: 0 5px;
 }
 
+.tbodyTdSelect {
+    width: 100%;
+    appearance: auto;
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+}
+
 .working {
     /*width: 70px;*/
     /*height: 30px;*/
-    padding: 3px;
-    color: green;
-    /*background-color: aliceblue;*/
+    padding: 2px;
+    color: #fff;
+    background-color: lawngreen;
     margin: 0;
-    border: 2px solid green;
+    border: 1px solid black;
     border-radius: 10px;
 }
 
@@ -270,7 +305,7 @@
 
 .textAreaWidth {
     width: 100%;
-    height: 100%;
+    height: 97%;
 }
 
 .titleName {
@@ -280,7 +315,7 @@
 }
 
 .arrowBtn {
-    height: 100%;
+    /*height: 100%;*/
     transition: transform 300ms ease-in;
 }
 
@@ -310,57 +345,78 @@
     margin: auto;
 }
 
-.hideTable,
-.hideTable2,
-.hideTable3,
 .hideDiv,
-.hideDiv2 {
+.hideDiv2,
+.hideDiv3,
+.hideDiv4,
+.hideDiv5,
+.hideDiv6,
+.hideDiv7,
+.hideDiv8 {
     opacity: 0;
     visibility: hidden;
     transform: translateY(-20px);
     transition: opacity 300ms ease-in, transform 300ms ease-in;
     margin-top: 20px;
-    background-color: aquamarine;
+    /*background-color: aquamarine;*/
     height: 100%;
     width: 100%;
     margin: auto;
     margin: 0;
 }
 
-.hideTable.clicked,
-.hideTable2.clicked,
-.hideTable3.clicked,
 .hideDiv.clicked,
-.hideDiv2.clicked {
+.hideDiv2.clicked,
+.hideDiv3.clicked,
+.hideDiv4.clicked,
+.hideDiv5.clicked,
+.hideDiv6.clicked,
+.hideDiv7.clicked,
+.hideDiv8.clicked {
     height: 100%;
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
     margin: 0;
-}
-
-.hideDiv,
-.hideDiv2 {
-    height: 200px;
-}
-
-.hideDiv.clicked,
-.hideDiv2.clicked {
-    height: 200px;
-}
-
-.hideDiv2 {
-    display: flex;
+    /*display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: center;*/
 }
 
 .div5Span {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
     color: gray;
 }
 
 #content5 {
     margin-bottom: 30px;
+}
+
+.hideDiv7,
+.hideDiv8,
+.hideDiv7.clicked,
+.hideDiv8.clicked {
+    height: 200px;
+}
+
+.hideDiv8 {
+    background-color: beige;
+    border: 3px black dotted;
+}
+
+.fold.clicked,
+.fold2.clicked,
+.fold3.clicked,
+.fold4.clicked,
+.fold5.clicked,
+.fold6.clicked,
+.fold7.clicked {
+    height: 0;
 }
 
 .tableHead {
@@ -379,8 +435,17 @@
 
 .headerH2 > .spanCss {
     height: 30px;
-    /*line-height: -100px;*/
-    margin-left: 10px;
+}
+
+.headerH2 {
+    border-bottom: 1px solid #ededed;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dataTables_length > label {
     margin-bottom: 20px;
 }
 
@@ -418,7 +483,10 @@
 
 .tableTrTotal {
     display: flex;
-    justify-content: flex-start;
+}
+
+.totalSum {
+    padding: 10px 0;
 }
 
 .totalCount {
@@ -427,16 +495,13 @@
     align-items: center;
     justify-content: center;
     border: 1px solid gray;
+    margin-left: 10px;
 }
 
 .btnWrap {
     display: flex;
     flex-direction: column;
     width: 100%;
-}
-
-.tbodyTd {
-    width: 15px;
 }
 
 table.dataTable {
@@ -462,4 +527,17 @@ table.dataTable {
 table.dataTable thead > tr > th.sorting.tableHeaderTh:after,
 table.dataTable thead > tr > th.sorting.tableHeaderTh:before {
     display: none;
+}
+
+.table-responsive > div > div > div > .tableBtn {
+    margin-top: 0;
+}
+
+.arrowBtnStyle {
+    background-color: #fff;
+    /*border: 1;*/
+}
+
+#choiceBtn {
+    margin: 0;
 }

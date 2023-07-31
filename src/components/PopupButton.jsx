@@ -7,7 +7,7 @@ function PopupButton({ targetUrl, data }) {
         const url = `${targetUrl}?data=${encodeURIComponent(
             JSON.stringify(data)
         )}`;
-        const width = 1100;
+        const width = 1200;
         const height = 700;
         const left = window.screen.width / 2 - width / 2;
         const top = window.screen.height / 2 - height / 2;
@@ -15,7 +15,11 @@ function PopupButton({ targetUrl, data }) {
         window.open(url, "newWindow", windowFeatures);
     };
 
-    return <button onClick={openPopup}>{data.btnName}</button>;
+    return (
+        <button id="utilBtn2" className="btn btn-primary" onClick={openPopup}>
+            {data.btnName}
+        </button>
+    );
 }
 
 export default PopupButton;

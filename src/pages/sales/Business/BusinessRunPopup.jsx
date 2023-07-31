@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import ReactDOM from "react-dom";
+//import ReactDOM from "react-dom/client";
 import "../../../css/componentCss/PersonnelPopup.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
@@ -494,337 +494,262 @@ const BusinessRunPopup = () => {
                     </div>*/}
 
                     <div id="content">
-                        <WidgetGrid>
-                            <JarvisWidget
-                                id="wid-id-0"
-                                editbutton={false}
-                                color="blueDark">
-                                <header>
-                                    <span className="widget-icon">
-                                        <i className="fa fa-list-ul" />
-                                    </span>
-                                    <div></div>
-                                    <span className="spanCss">구매 계획</span>
-                                </header>
-                                <div className="table-responsive">
-                                    <div>
-                                        <table ref={dataTableRef} border="1">
-                                            <thead>
-                                                <tr className="tableTr3">
-                                                    <th className="tableHeaderTh">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={check}
-                                                            onChange={(e) =>
-                                                                handleClick(e)
-                                                            }
-                                                        />
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        그룹품목명
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        품명
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        규격
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        수량
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        단가
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        금액
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        구매예상일
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        비고
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr className="tableTr3">
-                                                    <td className="tbodyTd">
-                                                        <div className="inputTh">
-                                                            <input type="checkbox" />
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <select>
-                                                            <option>1</option>
-                                                            <option>2</option>
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <button className="btn btn-primary">
-                                                            품목선택
-                                                        </button>
-                                                    </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>800,000</td>
-                                                    <td></td>
-                                                </tr>
-                                                <tr className="tableTr3">
-                                                    <td className="tbodyTd">
-                                                        <div className="inputTh">
-                                                            <input type="checkbox" />
-                                                        </div>
-                                                    </td>
-                                                    <td>10월</td>
-                                                    <td>PLC PANEL</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>300,000</td>
-                                                    <td></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </JarvisWidget>
-                        </WidgetGrid>
+                        <header>
+                            <span className="widget-icon">
+                                <i className="fa fa-list-ul" />
+                            </span>
+                            <div></div>
+                            <span className="spanCss">구매 계획</span>
+                        </header>
+                        <div className="table-responsive">
+                            <div>
+                                <table ref={dataTableRef} border="1">
+                                    <thead>
+                                        <tr className="tableTr3">
+                                            <th className="tableHeaderTh">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={check}
+                                                    onChange={(e) =>
+                                                        handleClick(e)
+                                                    }
+                                                />
+                                            </th>
+                                            <th className="thTitle1">
+                                                그룹품목명
+                                            </th>
+                                            <th className="thTitle1">품명</th>
+                                            <th className="thTitle1">규격</th>
+                                            <th className="thTitle1">수량</th>
+                                            <th className="thTitle1">단가</th>
+                                            <th className="thTitle1">금액</th>
+                                            <th className="thTitle1">
+                                                구매예상일
+                                            </th>
+                                            <th className="thTitle1">비고</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr className="tableTr3">
+                                            <td className="tbodyTd">
+                                                <div className="inputTh">
+                                                    <input type="checkbox" />
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <select>
+                                                    <option>1</option>
+                                                    <option>2</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button className="btn btn-primary">
+                                                    품목선택
+                                                </button>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>800,000</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr className="tableTr3">
+                                            <td className="tbodyTd">
+                                                <div className="inputTh">
+                                                    <input type="checkbox" />
+                                                </div>
+                                            </td>
+                                            <td>10월</td>
+                                            <td>PLC PANEL</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>300,000</td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                     <div style={{ marginRight: "4.5%" }}>
                         <BusinessUtilBtn />
                     </div>
                     <div id="content">
-                        <WidgetGrid>
-                            <JarvisWidget
-                                id="wid-id-0"
-                                editbutton={false}
-                                color="blueDark">
-                                <header>
-                                    <span className="widget-icon">
-                                        <i className="fa fa-list-ul" />
-                                    </span>
-                                    <h2>구매 상세내역 실행</h2>
-                                    {/*<span className="spanCss">경비 계획</span>*/}
-                                </header>
-                                <div className="table-responsive">
-                                    <div>
-                                        <table ref={dataTableRef2} border="1">
-                                            <thead>
-                                                <tr className="tableTr3">
-                                                    <th className="tableHeaderTh">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={check}
-                                                            onChange={(e) =>
-                                                                handleClick(e)
-                                                            }
-                                                        />
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        그룹품목명
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        품목명
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        규격
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        수량
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        단위
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        단가
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        금액
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        구매거래처
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        발주일
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        제조사
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        요청납기일
-                                                    </th>
-                                                    <th className="thTitle1">
-                                                        입고일
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr className="tableTr3">
-                                                    <td className="tbodyTd">
-                                                        <div className="inputTh">
-                                                            <input type="checkbox" />
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <select name="" id="">
-                                                            <option value="">
-                                                                판넬
-                                                            </option>
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <button className="btn btn-primary">
-                                                            품목선택
-                                                        </button>
-                                                    </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>800,000</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>800,000</td>
-                                                    <td></td>
-                                                </tr>
-                                                <tr className="tableTr3">
-                                                    <td className="tbodyTd">
-                                                        <div className="inputTh">
-                                                            <input type="checkbox" />
-                                                        </div>
-                                                    </td>
-                                                    <td>10월</td>
-                                                    <td>PLC PANEL</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>300,000</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>800,000</td>
-                                                    <td></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <div className="btnWrap">
-                                            <button
-                                                className="btn btn-primary tdBtn"
-                                                onClick={handleAddRunRow}>
-                                                추가
-                                            </button>
-                                        </div>
-                                    </div>
+                        <header>
+                            <span className="widget-icon">
+                                <i className="fa fa-list-ul" />
+                            </span>
+                            <h2>구매 상세내역 실행</h2>
+                            {/*<span className="spanCss">경비 계획</span>*/}
+                        </header>
+                        <div className="table-responsive">
+                            <div>
+                                <table ref={dataTableRef2} border="1">
+                                    <thead>
+                                        <tr className="tableTr3">
+                                            <th className="tableHeaderTh">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={check}
+                                                    onChange={(e) =>
+                                                        handleClick(e)
+                                                    }
+                                                />
+                                            </th>
+                                            <th className="thTitle1">
+                                                그룹품목명
+                                            </th>
+                                            <th className="thTitle1">품목명</th>
+                                            <th className="thTitle1">규격</th>
+                                            <th className="thTitle1">수량</th>
+                                            <th className="thTitle1">단위</th>
+                                            <th className="thTitle1">단가</th>
+                                            <th className="thTitle1">금액</th>
+                                            <th className="thTitle1">
+                                                구매거래처
+                                            </th>
+                                            <th className="thTitle1">발주일</th>
+                                            <th className="thTitle1">제조사</th>
+                                            <th className="thTitle1">
+                                                요청납기일
+                                            </th>
+                                            <th className="thTitle1">입고일</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr className="tableTr3">
+                                            <td className="tbodyTd">
+                                                <div className="inputTh">
+                                                    <input type="checkbox" />
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <select name="" id="">
+                                                    <option value="">
+                                                        판넬
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button className="btn btn-primary">
+                                                    품목선택
+                                                </button>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>800,000</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>800,000</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr className="tableTr3">
+                                            <td className="tbodyTd">
+                                                <div className="inputTh">
+                                                    <input type="checkbox" />
+                                                </div>
+                                            </td>
+                                            <td>10월</td>
+                                            <td>PLC PANEL</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>300,000</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>800,000</td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div className="btnWrap">
+                                    <button
+                                        className="btn btn-primary tdBtn"
+                                        onClick={handleAddRunRow}>
+                                        추가
+                                    </button>
                                 </div>
-                            </JarvisWidget>
-                        </WidgetGrid>
+                            </div>
+                        </div>
                     </div>
                     <div id="content">
-                        <WidgetGrid>
-                            <JarvisWidget
-                                id="wid-id-0"
-                                editbutton={false}
-                                color="blueDark">
-                                <header className="headerH2">
-                                    <span className="widget-icon">
-                                        <i className="fa fa-list-ul" />
-                                    </span>
-                                    <span className="spanCss">
-                                        계획 실행 검토
-                                    </span>
-                                </header>
-                                <div className="table-responsive">
-                                    <table
-                                        border="1"
-                                        style={{
-                                            width: "100%",
-                                        }}>
-                                        <thead>
-                                            <tr className="tableTr3">
-                                                <th className="thTitle1">
-                                                    계획 비용 합계
-                                                </th>
-                                                <th className="thTitle1">
-                                                    500,000
-                                                </th>
-                                                <th className="thTitle1">
-                                                    실행 비용 합계
-                                                </th>
-                                                <th className="thTitle1">
-                                                    300,000
-                                                </th>
-                                                <th className="thTitle1">
-                                                    차액
-                                                </th>
-                                                <th className="thTitle1">
-                                                    200,000
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </JarvisWidget>
-                        </WidgetGrid>
+                        <header className="headerH2">
+                            <span className="widget-icon">
+                                <i className="fa fa-list-ul" />
+                            </span>
+                            <span className="spanCss">계획 실행 검토</span>
+                        </header>
+                        <div className="table-responsive">
+                            <table
+                                border="1"
+                                style={{
+                                    width: "100%",
+                                }}>
+                                <thead>
+                                    <tr className="tableTr3">
+                                        <th className="thTitle1">
+                                            계획 비용 합계
+                                        </th>
+                                        <th className="thTitle1">500,000</th>
+                                        <th className="thTitle1">
+                                            실행 비용 합계
+                                        </th>
+                                        <th className="thTitle1">300,000</th>
+                                        <th className="thTitle1">차액</th>
+                                        <th className="thTitle1">200,000</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
 
                     <div id="content">
-                        <WidgetGrid>
-                            <JarvisWidget
-                                id="wid-id-0"
-                                editbutton={false}
-                                color="blueDark">
-                                <header>
-                                    <span className="widget-icon">
-                                        <i className="fa fa-list-ul" />
-                                    </span>
+                        <header>
+                            <span className="widget-icon">
+                                <i className="fa fa-list-ul" />
+                            </span>
 
-                                    <h2>비고</h2>
-                                </header>
-                                <div className="table-responsive">
-                                    <div
-                                        className={`hideDiv ${
-                                            isClicked4 ? "" : "clicked"
-                                        }`}
-                                        border="1">
-                                        <textarea
-                                            className="textAreaWidth"
-                                            placeholder="내용을 입력하세요."></textarea>
-                                    </div>
-                                </div>
-                            </JarvisWidget>
-                        </WidgetGrid>
+                            <h2>비고</h2>
+                        </header>
+                        <div className="table-responsive">
+                            <div
+                                className={`hideDiv ${
+                                    isClicked4 ? "" : "clicked"
+                                }`}
+                                border="1">
+                                <textarea
+                                    className="textAreaWidth"
+                                    placeholder="내용을 입력하세요."></textarea>
+                            </div>
+                        </div>
                     </div>
                     <div id="content">
-                        <WidgetGrid>
-                            <JarvisWidget
-                                id="wid-id-0"
-                                editbutton={false}
-                                color="blueDark">
-                                <header>
-                                    <span className="widget-icon">
-                                        <i className="fa fa-list-ul" />
-                                    </span>
+                        <header>
+                            <span className="widget-icon">
+                                <i className="fa fa-list-ul" />
+                            </span>
 
-                                    <h2>파일 업로드</h2>
-                                </header>
-                                <div className="table-responsive">
-                                    <div
-                                        className={`hideDiv2 ${
-                                            isClicked5 ? "" : "clicked"
-                                        }`}
-                                        border="1">
-                                        <span className="div5Span">
-                                            이곳에 파일을 드래그하세요.
-                                        </span>
-                                    </div>
-                                </div>
-                            </JarvisWidget>
-                        </WidgetGrid>
+                            <h2>파일 업로드</h2>
+                        </header>
+                        <div className="table-responsive">
+                            <div
+                                className={`hideDiv2 ${
+                                    isClicked5 ? "" : "clicked"
+                                }`}
+                                border="1">
+                                <span className="div5Span">
+                                    이곳에 파일을 드래그하세요.
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

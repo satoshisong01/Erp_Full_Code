@@ -14,13 +14,13 @@ export default function ModalSearch(props) {
                     alignItems: "center",
                     //borderTop: "solid #DDDDDD 1px",
                     //borderBottom: "solid #DDDDDD 1px",
-                    marginLeft: "auto",
+                    marginLeft: "20px",
                     height: "40px",
                     backgroundColor: "white",
                 }}>
                 <input
                     onClick={() => setModalOpen(true)}
-                    style={{ height: "26px", marginLeft: "7px" }}
+                    //style={{ height: "26px", marginLeft: "7px" }}
                     type="text"
                     placeholder="프로젝트를 선택해 주세요"
                 />

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import ReactDOM from "react-dom";
+//import ReactDOM from "react-dom/client";
 import "../../../css/componentCss/PersonnelPopup.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";

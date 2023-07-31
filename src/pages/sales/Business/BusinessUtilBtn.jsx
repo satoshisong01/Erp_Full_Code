@@ -16,6 +16,7 @@ export default function BusinessUtilBtn({
     selectedData,
     urlName,
     headers,
+    title,
 }) {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [Business, setBusiness] = useState(1); //키 값 넘버자동 1씩추가
@@ -28,11 +29,11 @@ export default function BusinessUtilBtn({
         urlName === "detailCode"
             ? true
             : false;
-    const showPreCostPaper = true;
-    const showOrderPlan = true;
-    const showElecPayment = true;
-    const showCopyBtn = true;
-    const showPrintBtn = true;
+    const showPreCostPaper = title === "plan" ? false : true;
+    const showOrderPlan = title === "plan" ? false : true;
+    const showElecPayment = title === "plan" ? false : true;
+    const showCopyBtn = title === "plan" ? false : true;
+    const showPrintBtn = title === "plan" ? false : true;
     const showDeleteBtn = true;
     const showAddBtn = true;
 
@@ -317,21 +318,21 @@ export default function BusinessUtilBtn({
             <div className="tableBtn">
                 {showPreCostPaper && (
                     <PopupButton
-                        targetUrl={URL.ApprovalContainer}
-                        title={"전자결제"}
+                        targetUrl={URL.CostStatement}
+                        data={{
+                            btnName: "전자결재",
+                            title: "사전 원가 계산서",
+                        }}
                     />
                 )}
                 {showOrderPlan && (
-                    <button
-                        className="btn btn-primary csvIcon"
-                        id="utilBtn"
-                        //onClick={() => {
-                        //    // STEP 4: Write Excel file to browser (Specify the file name in the second argument)
-                        //    XLSX.writeFile(wb, "table-demo.xlsx");
-                        //}}
-                    >
-                        수주계획
-                    </button>
+                    <PopupButton
+                        targetUrl={URL.ApprovalContainer}
+                        data={{
+                            btnName: "원가계획",
+                            title: "사전 원가 계획",
+                        }}
+                    />
                 )}
                 {/*{showElecPayment && (
                     <button

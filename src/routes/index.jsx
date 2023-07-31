@@ -112,9 +112,12 @@ const RootRoutes = () => {
                     element={<EgovError prevUrl={prevLocation} />}
                 />
                 <Route path="*" element={<SecondRoutes />} />
-
                 {/* 새창(팝업) */}
-                <Route path={URL.ApprovalContainer} element={<ApprovalContainer />} />
+                <Route
+                    path={URL.ApprovalContainer}
+                    element={<ApprovalContainer />}
+                />
+                <Route path={URL.CostStatement} element={<CostStatement />} />
             </Routes>
         );
     }
@@ -150,12 +153,6 @@ const SecondRoutes = () => {
 
                 {/* ERROR */}
                 <Route path={URL.ERROR} element={<EgovError />} />
-
-                {/* 전자결재 */}
-                <Route path={URL.ApprovalContainer} element={<ApprovalContainer />} />
-
-                {/* 원가계산서 */}
-                <Route path={URL.CostStatement} element={<CostStatement />} />
 
                 {/* 기준정보관리 */}
                 <Route

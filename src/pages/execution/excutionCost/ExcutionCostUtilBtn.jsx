@@ -6,7 +6,9 @@ import XLSX from "xlsx-js-style";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import "../../../css/componentCss/CodeUtilBtn.css";
 import axios from "axios";
+import URL from "constants/url";
 import ExcutionCostModalPagePost from "./ExcutionCostModalPagePost";
+import PopupButton from "components/PopupButton";
 
 export default function ExcutionCostUtilBtn({
     initialData,
@@ -27,6 +29,7 @@ export default function ExcutionCostUtilBtn({
         urlName === "detailCode"
             ? true
             : false;
+    const showPreCostPaper = true;
     const showCopyBtn = true;
     const showPrintBtn = true;
     const showDeleteBtn = true;
@@ -353,14 +356,14 @@ export default function ExcutionCostUtilBtn({
                 </button>
             </div>*/}
             <div className="tableBtn">
-                {showExcelBtn && (
-                    <button
-                        className="btn btn-primary csvIcon"
-                        id="utilBtn"
-                        onClick={handleCalculate}>
-                        <i className="fa fa-file-excel-o utilIcon" />
-                        사후 정산서
-                    </button>
+                {showPreCostPaper && (
+                    <PopupButton
+                        targetUrl={URL.CostStatement}
+                        data={{
+                            btnName: "실행 원가서",
+                            title: "실행 원가 계산서",
+                        }}
+                    />
                 )}
                 {showExcelBtn && (
                     <button

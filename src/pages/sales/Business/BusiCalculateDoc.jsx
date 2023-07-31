@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import ReactDOM from "react-dom";
+//import  ReactDOM from "react-dom/client";
 import "../../../css/componentCss/PersonnelPopup.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
@@ -236,7 +236,7 @@ const BusiCalculateDoc = () => {
                 backgroundColor: "white",
             }}>
             <div>
-                <div
+                {/*<div
                     style={{
                         padding: "50px",
                         display: "flex",
@@ -252,11 +252,9 @@ const BusiCalculateDoc = () => {
                         사후 정산서
                     </span>
                 </div>
-                <h6 style={{ textAlign: "right", marginRight: "5%" }}>
-                    단위:₩(원)
-                </h6>
+                */}
                 <div className="TableBucket">
-                    <table className="tableMain">
+                    {/*<table className="tableMain">
                         <tbody className="tableBody">
                             <tr className="tableTr">
                                 <td className="table3-1">프로젝트명</td>
@@ -287,7 +285,7 @@ const BusiCalculateDoc = () => {
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
+                    </table>*/}
 
                     <table className="tableMain">
                         <tbody className="tableBody">
