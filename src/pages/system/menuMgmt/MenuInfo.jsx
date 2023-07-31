@@ -1,31 +1,27 @@
 import React, { useRef, useState } from "react";
 import AntTree from "components/antTree/AntTree";
-import { menuTreeData } from "./menuTreeData.js";
-import InnerForm from "components/antTree/InnerForm.jsx";
+import { reference, sales, execution, system } from "./menuTreeData.js";
+import MenuForm from "components/form/MenuForm.jsx";
 import { Resizable } from "re-resizable";
-import CustomRModal from "components/modal/CustomRModal";
 import { Link } from "react-router-dom";
 import store from "store/configureStore";
 import { tabActive } from "components/tabs/TabsActions";
 
 /** 시스템관리-메뉴관리-메뉴정보관리 */
 const MenuInfo = () => {
-    const [treeNode, setTreeNode] = useState({
-        title: "",
-        isParent: false,
-        key: "",
-    });
 
-    const getTreeNode = (data) => {
-        setTreeNode(data);
+    const [treeData, setTreeData] = useState(reference);
+
+    const [node, setNode] = useState({});
+
+    const selectData = (data) => {
+        setNode(data);
     };
 
     const containerRef = useRef(null);
     const resizableRef = useRef(null);
     const [leftWidth, setLeftWidth] = useState("50%");
     const [rightWidth, setRightWidth] = useState("50%");
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isModalClose, setIsModalClose] = useState(false);
 
     const handleResize = (event, direction, ref, delta) => {
         const containerWidth = containerRef.current.offsetWidth;
@@ -34,50 +30,52 @@ const MenuInfo = () => {
         const newRightWidth = `${
             ((containerWidth - resizableWidth) / containerWidth) * 100
         }%`;
-
-        console.log(
-            " containerWidth: ",
-            containerWidth,
-            " resizableWidth: ",
-            resizableWidth,
-            ", newLeftWidth: ",
-            newLeftWidth
-        );
-
         setLeftWidth(newLeftWidth);
         setRightWidth(newRightWidth);
     };
 
-    const treeOpen = () => {
-        setIsModalOpen(true);
-    };
-    const treeClose = () => {
-        setIsModalClose(true);
-    };
+    const selectChange = (e) => {
+        const value = e.target.value;
+        let newData;
+        switch (value) {
+          case "reference":
+            newData = reference;
+            break;
+          case "sales":
+            newData = sales;
+            break;
+          case "execution":
+            newData = execution;
+            break;
+          case "system":
+            newData = system;
+            break;
+          default:
+            newData = reference;
+            break;
+        }
+        setTreeData(newData);
+    }
 
     return (
         <>
             <div className="location">
                 <ul>
-                    <li>
-                        <Link to="/" className="home">
-                            Home
-                        </Link>
-                    </li>
-                    <li>
-                        <Link
-                            to=""
-                            onClick={(e) =>
-                                store.dispatch(tabActive("권한관리"))
-                            }>
-                            시스템관리
-                        </Link>
-                    </li>
+                    <li><Link to="/" className="home">Home</Link></li>
+                    <li><Link  to="" onClick={(e) => store.dispatch(tabActive("권한관리"))}>시스템관리</Link></li>
                     <li>메뉴정보관리</li>
                 </ul>
             </div>
 
-            <CustomRModal isModalOpen={isModalOpen} onClose={isModalClose} />
+            <div className="row">
+                <select defaultValue={"reference"} name="select-basic" id="search_select" className="b-select mg-b-20" onChange={selectChange}>
+                    <option value="reference" >기준정보관리</option>
+                    <option value="sales">영업관리</option>
+                    <option value="execution">실행관리</option>
+                    <option value="system">시스템관리</option>
+                </select>
+            </div>
+            
             <div
                 ref={containerRef}
                 style={{
@@ -94,8 +92,10 @@ const MenuInfo = () => {
                         paddingRight: 10,
                         width: leftWidth,
                     }}
-                    onResize={handleResize}>
-                    <AntTree treeData={menuTreeData} selectData={getTreeNode} />
+                    onResize={handleResize}
+                    minWidth={280}
+                >
+                    <AntTree treeData={treeData} selectData={selectData}/>
                 </Resizable>
 
                 {/* 오른쪽 영역 */}
@@ -110,7 +110,8 @@ const MenuInfo = () => {
                         borderLeft: "1px solid #ccc",
                         width: rightWidth,
                     }}>
-                    <InnerForm treeNode={treeNode} />
+                    <MenuForm selectNode={node} />
+                    {/* <InnerForm treeNode={treeNode} /> */}
                 </div>
             </div>
         </>

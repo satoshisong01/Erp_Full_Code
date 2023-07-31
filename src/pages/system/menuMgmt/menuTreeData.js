@@ -1,54 +1,342 @@
 //트리..
-export const menuTreeData = [ //folder
+
+const DEFAULT_ROLE = 'ROLE_USER';
+const DEFAULT_LV = '1';
+const DISABLE_EXPAND = true;
+
+export const reference = [
 	{
-		title: 'ROOT',
-		key: '0',
+		title: '기준정보관리',
+		menuCategory: '기준정보관리',
+		upperMenuNo: '',
+		menuLv: DEFAULT_LV,
+		key: '0', //Root
+		menuDc: '',
+		rltImgPath: '/',
+		rltImgNm: '',
+		useAt: 'Y',
+		targetAt: 'N',
+		authorCode: DEFAULT_ROLE,
+		disableExpand: DISABLE_EXPAND,
 		children: [
 			{
-				title: '사전원가', //메뉴명(menuName)
-				menuCategory: '', //메뉴카테고리
-				upperMenuNo: '', //상위메뉴번호
-				menuLv: '', //레벨
+				title: '품목관리', //메뉴명(menuName)
+				menuCategory: '기준정보관리', //메뉴카테고리
+				upperMenuNo: '0', //상위메뉴번호
+				menuLv: DEFAULT_LV, //메뉴레벨
 				key: '0-0', //메뉴순서(menuOrder)
 				menuDc: '', //메뉴설명
-				rltImgPath: '', //관계이미지경로
+				rltImgPath: '/', //관계이미지경로
 				rltImgNm: '', //관계이미지명
-				useAt: '', //사용여부
-				targetAt: '', //새창여부
-				authorCode: '', //권한정보
+				useAt: 'Y', //사용여부
+				targetAt: 'N', //새창여부
+				authorCode: DEFAULT_ROLE, //권한정보
+				disableExpand: DISABLE_EXPAND,
 				children: [
 					{
-						title: '프로젝트 등록', //메뉴명
-						key: '0-0-0', //메뉴순서, 상위메뉴? 0-0
+						title: '품목그룹관리',
+						menuCategory: '기준정보관리',
+						upperMenuNo: '0-0',
+						menuLv: DEFAULT_LV,
+						key: '0-0-0',
+						menuDc: '',
+						rltImgPath: '/',
+						rltImgNm: '',
+						useAt: 'Y',
+						targetAt: 'N',
+						authorCode: DEFAULT_ROLE,
 						isLeaf: true,
 					},
 					{
-						title: '재료비 내역',
+						title: '품목상세관리',
+						menuCategory: '기준정보관리',
+						upperMenuNo: '0-0-0',
+						menuLv: DEFAULT_LV,
 						key: '0-0-1',
+						menuDc: '',
+						rltImgPath: '/',
+						rltImgNm: '',
+						useAt: 'Y',
+						targetAt: 'N',
+						authorCode: DEFAULT_ROLE,
 						isLeaf: true,
 				  	},
 				],
-			  },
-			  {
-				title: '시스템관리',
+			},
+			{
+				title: '거래처관리',
+				menuCategory: '기준정보관리',
+				upperMenuNo: '0-0',
+				menuLv: DEFAULT_LV,
 				key: '0-1',
+				menuDc: '',
+				rltImgPath: '/',
+				rltImgNm: '',
+				useAt: 'Y',
+				targetAt: 'N',
+				authorCode: DEFAULT_ROLE,
+				disableExpand: DISABLE_EXPAND,
 				children: [
 					{
-						title: '거래처 관리',
+						title: '고객사',
+						menuCategory: '기준정보관리',
+						upperMenuNo: '0-1',
+						menuLv: DEFAULT_LV,
 						key: '0-1-0',
+						menuDc: '',
+						rltImgPath: '/',
+						rltImgNm: '',
+						useAt: 'Y',
+						targetAt: 'N',
+						authorCode: DEFAULT_ROLE,
 						isLeaf: true,
 					},
 					{
-						title: '메뉴 관리',
+						title: '협력사',
+						menuCategory: '기준정보관리',
+						upperMenuNo: '0-1-0',
+						menuLv: DEFAULT_LV,
 						key: '0-1-1',
+						menuDc: '',
+						rltImgPath: '/',
+						rltImgNm: '',
+						useAt: 'Y',
+						targetAt: 'N',
+						authorCode: DEFAULT_ROLE,
+						isLeaf: true,
+				  	},
+				],
+			},
+			{
+				title: '사업장관리',
+				menuCategory: '기준정보관리',
+				upperMenuNo: '0-1',
+				menuLv: DEFAULT_LV,
+				key: '0-2',
+				menuDc: '',
+				rltImgPath: '/',
+				rltImgNm: '',
+				useAt: 'Y',
+				targetAt: 'N',
+				authorCode: DEFAULT_ROLE,
+				children: [],
+			},
+			{
+				title: '사용자관리',
+				menuCategory: '기준정보관리',
+				upperMenuNo: '0-2',
+				menuLv: DEFAULT_LV,
+				key: '0-3',
+				menuDc: '',
+				rltImgPath: '/',
+				rltImgNm: '',
+				useAt: 'Y',
+				targetAt: 'N',
+				authorCode: DEFAULT_ROLE,
+				disableExpand: DISABLE_EXPAND,
+				children: [
+					{
+						title: '업무회원관리',
+						menuCategory: '기준정보관리',
+						upperMenuNo: '0-3',
+						menuLv: DEFAULT_LV,
+						key: '0-3-0',
+						menuDc: '',
+						rltImgPath: '/',
+						rltImgNm: '',
+						useAt: 'Y',
+						targetAt: 'N',
+						authorCode: DEFAULT_ROLE,
 						isLeaf: true,
 					},
+					{
+						title: '일반회원관리',
+						menuCategory: '기준정보관리',
+						upperMenuNo: '0-3-0',
+						menuLv: DEFAULT_LV,
+						key: '0-3-1',
+						menuDc: '',
+						rltImgPath: '/',
+						rltImgNm: '',
+						useAt: 'Y',
+						targetAt: 'N',
+						authorCode: DEFAULT_ROLE,
+						isLeaf: true,
+				  	},
+					{
+						title: '기업회원관리',
+						menuCategory: '기준정보관리',
+						upperMenuNo: '0-3-1',
+						menuLv: DEFAULT_LV,
+						key: '0-3-2',
+						menuDc: '',
+						rltImgPath: '/',
+						rltImgNm: '',
+						useAt: 'Y',
+						targetAt: 'N',
+						authorCode: DEFAULT_ROLE,
+						isLeaf: true,
+				  	},
+					{
+						title: '권한그룹정보관리',
+						menuCategory: '기준정보관리',
+						upperMenuNo: '0-3-2',
+						menuLv: DEFAULT_LV,
+						key: '0-3-3',
+						menuDc: '',
+						rltImgPath: '/',
+						rltImgNm: '',
+						useAt: 'Y',
+						targetAt: 'N',
+						authorCode: DEFAULT_ROLE,
+						isLeaf: true,
+				  	},
+					{
+						title: '조직부서정보관리',
+						menuCategory: '기준정보관리',
+						upperMenuNo: '0-3-3',
+						menuLv: DEFAULT_LV,
+						key: '0-3-4',
+						menuDc: '',
+						rltImgPath: '/',
+						rltImgNm: '',
+						useAt: 'Y',
+						targetAt: 'N',
+						authorCode: DEFAULT_ROLE,
+						isLeaf: true,
+				  	},
+				],
+			},
+			{
+				title: '원가기준관리',
+				menuCategory: '기준정보관리',
+				upperMenuNo: '0-3',
+				menuLv: DEFAULT_LV,
+				key: '0-4',
+				menuDc: '',
+				rltImgPath: '/',
+				rltImgNm: '',
+				useAt: 'Y',
+				targetAt: 'N',
+				authorCode: DEFAULT_ROLE,
+				disableExpand: DISABLE_EXPAND,
+				children: [
+					{
+						title: '인건비요율',
+						menuCategory: '기준정보관리',
+						upperMenuNo: '0-4',
+						menuLv: DEFAULT_LV,
+						key: '0-4-0',
+						menuDc: '',
+						rltImgPath: '/',
+						rltImgNm: '',
+						useAt: 'Y',
+						targetAt: 'N',
+						authorCode: DEFAULT_ROLE,
+						isLeaf: true,
+					},
+					{
+						title: '급별단가(인건비)',
+						menuCategory: '기준정보관리',
+						upperMenuNo: '0-4-0',
+						menuLv: DEFAULT_LV,
+						key: '0-4-1',
+						menuDc: '',
+						rltImgPath: '/',
+						rltImgNm: '',
+						useAt: 'Y',
+						targetAt: 'N',
+						authorCode: DEFAULT_ROLE,
+						isLeaf: true,
+				  	},
+					{
+						title: '급별단가(경비)',
+						menuCategory: '기준정보관리',
+						upperMenuNo: '0-4-1',
+						menuLv: DEFAULT_LV,
+						key: '0-4-2',
+						menuDc: '',
+						rltImgPath: '/',
+						rltImgNm: '',
+						useAt: 'Y',
+						targetAt: 'N',
+						authorCode: DEFAULT_ROLE,
+						isLeaf: true,
+				  	},
+					{
+						title: '사전원가지표',
+						menuCategory: '기준정보관리',
+						upperMenuNo: '0-4-2',
+						menuLv: DEFAULT_LV,
+						key: '0-4-3',
+						menuDc: '',
+						rltImgPath: '/',
+						rltImgNm: '',
+						useAt: 'Y',
+						targetAt: 'N',
+						authorCode: DEFAULT_ROLE,
+						isLeaf: true,
+				  	},
 				],
 			},
 		],
 	},
 ];
-
-export const menuCtxData = [ //context menu
-	'create', 'delete'
+export const sales = [
+	{
+		title: '영업관리',
+		menuCategory: '영업관리',
+		upperMenuNo: '',
+		menuLv: DEFAULT_LV,
+		key: '0', //Root
+		menuDc: '',
+		rltImgPath: '/',
+		rltImgNm: '',
+		useAt: 'Y',
+		targetAt: 'N',
+		authorCode: DEFAULT_ROLE,
+		disableExpand: DISABLE_EXPAND,
+		children: [
+		]
+	},
 ];
+export const execution = [
+	{
+		title: '실행관리',
+		menuCategory: '실행관리',
+		upperMenuNo: '',
+		menuLv: DEFAULT_LV,
+		key: '0', //Root
+		menuDc: '',
+		rltImgPath: '/',
+		rltImgNm: '',
+		useAt: 'Y',
+		targetAt: 'N',
+		authorCode: DEFAULT_ROLE,
+		disableExpand: DISABLE_EXPAND,
+		children: [
+		],
+	},
+];
+export const system = [
+	{
+		title: '시스템관리',
+		menuCategory: '시스템관리',
+		upperMenuNo: '',
+		menuLv: DEFAULT_LV,
+		key: '0', //Root
+		menuDc: '',
+		rltImgPath: '/',
+		rltImgNm: '',
+		useAt: 'Y',
+		targetAt: 'N',
+		authorCode: DEFAULT_ROLE,
+		disableExpand: DISABLE_EXPAND,
+		children: [
+		],
+	},
+];
+
+// export const menuCtxData = [ //context menu
+// 	'create', 'delete'
+// ];

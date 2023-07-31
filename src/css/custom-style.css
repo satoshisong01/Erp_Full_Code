@@ -1,0 +1,81 @@
+/*
+ * 작은 단위의 스타일 그룹
+ */
+
+ /* margin css */
+ .mg-t-20 { margin-top: 20px; }
+ .mg-r-20 { margin-right: 20px; }
+ .mg-b-20 { margin-bottom: 20px; }
+ .mg-l-20 { margin-left: 20px; }
+
+/* select box */
+.b-select {
+	padding: 8px;
+	font-size: 14px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	background-color: #fff;
+	color: #333;
+	width: 200px;
+	/* 드롭다운 화살표를 숨김 */
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	/* 셀렉트 박스의 배경 이미지로 커스텀 아이콘 사용 */
+	background: url(images/ico_arrow_gray_15x9.png) no-repeat;
+	background-position: right 8px center;
+	background-repeat: no-repeat;
+}
+.b-select::-ms-expand { display: none; }
+.b-select:hover { cursor: pointer; }
+
+
+/* menu form css */
+.form-container {
+	display: flex;
+	flex-direction: column;
+	padding: 0 0 0 10px;
+
+	.text-menu, input, select, span {
+		font-weight: 400;
+	}
+
+	.checkbox-area {
+		display: flex;
+		align-items: center;
+		gap: 3px;
+	}
+	
+	.checkbox-area > span:not(:last-child) {
+		margin-right: 10px;
+	}
+	
+	.btn-primary {
+		background-color: #007bff;
+		border: none;
+		margin: 0px;
+	}
+	
+	/* 마지막 row 아래 간격 제거 */
+	.row:not(:last-child) {
+		margin-bottom: 10px;
+	}
+	
+	.row {
+		display: flex;
+		align-items: center;
+	}
+	.row-right {
+		display: flex;
+		align-items: center;
+	}
+	
+	.text-danger:not(:last-child) {
+		color: red;
+		margin-right: 2px;
+	}
+
+	.col-md-2, .col-md-10 {
+		padding: 0px;
+	}
+}
