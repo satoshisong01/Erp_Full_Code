@@ -28,6 +28,7 @@ const Businesses = () => {
     const [searchCondition, setSearchCondition] = useState("0"); //검색 종류명시 int값
     const [selectedOption, setSelectedOption] = useState("option2"); //삭제된 항목 & 삭제되지 않은 항목(디폴트)
     //const [detailData, setDetailData] = useState(""); // 옆 컴포넌트에 세부정보 보내주기
+    const [stateTitle, setStateTitle] = useState("finished");
 
     const urlName = "Businesses";
 
@@ -198,6 +199,43 @@ const Businesses = () => {
         setModalItem(item);
         setModalOpen(true);
     };
+
+    function getStateElement(stateTitle) {
+        if (stateTitle === "before") {
+            return (
+                <div className="stateName stateNameB">
+                    <span className="dotPoint dotPointB">●</span>
+                    <span className="stateNameTitle stateNameTitleB">
+                        시작 전
+                    </span>
+                </div>
+            );
+        } else if (stateTitle === "working") {
+            return (
+                <div className="stateName stateNameW">
+                    <span className="dotPoint dotPointW">●</span>
+                    <span className="stateNameTitle stateNameTitleW">
+                        진행 중
+                    </span>
+                </div>
+            );
+        } else if (stateTitle === "finished") {
+            return (
+                <div className="stateName stateNameF">
+                    <span className="dotPoint dotPointF">●</span>
+                    <span className="stateNameTitle stateNameTitleF">완료</span>
+                </div>
+            );
+        } else {
+            // 기본값이 필요하다면 이곳에 추가해주세요.
+            return (
+                <div className="stateName stateNameDefault">
+                    <span className="dotPoint dotDefault">●</span>
+                    <span className="stateNameTitle Default">기본 상태</span>
+                </div>
+            );
+        }
+    }
 
     return (
         <>
@@ -376,7 +414,7 @@ const Businesses = () => {
                             <td className="table4-2">2022/12/30</td>
                             <td className="table2-1">상태</td>
                             <td className="table4-2">
-                                <div className="working">작성중</div>
+                                {getStateElement(stateTitle)}
                             </td>
                         </tr>
                         <tr className="tableTr">

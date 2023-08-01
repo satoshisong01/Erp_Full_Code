@@ -1,8 +1,10 @@
-import ApprovalForm from "components/form/ApprovalForm";
+import CostStatementForm from "components/form/CostStatementForm";
+import ExcutionCostsDoc from "pages/execution/excutionCost/ExcutionCostsDoc";
 import BusiCalculateDoc from "pages/sales/Business/BusiCalculateDoc";
 import React, { useEffect, useState } from "react";
 
 /* 사전 원가 계산서, 실행 원가 계산서 */
+
 function CostStatement() {
     const [title, setTitle] = useState("");
 
@@ -17,13 +19,15 @@ function CostStatement() {
     let content;
     if (title === "사전 원가 계산서") {
         content = <BusiCalculateDoc />;
+    } else if (title === "실행 원가 계산서") {
+        content = <ExcutionCostsDoc />;
     } else {
         content = null; // 'title'이 어떤 조건과도 일치하지 않을 경우 렌더링하지 않음
     }
 
     return (
         <div className="">
-            <ApprovalForm title={title}>{content}</ApprovalForm>
+            <CostStatementForm title={title}>{content}</CostStatementForm>
         </div>
     );
 }

@@ -5,11 +5,11 @@ import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
 
-import BusinessUtilBtn from "./BusinessUtilBtn";
+import ExcutionCostUtilBtn from "./ExcutionCostUtilBtn";
 //import PopupTesting from "./PopupTesting";
 //import PopupWindow from "./PopupTesting";
 
-const BusiCalculateDoc = () => {
+const ExcutionCostsDoc = () => {
     const dataTableRef3 = useRef(null); //dataTable 테이블 명시
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const dataTableRef2 = useRef(null); //dataTable 테이블 명시
@@ -633,4 +633,4 @@ const BusiCalculateDoc = () => {
     );
 };
 
-export default BusiCalculateDoc;
+export default ExcutionCostsDoc;

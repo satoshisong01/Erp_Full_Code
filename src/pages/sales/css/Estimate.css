@@ -1,120 +1,166 @@
-*{
-  box-sizing: border-box;
-  margin: 0px;
+* {
+    box-sizing: border-box;
+    margin: 0px;
 }
 
-.EstimateHeader{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
-  font-size: xx-large;
-  font-weight: 700;
-  background-color: #17375e;
-  color: white;
-  height: 50px;
+.EstimateHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    font-size: xx-large;
+    font-weight: 700;
+    background-color: #17375e;
+    color: white;
+    height: 50px;
 }
 
-.EstimateBody{
-  width: 90%;
-  margin: auto;
-  /*display: flex;*/
-  /*justify-content: space-between;*/
+.EstimateBody {
+    width: 90%;
+    margin: auto;
+    /*display: flex;*/
+    /*justify-content: space-between;*/
 }
 
-.spanBody > span {
-  font-size: larger;
-  font-weight: 600;
-  margin-top: 10px;
+.bodySpan {
+    font-size: larger;
+    font-weight: 600;
 }
 
-.spanBody3, .titleRight, .titleLeft{
-  flex: 1;
+.bodySpan2 {
+    margin-left: 20px;
 }
 
-.titleRight{
-  min-width: 300px;
-  max-width: 310px;
-  margin-right: 9%;
+.h2Body {
+    z-index: 999;
+    position: relative;
 }
 
-.titleLeft{
-  min-width: 300px;
-  max-width: 310px;
-  margin-left: 10%;
+.spanBody3,
+.titleRight,
+.titleLeft {
+    flex: 1;
 }
 
-.titleTotal{
-  display: flex;
+.titleRight {
+    min-width: 300px;
+    max-width: 310px;
+    margin-right: 9%;
 }
 
-.spanBodyFooter{
-  position: relative;
+.titleLeft {
+    min-width: 300px;
+    max-width: 310px;
+    margin-left: 10%;
 }
 
-.spanBodyFooter > h2{
-  font-weight: 700;
+.titleTotal {
+    display: flex;
 }
 
-.spanBody{
-  margin-top: 10px;
+.spanBodyFooter {
+    position: relative;
 }
 
-.spanBody3{
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.spanBodyFooter > h2 {
+    font-weight: 700;
 }
 
-.mecca{
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  width: 100px;
-  height: 100px;
-  margin-top: 70px;
-  padding:auto;
+.spanBody {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
 }
 
-.footerTitle{
-  z-index: 10;
-  font-weight: 700;
+.spanBody3 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.signImg{
-  z-index: 1;
-  position: absolute;
-  right: 0px;
-  bottom:0px;
+.mecca {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    margin-top: 70px;
+    padding: auto;
 }
 
-.SumCount{
-  text-align: center;
-  margin-top: 80px;
-  font-weight: 700;
+.footerTitle {
+    margin-top: 10px;
+    z-index: 10;
+    font-weight: 700;
 }
 
-.condition{
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  margin-top: 50px;
+.signImg {
+    z-index: 1;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
 }
 
-.conditionSpan{
-  display: flex;
-  flex-direction: column;
+.SumCount {
+    text-align: center;
+    margin-top: 80px;
+    font-weight: 700;
 }
 
-.conditionSpan > span{
-  font-size: large;
-  font-weight: 600;
+.condition {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin: auto;
+    margin-top: 50px;
 }
 
-.projectName{
-  margin-top: 50px;
-  margin-left: 10%;
-  font-weight: 600;
+.conditionSpan {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.conditionSpan > span {
+    font-size: large;
+    font-weight: 600;
+}
+
+.projectName {
+    margin-top: 50px;
+    margin-left: 5%;
+    margin-bottom: 1%;
+    font-weight: 600;
+}
+
+.tableParent,
+.etcBox {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: auto;
+}
+
+.width90 {
+    width: 90%;
+}
+
+.tableRedPercent {
+    color: black;
+}
+
+.etcItems {
+    border: solid 1px gray;
+    width: 90%;
+    height: 100%;
+    min-height: 150px;
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+}
+
+.etcItem {
+    padding: 10px;
 }

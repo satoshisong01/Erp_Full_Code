@@ -27,6 +27,8 @@
 }
 
 #utilBtn,
+#delUtil,
+#addUtil,
 #utilBtn2 {
     width: 100%;
     padding: 5px;
@@ -37,6 +39,8 @@
 }
 
 #utilBtn:hover,
+#delUtil:hover,
+#addUtil:hover,
 #utilBtn2:hover {
     cursor: pointer;
 }
@@ -77,14 +81,22 @@
 //#0b75c5
 
 .addIcon {
-    background-color: var(--color-blue);
+    /*background-color: var(--color-blue);*/
+    /*color: #fff;*/
+    /*margin: 10px 10px 10px 0;*/
     border: none;
-    transition: all 0.2s;
+    /*transition: all 0.2s;*/
+    /*background-color: #007bff;*/
 }
 
-.addIcon:hover {
+/*.addIcon:hover {
     background-color: var(--color-blue);
     transform: scale(1.05);
+}*/
+
+#addUtil,
+#delUtil {
+    border: none;
 }
 
 .btnImg {

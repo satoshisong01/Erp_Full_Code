@@ -3,7 +3,8 @@ import ApprovalForm from "components/form/ApprovalForm"; //기본 폼
 import BusiCalculateDoc from "pages/sales/Business/BusiCalculateDoc";
 import BusinessPopup from "pages/sales/Business/BusinessPopup";
 
-/* 전자결재 */
+/* 전자결재, 사전 원가 계획 */
+
 function ApprovalContainer() {
     const [title, setTitle] = useState("");
 

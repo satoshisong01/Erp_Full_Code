@@ -65,7 +65,8 @@
 .tableTr2 {
     height: 100px;
 }
-.tableTr3 {
+.tableTr3,
+.tbodyDiv {
     width: 90%;
 }
 
@@ -283,16 +284,69 @@
     -moz-appearance: auto;
 }
 
-.working {
-    /*width: 70px;*/
-    /*height: 30px;*/
-    padding: 2px;
-    color: #fff;
-    background-color: lawngreen;
-    margin: 0;
-    border: 1px solid black;
-    border-radius: 10px;
+.contentForm {
+    width: 100%;
+    margin: auto;
 }
+/* ------------------ */
+.stateName {
+    height: 23px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 13px;
+    padding: 10px;
+}
+
+.stateNameB {
+    background-color: #efeeec;
+}
+
+.stateNameW {
+    background-color: #d7e5ee;
+}
+
+.stateNameF {
+    background-color: #dfeddd;
+}
+
+/* ------------------ */
+
+.dotPoint {
+    font-size: x-large;
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.dotPointB {
+    color: #91918e;
+}
+
+.dotPointW {
+    color: #6996ba;
+}
+
+.dotPointF {
+    color: #769a7f;
+}
+/* ------------------ */
+
+.stateNameTitle {
+    font-weight: bold;
+}
+
+.stateNameTitleB {
+    color: #32302d;
+}
+
+.stateNameTitleW {
+    color: #3d5061;
+}
+
+.stateNameTitleF {
+    color: #617566;
+}
+/* ------------------ */
 
 .bucket {
     display: flex;
@@ -312,6 +366,15 @@
     margin-left: 20px;
     font-size: large;
     font-weight: 600;
+}
+
+.contentTitle {
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.halfContent {
+    width: 48%;
 }
 
 .arrowBtn {

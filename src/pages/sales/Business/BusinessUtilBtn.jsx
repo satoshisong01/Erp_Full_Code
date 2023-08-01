@@ -320,7 +320,7 @@ export default function BusinessUtilBtn({
                     <PopupButton
                         targetUrl={URL.CostStatement}
                         data={{
-                            btnName: "전자결재",
+                            btnName: "사전원가서",
                             title: "사전 원가 계산서",
                         }}
                     />
@@ -380,7 +380,7 @@ export default function BusinessUtilBtn({
                 )}
                 {showDeleteBtn && (
                     <button
-                        id="utilBtn"
+                        id="delUtil"
                         className="btn btn-primary delIcon"
                         onClick={handleDelete}>
                         <i className="fa fa-trash-o utilIcon" />
@@ -390,7 +390,7 @@ export default function BusinessUtilBtn({
                 {showAddBtn && (
                     <button
                         className="btn btn-primary addIcon"
-                        id="utilBtn"
+                        id="addUtil"
                         onClick={(e) => handleModalPostClick(e)}>
                         <i className="fa fa-plus utilIcon" />
                         추가

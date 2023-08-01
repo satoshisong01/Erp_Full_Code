@@ -40,6 +40,12 @@
     margin: 0;
 }
 
+.CostForm-title {
+    display: flex;
+    justify-content: center;
+    margin: 50px;
+}
+
 .area-container {
     display: flex;
     margin-left: auto;
@@ -92,8 +98,27 @@
     margin-left: 2.3%;
 }
 
-.table8-1 {
+.table8-1-1 {
+    flex: 0.99;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
     height: 35px;
+    font-size: large;
+    text-align: center;
+    background-color: #e3ecf8;
+    border: 1px solid gray;
+}
+
+.table8-2-2 {
+    flex: 4;
+    display: flex;
+    /*margin-left: 20px;*/
+    /*padding-left: 20px;*/
+    justify-content: center;
+    align-items: center;
+    border: 1px solid gray;
 }
 
 .titleH3 {
@@ -123,4 +148,9 @@
 .btnR {
     color: #fff;
     background-color: #fd3d6b;
+}
+
+.won {
+    text-align: right;
+    margin-bottom: 2px;
 }

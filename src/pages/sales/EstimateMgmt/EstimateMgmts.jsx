@@ -12,6 +12,8 @@ import "../../../css/componentCss/PersonnelPopup.css";
 import EstimateMgmtModalPage from "./EstimateMgmtModalPage";
 import EstimateMgmtUtilBtn from "./EstimateMgmtUtilBtn";
 import EstimateMgmtTableSearchBar from "./EstimateMgmtTableSearchBar";
+import PopupButton from "components/PopupButton";
+import URL from "constants/url";
 //import UserManagementInfo from "../../../sysadmin/UserManagementInfo";
 
 const EstimateMgmts = () => {
@@ -334,6 +336,13 @@ const EstimateMgmts = () => {
                                     )}
                                 </div>
                             </div>
+                            <PopupButton
+                                targetUrl={URL.EstimatePopupContainer}
+                                data={{
+                                    btnName: "견적서",
+                                    title: "견적서",
+                                }}
+                            />
                         </div>
                     </div>
                 </div>
