@@ -17,9 +17,10 @@ export default function AuthorGroupModalPagePost({
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [AuthorGroup, setAuthorGroup] = useState(countAuthorGroup);
     const [data, setData] = useState({
-        AuthorGroup: "",
-        AuthorGroupNm: "",
-        AuthorGroupDc: "",
+        groupId: "",
+        groupNm: "",
+        groupCode: "",
+        orgId: "",
     });
 
     console.log(countAuthorGroup);

@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../../../../css/ContentMain.css";
-import { Tooltip } from "react-tooltip";
-import MouseDc from "components/MouseDc";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
@@ -9,11 +7,13 @@ import "../../../../css/defaultSearchBar.css";
 import axios from "axios";
 import "../../../../css/componentCss/Code.css";
 //import "react-calendar/dist/Calendar.css";
-import CommentModalPage from "./CommentModalPage";
-import CommentUtilBtn from "./CommentUtilBtn";
-import CommentTableSearchBar from "./CommentTableSearchBar";
+import ClCodeModalPage from "./ClCodeModalPage";
+import ClCodeUtilBtn from "./ClCodeUtilBtn";
+import ClCodeTableSearchBar from "./ClCodeTableSearchBar";
+import { Tooltip } from "react-tooltip";
+import MouseDc from "components/MouseDc";
 
-const Comments = () => {
+const ClCode = ({ componentName }) => {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창
     //const [postModalOpen, setPostModalOpen] = useState(false); // 클릭 추가 모달창
@@ -37,7 +37,7 @@ const Comments = () => {
         setShowTooltip(false);
     };
 
-    const urlName = "Comment";
+    const urlName = "clCode";
 
     //키워드값 받아오기
     const handleSearch = (value) => {
@@ -151,8 +151,8 @@ const Comments = () => {
 
     //테이블 초기화 및 기능 명시
 
-    //체크된 아이템의 Comment 숫자만 저장
-    const changeInt = selectedData.map((item) => item.Comment);
+    //체크된 아이템의 clCode 숫자만 저장
+    const changeInt = selectedData.map((item) => item.clCode);
 
     console.log(selectedData, "체크데이터");
     console.log(changeInt, "받아오자값");
@@ -180,16 +180,16 @@ const Comments = () => {
                 // 이미 선택된 데이터인지 확인 후 중복 추가 방지
                 if (
                     !prevSelectedData.find(
-                        (selectedItem) => selectedItem.Comment === item.Comment
+                        (selectedItem) => selectedItem.clCode === item.clCode
                     )
                 ) {
                     const sortedData = [...prevSelectedData, item].sort(
                         (a, b) => {
-                            // Comment 속성을 기준으로 데이터 정렬
-                            if (a.Comment < b.Comment) {
+                            // clCode 속성을 기준으로 데이터 정렬
+                            if (a.clCode < b.clCode) {
                                 return -1;
                             }
-                            if (a.Comment > b.Comment) {
+                            if (a.clCode > b.clCode) {
                                 return 1;
                             }
                             return 0;
@@ -199,7 +199,7 @@ const Comments = () => {
                 }
             } else {
                 return prevSelectedData.filter(
-                    (selectedItem) => selectedItem.Comment !== item.Comment
+                    (selectedItem) => selectedItem.clCode !== item.clCode
                 );
             }
             return prevSelectedData; // 체크가 풀리지 않았거나 중복 데이터인 경우 이전 상태 그대로 반환
@@ -220,7 +220,7 @@ const Comments = () => {
             <div className="divBodySet">
                 <div id="content">
                     <div className="SearchDiv">
-                        <CommentTableSearchBar
+                        <ClCodeTableSearchBar
                             onSearch={handleSearch}
                             onSearchLv={handleSearchLv}
                             onOption={handleOption}
@@ -228,7 +228,7 @@ const Comments = () => {
                             urlName={urlName}
                             searchBtn={handleSearchData}
                         />
-                        <CommentUtilBtn
+                        <ClCodeUtilBtn
                             initialData={searchedData}
                             refresh={fetchAllData}
                             changeInt={changeInt}
@@ -262,12 +262,13 @@ const Comments = () => {
                                                             />
                                                         </th>
                                                         {[
-                                                            "댓글명",
-                                                            "댓글번호",
-                                                            "작성일",
+                                                            "분류코드",
+                                                            "분류코드명",
+                                                            "분류코드설명",
                                                             "작성자",
-                                                            "수정일",
+                                                            "작성일",
                                                             "수정자",
+                                                            "수정일",
                                                         ].map((item, index) => (
                                                             <th key={index}>
                                                                 {item}
@@ -286,8 +287,8 @@ const Comments = () => {
                                                                             (
                                                                                 selectedItem
                                                                             ) =>
-                                                                                selectedItem.Comment ===
-                                                                                item.Comment
+                                                                                selectedItem.clCode ===
+                                                                                item.clCode
                                                                         )}
                                                                         onChange={(
                                                                             e
@@ -300,12 +301,13 @@ const Comments = () => {
                                                                     />
                                                                 </td>
                                                                 {[
-                                                                    "Comment",
-                                                                    "CommentNm",
-                                                                    "CommentDc",
+                                                                    "clCode",
+                                                                    "clCodeNm",
+                                                                    "clCodeDc",
                                                                     "createIdBy",
                                                                     "createDate",
                                                                     "lastModifiedIdBy",
+                                                                    "lastModifyDate",
                                                                 ].map((key) => (
                                                                     <td
                                                                         onMouseEnter={
@@ -354,7 +356,7 @@ const Comments = () => {
                 </div>
             </div>
             {modalOpen && (
-                <CommentModalPage
+                <ClCodeModalPage
                     onClose={() => {
                         setModalOpen(false);
                     }}
@@ -368,4 +370,4 @@ const Comments = () => {
     );
 };
 
-export default Comments;
+export default ClCode;

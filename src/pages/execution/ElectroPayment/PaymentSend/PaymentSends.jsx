@@ -28,6 +28,16 @@ const PaymentSends = () => {
     const [searchKeyword, setSearchKeyword] = useState(""); //검색을 위한 키워드 저장
     const [searchCondition, setSearchCondition] = useState("0"); //검색 종류명시 int값
     const [selectedOption, setSelectedOption] = useState("option2"); //삭제된 항목 & 삭제되지 않은 항목(디폴트)
+
+    const [showTooltip, setShowTooltip] = useState(false);
+
+    const handleMouseEnter = () => {
+        setShowTooltip(true);
+    };
+
+    const handleMouseLeave = () => {
+        setShowTooltip(false);
+    };
     //const [detailData, setDetailData] = useState(""); // 옆 컴포넌트에 세부정보 보내주기
 
     const urlName = "excutionCost";
@@ -350,8 +360,15 @@ const PaymentSends = () => {
                                                                                         key
                                                                                     ) => (
                                                                                         <td
-                                                                                            className="tableWidth tdStyle"
-                                                                                            onClick={(
+                                                                                            onMouseEnter={
+                                                                                                handleMouseEnter
+                                                                                            }
+                                                                                            onMouseLeave={
+                                                                                                handleMouseLeave
+                                                                                            }
+                                                                                            className="tableWidth
+                                                                        tdStyle mouseText"
+                                                                                            onDoubleClick={(
                                                                                                 e
                                                                                             ) =>
                                                                                                 handleModalClick(

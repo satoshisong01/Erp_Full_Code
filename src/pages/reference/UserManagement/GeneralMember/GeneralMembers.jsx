@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../../../../css/ContentMain.css";
+import { Tooltip } from "react-tooltip";
+import MouseDc from "components/MouseDc";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
@@ -27,6 +29,16 @@ const GeneralMembers = () => {
     const [searchKeyword, setSearchKeyword] = useState(""); //검색을 위한 키워드 저장
     const [searchCondition, setSearchCondition] = useState("0"); //검색 종류명시 int값
     const [selectedOption, setSelectedOption] = useState("option2"); //삭제된 항목 & 삭제되지 않은 항목(디폴트)
+
+    const [showTooltip, setShowTooltip] = useState(false);
+
+    const handleMouseEnter = () => {
+        setShowTooltip(true);
+    };
+
+    const handleMouseLeave = () => {
+        setShowTooltip(false);
+    };
 
     const urlName = "generalMember";
     //키워드값 받아오기
@@ -73,15 +85,15 @@ const GeneralMembers = () => {
 
             console.log(searchKeyword, searchCondition);
             const response = await axios.post(
-                `http://192.168.0.113:8080/api/base/member/${urlName}/listAll.do`,
+                `http://192.168.0.113:8080/api/baseInfrm/member/${urlName}/listAll.do`,
 
-                //`http://localhost:8080/api/base/member/${urlName}/listAll.do`,
+                //`http://localhost:8080/api/baseInfrm/member/${urlName}/listAll.do`,
                 requestData,
                 options
             );
             console.log(response);
-            console.log(response.data.result.resultData.data, "데이터 결과");
-            setSearchedData(response.data.result.resultData.data);
+            console.log(response.data.result.resultData, "데이터 결과");
+            setSearchedData(response.data.result.resultData);
         } catch (error) {
             console.error("에러입니다", error);
             alert("서버와 연결할 수 없습니다");
@@ -105,13 +117,13 @@ const GeneralMembers = () => {
             };
 
             const response = await axios.post(
-                `http://192.168.0.113:8080/api/base/member/${urlName}/listAll.do`,
-                //`http://localhost:8080/api/base/member/${urlName}/listAll.do`,
+                `http://192.168.0.113:8080/api/baseInfrm/member/${urlName}/listAll.do`,
+                //`http://localhost:8080/api/baseInfrm/member/${urlName}/listAll.do`,
                 requestData,
                 options
             );
             console.log(response, "검색후값이 나올까");
-            setSearchedData(response.data.result.resultData.data);
+            setSearchedData(response.data.result.resultData);
         } catch (error) {
             console.error("Error searching data:", error);
         } finally {
@@ -217,142 +229,126 @@ const GeneralMembers = () => {
                         headers={headers}
                     />
                 </div>
-                <div className="UserInfo">
-                    <div className="UserTable">
-                        <div className="row">
-                            <div className="tableBody">
-                                <div className="widget-body">
-                                    {isSearching && <div>Loading...</div>}
-                                    {!isSearching && (
-                                        <>
-                                            <div className="tableBox">
-                                                <table
-                                                    ref={dataTableRef}
-                                                    className="table table-bordered"
-                                                    id="dataTable">
-                                                    <thead>
-                                                        <tr>
-                                                            <th className="tableHeaderTh">
+                <div className="row">
+                    <div className="tableBody">
+                        <div className="widget-body">
+                            {isSearching && <div>Loading...</div>}
+                            {!isSearching && (
+                                <>
+                                    <div className="tableBox">
+                                        <table
+                                            ref={dataTableRef}
+                                            className="table table-bordered"
+                                            id="dataTable">
+                                            <thead>
+                                                <tr>
+                                                    <th className="tableHeaderTh">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={check}
+                                                            onChange={(e) =>
+                                                                handleClick(e)
+                                                            }
+                                                        />
+                                                    </th>
+                                                    {[
+                                                        "ID",
+                                                        "이름",
+                                                        "비밀번호",
+                                                        "주소",
+                                                        "전화번호",
+                                                        "이메일",
+                                                        "가입일",
+                                                        //"권한",
+                                                        "작성일",
+                                                        "작성자",
+                                                        "수정일",
+                                                        "수정자",
+                                                    ].map((item, index) => (
+                                                        <th key={index}>
+                                                            {item}
+                                                        </th>
+                                                    ))}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {searchedData.map(
+                                                    (item, index) => (
+                                                        <tr key={index}>
+                                                            <td>
                                                                 <input
                                                                     type="checkbox"
-                                                                    checked={
-                                                                        check
-                                                                    }
+                                                                    checked={selectedData.some(
+                                                                        (
+                                                                            selectedItem
+                                                                        ) =>
+                                                                            selectedItem.uniqId ===
+                                                                            item.uniqId
+                                                                    )}
                                                                     onChange={(
                                                                         e
                                                                     ) =>
-                                                                        handleClick(
+                                                                        handleItemCheck(
+                                                                            item,
                                                                             e
                                                                         )
                                                                     }
                                                                 />
-                                                            </th>
+                                                            </td>
                                                             {[
-                                                                "ID",
-                                                                "이름",
-                                                                "비밀번호",
-                                                                "주소",
-                                                                "전화번호",
-                                                                "이메일",
-                                                                "가입일",
-                                                                //"권한",
-                                                                "작성일",
-                                                                "작성자",
-                                                                "수정일",
-                                                                "수정자",
-                                                            ].map(
-                                                                (
-                                                                    item,
-                                                                    index
-                                                                ) => (
-                                                                    <th
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        {item}
-                                                                    </th>
-                                                                )
-                                                            )}
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {searchedData.map(
-                                                            (item, index) => (
-                                                                <tr key={index}>
-                                                                    <td>
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            checked={selectedData.some(
-                                                                                (
-                                                                                    selectedItem
-                                                                                ) =>
-                                                                                    selectedItem.uniqId ===
-                                                                                    item.uniqId
-                                                                            )}
-                                                                            onChange={(
-                                                                                e
-                                                                            ) =>
-                                                                                handleItemCheck(
-                                                                                    item,
-                                                                                    e
-                                                                                )
-                                                                            }
-                                                                        />
-                                                                    </td>
-                                                                    {[
-                                                                        "mbId",
-                                                                        "mbNm",
-                                                                        "password",
-                                                                        "address",
-                                                                        "mbTelNm",
-                                                                        "mbEmAdr",
-                                                                        "sbsDt",
-                                                                        "createDate",
-                                                                        "createIdBy",
-                                                                        "lastModifyDate",
-                                                                        "lastModifiedUserName",
-                                                                    ].map(
-                                                                        (
-                                                                            key
-                                                                        ) => (
-                                                                            <td
-                                                                                className="tableWidth tdStyle"
-                                                                                onClick={(
-                                                                                    e
-                                                                                ) =>
-                                                                                    handleModalClick(
-                                                                                        e,
-                                                                                        item
-                                                                                    )
-                                                                                }
-                                                                                key={
-                                                                                    key
-                                                                                }>
-                                                                                {
-                                                                                    item[
-                                                                                        key
-                                                                                    ]
-                                                                                }
-                                                                            </td>
+                                                                "mbId",
+                                                                "mbNm",
+                                                                "password",
+                                                                "address",
+                                                                "mbTelNm",
+                                                                "mbEmAdr",
+                                                                "sbsDt",
+                                                                "createDate",
+                                                                "createIdBy",
+                                                                "lastModifyDate",
+                                                                "lastModifiedUserName",
+                                                            ].map((key) => (
+                                                                <td
+                                                                    onMouseEnter={
+                                                                        handleMouseEnter
+                                                                    }
+                                                                    onMouseLeave={
+                                                                        handleMouseLeave
+                                                                    }
+                                                                    className="tableWidth
+                                                                        tdStyle mouseText"
+                                                                    onDoubleClick={(
+                                                                        e
+                                                                    ) =>
+                                                                        handleModalClick(
+                                                                            e,
+                                                                            item
                                                                         )
-                                                                    )}
-                                                                </tr>
-                                                            )
-                                                        )}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
+                                                                    }
+                                                                    key={key}>
+                                                                    <MouseDc
+                                                                        showTooltip={
+                                                                            showTooltip
+                                                                        }
+                                                                    />
+                                                                    <Tooltip />
+                                                                    {item[key]}
+                                                                </td>
+                                                            ))}
+                                                        </tr>
+                                                    )
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
-                    <div>
-                        {/*<UserManagementInfo detailData={detailData} />*/}
-                    </div>
                 </div>
+                <div>{/*<UserManagementInfo detailData={detailData} />*/}</div>
             </div>
+
             {modalOpen && (
                 <GeneralMemberModalPage
                     onClose={() => {

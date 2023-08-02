@@ -17,9 +17,10 @@ export default function OrgNztModalPagePost({
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [OrgNzt, setOrgNzt] = useState(countOrgNzt);
     const [data, setData] = useState({
-        OrgNzt: "",
-        OrgNztNm: "",
-        OrgNztDc: "",
+        orgId: "",
+        orgNm: "",
+        orgCd: "",
+        orgDc: "",
     });
 
     console.log(countOrgNzt);
@@ -44,14 +45,14 @@ export default function OrgNztModalPagePost({
 
         const newData = {
             ...data,
-            OrgNzt: newOrgNzt,
+            orgId: newOrgNzt,
         };
 
         console.log(OrgNzt);
 
         try {
             const response = await axios.post(
-                `http://192.168.0.113:8080/api/system/code/${urlName}/add.do`,
+                `http://192.168.0.113:8080/api/baseInfrm/member/${urlName}/add.do`,
                 newData,
                 options
             );
@@ -105,18 +106,25 @@ export default function OrgNztModalPagePost({
                                 style={{ marginTop: "30px" }}>
                                 {urlName === "orgNzt" && (
                                     <>
-                                        분류코드 명:
+                                        조직명:
                                         <input
                                             type="text"
-                                            name="OrgNztNm"
-                                            value={data.OrgNztNm}
+                                            name="orgNm"
+                                            value={data.orgNm}
                                             onChange={inputChange}
                                         />
-                                        분류코드 설명:
+                                        조직코드:
                                         <input
                                             type="text"
-                                            name="OrgNztDc"
-                                            value={data.OrgNztDc}
+                                            name="orgCd"
+                                            value={data.orgCd}
+                                            onChange={inputChange}
+                                        />
+                                        조직설명:
+                                        <input
+                                            type="text"
+                                            name="orgDc"
+                                            value={data.orgDc}
                                             onChange={inputChange}
                                         />
                                     </>

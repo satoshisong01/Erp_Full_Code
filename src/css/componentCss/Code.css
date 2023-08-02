@@ -35,6 +35,21 @@
     height: auto;
 }
 
+.tdStyle {
+    cursor: pointer;
+    position: relative;
+}
+
+.showMouse {
+    position: fixed;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: beige;
+    color: rgb(129, 129, 86);
+    opacity: 0.4;
+    font-size: 12px;
+}
+
 #searchCondition {
     width: 150px;
 }

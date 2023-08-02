@@ -10,6 +10,8 @@ import "../../../../css/componentCss/Code.css";
 import ClCodeModalPage from "./ClCodeModalPage";
 import ClCodeUtilBtn from "./ClCodeUtilBtn";
 import ClCodeTableSearchBar from "./ClCodeTableSearchBar";
+import { Tooltip } from "react-tooltip";
+import MouseDc from "components/MouseDc";
 
 const ClCode = () => {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
@@ -24,6 +26,16 @@ const ClCode = () => {
     const [searchKeyword, setSearchKeyword] = useState(""); //검색을 위한 키워드 저장
     const [searchCondition, setSearchCondition] = useState("0"); //검색 종류명시 int값
     const [selectedOption, setSelectedOption] = useState("option2"); //삭제된 항목 & 삭제되지 않은 항목(디폴트)
+
+    const [showTooltip, setShowTooltip] = useState(false);
+
+    const handleMouseEnter = () => {
+        setShowTooltip(true);
+    };
+
+    const handleMouseLeave = () => {
+        setShowTooltip(false);
+    };
 
     const urlName = "clCode";
 
@@ -298,8 +310,15 @@ const ClCode = () => {
                                                                     "lastModifyDate",
                                                                 ].map((key) => (
                                                                     <td
-                                                                        className="tableWidth tdStyle"
-                                                                        onClick={(
+                                                                        onMouseEnter={
+                                                                            handleMouseEnter
+                                                                        }
+                                                                        onMouseLeave={
+                                                                            handleMouseLeave
+                                                                        }
+                                                                        className="tableWidth
+                                                                        tdStyle mouseText"
+                                                                        onDoubleClick={(
                                                                             e
                                                                         ) =>
                                                                             handleModalClick(
@@ -310,6 +329,12 @@ const ClCode = () => {
                                                                         key={
                                                                             key
                                                                         }>
+                                                                        <MouseDc
+                                                                            showTooltip={
+                                                                                showTooltip
+                                                                            }
+                                                                        />
+                                                                        <Tooltip />
                                                                         {
                                                                             item[
                                                                                 key

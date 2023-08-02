@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../../../../css/ContentMain.css";
+import { Tooltip } from "react-tooltip";
+import MouseDc from "components/MouseDc";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
@@ -24,6 +26,16 @@ const GroupCodes = () => {
     const [searchKeyword, setSearchKeyword] = useState(""); //검색을 위한 키워드 저장
     const [searchCondition, setSearchCondition] = useState("0"); //검색 종류명시 int값
     const [selectedOption, setSelectedOption] = useState("option2"); //삭제된 항목 & 삭제되지 않은 항목(디폴트)
+
+    const [showTooltip, setShowTooltip] = useState(false);
+
+    const handleMouseEnter = () => {
+        setShowTooltip(true);
+    };
+
+    const handleMouseLeave = () => {
+        setShowTooltip(false);
+    };
 
     const urlName = "groupCode";
 
@@ -287,8 +299,17 @@ const GroupCodes = () => {
                                                                 />
                                                             </td>
                                                             <td
-                                                                className="tableWidth tdStyle"
-                                                                onClick={(e) =>
+                                                                onMouseEnter={
+                                                                    handleMouseEnter
+                                                                }
+                                                                onMouseLeave={
+                                                                    handleMouseLeave
+                                                                }
+                                                                className="tableWidth
+                                                                        tdStyle mouseText"
+                                                                onDoubleClick={(
+                                                                    e
+                                                                ) =>
                                                                     handleModalClick(
                                                                         e,
                                                                         item
@@ -312,8 +333,15 @@ const GroupCodes = () => {
                                                                 "lastModifyDate",
                                                             ].map((key) => (
                                                                 <td
-                                                                    className="tableWidth tdStyle"
-                                                                    onClick={(
+                                                                    onMouseEnter={
+                                                                        handleMouseEnter
+                                                                    }
+                                                                    onMouseLeave={
+                                                                        handleMouseLeave
+                                                                    }
+                                                                    className="tableWidth
+                                                                        tdStyle mouseText"
+                                                                    onDoubleClick={(
                                                                         e
                                                                     ) =>
                                                                         handleModalClick(
@@ -322,6 +350,12 @@ const GroupCodes = () => {
                                                                         )
                                                                     }
                                                                     key={key}>
+                                                                    <MouseDc
+                                                                        showTooltip={
+                                                                            showTooltip
+                                                                        }
+                                                                    />
+                                                                    <Tooltip />
                                                                     {item[key]}
                                                                 </td>
                                                             ))}
