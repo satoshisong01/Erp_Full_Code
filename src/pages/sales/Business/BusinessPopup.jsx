@@ -250,6 +250,43 @@ const BusinessPopup = () => {
         setIsClicked7(!isClicked7);
     };
 
+    //파일업로드
+
+    const [dragging, setDragging] = useState(false);
+    const [files, setFiles] = useState([]);
+    const fileInputRef = useRef(null);
+
+    const handleDragEnter = (e) => {
+        e.preventDefault();
+        setDragging(true);
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        setDragging(false);
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setDragging(false);
+
+        const newFiles = [...e.dataTransfer.files];
+        setFiles(newFiles);
+    };
+
+    const handleBrowseClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const handleFileInputChange = (e) => {
+        const newFiles = [...e.target.files];
+        setFiles(newFiles);
+    };
+
     return (
         <div className="popUpHomeBody">
             <div>
@@ -907,13 +944,40 @@ const BusinessPopup = () => {
                         </header>
                         <div className="table-responsive">
                             <div
+                                onClick={handleBrowseClick}
+                                onDragEnter={handleDragEnter}
+                                onDragLeave={handleDragLeave}
+                                onDragOver={handleDragOver}
+                                onDrop={handleDrop}
+                                style={{
+                                    backgroundColor: dragging
+                                        ? "beige"
+                                        : "#ffffff",
+                                    cursor: "pointer",
+                                }}
                                 className={`hideDiv8 ${
                                     isClicked ? "" : "clicked"
                                 }`}
                                 border="1">
-                                <span className="div5Span">
-                                    이곳에 파일을 드래그하세요.
-                                </span>
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    style={{ display: "none" }}
+                                    onChange={handleFileInputChange}
+                                    multiple
+                                />
+                                {files.length > 0 ? (
+                                    <div className="div5Span">
+                                        {files.map((file, index) => (
+                                            <div key={index}>{file.name}</div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="div5Span">
+                                        파일을 드래그 앤 드롭하거나 클릭하여
+                                        파일을 선택하세요.
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
