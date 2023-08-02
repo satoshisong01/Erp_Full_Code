@@ -7,13 +7,13 @@ import DataTable from "components/DataTable";
 /** 시스템관리-코드관리-분류코드관리 */
 function CategoryCode() {
     const columns = [
-        { header: "분류코드", col: "clCode",},
-        { header: "분류코드명", col: "clCodeNm",},
-        { header: "분류코드설명", col: "clCodeDc",},
-        { header: "작성자", col: "createIdBy",},
-        { header: "작성일", col: "createDate",},
-        { header: "수정자", col: "lastModifiedIdBy",},
-        { header: "수정일", col: "lastModifyDate",}
+        { header: "분류코드", col: "clCode", cellWidth: "20%"},
+        { header: "분류코드명", col: "clCodeNm", cellWidth: "20%"},
+        { header: "분류코드설명", col: "clCodeDc", cellWidth: "50%"},
+        { header: "작성자", col: "createIdBy", cellWidth: "20%"},
+        { header: "작성일", col: "createDate", cellWidth: "20%"},
+        { header: "수정자", col: "lastModifiedIdBy", cellWidth: "20%"},
+        { header: "수정일", col: "lastModifyDate", cellWidth: "20%"}
     ];
 
     return (

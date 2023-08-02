@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
-import axios from 'axios';
+import { axiosFetch } from "api/axiosFetch";
 
 const DataTable = (props) => {
     const { isSearching, columns, suffixUrl, currentPage } = props;
@@ -16,9 +16,22 @@ const DataTable = (props) => {
     }, [selectedData]);
 
     useEffect(() => {
-        fetchAllData();
+        fetchAllData(); /* 맨 처음 전체 데이터 불러오기 */
     }, []);
 
+    useEffect(() => {
+        const updateColumnWidth = () => {
+            /* 컬럼의 너비를 동적으로 설정 */
+            const thElements = dataTableRef.current.querySelectorAll("th:not(.tableHeaderTh)");
+            const tdElements = dataTableRef.current.querySelectorAll("td");
+            const elementsLength = Math.min(thElements.length, tdElements.length, columns.length);
+            for (let i = 0; i < elementsLength; i++) {
+                thElements[i].style.width = columns[i].cellWidth;
+                tdElements[i].style.width = columns[i].cellWidth;
+            }
+        };
+        updateColumnWidth();
+    }, [columns]);
 
     const selectAllData = (e) => {
         const checked = e.target.checked;
@@ -33,12 +46,13 @@ const DataTable = (props) => {
 
     const ItemCheckboxClick = (item, e) => {
         const checked = e.target.checked;
-
         if (checked) {
             setSelectedData((prevSelectedData) => [...prevSelectedData, item]);
         } else {
             setSelectedData((prevSelectedData) =>
-                prevSelectedData.filter((data) => data[columns[0].col] !== item[columns[0].col])
+                prevSelectedData.filter(
+                    (data) => data[columns[0].col] !== item[columns[0].col]
+                )
             );
         }
     };
@@ -46,32 +60,16 @@ const DataTable = (props) => {
     /* column click */
     const onClick = (e, item) => {
         console.log("⭕ click item: ", item);
-
     };
 
     /* 서버에서 전체 데이터 가져오기 */
     const fetchAllData = async () => {
-        if (suffixUrl === "") return; 
+        if (suffixUrl === "") return;
+        const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
+        const requestData = { lockAt: "Y" };
 
-        try {
-            const options = {
-                headers: {
-                    Authorization: process.env.REACT_APP_POST
-                }
-            };
-
-            const requestData = {useAt: "Y"};
-
-            const response = await axios.post(
-                `http://192.168.0.113:8080/api${suffixUrl}/${currentPage}/listAll.do`,
-                requestData, options
-            );
-
-            setTableData(response.data.result.resultData);
-
-        } catch (error) {
-            console.error("fetchAllData() error:", error);
-        }
+        const resultData = await axiosFetch(url, requestData);
+        setTableData(resultData);
     };
 
     return (
@@ -81,10 +79,14 @@ const DataTable = (props) => {
                 {!isSearching && (
                     <>
                         <div className="tableBox">
-                            <table ref={dataTableRef} className="table table-bordered" id="dataTable">
+                            <table
+                                ref={dataTableRef}
+                                className="table table-bordered"
+                                id="dataTable"
+                            >
                                 <thead>
                                     <tr>
-                                        <th className="tableHeaderTh">
+                                        <th className="tableHeaderTh" style={{ width: "25px" }}>
                                             <input
                                                 type="checkbox"
                                                 checked={isCheck}
@@ -92,7 +94,9 @@ const DataTable = (props) => {
                                             />
                                         </th>
                                         {columns.map((column, index) => (
-                                            <th key={index}>{column.header}</th>
+                                            <th key={index}  style={{ width: column.cellWidth }}>
+                                                {column.header}
+                                            </th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -111,10 +115,8 @@ const DataTable = (props) => {
                                             {columns.map((column, colIndex) => (
                                                 <td
                                                     key={colIndex}
-                                                    onClick={(e) => {
-                                                        onClick(e, item[column.col])
-                                                    }}
-                                                 >
+                                                    onClick={(e) => {onClick(e, item[column.col]);}}
+                                                >
                                                     {item[column.col]}
                                                 </td>
                                             ))}
