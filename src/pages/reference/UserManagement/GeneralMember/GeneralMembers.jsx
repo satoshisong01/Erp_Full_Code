@@ -8,8 +8,7 @@ import "datatables.net-dt/js/dataTables.dataTables";
 import GeneralMemberModalPage from "./GeneralMemberModalPage";
 import SearchList from "components/SearchList";
 import DataTableButton from "components/button/DataTableButton";
-import { axiosFetch } from "api/axiosFetch";
-import { axiosPut } from "api/axiosPut";
+import { axiosFetch, axiosUpdate } from "api/axiosFetch";
 import ReSearchBtn from "components/DataTable/function/ReSearchBtn";
 
 /* 일반회원관리 */
@@ -102,7 +101,7 @@ const GeneralMembers = (props) => {
         const url = `/api${suffixUrl}/${currentPage}/edit.do`;
         const requestData = { lockAt: "Y" };
 
-        await axiosPut(handleLoading, url, requestData);
+        await axiosUpdate(handleLoading, url, requestData);
     };
 
     useEffect(() => {

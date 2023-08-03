@@ -26,3 +26,28 @@ export async function axiosFetch(handleLoading, url, requestData) {
         handleLoading(false);
     }
 }
+
+/* axios 데이터 통신 */
+export async function axiosUpdate(handleLoading, url, requestData) {
+    const headers = {
+        Authorization: process.env.REACT_APP_POST,
+        "Content-Type": "application/json",
+    };
+
+    try {
+        handleLoading(true);
+        const response = await axios.put(url, requestData, { headers });
+        console.log(response.data.resultData, "aaa");
+        if (Number(response.data.resultCode) === Number(CODE.RCV_SUCCESS)) {
+            return response.data.result.resultData;
+        } else {
+            return response.data;
+        }
+    } catch (error) {
+        console.error("server error: ", error);
+        throw error;
+    } finally {
+        console.log("axios update finally end");
+        handleLoading(false);
+    }
+}
