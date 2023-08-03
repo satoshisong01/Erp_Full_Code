@@ -7,7 +7,7 @@ import "../../../css/componentCss/CodeUtilBtn.css";
 import axios from "axios";
 import BusinessModalPagePost from "./BusinessModalPagePost";
 import URL from "constants/url";
-import PopupButton from "components/PopupButton";
+import PopupButton from "components/button/PopupButton";
 
 export default function BusinessUtilBtn({
     initialData,

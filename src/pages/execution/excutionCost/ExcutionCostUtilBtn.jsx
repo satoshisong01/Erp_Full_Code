@@ -8,7 +8,7 @@ import "../../../css/componentCss/CodeUtilBtn.css";
 import axios from "axios";
 import URL from "constants/url";
 import ExcutionCostModalPagePost from "./ExcutionCostModalPagePost";
-import PopupButton from "components/PopupButton";
+import PopupButton from "components/button/PopupButton";
 
 export default function ExcutionCostUtilBtn({
     initialData,

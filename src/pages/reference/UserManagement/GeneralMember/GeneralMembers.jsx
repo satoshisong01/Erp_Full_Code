@@ -5,131 +5,21 @@ import MouseDc from "components/MouseDc";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
-import "../../../../css/defaultSearchBar.css";
-import "../../../../css/componentCss/UserManage.css";
-import axios from "axios";
-import "../../../../css/componentCss/Code.css";
-//import "react-calendar/dist/Calendar.css";
 import GeneralMemberModalPage from "./GeneralMemberModalPage";
-import GeneralMemberUtilBtn from "./GeneralMemberUtilBtn";
-import GeneralMemberTableSearchBar from "./GeneralMemberTableSearchBar";
-//import UserManagementInfo from "../../../sysadmin/UserManagementInfo";
+import SearchList from "components/SearchList";
+import DataTableButton from "components/button/DataTableButton";
+import { axiosFetch } from "api/axiosFetch";
 
+/* 일반회원관리 */
 const GeneralMembers = () => {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창
-    //const [postModalOpen, setPostModalOpen] = useState(false); // 클릭 추가 모달창
+    const [check, setCheck] = useState(false); //체크 확인
+    const [modalItem, setModalItem] = useState(""); //모달창에 넘겨주는 데이터
     const [searchedData, setSearchedData] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [selectedData, setSelectedData] = useState([]); //체크된 데이터
-    const [check, setCheck] = useState(false); //체크 확인
-    //const [isCalendarVisible, setCalendarVisible] = useState(false);
-    //const [detailData, setDetailData] = useState(""); // 옆 컴포넌트에 세부정보 보내주기
-    const [modalItem, setModalItem] = useState(""); //모달창에 넘겨주는 데이터
-    const [searchKeyword, setSearchKeyword] = useState(""); //검색을 위한 키워드 저장
-    const [searchCondition, setSearchCondition] = useState("0"); //검색 종류명시 int값
-    const [selectedOption, setSelectedOption] = useState("option2"); //삭제된 항목 & 삭제되지 않은 항목(디폴트)
-
     const [showTooltip, setShowTooltip] = useState(false);
-
-    const handleMouseEnter = () => {
-        setShowTooltip(true);
-    };
-
-    const handleMouseLeave = () => {
-        setShowTooltip(false);
-    };
-
-    const urlName = "generalMember";
-    //키워드값 받아오기
-    const handleSearch = (value) => {
-        setSearchKeyword(value);
-    };
-    //검색 레벨 받아오기
-    const handleSearchLv = (value) => {
-        setSearchCondition(value);
-    };
-    //옵션 받아오기
-    const handleOption = (value) => {
-        setSelectedOption(value);
-    };
-
-    //새로고침 클릭 핸들러
-    const handleRefreshClick = async () => {
-        console.log(urlName);
-        setSearchKeyword("");
-        setSearchCondition("");
-        if (
-            dataTableRef.current &&
-            $.fn.DataTable.isDataTable(dataTableRef.current)
-        ) {
-            $(dataTableRef.current).DataTable().destroy();
-        }
-        setIsSearching(!isSearching); // 로딩 상태 활성화
-        await fetchAllData(urlName);
-    };
-
-    const headers = {
-        Authorization: process.env.REACT_APP_POST,
-    };
-
-    const fetchAllData = async () => {
-        try {
-            setIsSearching(true);
-            const options = {
-                headers: headers,
-            };
-            const requestData = {
-                useAt: "Y",
-            };
-
-            console.log(searchKeyword, searchCondition);
-            const response = await axios.post(
-                `http://192.168.0.113:8080/api/baseInfrm/member/${urlName}/listAll.do`,
-
-                //`http://localhost:8080/api/baseInfrm/member/${urlName}/listAll.do`,
-                requestData,
-                options
-            );
-            console.log(response);
-            console.log(response.data.result.resultData, "데이터 결과");
-            setSearchedData(response.data.result.resultData);
-        } catch (error) {
-            console.error("에러입니다", error);
-            alert("서버와 연결할 수 없습니다");
-        } finally {
-            setIsSearching(false); // 로딩 상태 비활성화
-        }
-    };
-
-    const handleSearchData = async () => {
-        try {
-            setIsSearching(true);
-
-            const options = {
-                headers: headers,
-            };
-
-            const requestData = {
-                useAt: "Y",
-                searchKeyword: searchKeyword,
-                searchCondition: searchCondition,
-            };
-
-            const response = await axios.post(
-                `http://192.168.0.113:8080/api/baseInfrm/member/${urlName}/listAll.do`,
-                //`http://localhost:8080/api/baseInfrm/member/${urlName}/listAll.do`,
-                requestData,
-                options
-            );
-            console.log(response, "검색후값이 나올까");
-            setSearchedData(response.data.result.resultData);
-        } catch (error) {
-            console.error("Error searching data:", error);
-        } finally {
-            setIsSearching(false);
-        }
-    };
 
     useEffect(() => {
         fetchAllData();
@@ -147,6 +37,101 @@ const GeneralMembers = () => {
             });
         }
     }, [searchedData, isSearching]);
+
+    const handleMouseEnter = () => {
+        setShowTooltip(true);
+    };
+
+    const handleMouseLeave = () => {
+        setShowTooltip(false);
+    };
+
+    const urlName = "generalMember";
+
+    const headers = {
+        Authorization: process.env.REACT_APP_POST,
+    };
+
+    const conditionList = [
+        {
+            title: "ID",
+            colName: "id", //컬럼명
+            type: "input",
+            value: "",
+            searchLevel: "1",
+        },
+        {
+            title: "다른검색어",
+            colName: "other", //컬럼명
+            type: "input",
+            value: "",
+            searchLevel: "2",
+        },
+        {
+            title: "이름",
+            colName: "name",
+            type: "select",
+            option: [{ value: "다섯글자의옵션1" }, { value: "다섯글자의옵션2" }],
+            searchLevel: "3",
+        },
+    ];
+
+    //새로고침 클릭 핸들러
+    const refreshClick = async () => {
+        if (
+            dataTableRef.current &&
+            $.fn.DataTable.isDataTable(dataTableRef.current)
+        ) {
+            $(dataTableRef.current).DataTable().destroy();
+        }
+        setIsSearching(!isSearching); // 로딩 상태 활성화
+        await fetchAllData(urlName);
+    };
+
+    const excelClick = () => {
+        /* 엑셀기능구현 */
+    }
+    const copyClick = () => {
+        /* 복사기능구현 */
+    }
+    const printClick = () => {
+        /* 프린트기능구현 */
+    }
+    const deleteClick = () => {
+        /* 삭제기능구현 */
+    }
+    const addClick = () => {
+        /* 추가기능구현 */
+    }
+
+    const fetchAllData = async () => {
+        const url = `http://192.168.0.113:8080/api/baseInfrm/member/generalMember/listAll.do`;
+        const requestData = { useAt: "Y" };
+        const resultData = await axiosFetch(url, requestData)
+
+        if(resultData) {
+            setIsSearching(false);
+            setSearchedData(resultData);
+        } else {
+            setIsSearching(true);
+        }
+    };
+
+    //검색 키워드값, 검색 레벨, 라디오옵션
+    const searchClick = async (dataToSend) => {
+        
+        const requestData = {
+            searchKeyword: dataToSend.searchKeyword,
+            searchCondition: dataToSend.searchCondition,
+            useAt: dataToSend.radioOption,
+        }
+        console.log("⭕ 검색목록: ", requestData);
+
+        const url = `/api/baseInfrm/member/generalMember/listAll.do`;
+        const resultData = await axiosFetch(url, requestData)
+
+        setSearchedData(resultData);
+    };
 
     //체크된 아이템의 uniqId 숫자만 저장
     const changeInt = selectedData.map((item) => item.uniqId);
@@ -203,8 +188,6 @@ const GeneralMembers = () => {
 
     // 모달 클릭 핸들러(수정 모달창)
     const handleModalClick = (e, item) => {
-        console.log(e);
-        console.log(item);
         setModalItem(item);
         setModalOpen(true);
     };
@@ -213,21 +196,8 @@ const GeneralMembers = () => {
         <>
             <div id="content">
                 <div className="SearchDiv">
-                    <GeneralMemberTableSearchBar
-                        onSearch={handleSearch}
-                        onSearchLv={handleSearchLv}
-                        onOption={handleOption}
-                        refresh={handleRefreshClick}
-                        searchBtn={handleSearchData}
-                    />
-                    <GeneralMemberUtilBtn
-                        initialData={searchedData}
-                        refresh={fetchAllData}
-                        changeInt={changeInt}
-                        selectedData={selectedData}
-                        urlName={urlName}
-                        headers={headers}
-                    />
+                    <SearchList onSearch={searchClick} refresh={refreshClick} conditionList={conditionList}/>
+                    <DataTableButton deleteClick={deleteClick} addClick={addClick}/>
                 </div>
                 <div className="row">
                     <div className="tableBody">

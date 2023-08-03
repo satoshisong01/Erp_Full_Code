@@ -1,23 +1,15 @@
-/*
- * 작은 단위의 스타일 그룹 */
+/* 작은 단위의 스타일 그룹 */
 
 :root {
     --color-blue: #007bff;
 }
 
 /* margin css */
-.mg-t-20 {
-    margin-top: 20px;
-}
-.mg-r-20 {
-    margin-right: 20px;
-}
-.mg-b-20 {
-    margin-bottom: 20px;
-}
-.mg-l-20 {
-    margin-left: 20px;
-}
+.mg-t-20 { margin-top: 20px; }
+.mg-r-20 { margin-right: 20px; }
+.mg-b-20 { margin-bottom: 20px; }
+.mg-l-20 { margin-left: 20px; }
+.mg-l-15 { margin-bottom: 15px; }
 
 /* select box */
 .b-select {
@@ -95,5 +87,62 @@
     .col-md-2,
     .col-md-10 {
         padding: 0px;
+    }
+}
+
+
+/* flex 설정 */
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+  
+.flex-group {
+    display: flex;
+    align-items: center;
+    width: 25%;
+}
+  
+.flex-label {
+    flex: 1;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.flex-input {
+    flex: 2;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+/* radio 버튼 */
+.line {
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.radio-group {
+    display: flex;
+    align-items: center;
+}
+
+.radio-group input[type="radio"] {
+    margin: 0px;
+    margin-right: 5px;
+}
+
+.radio-group label {
+    margin-right: 15px;
+}
+
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .flex-group {
+        width: 50%; /* 768px 이하에서 2개씩 배치 */
     }
 }

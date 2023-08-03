@@ -7,7 +7,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import "../../../css/componentCss/CodeUtilBtn.css";
 import axios from "axios";
 import SalesCostModalPagePost from "./SalesCostModalPagePost";
-import PopupButton from "components/PopupButton";
+import PopupButton from "components/button/PopupButton";
 
 export default function SalesCostUtilBtn({
     initialData,

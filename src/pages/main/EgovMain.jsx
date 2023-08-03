@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import * as EgovNet from "api/egovFetch";
 import URL from "constants/url";
-import PopupButton from "components/PopupButton";
+import PopupButton from "components/button/PopupButton";
 import CategoryCode from "pages/system/CategoryCode";
 
 function EgovMain(props) {

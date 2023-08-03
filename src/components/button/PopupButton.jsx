@@ -1,5 +1,5 @@
 import React from "react";
-import "../css/componentCss/CodeUtilBtn.css";
+import "../../css/componentCss/CodeUtilBtn.css";
 
 /* data를 새창에 넘겨주는 버튼 */
 function PopupButton({ targetUrl, data }) {

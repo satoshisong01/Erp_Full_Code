@@ -14,7 +14,7 @@ import "../../../css/componentCss/PersonnelPopup.css";
 import EstimateMgmtModalPage from "./EstimateMgmtModalPage";
 import EstimateMgmtUtilBtn from "./EstimateMgmtUtilBtn";
 import EstimateMgmtTableSearchBar from "./EstimateMgmtTableSearchBar";
-import PopupButton from "components/PopupButton";
+import PopupButton from "components/button/PopupButton";
 import URL from "constants/url";
 //import UserManagementInfo from "../../../sysadmin/UserManagementInfo";
 
