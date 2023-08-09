@@ -7,6 +7,7 @@ import EstimateMgmts from "./EstimateMgmt/EstimateMgmts";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
+import DataTableDummy from "components/DataTable/DataTableDummy";
 
 /** 영업관리-견적서관리 */
 function Quotation() {
@@ -14,31 +15,29 @@ function Quotation() {
 
     const columns = [
         {
-            header: "분류코드",
-            col: "clCode",
+            header: "프로젝트명",
+            col: "projectName",
             cellWidth: "20%",
             update: false,
             updating: true,
             write: true,
         },
         {
-            header: "분류코드명",
-            col: "clCodeNm",
+            header: "지출일",
+            col: "byeDay",
             cellWidth: "20%",
             updating: true,
             write: true,
         },
         {
-            header: "분류코드설명",
-            col: "clCodeDc",
+            header: "금액",
+            col: "won",
             cellWidth: "50%",
             updating: true,
             write: true,
         },
-        { header: "작성자", col: "createIdBy", cellWidth: "20%" },
-        { header: "작성일", col: "createDate", cellWidth: "20%" },
-        { header: "수정자", col: "lastModifiedIdBy", cellWidth: "20%" },
-        { header: "수정일", col: "lastModifyDate", cellWidth: "20%" },
+        { header: "비고", col: "beeGo", cellWidth: "20%" },
+        { header: "구분", col: "gooBoom", cellWidth: "20%" },
     ];
 
     const conditionList = [
@@ -90,16 +89,34 @@ function Quotation() {
 
     const addBtn = ["costPage"];
 
+    const dummyData = [
+        {
+            projectName: "PS 하부서편",
+            byeDay: "2월31일",
+            won: "5,000,000",
+            beeGo: "beeGo",
+            gooBoom: "계획",
+        },
+        {
+            projectName: "PS 하부서편",
+            byeDay: "2월31일",
+            won: "5,000,000",
+            beeGo: "beeGo",
+            gooBoom: "계획",
+        },
+    ];
+
     return (
         <>
             <Location tableList={tableList} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
-            <DataTable
+            <DataTableDummy
                 returnKeyWord={returnKeyWord}
                 columns={columns}
                 suffixUrl="/system/code"
                 currentPage="clCode"
                 addBtn={addBtn}
+                dummyData={dummyData}
             />
         </>
     );

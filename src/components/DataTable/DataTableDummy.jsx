@@ -16,7 +16,7 @@ import DataPutModal from "./DataPutModal";
 import DataTableButton from "components/button/DataTableButton";
 import DataPostModal from "./DataPostModal";
 
-const DataTable = (props) => {
+const DataTableDummy = (props) => {
     const {
         returnKeyWord,
         columns,
@@ -108,15 +108,17 @@ const DataTable = (props) => {
 
     /* 서버에서 전체 데이터 가져오기 */
     const fetchAllData = async () => {
-        //setTableData(dummyData);
-        if (suffixUrl === "") return;
-        const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
-        const requestData = { lockAt: "Y" };
+        setTableData(dummyData);
 
-        const resultData = await axiosFetch(url, requestData);
-        if (resultData) {
-            setTableData(resultData);
-        }
+        // if (suffixUrl === "") return;
+        // const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
+        // const requestData = { lockAt: "Y" };
+
+        // const resultData = await axiosFetch(url, requestData);
+        // if (resultData) {
+
+        //     setTableData(resultData);
+        // }
     };
 
     /* 데이터 업데이트 */
@@ -374,4 +376,4 @@ const DataTable = (props) => {
     );
 };
 
-export default DataTable;
+export default DataTableDummy;

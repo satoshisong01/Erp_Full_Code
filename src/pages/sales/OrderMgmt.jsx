@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
+import DataTableDummy from "components/DataTable/DataTableDummy";
 
 /** 영업관리-수주관리 */
 function OrderMgmt() {
@@ -102,7 +103,7 @@ function OrderMgmt() {
         <>
             <Location tableList={tableList} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
-            <DataTable
+            <DataTableDummy
                 returnKeyWord={returnKeyWord}
                 columns={columns}
                 suffixUrl="/system/code"
