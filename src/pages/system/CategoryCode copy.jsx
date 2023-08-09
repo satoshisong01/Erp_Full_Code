@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import store from "store/configureStore";
 import { tabActive } from "components/tabs/TabsActions";
-import DataTable from "components/DataTable";
+import DataTable from "components/DataTable/DataTable";
 
 /** 시스템관리-코드관리-분류코드관리 */
 function CategoryCode(props) {

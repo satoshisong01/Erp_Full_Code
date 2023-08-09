@@ -232,6 +232,7 @@ export default function ClCodeUtilBtn({
                 headers: headers,
                 data: changeInt,
             };
+            console.log(options, "옵션값");
             console.log(changeInt, "삭제시 나오는값");
             const response = await axios.delete(
                 `http://192.168.0.113:8080/api/system/code/clCode/removeAll.do`,

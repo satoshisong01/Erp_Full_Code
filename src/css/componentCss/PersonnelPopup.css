@@ -39,6 +39,8 @@
     justify-content: flex-start;
     /*align-items: center;*/
     margin-bottom: 50px;
+    box-sizing: content-box;
+    /*padding-top: 100px;*/
 }
 
 .detailCost {
@@ -572,24 +574,66 @@ table.dataTable {
 }
 
 .sorting_1 {
-    width: 20px;
+    /*display: flex;*/
+    /*text-align: center;*/
+    /*justify-content: center;*/
+    align-items: center;
+    padding: 0;
+    /*height: 100%;*/
+    width: 100%;
 }
 
 .tableHeaderTh {
-    width: 0;
+    width: 30px;
+    padding: 0;
 }
 
-.tableHeaderTh::before {
-    display: none;
-}
-
-.tableHeaderTh::after {
-    display: none;
-}
-
-table.dataTable thead > tr > th.sorting.tableHeaderTh:after,
+/*table.dataTable thead > tr > th.sorting.tableHeaderTh:after,
 table.dataTable thead > tr > th.sorting.tableHeaderTh:before {
     display: none;
+}*/
+
+table.dataTable thead > tr > th.sorting#checkBoxAll:after,
+table.dataTable thead > tr > th.sorting#checkBoxAll:before {
+    display: none;
+}
+
+table > thead > tr > #thCheckBox {
+    margin: 0;
+    height: 30px;
+}
+
+table > tbody > tr > .sorting_1 {
+    /*width: 708px;*/
+    margin: auto;
+    text-align: center;
+    padding: 0;
+    vertical-align: inherit;
+    height: 100%;
+}
+input[type="checkbox"],
+input[type="radio"] {
+    margin: 0;
+}
+
+table > tbody > .tableHeaderTh {
+    padding: 0;
+}
+
+table > thead > tr > #checkBoxAll {
+    /*width: 30px;*/
+    margin: auto;
+    /*width: 2%;*/
+    padding: 0;
+    text-align: center;
+    vertical-align: inherit;
+}
+
+table > tbody > tr > .sorting_1 > #checkBoxItem {
+    padding: 0;
+    height: 100%;
+    margin: auto;
+    box-sizing: border-box;
 }
 
 .table-responsive > div > div > div > .tableBtn {
@@ -607,3 +651,8 @@ table.dataTable thead > tr > th.sorting.tableHeaderTh:before {
 
 .dragDrop {
 }
+
+/*#checkBoxAll {
+    padding: 0;
+    text-align: center;
+}*/

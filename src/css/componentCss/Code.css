@@ -86,9 +86,9 @@
 
 .tableBox {
     background-color: #fff;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    max-height: 400px;
+    /*overflow-y: scroll;*/
+    /*overflow-x: hidden;*/
+    /*max-height: 400px;*/
     display: flex;
     flex-direction: column;
 }
@@ -127,12 +127,12 @@
 
 .tableBody {
     /*box-shadow: 3px 3px 3px gray;*/
-    border: 2px solid #f0f1f1;
-    border-radius: 5px;
+    /*border: 2px solid #f0f1f1;*/
+    /*border-radius: 5px;*/
 }
 
 .widget-body {
-    padding: 20px;
+    /*padding: 20px;*/
     background-color: #fff;
 }
 
@@ -147,4 +147,8 @@
 
 #dataTable_length {
     margin-bottom: 10px;
+}
+
+#dataTable {
+    margin-top: 60px;
 }

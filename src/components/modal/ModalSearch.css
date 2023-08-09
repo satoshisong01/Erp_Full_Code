@@ -7,6 +7,15 @@
     align-items: center;
 }
 
+.demo-modal {
+    margin: 0;
+    z-index: 9999;
+}
+
+.modal-content {
+    border: 0;
+}
+
 .product-modal-bg {
     position: absolute;
     width: 100%;
@@ -43,6 +52,10 @@
     align-items: center;
     user-select: none;
     border-bottom: 1px solid #e5e5e5;
+}
+
+.modal-header {
+    border: none;
 }
 
 .product-modal-logo {
@@ -278,7 +291,7 @@
 
 .submitProduct {
     width: 100%;
-    margin-top: 10px;
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -308,3 +321,8 @@
 /*.col-12 {
     height: 10% !important;
 }*/
+
+.modal-btn-close {
+    margin: 0;
+    margin-left: 10px;
+}

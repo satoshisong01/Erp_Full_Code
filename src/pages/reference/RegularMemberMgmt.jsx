@@ -1,7 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import store from "store/configureStore";
-import { tabActive } from "components/tabs/TabsActions";
+import DataTable from "components/DataTable/DataTable";
+import Location from "components/Location/Location";
+import DataTableButton from "components/button/DataTableButton";
 import GeneralMembers from "./UserManagement/GeneralMember/GeneralMembers";
 
 /** 기준정보관리-원가기준관리-일반회원관리 */
@@ -22,30 +22,16 @@ function RegularMemberMgmt() {
 
     return (
         <>
-            <div className="location">
-                <ul>
-                    <li>
-                        <Link to="/" className="home">
-                            Home
-                        </Link>
-                    </li>
-                    <li>
-                        <Link
-                            to=""
-                            onClick={(e) =>
-                                store.dispatch(tabActive("품목그룹관리"))
-                            }>
-                            기준정보관리
-                        </Link>
-                    </li>
-                    <li>일반회원관리</li>
-                </ul>
-            </div>
-            <GeneralMembers
+            <Location />
+            {/* 검색 조건 */}
+            {/* 데이터테이블 버튼 */}
+            {/*<DataTableButton />
+            <DataTable
                 columns={columns}
                 suffixUrl="/baseInfrm/member"
                 currentPage="generalMember"
-            />
+            />*/}
+            <GeneralMembers />
         </>
     );
 }

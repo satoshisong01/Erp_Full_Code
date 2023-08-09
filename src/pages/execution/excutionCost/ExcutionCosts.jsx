@@ -232,142 +232,114 @@ const ExcutionCosts = () => {
                         headers={headers}
                     />
                 </div>
-                <div className="UserInfo">
-                    <div className="UserTable">
-                        <div className="row">
-                            <div className="tableBody">
-                                <div className="widget-body">
-                                    {isSearching && <div>Loading...</div>}
-                                    {!isSearching && (
-                                        <>
-                                            <div className="tableBox">
-                                                <table
-                                                    ref={dataTableRef}
-                                                    className="table table-bordered"
-                                                    id="dataTable">
-                                                    <thead>
-                                                        <tr>
-                                                            <th className="tableHeaderTh">
+
+                <div className="row">
+                    <div className="tableBody">
+                        <div className="widget-body">
+                            {isSearching && <div>Loading...</div>}
+                            {!isSearching && (
+                                <>
+                                    <div className="tableBox">
+                                        <table
+                                            ref={dataTableRef}
+                                            className="table table-bordered"
+                                            id="dataTable">
+                                            <thead>
+                                                <tr>
+                                                    <th className="tableHeaderTh">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={check}
+                                                            onChange={(e) =>
+                                                                handleClick(e)
+                                                            }
+                                                        />
+                                                    </th>
+                                                    {[
+                                                        "연도",
+                                                        "프로젝트명",
+                                                        "매출부서",
+                                                        "담당자",
+                                                        "시작일",
+                                                        "종료일",
+                                                        "비고",
+                                                        "수주상태",
+                                                    ].map((item, index) => (
+                                                        <th key={index}>
+                                                            {item}
+                                                        </th>
+                                                    ))}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {searchedData.map(
+                                                    (item, index) => (
+                                                        <tr key={index}>
+                                                            <td>
                                                                 <input
                                                                     type="checkbox"
-                                                                    checked={
-                                                                        check
-                                                                    }
+                                                                    checked={selectedData.some(
+                                                                        (
+                                                                            selectedItem
+                                                                        ) =>
+                                                                            selectedItem.uniqId ===
+                                                                            item.uniqId
+                                                                    )}
                                                                     onChange={(
                                                                         e
                                                                     ) =>
-                                                                        handleClick(
+                                                                        handleItemCheck(
+                                                                            item,
                                                                             e
                                                                         )
                                                                     }
                                                                 />
-                                                            </th>
+                                                            </td>
                                                             {[
-                                                                "연도",
-                                                                "프로젝트명",
-                                                                "매출부서",
-                                                                "담당자",
-                                                                "시작일",
-                                                                "종료일",
-                                                                "비고",
-                                                                "수주상태",
-                                                            ].map(
-                                                                (
-                                                                    item,
-                                                                    index
-                                                                ) => (
-                                                                    <th
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        {item}
-                                                                    </th>
-                                                                )
-                                                            )}
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {searchedData.map(
-                                                            (item, index) => (
-                                                                <tr key={index}>
-                                                                    <td>
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            checked={selectedData.some(
-                                                                                (
-                                                                                    selectedItem
-                                                                                ) =>
-                                                                                    selectedItem.uniqId ===
-                                                                                    item.uniqId
-                                                                            )}
-                                                                            onChange={(
-                                                                                e
-                                                                            ) =>
-                                                                                handleItemCheck(
-                                                                                    item,
-                                                                                    e
-                                                                                )
-                                                                            }
-                                                                        />
-                                                                    </td>
-                                                                    {[
-                                                                        "orgId",
-                                                                        "orgNm",
-                                                                        "orgCd",
-                                                                        "orgDc",
-                                                                        "createDate",
-                                                                        "createIdBy",
-                                                                        "lastModifyDate",
-                                                                        "lastModifiedUserName",
-                                                                    ].map(
-                                                                        (
-                                                                            key
-                                                                        ) => (
-                                                                            <td
-                                                                                onMouseEnter={
-                                                                                    handleMouseEnter
-                                                                                }
-                                                                                onMouseLeave={
-                                                                                    handleMouseLeave
-                                                                                }
-                                                                                className="tableWidth
+                                                                "orgId",
+                                                                "orgNm",
+                                                                "orgCd",
+                                                                "orgDc",
+                                                                "createDate",
+                                                                "createIdBy",
+                                                                "lastModifyDate",
+                                                                "lastModifiedUserName",
+                                                            ].map((key) => (
+                                                                <td
+                                                                    onMouseEnter={
+                                                                        handleMouseEnter
+                                                                    }
+                                                                    onMouseLeave={
+                                                                        handleMouseLeave
+                                                                    }
+                                                                    className="tableWidth
                                                                         tdStyle mouseText"
-                                                                                onDoubleClick={(
-                                                                                    e
-                                                                                ) =>
-                                                                                    handleModalClick(
-                                                                                        e,
-                                                                                        item
-                                                                                    )
-                                                                                }
-                                                                                key={
-                                                                                    key
-                                                                                }>
-                                                                                {
-                                                                                    item[
-                                                                                        key
-                                                                                    ]
-                                                                                }
-                                                                            </td>
+                                                                    onDoubleClick={(
+                                                                        e
+                                                                    ) =>
+                                                                        handleModalClick(
+                                                                            e,
+                                                                            item
                                                                         )
-                                                                    )}
-                                                                </tr>
-                                                            )
-                                                        )}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
+                                                                    }
+                                                                    key={key}>
+                                                                    {item[key]}
+                                                                </td>
+                                                            ))}
+                                                        </tr>
+                                                    )
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </>
+                            )}
                         </div>
-                    </div>
-                    <div>
-                        {/*<UserManagementInfo detailData={detailData} />*/}
                     </div>
                 </div>
             </div>
+            <div>{/*<UserManagementInfo detailData={detailData} />*/}</div>
+
             {modalOpen && (
                 <ExcutionCostModalPage
                     onClose={() => {

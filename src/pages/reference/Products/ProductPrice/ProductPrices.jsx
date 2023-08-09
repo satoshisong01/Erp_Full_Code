@@ -231,186 +231,178 @@ const ProductPrices = () => {
                         searchBtn={handleSearchData}
                     />
                 </div>
-                <div className="UserInfo">
-                    <div className="UserTable">
-                        <WidgetGrid>
-                            <div className="row">
-                                <article className="col-sm-12">
-                                    <JarvisWidget
-                                        id="wid-id-0"
-                                        editbutton={true}
-                                        color="blueDark">
-                                        <header>
-                                            <span className="widget-icon">
-                                                <i className="fa fa-table" />
-                                            </span>
-                                        </header>
-                                        <ProductPriceUtilBtn
-                                            initialData={searchedData}
-                                            refresh={fetchAllData}
-                                            changeInt={changeInt}
-                                            selectedData={selectedData}
-                                            urlName={urlName}
-                                            headers={headers}
-                                        />
-                                        <div className="tableBody">
-                                            <div className="widget-body">
-                                                {isSearching && (
-                                                    <div>Loading...</div>
-                                                )}
-                                                {!isSearching && (
-                                                    <>
-                                                        <div className="tableBox">
-                                                            <table
-                                                                ref={
-                                                                    dataTableRef
-                                                                }
-                                                                className="table table-bordered"
-                                                                id="dataTable"
-                                                                style={{
-                                                                    backgroundColor:
-                                                                        "#fff",
-                                                                }}>
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th className="tableHeaderTh">
+
+                <WidgetGrid>
+                    <div className="row">
+                        <article className="col-sm-12">
+                            <JarvisWidget
+                                id="wid-id-0"
+                                editbutton={true}
+                                color="blueDark">
+                                <header>
+                                    <span className="widget-icon">
+                                        <i className="fa fa-table" />
+                                    </span>
+                                </header>
+                                <ProductPriceUtilBtn
+                                    initialData={searchedData}
+                                    refresh={fetchAllData}
+                                    changeInt={changeInt}
+                                    selectedData={selectedData}
+                                    urlName={urlName}
+                                    headers={headers}
+                                />
+                                <div className="tableBody">
+                                    <div className="widget-body">
+                                        {isSearching && <div>Loading...</div>}
+                                        {!isSearching && (
+                                            <>
+                                                <div className="tableBox">
+                                                    <table
+                                                        ref={dataTableRef}
+                                                        className="table table-bordered"
+                                                        id="dataTable"
+                                                        style={{
+                                                            backgroundColor:
+                                                                "#fff",
+                                                        }}>
+                                                        <thead>
+                                                            <tr>
+                                                                <th className="tableHeaderTh">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={
+                                                                            check
+                                                                        }
+                                                                        onChange={(
+                                                                            e
+                                                                        ) =>
+                                                                            handleClick(
+                                                                                e
+                                                                            )
+                                                                        }
+                                                                    />
+                                                                    <p
+                                                                        style={{
+                                                                            margin: 0,
+                                                                        }}>
+                                                                        All
+                                                                    </p>
+                                                                </th>
+                                                                {[
+                                                                    "ID",
+                                                                    "조직이름",
+                                                                    "조직코드",
+                                                                    "설명",
+                                                                    "작성일",
+                                                                    "작성자",
+                                                                    "수정일",
+                                                                    "수정자",
+                                                                ].map(
+                                                                    (
+                                                                        item,
+                                                                        index
+                                                                    ) => (
+                                                                        <th
+                                                                            key={
+                                                                                index
+                                                                            }>
+                                                                            {
+                                                                                item
+                                                                            }
+                                                                        </th>
+                                                                    )
+                                                                )}
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {searchedData.map(
+                                                                (
+                                                                    item,
+                                                                    index
+                                                                ) => (
+                                                                    <tr
+                                                                        key={
+                                                                            index
+                                                                        }>
+                                                                        <td>
                                                                             <input
                                                                                 type="checkbox"
-                                                                                checked={
-                                                                                    check
-                                                                                }
+                                                                                checked={selectedData.some(
+                                                                                    (
+                                                                                        selectedItem
+                                                                                    ) =>
+                                                                                        selectedItem.uniqId ===
+                                                                                        item.uniqId
+                                                                                )}
                                                                                 onChange={(
                                                                                     e
                                                                                 ) =>
-                                                                                    handleClick(
+                                                                                    handleItemCheck(
+                                                                                        item,
                                                                                         e
                                                                                     )
                                                                                 }
                                                                             />
-                                                                            <p
-                                                                                style={{
-                                                                                    margin: 0,
-                                                                                }}>
-                                                                                All
-                                                                            </p>
-                                                                        </th>
+                                                                        </td>
                                                                         {[
-                                                                            "ID",
-                                                                            "조직이름",
-                                                                            "조직코드",
-                                                                            "설명",
-                                                                            "작성일",
-                                                                            "작성자",
-                                                                            "수정일",
-                                                                            "수정자",
+                                                                            "orgId",
+                                                                            "orgNm",
+                                                                            "orgCd",
+                                                                            "orgDc",
+                                                                            "createDate",
+                                                                            "createIdBy",
+                                                                            "lastModifyDate",
+                                                                            "lastModifiedUserName",
                                                                         ].map(
                                                                             (
-                                                                                item,
-                                                                                index
+                                                                                key
                                                                             ) => (
-                                                                                <th
+                                                                                <td
+                                                                                    onMouseEnter={
+                                                                                        handleMouseEnter
+                                                                                    }
+                                                                                    onMouseLeave={
+                                                                                        handleMouseLeave
+                                                                                    }
+                                                                                    className="tableWidth
+                                                                        tdStyle mouseText"
+                                                                                    onDoubleClick={(
+                                                                                        e
+                                                                                    ) =>
+                                                                                        handleModalClick(
+                                                                                            e,
+                                                                                            item
+                                                                                        )
+                                                                                    }
                                                                                     key={
-                                                                                        index
+                                                                                        key
                                                                                     }>
                                                                                     {
-                                                                                        item
+                                                                                        item[
+                                                                                            key
+                                                                                        ]
                                                                                     }
-                                                                                </th>
+                                                                                </td>
                                                                             )
                                                                         )}
                                                                     </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    {searchedData.map(
-                                                                        (
-                                                                            item,
-                                                                            index
-                                                                        ) => (
-                                                                            <tr
-                                                                                key={
-                                                                                    index
-                                                                                }>
-                                                                                <td>
-                                                                                    <input
-                                                                                        type="checkbox"
-                                                                                        checked={selectedData.some(
-                                                                                            (
-                                                                                                selectedItem
-                                                                                            ) =>
-                                                                                                selectedItem.uniqId ===
-                                                                                                item.uniqId
-                                                                                        )}
-                                                                                        onChange={(
-                                                                                            e
-                                                                                        ) =>
-                                                                                            handleItemCheck(
-                                                                                                item,
-                                                                                                e
-                                                                                            )
-                                                                                        }
-                                                                                    />
-                                                                                </td>
-                                                                                {[
-                                                                                    "orgId",
-                                                                                    "orgNm",
-                                                                                    "orgCd",
-                                                                                    "orgDc",
-                                                                                    "createDate",
-                                                                                    "createIdBy",
-                                                                                    "lastModifyDate",
-                                                                                    "lastModifiedUserName",
-                                                                                ].map(
-                                                                                    (
-                                                                                        key
-                                                                                    ) => (
-                                                                                        <td
-                                                                                            onMouseEnter={
-                                                                                                handleMouseEnter
-                                                                                            }
-                                                                                            onMouseLeave={
-                                                                                                handleMouseLeave
-                                                                                            }
-                                                                                            className="tableWidth
-                                                                        tdStyle mouseText"
-                                                                                            onDoubleClick={(
-                                                                                                e
-                                                                                            ) =>
-                                                                                                handleModalClick(
-                                                                                                    e,
-                                                                                                    item
-                                                                                                )
-                                                                                            }
-                                                                                            key={
-                                                                                                key
-                                                                                            }>
-                                                                                            {
-                                                                                                item[
-                                                                                                    key
-                                                                                                ]
-                                                                                            }
-                                                                                        </td>
-                                                                                    )
-                                                                                )}
-                                                                            </tr>
-                                                                        )
-                                                                    )}
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </JarvisWidget>
-                                </article>
-                            </div>
-                        </WidgetGrid>
+                                                                )
+                                                            )}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            </JarvisWidget>
+                        </article>
                     </div>
-                    <div>
-                        {/*<UserManagementInfo detailData={detailData} />*/}
-                    </div>
-                </div>
+                </WidgetGrid>
             </div>
+            <div>{/*<UserManagementInfo detailData={detailData} />*/}</div>
+
             {modalOpen && (
                 <ProductPriceModalPage
                     onClose={() => {

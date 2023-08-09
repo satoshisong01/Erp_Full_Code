@@ -10,12 +10,12 @@ import "../../../../css/componentCss/UserManage.css";
 import axios from "axios";
 import "../../../../css/componentCss/Code.css";
 //import "react-calendar/dist/Calendar.css";
-import ProductInfoModalPage from "./ProductInfoModalPage";
-import ProductInfoUtilBtn from "./ProductInfoUtilBtn";
-import ProductInfoTableSearchBar from "./ProductInfoTableSearchBar";
+import GeneralMemberModalPage from "./GeneralMemberModalPage";
+import GeneralMemberUtilBtn from "./GeneralMemberUtilBtn";
+import GeneralMemberTableSearchBar from "./GeneralMemberTableSearchBar";
 //import UserManagementInfo from "../../../sysadmin/UserManagementInfo";
 
-const ProductInfos = () => {
+const GeneralMembers = () => {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창
     //const [postModalOpen, setPostModalOpen] = useState(false); // 클릭 추가 모달창
@@ -24,6 +24,7 @@ const ProductInfos = () => {
     const [selectedData, setSelectedData] = useState([]); //체크된 데이터
     const [check, setCheck] = useState(false); //체크 확인
     //const [isCalendarVisible, setCalendarVisible] = useState(false);
+    //const [detailData, setDetailData] = useState(""); // 옆 컴포넌트에 세부정보 보내주기
     const [modalItem, setModalItem] = useState(""); //모달창에 넘겨주는 데이터
     const [searchKeyword, setSearchKeyword] = useState(""); //검색을 위한 키워드 저장
     const [searchCondition, setSearchCondition] = useState("0"); //검색 종류명시 int값
@@ -38,10 +39,8 @@ const ProductInfos = () => {
     const handleMouseLeave = () => {
         setShowTooltip(false);
     };
-    //const [detailData, setDetailData] = useState(""); // 옆 컴포넌트에 세부정보 보내주기
 
-    const urlName = "productInfo";
-
+    const urlName = "generalMember";
     //키워드값 받아오기
     const handleSearch = (value) => {
         setSearchKeyword(value);
@@ -86,15 +85,15 @@ const ProductInfos = () => {
 
             console.log(searchKeyword, searchCondition);
             const response = await axios.post(
-                `http://192.168.0.113:8080/api/bsinMngmn/product/${urlName}/listAll.do`,
+                `http://192.168.0.113:8080/api/baseInfrm/member/${urlName}/listAll.do`,
 
-                //`http://localhost:8080/api/base/member/${urlName}/listAll.do`,
+                //`http://localhost:8080/api/baseInfrm/member/${urlName}/listAll.do`,
                 requestData,
                 options
             );
             console.log(response);
-            console.log(response.data.result.resultData.data, "데이터 결과");
-            setSearchedData(response.data.result.resultData.data);
+            console.log(response.data.result.resultData, "데이터 결과");
+            setSearchedData(response.data.result.resultData);
         } catch (error) {
             console.error("에러입니다", error);
             alert("서버와 연결할 수 없습니다");
@@ -118,13 +117,13 @@ const ProductInfos = () => {
             };
 
             const response = await axios.post(
-                `http://192.168.0.113:8080/api/bsinMngmn/product/${urlName}/listAll.do`,
-                //`http://localhost:8080/api/base/member/${urlName}/listAll.do`,
+                `http://192.168.0.113:8080/api/baseInfrm/member/${urlName}/listAll.do`,
+                //`http://localhost:8080/api/baseInfrm/member/${urlName}/listAll.do`,
                 requestData,
                 options
             );
             console.log(response, "검색후값이 나올까");
-            setSearchedData(response.data.result.resultData.data);
+            setSearchedData(response.data.result.resultData);
         } catch (error) {
             console.error("Error searching data:", error);
         } finally {
@@ -214,15 +213,14 @@ const ProductInfos = () => {
         <>
             <div id="content">
                 <div className="SearchDiv">
-                    <ProductInfoTableSearchBar
+                    <GeneralMemberTableSearchBar
                         onSearch={handleSearch}
                         onSearchLv={handleSearchLv}
                         onOption={handleOption}
                         refresh={handleRefreshClick}
-                        urlName={urlName}
                         searchBtn={handleSearchData}
                     />
-                    <ProductInfoUtilBtn
+                    <GeneralMemberUtilBtn
                         initialData={searchedData}
                         refresh={fetchAllData}
                         changeInt={changeInt}
@@ -231,7 +229,6 @@ const ProductInfos = () => {
                         headers={headers}
                     />
                 </div>
-
                 <div className="row">
                     <div className="tableBody">
                         <div className="widget-body">
@@ -255,15 +252,18 @@ const ProductInfos = () => {
                                                         />
                                                     </th>
                                                     {[
-                                                        "품목그룹명",
-                                                        "품목명",
-                                                        "품목번호",
-                                                        "품목코드",
-                                                        "내·외자구분",
-                                                        "상태",
-                                                        "단위",
-                                                        "품목규격",
-                                                        "모델/사양",
+                                                        "ID",
+                                                        "이름",
+                                                        "비밀번호",
+                                                        "주소",
+                                                        "전화번호",
+                                                        "이메일",
+                                                        "가입일",
+                                                        //"권한",
+                                                        "작성일",
+                                                        "작성자",
+                                                        "수정일",
+                                                        "수정자",
                                                     ].map((item, index) => (
                                                         <th key={index}>
                                                             {item}
@@ -296,11 +296,13 @@ const ProductInfos = () => {
                                                                 />
                                                             </td>
                                                             {[
-                                                                "orgId",
-                                                                "orgNm",
-                                                                "orgCd",
-                                                                "orgDc",
-                                                                "createDate",
+                                                                "mbId",
+                                                                "mbNm",
+                                                                "password",
+                                                                "address",
+                                                                "mbTelNm",
+                                                                "mbEmAdr",
+                                                                "sbsDt",
                                                                 "createDate",
                                                                 "createIdBy",
                                                                 "lastModifyDate",
@@ -324,6 +326,12 @@ const ProductInfos = () => {
                                                                         )
                                                                     }
                                                                     key={key}>
+                                                                    <MouseDc
+                                                                        showTooltip={
+                                                                            showTooltip
+                                                                        }
+                                                                    />
+                                                                    <Tooltip />
                                                                     {item[key]}
                                                                 </td>
                                                             ))}
@@ -338,11 +346,11 @@ const ProductInfos = () => {
                         </div>
                     </div>
                 </div>
+                <div>{/*<UserManagementInfo detailData={detailData} />*/}</div>
             </div>
-            <div>{/*<UserManagementInfo detailData={detailData} />*/}</div>
 
             {modalOpen && (
-                <ProductInfoModalPage
+                <GeneralMemberModalPage
                     onClose={() => {
                         setModalOpen(false);
                     }}
@@ -356,4 +364,4 @@ const ProductInfos = () => {
     );
 };
 
-export default ProductInfos;
+export default GeneralMembers;

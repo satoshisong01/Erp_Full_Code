@@ -8,108 +8,25 @@ import "datatables.net-dt/js/dataTables.dataTables";
 import GeneralMemberModalPage from "./GeneralMemberModalPage";
 import SearchList from "components/SearchList";
 import DataTableButton from "components/button/DataTableButton";
-import { axiosFetch, axiosUpdate } from "api/axiosFetch";
-import ReSearchBtn from "components/DataTable/function/ReSearchBtn";
+import { axiosFetch } from "api/axiosFetch";
 
 /* 일반회원관리 */
-const GeneralMembers = (props) => {
-    const { columns, suffixUrl, currentPage } = props;
-
+const GeneralMembers = () => {
     const dataTableRef = useRef(null); //dataTable 테이블 명시
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창
-    const [isCheck, setIsCheck] = useState(false); //체크 확인
+    const [check, setCheck] = useState(false); //체크 확인
     const [modalItem, setModalItem] = useState(""); //모달창에 넘겨주는 데이터
-    const [tableData, setTableData] = useState([]); //데이터 저장
+    const [searchedData, setSearchedData] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [selectedData, setSelectedData] = useState([]); //체크된 데이터
-    const [showTooltip, setShowTooltip] = useState(false); //테이블 마우스 커서 설명
-
-    const handleMouseEnter = () => {
-        setShowTooltip(true);
-    };
-
-    const handleMouseLeave = () => {
-        setShowTooltip(false);
-    };
-
-    const handleLoading = (value) => {
-        setIsSearching(value);
-    };
+    const [showTooltip, setShowTooltip] = useState(false);
 
     useEffect(() => {
         fetchAllData();
     }, []);
 
     useEffect(() => {
-        const updateColumnWidth = () => {
-            /* 컬럼의 너비를 동적으로 설정 */
-            const thElements = dataTableRef.current.querySelectorAll(
-                "th:not(.tableHeaderTh)"
-            );
-            const elementsLength = Math.min(thElements.length, columns.length);
-            for (let i = 0; i < elementsLength; i++) {
-                thElements[i].style.width = columns[i].cellWidth;
-            }
-        };
-        updateColumnWidth();
-    }, [columns]);
-
-    const selectAllData = (e) => {
-        const checked = e.target.checked;
-        setIsCheck(checked);
-
-        if (checked) {
-            setSelectedData([...tableData]);
-        } else {
-            setSelectedData([]);
-        }
-    };
-
-    const ItemCheckboxClick = (item, e) => {
-        const checked = e.target.checked;
-        if (checked) {
-            setSelectedData((prevSelectedData) => [...prevSelectedData, item]);
-        } else {
-            setSelectedData((prevSelectedData) =>
-                prevSelectedData.filter(
-                    (data) => data[columns[0].col] !== item[columns[0].col]
-                )
-            );
-        }
-    };
-
-    /* column click */
-    const onClick = (e, item) => {
-        console.log("⭕ click item: ", item);
-    };
-
-    /* 서버에서 전체 데이터 가져오기 */
-    const fetchAllData = async () => {
-        if (suffixUrl === "") return;
-        const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
-        const requestData = { lockAt: "Y" };
-
-        const resultData = await axiosFetch(handleLoading, url, requestData);
-        if (resultData) {
-            setTableData(resultData);
-        }
-    };
-
-    /* 데이터 업데이트 */
-    const updateData = async () => {
-        if (suffixUrl === "") return;
-        const url = `/api${suffixUrl}/${currentPage}/edit.do`;
-        const requestData = { lockAt: "Y" };
-
-        await axiosUpdate(handleLoading, url, requestData);
-    };
-
-    useEffect(() => {
-        fetchAllData();
-    }, []);
-
-    useEffect(() => {
-        if (!isSearching && tableData.length > 0) {
+        if (!isSearching && searchedData.length > 0) {
             if ($.fn.DataTable.isDataTable(dataTableRef.current)) {
                 $(dataTableRef.current).DataTable().destroy();
             }
@@ -119,28 +36,43 @@ const GeneralMembers = (props) => {
                 ordering: true,
             });
         }
-    }, [tableData, isSearching]);
+    }, [searchedData, isSearching]);
 
-    // 모달 클릭 핸들러(수정 모달창)
-    const handleModalClick = (e, item) => {
-        setModalItem(item);
-        setModalOpen(true);
+    const handleMouseEnter = () => {
+        setShowTooltip(true);
+    };
+
+    const handleMouseLeave = () => {
+        setShowTooltip(false);
+    };
+
+    const urlName = "generalMember";
+
+    const headers = {
+        Authorization: process.env.REACT_APP_POST,
     };
 
     const conditionList = [
         {
-            title: "ID",
-            colName: "id", //컬럼명
+            title: "분류코드",
+            colName: "clCode", //컬럼명
             type: "input",
             value: "",
             searchLevel: "1",
         },
         {
-            title: "다른검색어",
-            colName: "other", //컬럼명
+            title: "분류코드명",
+            colName: "clCodeNm", //컬럼명
             type: "input",
             value: "",
             searchLevel: "2",
+        },
+        {
+            title: "분류코드설명",
+            colName: "clCodeDc", //컬럼명
+            type: "input",
+            value: "",
+            searchLevel: "3",
         },
         {
             title: "이름",
@@ -153,6 +85,18 @@ const GeneralMembers = (props) => {
             searchLevel: "3",
         },
     ];
+
+    //새로고침 클릭 핸들러
+    const refreshClick = async () => {
+        if (
+            dataTableRef.current &&
+            $.fn.DataTable.isDataTable(dataTableRef.current)
+        ) {
+            $(dataTableRef.current).DataTable().destroy();
+        }
+        setIsSearching(!isSearching); // 로딩 상태 활성화
+        await fetchAllData(urlName);
+    };
 
     const excelClick = () => {
         /* 엑셀기능구현 */
@@ -170,6 +114,19 @@ const GeneralMembers = (props) => {
         /* 추가기능구현 */
     };
 
+    const fetchAllData = async () => {
+        const url = `http://192.168.0.113:8080/api/baseInfrm/member/generalMember/listAll.do`;
+        const requestData = { useAt: "Y" };
+        const resultData = await axiosFetch(url, requestData);
+
+        if (resultData) {
+            setIsSearching(false);
+            setSearchedData(resultData);
+        } else {
+            setIsSearching(true);
+        }
+    };
+
     //검색 키워드값, 검색 레벨, 라디오옵션
     const searchClick = async (dataToSend) => {
         const requestData = {
@@ -182,7 +139,9 @@ const GeneralMembers = (props) => {
         const url = `/api/baseInfrm/member/generalMember/listAll.do`;
         const resultData = await axiosFetch(url, requestData);
 
-        setTableData(resultData);
+        if (resultData) {
+            setSearchedData(resultData);
+        }
     };
 
     //체크된 아이템의 uniqId 숫자만 저장
@@ -190,12 +149,67 @@ const GeneralMembers = (props) => {
 
     //const keys = data.length > 0 ? Object.keys(data[0]) : [];
 
+    // 전체 선택/해제 핸들러
+    const handleClick = (e) => {
+        const isChecked = e.target.checked;
+
+        if (isChecked) {
+            setCheck(true);
+            setSelectedData(searchedData); // 모든 데이터를 선택된 데이터로 설정
+        } else {
+            setCheck(false);
+            setSelectedData([]); // 선택된 데이터 초기화
+        }
+    };
+
+    // 개별 아이템 체크 핸들러
+    const handleItemCheck = (item, e) => {
+        const isChecked = e.target.checked;
+
+        setSelectedData((prevSelectedData) => {
+            if (isChecked) {
+                // 이미 선택된 데이터인지 확인 후 중복 추가 방지
+                if (
+                    !prevSelectedData.find(
+                        (selectedItem) => selectedItem.uniqId === item.uniqId
+                    )
+                ) {
+                    const sortedData = [...prevSelectedData, item].sort(
+                        (a, b) => {
+                            // uniqId 속성을 기준으로 데이터 정렬
+                            if (a.uniqId < b.uniqId) {
+                                return -1;
+                            }
+                            if (a.uniqId > b.uniqId) {
+                                return 1;
+                            }
+                            return 0;
+                        }
+                    );
+                    return sortedData;
+                }
+            } else {
+                return prevSelectedData.filter(
+                    (selectedItem) => selectedItem.uniqId !== item.uniqId
+                );
+            }
+            return prevSelectedData; // 체크가 풀리지 않았거나 중복 데이터인 경우 이전 상태 그대로 반환
+        });
+    };
+
+    // 모달 클릭 핸들러(수정 모달창)
+    const handleModalClick = (e, item) => {
+        setModalItem(item);
+        setModalOpen(true);
+    };
+
     return (
         <>
             <div id="content">
                 <div className="SearchDiv">
                     <SearchList
                         onSearch={searchClick}
+                        refresh={refreshClick}
                         conditionList={conditionList}
                     />
                     <DataTableButton
@@ -209,10 +223,6 @@ const GeneralMembers = (props) => {
                             {isSearching && <div>Loading...</div>}
                             {!isSearching && (
                                 <>
-                                    <ReSearchBtn
-                                        dataTableRef={dataTableRef}
-                                        fetchAllData={fetchAllData}
-                                    />
                                     <div className="tableBox">
                                         <table
                                             ref={dataTableRef}
@@ -223,27 +233,34 @@ const GeneralMembers = (props) => {
                                                     <th className="tableHeaderTh">
                                                         <input
                                                             type="checkbox"
-                                                            checked={isCheck}
+                                                            checked={check}
                                                             onChange={(e) =>
-                                                                selectAllData(e)
+                                                                handleClick(e)
                                                             }
                                                         />
                                                     </th>
-                                                    {columns.map(
-                                                        (column, index) => (
-                                                            <th
-                                                                key={index}
-                                                                style={{
-                                                                    width: column.cellWidth,
-                                                                }}>
-                                                                {column.header}
-                                                            </th>
-                                                        )
-                                                    )}
+                                                    {[
+                                                        "ID",
+                                                        "이름",
+                                                        "비밀번호",
+                                                        "주소",
+                                                        "전화번호",
+                                                        "이메일",
+                                                        "가입일",
+                                                        //"권한",
+                                                        "작성일",
+                                                        "작성자",
+                                                        "수정일",
+                                                        "수정자",
+                                                    ].map((item, index) => (
+                                                        <th key={index}>
+                                                            {item}
+                                                        </th>
+                                                    ))}
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {tableData.map(
+                                                {searchedData.map(
                                                     (item, index) => (
                                                         <tr key={index}>
                                                             <td>
@@ -253,67 +270,59 @@ const GeneralMembers = (props) => {
                                                                         (
                                                                             selectedItem
                                                                         ) =>
-                                                                            selectedItem[
-                                                                                columns[0]
-                                                                                    .col
-                                                                            ] ===
-                                                                            item[
-                                                                                columns[0]
-                                                                                    .col
-                                                                            ]
+                                                                            selectedItem.uniqId ===
+                                                                            item.uniqId
                                                                     )}
                                                                     onChange={(
                                                                         e
                                                                     ) =>
-                                                                        ItemCheckboxClick(
+                                                                        handleItemCheck(
                                                                             item,
                                                                             e
                                                                         )
                                                                     }
                                                                 />
                                                             </td>
-                                                            {columns.map(
-                                                                (
-                                                                    column,
-                                                                    colIndex
-                                                                ) => (
-                                                                    <td
-                                                                        onMouseEnter={
-                                                                            handleMouseEnter
+                                                            {[
+                                                                "mbId",
+                                                                "mbNm",
+                                                                "password",
+                                                                "address",
+                                                                "mbTelNm",
+                                                                "mbEmAdr",
+                                                                "sbsDt",
+                                                                "createDate",
+                                                                "createIdBy",
+                                                                "lastModifyDate",
+                                                                "lastModifiedUserName",
+                                                            ].map((key) => (
+                                                                <td
+                                                                    onMouseEnter={
+                                                                        handleMouseEnter
+                                                                    }
+                                                                    onMouseLeave={
+                                                                        handleMouseLeave
+                                                                    }
+                                                                    className="tableWidth
+                                                                        tdStyle mouseText"
+                                                                    onDoubleClick={(
+                                                                        e
+                                                                    ) =>
+                                                                        handleModalClick(
+                                                                            e,
+                                                                            item
+                                                                        )
+                                                                    }
+                                                                    key={key}>
+                                                                    <MouseDc
+                                                                        showTooltip={
+                                                                            showTooltip
                                                                         }
-                                                                        onMouseLeave={
-                                                                            handleMouseLeave
-                                                                        }
-                                                                        className="tdStyle"
-                                                                        key={
-                                                                            colIndex
-                                                                        }
-                                                                        onDoubleClick={(
-                                                                            e
-                                                                        ) => {
-                                                                            handleModalClick(
-                                                                                e,
-                                                                                item[
-                                                                                    column
-                                                                                        .col
-                                                                                ]
-                                                                            );
-                                                                        }}>
-                                                                        <MouseDc
-                                                                            showTooltip={
-                                                                                showTooltip
-                                                                            }
-                                                                        />
-                                                                        <Tooltip />
-                                                                        {
-                                                                            item[
-                                                                                column
-                                                                                    .col
-                                                                            ]
-                                                                        }
-                                                                    </td>
-                                                                )
-                                                            )}
+                                                                    />
+                                                                    <Tooltip />
+                                                                    {item[key]}
+                                                                </td>
+                                                            ))}
                                                         </tr>
                                                     )
                                                 )}
@@ -328,15 +337,17 @@ const GeneralMembers = (props) => {
                 <div>{/*<UserManagementInfo detailData={detailData} />*/}</div>
             </div>
 
-            {/*{modalOpen && (
+            {modalOpen && (
                 <GeneralMemberModalPage
                     onClose={() => {
                         setModalOpen(false);
                     }}
                     refresh={fetchAllData}
                     clickData={modalItem}
+                    urlName={urlName}
+                    headers={headers}
                 />
-            )}*/}
+            )}
         </>
     );
 };

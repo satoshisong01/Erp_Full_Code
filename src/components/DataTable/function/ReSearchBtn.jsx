@@ -1,5 +1,7 @@
 import React from "react";
 import $ from "jquery";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRotateRight } from "@fortawesome/free-solid-svg-icons";
 //import "datatables.net-dt/css/jquery.dataTables.css";
 //import "datatables.net-dt/js/dataTables.dataTables";
 
@@ -22,7 +24,13 @@ const ReSearchBtn = ({
         await fetchAllData();
     };
 
-    return <button onClick={handleRefreshClick}>클릭</button>;
+    return (
+        <button
+            className="btn btn-primary refreshIcon"
+            onClick={handleRefreshClick}>
+            <FontAwesomeIcon icon={faArrowRotateRight} className="refreshI" />
+        </button>
+    );
 };
 
 export default ReSearchBtn;

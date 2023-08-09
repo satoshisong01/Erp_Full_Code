@@ -1,36 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass, faArrowRotateRight, } from "@fortawesome/free-solid-svg-icons";
+import {
+    faMagnifyingGlass,
+    faArrowRotateRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 /* 데이터 테이블 검색 */
-export default function SearchList({ conditionList, onSearch, refresh }) {
+export default function SearchList({ conditionList, onSearch }) {
     const [fieldList, setFieldList] = useState([]);
     const [searchData, setSearchData] = useState({});
     const [radioOption, setRadioOption] = useState("Y");
 
     useEffect(() => {
-        setFieldList(conditionList)
-    }, [conditionList])
+        setFieldList(conditionList);
+    }, [conditionList]);
 
     /* radio click */
     const radioClick = (value) => {
-        setRadioOption(value)
+        setRadioOption(value);
     };
 
     /* 초기화구현 */
     const resetClick = () => {
-        setSearchData({})
-    }
+        setSearchData({});
+    };
 
     /* 검색 이벤트 */
     const searchClick = (e) => {
         const keyArr = Object.keys(searchData);
-        let searchLevel = '0';
-        
-        if(keyArr.length === 1) {
+        console.log(keyArr, "이게머얀");
+        let searchLevel = "0";
+
+        if (keyArr.length === 1) {
             const fieldName = keyArr[0];
             const field = fieldList.find((item) => item.colName === fieldName);
-            if(field) {
+            if (field) {
                 searchLevel = field.searchLevel;
             }
         }
@@ -39,16 +43,17 @@ export default function SearchList({ conditionList, onSearch, refresh }) {
             searchKeyword: searchData,
             searchCondition: searchLevel,
             radioOption: radioOption,
-        }
+        };
+        console.log(dataToSend, "555555");
         onSearch(dataToSend);
-    }
-    
+    };
+
     /* 검색 데이터 */
     const onChange = (e) => {
         const { name, value } = e.target;
         setSearchData((prevData) => {
             const newData = { ...prevData, [name]: value };
-        
+
             // 빈 값을 가진 객체 제거
             Object.keys(newData).forEach((key) => {
                 if (newData[key] === "") {
@@ -58,7 +63,7 @@ export default function SearchList({ conditionList, onSearch, refresh }) {
 
             return newData;
         });
-    }
+    };
 
     /* 검색 화면구현 */
     const renderField = (param) => {
@@ -79,8 +84,7 @@ export default function SearchList({ conditionList, onSearch, refresh }) {
                     value={searchData[param.colName] || ""}
                     onChange={onChange}
                     className="form-control flex-item"
-                    key={searchData[param.colName]}
-                >
+                    key={searchData[param.colName]}>
                     <option value=""> 선택없음 </option>
                     {param.option.map((op) => (
                         <option key={op.value} value={op.value}>
@@ -101,35 +105,31 @@ export default function SearchList({ conditionList, onSearch, refresh }) {
                         type="radio"
                         value="Y"
                         checked={radioOption === "Y"}
-                        onChange={() => {radioClick("Y")}}
+                        onChange={() => {
+                            radioClick("Y");
+                        }}
                     />
                     <label>미삭제 항목</label>
                     <input
                         type="radio"
                         value="N"
                         checked={radioOption === "N"}
-                        onChange={() => {radioClick("N")}}
+                        onChange={() => {
+                            radioClick("N");
+                        }}
                     />
                     <label>삭제 항목</label>
                 </div>
 
                 <div>
                     <button
-                        className="btn btn-primary refreshIcon"
-                        onClick={refresh}
-                    >
-                        <FontAwesomeIcon icon={faArrowRotateRight} />
-                    </button>
-                    <button
                         className="btn btn-primary clearIcon"
-                        onClick={resetClick}
-                    >
+                        onClick={resetClick}>
                         초기화
                     </button>
                     <button
-                         className="btn btn-primary searchIcon"
-                         onClick={searchClick}
-                    >
+                        className="btn btn-primary searchIcon"
+                        onClick={searchClick}>
                         <FontAwesomeIcon icon={faMagnifyingGlass} />
                     </button>
                 </div>
@@ -143,13 +143,10 @@ export default function SearchList({ conditionList, onSearch, refresh }) {
                         <div className="flex-label">
                             <label>{param.title}</label>
                         </div>
-                        <div className="flex-input">
-                            {renderField(param)}
-                        </div>
+                        <div className="flex-input">{renderField(param)}</div>
                     </div>
                 ))}
             </div>
-
         </>
     );
 }
