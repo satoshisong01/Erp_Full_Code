@@ -85,6 +85,33 @@ function OrderMgmt() {
 
     const addBtn = ["planPage", "calPage"];
 
+    const dummyData = [
+        {
+            name: "PS 하부서편",
+            code: "P001",
+            startDate: "2022/10/24",
+            currency: "원화",
+            vendor: "SDS",
+            contactPerson: "",
+            endDate: "2022/12/30",
+            orderAmount: "78,600,000",
+            Invoice: "",
+            status: "작성중",
+        },
+        {
+            name: "드림클래스 2.0 후속과제 개발",
+            code: "P002",
+            startDate: "2023/01/05",
+            currency: "원화",
+            vendor: "미라콤",
+            contactPerson: "손영훈 부장",
+            endDate: "2023/6/12",
+            orderAmount: "194,881,000",
+            Invoice: "",
+            status: "수주진행중",
+        },
+    ];
+
     return (
         <>
             <Location tableList={tableList} />
@@ -95,6 +122,7 @@ function OrderMgmt() {
                 suffixUrl="/system/code"
                 currentPage="clCode"
                 addBtn={addBtn}
+                dummyData={dummyData}
             />
         </>
     );
