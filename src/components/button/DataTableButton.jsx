@@ -88,7 +88,7 @@ export default function DataTableButton({
                         targetUrl: URL.ApprovalContainer,
                         data: {
                             btnName: "수주계획",
-                            title: "사전원가계획",
+                            title: "사전 원가 계획",
                         },
                     };
                 } else if (btn === "calPage") {
@@ -96,7 +96,7 @@ export default function DataTableButton({
                         targetUrl: URL.CostStatement,
                         data: {
                             btnName: "사전원가서",
-                            title: "사전원가계산서",
+                            title: "사전 원가 계산서",
                         },
                     };
                 } else {

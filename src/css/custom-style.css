@@ -90,7 +90,6 @@
     }
 }
 
-
 /* flex 설정 */
 .flex-container {
     display: flex;
@@ -118,6 +117,11 @@
     justify-content: space-between;
 }
 
+.flex-column {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: flex-start; */
+}
 
 /* radio 버튼 */
 .line {
@@ -137,6 +141,118 @@
 
 .radio-group label {
     margin-right: 15px;
+}
+
+/* Basic Data Table */
+.table-content td {
+    text-align: center;
+    padding: 4px 0 4px 0;
+    border-left: 1px solid #cccccccc;
+}
+.table-content tbody tr:not(:first-child) {
+    border-top: 1px solid #cccccccc;
+}
+.table-content tr {
+    border-right: 1px solid #cccccccc;
+}
+.table-content tbody tr:last-child {
+    border-bottom: 1px solid #cccccccc;
+}
+
+.table-content {
+    .table-title {
+        font-weight: bold;
+        font-size: large;
+        margin-bottom: 10px;
+    }
+    .table-sub {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .table-header th {
+        text-align: center;
+        padding: 5px 0 5px 0;
+        background-color: #4f5055;
+        background-color: slategrey;
+        color: #eeeeee;
+        border-left: 1px solid rgb(89, 102, 116);
+        border-bottom: 1px solid rgb(89, 102, 116);
+        font-weight: 300;
+    }
+    .table-row {
+        display: flex;
+    
+        .flex-col-2 {
+            flex: 2;
+        }
+        .flex-col-1 {
+            flex: 1;
+        }
+    }
+}
+
+/* 사전원가계산서 */
+.popup-container {
+    background-color: var(--background-white);
+    width: 100%;
+    margin: 0 auto;
+    font-weight: 400;
+    font-size: 15px;
+    color: rgb(74, 84, 94);
+
+    .wrap {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .empty {
+        margin: 15px 0 15px 0;
+    }
+    .point {
+        font-weight: bold;
+    }
+    .b-gray {
+        background-color: rgba(112, 128, 144, 0.171);
+    }
+    .b-light {
+        /* background-color: aquamarine; */
+    }
+    .line-t-2 {
+        border-top: 1px solid rgba(112, 128, 144, 0.5);
+    }
+}
+
+/* 임시 프로젝트 등록 테이블 */
+.table-Container {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.table-styled {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+}
+
+.table-styled th, .table-styled td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.table-styled th {
+    background-color: #f2f2f2;
+}
+
+.table-styled input[type="text"] {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.table-styled tr:hover {
+    background-color: #f5f5f5;
 }
 
 

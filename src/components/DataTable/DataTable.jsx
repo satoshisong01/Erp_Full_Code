@@ -17,7 +17,7 @@ import DataTableButton from "components/button/DataTableButton";
 import DataPostModal from "./DataPostModal";
 
 const DataTable = (props) => {
-    const { returnKeyWord, columns, suffixUrl, currentPage, addBtn } = props;
+    const { returnKeyWord, columns, suffixUrl, currentPage, addBtn, dummyData } = props;
 
     const [modalItem, setModalItem] = useState(""); //모달창에 넘겨주는 데이터
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창 true, false
@@ -101,14 +101,17 @@ const DataTable = (props) => {
 
     /* 서버에서 전체 데이터 가져오기 */
     const fetchAllData = async () => {
-        if (suffixUrl === "") return;
-        const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
-        const requestData = { lockAt: "Y" };
+        setTableData(dummyData);
 
-        const resultData = await axiosFetch(url, requestData);
-        if (resultData) {
-            setTableData(resultData);
-        }
+        // if (suffixUrl === "") return;
+        // const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
+        // const requestData = { lockAt: "Y" };
+
+        // const resultData = await axiosFetch(url, requestData);
+        // if (resultData) {
+            
+        //     setTableData(resultData);
+        // }
     };
 
     /* 데이터 업데이트 */
