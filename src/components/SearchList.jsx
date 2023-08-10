@@ -1,15 +1,87 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faMagnifyingGlass,
     faArrowRotateRight,
 } from "@fortawesome/free-solid-svg-icons";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 /* 데이터 테이블 검색 */
 export default function SearchList({ conditionList, onSearch }) {
     const [fieldList, setFieldList] = useState([]);
     const [searchData, setSearchData] = useState({});
     const [radioOption, setRadioOption] = useState("Y");
+
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate2, setSelectedDate2] = useState(new Date());
+    const [formattedDate, setFormattedDate] = useState("");
+    const [formattedDate2, setFormattedDate2] = useState("");
+    const [isCalendarVisible, setCalendarVisible] = useState(false);
+    const [isCalendarVisible2, setCalendarVisible2] = useState(false);
+
+    const inputRef = useRef(null);
+    const inputRef2 = useRef(null);
+
+    //--------------------------------------------
+
+    const handleInputClick = () => {
+        setCalendarVisible(true);
+    };
+
+    const handleInputClick2 = () => {
+        setCalendarVisible2(true);
+    };
+
+    const handleDateClick = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        const formatted = `${year}${month}${day}`;
+
+        setSelectedDate(date);
+        setFormattedDate(formatted);
+        setCalendarVisible(false);
+    };
+
+    const handleDateClick2 = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        const formatted = `${year}${month}${day}`;
+
+        setSelectedDate2(date);
+        setFormattedDate2(formatted);
+        setCalendarVisible2(false);
+    };
+
+    const handleOutsideClick = (event) => {
+        if (inputRef.current && !inputRef.current.contains(event.target)) {
+            setCalendarVisible(false);
+        }
+    };
+
+    const handleOutsideClick2 = (event) => {
+        if (inputRef2.current && !inputRef2.current.contains(event.target)) {
+            setCalendarVisible2(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener("click", handleOutsideClick);
+        return () => {
+            document.removeEventListener("click", handleOutsideClick);
+        };
+    }, []);
+
+    useEffect(() => {
+        document.addEventListener("click", handleOutsideClick2);
+        return () => {
+            document.removeEventListener("click", handleOutsideClick2);
+        };
+    }, []);
+
+    //---------------------------------------------
 
     useEffect(() => {
         setFieldList(conditionList);
@@ -92,6 +164,42 @@ export default function SearchList({ conditionList, onSearch }) {
                         </option>
                     ))}
                 </select>
+            );
+        } else if (param.type === "datepicker") {
+            return (
+                <div className="box3-0">
+                    <div className="box3-1 boxDate">
+                        <input
+                            type="text"
+                            id="searchKeyword"
+                            value={formattedDate}
+                            onClick={handleInputClick}
+                            readOnly
+                            ref={inputRef}
+                        />
+                        {isCalendarVisible && (
+                            <div className="boxCalendar">
+                                <Calendar onClickDay={handleDateClick} />
+                            </div>
+                        )}
+                    </div>
+                    <div className="box3-1">~</div>
+                    <div className="box3-1 boxDate">
+                        <input
+                            type="text"
+                            id="searchKeyword"
+                            value={formattedDate2}
+                            onClick={handleInputClick2}
+                            readOnly
+                            ref={inputRef2}
+                        />
+                        {isCalendarVisible2 && (
+                            <div className="boxCalendar">
+                                <Calendar onClickDay={handleDateClick2} />
+                            </div>
+                        )}
+                    </div>
+                </div>
             );
         }
         return null;

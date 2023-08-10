@@ -17,14 +17,7 @@ import DataTableButton from "components/button/DataTableButton";
 import DataPostModal from "./DataPostModal";
 
 const DataTable = (props) => {
-    const {
-        returnKeyWord,
-        columns,
-        suffixUrl,
-        currentPage,
-        addBtn,
-        dummyData,
-    } = props;
+    const { returnKeyWord, columns, suffixUrl, currentPage, addBtn } = props;
 
     const [modalItem, setModalItem] = useState(""); //모달창에 넘겨주는 데이터
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창 true, false

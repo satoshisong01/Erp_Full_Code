@@ -75,6 +75,7 @@
 }
 
 .delIcon {
+    height: 32px;
     background-color: #fd3d6b;
     border: none;
     transition: all 0.2s;

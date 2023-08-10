@@ -26,7 +26,7 @@ function CategoryCode() {
         {
             header: "분류코드설명",
             col: "clCodeDc",
-            cellWidth: "50%",
+            cellWidth: "20%",
             updating: true,
             write: true,
         },
@@ -67,6 +67,12 @@ function CategoryCode() {
                 { value: "다섯글자의옵션2" },
             ],
             searchLevel: "3",
+        },
+        {
+            title: "날짜선택",
+            colName: "selectedDate",
+            type: "datepicker",
+            searchLevel: "0",
         },
     ];
 

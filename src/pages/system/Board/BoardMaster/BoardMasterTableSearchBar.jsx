@@ -200,6 +200,7 @@ export default function BoardMasterTableSearchBar({
                                     <option>작성일</option>
                                 </select>
                             </div>
+
                             <div className="box3-0">
                                 <div className="box3-1 boxDate">
                                     <input

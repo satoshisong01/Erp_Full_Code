@@ -27,7 +27,7 @@ function OrderMgmt() {
         {
             header: "수주일",
             col: "startDate",
-            cellWidth: "50%",
+            cellWidth: "20%",
             updating: true,
             write: true,
         },
