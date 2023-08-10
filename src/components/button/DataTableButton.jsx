@@ -64,8 +64,6 @@ export default function DataTableButton({
         buttons.reduce((acc, button) => ({ ...acc, [button.id]: false }), {})
     );
 
-    console.log(addBtn, "에드버튼의값");
-
     return (
         <div className="tableBtn">
             <ReSearchBtn

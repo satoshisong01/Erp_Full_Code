@@ -20,13 +20,11 @@
 }
 
 .buttonBody {
-    height: 130px;
 }
 
 .tableBtn {
     position: absolute;
     width: 100%;
-    margin-top: 120px;
     display: flex;
     justify-content: right;
     align-items: flex-end;

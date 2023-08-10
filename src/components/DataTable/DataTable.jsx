@@ -234,6 +234,26 @@ const DataTable = (props) => {
         fetchAllData(); /* 맨 처음 전체 데이터 불러오기 */
     }, []);
 
+    function getNestedData(obj, path) {
+        const properties = path.split(".");
+        let value = obj;
+
+        for (const property of properties) {
+            if (value && value.hasOwnProperty(property)) {
+                value = value[property];
+            } else if (
+                value.productGroup &&
+                value.productGroup.hasOwnProperty(property)
+            ) {
+                value = value.productGroup[property];
+            } else {
+                return null;
+            }
+        }
+
+        return value;
+    }
+
     return (
         <>
             <div className="buttonBody">
@@ -332,7 +352,11 @@ const DataTable = (props) => {
                                                         }
                                                     />
                                                     <Tooltip />
-                                                    {item[column.col]}
+                                                    {/*{item[column.col]}*/}
+                                                    {getNestedData(
+                                                        item,
+                                                        column.col
+                                                    ) || "데이터 없음"}
                                                 </td>
                                             ))}
                                         </tr>

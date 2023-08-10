@@ -5,13 +5,27 @@
 }
 
 /* margin css */
-.mg-t-20 { margin-top: 20px; }
-.mg-r-20 { margin-right: 20px; }
-.mg-b-20 { margin-bottom: 20px; }
-.mg-l-20 { margin-left: 20px; }
-.mg-l-15 { margin-left: 15px; }
-.mg-b-15 { margin-bottom: 15px; }
-.mg-b-10 { margin-bottom: 10px; }
+.mg-t-20 {
+    margin-top: 20px;
+}
+.mg-r-20 {
+    margin-right: 20px;
+}
+.mg-b-20 {
+    margin-bottom: 20px;
+}
+.mg-l-20 {
+    margin-left: 20px;
+}
+.mg-l-15 {
+    margin-left: 15px;
+}
+.mg-b-15 {
+    margin-bottom: 15px;
+}
+.mg-b-10 {
+    margin-bottom: 10px;
+}
 
 /* select box */
 .b-select {
@@ -96,14 +110,15 @@
 .flex-container {
     display: flex;
     flex-wrap: wrap;
+    margin-bottom: 50px;
 }
-  
+
 .flex-group {
     display: flex;
     align-items: center;
     width: 25%;
 }
-  
+
 .flex-label {
     flex: 1;
     text-align: right;
@@ -184,7 +199,7 @@
     }
     .table-row {
         display: flex;
-    
+
         .flex-col-2 {
             flex: 2;
         }
@@ -238,7 +253,8 @@
     border: 1px solid #ddd;
 }
 
-.table-styled th, .table-styled td {
+.table-styled th,
+.table-styled td {
     padding: 6px;
     text-align: left;
     border: 1px solid #ddd;
@@ -346,7 +362,6 @@
 .b-orange span {
     color: rgb(119, 45, 23);
 }
-
 
 /* 반응형 스타일 */
 @media (max-width: 768px) {

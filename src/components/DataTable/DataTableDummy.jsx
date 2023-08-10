@@ -38,30 +38,44 @@ const DataTableDummy = (props) => {
 
     const [showTooltip, setShowTooltip] = useState(false); //테이블 마우스 커서 설명
 
+    console.log(newRowData, "값넘어오는지 확인");
+
     useEffect(() => {
         fetchAllData(); /* 맨 처음 전체 데이터 불러오기 */
+        //if (newRowData) {
+        //    setTableData((prevTableData) => [...prevTableData, newRowData]);
+        //}
+
+        console.log(
+            "⭕ columns: ",
+            columns,
+            " dummyData: ",
+            dummyData,
+            " newRowData: ",
+            newRowData
+        );
+        console.log("이거뭔데", Object.keys(dummyData[0]));
+        console.log(
+            "⭕ columns, dummyData length: ",
+            columns.length,
+            Object.keys(dummyData).length
+        );
     }, []);
 
-    useEffect(() => {
-        console.log("⭕ tableData: ", tableData);
-    }, [tableData]);
+    //useEffect(() => {
+    //    console.log("⭕ tableData: ", tableData);
+    //}, [tableData]);
 
-    useEffect(() => {
-        setNewrow(newRowData);
-    }, [newRowData]);
+    console.log(tableData, "테이블의 값은??");
 
-    const setNewrow = (data) => {
-        if (data) {
-            setTableData((prevTableData) => [...prevTableData, data]);
-        }
-    }
+    //const setNewrow = (data) => {
+    //    if (data) {
+    //        setTableData((prevTableData) => [...prevTableData, data]);
+    //    }
+    //};
     const removeInt = columns[0].col;
 
     const changeInt = selectedData.map((item) => item[removeInt]);
-
-    useEffect(() => {
-        fetchAllData(); /* 맨 처음 전체 데이터 불러오기 */
-    }, []);
 
     useEffect(() => {
         const updateColumnWidth = () => {
@@ -109,7 +123,7 @@ const DataTableDummy = (props) => {
     /* 서버에서 전체 데이터 가져오기 */
     const fetchAllData = async () => {
         setTableData(dummyData);
-
+        destroy();
         // if (suffixUrl === "") return;
         // const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
         // const requestData = { lockAt: "Y" };
@@ -197,23 +211,30 @@ const DataTableDummy = (props) => {
         //}
     };
 
-    useEffect(() => {
-        if (returnKeyWord) {
-            searchData(returnKeyWord);
-        }
-    }, [returnKeyWord]);
+    //useEffect(() => {
+    //    if (returnKeyWord) {
+    //        searchData(returnKeyWord);
+    //    }
+    //}, [returnKeyWord]);
 
-    useEffect(() => {
-        if (!isSearching && tableData.length > 0) {
-            if ($.fn.DataTable.isDataTable(dataTableRef.current)) {
-                $(dataTableRef.current).DataTable().destroy();
-            }
-            $(dataTableRef.current).DataTable({
-                paging: true,
-                ordering: true,
-            });
-        }
-    }, [tableData, isSearching]);
+    //useEffect(() => {
+    //if (tableData.length > 0)
+    //if ($.fn.DataTable.isDataTable(dataTableRef.current)) {
+    //}
+    //    $(dataTableRef.current).DataTable().destroy();
+    //    $(dataTableRef.current).DataTable({
+    //        paging: true,
+    //        ordering: true,
+    //    });
+    //}, []);
+
+    const destroy = () => {
+        $(dataTableRef.current).DataTable().destroy();
+        $(dataTableRef.current).DataTable({
+            paging: true,
+            ordering: true,
+        });
+    };
 
     const handleModalClick = (e, item) => {
         setModalItem(item);
@@ -271,6 +292,7 @@ const DataTableDummy = (props) => {
                             {isReSearchVisible && (*/}
                         {/*)}*/}
                         {/*</button>*/}
+
                         <div className="tableBox">
                             <table
                                 ref={dataTableRef}
