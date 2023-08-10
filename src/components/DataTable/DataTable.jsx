@@ -303,9 +303,16 @@ const DataTable = (props) => {
                                                 onChange={selectAllData}
                                             />
                                         </th>
-                                        {columns.map((column, index) => (
-                                            <th key={index}>{column.header}</th>
-                                        ))}
+                                        {columns.map((column, index) => {
+                                            if (column.notView) {
+                                                return null; // notView 값이 false인 컬럼의 제목은 출력하지 않음
+                                            }
+                                            return (
+                                                <th key={index}>
+                                                    {column.header}
+                                                </th>
+                                            );
+                                        })}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -330,35 +337,42 @@ const DataTable = (props) => {
                                                     }
                                                 />
                                             </td>
-                                            {columns.map((column, colIndex) => (
-                                                <td
-                                                    onMouseEnter={() =>
-                                                        setShowTooltip(true)
-                                                    }
-                                                    onMouseLeave={() =>
-                                                        setShowTooltip(false)
-                                                    }
-                                                    className="tdStyle"
-                                                    key={colIndex}
-                                                    onDoubleClick={(e) => {
-                                                        handleModalClick(
-                                                            e,
-                                                            item
-                                                        );
-                                                    }}>
-                                                    <MouseDc
-                                                        showTooltip={
-                                                            showTooltip
+                                            {columns.map((column, colIndex) => {
+                                                if (column.notView) {
+                                                    return null; // notView 값이 false인 컬럼은 출력하지 않음
+                                                }
+
+                                                return (
+                                                    <td
+                                                        onMouseEnter={() =>
+                                                            setShowTooltip(true)
                                                         }
-                                                    />
-                                                    <Tooltip />
-                                                    {/*{item[column.col]}*/}
-                                                    {getNestedData(
-                                                        item,
-                                                        column.col
-                                                    ) || "데이터 없음"}
-                                                </td>
-                                            ))}
+                                                        onMouseLeave={() =>
+                                                            setShowTooltip(
+                                                                false
+                                                            )
+                                                        }
+                                                        className="tdStyle"
+                                                        key={colIndex}
+                                                        onDoubleClick={(e) => {
+                                                            handleModalClick(
+                                                                e,
+                                                                item
+                                                            );
+                                                        }}>
+                                                        <MouseDc
+                                                            showTooltip={
+                                                                showTooltip
+                                                            }
+                                                        />
+                                                        <Tooltip />
+                                                        {getNestedData(
+                                                            item,
+                                                            column.col
+                                                        ) || "No data yet."}
+                                                    </td>
+                                                );
+                                            })}
                                         </tr>
                                     ))}
                                 </tbody>

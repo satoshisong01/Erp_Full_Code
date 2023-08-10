@@ -9,10 +9,13 @@ function ItemGroupMgmt() {
 
     const columns = [
         {
+            header: "품목그룹ID",
             col: "pgId",
+            cellWidth: "30%",
             update: false,
             updating: true,
             write: true,
+            notView: true,
         },
         {
             header: "품목그룹명",
