@@ -9,7 +9,9 @@
 .mg-r-20 { margin-right: 20px; }
 .mg-b-20 { margin-bottom: 20px; }
 .mg-l-20 { margin-left: 20px; }
-.mg-l-15 { margin-bottom: 15px; }
+.mg-l-15 { margin-left: 15px; }
+.mg-b-15 { margin-bottom: 15px; }
+.mg-b-10 { margin-bottom: 10px; }
 
 /* select box */
 .b-select {
@@ -115,6 +117,7 @@
 .flex-between {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .flex-column {
@@ -221,11 +224,12 @@
     }
 }
 
-/* 임시 프로젝트 등록 테이블 */
+/* 수주등록 formDataTable */
 .table-Container {
     width: 100%;
     overflow-x: auto;
     margin-bottom: 20px;
+    font-size: 14px;
 }
 
 .table-styled {
@@ -235,7 +239,7 @@
 }
 
 .table-styled th, .table-styled td {
-    padding: 10px;
+    padding: 6px;
     text-align: left;
     border: 1px solid #ddd;
 }
@@ -246,13 +250,101 @@
 
 .table-styled input[type="text"] {
     width: 100%;
-    padding: 5px;
+    padding: 2px;
     border: 1px solid #ccc;
     border-radius: 3px;
 }
 
-.table-styled tr:hover {
-    background-color: #f5f5f5;
+.table-styled select {
+    width: 100%;
+    padding: 2px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.table-styled input:focus,
+.table-styled select:focus {
+    outline: none;
+    border: 1px solid #3498db;
+}
+
+.table-title {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.btn-outline {
+    display: inline-block;
+    padding: 0.5rem 2rem;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    background: none;
+    color: #007bff;
+    cursor: pointer;
+    font-size: 14px;
+    outline: none;
+    transition: background 0.3s, color 0.3s;
+}
+
+.btn-outline:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+/* status icon */
+.state-area {
+    width: 105px;
+    height: 27px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 13px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.dot {
+    font-size: x-large;
+    font-weight: bold;
+    margin-bottom: 3px;
+    margin-right: 2px;
+}
+
+.b-gray {
+    background-color: lightgray;
+}
+.b-gray .dot {
+    color: gray;
+}
+.b-gray span {
+    color: rgb(85, 85, 85);
+}
+.b-blue {
+    background-color: lightblue;
+}
+.b-blue .dot {
+    color: rgb(71, 171, 204);
+}
+.b-blue span {
+    color: rgb(0, 90, 121);
+}
+.b-green {
+    background-color: rgba(183, 243, 149, 0.664);
+}
+.b-green .dot {
+    color: rgba(75, 168, 21, 0.664);
+}
+.b-green span {
+    color: rgb(84, 114, 84);
+}
+.b-orange {
+    background-color: rgba(255, 127, 80, 0.432);
+}
+.b-orange .dot {
+    color: rgb(241, 111, 64);
+}
+.b-orange span {
+    color: rgb(119, 45, 23);
 }
 
 

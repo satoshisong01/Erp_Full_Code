@@ -3,10 +3,12 @@ import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
 import DataTableDummy from "components/DataTable/DataTableDummy";
+import FormDataTable from "components/DataTable/FormDataTable";
 
 /** 영업관리-수주관리 */
 function OrderMgmt() {
     const [returnKeyWord, setReturnKeyWord] = useState("");
+    const [newRowData, setNewRowData] = useState({});
 
     const columns = [
         {
@@ -27,7 +29,7 @@ function OrderMgmt() {
         {
             header: "수주일",
             col: "startDate",
-            cellWidth: "20%",
+            cellWidth: "50%",
             updating: true,
             write: true,
         },
@@ -99,6 +101,43 @@ function OrderMgmt() {
         },
     ];
 
+    const formTableColumns = [
+        [
+            {
+                label: "프로젝트 이름",
+                key: "name",
+                type: "input",
+                colSpan: "3",
+            },
+            {
+                label: "프로젝트 코드",
+                key: "code",
+                type: "input",
+                colSpan: "3",
+            },
+        ],
+        // [
+        //     { label: '수주부서', key: 'order', type: 'input' },
+        //     { label: '매출부서', key: 'salesDepartment', type: 'select', option: ['PA', 'PS', 'FMCS', 'HMI']},
+        //     { label: '영업대표', key: 'salesAgent', type: 'input' },
+        //     { label: 'PM', key: 'pm', type: 'input' },
+        // ],
+        // [
+        //     { label: '연도', key: 'year', type: 'input' },
+        //     { label: '시작일', key: 'startDate', type: 'input' },
+        //     { label: '종료일', key: 'endDate', type: 'input' },
+        //     { label: '상태', key: 'status' },
+        // ],
+        // [
+        //     { label: '기준 이익률', key: 'margin', type: 'input' },
+        // ]
+    ];
+
+    const newProject = (rowData) => {
+        console.log("⭕ 부모: ", rowData);
+        setNewRowData(rowData);
+    };
+
     return (
         <>
             <Location tableList={tableList} />
@@ -110,6 +149,11 @@ function OrderMgmt() {
                 currentPage="clCode"
                 addBtn={addBtn}
                 dummyData={dummyData}
+                newRowData={newRowData}
+            />
+            <FormDataTable
+                formTableColumns={formTableColumns}
+                newProject={newProject}
             />
         </>
     );

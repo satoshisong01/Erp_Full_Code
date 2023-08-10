@@ -24,6 +24,7 @@ const DataTableDummy = (props) => {
         currentPage,
         addBtn,
         dummyData,
+        newRowData,
     } = props;
 
     const [modalItem, setModalItem] = useState(""); //모달창에 넘겨주는 데이터
@@ -37,24 +38,23 @@ const DataTableDummy = (props) => {
 
     const [showTooltip, setShowTooltip] = useState(false); //테이블 마우스 커서 설명
 
-    console.log(returnKeyWord, "잘 넘겨받았느냐");
-
-    //const handleMouseEnter = () => {
-    //    setShowTooltip(true);
-    //};
-
-    //const handleMouseLeave = () => {
-    //    setShowTooltip(false);
-    //};
-
-    //const handleLoading = (value) => {
-    //    setIsSearching(value);
-    //};
+    useEffect(() => {
+        fetchAllData(); /* 맨 처음 전체 데이터 불러오기 */
+    }, []);
 
     useEffect(() => {
-        console.log("⭕ check box select: ", selectedData);
-    }, [selectedData]);
+        console.log("⭕ tableData: ", tableData);
+    }, [tableData]);
 
+    useEffect(() => {
+        setNewrow(newRowData);
+    }, [newRowData]);
+
+    const setNewrow = (data) => {
+        if (data) {
+            setTableData((prevTableData) => [...prevTableData, data]);
+        }
+    }
     const removeInt = columns[0].col;
 
     const changeInt = selectedData.map((item) => item[removeInt]);
@@ -228,7 +228,7 @@ const DataTableDummy = (props) => {
 
     const deleteClick = () => {
         console.log("삭제버튼 클릭");
-        deleteData();
+        // deleteData();
     };
 
     const addClick = () => {
@@ -238,10 +238,6 @@ const DataTableDummy = (props) => {
     const excelClick = () => {};
     const copyClick = () => {};
     const printClick = () => {};
-
-    useEffect(() => {
-        fetchAllData(); /* 맨 처음 전체 데이터 불러오기 */
-    }, []);
 
     return (
         <>
