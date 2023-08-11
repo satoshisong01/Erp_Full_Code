@@ -93,6 +93,7 @@ export async function axiosPost(url, requestData) {
         throw error;
     } finally {
         console.log("axios Post finally end");
+        alert("추가 되었습니다!✅");
     }
 }
 

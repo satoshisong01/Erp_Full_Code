@@ -30,19 +30,7 @@ const DataTable = (props) => {
 
     const [showTooltip, setShowTooltip] = useState(false); //테이블 마우스 커서 설명
 
-    console.log(returnKeyWord, "잘 넘겨받았느냐");
-
-    //const handleMouseEnter = () => {
-    //    setShowTooltip(true);
-    //};
-
-    //const handleMouseLeave = () => {
-    //    setShowTooltip(false);
-    //};
-
-    //const handleLoading = (value) => {
-    //    setIsSearching(value);
-    //};
+    //const [changeInt, setChangeInt] = useState([]);
 
     useEffect(() => {
         console.log("⭕ check box select: ", selectedData);
@@ -51,6 +39,8 @@ const DataTable = (props) => {
     const removeInt = columns[0].col;
 
     const changeInt = selectedData.map((item) => item[removeInt]);
+
+    //setChangeInt(selectedData.map((item) => item[removeInt]));
 
     useEffect(() => {
         fetchAllData(); /* 맨 처음 전체 데이터 불러오기 */
@@ -136,12 +126,18 @@ const DataTable = (props) => {
         if (suffixUrl === "") return;
         const url = `/api${suffixUrl}/${currentPage}/removeAll.do`;
         // API 호출 등의 로직 실행
+        //const resultData = await axiosDelete(url, {
+        //    data: changeInt,
+        //});
         const resultData = await axiosDelete(url, {
             data: changeInt,
         });
+
         if (resultData) {
             setSelectedData([]);
+            $(dataTableRef.current).DataTable().destroy();
             fetchAllData();
+            alert("삭제되었습니다");
         }
     };
 
@@ -183,6 +179,7 @@ const DataTable = (props) => {
         // API 호출 등의 로직 실행
         const resultData = await axiosScan(url, requestData);
         console.log(resultData, "결과값을 봐야지");
+        fetchAllData();
         //if (resultData) {
         //    fetchAllData();
         //}
@@ -234,6 +231,8 @@ const DataTable = (props) => {
         fetchAllData(); /* 맨 처음 전체 데이터 불러오기 */
     }, []);
 
+    //join된 테이블 값 찾아와서 띄워주기 위한 코드
+    //productGroup를 변수로 변경시켜 이전 컴포넌트에서 보내줄것
     function getNestedData(obj, path) {
         const properties = path.split(".");
         let value = obj;
@@ -366,10 +365,12 @@ const DataTable = (props) => {
                                                             }
                                                         />
                                                         <Tooltip />
+                                                        {/* 변경된코드 */}
                                                         {getNestedData(
                                                             item,
                                                             column.col
                                                         ) || "No data yet."}
+                                                        {/* 기존코드 {item[column.col]}*/}
                                                     </td>
                                                 );
                                             })}
@@ -389,6 +390,7 @@ const DataTable = (props) => {
                         columns={columns}
                         initialData={modalItem}
                         updateData={updateData}
+                        getNestedData={getNestedData}
                     />
                 )}
                 {postModalOpen && (

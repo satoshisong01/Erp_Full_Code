@@ -29,6 +29,7 @@ function ItemGroupMgmt() {
             header: "품목구분코드",
             col: "pgCode",
             cellWidth: "30%",
+            update: true,
             updating: true,
             write: true,
         },

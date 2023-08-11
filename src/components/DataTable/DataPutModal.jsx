@@ -6,6 +6,7 @@ export default function DataPutModal({
     initialData,
     columns,
     updateData,
+    getNestedData,
 }) {
     const initializeState = () => {
         const initialState = columns.reduce((acc, curr) => {
@@ -62,6 +63,7 @@ export default function DataPutModal({
                                                     type="text"
                                                     name={column.col}
                                                     value={data[column.col]}
+                                                    //value={getNestedData(data, column.col) || ""}
                                                     onChange={inputChange}
                                                     disabled={
                                                         column.update === false
