@@ -89,6 +89,7 @@ function ItemDetailMgmt() {
     };
 
     const addBtn = [""];
+
     return (
         <>
             <Location tableList={tableList} />

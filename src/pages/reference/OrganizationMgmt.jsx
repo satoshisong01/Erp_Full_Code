@@ -1,34 +1,64 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import store from "store/configureStore";
-import { tabActive } from "components/tabs/TabsActions";
-import { default as EgovLeftNav } from "components/leftmenu/EgovLeftNavReference";
-import OrgNzts from "./UserManagement/OrgNzt/OrgNzts";
+import React, { useState } from "react";
+import Location from "components/Location/Location";
+import SearchList from "components/SearchList";
+import DataTable from "components/DataTable/DataTable";
 
 /** 기준정보관리-원가기준관리-조직부서정보관리 */
 function OrganizationMgmt() {
+    const [returnKeyWord, setReturnKeyWord] = useState("");
+
+    const columns = [
+        { header: "ID", col: "orgId", cellWidth: "30%" },
+        { header: "조직이름", col: "orgNm", cellWidth: "30%" },
+        { header: "조직코드", col: "orgCd", cellWidth: "30%" },
+        { header: "설명", col: "orgDc", cellWidth: "30%" },
+        { header: "작성일", col: "createDate", cellWidth: "30%" },
+        { header: "작성자", col: "createIdBy", cellWidth: "30%" },
+        { header: "수정일", col: "lastModifyDate", cellWidth: "30%" },
+        { header: "수정자", col: "lastModifiedUserName", cellWidth: "30%" },
+    ];
+
+    const conditionList = [
+        {
+            title: "ID",
+            colName: "orgId", //컬럼명
+            type: "input",
+            value: "",
+            searchLevel: "1",
+        },
+        {
+            title: "조직이름",
+            colName: "orgNm", //컬럼명
+            type: "input",
+            value: "",
+            searchLevel: "2",
+        },
+    ];
+
+    const tableList = [
+        {
+            title: "사용자관리",
+            middleName: "기준정보 관리",
+            detailName: "조직부서정보관리",
+        },
+    ];
+
+    const handleReturn = (value) => {
+        setReturnKeyWord(value);
+    };
+
+    const addBtn = [""];
     return (
         <>
-            <div className="location">
-                <ul>
-                    <li>
-                        <Link to="/" className="home">
-                            Home
-                        </Link>
-                    </li>
-                    <li>
-                        <Link
-                            to=""
-                            onClick={(e) =>
-                                store.dispatch(tabActive("품목그룹관리"))
-                            }>
-                            기준정보관리
-                        </Link>
-                    </li>
-                    <li>조직부서정보관리</li>
-                </ul>
-            </div>
-            <OrgNzts />
+            <Location tableList={tableList} />
+            <SearchList conditionList={conditionList} onSearch={handleReturn} />
+            <DataTable
+                returnKeyWord={returnKeyWord}
+                columns={columns}
+                suffixUrl="/baseInfrm/member"
+                currentPage="orgNzt"
+                addBtn={addBtn}
+            />
         </>
     );
 }

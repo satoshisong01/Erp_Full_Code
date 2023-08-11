@@ -1,34 +1,37 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import store from "store/configureStore";
-import { tabActive } from "components/tabs/TabsActions";
-import { default as EgovLeftNav } from "components/leftmenu/EgovLeftNavReference";
-import PreCosts from "./CostPrice/PreCost/PreCosts";
+import Location from "components/Location/Location";
+import DataTable from "components/DataTable/DataTable";
 
 /** 기준정보관리-원가기준관리-사전원가지표 */
 function CostIndex() {
+    const columns = [
+        { header: "분류", col: "cbTypeCode", cellWidth: "30%" },
+        { header: "간접원가", col: "groupNm", cellWidth: "30%" },
+        { header: "판매비", col: "groupCode", cellWidth: "30%" },
+        { header: "사내본사비", col: "groupCreatDe", cellWidth: "30%" },
+        { header: "일반관리비", col: "mbTelNm", cellWidth: "30%" },
+        { header: "영업외수지", col: "sbsDt", cellWidth: "30%" },
+    ];
+
+    const tableList = [
+        {
+            title: "원가기준관리",
+            middleName: "기준정보 관리",
+            detailName: "사전원가지표",
+        },
+    ];
+
+    const addBtn = [""];
+
     return (
         <>
-            <div className="location">
-                <ul>
-                    <li>
-                        <Link to="/" className="home">
-                            Home
-                        </Link>
-                    </li>
-                    <li>
-                        <Link
-                            to=""
-                            onClick={(e) =>
-                                store.dispatch(tabActive("품목그룹관리"))
-                            }>
-                            기준정보관리
-                        </Link>
-                    </li>
-                    <li>사전원가지표</li>
-                </ul>
-            </div>
-            <PreCosts />
+            <Location tableList={tableList} />
+            <DataTable
+                columns={columns}
+                suffixUrl="/baseInfrm/product"
+                currentPage="costBase"
+                addBtn={addBtn}
+            />
         </>
     );
 }

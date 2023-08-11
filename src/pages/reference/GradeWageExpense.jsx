@@ -1,34 +1,43 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import store from "store/configureStore";
-import { tabActive } from "components/tabs/TabsActions";
-import { default as EgovLeftNav } from "components/leftmenu/EgovLeftNavReference";
-import UnitPriceCosts from "./CostPrice/UnitPriceCost/UnitPriceCosts";
+import Location from "components/Location/Location";
+import DataTable from "components/DataTable/DataTable";
 
 /** 기준정보관리-원가기준관리-급별단가(경비) */
 function GradeWageExpense() {
+    const columns = [
+        { header: "기준명", col: "groupId", cellWidth: "30%" },
+        { header: "임원", col: "groupNm", cellWidth: "30%" },
+        { header: "특급기술사", col: "groupCode", cellWidth: "30%" },
+        { header: "고급기술사", col: "groupCreatDe", cellWidth: "30%" },
+        { header: "중급기술사", col: "mbTelNm", cellWidth: "30%" },
+        { header: "초급기술사", col: "sbsDt", cellWidth: "30%" },
+        { header: "고급기능사", col: "createDate", cellWidth: "30%" },
+        { header: "중급기능사", col: "createDate", cellWidth: "30%" },
+        { header: "부장/차장", col: "createDate", cellWidth: "30%" },
+        { header: "과장", col: "createDate", cellWidth: "30%" },
+        { header: "대리", col: "createDate", cellWidth: "30%" },
+        { header: "주임", col: "createDate", cellWidth: "30%" },
+        { header: "사원", col: "createDate", cellWidth: "30%" },
+    ];
+
+    const tableList = [
+        {
+            title: "원가기준관리",
+            middleName: "기준정보 관리",
+            detailName: "급별단가(경비)",
+        },
+    ];
+
+    const addBtn = [""];
     return (
         <>
-            <div className="location">
-                <ul>
-                    <li>
-                        <Link to="/" className="home">
-                            Home
-                        </Link>
-                    </li>
-                    <li>
-                        <Link
-                            to=""
-                            onClick={(e) =>
-                                store.dispatch(tabActive("품목그룹관리"))
-                            }>
-                            기준정보관리
-                        </Link>
-                    </li>
-                    <li>급별단가(경비)</li>
-                </ul>
-            </div>
-            <UnitPriceCosts />
+            <Location tableList={tableList} />
+            <DataTable
+                columns={columns}
+                suffixUrl="/baseInfrm/product"
+                currentPage="gradeunitPrice"
+                addBtn={addBtn}
+            />
         </>
     );
 }

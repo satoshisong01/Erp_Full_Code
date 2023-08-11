@@ -46,15 +46,15 @@ function EgovLeftNavSystem(props) {
                 { label: "프로그램목록관리" },
             ],
         },
-        {
-            label: "게시판관리",
-            subMenus: [
-                { label: "게시물관리" },
-                { label: "게시판마스터관리" },
-                { label: "게시판열람권한관리" },
-                { label: "댓글관리" },
-            ],
-        },
+        //{
+        //    label: "게시판관리",
+        //    subMenus: [
+        //        { label: "게시물관리" },
+        //        { label: "게시판마스터관리" },
+        //        { label: "게시판열람권한관리" },
+        //        { label: "댓글관리" },
+        //    ],
+        //},
         {
             label: "코드관리",
             subMenus: [
