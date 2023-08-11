@@ -214,7 +214,7 @@ const PersonnelMgmts = () => {
         <>
             <div className="divBodySet0">
                 <div id="content">
-                    <div className="SearchDiv">
+                    {/*<div className="SearchDiv">
                         <PersonnelMgmtTableSearchBar
                             onSearch={handleSearch}
                             onSearchLv={handleSearchLv}
@@ -231,338 +231,196 @@ const PersonnelMgmts = () => {
                             urlName={urlName}
                             headers={headers}
                         />
-                    </div>
+                    </div>*/}
                     <div className="TableBoxs">
-                        <div className="UserTable">
-                            <div className="row">
-                                <div className="tableBody">
-                                    <div className="widget-body">
-                                        {isSearching && <div>Loading...</div>}
-                                        {!isSearching && (
-                                            <>
-                                                <div className="tableBox">
-                                                    <table
-                                                        ref={dataTableRef}
-                                                        className="table table-bordered"
-                                                        id="dataTable">
-                                                        <thead>
-                                                            <tr>
-                                                                <th className="tableHeaderTh">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={
-                                                                            check
-                                                                        }
-                                                                        onChange={(
-                                                                            e
-                                                                        ) =>
-                                                                            handleClick(
-                                                                                e
-                                                                            )
-                                                                        }
-                                                                    />
-                                                                </th>
-                                                                {[
-                                                                    "프로젝트명",
-                                                                    "계획인건비",
-                                                                    "실행인건비",
-                                                                ].map(
-                                                                    (
-                                                                        item,
-                                                                        index
-                                                                    ) => (
-                                                                        <th
-                                                                            key={
-                                                                                index
-                                                                            }>
-                                                                            {
-                                                                                item
-                                                                            }
-                                                                        </th>
-                                                                    )
-                                                                )}
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {searchedData.map(
-                                                                (
-                                                                    item,
-                                                                    index
-                                                                ) => (
-                                                                    <tr
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <td>
-                                                                            <input
-                                                                                type="checkbox"
-                                                                                checked={selectedData.some(
-                                                                                    (
-                                                                                        selectedItem
-                                                                                    ) =>
-                                                                                        selectedItem.uniqId ===
-                                                                                        item.uniqId
-                                                                                )}
-                                                                                onChange={(
-                                                                                    e
-                                                                                ) =>
-                                                                                    handleItemCheck(
-                                                                                        item,
-                                                                                        e
-                                                                                    )
-                                                                                }
-                                                                            />
-                                                                        </td>
-                                                                        {[
-                                                                            "orgId",
-                                                                            "orgNm",
-                                                                            "orgNm",
-                                                                        ].map(
-                                                                            (
-                                                                                key
-                                                                            ) => (
-                                                                                <td
-                                                                                    onMouseEnter={
-                                                                                        handleMouseEnter
-                                                                                    }
-                                                                                    onMouseLeave={
-                                                                                        handleMouseLeave
-                                                                                    }
-                                                                                    className="tableWidth
-                                                                        tdStyle mouseText"
-                                                                                    onDoubleClick={(
-                                                                                        e
-                                                                                    ) =>
-                                                                                        handleModalClick(
-                                                                                            e,
-                                                                                            item
-                                                                                        )
-                                                                                    }
-                                                                                    key={
-                                                                                        key
-                                                                                    }>
-                                                                                    {
-                                                                                        item[
-                                                                                            key
-                                                                                        ]
-                                                                                    }
-                                                                                </td>
-                                                                            )
-                                                                        )}
-                                                                    </tr>
-                                                                )
-                                                            )}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                id="content"
-                                style={{ padding: "0", marginTop: "20px" }}>
-                                <div className="table-responsive">
-                                    <table
-                                        border="1"
-                                        style={{
-                                            width: "100%",
-                                            margin: "auto",
-                                        }}>
-                                        <thead>
-                                            <tr className="tableTr3">
-                                                <th
-                                                    className="thTitle1"
-                                                    rowSpan={"2"}>
-                                                    품목그룹명
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    rowSpan={"2"}>
-                                                    연월
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    rowSpan={"2"}>
-                                                    M/M계
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    rowSpan={"2"}>
-                                                    인건비계
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    colSpan={"7"}>
-                                                    일반
-                                                </th>
-                                                <th
-                                                    className="thTitle1"
-                                                    colSpan={"6"}>
-                                                    프로젝트팀원
-                                                </th>
-                                            </tr>
-                                            <tr className="tableTr3">
-                                                <th className="thTitle2">
-                                                    임원
-                                                </th>
-                                                <th className="thTitle2">
-                                                    특급기술사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    고급기술사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    중급기술사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    초급기술사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    중급기능사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    고급기능사
-                                                </th>
-                                                <th className="thTitle2">
-                                                    부장
-                                                </th>
-                                                <th className="thTitle2">
-                                                    차장
-                                                </th>
-                                                <th className="thTitle2">
-                                                    과장
-                                                </th>
-                                                <th className="thTitle2">
-                                                    대리
-                                                </th>
-                                                <th className="thTitle2">
-                                                    주임
-                                                </th>
-                                                <th className="thTitle2">
-                                                    사원
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr className="tableTr3">
-                                                <td>
-                                                    <select
-                                                        //id="searchCondition"
-                                                        //name="searchCondition"
-                                                        className="form-control"
-                                                        //onChange={(e) =>
-                                                        //    setInputLv(
-                                                        //        e.target.value
-                                                        //    )
-                                                        //}
-                                                    >
-                                                        <option>선택</option>
-                                                        <option value="PANEL">
-                                                            PANEL
-                                                        </option>
-                                                        <option value="개발외주비">
-                                                            개발외주비
-                                                        </option>
-                                                    </select>
-                                                </td>
-                                                <td>2023/05</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-                                            <tr className="tableTr3">
-                                                <td>
-                                                    <select
-                                                        //id="searchCondition"
-                                                        //name="searchCondition"
-                                                        className="form-control"
-                                                        //onChange={(e) =>
-                                                        //    setInputLv(
-                                                        //        e.target.value
-                                                        //    )
-                                                        //}
-                                                    >
-                                                        <option>선택</option>
-                                                        <option value="PANEL">
-                                                            PANEL
-                                                        </option>
-                                                        <option value="개발외주비">
-                                                            개발외주비
-                                                        </option>
-                                                    </select>
-                                                </td>
-                                                <td>2023/06</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-                                            <tr className="tableTr3">
-                                                <td>
-                                                    <select
-                                                        //id="searchCondition"
-                                                        //name="searchCondition"
-                                                        className="form-control"
-                                                        //onChange={(e) =>
-                                                        //    setInputLv(
-                                                        //        e.target.value
-                                                        //    )
-                                                        //}
-                                                    >
-                                                        <option>선택</option>
-                                                        <option value="PANEL">
-                                                            PANEL
-                                                        </option>
-                                                        <option value="개발외주비">
-                                                            개발외주비
-                                                        </option>
-                                                    </select>
-                                                </td>
-                                                <td>2023/07</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                        <div
+                            id="content"
+                            style={{ padding: "0", marginTop: "20px" }}>
+                            <div className="table-responsive">
+                                <table
+                                    border="1"
+                                    style={{
+                                        width: "100%",
+                                        margin: "auto",
+                                    }}>
+                                    <thead>
+                                        <tr className="tableTr3">
+                                            <th
+                                                className="thTitle1"
+                                                rowSpan={"2"}>
+                                                품목그룹명
+                                            </th>
+                                            <th
+                                                className="thTitle1"
+                                                rowSpan={"2"}>
+                                                연월
+                                            </th>
+                                            <th
+                                                className="thTitle1"
+                                                rowSpan={"2"}>
+                                                M/M계
+                                            </th>
+                                            <th
+                                                className="thTitle1"
+                                                rowSpan={"2"}>
+                                                인건비계
+                                            </th>
+                                            <th
+                                                className="thTitle1"
+                                                colSpan={"7"}>
+                                                일반
+                                            </th>
+                                            <th
+                                                className="thTitle1"
+                                                colSpan={"6"}>
+                                                프로젝트팀원
+                                            </th>
+                                        </tr>
+                                        <tr className="tableTr3">
+                                            <th className="thTitle2">임원</th>
+                                            <th className="thTitle2">
+                                                특급기술사
+                                            </th>
+                                            <th className="thTitle2">
+                                                고급기술사
+                                            </th>
+                                            <th className="thTitle2">
+                                                중급기술사
+                                            </th>
+                                            <th className="thTitle2">
+                                                초급기술사
+                                            </th>
+                                            <th className="thTitle2">
+                                                중급기능사
+                                            </th>
+                                            <th className="thTitle2">
+                                                고급기능사
+                                            </th>
+                                            <th className="thTitle2">부장</th>
+                                            <th className="thTitle2">차장</th>
+                                            <th className="thTitle2">과장</th>
+                                            <th className="thTitle2">대리</th>
+                                            <th className="thTitle2">주임</th>
+                                            <th className="thTitle2">사원</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr className="tableTr3">
+                                            <td>
+                                                <select
+                                                    //id="searchCondition"
+                                                    //name="searchCondition"
+                                                    className="form-control"
+                                                    //onChange={(e) =>
+                                                    //    setInputLv(
+                                                    //        e.target.value
+                                                    //    )
+                                                    //}
+                                                >
+                                                    <option>선택</option>
+                                                    <option value="PANEL">
+                                                        PANEL
+                                                    </option>
+                                                    <option value="개발외주비">
+                                                        개발외주비
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>2023/05</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr className="tableTr3">
+                                            <td>
+                                                <select
+                                                    //id="searchCondition"
+                                                    //name="searchCondition"
+                                                    className="form-control"
+                                                    //onChange={(e) =>
+                                                    //    setInputLv(
+                                                    //        e.target.value
+                                                    //    )
+                                                    //}
+                                                >
+                                                    <option>선택</option>
+                                                    <option value="PANEL">
+                                                        PANEL
+                                                    </option>
+                                                    <option value="개발외주비">
+                                                        개발외주비
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>2023/06</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr className="tableTr3">
+                                            <td>
+                                                <select
+                                                    //id="searchCondition"
+                                                    //name="searchCondition"
+                                                    className="form-control"
+                                                    //onChange={(e) =>
+                                                    //    setInputLv(
+                                                    //        e.target.value
+                                                    //    )
+                                                    //}
+                                                >
+                                                    <option>선택</option>
+                                                    <option value="PANEL">
+                                                        PANEL
+                                                    </option>
+                                                    <option value="개발외주비">
+                                                        개발외주비
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>2023/07</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

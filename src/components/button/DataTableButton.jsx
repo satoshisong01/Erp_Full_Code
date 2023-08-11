@@ -47,6 +47,44 @@ export default function DataTableButton({
         },
     ];
 
+    const buttonPropsMap = {
+        costPage: {
+            targetUrl: URL.EstimatePopupContainer,
+            data: {
+                btnName: "견적서",
+                title: "견적서",
+            },
+        },
+        calPage: {
+            targetUrl: URL.CostStatement,
+            data: {
+                btnName: "사전원가서",
+                title: "사전 원가 계산서",
+            },
+        },
+        runCalPage: {
+            targetUrl: URL.CostStatement,
+            data: {
+                btnName: "실행원가서",
+                title: "실행 원가 계산서",
+            },
+        },
+        planPage: {
+            targetUrl: URL.ApprovalContainer,
+            data: {
+                btnName: "수주계획",
+                title: "사전 원가 계획",
+            },
+        },
+        runPlanPage: {
+            targetUrl: URL.ApprovalContainer,
+            data: {
+                btnName: "실행계획",
+                title: "사전 실행 계획",
+            },
+        },
+    };
+
     useEffect(() => {
         buttons.forEach((button) => {
             if (typeof button.clickHandler === "function") {
@@ -71,37 +109,11 @@ export default function DataTableButton({
                 fetchAllData={fetchAllData}
             />
             {addBtn.map((btn, index) => {
-                let popupButtonProps = {};
-
-                if (btn === "costPage") {
-                    popupButtonProps = {
-                        targetUrl: URL.EstimatePopupContainer,
-                        data: {
-                            btnName: "견적서",
-                            title: "견적서",
-                        },
-                    };
-                } else if (btn === "planPage") {
-                    popupButtonProps = {
-                        targetUrl: URL.ApprovalContainer,
-                        data: {
-                            btnName: "수주계획",
-                            title: "사전 원가 계획",
-                        },
-                    };
-                } else if (btn === "calPage") {
-                    popupButtonProps = {
-                        targetUrl: URL.CostStatement,
-                        data: {
-                            btnName: "사전원가서",
-                            title: "사전 원가 계산서",
-                        },
-                    };
-                } else {
-                    return null;
+                const popupButtonProps = buttonPropsMap[btn];
+                if (popupButtonProps) {
+                    return <PopupButton key={index} {...popupButtonProps} />;
                 }
-
-                return <PopupButton key={index} {...popupButtonProps} />;
+                return null;
             })}
             {buttons.map(
                 (button) =>

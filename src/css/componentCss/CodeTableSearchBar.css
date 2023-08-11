@@ -70,7 +70,7 @@
 .refreshIcon,
 .searchIcon,
 .clearIcon {
-    z-index: 9999;
+    z-index: 3;
     padding: 5px 12px;
     transition: all 0.2s;
     background-color: #fff;
