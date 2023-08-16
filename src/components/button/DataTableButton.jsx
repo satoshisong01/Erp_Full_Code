@@ -1,7 +1,7 @@
 import ReSearchBtn from "components/DataTable/function/ReSearchBtn";
-import { axiosDelete, axiosFetch, axiosUpdate } from "api/axiosFetch";
 import React, { useEffect, useState } from "react";
 import PopupButton from "./PopupButton";
+import XLSX from "xlsx-js-style";
 import URL from "constants/url";
 
 export default function DataTableButton({
@@ -13,6 +13,8 @@ export default function DataTableButton({
     dataTableRef,
     fetchAllData,
     addBtn,
+    selectedData,
+    columns,
 }) {
     const buttons = [
         {
@@ -46,6 +48,48 @@ export default function DataTableButton({
             clickHandler: addClick,
         },
     ];
+
+    console.log(excelClick);
+
+    const handlePrint = () => {
+        window.print();
+    };
+
+    const wb = XLSX.utils.book_new();
+
+    const header = columns.map((column) => ({
+        v: column.header, // 컬럼의 header 내용
+        t: "s", // 데이터 타입 (s: string)
+        s: {
+            font: { sz: "15" },
+            border: {
+                top: { color: { rgb: "000000" } },
+                bottom: { color: { rgb: "000000" } },
+                left: { color: { rgb: "000000" } },
+                right: { color: { rgb: "000000" } },
+            },
+        },
+    }));
+
+    const body = selectedData.map((item) =>
+        columns.map((column) => ({
+            v: item[column.col], // 컬럼에 해당하는 데이터 값
+            t: "s", // 데이터 타입 (s: string)
+            s: {
+                font: { color: { rgb: "188038" } },
+            },
+        }))
+    );
+
+    // STEP 3: header와 body로 worksheet를 생성한다.
+
+    const ws = XLSX.utils.aoa_to_sheet([header, ...body]);
+    // 열의 너비를 조정
+    const columnWidths = header.map((col) => ({ wch: 30 }));
+    ws["!cols"] = columnWidths;
+
+    // worksheet를 workbook에 추가한다.
+    XLSX.utils.book_append_sheet(wb, ws, "readme demo");
 
     const buttonPropsMap = {
         costPage: {
@@ -150,7 +194,15 @@ export default function DataTableButton({
                             key={button.id}
                             className={`btn btn-primary ${button.id}`}
                             id="utilBtn"
-                            onClick={button.clickHandler}>
+                            onClick={
+                                button.id === "printIcon"
+                                    ? handlePrint
+                                    : button.id === "csvIcon"
+                                    ? () => {
+                                          XLSX.writeFile(wb, "table-demo.xlsx");
+                                      }
+                                    : button.clickHandler
+                            }>
                             <i className={button.iconClass} />
                             {button.label}
                         </button>

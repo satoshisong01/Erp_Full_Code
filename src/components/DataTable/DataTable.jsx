@@ -208,12 +208,6 @@ const DataTable = (props) => {
         setModalOpen(true);
     };
 
-    //const [isReSearchVisible, setIsReSearchVisible] = useState(false);
-
-    //const handleButtonClick = () => {
-    //    setIsReSearchVisible(true);
-    //};
-
     const deleteClick = () => {
         console.log("삭제버튼 클릭");
         deleteData();
@@ -223,9 +217,28 @@ const DataTable = (props) => {
         setPostModalOpen(true);
     };
 
-    const excelClick = () => {};
-    const copyClick = () => {};
-    const printClick = () => {};
+    const excelClick = () => {
+        alert("Excel 파일로 다운로드가 되었습니다.");
+    };
+
+    const copyClick = () => {
+        const headers = columns.map((item) => item.header);
+        const fields = columns.map((item) => item.col);
+
+        console.log(headers, "헤더");
+        console.log(fields, "필ㄷ");
+
+        const headersString = headers.join("\t\t");
+        const dataString = `${headersString}\n${selectedData
+            .map((item) => fields.map((field) => item[field]).join("\t"))
+            .join("\n")}`;
+
+        navigator.clipboard.writeText(dataString);
+        alert("테이블이 복사되었습니다!");
+    };
+    const printClick = () => {
+        console.log("출력!");
+    };
 
     useEffect(() => {
         fetchAllData(); /* 맨 처음 전체 데이터 불러오기 */
@@ -265,26 +278,13 @@ const DataTable = (props) => {
                     dataTableRef={dataTableRef}
                     fetchAllData={fetchAllData}
                     addBtn={addBtn}
+                    columns={columns}
+                    selectedData={selectedData}
                 />
             </div>
             <div className="tableBody">
                 <div className="widget-body">
-                    {/*{isSearching && (
-                        <div>
-                            Loading...
-                            {setTimeout(() => {
-                                setIsSearching(false);
-                            }, 1000)}{" "}*/}
-                    {/* 1초 후에 isSearching 값을 false로 변경 */}
-                    {/*</div>*/}
-                    {/*)}*/}
-                    {/*{!isSearching && (*/}
                     <>
-                        {/*<button onClick={handleButtonClick}>
-                            {console.log("눌려지긴하나")}
-                            {isReSearchVisible && (*/}
-                        {/*)}*/}
-                        {/*</button>*/}
                         <div className="tableBox">
                             <table
                                 ref={dataTableRef}

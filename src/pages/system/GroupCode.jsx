@@ -1,8 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import store from "store/configureStore";
-import { tabActive } from "components/tabs/TabsActions";
-import GroupCodes from "./CodeManage/GroupCode/GroupCodes";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
