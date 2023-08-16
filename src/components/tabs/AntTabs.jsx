@@ -19,8 +19,8 @@ const defaultPanes = [
 /** nav, header 클릭 시  label props로 전달 & 해당하는 화면(컴포넌트) children 으로 보여줌 */
 const AntTabs = (props) => {
     
-    const [activeKey, setActiveKey] = useState(defaultPanes[0].key); // 프로젝트 등록 키 0번(활성화)
-    const [items, setItems] = useState(defaultPanes);
+    const [activeKey, setActiveKey] = useState(""); // 프로젝트 등록 키 0번(활성화)
+    const [items, setItems] = useState([]);
 
     /** title이 변경 될 때(navigation 클릭 시) 실행 되는 함수 */
     useEffect(() => {
@@ -28,6 +28,12 @@ const AntTabs = (props) => {
         if (!tab) return; 
         addTab(tab);
     }, [props.label]);
+
+    useEffect(() => {
+        setActiveKey(defaultPanes[0].key)
+        store.dispatch(tabSelect(defaultPanes[0].label));
+        setItems(defaultPanes)
+    }, []);
 
     const onChange = (key) => {
         setActiveKey(key);
@@ -60,15 +66,17 @@ const AntTabs = (props) => {
         const targetIndex = items.findIndex((tab) => tab.key === targetKey);
         const newPanes = items.filter((tab) => tab.key !== targetKey);
         if (newPanes.length && targetKey === activeKey) {
-            const { key } = newPanes[
+            const { key, label } = newPanes[
                 targetIndex === newPanes.length ? targetIndex - 1 : targetIndex
             ];
             setActiveKey(key);
+            store.dispatch(tabSelect(label));
         }
         setItems(newPanes);
 
         if (items.length === 1) { //모든 탭 종료시 디폴트
             setItems([]);
+            store.dispatch(tabSelect(""));
             // setItems([...defaultPanes]);
             // setActiveKey(defaultPanes.key);
         }
