@@ -1,33 +1,99 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import store from "store/configureStore";
 import { tabActive } from "components/tabs/TabsActions";
 import PaymentReceiveds from "./ElectroPayment/PaymentReceived/PaymentReceiveds";
+import Location from "components/Location/Location";
+import SearchList from "components/SearchList";
+import DataTable from "components/DataTable/DataTable";
 
 /** 시스템관리-전자결재 */
 function Approval() {
+    const [returnKeyWord, setReturnKeyWord] = useState("");
+
+    const columns = [
+        {
+            header: "프로젝트명",
+            col: "name",
+            cellWidth: "20%",
+            update: false,
+            updating: true,
+            write: true,
+        },
+        {
+            header: "발신자",
+            col: "code",
+            cellWidth: "20%",
+            updating: true,
+            write: true,
+        },
+        {
+            header: "발신일",
+            col: "startDate",
+            cellWidth: "20%",
+            updating: true,
+            write: true,
+        },
+        { header: "수신자", col: "currency", cellWidth: "20%" },
+        { header: "수신일", col: "vendor", cellWidth: "20%" },
+        { header: "결재상태", col: "contactPerson", cellWidth: "20%" },
+    ];
+
+    const conditionList = [
+        {
+            title: "프로젝트명",
+            colName: "clCode", //컬럼명
+            type: "input",
+            value: "",
+            searchLevel: "1",
+        },
+        {
+            title: "기간검색",
+            colName: "selectedDate",
+            type: "datepicker",
+            searchLevel: "0",
+        },
+        {
+            title: "결재상태",
+            colName: "name",
+            type: "select",
+            option: [{ value: "전체" }, { value: "대기중" }, { value: "반려" }],
+            searchLevel: "3",
+        },
+        {
+            title: "발신자",
+            colName: "clCodeNm", //컬럼명
+            type: "input",
+            value: "",
+            searchLevel: "2",
+        },
+    ];
+
+    const tableList = [
+        {
+            title: "전자결재",
+            middleName: "실행관리",
+            detailName: "결재 수신함",
+        },
+    ];
+
+    const handleReturn = (value) => {
+        setReturnKeyWord(value);
+        console.log(value, "제대로 들어오냐");
+    };
+
+    const addBtn = [""];
     return (
         <>
-            <div className="location">
-                <ul>
-                    <li>
-                        <Link to="" className="home">
-                            Home
-                        </Link>
-                    </li>
-                    <li>
-                        <Link
-                            to=""
-                            onClick={(e) =>
-                                store.dispatch(tabActive("실행원가"))
-                            }>
-                            실행관리
-                        </Link>
-                    </li>
-                    <li>전자결재</li>
-                </ul>
-            </div>
-            <PaymentReceiveds />
+            <Location tableList={tableList} />
+            <SearchList conditionList={conditionList} onSearch={handleReturn} />
+            <DataTable
+                returnKeyWord={returnKeyWord}
+                columns={columns}
+                suffixUrl="/system/code"
+                currentPage="clCode"
+                addBtn={addBtn}
+            />
         </>
     );
 }

@@ -273,8 +273,8 @@ export const system = [
     {
         title: "CategoryCode",
         path: URL.CategoryCode,
-        component: <ClCode componentName={"ClCode"} />,
-        // component: <CategoryCode />,
+        //component: <ClCode componentName={"ClCode"} />,
+        component: <CategoryCode />,
         label: "분류코드관리",
         activeKey: 31,
     },

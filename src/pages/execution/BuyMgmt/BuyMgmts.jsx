@@ -213,7 +213,7 @@ const BuyMgmts = () => {
     return (
         <>
             <div id="content">
-                <div className="SearchDiv">
+                {/*<div className="SearchDiv">
                     <BuyMgmtTableSearchBar
                         onSearch={handleSearch}
                         onSearchLv={handleSearchLv}
@@ -222,8 +222,8 @@ const BuyMgmts = () => {
                         urlName={urlName}
                         searchBtn={handleSearchData}
                     />
-                </div>
-                <div className="TableBoxs">
+                </div>*/}
+                {/*<div className="TableBoxs">
                     <div className="UserTable">
                         <div className="row">
                             <BuyMgmtUtilBtn
@@ -364,7 +364,8 @@ const BuyMgmts = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>*/}
+                <h5>구매 상세내역</h5>
                 <div className="TableBoxs">
                     <div className="UserTable">
                         <div className="row">

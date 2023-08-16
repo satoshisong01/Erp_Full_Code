@@ -38,7 +38,6 @@ function EgovLeftNavSystem(props) {
     };
 
     const menuItems = [
-        { label: "권한관리", subMenus: [] },
         {
             label: "메뉴관리",
             subMenus: [
@@ -46,6 +45,8 @@ function EgovLeftNavSystem(props) {
                 { label: "프로그램목록관리" },
             ],
         },
+        { label: "권한관리", subMenus: [] },
+
         //{
         //    label: "게시판관리",
         //    subMenus: [

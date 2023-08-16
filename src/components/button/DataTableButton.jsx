@@ -83,6 +83,34 @@ export default function DataTableButton({
                 title: "사전 실행 계획",
             },
         },
+        costPlanPage: {
+            targetUrl: URL.ApprovalContainer,
+            data: {
+                btnName: "경비계획",
+                title: "경비계획",
+            },
+        },
+        runCostPlanPage: {
+            targetUrl: URL.ApprovalContainer,
+            data: {
+                btnName: "경비실행",
+                title: "경비실행",
+            },
+        },
+        buyPlanPage: {
+            targetUrl: URL.ApprovalContainer,
+            data: {
+                btnName: "구매계획",
+                title: "구매계획",
+            },
+        },
+        runBuyPlanPage: {
+            targetUrl: URL.ApprovalContainer,
+            data: {
+                btnName: "구매실행",
+                title: "구매실행",
+            },
+        },
     };
 
     useEffect(() => {

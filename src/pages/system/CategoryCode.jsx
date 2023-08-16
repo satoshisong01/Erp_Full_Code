@@ -52,33 +52,24 @@ function CategoryCode() {
             searchLevel: "2",
         },
         {
-            title: "분류코드설명",
-            colName: "clCodeDc", //컬럼명
+            title: "작성자",
+            colName: "createIdBy", //컬럼명
             type: "input",
             value: "",
             searchLevel: "3",
         },
         {
-            title: "이름",
-            colName: "name",
-            type: "select",
-            option: [
-                { value: "다섯글자의옵션1" },
-                { value: "다섯글자의옵션2" },
-            ],
+            title: "수정자",
+            colName: "lastModifiedIdBy", //컬럼명
+            type: "input",
+            value: "",
             searchLevel: "3",
-        },
-        {
-            title: "날짜선택",
-            colName: "selectedDate",
-            type: "datepicker",
-            searchLevel: "0",
         },
     ];
 
     const tableList = [
         {
-            title: "권한관리",
+            title: "코드관리",
             middleName: "시스템관리",
             detailName: "분류코드관리",
         },
