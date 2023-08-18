@@ -57,29 +57,36 @@ export default function DataTableButton({
 
     const wb = XLSX.utils.book_new();
 
-    const header = columns.map((column) => ({
-        v: column.header, // 컬럼의 header 내용
-        t: "s", // 데이터 타입 (s: string)
-        s: {
-            font: { sz: "15" },
-            border: {
-                top: { color: { rgb: "000000" } },
-                bottom: { color: { rgb: "000000" } },
-                left: { color: { rgb: "000000" } },
-                right: { color: { rgb: "000000" } },
-            },
-        },
-    }));
+    let header = {};
+    let body = {};
 
-    const body = selectedData.map((item) =>
-        columns.map((column) => ({
-            v: item[column.col], // 컬럼에 해당하는 데이터 값
+    if(columns.length > 0) {
+        header = columns.map((column) => ({
+            v: column.header, // 컬럼의 header 내용
             t: "s", // 데이터 타입 (s: string)
             s: {
-                font: { color: { rgb: "188038" } },
+                font: { sz: "15" },
+                border: {
+                    top: { color: { rgb: "000000" } },
+                    bottom: { color: { rgb: "000000" } },
+                    left: { color: { rgb: "000000" } },
+                    right: { color: { rgb: "000000" } },
+                },
             },
-        }))
-    );
+        }));
+    
+        if (selectedData) {
+            body = selectedData.map((item) =>
+                columns.map((column) => ({
+                    v: item[column.col], // 컬럼에 해당하는 데이터 값
+                    t: "s", // 데이터 타입 (s: string)
+                    s: {
+                        font: { color: { rgb: "188038" } },
+                    },
+                }))
+            );
+        }
+    }
 
     // STEP 3: header와 body로 worksheet를 생성한다.
 
