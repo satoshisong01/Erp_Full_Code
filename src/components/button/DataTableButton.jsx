@@ -49,10 +49,65 @@ export default function DataTableButton({
         },
     ];
 
-    console.log(excelClick);
-
+    // DataTableButton 컴포넌트 내의 handlePrint 함수 수정
     const handlePrint = () => {
-        window.print();
+        const printWindow = window.open("", "_blank");
+        const printContent = document
+            .getElementById("print-content")
+            .cloneNode(true);
+        printWindow.document.open();
+        printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <title>Print</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        font-size: 12px;
+                    }
+
+                    #print-content {
+                        max-width: 100%;
+                        margin: 0 auto;
+                        padding: 20px;
+                    }
+
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+
+                    th, td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                        text-align: center;
+                    }
+
+                    th {
+                        background-color: #f2f2f2;
+                    }
+
+                    tr:nth-child(even) {
+                        background-color: #f2f2f2;
+                    }
+                    body {
+                        zoom: 80%;
+                        margin: 1cm;
+                    }
+                </style>
+            </head>
+            <body>
+                ${printContent.innerHTML}
+            </body>
+        </html>
+    `);
+        printWindow.document.close();
+        printWindow.print();
+    };
+
+    const excelAlert = () => {
+        alert("Excel 파일로 다운로드가 되었습니다.");
     };
 
     const wb = XLSX.utils.book_new();
@@ -200,6 +255,7 @@ export default function DataTableButton({
                                     : button.id === "csvIcon"
                                     ? () => {
                                           XLSX.writeFile(wb, "table-demo.xlsx");
+                                          excelAlert();
                                       }
                                     : button.clickHandler
                             }>

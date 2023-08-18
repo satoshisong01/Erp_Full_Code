@@ -15,6 +15,7 @@ function CategoryCode() {
             update: false,
             updating: true,
             write: true,
+            require: true,
         },
         {
             header: "분류코드명",
@@ -22,6 +23,7 @@ function CategoryCode() {
             cellWidth: "20%",
             updating: true,
             write: true,
+            require: true,
         },
         {
             header: "분류코드설명",
@@ -29,6 +31,7 @@ function CategoryCode() {
             cellWidth: "20%",
             updating: true,
             write: true,
+            require: true,
         },
         { header: "작성자", col: "createIdBy", cellWidth: "20%" },
         { header: "작성일", col: "createDate", cellWidth: "20%" },

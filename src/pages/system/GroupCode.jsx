@@ -9,17 +9,10 @@ function GroupCode() {
 
     const columns = [
         {
-            header: "분류코드명",
-            col: "clCode",
-            cellWidth: "20%",
-            update: false,
-            updating: true,
-            write: true,
-        },
-        {
             header: "그룹코드",
             col: "codeId",
             cellWidth: "20%",
+            update: false,
             updating: true,
             write: true,
         },
@@ -41,6 +34,17 @@ function GroupCode() {
         { header: "작성일", col: "createDate", cellWidth: "20%" },
         { header: "수정자", col: "lastModifiedIdBy", cellWidth: "20%" },
         { header: "수정일", col: "lastModifyDate", cellWidth: "20%" },
+        {
+            header: "분류코드",
+            col: "clCode",
+            cellWidth: "20%",
+            update: false,
+            updating: true,
+            write: true,
+            selectOption: true,
+            listItem: "clCode",
+            callTable: "clCode",
+        },
     ];
 
     const conditionList = [

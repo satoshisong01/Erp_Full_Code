@@ -4,8 +4,6 @@ import store from "store/configureStore";
 import { tabActive } from "components/tabs/TabsActions";
 
 export default function Location({ tableList }) {
-    console.log(tableList, "ㅣㅣㅣㅣㅣㅣ");
-
     return (
         <div className="location">
             <ul>

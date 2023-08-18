@@ -6,20 +6,26 @@ import "datatables.net-dt/js/dataTables.dataTables";
 //import { v4 as uuidv4 } from "uuid";
 //import axios from "axios";
 
-export default function DataPostModal({ refresh, postData, columns, onClose }) {
-    //const [clCode, setClCode] = useState("");
-
-    //const initializeState = () => {
-    //    const initialState = columns.reduce((acc, curr) => {
-    //        acc[curr.col] = "";
-    //        return acc;
-    //    }, {});
-    //    setData(initialState);
-    //};
-
+export default function DataPostModal({
+    refresh,
+    postData,
+    columns,
+    onClose,
+    saveList,
+}) {
     const [data, setData] = useState({});
+    useEffect(() => {
+        const initialData = columns.reduce((acc, column) => {
+            if (column.selectOption) {
+                acc[column.col] = saveList[0]; // 첫 번째 값 선택
+            } else {
+                acc[column.col] = "";
+            }
+            return acc;
+        }, {});
 
-    //console.log(clCode);
+        setData(initialData);
+    }, [columns, saveList]);
 
     const inputChange = (e) => {
         const { name, value } = e.target;
@@ -29,17 +35,10 @@ export default function DataPostModal({ refresh, postData, columns, onClose }) {
         }));
     };
 
+    console.log(saveList, "값나오나");
+
     const onAdd = async (e) => {
         e.preventDefault();
-
-        //const newClCode = clCode;
-        //setClCode(newClCode);
-
-        //const newData = {
-        //...data,
-        //clCode: newClCode,
-        //};
-
         postData(data);
         onClose();
     };
@@ -64,36 +63,70 @@ export default function DataPostModal({ refresh, postData, columns, onClose }) {
                                 {columns.map((column, index) => {
                                     if (column.write) {
                                         return (
-                                            <div key={index}>
-                                                <label>{column.header}:</label>
-                                                <input
-                                                    type="text"
-                                                    name={column.col}
-                                                    value={
-                                                        data && data[column.col]
-                                                    }
-                                                    onChange={inputChange}
-                                                />
+                                            <div
+                                                className="postBox"
+                                                key={index}>
+                                                <label className="postLabel">
+                                                    {column.require && (
+                                                        <span className="redStar">
+                                                            *
+                                                        </span>
+                                                    )}
+                                                    {column.header}:
+                                                </label>
+                                                {column.selectOption ? (
+                                                    <select
+                                                        name={column.col}
+                                                        className="postInput"
+                                                        onChange={inputChange}>
+                                                        {saveList.map(
+                                                            (item, index) => (
+                                                                <option
+                                                                    key={index}
+                                                                    value={
+                                                                        item
+                                                                    }>
+                                                                    {item}
+                                                                </option>
+                                                            )
+                                                        )}
+                                                    </select>
+                                                ) : (
+                                                    <input
+                                                        placeholder={
+                                                            column.header
+                                                        }
+                                                        className="postInput"
+                                                        type="text"
+                                                        name={column.col}
+                                                        value={
+                                                            data[column.col] ||
+                                                            ""
+                                                        }
+                                                        onChange={inputChange}
+                                                    />
+                                                )}
                                             </div>
                                         );
                                     }
                                     return null;
                                 })}
-                                <div className="modal-footer">
-                                    <button
-                                        type="button"
-                                        className="btn btn-default"
-                                        data-dismiss="modal"
-                                        onClick={onClose}>
-                                        Close
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary modal-btn-close"
-                                        onClick={onAdd}>
-                                        ADD
-                                    </button>
-                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button
+                                    type="button"
+                                    className="btn btn-default"
+                                    data-dismiss="modal"
+                                    onClick={onClose}>
+                                    Close
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary modal-btn-close"
+                                    id="modalSubmitBtn"
+                                    onClick={onAdd}>
+                                    ADD
+                                </button>
                             </div>
                         </form>
                     </div>

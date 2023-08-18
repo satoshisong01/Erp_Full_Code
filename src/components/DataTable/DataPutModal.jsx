@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "../../css/ModalSearch.css";
+import "../../components/modal/ModalSearch.css";
+import "../../components/modal/ModalSearch.css";
 
 export default function DataPutModal({
     onClose,
@@ -57,9 +58,20 @@ export default function DataPutModal({
                                 {columns.map((column, index) => {
                                     if (column.updating) {
                                         return (
-                                            <div key={index}>
-                                                <label>{column.header}:</label>
+                                            <div
+                                                className="postBox"
+                                                key={index}>
+                                                <label className="postLabel">
+                                                    {column.require && (
+                                                        <span className="redStar">
+                                                            *
+                                                        </span>
+                                                    )}
+                                                    {column.header}:
+                                                </label>
                                                 <input
+                                                    placeholder={column.header}
+                                                    className="postInput"
                                                     type="text"
                                                     name={column.col}
                                                     value={data[column.col]}
@@ -74,21 +86,22 @@ export default function DataPutModal({
                                     }
                                     return null;
                                 })}
-                                <div className="modal-footer">
-                                    <button
-                                        type="button"
-                                        className="btn btn-default"
-                                        data-dismiss="modal"
-                                        onClick={onClose}>
-                                        Close
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary modal-btn-close"
-                                        onClick={handleSaveChanges}>
-                                        Save changes
-                                    </button>
-                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button
+                                    type="button"
+                                    className="btn btn-default"
+                                    data-dismiss="modal"
+                                    onClick={onClose}>
+                                    Close
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary modal-btn-close"
+                                    id="modalSubmitBtn"
+                                    onClick={handleSaveChanges}>
+                                    Save changes
+                                </button>
                             </div>
                         </form>
                     </div>

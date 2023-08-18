@@ -1,9 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import store from "store/configureStore";
-import { tabActive } from "components/tabs/TabsActions";
-import { default as EgovLeftNav } from "components/leftmenu/EgovLeftNavReference";
-import EntrprsMembers from "./UserManagement/EntrprsMember/EntrprsMembers";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
@@ -14,12 +9,22 @@ function EnterpriseMemberMgmt() {
 
     const columns = [
         {
-            header: "ID",
+            header: "고유ID",
+            col: "uniqId",
+            cellWidth: "20%",
+            update: false,
+            updating: true,
+            write: true,
+            require: true,
+        },
+        {
+            header: "기업회원ID",
             col: "entMbId",
             cellWidth: "20%",
             update: false,
             updating: true,
             write: true,
+            //require: true,
         },
         {
             header: "기업명",
@@ -30,8 +35,16 @@ function EnterpriseMemberMgmt() {
             write: true,
         },
         {
+            header: "기업구분코드",
+            col: "entSeCd",
+            cellWidth: "20%",
+            update: false,
+            updating: true,
+            write: true,
+        },
+        {
             header: "비밀번호",
-            col: "password",
+            col: "entMbPw",
             cellWidth: "20%",
             update: true,
             updating: true,
@@ -45,19 +58,30 @@ function EnterpriseMemberMgmt() {
             updating: true,
             write: true,
         },
-        { header: "전화번호", col: "telNm", cellWidth: "20%" },
+        { header: "휴대폰", col: "mbTelNm", cellWidth: "20%" },
+        { header: "회사번호", col: "telNm", cellWidth: "20%" },
         { header: "가입일", col: "sbsDt", cellWidth: "20%" },
-        { header: "권한", col: "sbsDt", cellWidth: "20%" },
         { header: "작성일", col: "createDate", cellWidth: "20%" },
         { header: "작성자", col: "createIdBy", cellWidth: "20%" },
         { header: "수정일", col: "lastModifyDate", cellWidth: "20%" },
         { header: "수정자", col: "lastModifiedUserName", cellWidth: "20%" },
+        {
+            header: "그룹ID",
+            col: "groupId",
+            cellWidth: "20%",
+            update: false,
+            selectOption: true,
+            updating: true,
+            write: true,
+            listItem: "groupId",
+            callTable: "authorGroup",
+        },
     ];
 
     const conditionList = [
         {
-            title: "ID",
-            colName: "entMbId", //컬럼명
+            title: "기업ID",
+            colName: "uniqId", //컬럼명
             type: "input",
             value: "",
             searchLevel: "1",

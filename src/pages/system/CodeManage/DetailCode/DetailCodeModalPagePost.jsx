@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import "../../../../css/ModalSearch.css";
+import "../../../../components/modal/ModalSearch.css";
 import $ from "jquery";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";

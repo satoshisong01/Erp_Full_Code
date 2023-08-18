@@ -8,16 +8,52 @@ function PermissionGroupMgmt() {
     const [returnKeyWord, setReturnKeyWord] = useState("");
 
     const columns = [
-        { header: "ID", col: "groupId", cellWidth: "30%" },
-        { header: "그룹명", col: "groupNm", cellWidth: "30%" },
-        { header: "그룹코드", col: "groupCode", cellWidth: "30%" },
+        {
+            header: "그룹ID",
+            col: "groupId",
+            cellWidth: "30%",
+            update: false,
+            updating: true,
+            write: true,
+            require: true,
+        },
+        {
+            header: "그룹명",
+            col: "groupNm",
+            cellWidth: "30%",
+            updating: true,
+            write: true,
+        },
+        {
+            header: "그룹코드",
+            col: "groupCode",
+            cellWidth: "30%",
+            updating: true,
+            write: true,
+        },
+        {
+            header: "그룹설명",
+            col: "groupDc",
+            cellWidth: "30%",
+            updating: true,
+            write: true,
+        },
         { header: "가입일자", col: "groupCreatDe", cellWidth: "30%" },
-        { header: "전화번호", col: "mbTelNm", cellWidth: "30%" },
-        { header: "권한", col: "sbsDt", cellWidth: "30%" },
         { header: "작성일", col: "createDate", cellWidth: "30%" },
         { header: "작성자", col: "createIdBy", cellWidth: "30%" },
         { header: "수정일", col: "lastModifyDate", cellWidth: "30%" },
         { header: "수정자", col: "lastModifiedUserName", cellWidth: "30%" },
+        {
+            header: "조직ID",
+            col: "orgId",
+            cellWidth: "30%",
+            update: false,
+            updating: true,
+            write: true,
+            selectOption: true,
+            listItem: "orgId",
+            callTable: "orgNzt",
+        },
     ];
 
     const conditionList = [

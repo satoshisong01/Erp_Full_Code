@@ -8,10 +8,39 @@ function OrganizationMgmt() {
     const [returnKeyWord, setReturnKeyWord] = useState("");
 
     const columns = [
-        { header: "ID", col: "orgId", cellWidth: "30%" },
-        { header: "조직이름", col: "orgNm", cellWidth: "30%" },
-        { header: "조직코드", col: "orgCd", cellWidth: "30%" },
-        { header: "설명", col: "orgDc", cellWidth: "30%" },
+        {
+            header: "조직ID",
+            col: "orgId",
+            cellWidth: "30%",
+            update: false,
+            updating: true,
+            write: true,
+            require: true,
+        },
+        {
+            header: "조직이름",
+            updating: true,
+            write: true,
+            require: true,
+            col: "orgNm",
+            cellWidth: "30%",
+        },
+        {
+            header: "조직코드",
+            updating: true,
+            write: true,
+            require: true,
+            col: "orgCd",
+            cellWidth: "30%",
+        },
+        {
+            header: "조직설명",
+            updating: true,
+            write: true,
+            require: true,
+            col: "orgDc",
+            cellWidth: "30%",
+        },
         { header: "작성일", col: "createDate", cellWidth: "30%" },
         { header: "작성자", col: "createIdBy", cellWidth: "30%" },
         { header: "수정일", col: "lastModifyDate", cellWidth: "30%" },

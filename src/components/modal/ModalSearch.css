@@ -326,3 +326,38 @@
     margin: 0;
     margin-left: 10px;
 }
+
+#modalSubmitBtn {
+    margin: 0;
+    margin-left: 10px;
+}
+
+.postBox {
+    width: 90%;
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+.postLabel {
+    text-align: right;
+    padding-right: 20px;
+    width: 25%;
+}
+
+.postInput {
+    width: 75%;
+}
+
+.redStar {
+    color: red;
+    margin: 2px;
+}
+
+.modal-footer {
+    box-sizing: border-box;
+    text-align: center;
+    width: 100%;
+    border-top: none;
+}
