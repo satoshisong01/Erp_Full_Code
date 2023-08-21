@@ -61,7 +61,7 @@ export default function DataPostModal({
                         <form className="product-modal-body">
                             <div className="submitProduct">
                                 {columns.map((column, index) => {
-                                    if (column.write) {
+                                    if (column.add) {
                                         return (
                                             <div
                                                 className="postBox"

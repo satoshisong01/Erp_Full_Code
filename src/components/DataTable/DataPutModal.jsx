@@ -56,7 +56,7 @@ export default function DataPutModal({
                         <form className="product-modal-body">
                             <div className="submitProduct">
                                 {columns.map((column, index) => {
-                                    if (column.updating) {
+                                    if (column.modify) {
                                         return (
                                             <div
                                                 className="postBox"
@@ -78,7 +78,7 @@ export default function DataPutModal({
                                                     //value={getNestedData(data, column.col) || ""}
                                                     onChange={inputChange}
                                                     disabled={
-                                                        column.update === false
+                                                        column.enable === false
                                                     }
                                                 />
                                             </div>

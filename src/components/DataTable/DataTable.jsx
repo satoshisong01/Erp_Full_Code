@@ -30,7 +30,7 @@ const DataTable = (props) => {
     const [isLoading, setIsLoading] = useState(true); //로딩화면(true 일때 로딩화면)
     //const [uniqueValues, setUniqueValues] = useState([]); //추출한 col값 저장
     const addData = columns[columns.length - 1].listItem;
-    const callTable = columns[columns.length - 1].callTable;
+    const addListURL = columns[columns.length - 1].addListURL;
 
     const [saveList, setSaveList] = useState([]);
 
@@ -260,9 +260,8 @@ const DataTable = (props) => {
 
     const addClick = async () => {
         setIsLoading(true); // 로딩 화면 활성화
-
         if (addData) {
-            let url = `/api${suffixUrl}/${callTable}/listAll.do`;
+            let url = `/api${suffixUrl}/${addListURL}/listAll.do`;
             let requestData = { lockAt: "Y" };
 
             let resultData = await axiosFetch(url, requestData);
