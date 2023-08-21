@@ -22,6 +22,7 @@
 }
 .mg-l-15 {
     margin-left: 15px;
+    margin-bottom: 15px;
 }
 .mg-b-15 {
     margin-bottom: 15px;
@@ -379,6 +380,11 @@
 }
 .b-orange span {
     color: rgb(119, 45, 23);
+}
+
+select {
+    appearance: auto;
+    -webkit-appearance: auto;
 }
 
 /* 반응형 스타일 */

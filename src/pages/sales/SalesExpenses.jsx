@@ -1,12 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import store from "store/configureStore";
-import { tabActive } from "components/tabs/TabsActions";
-import SalesCosts from "./SalesCost/SalesCosts";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
-import DataTableDummy from "components/DataTable/DataTableDummy";
 
 /** 영업관리-영업비용 */
 function SalesExpenses() {
@@ -87,32 +82,16 @@ function SalesExpenses() {
 
     const addBtn = [""];
 
-    const dummyData = [
-        {
-            projectName: "PS 하부서편",
-            byeDay: "2월31일",
-            won: "5,000,000",
-            beeGo: "beeGo",
-        },
-        {
-            projectName: "PS 하부서편",
-            byeDay: "2월31일",
-            won: "5,000,000",
-            beeGo: "beeGo",
-        },
-    ];
-
     return (
         <>
             <Location tableList={tableList} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
-            <DataTableDummy
+            <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
                 suffixUrl="/system/code"
                 currentPage="clCode"
                 addBtn={addBtn}
-                dummyData={dummyData}
             />
         </>
     );

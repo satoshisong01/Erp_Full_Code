@@ -270,4 +270,5 @@ button {
 .btn:focus {
     outline: none;
     outline-offset: none;
+    box-shadow: none;
 }

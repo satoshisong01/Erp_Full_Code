@@ -9,24 +9,10 @@ function DetailCode() {
 
     const columns = [
         {
-            header: "그룹코드",
-            col: "codeId",
-            cellWidth: "20%",
-            update: false,
-            updating: true,
-            write: true,
-        },
-        {
-            header: "그룹코드명",
-            col: "codeIdNm",
-            cellWidth: "20%",
-            updating: true,
-            write: true,
-        },
-        {
             header: "상세코드",
             col: "code",
             cellWidth: "20%",
+            update: false,
             updating: true,
             write: true,
         },
@@ -55,6 +41,26 @@ function DetailCode() {
         { header: "작성일", col: "createDate", cellWidth: "20%" },
         { header: "수정자", col: "lastModifiedIdBy", cellWidth: "20%" },
         { header: "수정일", col: "lastModifyDate", cellWidth: "20%" },
+        {
+            header: "그룹코드명",
+            col: "codeIdNm",
+            cellWidth: "20%",
+            updating: true,
+            update: false,
+            //selectOption: true,
+            //write: true,
+        },
+        {
+            header: "그룹코드",
+            col: "codeId",
+            cellWidth: "20%",
+            update: false,
+            updating: true,
+            listItem: "codeId",
+            callTable: "groupCode",
+            selectOption: true,
+            write: true,
+        },
     ];
 
     const conditionList = [

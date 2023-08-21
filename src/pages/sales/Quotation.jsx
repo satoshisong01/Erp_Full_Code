@@ -1,13 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import store from "store/configureStore";
-import { tabActive } from "components/tabs/TabsActions";
-import { default as EgovLeftNav } from "components/leftmenu/EgovLeftNavSales";
-import EstimateMgmts from "./EstimateMgmt/EstimateMgmts";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
-import DataTableDummy from "components/DataTable/DataTableDummy";
 
 /** 영업관리-견적서관리 */
 function Quotation() {
@@ -89,34 +83,16 @@ function Quotation() {
 
     const addBtn = ["costPage"];
 
-    const dummyData = [
-        {
-            projectName: "PS 하부서편",
-            byeDay: "2월31일",
-            won: "5,000,000",
-            beeGo: "beeGo",
-            gooBoom: "계획",
-        },
-        {
-            projectName: "PS 하부서편",
-            byeDay: "2월31일",
-            won: "5,000,000",
-            beeGo: "beeGo",
-            gooBoom: "계획",
-        },
-    ];
-
     return (
         <>
             <Location tableList={tableList} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
-            <DataTableDummy
+            <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
                 suffixUrl="/system/code"
                 currentPage="clCode"
                 addBtn={addBtn}
-                dummyData={dummyData}
             />
         </>
     );

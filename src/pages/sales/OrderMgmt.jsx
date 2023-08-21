@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
-import DataTableDummy from "components/DataTable/DataTableDummy";
 import FormDataTable from "components/DataTable/FormDataTable";
 
 /** 영업관리-수주관리 */
@@ -29,7 +28,7 @@ function OrderMgmt() {
         {
             header: "수주일",
             col: "startDate",
-            cellWidth: "50%",
+            cellWidth: "20%",
             updating: true,
             write: true,
         },
@@ -142,7 +141,7 @@ function OrderMgmt() {
         <>
             <Location tableList={tableList} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
-            <DataTableDummy
+            <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
                 suffixUrl="/system/code"
