@@ -5,6 +5,9 @@
 }
 
 /* margin css */
+.mg-t-5 {
+    margin-top: 5px;
+}
 .mg-t-20 {
     margin-top: 20px;
 }
@@ -176,17 +179,17 @@
 .table-content tbody tr:last-child {
     border-bottom: 1px solid #cccccccc;
 }
+.table-title {
+    font-weight: bold;
+    font-size: large;
+    margin-bottom: 5px;
+}
 
+.table-sub {
+    font-weight: bold;
+    margin-bottom: 3px;
+}
 .table-content {
-    .table-title {
-        font-weight: bold;
-        font-size: large;
-        margin-bottom: 10px;
-    }
-    .table-sub {
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
     .table-header th {
         text-align: center;
         padding: 5px 0 5px 0;
@@ -195,16 +198,19 @@
         color: #eeeeee;
         border-left: 1px solid rgb(89, 102, 116);
         border-bottom: 1px solid rgb(89, 102, 116);
-        font-weight: 300;
+        font-weight: 400;
     }
     .table-row {
         display: flex;
 
+        .flex-col-1 {
+            flex: 1;
+        }
         .flex-col-2 {
             flex: 2;
         }
-        .flex-col-1 {
-            flex: 1;
+        .flex-col-4 {
+            flex: 4;
         }
     }
 }
@@ -217,7 +223,6 @@
     font-weight: 400;
     font-size: 15px;
     color: rgb(74, 84, 94);
-
     .wrap {
         display: flex;
         flex-wrap: wrap;
@@ -231,11 +236,24 @@
     .b-gray {
         background-color: rgba(112, 128, 144, 0.171);
     }
-    .b-light {
-        /* background-color: aquamarine; */
+    .b-highlight {
+        background-color: cornsilk;
     }
-    .line-t-2 {
+    .col-header {
+        background-color: slategrey;
+        font-weight: 400;
+        color: #eeeeee;
+        border-left: 1px solid rgb(89, 102, 116);
+    }
+    .b-lightblue {
+        background-color: rgba(182, 203, 231, 0.541);
+    }
+    .line-t {
         border-top: 1px solid rgba(112, 128, 144, 0.5);
+    }
+    .line-t-b {
+        border-top: 1px solid rgba(112, 128, 144, 0.5);
+        border-bottom: 1px solid rgba(112, 128, 144, 0.5);
     }
 }
 
