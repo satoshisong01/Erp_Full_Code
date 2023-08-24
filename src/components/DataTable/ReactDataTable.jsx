@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
 import DataTableButton from "components/button/DataTableButton";
 import { axiosFetch, axiosPost } from "api/axiosFetch";
-import { useTable, usePagination, useSortBy, useRowSelect } from "react-table";
+import { useTable, usePagination, useSortBy, useRowSelect, } from "react-table";
 
 const ReactDataTable = (props) => {
-    const { returnKeyWord, columns, suffixUrl, currentPage, dummyData, newRowData, btnClick, addBtn } = props;
+    const { returnKeyWord, columns, suffixUrl, currentPage, dummyData, newRowData, addBtn } = props;
 
     const [tableData, setTableData] = useState([]);
     const [changPageSize, setChangPageSize] = useState(10); // 초기 페이지 크기
@@ -17,65 +17,49 @@ const ReactDataTable = (props) => {
         fetchAllData();
     }, []);
 
-    useEffect(() => {
-        console.log("⭕ selectDatas: ", selectDatas);
-    }, [selectDatas]);
+    // useEffect(() => {
+    //     console.log("테이블데이터: ", tableData);
+    // }, [tableData])
+
+    // useEffect(() => {
+    //     console.log("셀렉트데이터: ", selectDatas);
+    // }, [selectDatas]);
 
     const columnsConfig = useMemo(() => columns.map(column => ({
         Header: column.header,
         accessor: column.col,
         sortable: true,
-        width: column.cellWidth,
+        width: column.cellWidth
     })), [columns]);
 
     /* newRowData 변동 시 새로운 행 추가 */
     useEffect(() => {
-        console.log("⭕ tableData> newRowData: ", newRowData);
         if (newRowData && Object.keys(newRowData).length !== 0) {
-            const updatedTableData = [ { ...newRowData }, ...tableData];
             addClick(newRowData);
-            // setTableData(updatedTableData);
         }
     }, [newRowData]);
 
     // useEffect(() => {
-    //     console.log("⭕ tableData: ", tableData);
-    // }, [tableData]);
+    //     if (returnKeyWord) {
+    //         searchData(returnKeyWord);
+    //     }
+    // }, [returnKeyWord]);
 
-    /* returnKeyWord 변동 시 데이터 검색 실행 */
-    useEffect(() => {
-        if (returnKeyWord) {
-            searchData(returnKeyWord);
-        }
-    }, [returnKeyWord]);
-
-    useEffect(() => {
-        fetchAllData();
-    }, [changPageSize]);
-
-    useEffect(() => {
-        if (btnClick.includes('add')) {
-            // addClick(selectData)
-        } else if (btnClick.includes('delete')) {
-            // deleteClick(selectData)
-        }
-    }, [btnClick]);
+    /* 선택된 값에 따라 페이징 */
+    // useEffect(() => {
+    //     fetchAllData();
+    // }, [changPageSize]);
 
     /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
         if (suffixUrl === "") return;
-        // http://192.168.0.113:8080/api/baseInfrm/product/pjOrdrInfo/listAll.do
         const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
         const requestData = { useAt: "Y" };
 
         const resultData = await axiosFetch(url, requestData);
         if (resultData) {
-            // console.log("⭕ resultData: ", resultData);
             setTableData(resultData);
         }
-        // if (dummyData) {
-        //     setTableData(dummyData);
-        // }
     };
 
     /* 데이터 수정 */
@@ -88,47 +72,53 @@ const ReactDataTable = (props) => {
         if (suffixUrl === "") return;
     };
 
+    /* 새로고침 */
+    const refreshClick = () => {
+        fetchAllData(); // 임시
+    }
+
     /* 데이터 추가 */
     const addClick = async (addData) => {
-        // http://192.168.0.113:8080/api/baseInfrm/product/pjOrdrInfo/add.do
         if (suffixUrl === "") return;
-        // const url = `/api${suffixUrl}/${currentPage}/add.do`;
-        const url = `/api/baseInfrm/product/pjOrdrInfo/add.do`;
+        const url = `/api${suffixUrl}/${currentPage}/add.do`;
         const dataToSend = {...addData};
 
         const resultData = await axiosPost(url, dataToSend);
-        if (resultData) {
-            console.log("⭕ 추가 완: ", resultData);
+        if (resultData) { //새로고침
             fetchAllData();
         }
     };
 
-    /* 데이터 검색, returnKeyWord: 검색 */
+    /* 데이터 검색 */
     const searchData = async (returnKeyWord) => {
-        console.log("⭕ returnKeyWord: ", returnKeyWord);
-    };
-
-    const refreshClick = () => {
-        
+        if (suffixUrl === "") return;
+        // const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
+        // const requestData = {
+        //     useAt: returnKeyWord.radioOption,
+        //     searchKeyword: returnKeyWord.searchKeyword,
+        //     searchCondition: returnKeyWord.searchCondition,
+        // };
+        // const resultData = await axiosScan(url, requestData);
     }
 
+    /* 전체 선택 시 selectDatas에 저장 또는 삭제 */
     const onSelectAll = (e) => {
         const isSelected = e.target.checked; 
-        alert(isSelected)
-        if (isSelected) {
-            setSelectDatas(tableData);
+
+        if (isSelected && tableData) {
+            setTableData(resultData => {
+                setSelectDatas(resultData);
+                return resultData;
+            });
         } else {
             setSelectDatas([]);
         }
     }
 
+    /* 선택된 행 selectDatas에 저장 또는 삭제 */
     const onSelectRow = (e, row) => {
         const data = row.original;
         const isSelected = e.target.checked; 
-
-        console.log("⭕ data: ", data);
-        console.log("⭕ selectDatas: ", selectDatas);
-        console.log("⭕ includes: ", selectDatas.includes(data));
 
         if (isSelected) {
             if (!selectDatas.includes(data)) {
@@ -164,15 +154,16 @@ const ReactDataTable = (props) => {
         useRowSelect,
         hooks => {
             hooks.visibleColumns.push(columns => [
-                // 선택 체크박스 컬럼 추가
                 {
                     id: 'selection',
                     Header: ({ getToggleAllPageRowsSelectedProps }) => (
                         <div>
                             <input
-                                type="checkbox" {...getToggleAllPageRowsSelectedProps()}
+                                type="checkbox"
+                                {...getToggleAllPageRowsSelectedProps()}
                                 onClick={onSelectAll}
                                 className="table-checkbox"
+                                indeterminate="false"
                              />
                         </div>
                     ),
@@ -182,28 +173,28 @@ const ReactDataTable = (props) => {
                                 type="checkbox" {...row.getToggleRowSelectedProps()}
                                 onClick={(e) => onSelectRow(e, row)}
                                 className="table-checkbox"
+                                indeterminate="false"
                             />
                         </div>
                     ),
-                    width: 35, // 체크박스 컬럼의 너비 조절
+                    width: 35,
                 },
-                ...columns,
+               ...columns
             ]);
-        }
-        
+        },
     );
 
 
     return (
         <>
-            {/* <DataTableButton
-                    deleteClick={deleteClick}
-                    refreshClick={refreshClick}
-                    addBtn={addBtn}
-                    columns={columns}
-                    suffixUrl={suffixUrl}
-                    selectedData={[]}
-            /> */}
+            <DataTableButton
+                deleteClick={deleteClick}
+                refreshClick={refreshClick}
+                addBtn={addBtn}
+                columns={columns}
+                suffixUrl={suffixUrl}
+                selectedData={selectDatas}
+            />
             <div>
                 <span className="mg-r-5">Show</span>
                 <select value={changPageSize} onChange={e => setChangPageSize(Number(e.target.value))} className="select">
