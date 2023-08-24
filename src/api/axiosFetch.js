@@ -75,7 +75,7 @@ export async function axiosDelete(url, requestData) {
 
 /* axios 데이터 추가하기 */
 export async function axiosPost(url, requestData) {
-    console.log(requestData);
+    console.log(requestData, "추가하기위해서 받는 데이터");
     const headers = {
         Authorization: process.env.REACT_APP_POST,
         "Content-Type": "application/json",
@@ -83,6 +83,7 @@ export async function axiosPost(url, requestData) {
 
     try {
         const response = await axios.post(url, requestData, { headers });
+        console.log(response, "일반회원관리 어케되는거지");
         if (Number(response.data.resultCode) === Number(CODE.RCV_SUCCESS)) {
             return response.data.result.resultData;
         } else {

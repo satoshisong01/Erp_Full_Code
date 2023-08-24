@@ -50,7 +50,8 @@ function ProgramList() {
         {
             title: "파일명",
             colName: "selectedDate",
-            type: "datepicker",
+            type: "input",
+            value: "",
             searchLevel: "0",
         },
         {

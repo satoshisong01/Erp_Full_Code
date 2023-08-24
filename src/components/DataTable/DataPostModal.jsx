@@ -91,9 +91,22 @@ export default function DataPostModal({
                                                             )
                                                         )}
                                                     </select>
+                                                ) : column.lockAt ? (
+                                                    <select
+                                                        name={column.col}
+                                                        className="postInput"
+                                                        onChange={inputChange}>
+                                                        <option value="Y">
+                                                            Y
+                                                        </option>
+                                                        <option value="N">
+                                                            N
+                                                        </option>
+                                                    </select>
                                                 ) : (
                                                     <input
                                                         placeholder={
+                                                            column.placeholder ||
                                                             column.header
                                                         }
                                                         className="postInput"

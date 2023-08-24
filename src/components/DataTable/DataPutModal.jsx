@@ -7,7 +7,6 @@ export default function DataPutModal({
     initialData,
     columns,
     updateData,
-    getNestedData,
 }) {
     const initializeState = () => {
         const initialState = columns.reduce((acc, curr) => {

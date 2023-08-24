@@ -99,8 +99,7 @@ export default function SearchList({ conditionList, onSearch }) {
 
     /* 검색 이벤트 */
     const searchClick = (e) => {
-        const keyArr = Object.keys(searchData);
-        console.log(keyArr, "이게머얀");
+        const keyArr = Object.keys(searchData); //컬럼명
         let searchLevel = "0";
 
         if (keyArr.length === 1) {

@@ -32,7 +32,7 @@ const URL = {
     OrganizationMgmt: "/reference/user/organization", //사용자관리>조직부서정보관리
 
     CostMgmt: "/reference/cost", //원가기준관리
-    LaborRate: "/reference/cost/laborRate", //원가기준관리>인건비요율
+    LaborRate: "/reference/cost/laborRate", //원가기준관리>인건비단가
     GradeWageLaborCost: "/reference/cost/gradeWageLaborCost", //원가기준관리>급별단가(인건비)
     GradeWageExpense: "/reference/cost/gradeWageExpense", //원가기준관리>급별단가(경비)
     CostIndex: "/reference/cost/CostIndex", //원가기준관리>사전원가지표

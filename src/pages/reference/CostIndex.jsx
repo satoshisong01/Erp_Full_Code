@@ -6,7 +6,8 @@ import DataTable from "components/DataTable/DataTable";
 function CostIndex() {
     const columns = [
         { header: "분류", col: "cbTypeCode", cellWidth: "30%" },
-        { header: "간접원가", col: "groupNm", cellWidth: "30%" },
+        { header: "간접원가", col: "cbPer", cellWidth: "30%" },
+        { header: "원가명", col: "cbName", cellWidth: "30%" },
         { header: "판매비", col: "groupCode", cellWidth: "30%" },
         { header: "사내본사비", col: "groupCreatDe", cellWidth: "30%" },
         { header: "일반관리비", col: "mbTelNm", cellWidth: "30%" },

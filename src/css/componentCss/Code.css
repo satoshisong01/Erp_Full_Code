@@ -198,3 +198,31 @@
         transform: rotate(360deg);
     }
 }
+
+.dataTable_wrapper,
+body {
+    cursor: default;
+    outline: none;
+    caret-color: transparent;
+}
+
+#dataTable {
+    cursor: default;
+    outline: none;
+    caret-color: transparent;
+}
+.table {
+    cursor: default;
+    caret-color: transparent;
+}
+input {
+    caret-color: auto;
+}
+
+#dataTable > thead > tr > th {
+    font-size: 12px;
+}
+
+table.dataTable th {
+    white-space: nowrap; /* 글자 줄바꿈 방지 */
+}

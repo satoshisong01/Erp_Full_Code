@@ -315,7 +315,7 @@ export default function BusinessUtilBtn({
                     추가
                 </button>
             </div>*/}
-            <div className="tableBtn">
+            <div className="tableBtn tableBtnPosition">
                 {showPreCostPaper && (
                     <PopupButton
                         targetUrl={URL.CostStatement}

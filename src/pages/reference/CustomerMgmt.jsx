@@ -8,36 +8,49 @@ function CustomerMgmt() {
     const [returnKeyWord, setReturnKeyWord] = useState("");
 
     const columns = [
-        { header: "회사명", col: "createDate", cellWidth: "30%" },
-        { header: "거래처코드", col: "createDate", cellWidth: "30%" },
-        { header: "사업자번호", col: "createDate", cellWidth: "30%" },
-        { header: "대표자", col: "createDate", cellWidth: "30%" },
-        { header: "회사번호", col: "createDate", cellWidth: "30%" },
-        { header: "FAX번호", col: "createDate", cellWidth: "30%" },
-        { header: "이메일", col: "createDate", cellWidth: "30%" },
-        { header: "입금계좌", col: "createDate", cellWidth: "30%" },
-        { header: "주소", col: "createDate", cellWidth: "30%" },
-        { header: "업태", col: "createIdBy", cellWidth: "30%" },
+        { header: "거래처타입", col: "cltType", cellWidth: "30%" },
+        { header: "거래처명", col: "cltNm", cellWidth: "30%" },
+        { header: "거래처ID", col: "cltId", cellWidth: "30%" },
+        { header: "기업회원ID", col: "esntlId", cellWidth: "30%" },
+        { header: "거래처코드", col: "cltCode", cellWidth: "30%" },
+        { header: "사업자번호", col: "cltBussnum", cellWidth: "30%" },
+        { header: "대표자", col: "cltOwnrnm", cellWidth: "30%" },
+        { header: "회사번호", col: "cltTelno", cellWidth: "30%" },
+        { header: "FAX번호", col: "cltFaxnum", cellWidth: "30%" },
+        { header: "이메일", col: "cltEmail", cellWidth: "30%" },
+        { header: "주소", col: "cltAddr", cellWidth: "30%" },
+        { header: "업태", col: "cltBusstype", cellWidth: "30%" },
+        {
+            header: "품목ID",
+            col: "pdiId",
+            cellWidth: "20%",
+            enable: false,
+            modify: true,
+            add: true,
+            selectOption: true,
+            listItem: "pdiId",
+            addListURL: "productInfo",
+        },
     ];
 
     const conditionList = [
         {
-            title: "회사명",
-            colName: "pgNm", //컬럼명
+            title: "거래처명",
+            colName: "cltNm", //컬럼명
             type: "input",
             value: "",
             searchLevel: "1",
         },
         {
             title: "대표자",
-            colName: "pgCode", //컬럼명
+            colName: "cltOwnrnm", //컬럼명
             type: "input",
             value: "",
             searchLevel: "2",
         },
         {
             title: "주소",
-            colName: "createIdBy", //컬럼명
+            colName: "cltAddr", //컬럼명
             type: "input",
             value: "",
             searchLevel: "3",
@@ -57,6 +70,7 @@ function CustomerMgmt() {
     };
 
     const addBtn = [""];
+
     return (
         <>
             <Location tableList={tableList} />
@@ -64,12 +78,11 @@ function CustomerMgmt() {
             <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl=""
-                currentPage=""
+                suffixUrl="/baseInfrm/client"
+                currentPage="client"
                 addBtn={addBtn}
             />
         </>
     );
 }
-
 export default CustomerMgmt;

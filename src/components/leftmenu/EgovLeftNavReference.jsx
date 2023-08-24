@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { tabActive } from 'components/tabs/TabsActions';
-import NavLinkTabs from 'components/tabs/NavLinkTabs';
-import store from 'store/configureStore';
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { tabActive } from "components/tabs/TabsActions";
+import NavLinkTabs from "components/tabs/NavLinkTabs";
+import store from "store/configureStore";
 
 function EgovLeftNavReference(props) {
     const { label, selectLabel } = props;
-    const [activeSub, setActiveSub] = useState('');
-    const [activeLabel, setActiveLabel] = useState('');
+    const [activeSub, setActiveSub] = useState("");
+    const [activeLabel, setActiveLabel] = useState("");
 
     /* header 또는 tabs에서 선택된 라벨을 저장  */
     useEffect(() => {
         const propsLabel = selectLabel || label;
-        let parentLabel = '';
+        let parentLabel = "";
 
         for (const item of menuItems) {
             if (item.label === propsLabel) {
                 parentLabel = item.label;
                 break;
             }
-        
+
             for (const subMenu of item.subMenus) {
                 if (subMenu.label === propsLabel) {
                     parentLabel = item.label;
@@ -28,21 +28,44 @@ function EgovLeftNavReference(props) {
             }
         }
         setActiveSub(selectLabel || label);
-        if(activeLabel !== parentLabel) setActiveLabel(parentLabel);
+        if (activeLabel !== parentLabel) setActiveLabel(parentLabel);
     }, [label, selectLabel]);
 
     const clickHandle = (label, sub) => {
-        setActiveSub(sub)
-        setActiveLabel(label)
+        setActiveSub(sub);
+        setActiveLabel(label);
         store.dispatch(tabActive(sub));
     };
 
     const menuItems = [
-        { label: '품목관리',     subMenus: [{ label: '품목그룹관리' }, { label: '품목상세관리' }] },
-        { label: '거래처관리',   subMenus: [{ label: '고객사' }, { label: '협력사' }] },
-        { label: '사업장관리',   subMenus: [] },
-        { label: '사용자관리',   subMenus: [{ label: '업무회원관리' }, { label: '일반회원관리' }, { label: '기업회원관리' }, { label: '권한그룹정보관리' }, { label: '조직부서정보관리' },] },
-        { label: '원가기준관리', subMenus: [{ label: '인건비요율' }, { label: '급별단가(인건비)' }, { label: '급별단가(경비)' }, { label: '사전원가지표' }] },
+        {
+            label: "품목관리",
+            subMenus: [{ label: "품목그룹관리" }, { label: "품목상세관리" }],
+        },
+        {
+            label: "거래처관리",
+            subMenus: [{ label: "고객사" }, { label: "협력사" }],
+        },
+        //{ label: '사업장관리',   subMenus: [] },
+        {
+            label: "사용자관리",
+            subMenus: [
+                { label: "업무회원관리" },
+                { label: "일반회원관리" },
+                { label: "기업회원관리" },
+                { label: "권한그룹정보관리" },
+                { label: "조직부서정보관리" },
+            ],
+        },
+        {
+            label: "원가기준관리",
+            subMenus: [
+                { label: "인건비단가" },
+                { label: "급별단가(인건비)" },
+                { label: "급별단가(경비)" },
+                { label: "사전원가지표" },
+            ],
+        },
     ];
 
     return (
@@ -55,9 +78,19 @@ function EgovLeftNavReference(props) {
                             <li key={menuItem.label}>
                                 <NavLinkTabs
                                     to="#"
-                                    onClick={(e) => clickHandle(menuItem.label, menuItem.subMenus.length > 0 ? menuItem.subMenus[0].label : menuItem.label)}
-                                    activeName={activeLabel === menuItem.label ? menuItem.label : null}
-                                >
+                                    onClick={(e) =>
+                                        clickHandle(
+                                            menuItem.label,
+                                            menuItem.subMenus.length > 0
+                                                ? menuItem.subMenus[0].label
+                                                : menuItem.label
+                                        )
+                                    }
+                                    activeName={
+                                        activeLabel === menuItem.label
+                                            ? menuItem.label
+                                            : null
+                                    }>
                                     {menuItem.label}
                                 </NavLinkTabs>
 
@@ -67,9 +100,13 @@ function EgovLeftNavReference(props) {
                                             <li key={subMenu.label}>
                                                 <NavLinkTabs
                                                     to="#"
-                                                    onClick={(e) => clickHandle(subMenu.label, subMenu.label)}
-                                                    activeName={activeSub}
-                                                >
+                                                    onClick={(e) =>
+                                                        clickHandle(
+                                                            subMenu.label,
+                                                            subMenu.label
+                                                        )
+                                                    }
+                                                    activeName={activeSub}>
                                                     {subMenu.label}
                                                 </NavLinkTabs>
                                             </li>
@@ -89,5 +126,5 @@ const mapStateToProps = (data) => ({
     label: data.tabs.label,
     selectLabel: data.tabs.selectLabel,
 });
-  
+
 export default connect(mapStateToProps)(EgovLeftNavReference);

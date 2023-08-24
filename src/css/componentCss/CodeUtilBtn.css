@@ -31,6 +31,10 @@
     /*margin-top: px;*/
 }
 
+.tableBtnPosition {
+    position: relative;
+}
+
 #utilBtn,
 #delUtil,
 #addUtil,
