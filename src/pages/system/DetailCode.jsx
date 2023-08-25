@@ -59,7 +59,7 @@ function DetailCode() {
             enable: false,
             modify: true,
             listItem: "codeId",
-            addListURL: "groupCode",
+            addListURL: "/system/code/groupCode",
             selectOption: true,
             add: true,
         },

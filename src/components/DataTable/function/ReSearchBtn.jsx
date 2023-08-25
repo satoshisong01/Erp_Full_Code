@@ -21,6 +21,8 @@ const ReSearchBtn = ({
             $(dataTableRef.current).DataTable().destroy();
         }
         //setIsSearching(!isSearching); // 로딩 상태 활성화
+        $(dataTableRef.current).DataTable().destroy();
+
         await fetchAllData();
     };
 

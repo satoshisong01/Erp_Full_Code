@@ -55,7 +55,7 @@ function ItemDetailMgmt() {
             modify: true,
             add: true,
             listItem: "pgId",
-            addListURL: "productGroup",
+            addListURL: "/baseInfrm/product/productGroup",
             require: true,
         },
     ];

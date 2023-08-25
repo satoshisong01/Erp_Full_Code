@@ -54,7 +54,7 @@ function PermissionGroupMgmt() {
             add: true,
             selectOption: true,
             listItem: "orgId",
-            addListURL: "orgNzt",
+            addListURL: "/baseInfrm/member/orgNzt",
         },
     ];
 

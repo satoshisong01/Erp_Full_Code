@@ -10,6 +10,8 @@ import {
 } from "api/axiosFetch";
 import $ from "jquery";
 import "../../css/componentCss/Code.css";
+//import MouseDc from "components/MouseDc";
+//import { Tooltip } from "react-tooltip";
 import DataPutModal from "./DataPutModal";
 import DataTableButton from "components/button/DataTableButton";
 import DataPostModal from "./DataPostModal";
@@ -31,6 +33,12 @@ const DataTable = (props) => {
     const addListURL = columns[columns.length - 1].addListURL;
 
     const [saveList, setSaveList] = useState([]);
+
+    //const [showTooltip, setShowTooltip] = useState(false); //테이블 마우스 커서 설명
+
+    //const [changeInt, setChangeInt] = useState([]);
+    //const pageLength = 10;
+    //const currentPages = 1;
     const [currentPages, setCurrentPages] = useState(1);
 
     const [pageLength, setPageLength] = useState(10);
@@ -152,6 +160,10 @@ const DataTable = (props) => {
     const deleteData = async () => {
         if (suffixUrl === "") return;
         const url = `/api${suffixUrl}/${currentPage}/removeAll.do`;
+        // API 호출 등의 로직 실행
+        //const resultData = await axiosDelete(url, {
+        //    data: changeInt,
+        //});
         const resultData = await axiosDelete(url, {
             data: changeInt,
         });
@@ -222,6 +234,9 @@ const DataTable = (props) => {
         const resultData = await axiosScan(url, requestData);
         console.log(resultData, "결과값을 봐야지");
         fetchAllData();
+        //if (resultData) {
+        //    fetchAllData();
+        //}
     };
 
     useEffect(() => {
@@ -278,7 +293,7 @@ const DataTable = (props) => {
     const addClick = async () => {
         setIsLoading(true); // 로딩 화면 활성화
         if (addData) {
-            let url = `/api${addListURL}/listAll.do`;
+            let url = `/api${suffixUrl}/${addListURL}/listAll.do`;
             let requestData = { lockAt: "Y" };
 
             let resultData = await axiosFetch(url, requestData);
@@ -316,6 +331,33 @@ const DataTable = (props) => {
     const printClick = () => {
         console.log("출력!");
     };
+
+    //useEffect(() => {
+    //    fetchAllData(); /* 맨 처음 전체 데이터 불러오기 */
+    //}, []);
+
+    //join된 테이블 값 찾아와서 띄워주기 위한 코드
+    //productGroup를 변수로 변경시켜 이전 컴포넌트에서 보내줄것
+    //function getNestedData(obj, path) {
+    //    const properties = path.split(".");
+    //    let value = obj;
+
+    //    console.log(value, "벨류값은?");
+    //    for (const property of properties) {
+    //        if (value && value.hasOwnProperty(property)) {
+    //            value = value[property];
+    //        } else if (
+    //            value.productGroup &&
+    //            value.productGroup.hasOwnProperty(property)
+    //        ) {
+    //            value = value.productGroup[property];
+    //        } else {
+    //            return null;
+    //        }
+    //    }
+
+    //    return value;
+    //}
     useEffect(() => {
         if (returnKeyWord) {
             searchData(returnKeyWord);
@@ -444,7 +486,6 @@ const DataTable = (props) => {
                                                                     );
                                                                 }}>
                                                                 {formattedValue}
-
                                                                 {/* 기존코드 {item[column.col]}*/}
                                                             </td>
                                                         );

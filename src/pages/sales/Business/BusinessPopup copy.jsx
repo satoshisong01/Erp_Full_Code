@@ -11,28 +11,28 @@ import BusinessUtilBtn from "./BusinessUtilBtn";
 //import PopupTesting from "./PopupTesting";
 //import PopupWindow from "./PopupTesting";
 
-//const InputCell = ({ value, onChange }) => (
-//    <td className="tbodyTd">
-//        <input type="text" value={value} onChange={onChange} />
-//    </td>
-//);
+const InputCell = ({ value, onChange }) => (
+    <td className="tbodyTd">
+        <input type="text" value={value} onChange={onChange} />
+    </td>
+);
 
-//const Row = ({ row, id, fields, onCellChange }) => (
-//    <tr className="tableTr3">
-//        <td className="tbodyTd">
-//            <div className="inputTh">
-//                <input type="checkbox" />
-//            </div>
-//        </td>
-//        {fields.map((field) => (
-//            <InputCell
-//                key={field}
-//                value={row[field]}
-//                onChange={(e) => onCellChange(e, id, field)}
-//            />
-//        ))}
-//    </tr>
-//);
+const Row = ({ row, id, fields, onCellChange }) => (
+    <tr className="tableTr3">
+        <td className="tbodyTd">
+            <div className="inputTh">
+                <input type="checkbox" />
+            </div>
+        </td>
+        {fields.map((field) => (
+            <InputCell
+                key={field}
+                value={row[field]}
+                onChange={(e) => onCellChange(e, id, field)}
+            />
+        ))}
+    </tr>
+);
 
 const BusinessPopup = () => {
     const dataTableRef3 = useRef(null); //dataTable 테이블 명시
@@ -86,13 +86,6 @@ const BusinessPopup = () => {
             paging: true,
             searching: true,
             ordering: true,
-        });
-        $(dataTableRef2.current).DataTable().destroy();
-        $(dataTableRef2.current).DataTable({
-            paging: true,
-            ordering: true,
-            lengthMenu: [10, 15, 30, 50, 100],
-            autoWidth: true,
         });
     });
 
@@ -167,15 +160,9 @@ const BusinessPopup = () => {
     ];
 
     const [tableRows, setTableRows] = useState(initialTableRows);
-
     const [tableRunRows, setTableRunRows] = useState(initialTableRows);
 
     const [dataTableRows, setDataTableRows] = useState(dummyDataTableRows);
-
-    //useEffect(() => {
-    //    // dataTableRows 상태가 변경될 때마다 실행되는 코드
-    //    // 컴포넌트가 다시 렌더링됩니다.
-    //}, [dataTableRows]);
 
     //체크된 아이템의 uniqId 숫자만 저장
     const changeInt = selectedData.map((item) => item.uniqId);
@@ -256,31 +243,6 @@ const BusinessPopup = () => {
         setTableRows([...tableRows, newRow]);
     };
 
-    const handleAddRunRow = () => {
-        // 새로운 행을 만들고, 현재의 tableRows 상태에 추가합니다.
-        const newRow = {
-            id: tableRunRows.length + 1,
-            품목그룹명: "", // 여기에 새로운 열의 초기 값들을 지정하세요...
-            연월: "", // 예시로 빈 문자열로 초기화 했습니다.
-            M_M계: "", // 다른 속성들도 추가하세요...
-            인건비계: "", // 임시로 데이터를 넣어주세요
-            임원: "", // 임시로 데이터를 넣어주세요
-            특급기술사: "", // 임시로 데이터를 넣어주세요
-            고급기술사: "", // 임시로 데이터를 넣어주세요
-            중급기술사: "", // 임시로 데이터를 넣어주세요
-            초급기술사: "", // 임시로 데이터를 넣어주세요
-            중급기능사: "", // 임시로 데이터를 넣어주세요
-            고급기능사: "", // 임시로 데이터를 넣어주세요
-            부장: "", // 임시로 데이터를 넣어주세요
-            차장: "", // 임시로 데이터를 넣어주세요
-            과장: "", // 임시로 데이터를 넣어주세요
-            대리: "", // 임시로 데이터를 넣어주세요
-            주임: "", // 임시로 데이터를 넣어주세요
-            사원: "", // 임시로 데이터를 넣어주세요
-        };
-        setTableRunRows([...tableRunRows, newRow]);
-    };
-
     const handleDataTableAddRunRow = () => {
         // 새로운 행을 만들고, 현재의 tableRows 상태에 추가합니다.
         const newRow = {
@@ -316,16 +278,30 @@ const BusinessPopup = () => {
         "사원",
     ];
 
-    const dataTableCellFields = [
-        "품명",
-        "규격",
-        "수량",
-        "단가",
-        "금액",
-        "구매예상일",
-        "비고",
-    ];
-
+    const handleAddRunRow = () => {
+        // 새로운 행을 만들고, 현재의 tableRows 상태에 추가합니다.
+        const newRow = {
+            id: tableRunRows.length + 1,
+            품목그룹명: "", // 여기에 새로운 열의 초기 값들을 지정하세요...
+            연월: "", // 예시로 빈 문자열로 초기화 했습니다.
+            M_M계: "", // 다른 속성들도 추가하세요...
+            인건비계: "", // 임시로 데이터를 넣어주세요
+            임원: "", // 임시로 데이터를 넣어주세요
+            특급기술사: "", // 임시로 데이터를 넣어주세요
+            고급기술사: "", // 임시로 데이터를 넣어주세요
+            중급기술사: "", // 임시로 데이터를 넣어주세요
+            초급기술사: "", // 임시로 데이터를 넣어주세요
+            중급기능사: "", // 임시로 데이터를 넣어주세요
+            고급기능사: "", // 임시로 데이터를 넣어주세요
+            부장: "", // 임시로 데이터를 넣어주세요
+            차장: "", // 임시로 데이터를 넣어주세요
+            과장: "", // 임시로 데이터를 넣어주세요
+            대리: "", // 임시로 데이터를 넣어주세요
+            주임: "", // 임시로 데이터를 넣어주세요
+            사원: "", // 임시로 데이터를 넣어주세요
+        };
+        setTableRunRows([...tableRunRows, newRow]);
+    };
     const handleClick1 = () => {
         setIsClicked(!isClicked);
     };
@@ -400,10 +376,8 @@ const BusinessPopup = () => {
     };
 
     const handleDataTableCellChange = (e, id, field) => {
-        e.stopPropagation();
         const { value } = e.target;
-        console.log(e.target.value);
-        const updatedRows = dataTableRows.map((row) => {
+        const updatedRows = tableRunRows.map((row) => {
             if (row.id === id) {
                 return {
                     ...row,
@@ -414,10 +388,6 @@ const BusinessPopup = () => {
         });
         setDataTableRows(updatedRows);
     };
-
-    //useEffect(() => {
-    //    console.log(dataTableRows, "추가되고있나");
-    //}, [dataTableRows]);
 
     return (
         <div className="popUpHomeBody">
@@ -525,7 +495,7 @@ const BusinessPopup = () => {
                                     </thead>
                                     <tbody>
                                         {/* tableRows 상태로부터 테이블 행을 렌더링합니다. */}
-                                        {tableRunRows.map((row) => (
+                                        {dataTableRows.map((row) => (
                                             <tr
                                                 className="tableTr3"
                                                 key={row.id}>
@@ -537,7 +507,7 @@ const BusinessPopup = () => {
                                                 </td>
                                                 <td className="tbodyTd">
                                                     <select className="tbodyTdSelect">
-                                                        {tableRunRows.map(
+                                                        {dataTableRows.map(
                                                             (row) => (
                                                                 <option
                                                                     key={row.id}
@@ -553,20 +523,17 @@ const BusinessPopup = () => {
                                                     </select>
                                                 </td>
                                                 {cellFields.map((field) => (
-                                                    <td
+                                                    <InputCell
                                                         key={field}
-                                                        className="tbodyTd">
-                                                        <input
-                                                            type="text"
-                                                            value={row[field]}
-                                                            onChange={(e) =>
-                                                                handleCellChange(
-                                                                    e,
-                                                                    row.id,
-                                                                    field
-                                                                )
-                                                            }></input>
-                                                    </td>
+                                                        value={row[field]}
+                                                        onChange={(e) =>
+                                                            handleCellChange(
+                                                                e,
+                                                                row.id,
+                                                                field
+                                                            )
+                                                        }
+                                                    />
                                                 ))}
                                                 {/* 다른 셀들도 추가하세요 */}
                                             </tr>
@@ -650,10 +617,12 @@ const BusinessPopup = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {dataTableRows.map((row) => (
+                                        {/* tableRows 상태로부터 테이블 행을 렌더링합니다. */}
+                                        {tableRunRows.map((row) => (
                                             <tr
                                                 className="tableTr3"
                                                 key={row.id}>
+                                                {/* 테이블 셀들의 값들을 적절하게 지정하세요 */}
                                                 <td className="tbodyTd">
                                                     <div className="inputTh">
                                                         <input type="checkbox" />
@@ -661,43 +630,63 @@ const BusinessPopup = () => {
                                                 </td>
                                                 <td className="tbodyTd">
                                                     <select className="tbodyTdSelect">
-                                                        {dataTableRows.map(
-                                                            (r) => (
+                                                        {tableRunRows.map(
+                                                            (row) => (
                                                                 <option
-                                                                    key={r.id}
                                                                     value={
-                                                                        r.그룹품목명
+                                                                        row.품목그룹명
                                                                     }>
                                                                     {
-                                                                        r.그룹품목명
+                                                                        row.품목그룹명
                                                                     }
                                                                 </option>
                                                             )
                                                         )}
                                                     </select>
                                                 </td>
-                                                {dataTableCellFields.map(
-                                                    (field) => (
-                                                        <td
-                                                            key={field}
-                                                            className="tbodyTd">
-                                                            <input
-                                                                type="text"
-                                                                value={
-                                                                    row[field]
-                                                                }
-                                                                onChange={(e) =>
-                                                                    handleDataTableCellChange(
-                                                                        e,
-                                                                        row.id,
-                                                                        field
-                                                                    )
-                                                                }></input>
-                                                        </td>
-                                                    )
-                                                )}
+                                                {cellFields.map((field) => (
+                                                    <InputCell
+                                                        key={field}
+                                                        value={row[field]}
+                                                        onChange={(e) =>
+                                                            handleDataTableCellChange(
+                                                                e,
+                                                                row.id,
+                                                                field
+                                                            )
+                                                        }
+                                                    />
+                                                ))}
+                                                {/* 다른 셀들도 추가하세요 */}
                                             </tr>
                                         ))}
+                                    </tbody>
+                                    <tbody>
+                                        <tr className="tableTr3">
+                                            <td className="tbodyTd">
+                                                <div className="inputTh">
+                                                    <input type="checkbox" />
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <select className="tbodyTdSelect">
+                                                    <option>판넬</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button
+                                                    className="btn btn-primary"
+                                                    id="choiceBtn">
+                                                    품목선택
+                                                </button>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>800,000</td>
+                                            <td></td>
+                                        </tr>
                                     </tbody>
                                 </table>
                                 <div className="buttonParent">
@@ -722,7 +711,6 @@ const BusinessPopup = () => {
                             </div>
                         </div>
                     </div>
-
                     <div id="content">
                         <header className="headerH2">
                             <span className="spanCss">경비 영업 계획</span>
@@ -829,7 +817,6 @@ const BusinessPopup = () => {
                             </div>
                         </div>
                     </div>
-
                     <div id="content">
                         <header className="headerH2">
                             <span className="spanCss">기업 이윤 계획</span>
@@ -971,7 +958,6 @@ const BusinessPopup = () => {
                             </div>
                         </div>
                     </div>
-
                     <div id="content">
                         <header className="headerH2">
                             <span className="spanCss">NEGO 계획</span>
@@ -1037,7 +1023,6 @@ const BusinessPopup = () => {
                             </div>
                         </div>
                     </div>
-
                     <div id="content">
                         <header className="headerH2">
                             <span className="spanCss">비고</span>
@@ -1066,7 +1051,6 @@ const BusinessPopup = () => {
                             </div>
                         </div>
                     </div>
-
                     <div id="content">
                         <header className="headerH2">
                             <span className="spanCss">파일 업로드</span>

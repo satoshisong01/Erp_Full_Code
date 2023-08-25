@@ -42,7 +42,7 @@ function ApprovalForm({ title, children }) {
                         <tbody className="tableBody tableBodyTop">
                             <tr className="tableTr">
                                 <td className="table2-1">프로젝트명</td>
-                                <td className="table2-2 titleSelect">
+                                <td className="table2-2" id="titleSelect">
                                     <ModalSearch />
                                 </td>
                             </tr>

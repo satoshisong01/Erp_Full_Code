@@ -83,6 +83,10 @@
     width: 15px;
 }
 
+.tbodyTd > input {
+    width: 100%;
+}
+
 .tdBtn {
     /*width: 100%;*/
     /*margin: 10px;*/

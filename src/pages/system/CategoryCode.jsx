@@ -39,47 +39,47 @@ function CategoryCode() {
         { header: "수정일", col: "lastModifyDate", cellWidth: "20%" },
     ];
 
-    //const conditionList = [
-    //    {
-    //        title: "분류코드",
-    //        colName: "clCode", //컬럼명
-    //        type: "input",
-    //        value: "",
-    //        searchLevel: "1",
-    //    },
-    //    {
-    //        title: "분류코드명",
-    //        colName: "clCodeNm", //컬럼명
-    //        type: "input",
-    //        value: "",
-    //        searchLevel: "2",
-    //    },
-    //    {
-    //        title: "작성자",
-    //        colName: "createIdBy", //컬럼명
-    //        type: "input",
-    //        value: "",
-    //        searchLevel: "3",
-    //    },
-    //    {
-    //        title: "수정자",
-    //        colName: "lastModifiedIdBy", //컬럼명
-    //        type: "input",
-    //        value: "",
-    //        searchLevel: "3",
-    //    },
-    //];
+    const conditionList = [
+        {
+            title: "분류코드",
+            colName: "clCode", //컬럼명
+            type: "input",
+            value: "",
+            searchLevel: "1",
+        },
+        {
+            title: "분류코드명",
+            colName: "clCodeNm", //컬럼명
+            type: "input",
+            value: "",
+            searchLevel: "2",
+        },
+        {
+            title: "작성자",
+            colName: "createIdBy", //컬럼명
+            type: "input",
+            value: "",
+            searchLevel: "3",
+        },
+        {
+            title: "수정자",
+            colName: "lastModifiedIdBy", //컬럼명
+            type: "input",
+            value: "",
+            searchLevel: "3",
+        },
+    ];
 
-    const conditionList = {
-        clCode: "",
-        clCodeNm: "",
-        clCodeDc: "",
-        useAt: "Y",
-        searchCondition: "0",
-        searchKeyword: "",
-        createIdBy: "USRCNFRM_00000000000",
-        createDate: "2023-08-04",
-    };
+    //const conditionList = {
+    //    clCode: "",
+    //    clCodeNm: "",
+    //    clCodeDc: "",
+    //    useAt: "Y",
+    //    searchCondition: "0",
+    //    searchKeyword: "",
+    //    createIdBy: "USRCNFRM_00000000000",
+    //    createDate: "2023-08-04",
+    //};
 
     const tableList = [
         {

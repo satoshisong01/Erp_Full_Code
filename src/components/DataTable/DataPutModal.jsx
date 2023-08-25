@@ -92,14 +92,14 @@ export default function DataPutModal({
                                     className="btn btn-default"
                                     data-dismiss="modal"
                                     onClick={onClose}>
-                                    Close
+                                    취소
                                 </button>
                                 <button
                                     type="button"
                                     className="btn btn-primary modal-btn-close"
                                     id="modalSubmitBtn"
                                     onClick={handleSaveChanges}>
-                                    Save changes
+                                    수정
                                 </button>
                             </div>
                         </form>

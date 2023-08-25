@@ -131,14 +131,14 @@ export default function DataPostModal({
                                     className="btn btn-default"
                                     data-dismiss="modal"
                                     onClick={onClose}>
-                                    Close
+                                    취소
                                 </button>
                                 <button
                                     type="button"
                                     className="btn btn-primary modal-btn-close"
                                     id="modalSubmitBtn"
                                     onClick={onAdd}>
-                                    ADD
+                                    추가
                                 </button>
                             </div>
                         </form>

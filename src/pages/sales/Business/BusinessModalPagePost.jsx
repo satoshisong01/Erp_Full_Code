@@ -193,7 +193,7 @@ export default function BusinessModalPagePost({
                                         className="btn btn-default"
                                         data-dismiss="modal"
                                         onClick={onClose}>
-                                        Close
+                                        취소
                                     </button>
                                     <button
                                         style={{
@@ -203,7 +203,7 @@ export default function BusinessModalPagePost({
                                         type="button"
                                         className="btn btn-primary modal-btn-close"
                                         onClick={onAdd}>
-                                        ADD
+                                        추가
                                     </button>
                                 </div>
                             </div>

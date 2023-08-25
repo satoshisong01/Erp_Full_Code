@@ -98,7 +98,7 @@ function EnterpriseMemberMgmt() {
             modify: true,
             add: true,
             listItem: "groupId",
-            addListURL: "authorGroup",
+            addListURL: "/baseInfrm/member/authorGroup",
             require: true,
         },
     ];

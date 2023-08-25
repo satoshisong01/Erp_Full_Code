@@ -46,7 +46,7 @@ function GroupCode() {
             add: true,
             selectOption: true,
             listItem: "clCode",
-            addListURL: "clCode",
+            addListURL: "/system/code/clCode",
         },
     ];
 
