@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import store from "store/configureStore";
-import { tabActive } from "components/tabs/TabsActions";
+import { selectLnb } from "components/tabs/TabsActions";
 import DataTable from "components/DataTable/DataTable";
 
 /** 시스템관리-코드관리-분류코드관리 */
@@ -74,7 +74,7 @@ function CategoryCode(props) {
                         <Link
                             to=""
                             onClick={(e) =>
-                                store.dispatch(tabActive("권한관리"))
+                                store.dispatch(selectLnb("권한관리"))
                             }>
                             시스템관리
                         </Link>

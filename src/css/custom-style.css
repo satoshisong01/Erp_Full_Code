@@ -387,6 +387,38 @@ select {
     -webkit-appearance: auto;
 }
 
+/* 예시 CSS 스타일 */
+.table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.first-column {
+    border-left: 1px solid #ddd;
+}
+
+tr,
+td,
+th {
+    border: 1px solid #ddd;
+}
+
+/*.other-column {
+    padding: 0;
+}*/
+
+td > input {
+    width: 100%;
+}
+.table {
+    margin-top: 50px;
+}
+
+.page-size {
+    position: relative;
+    z-index: 99;
+}
+
 /* 반응형 스타일 */
 @media (max-width: 768px) {
     .flex-group {

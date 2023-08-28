@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import store from "store/configureStore";
-import { tabActive } from "components/tabs/TabsActions";
+import { selectLnb } from "components/tabs/TabsActions";
 import BoardMasters from "./Board/BoardMaster/BoardMasters";
 
 /** 시스템관리-게시판관리-게시판마스터관리 */
@@ -19,7 +19,7 @@ function BoardMaster() {
                         <Link
                             to=""
                             onClick={(e) =>
-                                store.dispatch(tabActive("권한관리"))
+                                store.dispatch(selectLnb("권한관리"))
                             }>
                             시스템관리
                         </Link>

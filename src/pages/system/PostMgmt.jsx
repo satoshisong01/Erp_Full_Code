@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import store from "store/configureStore";
-import { tabActive } from "components/tabs/TabsActions";
+import { selectLnb } from "components/tabs/TabsActions";
 import PostMgmts from "./Board/PostMgmt/PostMgmts";
 /** 시스템관리-게시판관리-게시물관리 */
 function PostMgmt() {
@@ -18,7 +18,7 @@ function PostMgmt() {
                         <Link
                             to=""
                             onClick={(e) =>
-                                store.dispatch(tabActive("권한관리"))
+                                store.dispatch(selectLnb("권한관리"))
                             }>
                             시스템관리
                         </Link>

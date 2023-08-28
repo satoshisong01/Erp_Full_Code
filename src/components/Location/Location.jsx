@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import store from "store/configureStore";
-import { tabActive } from "components/tabs/TabsActions";
+import { selectLnb } from "components/tabs/TabsActions";
 
 export default function Location({ tableList }) {
     return (
@@ -16,7 +16,7 @@ export default function Location({ tableList }) {
                     <Link
                         to=""
                         onClick={(e) =>
-                            store.dispatch(tabActive(tableList[0].title))
+                            store.dispatch(selectLnb(tableList[0].title))
                         }>
                         {tableList[0].middleName}
                     </Link>

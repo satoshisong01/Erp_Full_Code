@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import store from "store/configureStore";
-import { tabActive } from "components/tabs/TabsActions";
+import { selectLnb } from "components/tabs/TabsActions";
 import AuthorManages from "./AuthorManage/AuthorManages";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
