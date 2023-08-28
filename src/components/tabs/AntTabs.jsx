@@ -2,44 +2,26 @@ import { Tabs } from "antd";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Children } from "./Children.js";
-
 import store from 'store/configureStore';
-import { tabSelect } from "components/tabs/TabsActions";
+import { selectSnb, selectLnb } from "components/tabs/TabsActions";
 
-const tab = Children.find((tab) => tab.activeKey === 0);
-
-const defaultPanes = [
-    {
-        label: tab.label,
-        children: tab.component,
-        key: tab.activeKey,
-    },
-];
-
-/** nav, header 클릭 시  label props로 전달 & 해당하는 화면(컴포넌트) children 으로 보여줌 */
+/* nav, header 클릭 시  label props로 전달 & 해당하는 화면(컴포넌트) children 으로 보여줌 */
 const AntTabs = (props) => {
-    
+    const {lnbLabel, snbLabel, gnbLabel} = props;
     const [activeKey, setActiveKey] = useState(""); // 프로젝트 등록 키 0번(활성화)
     const [items, setItems] = useState([]);
 
-    /** title이 변경 될 때(navigation 클릭 시) 실행 되는 함수 */
+    /* navi 클릭시 탭 생성 */
     useEffect(() => {
-        const tab = Children.find((item) => item.label === props.label);
+        const tab = Children.find((item) => item.label === lnbLabel || item.label === snbLabel);
         if (!tab) return; 
         addTab(tab);
-    }, [props.label]);
-
-    useEffect(() => {
-        setActiveKey(defaultPanes[0].key)
-        store.dispatch(tabSelect(defaultPanes[0].label));
-        setItems(defaultPanes)
-    }, []);
+    }, [lnbLabel, snbLabel]);
 
     const onChange = (key) => {
-        setActiveKey(key);
         const selectedTab = items.find((item) => item.key === key);
         if (selectedTab) {
-            store.dispatch(tabSelect(selectedTab.label));
+            store.dispatch(selectSnb(selectedTab.label));
         }
     };
 
@@ -70,15 +52,15 @@ const AntTabs = (props) => {
                 targetIndex === newPanes.length ? targetIndex - 1 : targetIndex
             ];
             setActiveKey(key);
-            store.dispatch(tabSelect(label));
+            store.dispatch(selectSnb(label));
+            console.log("⭕ 리무브탭: ", label);
         }
         setItems(newPanes);
 
         if (items.length === 1) { //모든 탭 종료시 디폴트
             setItems([]);
-            store.dispatch(tabSelect(""));
-            // setItems([...defaultPanes]);
-            // setActiveKey(defaultPanes.key);
+            store.dispatch(selectSnb(""));
+            store.dispatch(selectLnb(""));
         }
     };
 
@@ -98,10 +80,7 @@ const AntTabs = (props) => {
     );
 };
 
-//const mapStateToProps = data => data.tabs //tabs 전체 불러오기
-const mapStateToProps = (data) => ({
-    label: data.tabs.label
-});
+const mapStateToProps = data => data.tabs //tabs 전체 불러오기
 
 /** store와 props 연결 */
 export default connect(mapStateToProps)(AntTabs);
