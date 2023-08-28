@@ -4,13 +4,14 @@ import * as EgovNet from 'api/egovFetch';
 import URL from 'constants/url';
 import CODE from 'constants/code';
 import store from 'store/configureStore';
-import { tabActive, headerSelect } from './tabs/TabsActions';
+import { selectLnb, selectGnb } from './tabs/TabsActions';
 import { connect } from 'react-redux';
 import { system, execution, reference, sales } from './tabs/Children';
 import NavLinkTabs from './tabs/NavLinkTabs';
+import { NavLink } from 'react-router-dom';
 
 /** 대,중,소 카데고리 Link가 걸려 있는 헤더 */
-function EgovHeader({ loginUser, onChangeLogin, label, selectLabel }) {
+function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel }) {
     console.group("EgovHeader");
     console.log("[Start] EgovHeader ------------------------------");
     console.log("EgovHeader >>> onChangeLogin :", onChangeLogin);
@@ -20,22 +21,26 @@ function EgovHeader({ loginUser, onChangeLogin, label, selectLabel }) {
     const sessionUserName = JSON.parse(sessionUser)?.name;
     const sessionUserSe = JSON.parse(sessionUser)?.userSe;
 
-    const [activeLabel, setActiveLabel] = useState('');
+    const [activeGnb, setActiveGnb] = useState('');
+    const [activeLnb, setActiveLnb] = useState('');
 
     /** 라벨 선택 시 CSS 활성화 */
     useEffect(() => {
         const tabs = { 시스템관리: system, 실행관리: execution, 기준정보관리: reference, 영업관리: sales }; //tabLabel: tabItems
       
-        const activeTab = Object.entries(tabs).find(([tabLabel, tabItems]) =>
-            tabItems.some((item) => item.label === (selectLabel || label))
+        console.log("⭕ 1.헤더 - 들어온 라벨: ", lnbLabel || snbLabel);
+        const activeLabel = Object.entries(tabs).find(([tabLabel, tabItems]) =>
+            tabItems.some((item) => item.label === (lnbLabel || snbLabel))
         );
 
-        if (activeTab) {
-          const [tabLabel] = activeTab;
-          setActiveLabel(tabLabel);
-          store.dispatch(headerSelect(tabLabel)); //header
+        console.log("⭕ 2.헤더 - activeLabel: ", activeLabel);
+        if (activeLabel) {
+            const [tabLabel] = activeLabel;
+            console.log("⭕ 헤더 tabLabel: ", tabLabel);
+          setActiveGnb(tabLabel);
+        //   store.dispatch(selectGnb(tabLabel))
         }
-    }, [label, selectLabel]);
+    }, [lnbLabel, snbLabel]);
 
     const navigate = useNavigate();
 
@@ -70,11 +75,10 @@ function EgovHeader({ loginUser, onChangeLogin, label, selectLabel }) {
         );
     }
 
-    const menuClick = (e, header) => {
-        const selectedMenu = e.target.innerText;
-        store.dispatch(tabActive(selectedMenu)); //label
-        setActiveLabel(selectedMenu);
-        store.dispatch(headerSelect(header)); //header
+    const lnbClick = (e) => {
+        const lnbLabel = e.target.innerText;
+        store.dispatch(selectLnb(lnbLabel));
+        setActiveLnb(lnbLabel)
     }
 
     console.log("------------------------------EgovHeader [End]");
@@ -91,15 +95,37 @@ function EgovHeader({ loginUser, onChangeLogin, label, selectLabel }) {
                 <div className="gnb">
                     <h2 className="blind">주메뉴</h2>
                     <ul>
-                        <li><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel} header="기준정보관리">
+                        <li><NavLink
+                            to={URL.Tabs}
+                            className={({ isActive }) => (isActive ? "cur" : "")}
+                            onClick={(e) => store.dispatch(selectGnb(e.target.innerText))}
+                        >
                             기준정보관리
-                        </NavLinkTabs></li>
-                        <li><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel} header="영업관리">영업관리</NavLinkTabs></li>
-                        <li><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel} header="실행관리">실행관리</NavLinkTabs></li>
-                        <li><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel} header="시스템관리">시스템관리</NavLinkTabs></li>
-                        {sessionUserSe === 'USR' && (
-                            <li><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}  header="관리자페이지">관리자페이지</NavLinkTabs></li>
-                        )}
+                        </NavLink></li>
+                        <li><NavLink
+                            to={URL.Tabs}
+                            className={({ isActive }) => (isActive ? "cur" : "")}
+                            onClick={(e) => store.dispatch(selectGnb(e.target.innerText))}
+                        >
+                            영업관리
+                        </NavLink></li>
+                        <li><NavLink
+                            to={URL.Tabs}
+                            className={({ isActive }) => (isActive ? "cur" : "")}
+                            onClick={(e) => store.dispatch(selectGnb(e.target.innerText))}
+                        >
+                            실행관리
+                        </NavLink></li>
+                        <li><NavLink
+                            to={URL.Tabs}
+                            className={({ isActive }) => (isActive ? "cur" : "")}
+                            onClick={(e) => store.dispatch(selectGnb(e.target.innerText))}
+                        >
+                            시스템관리
+                        </NavLink></li>
+                        {/* {sessionUserSe === 'USR' && (
+                            <li><NavLinkTabs to={URL.TABS} activeName={activeGnb}  header="관리자페이지">관리자페이지</NavLinkTabs></li>
+                        )} */}
                     </ul>
                 </div>
 
@@ -130,11 +156,11 @@ function EgovHeader({ loginUser, onChangeLogin, label, selectLabel }) {
             <div className="all_menu WEB closed">
                 <h2 className="blind">전체메뉴</h2>
                 <div className="inner">
-                    <div className="col">
+                <div className="col">
                         <h3>기준정보관리</h3>
                         <ul>
                             {reference.map((item) => (
-                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                                <li key={item.title}><NavLinkTabs to={URL.ReferenceTabPage} onClick={lnbClick} activeName={activeLnb}>{item.label}</NavLinkTabs></li>
                             ))}
                         </ul> 
                     </div> 
@@ -142,7 +168,7 @@ function EgovHeader({ loginUser, onChangeLogin, label, selectLabel }) {
                         <h3>영업관리</h3> 
                         <ul> 
                             {sales.map((item) => (
-                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                                <li key={item.title}><NavLinkTabs to={URL.SalesTabPage} onClick={lnbClick} activeName={activeLnb}>{item.label}</NavLinkTabs></li>
                             ))}
                         </ul> 
                     </div> 
@@ -150,7 +176,7 @@ function EgovHeader({ loginUser, onChangeLogin, label, selectLabel }) {
                         <h3>실행관리</h3> 
                         <ul> 
                             {execution.map((item) => (
-                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                                <li key={item.title}><NavLinkTabs to={URL.ExecutionTabPage} onClick={lnbClick} activeName={activeLnb}>{item.label}</NavLinkTabs></li>
                             ))}
                         </ul> 
                     </div> 
@@ -158,15 +184,15 @@ function EgovHeader({ loginUser, onChangeLogin, label, selectLabel }) {
                         <h3>시스템관리</h3> 
                         <ul> 
                             {system.map((item) => (
-                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                                <li key={item.title}><NavLinkTabs to={URL.SystemTabPage} onClick={lnbClick} activeName={activeLnb}>{item.label}</NavLinkTabs></li>
                             ))}
                         </ul>
                     </div>
-                    {sessionUserSe ==='USR' &&
+                    {/* {sessionUserSe ==='USR' &&
                         <div className="col">
                             <h3>관리자페이지</h3>
                         </div>
-                    }
+                    } */}
                 </div>
             </div>
 
@@ -188,43 +214,43 @@ function EgovHeader({ loginUser, onChangeLogin, label, selectLabel }) {
                     <button className="btn noscript close" type="button">전체메뉴 닫기</button>
                 </div>
                 <div className="menu">
-                    <h3><Link to={URL.TABS}>기준정보관리</Link></h3>
+                    <h3><Link to={URL.ReferenceTabPage}>기준정보관리</Link></h3>
                     <div className="submenu closed">
                         <ul>
                             {reference.map((item) => (
-                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                                <li key={item.title}><NavLinkTabs to={URL.ReferenceTabPage} onClick={lnbClick} activeName={activeLnb}>{item.label}</NavLinkTabs></li>
                             ))}
                         </ul> 
                     </div>
-                    <h3><Link to={URL.TABS}>영업관리</Link></h3>
+                    <h3><Link to={URL.SalesTabPage}>영업관리</Link></h3>
                     <div className="submenu closed">
                         <ul>
                             {sales.map((item) => (
-                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                                <li key={item.title}><NavLinkTabs to={URL.SalesTabPage} onClick={lnbClick} activeName={activeLnb}>{item.label}</NavLinkTabs></li>
                             ))}
                         </ul> 
                     </div>
-                    <h3><Link to={URL.TABS}>실행관리</Link></h3>
+                    <h3><Link to={URL.ExecutionTabPage}>실행관리</Link></h3>
                     <div className="submenu closed">
                         <ul>
                             {execution.map((item) => (
-                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                                <li key={item.title}><NavLinkTabs to={URL.ExecutionTabPage} onClick={lnbClick} activeName={activeLnb}>{item.label}</NavLinkTabs></li>
                             ))}
                         </ul> 
                     </div>
-                    <h3><Link to={URL.TABS}>시스템관리</Link></h3>
+                    <h3><Link to={URL.SystemTabPage}>시스템관리</Link></h3>
                     <div className="submenu closed">
                         <ul>
                             {system.map((item) => (
-                                <li key={item.title}><NavLinkTabs to={URL.TABS} onClick={menuClick} activeName={activeLabel}>{item.label}</NavLinkTabs></li>
+                                <li key={item.title}><NavLinkTabs to={URL.SystemTabPage} onClick={lnbClick} activeName={activeLnb}>{item.label}</NavLinkTabs></li>
                             ))}
                         </ul> 
                     </div>
-                    {sessionUserSe ==='USR' &&
+                    {/* {sessionUserSe ==='USR' &&
                         <>
                             <h3><Link to={URL.TABS}>관리자페이지</Link></h3>
                         </>
-                    }
+                    } */}
                 </div>
             </div>
             {/* <!--// All menu --> */}
@@ -235,8 +261,8 @@ function EgovHeader({ loginUser, onChangeLogin, label, selectLabel }) {
 
 
 const mapStateToProps = (data) => ({
-    label: data.tabs.label,
-    selectLabel: data.tabs.selectLabel
+    lnbLabel: data.tabs.lnbLabel,
+    snbLabel: data.tabs.snbLabel
 });
 
 

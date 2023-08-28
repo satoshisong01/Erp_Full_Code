@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { tabActive } from "components/tabs/TabsActions";
+import { selectSnb } from 'components/tabs/TabsActions';
 import NavLinkTabs from "components/tabs/NavLinkTabs";
 import store from "store/configureStore";
 
 function EgovLeftNavReference(props) {
-    const { label, selectLabel } = props;
+    const {lnbLabel, snbLabel} = props;
     const [activeSub, setActiveSub] = useState("");
     const [activeLabel, setActiveLabel] = useState("");
 
     /* header 또는 tabs에서 선택된 라벨을 저장  */
     useEffect(() => {
-        const propsLabel = selectLabel || label;
+        const propsLabel = lnbLabel || snbLabel;
         let parentLabel = "";
 
         for (const item of menuItems) {
@@ -27,14 +27,14 @@ function EgovLeftNavReference(props) {
                 }
             }
         }
-        setActiveSub(selectLabel || label);
+        setActiveSub(lnbLabel || snbLabel);
         if (activeLabel !== parentLabel) setActiveLabel(parentLabel);
-    }, [label, selectLabel]);
+    }, [lnbLabel, snbLabel]);
 
     const clickHandle = (label, sub) => {
         setActiveSub(sub);
         setActiveLabel(label);
-        store.dispatch(tabActive(sub));
+        store.dispatch(selectSnb(sub));
     };
 
     const menuItems = [
@@ -102,7 +102,7 @@ function EgovLeftNavReference(props) {
                                                     to="#"
                                                     onClick={(e) =>
                                                         clickHandle(
-                                                            subMenu.label,
+                                                            menuItem.label,
                                                             subMenu.label
                                                         )
                                                     }
@@ -122,9 +122,5 @@ function EgovLeftNavReference(props) {
     );
 }
 
-const mapStateToProps = (data) => ({
-    label: data.tabs.label,
-    selectLabel: data.tabs.selectLabel,
-});
-
+const mapStateToProps = data => data.tabs
 export default connect(mapStateToProps)(EgovLeftNavReference);
