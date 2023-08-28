@@ -5,7 +5,11 @@ import URL from "constants/url";
 // import CODE from 'constants/code';
 
 //탭
-import TabContainer from "pages/main/TabContainer";
+import TabContainer from "pages/tabs/TabContainer";
+import ExecutionTabPage from "pages/tabs/ExecutionTabPage";
+import ReferenceTabPage from "pages/tabs/ReferenceTabPage";
+import SalesTabPage from "pages/tabs/SalesTabPage";
+import SystemTabPage from "pages/tabs/SystemTabPage";
 
 //전자결재 폼 팝업
 import ApprovalForm from "components/form/ApprovalForm";
@@ -148,7 +152,11 @@ const SecondRoutes = () => {
                 <Route path={URL.MAIN} element={<EgovMain />} />
 
                 {/* 탭 화면 */}
-                <Route path={URL.TABS} element={<TabContainer />} />
+                <Route path={URL.Tabs} element={<TabContainer />} />
+                <Route path={URL.ExecutionTabPage} element={<ExecutionTabPage />} />
+                <Route path={URL.ReferenceTabPage} element={<ReferenceTabPage />} />
+                <Route path={URL.SalesTabPage} element={<SalesTabPage />} />
+                <Route path={URL.SystemTabPage} element={<SystemTabPage />} />
 
                 {/* LOGIN - URL : /login */}
                 <Route

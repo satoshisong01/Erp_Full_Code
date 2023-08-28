@@ -1,36 +1,35 @@
 import React, { useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
-import DataTable from "components/DataTable/DataTable";
 import FormDataTable from "components/DataTable/FormDataTable";
-//import TestTable from "components/DataTable/TestTable";
 import ReactDataTable from "components/DataTable/ReactDataTable";
-//import ReactTableButton from "components/button/ReactTableButton";
 
 /** 영업관리-수주관리 */
 function OrderMgmt() {
     const columns = [
         {
             header: "프로젝트 이름",
-            col: "poiTitle",
+            col: "poiNm",
             cellWidth: "35%",
-            update: false,
-            updating: true,
-            write: true,
+            enable: false,
+            modify: true,
+            add: true,
         },
         {
             header: "프로젝트 코드",
             col: "poiCode",
             cellWidth: "15%",
-            updating: true,
-            write: true,
+            modify: true,
+            add: true,
+            type: "input",
         },
         {
             header: "수주시작일",
             col: "poiBeginDt",
             cellWidth: "20%",
-            updating: true,
-            write: true,
+            modify: true,
+            add: true,
+            type: "input",
         },
         { header: "통화", col: "poiCurrcy", cellWidth: "10%" },
         { header: "거래처", col: "cltId", cellWidth: "20%" },
@@ -44,7 +43,7 @@ function OrderMgmt() {
     const conditionList = [
         {
             title: "프로젝트 이름",
-            colName: "poiTitle",
+            colName: "poiNm",
             type: "input",
             value: "",
             searchLevel: "1",
@@ -70,7 +69,7 @@ function OrderMgmt() {
         [
             {
                 label: "프로젝트 이름",
-                key: "poiTitle",
+                key: "poiNm",
                 type: "input",
                 colSpan: "3",
                 require: true,
@@ -87,7 +86,8 @@ function OrderMgmt() {
             {
                 label: "수주부서",
                 key: "poiGroupId",
-                type: "input",
+                type: "select",
+                option: ["PA", "PS", "FMCS", "HMI"],
                 require: true,
             },
             {
