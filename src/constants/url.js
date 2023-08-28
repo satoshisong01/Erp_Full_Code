@@ -2,10 +2,14 @@ const URL = {
     //COMMON
     MAIN: "/", //메인페이지
 
-    TABS: "/tabs", //탭컨테이너
+    Tabs: "/tabs", //탭
+    ExecutionTabPage: "/exeTab",
+    ReferenceTabPage: "/refTab",
+    SalesTabPage: "/salTab",
+    SystemTabPage: "/sysTab",
 
     LOGIN: "/login", //로그인
-    ERROR: "/error", //로그인
+    ERROR: "/error",
 
     ApprovalContainer: "/approvalContainer", //전자결재 페이지
     EstimatePopupContainer: "/estimatePopupContainer",
@@ -40,6 +44,7 @@ const URL = {
     //SALES 영업관리
     Sales: "/sales", //영업관리
     OrderMgmt: "/sales/order", //영업관리>수주관리
+    OrderPlanMgmt: "/sales/orderPlan", //영업관리>수주관리
     SalesExpenses: "/sales/expenses", //영업관리>영업비용
     Quotation: "/sales/quotation", //영업관리>견적서관리
     InvoiceMgmt: "/sales/invoice", //영업관리>세금계산서발행관리
