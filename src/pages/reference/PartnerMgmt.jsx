@@ -40,14 +40,14 @@ function PartnerMgmt() {
             modify: true,
             add: true,
         },
-        //{
-        //    header: "기업회원ID",
-        //    col: "esntlId",
-        //    cellWidth: "30%",
-        //    modify: true,
-        //    add: true,
-        //    notView: true,
-        //},
+        {
+            header: "기업회원ID",
+            col: "esntlId",
+            cellWidth: "30%",
+            modify: true,
+            add: true,
+            notView: true,
+        },
         //{
         //    header: "사업자번호",
         //    col: "cltBussnum",

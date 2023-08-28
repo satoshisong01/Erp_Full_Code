@@ -201,6 +201,39 @@ const ReactDataTable = (props) => {
     );
 
     const pageSizeOptions = [5, 10, 15, 20, 30, 50, 100];
+    const [editingRows, setEditingRows] = useState(false);
+    const [editedData, setEditedData] = useState({});
+
+    const handleEditClick = () => {
+        setEditingRows(true);
+    };
+
+    const handleCancelClick = () => {
+        setEditingRows(false);
+    };
+
+    const handleEditChange = (rowIndex, columnId, value) => {
+        setEditedData((prevData) => ({
+            ...prevData,
+            [rowIndex]: {
+                ...prevData[rowIndex],
+                [columnId]: value,
+            },
+        }));
+    };
+
+    const handleSaveClick = (rowIndex) => {
+        updateData(rowIndex, editedData[rowIndex]);
+        setEditedData((prevData) => ({
+            ...prevData,
+            [rowIndex]: undefined,
+        }));
+        setEditingRows(false);
+    };
+
+    const updateData = (rowIndex, newData) => {
+        // TODO: newData를 사용하여 데이터 업데이트 로직 구현
+    };
 
     return (
         <>
@@ -225,10 +258,8 @@ const ReactDataTable = (props) => {
                     ))}
                 </select>
             </div>
-            <table
-                {...getTableProps()}
-                className="table table-bordered"
-                id="dataTable">
+            <button onClick={handleEditClick}>Edit All</button>
+            <table {...getTableProps()} className="table">
                 <thead>
                     {headerGroups.map((headerGroup) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
@@ -236,38 +267,64 @@ const ReactDataTable = (props) => {
                                 <th
                                     {...column.getHeaderProps(
                                         column.getSortByToggleProps()
-                                    )}
-                                    className="tableHeaderTh"
-                                    style={{ width: column.width }}>
-                                    <div className="icon-container">
-                                        <span>{column.render("Header")}</span>
-                                        <span className="sort-icon">
-                                            {column.isSorted
-                                                ? column.isSortedDesc
-                                                    ? " 🔽"
-                                                    : " 🔼"
-                                                : ""}
-                                        </span>
-                                    </div>
+                                    )}>
+                                    {column.render("Header")}
+                                    <span>
+                                        {column.isSorted
+                                            ? column.isSortedDesc
+                                                ? " 🔽"
+                                                : " 🔼"
+                                            : ""}
+                                    </span>
                                 </th>
                             ))}
+                            {/* 수정 중일 때는 "Cancel" 버튼을, 아닐 때는 "Edit All" 버튼을 표시 */}
+                            <th>
+                                {editingRows ? (
+                                    <button onClick={handleCancelClick}>
+                                        Cancel
+                                    </button>
+                                ) : (
+                                    <button onClick={handleEditClick}>
+                                        Edit All
+                                    </button>
+                                )}
+                            </th>
                         </tr>
                     ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
                     {page.map((row) => {
                         prepareRow(row);
+                        const isEditing = editingRows === true;
                         return (
                             <tr {...row.getRowProps()}>
-                                {row.cells.map((cell) => {
-                                    return (
-                                        <td
-                                            {...cell.getCellProps()}
-                                            className="tdStyle">
-                                            {cell.render("Cell")}
-                                        </td>
-                                    );
-                                })}
+                                {row.cells.map((cell) => (
+                                    <td {...cell.getCellProps()}>
+                                        {cell.column.id === "selection" ? (
+                                            cell.render("Cell")
+                                        ) : isEditing ? (
+                                            <input
+                                                type="text"
+                                                value={
+                                                    editedData[row.index][
+                                                        cell.column.id
+                                                    ] ||
+                                                    row.values[cell.column.id]
+                                                }
+                                                onChange={(e) =>
+                                                    handleEditChange(
+                                                        row.index,
+                                                        cell.column.id,
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        ) : (
+                                            cell.render("Cell")
+                                        )}
+                                    </td>
+                                ))}
                             </tr>
                         );
                     })}
