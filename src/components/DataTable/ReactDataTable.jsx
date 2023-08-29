@@ -302,9 +302,6 @@ const ReactDataTable = (props) => {
                             <th>
                                 {editingRows ? (
                                     <>
-                                        <button onClick={handleSaveClick}>
-                                            Save
-                                        </button>
                                         <button onClick={handleCancelClick}>
                                             Cancel
                                         </button>

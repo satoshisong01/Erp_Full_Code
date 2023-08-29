@@ -419,6 +419,14 @@ td > input {
     z-index: 99;
 }
 
+.redDelete {
+    margin: 0;
+}
+
+#dataTableReactTable {
+    margin-top: 0;
+}
+
 /* 반응형 스타일 */
 @media (max-width: 768px) {
     .flex-group {
