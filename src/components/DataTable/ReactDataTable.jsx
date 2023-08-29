@@ -201,6 +201,39 @@ const ReactDataTable = (props) => {
     );
 
     const pageSizeOptions = [5, 10, 15, 20, 30, 50, 100];
+    const [editingRows, setEditingRows] = useState(false);
+    const [editedData, setEditedData] = useState({});
+
+    const handleEditClick = () => {
+        setEditingRows(true);
+    };
+
+    const handleCancelClick = () => {
+        setEditingRows(false);
+    };
+
+    const handleEditChange = (rowIndex, columnId, value) => {
+        setEditedData((prevData) => ({
+            ...prevData,
+            [rowIndex]: {
+                ...prevData[rowIndex],
+                [columnId]: value,
+            },
+        }));
+    };
+
+    const handleSaveClick = (rowIndex) => {
+        updateData(rowIndex, editedData[rowIndex]);
+        setEditedData((prevData) => ({
+            ...prevData,
+            [rowIndex]: undefined,
+        }));
+        setEditingRows(false);
+    };
+
+    const updateData = (rowIndex, newData) => {
+        // TODO: newData를 사용하여 데이터 업데이트 로직 구현
+    };
 
     return (
         <>
@@ -212,7 +245,7 @@ const ReactDataTable = (props) => {
                 suffixUrl={suffixUrl}
                 selectedData={selectDatas}
             />
-            <div>
+            {/*<div>
                 <span className="mg-r-5">Show</span>
                 <select
                     value={changPageSize}
@@ -224,50 +257,111 @@ const ReactDataTable = (props) => {
                         </option>
                     ))}
                 </select>
+            </div>*/}
+            {/*<button onClick={handleEditClick}>Edit All</button>*/}
+
+            <div className="page-size">
+                페이지 크기:
+                <select
+                    value={pageSize}
+                    onChange={(e) => {
+                        const newSize = Number(e.target.value);
+                        setPageSize(newSize); // 페이지 크기 변경
+                        gotoPage(0); // 첫 페이지로 이동
+                    }}>
+                    {pageSizeOptions.map((size) => (
+                        <option key={size} value={size}>
+                            {size}
+                        </option>
+                    ))}
+                </select>
             </div>
-            <table
-                {...getTableProps()}
-                className="table table-bordered"
-                id="dataTable">
+            <table {...getTableProps()} className="table">
                 <thead>
-                    {headerGroups.map((headerGroup) => (
+                    {headerGroups.map((headerGroup, headerGroupIndex) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map((column) => (
+                            {headerGroup.headers.map((column, columnIndex) => (
                                 <th
                                     {...column.getHeaderProps(
                                         column.getSortByToggleProps()
                                     )}
-                                    className="tableHeaderTh"
-                                    style={{ width: column.width }}>
-                                    <div className="icon-container">
-                                        <span>{column.render("Header")}</span>
-                                        <span className="sort-icon">
-                                            {column.isSorted
-                                                ? column.isSortedDesc
-                                                    ? " 🔽"
-                                                    : " 🔼"
-                                                : ""}
-                                        </span>
-                                    </div>
+                                    className={
+                                        columnIndex === 0 ? "first-column" : ""
+                                    }>
+                                    {column.render("Header")}
+                                    <span>
+                                        {column.isSorted
+                                            ? column.isSortedDesc
+                                                ? " 🔽"
+                                                : " 🔼"
+                                            : ""}
+                                    </span>
                                 </th>
                             ))}
+                            {/* 수정 중일 때는 "Save" 버튼을, 아닐 때는 "Edit All" 버튼을 표시 */}
+                            <th>
+                                {editingRows ? (
+                                    <>
+                                        <button onClick={handleCancelClick}>
+                                            Cancel
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button onClick={handleEditClick}>
+                                        Edit All
+                                    </button>
+                                )}
+                            </th>
                         </tr>
                     ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
-                    {page.map((row) => {
+                    {page.map((row, rowIndex) => {
                         prepareRow(row);
+                        const isEditing = editingRows === true;
                         return (
-                            <tr {...row.getRowProps()}>
-                                {row.cells.map((cell) => {
-                                    return (
-                                        <td
-                                            {...cell.getCellProps()}
-                                            className="tdStyle">
-                                            {cell.render("Cell")}
-                                        </td>
-                                    );
-                                })}
+                            <tr
+                                {...row.getRowProps()}
+                                style={{ borderBottom: "1px solid #ddd" }} // 아이템 사이에 선 추가
+                            >
+                                {row.cells.map((cell, cellIndex) => (
+                                    <td
+                                        {...cell.getCellProps()}
+                                        className={
+                                            cellIndex === 0
+                                                ? "first-column"
+                                                : "other-column"
+                                        }>
+                                        {cell.column.id === "selection" ? (
+                                            cell.render("Cell")
+                                        ) : isEditing ? (
+                                            <input
+                                                type="text"
+                                                value={
+                                                    editedData[row.index] &&
+                                                    editedData[row.index][
+                                                        cell.column.id
+                                                    ] !== undefined
+                                                        ? editedData[row.index][
+                                                              cell.column.id
+                                                          ]
+                                                        : row.values[
+                                                              cell.column.id
+                                                          ]
+                                                }
+                                                onChange={(e) =>
+                                                    handleEditChange(
+                                                        row.index,
+                                                        cell.column.id,
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        ) : (
+                                            cell.render("Cell")
+                                        )}
+                                    </td>
+                                ))}
                             </tr>
                         );
                     })}
@@ -293,22 +387,6 @@ const ReactDataTable = (props) => {
                     disabled={!canNextPage}>
                     마지막
                 </button>
-            </div>
-            <div className="page-size">
-                페이지 크기:
-                <select
-                    value={pageSize}
-                    onChange={(e) => {
-                        const newSize = Number(e.target.value);
-                        setPageSize(newSize); // 페이지 크기 변경
-                        gotoPage(0); // 첫 페이지로 이동
-                    }}>
-                    {pageSizeOptions.map((size) => (
-                        <option key={size} value={size}>
-                            {size}
-                        </option>
-                    ))}
-                </select>
             </div>
         </>
     );

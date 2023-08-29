@@ -153,8 +153,14 @@ const SecondRoutes = () => {
 
                 {/* 탭 화면 */}
                 <Route path={URL.Tabs} element={<TabContainer />} />
-                <Route path={URL.ExecutionTabPage} element={<ExecutionTabPage />} />
-                <Route path={URL.ReferenceTabPage} element={<ReferenceTabPage />} />
+                <Route
+                    path={URL.ExecutionTabPage}
+                    element={<ExecutionTabPage />}
+                />
+                <Route
+                    path={URL.ReferenceTabPage}
+                    element={<ReferenceTabPage />}
+                />
                 <Route path={URL.SalesTabPage} element={<SalesTabPage />} />
                 <Route path={URL.SystemTabPage} element={<SystemTabPage />} />
 

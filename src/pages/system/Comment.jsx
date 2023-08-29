@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import store from "store/configureStore";
-import { tabActive } from "components/tabs/TabsActions";
+import { selectLnb } from "components/tabs/TabsActions";
 import Comments from "./Board/Comment/Comments";
 
 /** 시스템관리-게시판관리-댓글관리 */
@@ -19,7 +19,7 @@ function Comment() {
                         <Link
                             to=""
                             onClick={(e) =>
-                                store.dispatch(tabActive("권한관리"))
+                                store.dispatch(selectLnb("권한관리"))
                             }>
                             시스템관리
                         </Link>
