@@ -21,14 +21,16 @@ export function tabsReducer(
             return {
                 ...state,
                 lnbLabel: action.lnbLabel,
-                gnbLabel: Children.find((item) => item.label === action.lnbLabel).pLabel
+                snbLabel: ""
+                // gnbLabel: Children.find((item) => item.label === action.lnbLabel).pLabel
             };
 
         case SELECT_SNB:
             return {
                 ...state,
                 snbLabel: action.snbLabel,
-                gnbLabel: Children.find((item) => item.label === action.snbLabel).pLabel
+                lnbLabel: ""
+                // gnbLabel: Children.find((item) => item.label === action.snbLabel).pLabel
             };
         default:
             // 기본값 세팅

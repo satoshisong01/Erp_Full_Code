@@ -5,7 +5,7 @@ import { selectLnb } from "components/tabs/TabsActions";
 
 export default function Location({ tableList }) {
     return (
-        <div className="location">
+        <div className="location mg-b-20">
             <ul>
                 <li>
                     <Link to="/" className="home">

@@ -263,8 +263,8 @@ body {
 
 /* location */
 .location {
-    height: 70px;
-    padding-top: 43px;
+    /* height: 70px; */
+    /* padding-top: 43px; */
     text-align: right;
 }
 .location ul,

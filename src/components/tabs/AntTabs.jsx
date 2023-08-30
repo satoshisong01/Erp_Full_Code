@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Children } from "./Children.js";
 import store from 'store/configureStore';
-import { selectSnb, selectLnb } from "components/tabs/TabsActions";
+import { selectSnb, selectLnb, selectGnb } from "components/tabs/TabsActions";
 
 /* nav, header 클릭 시  label props로 전달 & 해당하는 화면(컴포넌트) children 으로 보여줌 */
 const AntTabs = (props) => {
@@ -13,6 +13,7 @@ const AntTabs = (props) => {
 
     /* navi 클릭시 탭 생성 */
     useEffect(() => {
+        console.log("❤️ AntTabs> lnbLabel: ", lnbLabel, ", snbLabel: ", snbLabel);
         const tab = Children.find((item) => item.label === lnbLabel || item.label === snbLabel);
         if (!tab) return; 
         addTab(tab);
@@ -40,9 +41,8 @@ const AntTabs = (props) => {
             ]);
             setActiveKey(addTab.activeKey);
         }
+        store.dispatch(selectGnb(addTab.pLabel)); //left nav를 띄우기 위함
     };
-
-
 
     const removeTab = (targetKey) => {
         const targetIndex = items.findIndex((tab) => tab.key === targetKey);
@@ -53,7 +53,6 @@ const AntTabs = (props) => {
             ];
             setActiveKey(key);
             store.dispatch(selectSnb(label));
-            console.log("⭕ 리무브탭: ", label);
         }
         setItems(newPanes);
 

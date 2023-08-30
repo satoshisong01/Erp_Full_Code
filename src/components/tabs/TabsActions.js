@@ -14,7 +14,6 @@ export function selectGnb(label) {
 
 /* local(site map) navi bar */
 export function selectLnb(label) {
-    console.log("⭕ 로컬메뉴: ", label);
 	return dispatch => {
 		return dispatch({
 			type: SELECT_LNB,
