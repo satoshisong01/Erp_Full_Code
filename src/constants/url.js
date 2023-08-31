@@ -53,6 +53,7 @@ const URL = {
     //EXECUTION 실행관리
     Execution: "/execution", //실행관리
     ExecutionCost: "/execution/cost", //실행관리>실행원가
+    DraftQuotation: "/execution/draft", //실행관리>실행원가
     LaborCostMgmt: "/execution/labor", //실행관리>인건비
     PurchasingMgmt: "/execution/purchasing", //실행관리>구매비
     ExpenseMgmt: "/execution/expense", //실행관리>경비

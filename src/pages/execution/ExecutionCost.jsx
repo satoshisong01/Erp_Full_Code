@@ -3,7 +3,7 @@ import Location from "components/Location/Location";
 import DataTable from "components/DataTable/DataTable";
 import SearchList from "components/SearchList";
 
-/** 실행관리-실행원가 */
+/** 실행관리-실행원가관리 */
 function ExecutionCost() {
     const [returnKeyWord, setReturnKeyWord] = useState("");
 

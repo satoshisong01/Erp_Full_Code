@@ -1,16 +1,13 @@
 .form-container {
-    /* position: relative;
-	margin-bottom: 50px;
-	margin-top: 20px;
 	display: flex;
-	justify-content: center; */
+	justify-content: center;
 }
 
-.newBody {
+/* .newBody {
     width: 1100px;
     max-width: 1100px;
     margin: auto;
-}
+} */
 
 .header-row {
     display: flex;
@@ -154,3 +151,8 @@
     text-align: right;
     margin-bottom: 2px;
 }
+
+  
+  
+  
+  
