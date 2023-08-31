@@ -104,6 +104,8 @@ export default function SearchList({ conditionList, onSearch }) {
     /* 초기화구현 */
     const resetClick = () => {
         setSearchData({});
+        setFormattedDate("");
+        setFormattedDate2("");
     };
 
     /* 검색 이벤트 */

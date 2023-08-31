@@ -69,6 +69,10 @@ const DataTable = (props) => {
     //    console.log(errorOn, "받은 에러값");
     //};
 
+    const handleSendLoading = (value) => {
+        setIsLoading(value);
+    };
+
     useEffect(() => {
         const updateColumnWidth = () => {
             if (dataTableRef.current) {
@@ -186,7 +190,7 @@ const DataTable = (props) => {
 
     /* 데이터 추가하기 */
     const postData = async (postData) => {
-        //setIsLoading(true); // 로딩 화면 활성화
+        setIsLoading(true); // 로딩 화면 활성화
 
         // 필수 필드가 비어있는지 확인
         const requiredFields = columns.filter((col) => col.require);
@@ -270,7 +274,7 @@ const DataTable = (props) => {
                 paging: true,
                 ordering: true,
                 pageLength: pageLength,
-                lengthMenu: [10, 15, 30, 50, 100],
+                lengthMenu: [5, 10, 15, 30, 50, 100],
                 autoWidth: true,
                 initComplete: function () {
                     // lengthMenu에서 숫자를 선택하면 해당 숫자를 pageLength에 할당
@@ -518,7 +522,9 @@ const DataTable = (props) => {
                             postData={postData}
                             columns={columns}
                             saveList={saveList}
+                            fetchAllData={fetchAllData}
                             errorOn={errorOn}
+                            handleSendLoading={handleSendLoading}
                             onClose={() => {
                                 setPostModalOpen(false);
                             }}

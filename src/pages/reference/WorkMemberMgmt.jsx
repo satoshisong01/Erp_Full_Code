@@ -53,6 +53,12 @@ function WorkMemberMgmt() {
         {
             header: "상태",
             col: "usrSttCd",
+            itemType: [
+                "타입을 선택해 주세요[A:가입신청, D:가입삭제, P:가입승인]",
+                "A",
+                "D",
+                "P",
+            ],
             cellWidth: "15%",
             modify: true,
             add: true,

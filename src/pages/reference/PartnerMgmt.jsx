@@ -13,7 +13,9 @@ function PartnerMgmt() {
             col: "cltType",
             cellWidth: "30%",
             enable: false,
+            itemType: ["타입을 선택해 주세요[C:고객사,P:협력사]", "C", "P"],
             modify: true,
+            //itemType: ["C", "P"],
             add: true,
             require: true,
             notView: true,
@@ -118,6 +120,7 @@ function PartnerMgmt() {
         //    modify: true,
         //    add: true,
         //},
+
         {
             header: "품목ID",
             col: "pdiId",

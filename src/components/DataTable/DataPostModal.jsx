@@ -13,6 +13,8 @@ export default function DataPostModal({
     onClose,
     saveList,
     errorOn,
+    fetchAllData,
+    handleSendLoading,
 }) {
     const [data, setData] = useState({});
     const [showAlert, setShowAlert] = useState(false);
@@ -135,6 +137,45 @@ export default function DataPostModal({
                                                                 N
                                                             </option>
                                                         </select>
+                                                    ) : column.itemType &&
+                                                      Array.isArray(
+                                                          column.itemType
+                                                      ) ? (
+                                                        <select
+                                                            className="postInput"
+                                                            name={column.col}
+                                                            value={
+                                                                data[
+                                                                    column.col
+                                                                ] || ""
+                                                            }
+                                                            onChange={
+                                                                inputChange
+                                                            }>
+                                                            <option value={""}>
+                                                                {
+                                                                    column
+                                                                        .itemType[0]
+                                                                }
+                                                            </option>
+                                                            {column.itemType.map(
+                                                                (item, index) =>
+                                                                    index >
+                                                                        0 && (
+                                                                        <option
+                                                                            key={
+                                                                                index
+                                                                            }
+                                                                            value={
+                                                                                item
+                                                                            }>
+                                                                            {
+                                                                                item
+                                                                            }
+                                                                        </option>
+                                                                    )
+                                                            )}
+                                                        </select>
                                                     ) : (
                                                         <input
                                                             placeholder={
@@ -184,7 +225,11 @@ export default function DataPostModal({
                                     type="button"
                                     className="btn btn-default"
                                     data-dismiss="modal"
-                                    onClick={onClose}>
+                                    onClick={() => {
+                                        fetchAllData();
+                                        onClose();
+                                        handleSendLoading(true);
+                                    }}>
                                     취소
                                 </button>
                                 <button
