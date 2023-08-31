@@ -7,37 +7,9 @@ import ReactDataTable from "components/DataTable/ReactDataTable";
 /** 영업관리-수주등록관리 */
 function OrderMgmt() {
     const columns = [
-        {
-            header: "프로젝트 이름",
-            col: "poiTitle",
-            cellWidth: "35%",
-            enable: false,
-            modify: true,
-            add: true,
-        },
-        {
-            header: "프로젝트 코드",
-            col: "poiCode",
-            cellWidth: "15%",
-            modify: true,
-            add: true,
-            type: "input",
-        },
-        {
-            header: "수주시작일",
-            col: "poiBeginDt",
-            cellWidth: "20%",
-            modify: true,
-            add: true,
-            type: "input",
-        },
-        { header: "통화", col: "poiCurrcy", cellWidth: "10%" },
-        { header: "거래처", col: "cltId", cellWidth: "20%" },
-        { header: "담당자", col: "poiManagerId", cellWidth: "20%" },
-        { header: "납기시작일", col: "poiDueBeginDt", cellWidth: "20%" },
-        { header: "수주금액", col: "orderAmount", cellWidth: "20%" },
-        { header: "거래명세서", col: "Invoice", cellWidth: "15%" },
-        { header: "상태", col: "poiStatus", cellWidth: "15%" },
+        { header: "프로젝트 이름", col: "poiNm", cellWidth: '50%', type: "input"},
+        { header: "프로젝트 코드", col: "poiCode", cellWidth: '25%', type: "input"},
+        { header: "수주시작일", col: "poiBeginDt", cellWidth: '25%', type: "select", options: [{value: '1', label: 'op1'}, {value: '2', label: 'op2'}]},
     ];
 
     const conditionList = [
@@ -106,6 +78,8 @@ function OrderMgmt() {
             { label: "PM", key: "poiManagerId", type: "input", require: true },
         ],
         [
+            { label: "수주 시작일", key: "poi_begin_dt", type: "input", require: true },
+            { label: "수주 마감일", key: "poi_end_dt", type: "input", require: true },
             {
                 label: "사전원가 기준 이익률",
                 key: "standardMargin",

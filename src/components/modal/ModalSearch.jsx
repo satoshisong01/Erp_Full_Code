@@ -3,37 +3,30 @@ import "./ModalSearch.css";
 import { useState } from "react";
 import ModalPage from "./ModalPage";
 
-export default function ModalSearch(props) {
+export default function ModalSearch() {
     const [modalOpen, setModalOpen] = useState(false);
+    const [name, setName] = useState("")
+    
+    const columns = [
+        { header: "프로젝트 이름", col: "poiNm", cellWidth: "100%" },
+    ]
+
+    const handleSelect = (value) => {
+        setName(value);
+    }
+
     return (
-        <div className="col-12 userTable" style={{ height: "100%" }}>
-            <div
-                className="searchTable"
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    //borderTop: "solid #DDDDDD 1px",
-                    //borderBottom: "solid #DDDDDD 1px",
-                    marginLeft: "20px",
-                    height: "40px",
-                    backgroundColor: "white",
-                }}>
-                <input
-                    onClick={() => setModalOpen(true)}
-                    //style={{ height: "26px", marginLeft: "7px" }}
-                    type="text"
-                    placeholder="프로젝트를 선택해 주세요"
-                />
-                {modalOpen && (
-                    <ModalPage
-                        onClose={() => {
-                            setModalOpen(false);
-                            //refetch();
-                        }}
-                        datas={123}
-                    />
-                )}
-            </div>
+        <div>
+            <input
+                onClick={() => setModalOpen(true)}
+                type="text"
+                placeholder="프로젝트를 선택해 주세요."
+                value={name}
+                readOnly
+            />
+            {modalOpen && (
+                <ModalPage onClose={() => {setModalOpen(false)}} onSelect={handleSelect} />
+            )}
         </div>
     );
 }

@@ -747,6 +747,63 @@ td > input {
     font-size: 18px;
 }
 
+/* 심플 탭 */
+.mini_board .blind {position: absolute; left: -9999px; top: -9999px;}
+.mini_board {position: relative;}
+.mini_board .tab::after {content: ""; display: block; clear: both;}
+.mini_board .tab li {float: left;}
+.mini_board .tab li + li {margin-left: 40px;}
+.mini_board .tab li a {display: block; position: relative; padding-bottom: 12px; color: #ccc; font-size: 30px; font-weight: 700;}
+.mini_board .tab li a.on {color: #222;}
+.mini_board .tab li a.on::after {content: ""; display: block; position: absolute; left: 0; bottom: 0; width: 100%; height: 4px; background: #0465be;}
+.mini_board .more {display: block; position: absolute; right: 0; top: 16px; height: 16px; padding-left: 27px; color: #444; font-size: 18px; line-height: 16px; background: url(css/images/ico_plus.png) no-repeat;}
+.mini_board .list ul {margin-top: 33px;}
+.mini_board .list ul > li {position: relative;}
+.mini_board .list ul > li + li {margin-top: 10px;}
+.mini_board .list ul > li a {display: block; width: calc(100% - 100px); color: #666; font-size: 20px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
+.mini_board .list ul > li a:hover {color: #222; text-decoration: underline;}
+.mini_board .list ul > li span {position: absolute; right: 0; top: 4px; color: #aaa; font-size: 16px;}
+.mini_board .second, .mini_board .third, .mini_board .fifth, .mini_board .fourth, .mini_board .sixth {display: none;}
+
+.mini_board .tab li + li {margin-left: 25px;}
+.mini_board .tab li a {padding-bottom: 10px; font-size: 18px;}
+
+.mini_board {margin: 0 -20px; padding: 30px 20px 40px 20px; background: #fff;}
+.mini_board .tab li + li {margin-left: 25px;}
+.mini_board .tab li a {padding-bottom: 10px; font-size: 18px;}
+.mini_board .list ul {margin-top: 26px;}
+.mini_board .list ul > li a {width: calc(100% - 60px); font-size: 12px;}
+.mini_board .list ul > li span {top: 1px; font-size: 11px;}
+.mini_board .more {right: 20px; top: 37px; height: 10px; padding-left: 13px; font-size: 11px; line-height: 10px; background-size: auto 8px;}
+
+.mini_board_2 .blind {position: absolute; left: -9999px; top: -9999px;}
+.mini_board_2 {position: relative;}
+.mini_board_2 .tab::after {content: ""; display: block; clear: both;}
+.mini_board_2 .tab li {float: left;}
+.mini_board_2 .tab li + li {margin-left: 40px;}
+.mini_board_2 .tab li a {display: block; position: relative; padding-bottom: 12px; color: #ccc; font-size: 30px; font-weight: 700;}
+.mini_board_2 .tab li a.on {color: #222;}
+.mini_board_2 .tab li a.on::after {content: ""; display: block; position: absolute; left: 0; bottom: 0; width: 100%; height: 4px; background: #0465be;}
+.mini_board_2 .more {display: block; position: absolute; right: 0; top: 16px; height: 16px; padding-left: 27px; color: #444; font-size: 18px; line-height: 16px; background: url(css/images/ico_plus.png) no-repeat;}
+.mini_board_2 .list ul {margin-top: 33px;}
+.mini_board_2 .list ul > li {position: relative;}
+.mini_board_2 .list ul > li + li {margin-top: 10px;}
+.mini_board_2 .list ul > li a {display: block; width: calc(100% - 100px); color: #666; font-size: 20px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
+.mini_board_2 .list ul > li a:hover {color: #222; text-decoration: underline;}
+.mini_board_2 .list ul > li span {position: absolute; right: 0; top: 4px; color: #aaa; font-size: 16px;}
+.mini_board_2 .second, .mini_board_2 .third {display: none;}
+
+.mini_board_2 .tab li + li {margin-left: 25px;}
+.mini_board_2 .tab li a {padding-bottom: 10px; font-size: 18px;}
+
+.mini_board_2 {margin: 0 -20px; padding: 30px 20px 40px 20px; background: #fff;}
+.mini_board_2 .tab li + li {margin-left: 25px;}
+.mini_board_2 .tab li a {padding-bottom: 10px; font-size: 18px;}
+.mini_board_2 .list ul {margin-top: 26px;}
+.mini_board_2 .list ul > li a {width: calc(100% - 60px); font-size: 12px;}
+.mini_board_2 .list ul > li span {top: 1px; font-size: 11px;}
+.mini_board_2 .more {right: 20px; top: 37px; height: 10px; padding-left: 13px; font-size: 11px; line-height: 10px; background-size: auto 8px;}
+
 /* 반응형 스타일 */
 @media (max-width: 768px) {
     .flex-group {
