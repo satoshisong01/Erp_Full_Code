@@ -11,13 +11,25 @@ function EgovMain(props) {
     console.log("EgovMain [location] : ", location);
 
     console.log("------------------------------EgovMain [End]");
-    console.groupEnd("EgovMain")
+    console.groupEnd("EgovMain");
+    const [isLoaded, setIsLoaded] = useState(false);
 
+    useEffect(() => {
+        const img = new Image();
+        img.src = "assets/images/mecca_logo.png";
+        img.onload = () => {
+            setIsLoaded(true);
+        };
+    }, []);
     return (
         <div className="egov-container">
             <div className="c_wrap">
                 <div className="logo-center-container">
-                    <img src="assets/images/mecca_logo.png" alt="로고" className="logo-main" />
+                    <img
+                        src="assets/images/mecca_logo.png"
+                        alt="로고"
+                        className={`logo-main ${isLoaded ? "loaded" : ""}`}
+                    />
                 </div>
             </div>
         </div>
