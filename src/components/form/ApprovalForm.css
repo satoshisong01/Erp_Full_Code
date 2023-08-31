@@ -107,8 +107,9 @@
     height: 35px;
     font-size: large;
     text-align: center;
-    background-color: #e3ecf8;
+    background-color: slategrey;
     border: 1px solid gray;
+    color: #eeeeee;
 }
 
 .table8-2-2 {
