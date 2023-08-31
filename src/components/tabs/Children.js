@@ -42,6 +42,7 @@ import DetailCode from "pages/system/DetailCode";
 import AccessHistoryMgmt from "pages/system/AccessHistoryMgmt";
 import AuthorizationMgmt from "pages/system/AuthorizationMgmt";
 import ClCode from "pages/system/CodeManage/ClassificationCode/ClCode";
+import DraftQuotation from "pages/execution/DraftQuotation";
 
 export const reference = [
     //기준정보관리
@@ -209,12 +210,20 @@ export const sales = [
 export const execution = [
     //실행관리
     {
+        title: "DraftQuotation",
+        path: URL.DraftQuotation,
+        component: <DraftQuotation />,
+        label: "사전원가(초안)관리",
+        pLabel: "실행관리",
+        activeKey: 300,
+    },
+    {
         title: "ExecutionCost",
         path: URL.ExecutionCost,
         component: <ExecutionCost />,
-        label: "실행원가",
+        label: "실행원가관리",
         pLabel: "실행관리",
-        activeKey: 300,
+        activeKey: 301,
     },
     {
         title: "LaborCostMgmt",
@@ -222,7 +231,7 @@ export const execution = [
         component: <LaborCostMgmt />,
         label: "인건비관리",
         pLabel: "실행관리",
-        activeKey: 301,
+        activeKey: 302,
     },
     {
         title: "PurchasingMgmt",
@@ -230,7 +239,7 @@ export const execution = [
         component: <PurchasingMgmt />,
         label: "구매관리",
         pLabel: "실행관리",
-        activeKey: 302,
+        activeKey: 303,
     },
     {
         title: "ExpenseMgmt",
@@ -238,7 +247,7 @@ export const execution = [
         component: <ExpenseMgmt />,
         label: "경비관리",
         pLabel: "실행관리",
-        activeKey: 303,
+        activeKey: 304,
     },
     {
         title: "Approval",
@@ -246,7 +255,7 @@ export const execution = [
         component: <Approval />,
         label: "전자결재",
         pLabel: "실행관리",
-        activeKey: 304,
+        activeKey: 305,
     },
 ];
 export const system = [
