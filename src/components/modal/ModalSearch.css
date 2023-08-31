@@ -335,9 +335,27 @@
 .postBox {
     width: 90%;
     display: flex;
+    flex-direction: column;
     align-items: center;
+    position: relative;
+    padding-bottom: 30px;
+}
 
-    margin-bottom: 20px;
+.inputBox {
+    width: 90%;
+    display: flex;
+    align-items: center;
+}
+
+.text-error {
+    position: absolute;
+    top: 21px;
+    color: red;
+}
+
+.error-message {
+    box-sizing: border-box;
+    width: 45%;
 }
 
 .postLabel {
@@ -347,6 +365,7 @@
 }
 
 .postInput {
+    box-sizing: border-box;
     width: 75%;
 }
 

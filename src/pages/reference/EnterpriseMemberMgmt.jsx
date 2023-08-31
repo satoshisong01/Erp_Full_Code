@@ -105,8 +105,8 @@ function EnterpriseMemberMgmt() {
 
     const conditionList = [
         {
-            title: "기업ID",
-            colName: "uniqId", //컬럼명
+            title: "기업회원ID",
+            colName: "entMbId", //컬럼명
             type: "input",
             value: "",
             searchLevel: "1",
@@ -124,6 +124,12 @@ function EnterpriseMemberMgmt() {
             type: "input",
             value: "",
             searchLevel: "2",
+        },
+        {
+            title: "작성일",
+            colName: "createDate",
+            type: "datepicker",
+            searchLevel: "1",
         },
     ];
 

@@ -83,8 +83,8 @@ export async function axiosPost(url, requestData) {
 
     try {
         const response = await axios.post(url, requestData, { headers });
-        console.log(response, "일반회원관리 어케되는거지");
         if (Number(response.data.resultCode) === Number(CODE.RCV_SUCCESS)) {
+            console.log(response.data.resultCode);
             return response.data.result.resultData;
         } else {
             return response.data;

@@ -10,6 +10,7 @@ function CategoryCode() {
     const columns = [
         {
             header: "분류코드",
+            pk: true,
             col: "clCode",
             cellWidth: "20%",
             enable: false,
@@ -45,14 +46,14 @@ function CategoryCode() {
             colName: "clCode", //컬럼명
             type: "input",
             value: "",
-            searchLevel: "1",
+            searchLevel: "5",
         },
         {
             title: "분류코드명",
             colName: "clCodeNm", //컬럼명
             type: "input",
             value: "",
-            searchLevel: "2",
+            searchLevel: "6",
         },
         {
             title: "작성자",
@@ -66,7 +67,13 @@ function CategoryCode() {
             colName: "lastModifiedIdBy", //컬럼명
             type: "input",
             value: "",
-            searchLevel: "3",
+            searchLevel: "4",
+        },
+        {
+            title: "작성일",
+            colName: "createDate",
+            type: "datepicker",
+            searchLevel: "1",
         },
     ];
 

@@ -70,12 +70,13 @@ const ReactDataTableRowEdit = ({ columns }) => {
         getTableBodyProps,
         headerGroups,
         prepareRow,
-        page,
         state: { pageIndex },
+        page,
         previousPage,
         nextPage,
         canPreviousPage,
         canNextPage,
+        setPage,
     } = useTable(
         {
             columns: columnsConfig,
@@ -151,6 +152,8 @@ const ReactDataTableRowEdit = ({ columns }) => {
         setSelectDatas((prevSelectDatas) =>
             prevSelectDatas.filter((data) => data !== rowToDelete)
         );
+
+        setPage(0);
     };
 
     return (
@@ -188,10 +191,10 @@ const ReactDataTableRowEdit = ({ columns }) => {
                     ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
-                    {page.map((row) => {
+                    {page.map((row, index) => {
                         prepareRow(row);
                         return (
-                            <tr {...row.getRowProps()}>
+                            <tr key={index} {...row.getRowProps()}>
                                 {row.cells.map((cell) => {
                                     const { column } = cell;
                                     return (

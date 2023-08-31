@@ -4,12 +4,12 @@ import SearchList from "components/SearchList";
 import FormDataTable from "components/DataTable/FormDataTable";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 
-/** 영업관리-수주관리 */
+/** 영업관리-수주등록관리 */
 function OrderMgmt() {
     const columns = [
         {
             header: "프로젝트 이름",
-            col: "poiNm",
+            col: "poiTitle",
             cellWidth: "35%",
             enable: false,
             modify: true,

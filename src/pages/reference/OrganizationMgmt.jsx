@@ -49,7 +49,7 @@ function OrganizationMgmt() {
 
     const conditionList = [
         {
-            title: "ID",
+            title: "조직ID",
             colName: "orgId", //컬럼명
             type: "input",
             value: "",
@@ -61,6 +61,12 @@ function OrganizationMgmt() {
             type: "input",
             value: "",
             searchLevel: "2",
+        },
+        {
+            title: "작성일",
+            colName: "createDate",
+            type: "datepicker",
+            searchLevel: "1",
         },
     ];
 

@@ -17,6 +17,7 @@ export default function DataPutModal({
     };
 
     const [data, setData] = useState(initialData);
+    const [errorMessages, setErrorMessages] = useState({}); // 각 필드에 대한 에러 메시지 상태 추가
 
     useEffect(() => {
         initializeState(); // 모달이 열릴 때 상태를 초기화합니다.
@@ -29,12 +30,36 @@ export default function DataPutModal({
     const inputChange = (e) => {
         const { name, value } = e.target;
         setData((prevData) => ({ ...prevData, [name]: value }));
-        console.log(data, "변경후값");
+
+        // 에러 메시지 상태 업데이트
+        setErrorMessages((prevErrors) => ({
+            ...prevErrors,
+            [name]: false,
+        }));
     };
 
     const handleSaveChanges = () => {
-        updateData(data); // 수정된 데이터와 함께 updateData 함수를 호출
-        onClose(); // 변경사항 저장 후 모달을 닫습니다.
+        // 필수값이 비어있는지 확인
+        const requiredColumns = columns.filter((column) => column.require);
+        const hasEmptyRequiredFields = requiredColumns.some(
+            (column) => !data[column.col]
+        );
+
+        if (hasEmptyRequiredFields) {
+            // 필수값 에러 메시지 상태 업데이트
+            setErrorMessages((prevErrors) => {
+                const newErrors = { ...prevErrors };
+                requiredColumns.forEach((column) => {
+                    if (!data[column.col]) {
+                        newErrors[column.col] = true;
+                    }
+                });
+                return newErrors;
+            });
+        } else {
+            updateData(data);
+            onClose();
+        }
     };
 
     return (
@@ -60,26 +85,37 @@ export default function DataPutModal({
                                             <div
                                                 className="postBox"
                                                 key={index}>
-                                                <label className="postLabel">
-                                                    {column.require && (
-                                                        <span className="redStar">
-                                                            *
-                                                        </span>
-                                                    )}
-                                                    {column.header}:
-                                                </label>
-                                                <input
-                                                    placeholder={column.header}
-                                                    className="postInput"
-                                                    type="text"
-                                                    name={column.col}
-                                                    value={data[column.col]}
-                                                    //value={getNestedData(data, column.col) || ""}
-                                                    onChange={inputChange}
-                                                    disabled={
-                                                        column.enable === false
-                                                    }
-                                                />
+                                                <div className="inputBox">
+                                                    <label className="postLabel">
+                                                        {column.require && (
+                                                            <span className="redStar">
+                                                                *
+                                                            </span>
+                                                        )}
+                                                        {column.header}:
+                                                    </label>
+                                                    <input
+                                                        placeholder={
+                                                            column.header
+                                                        }
+                                                        className="postInput"
+                                                        type="text"
+                                                        name={column.col}
+                                                        value={data[column.col]}
+                                                        //value={getNestedData(data, column.col) || ""}
+                                                        onChange={inputChange}
+                                                        disabled={
+                                                            column.enable ===
+                                                            false
+                                                        }
+                                                    />
+                                                </div>
+                                                {errorMessages[column.col] && (
+                                                    <span className="error-message text-error">
+                                                        필수값이 입력되지
+                                                        않았습니다.
+                                                    </span>
+                                                )}
                                             </div>
                                         );
                                     }

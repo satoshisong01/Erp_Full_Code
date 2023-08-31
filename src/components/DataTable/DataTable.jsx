@@ -15,7 +15,14 @@ import DataTableButton from "components/button/DataTableButton";
 import DataPostModal from "./DataPostModal";
 
 const DataTable = (props) => {
-    const { returnKeyWord, columns, suffixUrl, currentPage, addBtn } = props;
+    const {
+        returnKeyWord,
+        columns,
+        suffixUrl,
+        currentPage,
+        addBtn,
+        customerList,
+    } = props;
 
     const [modalItem, setModalItem] = useState(""); //모달창에 넘겨주는 데이터
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창 true, false
@@ -25,6 +32,7 @@ const DataTable = (props) => {
     const [tableData, setTableData] = useState([]); //데이터 저장
     const dataTableRef = useRef(null); //dataTable Ref 지정
 
+    const [errorOn, setErrorOn] = useState(false);
     const [isLoading, setIsLoading] = useState(false); //로딩화면(true 일때 로딩화면)
     //const [uniqueValues, setUniqueValues] = useState([]); //추출한 col값 저장
     const addData = columns[columns.length - 1].listItem;
@@ -54,6 +62,12 @@ const DataTable = (props) => {
     const changePage = (newPage) => {
         setCurrentPages(newPage);
     };
+
+    //const handleErrorCtrl = (value) => {
+    //    setErrorOn(value);
+    //    console.log(value, "에러온오프값");
+    //    console.log(errorOn, "받은 에러값");
+    //};
 
     useEffect(() => {
         const updateColumnWidth = () => {
@@ -113,7 +127,13 @@ const DataTable = (props) => {
         //setTableData(dummyData);
         //setIsLoading(true); // 로딩 화면 활성화
         if (suffixUrl === "") return;
-        const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
+        let url = ``;
+        if (customerList) {
+            url = `/api${suffixUrl}/${currentPage}/${customerList}/listAll.do`;
+        } else {
+            url = `/api${suffixUrl}/${currentPage}/listAll.do`;
+        }
+        console.log(url);
         const requestData = { lockAt: "Y" };
 
         const resultData = await axiosFetch(url, requestData);
@@ -166,7 +186,7 @@ const DataTable = (props) => {
 
     /* 데이터 추가하기 */
     const postData = async (postData) => {
-        setIsLoading(true); // 로딩 화면 활성화
+        //setIsLoading(true); // 로딩 화면 활성화
 
         // 필수 필드가 비어있는지 확인
         const requiredFields = columns.filter((col) => col.require);
@@ -175,7 +195,6 @@ const DataTable = (props) => {
         );
 
         if (emptyRequiredFields.length > 0) {
-            alert("필수 항목은 빈 값이 될 수 없습니다.");
             setIsLoading(false); // 로딩 화면 비활성화
             return;
         }
@@ -185,43 +204,54 @@ const DataTable = (props) => {
         const url = `/api${suffixUrl}/${currentPage}/add.do`;
         const requestData = { ...postData, lockAt: "Y", userAt: "Y" };
 
-        // API 호출 등의 로직 실행
-        const resultData = await axiosPost(url, requestData);
-        console.log(resultData, "결과값");
+        try {
+            // API 호출 등의 로직 실행
+            const resultData = await axiosPost(url, requestData);
+            console.log(resultData, "결과값");
 
-        if (resultData) {
-            $(dataTableRef.current).DataTable().destroy();
-            fetchAllData();
-            alert("추가 되었습니다!✅✅✅✅");
+            if (resultData) {
+                $(dataTableRef.current).DataTable().destroy();
+                fetchAllData();
+                alert("추가 되었습니다!✅✅✅✅");
+                setPostModalOpen(false);
+            }
+        } catch (error) {
+            //setPostModalOpen(true);
+            //setErrorOn(true);
+            setErrorOn(true);
+            console.log("에러받았다(에러시) 3번");
+        } finally {
+            setIsLoading(false); // 로딩 화면 비활성화
         }
-        setIsLoading(false); // 로딩 화면 활성화
     };
 
     /* 데이터 검색하기 */
     const searchData = async (returnKeyWord) => {
         console.log(returnKeyWord, "받아온데이터");
-
-        const sendData = Object.values(returnKeyWord.searchKeyword).map(
-            (value) => value
-        );
-        console.log(sendData, "뽑아둔 데이터");
-
-        const separatedData = sendData.map((item) => `${item}`).join(", ");
-        console.log(separatedData, "나눈 데이터");
-        console.log(typeof separatedData);
-
         if (suffixUrl === "") return;
-        const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
+        let url = ``;
+        if (customerList) {
+            url = `/api${suffixUrl}/${currentPage}/${customerList}/listAll.do`;
+        } else {
+            url = `/api${suffixUrl}/${currentPage}/totalListAll.do`;
+        }
+        //const url = `/api${suffixUrl}/${currentPage}/totalListAll.do`;
         const requestData = {
             useAt: returnKeyWord.radioOption,
-            searchKeyword: separatedData,
             searchCondition: returnKeyWord.searchCondition,
+            searchKeyword: "",
+            ...returnKeyWord,
         };
         console.log(requestData, "여기까지찍히나?");
         // API 호출 등의 로직 실행
-        const resultData = await axiosScan(url, requestData);
-        console.log(resultData, "결과값을 봐야지");
-        fetchAllData();
+        try {
+            const resultData = await axiosScan(url, requestData);
+            console.log(resultData, "결과값을 봐야지");
+            setTableData(resultData);
+        } catch (error) {
+            alert("날짜를 모두 입력해주세요");
+            fetchAllData();
+        }
     };
 
     useEffect(() => {
@@ -273,10 +303,12 @@ const DataTable = (props) => {
         console.log("삭제버튼 클릭");
         deleteData();
     };
-    console.log(addData, "값이 자꾸변경되는것같은데");
 
     const addClick = async () => {
+        console.log("1번");
         setIsLoading(true); // 로딩 화면 활성화
+        setErrorOn(false);
+        //이전테이블에서 join된값을 불러오는 기능
         if (addData) {
             let url = `/api${addListURL}/listAll.do`;
             let requestData = { lockAt: "Y" };
@@ -421,16 +453,31 @@ const DataTable = (props) => {
                                                         if (column.notView) {
                                                             return null; // notView 값이 false인 컬럼은 출력하지 않음
                                                         }
-
                                                         const cellValue =
                                                             item[column.col] ||
                                                             "No data yet.";
-                                                        const formattedValue =
+                                                        let formattedValue;
+                                                        if (
                                                             typeof cellValue ===
                                                             "number"
-                                                                ? cellValue.toLocaleString() // 숫자 값을 세 자리마다 쉼표로 변환
-                                                                : cellValue;
-
+                                                        ) {
+                                                            formattedValue =
+                                                                cellValue.toLocaleString();
+                                                        } else if (
+                                                            column.col ===
+                                                            "createDate"
+                                                        ) {
+                                                            // 시, 분 나오는 부분 자르고 연도/월/일 까지만(공백기준 자르기)
+                                                            const datePart =
+                                                                cellValue.split(
+                                                                    " "
+                                                                )[0];
+                                                            formattedValue =
+                                                                datePart;
+                                                        } else {
+                                                            formattedValue =
+                                                                cellValue;
+                                                        }
                                                         return (
                                                             <td
                                                                 className="tdStyle"
@@ -444,7 +491,6 @@ const DataTable = (props) => {
                                                                     );
                                                                 }}>
                                                                 {formattedValue}
-
                                                                 {/* 기존코드 {item[column.col]}*/}
                                                             </td>
                                                         );
@@ -472,8 +518,12 @@ const DataTable = (props) => {
                             postData={postData}
                             columns={columns}
                             saveList={saveList}
+                            errorOn={errorOn}
                             onClose={() => {
                                 setPostModalOpen(false);
+                            }}
+                            onOpen={() => {
+                                setPostModalOpen(true);
                             }}
                         />
                     )}

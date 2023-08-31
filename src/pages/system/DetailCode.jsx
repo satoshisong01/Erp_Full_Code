@@ -104,6 +104,12 @@ function DetailCode() {
             ],
             searchLevel: "3",
         },
+        {
+            title: "작성일",
+            colName: "createDate",
+            type: "datepicker",
+            searchLevel: "1",
+        },
     ];
 
     const tableList = [

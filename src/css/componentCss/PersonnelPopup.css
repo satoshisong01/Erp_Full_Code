@@ -607,7 +607,7 @@ table.dataTable tbody td {
     padding: 0;
 }
 .table > tbody > tr > td {
-    padding: 8px;
+    padding: 7.5px;
 }
 
 table > thead > tr > #thCheckBox {
@@ -645,6 +645,10 @@ table > tbody > tr > .sorting_1 > #checkBoxItem {
     height: 100%;
     margin: auto;
     box-sizing: border-box;
+}
+
+#checkBoxItem {
+    width: 13px;
 }
 
 .table-responsive > div > div > div > .tableBtn {

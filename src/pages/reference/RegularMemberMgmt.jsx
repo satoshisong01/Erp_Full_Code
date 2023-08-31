@@ -84,14 +84,14 @@ function RegularMemberMgmt() {
 
     const conditionList = [
         {
-            title: "ID",
+            title: "회원ID",
             colName: "mbId", //컬럼명
             type: "input",
             value: "",
             searchLevel: "1",
         },
         {
-            title: "이름",
+            title: "회원명",
             colName: "mbNm", //컬럼명
             type: "input",
             value: "",
@@ -103,6 +103,12 @@ function RegularMemberMgmt() {
             type: "input",
             value: "",
             searchLevel: "2",
+        },
+        {
+            title: "작성일",
+            colName: "createDate",
+            type: "datepicker",
+            searchLevel: "1",
         },
     ];
 

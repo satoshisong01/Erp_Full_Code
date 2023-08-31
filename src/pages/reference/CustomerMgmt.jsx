@@ -46,7 +46,6 @@ function CustomerMgmt() {
             cellWidth: "30%",
             modify: true,
             add: true,
-            notView: true,
         },
         //{
         //    header: "사업자번호",
@@ -123,9 +122,10 @@ function CustomerMgmt() {
             col: "pdiId",
             cellWidth: "20%",
             enable: false,
-            modify: true,
+            modify: false,
             add: true,
             selectOption: true,
+            //notView: true,
             listItem: "pdiId",
             addListURL: "/baseInfrm/product/productInfo",
         },
@@ -153,6 +153,12 @@ function CustomerMgmt() {
             value: "",
             searchLevel: "3",
         },
+        {
+            title: "작성일",
+            colName: "createDate",
+            type: "datepicker",
+            searchLevel: "1",
+        },
     ];
 
     const tableList = [
@@ -178,6 +184,7 @@ function CustomerMgmt() {
                 columns={columns}
                 suffixUrl="/baseInfrm/client"
                 currentPage="client"
+                customerList="type/c"
                 addBtn={addBtn}
             />
         </>

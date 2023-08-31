@@ -84,14 +84,14 @@ function WorkMemberMgmt() {
 
     const conditionList = [
         {
-            title: "ID",
+            title: "업무회원ID",
             colName: "empId", //컬럼명
             type: "input",
             value: "",
             searchLevel: "1",
         },
         {
-            title: "이름",
+            title: "사용자명",
             colName: "empNm", //컬럼명
             type: "input",
             value: "",
@@ -103,6 +103,12 @@ function WorkMemberMgmt() {
             type: "input",
             value: "",
             searchLevel: "3",
+        },
+        {
+            title: "작성일",
+            colName: "createDate",
+            type: "datepicker",
+            searchLevel: "1",
         },
     ];
 

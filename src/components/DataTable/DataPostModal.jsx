@@ -12,8 +12,12 @@ export default function DataPostModal({
     columns,
     onClose,
     saveList,
+    errorOn,
 }) {
     const [data, setData] = useState({});
+    const [showAlert, setShowAlert] = useState(false);
+    const [errorOnState, setErrorOnState] = useState(false);
+
     useEffect(() => {
         const initialData = columns.reduce((acc, column) => {
             if (column.selectOption) {
@@ -27,6 +31,10 @@ export default function DataPostModal({
         setData(initialData);
     }, [columns, saveList]);
 
+    useEffect(() => {
+        setErrorOnState(errorOn); // Update errorOnState when errorOn changes
+    }, [errorOn]);
+
     const inputChange = (e) => {
         const { name, value } = e.target;
         setData((prevData) => ({
@@ -35,12 +43,26 @@ export default function DataPostModal({
         }));
     };
 
-    console.log(saveList, "값나오나");
+    console.log(errorOnState, "post에서 선언한 기본값 2번");
+    console.log(errorOn, "이값에 변화가있나");
 
+    // 데이터 추가 버튼을 눌렀을 때 실행되는 함수
     const onAdd = async (e) => {
         e.preventDefault();
-        postData(data);
-        onClose();
+
+        // 필수 필드가 비어있는지 확인
+        const requiredColumns = columns.filter((column) => column.require);
+        const hasEmptyRequiredFields = requiredColumns.some(
+            (column) => !data[column.col]
+        );
+
+        //const hasPrimaryKey = columns.some((column) => column.pk);
+
+        if (hasEmptyRequiredFields) {
+            setShowAlert(true); // 알림 메시지 표시
+        } else {
+            postData(data); // 데이터 추가 함수 호출
+        }
     };
 
     return (
@@ -66,58 +88,90 @@ export default function DataPostModal({
                                             <div
                                                 className="postBox"
                                                 key={index}>
-                                                <label className="postLabel">
-                                                    {column.require && (
-                                                        <span className="redStar">
-                                                            *
+                                                <div className="inputBox">
+                                                    <label className="postLabel">
+                                                        {column.require && (
+                                                            <span className="redStar">
+                                                                *
+                                                            </span>
+                                                        )}
+                                                        {column.header}:
+                                                    </label>
+                                                    {column.selectOption ? (
+                                                        <select
+                                                            name={column.col}
+                                                            className="postInput"
+                                                            onChange={
+                                                                inputChange
+                                                            }>
+                                                            {saveList.map(
+                                                                (
+                                                                    item,
+                                                                    index
+                                                                ) => (
+                                                                    <option
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                        value={
+                                                                            item
+                                                                        }>
+                                                                        {item}
+                                                                    </option>
+                                                                )
+                                                            )}
+                                                        </select>
+                                                    ) : column.lockAt ? (
+                                                        <select
+                                                            name={column.col}
+                                                            className="postInput"
+                                                            onChange={
+                                                                inputChange
+                                                            }>
+                                                            <option value="Y">
+                                                                Y
+                                                            </option>
+                                                            <option value="N">
+                                                                N
+                                                            </option>
+                                                        </select>
+                                                    ) : (
+                                                        <input
+                                                            placeholder={
+                                                                column.placeholder ||
+                                                                column.header
+                                                            }
+                                                            className="postInput"
+                                                            type="text"
+                                                            name={column.col}
+                                                            value={
+                                                                data[
+                                                                    column.col
+                                                                ] || ""
+                                                            }
+                                                            onChange={
+                                                                inputChange
+                                                            }
+                                                        />
+                                                    )}
+                                                </div>
+                                                {column.require &&
+                                                    showAlert &&
+                                                    !data[column.col] && (
+                                                        <span className="error-message text-error">
+                                                            필수값이
+                                                            비어있습니다.
                                                         </span>
                                                     )}
-                                                    {column.header}:
-                                                </label>
-                                                {column.selectOption ? (
-                                                    <select
-                                                        name={column.col}
-                                                        className="postInput"
-                                                        onChange={inputChange}>
-                                                        {saveList.map(
-                                                            (item, index) => (
-                                                                <option
-                                                                    key={index}
-                                                                    value={
-                                                                        item
-                                                                    }>
-                                                                    {item}
-                                                                </option>
-                                                            )
-                                                        )}
-                                                    </select>
-                                                ) : column.lockAt ? (
-                                                    <select
-                                                        name={column.col}
-                                                        className="postInput"
-                                                        onChange={inputChange}>
-                                                        <option value="Y">
-                                                            Y
-                                                        </option>
-                                                        <option value="N">
-                                                            N
-                                                        </option>
-                                                    </select>
-                                                ) : (
-                                                    <input
-                                                        placeholder={
-                                                            column.placeholder ||
-                                                            column.header
-                                                        }
-                                                        className="postInput"
-                                                        type="text"
-                                                        name={column.col}
-                                                        value={
-                                                            data[column.col] ||
-                                                            ""
-                                                        }
-                                                        onChange={inputChange}
-                                                    />
+                                                {errorOnState && column.pk && (
+                                                    <span className="error-message text-error">
+                                                        중복된 값입니다.
+                                                    </span>
+                                                )}
+                                                {!errorOnState && column.pk && (
+                                                    <span className="error-message text-error">
+                                                        {" "}
+                                                    </span>
                                                 )}
                                             </div>
                                         );

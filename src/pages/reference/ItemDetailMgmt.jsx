@@ -62,15 +62,15 @@ function ItemDetailMgmt() {
 
     const conditionList = [
         {
-            title: "품목그룹명",
-            colName: "pgNm", //컬럼명
+            title: "품목명",
+            colName: "pdiNm", //컬럼명
             type: "input",
             value: "",
             searchLevel: "1",
         },
         {
-            title: "품목명",
-            colName: "pgCode", //컬럼명
+            title: "품목번호",
+            colName: "pdiNum", //컬럼명
             type: "input",
             value: "",
             searchLevel: "2",
@@ -86,6 +86,12 @@ function ItemDetailMgmt() {
                 { value: "폐기" },
             ],
             searchLevel: "3",
+        },
+        {
+            title: "작성일",
+            colName: "createDate",
+            type: "datepicker",
+            searchLevel: "1",
         },
     ];
 

@@ -60,7 +60,7 @@ function PermissionGroupMgmt() {
 
     const conditionList = [
         {
-            title: "ID",
+            title: "그룹ID",
             colName: "groupId", //컬럼명
             type: "input",
             value: "",
@@ -79,6 +79,12 @@ function PermissionGroupMgmt() {
             type: "input",
             value: "",
             searchLevel: "3",
+        },
+        {
+            title: "작성일",
+            colName: "createDate",
+            type: "datepicker",
+            searchLevel: "1",
         },
     ];
 
