@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Location from "components/Location/Location";
 import DataTable from "components/DataTable/DataTable";
 import SearchList from "components/SearchList";
+import { locationPath } from "constants/locationPath";
 
 /** 실행관리-실행원가관리 */
 function ExecutionCost() {
@@ -71,14 +72,6 @@ function ExecutionCost() {
         },
     ];
 
-    const tableList = [
-        {
-            title: "실행원가",
-            middleName: "실행관리",
-            detailName: "실행 원가 관리",
-        },
-    ];
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
         console.log(value, "제대로 들어오냐");
@@ -88,7 +81,7 @@ function ExecutionCost() {
 
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.ExecutionCost} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
             <DataTable
                 returnKeyWord={returnKeyWord}

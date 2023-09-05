@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
+import { locationPath } from "constants/locationPath";
 
 /** 기준정보관리-원가기준관리-협력사 */
 function PartnerMgmt() {
@@ -165,14 +166,6 @@ function PartnerMgmt() {
         },
     ];
 
-    const tableList = [
-        {
-            title: "거래처관리",
-            middleName: "기준정보 관리",
-            detailName: "협력사",
-        },
-    ];
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
     };
@@ -181,7 +174,7 @@ function PartnerMgmt() {
 
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.PartnerMgmt} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
             <DataTable
                 returnKeyWord={returnKeyWord}

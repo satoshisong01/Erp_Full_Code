@@ -1,6 +1,7 @@
 import React from "react";
 import Location from "components/Location/Location";
 import DataTable from "components/DataTable/DataTable";
+import { locationPath } from "constants/locationPath";
 
 /** 기준정보관리-원가기준관리-사전원가지표 */
 function CostIndex() {
@@ -14,19 +15,11 @@ function CostIndex() {
         { header: "영업외수지", col: "sbsDt", cellWidth: "30%" },
     ];
 
-    const tableList = [
-        {
-            title: "원가기준관리",
-            middleName: "기준정보 관리",
-            detailName: "사전원가지표",
-        },
-    ];
-
     const addBtn = [""];
 
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.CostIndex} />
             <DataTable
                 columns={columns}
                 suffixUrl="/baseInfrm/product"

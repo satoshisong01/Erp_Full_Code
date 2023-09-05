@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
+import { locationPath } from "constants/locationPath";
 
 /** 기준정보관리-원가기준관리-기업회원관리 */
 function EnterpriseMemberMgmt() {
@@ -133,14 +134,6 @@ function EnterpriseMemberMgmt() {
         },
     ];
 
-    const tableList = [
-        {
-            title: "사용자관리",
-            middleName: "기준정보 관리",
-            detailName: "기업회원관리",
-        },
-    ];
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
     };
@@ -148,7 +141,7 @@ function EnterpriseMemberMgmt() {
     const addBtn = [""];
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.EnterpriseMemberMgmt} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
             <DataTable
                 returnKeyWord={returnKeyWord}

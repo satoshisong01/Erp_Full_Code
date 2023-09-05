@@ -1,6 +1,7 @@
 import React from "react";
 import Location from "components/Location/Location";
 import DataTable from "components/DataTable/DataTable";
+import { locationPath } from "constants/locationPath";
 
 /** 기준정보관리-원가기준관리-급별단가(인건비) */
 function GradeWageLaborCost() {
@@ -20,19 +21,12 @@ function GradeWageLaborCost() {
         { header: "사원", col: "guppId", cellWidth: "30%" },
     ];
 
-    const tableList = [
-        {
-            title: "원가기준관리",
-            middleName: "기준정보 관리",
-            detailName: "급별단가(인건비)",
-        },
-    ];
 
     const addBtn = [""];
 
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.GradeWageLaborCost} />
             <DataTable
                 columns={columns}
                 suffixUrl="/baseInfrm/product"

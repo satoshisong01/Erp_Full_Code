@@ -1,6 +1,7 @@
 import React from "react";
 import Location from "components/Location/Location";
 import DataTable from "components/DataTable/DataTable";
+import { locationPath } from "constants/locationPath";
 
 /** 기준정보관리-원가기준관리-인건비단가 */
 function LaborRate() {
@@ -64,19 +65,11 @@ function LaborRate() {
         },
     ];
 
-    const tableList = [
-        {
-            title: "원가기준관리",
-            middleName: "기준정보 관리",
-            detailName: "인건비단가",
-        },
-    ];
-
     const addBtn = [""];
 
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.LaborRate} />
             <DataTable
                 columns={columns}
                 suffixUrl="/baseInfrm/product"

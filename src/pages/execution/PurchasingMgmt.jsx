@@ -3,6 +3,7 @@ import BuyMgmts from "./BuyMgmt/BuyMgmts";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
+import { locationPath } from "constants/locationPath";
 
 /** 실행관리-구매관리 */
 function PurchasingMgmt() {
@@ -97,14 +98,6 @@ function PurchasingMgmt() {
         },
     ];
 
-    const tableList = [
-        {
-            title: "구매관리",
-            middleName: "실행관리",
-            detailName: "구매관리",
-        },
-    ];
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
         console.log(value, "제대로 들어오냐");
@@ -114,7 +107,7 @@ function PurchasingMgmt() {
 
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.PurchasingMgmt} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
             <h4 style={{ marginBottom: "20px", fontWeight: "bold" }}>
                 프로젝트별 구매 내역

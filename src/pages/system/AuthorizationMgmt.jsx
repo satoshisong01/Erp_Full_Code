@@ -6,6 +6,7 @@ import AuthorManages from "./AuthorManage/AuthorManages";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
+import { locationPath } from "constants/locationPath";
 
 /** 시스템관리-권한관리 */
 function AuthorizationMgmt() {
@@ -61,14 +62,6 @@ function AuthorizationMgmt() {
         },
     ];
 
-    const tableList = [
-        {
-            title: "권한관리",
-            middleName: "실행관리",
-            detailName: "권한관리",
-        },
-    ];
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
         console.log(value, "제대로 들어오냐");
@@ -77,7 +70,7 @@ function AuthorizationMgmt() {
     const addBtn = [""];
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.AuthorizationMgmt} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
             <DataTable
                 returnKeyWord={returnKeyWord}

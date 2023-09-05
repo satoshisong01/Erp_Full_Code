@@ -6,6 +6,7 @@ import PaymentReceiveds from "./ElectroPayment/PaymentReceived/PaymentReceiveds"
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
+import { locationPath } from "constants/locationPath";
 
 /** 시스템관리-전자결재 */
 function Approval() {
@@ -69,14 +70,6 @@ function Approval() {
         },
     ];
 
-    const tableList = [
-        {
-            title: "전자결재",
-            middleName: "실행관리",
-            detailName: "결재 수신함",
-        },
-    ];
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
         console.log(value, "제대로 들어오냐");
@@ -85,7 +78,7 @@ function Approval() {
     const addBtn = [""];
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.Approval} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
             <DataTable
                 returnKeyWord={returnKeyWord}
