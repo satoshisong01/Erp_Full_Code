@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faMagnifyingGlass,
@@ -6,11 +6,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { PageContext } from "./PageProvider";
 
 /* 데이터 테이블 검색 */
-export default function SearchList({ conditionList, onSearch }) {
+export default function SearchList({ conditionList }) {
+    const { setSearchData, setNameOfButton } = useContext(PageContext)
+
     const [fieldList, setFieldList] = useState([]);
-    const [searchData, setSearchData] = useState({});
+    const [searchKeyword, setSearchKeyword] = useState({});
     const [radioOption, setRadioOption] = useState("Y");
 
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -103,19 +106,15 @@ export default function SearchList({ conditionList, onSearch }) {
 
     /* 초기화구현 */
     const resetClick = () => {
-        setSearchData({});
+        setSearchKeyword({});
         setFormattedDate("");
         setFormattedDate2("");
     };
 
     /* 검색 이벤트 */
     const searchClick = (e) => {
-        const keyArr = Object.keys(searchData); //컬럼명
+        const keyArr = Object.keys(searchKeyword); //컬럼명
         let searchLevel = "1";
-
-        console.log(keyArr, "키키값");
-        console.log(fieldList, "나오는값을보자");
-        console.log(searchData, "나오는값을보자");
 
         if (keyArr.length === 1) {
             const fieldName = keyArr[0];
@@ -123,26 +122,27 @@ export default function SearchList({ conditionList, onSearch }) {
             if (field) {
                 searchLevel = field.searchLevel;
             }
-            console.log(field, "이거잘나옴?");
         }
-        console.log(searchLevel);
 
         const dataToSend = {
-            searchKeyword: formattedDate
-                ? `${formattedDate} , ${formattedDate2}`
-                : "",
-            ...searchData,
+            // searchKeyword: formattedDate
+            //     ? `${formattedDate} , ${formattedDate2}`
+            //     : "",
+            // ...searchData,
+            searchKeyword: searchKeyword,
             searchCondition: 1,
             radioOption: radioOption,
         };
-        console.log(dataToSend, "555555");
-        onSearch(dataToSend);
+        setSearchData(dataToSend); // 전역상태
+        setNameOfButton('search'); // 전역상태
+        setSearchKeyword({}); // 초기화
+        console.log("❤️ dataToSend: ", dataToSend);
     };
 
     /* 검색 데이터 */
     const onChange = (e) => {
         const { name, value } = e.target;
-        setSearchData((prevData) => {
+        setSearchKeyword((prevData) => {
             const newData = { ...prevData, [name]: value };
 
             console.log(newData, "뉴데이터");
@@ -164,7 +164,7 @@ export default function SearchList({ conditionList, onSearch }) {
                 <input
                     type="text"
                     name={param.colName}
-                    value={searchData[param.colName] || ""}
+                    value={searchKeyword[param.colName] || ""}
                     onChange={onChange}
                     className="form-control flex-item"
                 />
@@ -173,10 +173,10 @@ export default function SearchList({ conditionList, onSearch }) {
             return (
                 <select
                     name={param.colName}
-                    value={searchData[param.colName] || ""}
+                    value={searchKeyword[param.colName] || ""}
                     onChange={onChange}
                     className="form-control flex-item"
-                    key={searchData[param.colName]}>
+                    key={searchKeyword[param.colName]}>
                     <option value=""> 선택없음 </option>
                     {param.option.map((op) => (
                         <option key={op.value} value={op.value}>

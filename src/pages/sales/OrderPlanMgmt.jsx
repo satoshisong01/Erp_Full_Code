@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Location from "components/Location/Location";
 import ApprovalForm from "components/form/ApprovalForm";
 import ReactDataTable from "components/DataTable/ReactDataTable";
+import { PageContext } from "components/PageProvider";
+import { locationPath } from "constants/locationPath";
 
 /** 영업관리-수주계획관리 */
 function OrderPlanMgmt() {
+
+    const { isSaveFormTable, setIsSaveFormTable } = useContext(PageContext)
+
     // { header: "수주시작일", col: "poiBeginDt", cellWidth: "25%", type: "select", options: [{value: '1', label: 'op1'}, {value: '2', label: 'op2'}]},
 
     const laborColumns = [ // 인건비
@@ -58,50 +63,38 @@ function OrderPlanMgmt() {
         { header: "비고", col: "poiTitle2", cellWidth: "50%", type: "input"},
     ];
 
-    const path = [
-        { title: "수주(사업)관리", middleName: "영업관리",  detailName: "수주(사업)관리",  },
-    ];
-
-    const [projectName, setProjectName] = useState("")
     const [currentTask, setCurrentTask] = useState("인건비")
-    const [flag, setFlag] = useState(true)
-    
-    const save = (flag) => {
-        setFlag(flag === true ? true : false)
-    }
 
-    const handleProjectName = (name) => {
-        if(name && typeof name === "string") {
-            setProjectName(name);
+    const chageTabs = (task) => {
+        setCurrentTask(task);
+        if(task !== currentTask) { //자신 일때 수정 창으로 변동 되지 않기 위한 조건
+            setIsSaveFormTable(true)
         }
     }
 
     return (
         <>
-            <Location tableList={path} />
-
+            <Location pathList={locationPath.OrderPlanMgmt} />
             <div className="mini_board">
                 <ul className="tab">
-                    <li onClick={() => setCurrentTask("인건비")}><a href="#인건비" className="on">인건비</a></li>
-                    <li onClick={() => setCurrentTask("경비")}><a href="#경비">경비</a></li>
-                    <li onClick={() => setCurrentTask("구매(재료비)")}><a href="#구매(재료비)">구매(재료비)</a></li>
-                    <li onClick={() => setCurrentTask("기업이윤")}><a href="#기업이윤">기업이윤</a></li>
-                    <li onClick={() => setCurrentTask("일반관리비")}><a href="#일반관리비">일반관리비</a></li>
-                    <li onClick={() => setCurrentTask("네고")}><a href="#네고">네고</a></li>
+                    <li onClick={() => chageTabs("인건비")}><a href="#인건비" className="on">인건비</a></li>
+                    <li onClick={() => chageTabs("경비")}><a href="#경비">경비</a></li>
+                    <li onClick={() => chageTabs("구매(재료비)")}><a href="#구매(재료비)">구매(재료비)</a></li>
+                    <li onClick={() => chageTabs("기업이윤")}><a href="#기업이윤">기업이윤</a></li>
+                    <li onClick={() => chageTabs("일반관리비")}><a href="#일반관리비">일반관리비</a></li>
+                    <li onClick={() => chageTabs("네고")}><a href="#네고">네고</a></li>
                 </ul>
 
                 <div className="list">
                     <div className="first">
                         <ul>
-                            <ApprovalForm title={currentTask + ' 계획 등록'} save={save}>
-                                <h2 className="blind">인건비</h2>
+                            <ApprovalForm title={currentTask + ' 계획 등록'}>
                                 <ul>
                                     <ReactDataTable
                                         columns={laborColumns}
                                         suffixUrl="/baseInfrm/product"
                                         currentPage="pjOrdrInfo"
-                                        flag={currentTask === '인건비' && flag}
-                                        currentTask={currentTask}
+                                        flag={currentTask === '인건비' && isSaveFormTable}
                                     />
                                 </ul>
                             </ApprovalForm>
@@ -109,75 +102,66 @@ function OrderPlanMgmt() {
                     </div>
 
                     <div className="second">
-                        <ApprovalForm title={currentTask + ' 계획 등록'} save={save}>
-                            <h2 className="blind">경비</h2>
+                        <ApprovalForm title={currentTask + ' 계획 등록'}>
                             <ul>
                                 <ReactDataTable
                                     columns={expensesColumns}
                                     suffixUrl="/baseInfrm/product"
                                     currentPage="pjOrdrInfo"
-                                    flag={currentTask === '경비' && flag}
-                                    currentTask={currentTask}
+                                    flag={currentTask === '경비' && isSaveFormTable}
                                 />
                             </ul>
                         </ApprovalForm>
                     </div>
 
                     <div className="third">
-                        <ApprovalForm title={currentTask + ' 계획 등록'} save={save}>
+                        <ApprovalForm title={currentTask + ' 계획 등록'}>
                             <h2 className="blind">구매(재료비)</h2>
                             <ul>
                                 <ReactDataTable
                                     columns={purchaseColumns}
                                     suffixUrl="/baseInfrm/product"
                                     currentPage="pjOrdrInfo"
-                                    flag={currentTask === '구매(재료비)' && flag}
-                                    currentTask={currentTask}
+                                    flag={currentTask === '구매(재료비)' && isSaveFormTable}
                                 />
                             </ul>
                         </ApprovalForm>
                     </div>
 
                     <div className="fourth">
-                        <ApprovalForm title={currentTask + ' 계획 등록'} save={save}>
-                            <h2 className="blind">기업이윤</h2>
+                        <ApprovalForm title={currentTask + ' 계획 등록'}>
                             <ul>
                                 <ReactDataTable
                                     columns={companyProfitColumns}
                                     suffixUrl="/baseInfrm/product"
                                     currentPage="pjOrdrInfo"
-                                    flag={currentTask === '기업이윤' && flag}
-                                    currentTask={currentTask}
+                                    flag={currentTask === '기업이윤' && isSaveFormTable}
                                 />
                             </ul>
                         </ApprovalForm>
                     </div>
 
                     <div className="fifth">
-                        <ApprovalForm title={currentTask + ' 계획 등록'} save={save}>
-                            <h2 className="blind">일반관리비</h2>
+                        <ApprovalForm title={currentTask + ' 계획 등록'}>
                             <ul>
                                 <ReactDataTable
                                     columns={generalExpensesColumns}
                                     suffixUrl="/baseInfrm/product"
                                     currentPage="pjOrdrInfo"
-                                    flag={currentTask === '일반관리비' && flag}
-                                    currentTask={currentTask}
+                                    flag={currentTask === '일반관리비' && isSaveFormTable}
                                 />
                             </ul>
                         </ApprovalForm>
                     </div>
 
                     <div className="sixth">
-                        <ApprovalForm title={currentTask + ' 계획 등록'} save={save} projectName={handleProjectName}>
-                            <h2 className="blind">네고</h2>
+                        <ApprovalForm title={currentTask + ' 계획 등록'}>
                             <ul>
                                 <ReactDataTable
                                     columns={negoColumns}
                                     suffixUrl="/baseInfrm/product"
                                     currentPage="pjOrdrInfo"
-                                    flag={currentTask === '네고' && flag}
-                                    projectName={projectName}
+                                    flag={currentTask === '네고' && isSaveFormTable}
                                 />
                             </ul>
                         </ApprovalForm>

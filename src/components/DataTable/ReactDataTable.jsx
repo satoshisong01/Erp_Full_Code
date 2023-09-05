@@ -1,25 +1,25 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import DataTableButton from "components/button/DataTableButton";
-import { axiosFetch, axiosPost } from "api/axiosFetch";
+import { axiosFetch, axiosPost, axiosScan } from "api/axiosFetch";
 import { useTable, usePagination, useSortBy, useRowSelect } from "react-table";
+import { PageContext } from "components/PageProvider";
 
 const ReactDataTable = (props) => {
     const {
-        returnKeyWord,
         columns,
         suffixUrl,
         currentPage,
-        dummyData,
-        newRowData,
-        addBtn,
         flag,
-        currentTask,
     } = props;
+
+    const {
+        nameOfButton, setNameOfButton, newRowData, setNewRowData, searchData, setSearchData, setIsOpenModal
+    } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
     const [selectDatas, setSelectDatas] = useState([]);
     const pageSizeOptions = [5, 10, 15, 20, 30, 50, 100];
-    const [isEditing, setIsEditing] = useState(flag);
+    const [isEditing, setIsEditing] = useState(false);
 
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
@@ -30,18 +30,36 @@ const ReactDataTable = (props) => {
         setIsEditing(flag);
     }, [flag]);
 
-    useEffect(() => {
-        
-        if(!isEditing) {
-            //저장할떄 데이터가 바뀌었는지 확인하고 저장
-            console.log("react-table 계획 저장> ", currentTask, ": ", tableData);
-        }
-    }, [isEditing]);
-
-
     // useEffect(() => {
-    //     console.log("테이블데이터: ", tableData);
-    // }, [tableData])
+    //     if(!isEditing) {
+    //         //저장할떄 데이터가 바뀌었는지 확인하고 저장
+    //         console.log("react-table 계획 저장> ", currentTask, ": ", tableData);
+    //     }
+    // }, [isEditing]);
+
+    useEffect(() => {
+        if(nameOfButton === 'refresh') {
+            refreshClick();
+        } else if(nameOfButton === 'csv') {
+            
+        } else if(nameOfButton === 'copy') {
+            
+        } else if(nameOfButton === 'print') {
+            
+        } else if(nameOfButton === 'delete') {
+            deleteClick();
+        } else if(nameOfButton === 'add') {
+            addClick();
+        } else if(nameOfButton === 'search') {
+            searchClick();
+        }
+
+        setNameOfButton(''); //초기화
+    }, [nameOfButton])
+
+    useEffect(() => {
+        console.log("테이블데이터: ", tableData);
+    }, [tableData])
 
     // useEffect(() => {
     //     console.log("셀렉트데이터: ", selectDatas);
@@ -80,27 +98,28 @@ const ReactDataTable = (props) => {
 
     /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
-        // if (suffixUrl === "") return;
-        // const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
-        // const requestData = { useAt: "Y" };
-        // const resultData = await axiosFetch(url, requestData);
-        
-        /* column과 서버 데이터의 column이 일치하는지 확인, 불일치시 삭제 error */
-        // const keys = Object.keys(resultData[0])
-        // const col = columns.map((arr) => arr.col);
-        // col.forEach((col) => { //비권장
-        //     if (!keys.includes(col)) {
-        //         console.log("⚠️Column not found:", col);
-        //         resultData.forEach((data) => {
-        //             data[col] = null;
-        //         })
-        //     }
-        // })
+        if (suffixUrl === "") return;
+        const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
+        const requestData = { useAt: "Y" };
+        const resultData = await axiosFetch(url, requestData);
 
-        // if (resultData) {
-        //     setTableData([resultData]);
-        // }
-        setTableData([]);
+        console.log("⭐ 리액트테이블 resultData: ", resultData);
+        
+        if (resultData && resultData.length > 0) { //⭐ length로 보는거 맞는지 확인
+            /* column과 서버 데이터의 column이 일치하는지 확인, 불일치시 삭제 에러 해결을 위한 코드(임시) */
+            const keys = Object.keys(resultData[0])
+            const col = columns.map((arr) => arr.col);
+            col.forEach((col) => { // 임시로 사용 중
+                if (!keys.includes(col)) {
+                    console.log("⚠️Column not found:", col);
+                    resultData.forEach((data) => {
+                        data[col] = null;
+                    })
+                }
+            })
+
+            setTableData([...resultData]);
+        }
     };
 
     /* 데이터 수정 */
@@ -111,6 +130,23 @@ const ReactDataTable = (props) => {
     /* 데이터 삭제 */
     const deleteClick = async () => {
         if (suffixUrl === "") return;
+        console.log("❤️ deleteClick - selectDatas: ", selectDatas);
+
+        if (selectDatas) {
+            setTableData((prevTableDatas) =>
+                prevTableDatas.filter((item) => !selectDatas.includes(item))
+            );
+        }
+        //삭제 후 체크박스 상태 확인
+
+        // if (selectDatas) {
+        //     selectDatas.forEach((selectData) => {
+        //         if (!tableData.includes(selectData)) {
+        //             setTableData((prevTableDatas) =>
+        //             prevTableDatas.filter((item) => item !== selectData)
+        //         );
+        //     })
+        // }
     };
 
     /* 새로고침 */
@@ -119,28 +155,41 @@ const ReactDataTable = (props) => {
     };
 
     /* 데이터 추가 */
-    const addClick = async (addData) => {
+    const addClick = async (newData) => {
         if (suffixUrl === "") return;
-        const url = `/api${suffixUrl}/${currentPage}/add.do`;
-        const dataToSend = { ...addData };
+        if(newData) { // row 추가
+            const url = `/api${suffixUrl}/${currentPage}/add.do`;
+            const dataToSend = { ...newData };
+            const resultData = await axiosPost(url, dataToSend);
 
-        const resultData = await axiosPost(url, dataToSend);
-        if (resultData) {
-            //새로고침
-            fetchAllData();
+            if (resultData) {
+                fetchAllData(); //새로고침
+                setNewRowData({}); //초기화
+            }
+
+        } else if(!newData) { //파라미터로 넘어온 데이터가 없다면, 팝업으로 추가
+            setIsOpenModal(true);
         }
     };
 
     /* 데이터 검색 */
-    const searchData = async (returnKeyWord) => {
+    const searchClick = async () => {
         if (suffixUrl === "") return;
-        // const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
-        // const requestData = {
-        //     useAt: returnKeyWord.radioOption,
-        //     searchKeyword: returnKeyWord.searchKeyword,
-        //     searchCondition: returnKeyWord.searchCondition,
-        // };
-        // const resultData = await axiosScan(url, requestData);
+        if(searchData) {
+            const url = `/api${suffixUrl}/${currentPage}/listAll.do`;
+            const requestData = {
+                useAt: searchData.radioOption,
+                searchKeyword: searchData.searchKeyword,
+                searchCondition: searchData.searchCondition,
+            };
+
+            const resultData = await axiosScan(url, requestData);
+            console.log("❤️ 서치데이터 결과: ", resultData);
+
+            setSearchData({}); //초기화
+        }
+       
+        
     };
 
     /* 전체 선택 시 selectDatas에 저장 또는 삭제 */
@@ -259,6 +308,7 @@ const ReactDataTable = (props) => {
 
     return (
         <>
+            {/* <div>클릭값 왜 안나오니? {clicked}</div> */}
             <div className="flex-between mg-b-20 mg-t-20">
                 <div className="page-size">
                     <span className="mg-r-10">페이지 크기 :</span>
@@ -277,14 +327,14 @@ const ReactDataTable = (props) => {
                         ))}
                     </select>
                 </div>
-                <DataTableButton
+                {/* <DataTableButton
                     deleteClick={deleteClick}
                     refreshClick={refreshClick}
                     addBtn={addBtn ? addBtn : []}
                     columns={columns}
                     suffixUrl={suffixUrl}
                     selectedData={selectDatas}
-                />
+                /> */}
             </div>
             
             <table {...getTableProps()} className="table-styled">

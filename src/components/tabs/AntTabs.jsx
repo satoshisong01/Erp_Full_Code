@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Children } from "./Children.js";
 import store from 'store/configureStore';
 import { selectSnb, selectLnb, selectGnb } from "components/tabs/TabsActions";
+import { PageProvider } from "components/PageProvider.js";
 
 /* nav, header 클릭 시  label props로 전달 & 해당하는 화면(컴포넌트) children 으로 보여줌 */
 const AntTabs = (props) => {
@@ -68,14 +69,16 @@ const AntTabs = (props) => {
     };
 
     return (
-        <Tabs
-            hideAdd={true}
-            onChange={onChange}
-            activeKey={activeKey}
-            type="editable-card"
-            onEdit={onEdit}
-            items={items}
-        />
+        <PageProvider>
+            <Tabs
+                hideAdd={true}
+                onChange={onChange}
+                activeKey={activeKey}
+                type="editable-card"
+                onEdit={onEdit}
+                items={items}
+            />
+        </PageProvider>
     );
 };
 

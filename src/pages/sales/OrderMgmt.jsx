@@ -1,13 +1,21 @@
-import React, { useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import FormDataTable from "components/DataTable/FormDataTable";
 import ReactDataTable from "components/DataTable/ReactDataTable";
+import ReactTableButton from "components/button/ReactTableButton";
+import { PageContext } from "components/PageProvider";
+import { locationPath } from "constants/locationPath";
+import TableAddModal from "components/modal/TableAddModal";
+
 
 /** 영업관리-수주등록관리 */
 function OrderMgmt() {
+
+    const {isOpenModal} = useContext(PageContext);
+
     const columns = [
-        { header: "프로젝트 이름", col: "poiNm", cellWidth: '50%', type: "input"},
+        { header: "프로젝트 이름", col: "poiNm", cellWidth: '50%', type: "input", enable: false, modify: true, add: true, notView: true, require: true,},
         { header: "프로젝트 코드", col: "poiCode", cellWidth: '25%', type: "input"},
         { header: "수주시작일", col: "poiBeginDt", cellWidth: '25%', type: "select", options: [{value: '1', label: 'op1'}, {value: '2', label: 'op2'}]},
     ];
@@ -26,14 +34,6 @@ function OrderMgmt() {
             type: "input",
             value: "",
             searchLevel: "2",
-        },
-    ];
-
-    const tableList = [
-        {
-            title: "수주(사업)관리",
-            middleName: "영업관리",
-            detailName: "수주(사업)관리",
         },
     ];
 
@@ -78,8 +78,8 @@ function OrderMgmt() {
             { label: "PM", key: "poiManagerId", type: "input", require: true },
         ],
         [
-            { label: "수주 시작일", key: "poi_begin_dt", type: "input", require: true },
-            { label: "수주 마감일", key: "poi_end_dt", type: "input", require: true },
+            { label: "수주 시작일", key: "poiBeginDt", type: "input", require: true },
+            { label: "수주 마감일", key: "poiEndDt", type: "input", require: true },
             {
                 label: "사전원가 기준 이익률",
                 key: "standardMargin",
@@ -89,36 +89,22 @@ function OrderMgmt() {
         ],
     ];
 
-    const [returnKeyWord, setReturnKeyWord] = useState("");
-    const [newRowData, setNewRowData] = useState({});
-
-    const handleReturn = (value) => {
-        setReturnKeyWord(value);
-    };
-
-    const onAddRow = (rowData) => {
-        setNewRowData(rowData);
-    };
-
-    const addBtn = ["planPage", "calPage"];
-
     return (
         <>
-            <Location tableList={tableList} />
-            <SearchList conditionList={conditionList} onSearch={handleReturn} />
+            <Location pathList={locationPath.OrderMgmt} />
+            <SearchList conditionList={conditionList}/>
+            <ReactTableButton showButton={['refresh', 'delete', 'add']}/>
             <ReactDataTable
-                returnKeyWord={returnKeyWord}
                 columns={columns}
-                newRowData={newRowData}
                 suffixUrl="/baseInfrm/product"
                 currentPage="pjOrdrInfo"
-                addBtn={addBtn}
             />
             <FormDataTable
                 formTableColumns={formTableColumns}
-                onAddRow={onAddRow}
                 title="프로젝트 신규 등록"
+                useStatus={true}
             />
+            { isOpenModal && <TableAddModal columns={columns} />}
         </>
     );
 }
