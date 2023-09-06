@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Location from "components/Location/Location";
 import ApprovalForm from "components/form/ApprovalForm";
 import ReactDataTable from "components/DataTable/ReactDataTable";
+import { locationPath } from "constants/locationPath";
 
 /** 영업관리-수주계획관리 */
 function DraftQuotation() {
@@ -44,10 +45,6 @@ function DraftQuotation() {
         { header: "소비자가\n산출률", col: "poiTitle99", cellWidth: "15%", type: "input"},
     ];
 
-    const path = [
-        { title: "수주(사업)관리", middleName: "영업관리",  detailName: "수주(사업)관리",  },
-    ];
-
     const [currentTask, setCurrentTask] = useState("인건비")
     const [flag, setFlag] = useState(true)
     
@@ -57,59 +54,58 @@ function DraftQuotation() {
 
     return (
         <>
-            <Location tableList={path} />
-            
-                <div className="mini_board_2">
-                    <ul className="tab">
-                        <li onClick={() => setCurrentTask("인건비")}><a href="#인건비" className="on">인건비</a></li>
-                        <li onClick={() => setCurrentTask("경비")}><a href="#경비">경비</a></li>
-                        <li onClick={() => setCurrentTask("구매(재료비)")} ><a href="#구매(재료비)">구매(재료비)</a></li>
-                    </ul>
-                    <div className="list">
-                        <div className="first">
-                            <ApprovalForm title={currentTask +' 초안 등록'} save={save}>
-                                <h2 className="blind">인건비</h2>
-                                <ul>
-                                    <ReactDataTable
-                                        columns={laborColumns}
-                                        suffixUrl="/baseInfrm/product"
-                                        currentPage="pjOrdrInfo"
-                                        flag={currentTask === '인건비' && flag}
-                                        currentTask={currentTask}
-                                    />
-                                </ul>
-                            </ApprovalForm>
-                        </div>
-                        <div className="second">
-                            <ApprovalForm title={currentTask +' 초안 등록'} save={save}>
-                                <h2 className="blind">경비</h2>
-                                <ul>
-                                    <ReactDataTable
-                                        columns={expensesColumns}
-                                        suffixUrl="/baseInfrm/product"
-                                        currentPage="pjOrdrInfo"
-                                        flag={currentTask === '경비' && flag}
-                                        currentTask={currentTask}
-                                    />
-                                </ul>
-                            </ApprovalForm>
-                        </div>
-                        <div className="third">
-                            <ApprovalForm title={currentTask +' 초안 등록'} save={save}>
-                                <h2 className="blind">구매(재료비)</h2>
-                                <ul>
-                                    <ReactDataTable
-                                        columns={purchaseColumns}
-                                        suffixUrl="/baseInfrm/product"
-                                        currentPage="pjOrdrInfo"
-                                        flag={currentTask === '구매(재료비)' && flag}
-                                        currentTask={currentTask}
-                                    />
-                                </ul>
-                            </ApprovalForm>
-                        </div>
+            <Location pathList={locationPath.DraftQuotation} />
+            <div className="mini_board_2">
+                <ul className="tab">
+                    <li onClick={() => setCurrentTask("인건비")}><a href="#인건비" className="on">인건비</a></li>
+                    <li onClick={() => setCurrentTask("경비")}><a href="#경비">경비</a></li>
+                    <li onClick={() => setCurrentTask("구매(재료비)")} ><a href="#구매(재료비)">구매(재료비)</a></li>
+                </ul>
+                <div className="list">
+                    <div className="first">
+                        <ApprovalForm title={currentTask +' 초안 등록'} save={save}>
+                            <h2 className="blind">인건비</h2>
+                            <ul>
+                                <ReactDataTable
+                                    columns={laborColumns}
+                                    suffixUrl="/baseInfrm/product"
+                                    currentPage="pjOrdrInfo"
+                                    flag={currentTask === '인건비' && flag}
+                                    currentTask={currentTask}
+                                />
+                            </ul>
+                        </ApprovalForm>
+                    </div>
+                    <div className="second">
+                        <ApprovalForm title={currentTask +' 초안 등록'} save={save}>
+                            <h2 className="blind">경비</h2>
+                            <ul>
+                                <ReactDataTable
+                                    columns={expensesColumns}
+                                    suffixUrl="/baseInfrm/product"
+                                    currentPage="pjOrdrInfo"
+                                    flag={currentTask === '경비' && flag}
+                                    currentTask={currentTask}
+                                />
+                            </ul>
+                        </ApprovalForm>
+                    </div>
+                    <div className="third">
+                        <ApprovalForm title={currentTask +' 초안 등록'} save={save}>
+                            <h2 className="blind">구매(재료비)</h2>
+                            <ul>
+                                <ReactDataTable
+                                    columns={purchaseColumns}
+                                    suffixUrl="/baseInfrm/product"
+                                    currentPage="pjOrdrInfo"
+                                    flag={currentTask === '구매(재료비)' && flag}
+                                    currentTask={currentTask}
+                                />
+                            </ul>
+                        </ApprovalForm>
                     </div>
                 </div>
+            </div>
 
             
         </>

@@ -3,6 +3,7 @@ export const locationPath = {
     OrderPlanMgmt: ["수주(사업)관리", "영업관리", "수주(사업)관리"],
     SalesExpenses: ["수주(사업)관리", "영업관리", "영업비용"],
     Quotation: ["수주(사업)관리", "영업관리", "견적서관리"],
+    DraftQuotation: ["수주(사업)관리", "영업관리", "수주(사업)관리"],
 
     GroupCode: ["코드관리", "시스템관리", "그룹코드관리"],
     DetailCode: ["코드관리", "시스템관리", "상세코드관리"],
