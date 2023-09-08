@@ -28,7 +28,7 @@ function ItemGroupMgmt() {
             require: true,
         },
         {
-            header: "품목구분코드",
+            header: "품목그룹코드",
             col: "pgCode",
             cellWidth: "30%",
             modify: true,
