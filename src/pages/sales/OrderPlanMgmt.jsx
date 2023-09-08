@@ -169,62 +169,6 @@ function OrderPlanMgmt() {
         }
     };
 
-    //수주계획 관리 데이터 불러오기
-
-    //const headers = {
-    //    Authorization: process.env.REACT_APP_POST,
-    //};
-
-    //const orderPlanListData = async () => {
-    //    try {
-    //        const options = {
-    //            headers: headers,
-    //        };
-    //        const requestData = {
-    //            useAt: "Y",
-    //        };
-    //        const response = await axios.post(
-    //            `http://192.168.0.162:8888/api/baseInfrm/product/pjOrdrInfo/totallistAll.do`,
-    //            requestData,
-    //            options
-    //        );
-    //        console.log(response);
-    //        setPlanData(response.data.result.resultData);
-    //    } catch (error) {
-    //        console.log(error, "계획불러오는데 에러");
-    //    } finally {
-    //    }
-    //};
-
-    const menuList = [
-        { title: "인건비", columns: laborColumns },
-        { title: "경비", columns: expensesColumns },
-        { title: "구매(재료비)", columns: purchaseColumns },
-        { title: "기업이윤", columns: companyProfitColumns },
-        { title: "일반관리비", columns: generalExpensesColumns },
-        { title: "네고", columns: negoColumns },
-    ];
-
-    const orderPlanListData = async () => {
-        try {
-            const requestData = {
-                useAt: "Y",
-            };
-            const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
-
-            const response = await axiosFetch(url, requestData);
-            console.log(response);
-            setPlanData(response);
-        } catch (error) {
-            console.log(error, "계획불러오는데 에러");
-        } finally {
-        }
-    };
-
-    useEffect(() => {
-        orderPlanListData();
-    }, []);
-
     return (
         <>
             <Location pathList={locationPath.OrderPlanMgmt} />
@@ -258,7 +202,7 @@ function OrderPlanMgmt() {
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ul>
                                     <ReactDataTable
-                                        columns={menuItem.columns}
+                                        columns={laborColumns}
                                         suffixUrl="/baseInfrm/product"
                                         currentPage="pjOrdrInfo"
                                         flag={
