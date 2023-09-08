@@ -3,6 +3,7 @@ import PersonnelMgmts from "./personnelMgmt/PersonnelMgmts";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
+import { locationPath } from "constants/locationPath";
 
 /** 실행관리-인건비관리 */
 function LaborCostMgmt() {
@@ -44,14 +45,6 @@ function LaborCostMgmt() {
         },
     ];
 
-    const tableList = [
-        {
-            title: "인건비 관리",
-            middleName: "실행관리",
-            detailName: "인건비 관리",
-        },
-    ];
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
         console.log(value, "제대로 들어오냐");
@@ -61,7 +54,7 @@ function LaborCostMgmt() {
 
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.LaborCostMgmt} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
             <DataTable
                 returnKeyWord={returnKeyWord}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DataTable from "components/DataTable/DataTable";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
+import { locationPath } from "constants/locationPath";
 
 /** 시스템관리-코드관리-분류코드관리 */
 function CategoryCode() {
@@ -88,14 +89,6 @@ function CategoryCode() {
     //    createDate: "2023-08-04",
     //};
 
-    const tableList = [
-        {
-            title: "코드관리",
-            middleName: "시스템관리",
-            detailName: "분류코드관리",
-        },
-    ];
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
         console.log(value, "제대로 들어오냐");
@@ -105,7 +98,7 @@ function CategoryCode() {
 
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.CategoryCode} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
             <DataTable
                 returnKeyWord={returnKeyWord}

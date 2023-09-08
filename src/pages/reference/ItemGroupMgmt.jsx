@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
+import { locationPath } from "constants/locationPath";
 
 /** 기준정보관리-품목관리-품목그룹관리 */
 function ItemGroupMgmt() {
@@ -69,14 +70,6 @@ function ItemGroupMgmt() {
         },
     ];
 
-    const tableList = [
-        {
-            title: "품목관리",
-            middleName: "기준정보 관리",
-            detailName: "품목 그룹 관리",
-        },
-    ];
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
     };
@@ -85,7 +78,7 @@ function ItemGroupMgmt() {
 
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.ItemGroupMgmt} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
             <DataTable
                 returnKeyWord={returnKeyWord}

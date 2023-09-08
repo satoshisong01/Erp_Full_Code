@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DataTable from "components/DataTable/DataTable";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
+import { locationPath } from "constants/locationPath";
 
 /** 기준정보관리-원가기준관리-일반회원관리 */
 function RegularMemberMgmt() {
@@ -112,14 +113,6 @@ function RegularMemberMgmt() {
         },
     ];
 
-    const tableList = [
-        {
-            title: "사용자관리",
-            middleName: "기준정보 관리",
-            detailName: "일반회원관리",
-        },
-    ];
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
     };
@@ -128,7 +121,7 @@ function RegularMemberMgmt() {
 
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.RegularMemberMgmt} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
             <DataTable
                 returnKeyWord={returnKeyWord}

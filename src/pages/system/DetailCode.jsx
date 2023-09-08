@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
+import { locationPath } from "constants/locationPath";
 
 /** 시스템관리-코드관리-상세코드관리 */
 function DetailCode() {
@@ -112,14 +113,6 @@ function DetailCode() {
         },
     ];
 
-    const tableList = [
-        {
-            title: "코드관리",
-            middleName: "시스템관리",
-            detailName: "상세코드관리",
-        },
-    ];
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
         console.log(value, "제대로 들어오냐");
@@ -129,7 +122,7 @@ function DetailCode() {
 
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.DetailCode} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
             <DataTable
                 returnKeyWord={returnKeyWord}

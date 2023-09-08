@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
+import { locationPath } from "constants/locationPath";
 
 /** 시스템관리-접속이력관리 */
 function AccessHistoryMgmt() {
@@ -85,14 +86,6 @@ function AccessHistoryMgmt() {
         },
     ];
 
-    const tableList = [
-        {
-            title: "접속이력관리",
-            middleName: "시스템관리",
-            detailName: "접속이력관리",
-        },
-    ];
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
         console.log(value, "제대로 들어오냐");
@@ -102,7 +95,7 @@ function AccessHistoryMgmt() {
 
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.AccessHistoryMgmt} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
             <DataTable
                 returnKeyWord={returnKeyWord}

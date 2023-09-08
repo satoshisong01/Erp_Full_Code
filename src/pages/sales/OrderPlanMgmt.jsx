@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import Location from "components/Location/Location";
 import ApprovalForm from "components/form/ApprovalForm";
 import ReactDataTable from "components/DataTable/ReactDataTable";
-import axios from "axios";
-import {
-    axiosDelete,
-    axiosFetch,
-    axiosPost,
-    axiosScan,
-    axiosUpdate,
-} from "api/axiosFetch";
+import { PageContext } from "components/PageProvider";
+import { locationPath } from "constants/locationPath";
 
 /** 영업관리-수주계획관리 */
 function OrderPlanMgmt() {
-    const [planData, setPlanData] = useState([]);
+    const { isSaveFormTable, setIsSaveFormTable } = useContext(PageContext);
+
     // { header: "수주시작일", col: "poiBeginDt", cellWidth: "25%", type: "select", options: [{value: '1', label: 'op1'}, {value: '2', label: 'op2'}]},
 
     const laborColumns = [
@@ -164,34 +159,14 @@ function OrderPlanMgmt() {
         { header: "비고", col: "poiTitle2", cellWidth: "50%", type: "input" },
     ];
 
-    const path = [
-        {
-            title: "수주(사업)관리",
-            middleName: "영업관리",
-            detailName: "수주(사업)관리",
-        },
-    ];
-
-    const [projectName, setProjectName] = useState("");
     const [currentTask, setCurrentTask] = useState("인건비");
-    const [flag, setFlag] = useState(true);
 
-    const [mainProjectName, setMainProjectName] = useState("");
-    const [mainProjectCode, setMainProjectCode] = useState("");
-
-    const save = (flag) => {
-        setFlag(flag === true ? true : false);
-    };
-
-    const handleProjectName = (name) => {
-        if (name && typeof name === "string") {
-            setProjectName(name);
+    const chageTabs = (task) => {
+        setCurrentTask(task);
+        if (task !== currentTask) {
+            //자신 일때 수정 창으로 변동 되지 않기 위한 조건
+            setIsSaveFormTable(true);
         }
-    };
-
-    const handleChangeName = (value, value2) => {
-        setMainProjectName(value);
-        setMainProjectCode(value2);
     };
 
     //수주계획 관리 데이터 불러오기
@@ -252,58 +227,130 @@ function OrderPlanMgmt() {
 
     return (
         <>
-            <Location tableList={path} />
-
+            <Location pathList={locationPath.OrderPlanMgmt} />
             <div className="mini_board">
                 <ul className="tab">
-                    {menuList.map((menuItem) => (
-                        <li
-                            key={menuItem.title}
-                            onClick={() => setCurrentTask(menuItem.title)}>
-                            <a
-                                href={`#${menuItem.title}`}
-                                className={
-                                    currentTask === menuItem.title ? "on" : ""
-                                }>
-                                {menuItem.title}
-                            </a>
-                        </li>
-                    ))}
+                    <li onClick={() => chageTabs("인건비")}>
+                        <a href="#인건비" className="on">
+                            인건비
+                        </a>
+                    </li>
+                    <li onClick={() => chageTabs("경비")}>
+                        <a href="#경비">경비</a>
+                    </li>
+                    <li onClick={() => chageTabs("구매(재료비)")}>
+                        <a href="#구매(재료비)">구매(재료비)</a>
+                    </li>
+                    <li onClick={() => chageTabs("기업이윤")}>
+                        <a href="#기업이윤">기업이윤</a>
+                    </li>
+                    <li onClick={() => chageTabs("일반관리비")}>
+                        <a href="#일반관리비">일반관리비</a>
+                    </li>
+                    <li onClick={() => chageTabs("네고")}>
+                        <a href="#네고">네고</a>
+                    </li>
                 </ul>
 
                 <div className="list">
-                    {menuList.map((menuItem) => (
-                        <div
-                            key={menuItem.title}
-                            className={menuItem.title.toLowerCase()}>
-                            <ApprovalForm
-                                title={currentTask + " 계획 등록"}
-                                save={save}
-                                listData={planData}
-                                handleChangeName={handleChangeName}
-                                mainProjectName={mainProjectName}
-                                mainProjectCode={mainProjectCode}>
-                                <h2 className="blind">{menuItem.title}</h2>
+                    <div className="first">
+                        <ul>
+                            <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ul>
                                     <ReactDataTable
                                         columns={menuItem.columns}
                                         suffixUrl="/baseInfrm/product"
                                         currentPage="pjOrdrInfo"
                                         flag={
-                                            currentTask === menuItem.title &&
-                                            flag
-                                        }
-                                        currentTask={currentTask}
-                                        projectName={
-                                            menuItem.title === "네고"
-                                                ? projectName
-                                                : null
+                                            currentTask === "인건비" &&
+                                            isSaveFormTable
                                         }
                                     />
                                 </ul>
                             </ApprovalForm>
-                        </div>
-                    ))}
+                        </ul>
+                    </div>
+
+                    <div className="second">
+                        <ApprovalForm title={currentTask + " 계획 등록"}>
+                            <ul>
+                                <ReactDataTable
+                                    columns={expensesColumns}
+                                    suffixUrl="/baseInfrm/product"
+                                    currentPage="pjOrdrInfo"
+                                    flag={
+                                        currentTask === "경비" &&
+                                        isSaveFormTable
+                                    }
+                                />
+                            </ul>
+                        </ApprovalForm>
+                    </div>
+
+                    <div className="third">
+                        <ApprovalForm title={currentTask + " 계획 등록"}>
+                            <h2 className="blind">구매(재료비)</h2>
+                            <ul>
+                                <ReactDataTable
+                                    columns={purchaseColumns}
+                                    suffixUrl="/baseInfrm/product"
+                                    currentPage="pjOrdrInfo"
+                                    flag={
+                                        currentTask === "구매(재료비)" &&
+                                        isSaveFormTable
+                                    }
+                                />
+                            </ul>
+                        </ApprovalForm>
+                    </div>
+
+                    <div className="fourth">
+                        <ApprovalForm title={currentTask + " 계획 등록"}>
+                            <ul>
+                                <ReactDataTable
+                                    columns={companyProfitColumns}
+                                    suffixUrl="/baseInfrm/product"
+                                    currentPage="pjOrdrInfo"
+                                    flag={
+                                        currentTask === "기업이윤" &&
+                                        isSaveFormTable
+                                    }
+                                />
+                            </ul>
+                        </ApprovalForm>
+                    </div>
+
+                    <div className="fifth">
+                        <ApprovalForm title={currentTask + " 계획 등록"}>
+                            <ul>
+                                <ReactDataTable
+                                    columns={generalExpensesColumns}
+                                    suffixUrl="/baseInfrm/product"
+                                    currentPage="pjOrdrInfo"
+                                    flag={
+                                        currentTask === "일반관리비" &&
+                                        isSaveFormTable
+                                    }
+                                />
+                            </ul>
+                        </ApprovalForm>
+                    </div>
+
+                    <div className="sixth">
+                        <ApprovalForm title={currentTask + " 계획 등록"}>
+                            <ul>
+                                <ReactDataTable
+                                    columns={negoColumns}
+                                    suffixUrl="/baseInfrm/product"
+                                    currentPage="pjOrdrInfo"
+                                    flag={
+                                        currentTask === "네고" &&
+                                        isSaveFormTable
+                                    }
+                                />
+                            </ul>
+                        </ApprovalForm>
+                    </div>
                 </div>
             </div>
         </>

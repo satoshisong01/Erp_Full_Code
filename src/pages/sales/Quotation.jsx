@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
+import { locationPath } from "constants/locationPath";
 
 /** 영업관리-견적서관리 */
 function Quotation() {
@@ -68,14 +69,6 @@ function Quotation() {
         },
     ];
 
-    const tableList = [
-        {
-            title: "수주(사업)관리",
-            middleName: "영업관리",
-            detailName: "견적서관리",
-        },
-    ];
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
         console.log(value, "제대로 들어오냐");
@@ -85,7 +78,7 @@ function Quotation() {
 
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.Quotation} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
             <DataTable
                 returnKeyWord={returnKeyWord}

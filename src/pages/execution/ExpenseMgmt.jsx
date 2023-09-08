@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
+import { locationPath } from "constants/locationPath";
 /** 실행관리-경비관리 */
 function ExpenseMgmt() {
     const [returnKeyWord, setReturnKeyWord] = useState("");
@@ -63,14 +64,6 @@ function ExpenseMgmt() {
         },
     ];
 
-    const tableList = [
-        {
-            title: "경비관리",
-            middleName: "실행관리",
-            detailName: "경비관리",
-        },
-    ];
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
         console.log(value, "제대로 들어오냐");
@@ -80,7 +73,7 @@ function ExpenseMgmt() {
 
     return (
         <>
-            <Location tableList={tableList} />
+            <Location pathList={locationPath.ExpenseMgmt} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
             <DataTable
                 returnKeyWord={returnKeyWord}
