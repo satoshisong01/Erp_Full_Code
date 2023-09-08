@@ -13,8 +13,10 @@ import "../../css/componentCss/Code.css";
 import DataPutModal from "./DataPutModal";
 import DataTableButton from "components/button/DataTableButton";
 import DataPostModal from "./DataPostModal";
+import DataPutModalRow from "./DataPutModalRow";
+import DataPostModalRow from "./DataPostModalRow";
 
-const DataTable = (props) => {
+const DataTableRow = (props) => {
     const {
         returnKeyWord,
         columns,
@@ -28,7 +30,6 @@ const DataTable = (props) => {
     const [modalItem, setModalItem] = useState(""); //모달창에 넘겨주는 데이터
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창 true, false
     const [postModalOpen, setPostModalOpen] = useState(false); // 클릭 추가 모달창
-    const [isCheck, setIsCheck] = useState(false); //체크된 데이터 확인
     const [selectedData, setSelectedData] = useState([]); //체크된 데이터 저장
     const [tableData, setTableData] = useState([]); //데이터 저장
     const dataTableRef = useRef(null); //dataTable Ref 지정
@@ -44,15 +45,28 @@ const DataTable = (props) => {
 
     const [pageLength, setPageLength] = useState(10);
 
+    const [thisData, setThisData] = useState([{}]);
+
+    const [selectedGupDescs, setSelectedGupDescs] = useState([]); // 선택된 gupDesc 값을 배열로 저장
+
+    const [isChecked, setIsChecked] = useState(false); // 전체 선택 체크박스 상태
+    const [bodyCheckboxes, setBodyCheckboxes] = useState([]); // 본문(body) 체크박스 상태
+    //배열로 저장된 gupDesc를 포함하고있는 데이터중 gupId를 모아서 배열로 다시 저장
+    const newGupId = tableData
+        .filter((item) => selectedGupDescs.includes(item.gupDesc))
+        .map((item) => item.gupId);
+
+    console.log(newGupId);
+
     //useEffect(() => {
     //    $(dataTableRef.current).DataTable().destroy();
     //    console.log("⭕ check box select: ", selectedData);
     //    console.log("범인찾기");
     //}, [selectedData]);
 
-    const removeInt = columns[0].col;
+    //const removeInt = columns[0].col;
 
-    const changeInt = selectedData.map((item) => item[removeInt]);
+    //const changeInt = selectedData.map((item) => item[removeInt]);
 
     //setChangeInt(selectedData.map((item) => item[removeInt]));
 
@@ -75,54 +89,96 @@ const DataTable = (props) => {
         setIsLoading(value);
     };
 
-    useEffect(() => {
-        const updateColumnWidth = () => {
-            if (dataTableRef.current) {
-                /* 컬럼의 너비를 동적으로 설정 */
-                const thElements = dataTableRef.current.querySelectorAll(
-                    "th:not(.tableHeaderTh)"
-                );
-                const elementsLength = Math.min(
-                    thElements.length,
-                    columns.length
-                );
-                for (let i = 0; i < elementsLength; i++) {
-                    thElements[i].style.width = columns[i].cellWidth;
-                }
-            }
-        };
-        updateColumnWidth();
-    }, [columns]);
+    //useEffect(() => {
+    //    const updateColumnWidth = () => {
+    //        if (dataTableRef.current) {
+    //            /* 컬럼의 너비를 동적으로 설정 */
+    //            const thElements = dataTableRef.current.querySelectorAll(
+    //                "th:not(.tableHeaderTh)"
+    //            );
+    //            const elementsLength = Math.min(
+    //                thElements.length,
+    //                columns.length
+    //            );
+    //            for (let i = 0; i < elementsLength; i++) {
+    //                thElements[i].style.width = columns[i].cellWidth;
+    //            }
+    //        }
+    //    };
+    //    updateColumnWidth();
+    //}, [columns]);
 
     const selectAllData = (e) => {
         const checked = e.target.checked;
-        setIsCheck(checked);
+        setIsChecked(checked);
+
+        // 본문(body)에 있는 체크박스들의 상태를 업데이트
+        const updatedBodyCheckboxes = {};
+        const currentPageItems = tableData.slice(
+            (currentPages - 1) * pageLength,
+            currentPages * pageLength
+        );
 
         if (checked) {
-            // 현재 페이지에 표시되는 항목만 선택
-            const currentPageItems = tableData.slice(
-                (currentPages - 1) * pageLength,
-                currentPages * pageLength
-            );
-            setSelectedData([...currentPageItems]);
+            // 전체 선택 체크박스를 클릭할 때 모든 gupDesc 값을 배열로 저장
+            const allGupDescs = uniqueBaseNames.map((baseName) => baseName);
+            setSelectedGupDescs(allGupDescs);
+
+            uniqueBaseNames.forEach((baseName) => {
+                updatedBodyCheckboxes[baseName] = checked;
+            });
+
+            // 현재 페이지에 표시되는 항목만 선택하고 개별 체크박스의 상태를 업데이트
+            currentPageItems.forEach((item) => {
+                const baseName = item.gupDesc;
+                updatedBodyCheckboxes[baseName] = true;
+            });
         } else {
-            setSelectedData([]);
+            setSelectedGupDescs([]); // 전체 선택 해제 시 배열 초기화
         }
+
+        setBodyCheckboxes(updatedBodyCheckboxes);
     };
 
-    const ItemCheckboxClick = (item, e) => {
+    useEffect(() => {
+        setIsChecked(false);
+        setBodyCheckboxes({});
+    }, [tableData]); // tableData가 변경될 때마다 실행
+
+    const ItemCheckboxClick = (e, baseName) => {
         const checked = e.target.checked;
-        if (checked) {
-            setSelectedData((prevSelectedData) => [...prevSelectedData, item]);
-        } else {
-            setSelectedData((prevSelectedData) =>
-                prevSelectedData.filter(
-                    (data) => data[columns[0].col] !== item[columns[0].col]
-                )
-            );
-        }
-    };
+        console.log(checked, "체크된거");
+        const row = e.target.closest("tr"); // 체크박스가 속한 행(row)을 찾음
+        console.log(row, "체크된거");
 
+        if (row) {
+            const gupDescValue =
+                row.querySelector("td:nth-child(2)").textContent; // 기준명이 들어 있는 두 번째 열의 값을 가져옴
+
+            if (checked) {
+                setSelectedData((prevSelectedData) => [
+                    ...prevSelectedData,
+                    gupDescValue,
+                ]);
+                setSelectedGupDescs((prevSelectedGupDescs) => [
+                    ...prevSelectedGupDescs,
+                    gupDescValue,
+                ]);
+            } else {
+                setSelectedData((prevSelectedData) =>
+                    prevSelectedData.filter((data) => data !== gupDescValue)
+                );
+                setSelectedGupDescs((prevSelectedGupDescs) =>
+                    prevSelectedGupDescs.filter((data) => data !== gupDescValue)
+                );
+            }
+        }
+        setBodyCheckboxes((prevBodyCheckboxes) => {
+            const updatedCheckboxes = { ...prevBodyCheckboxes };
+            updatedCheckboxes[baseName] = checked;
+            return updatedCheckboxes;
+        });
+    };
     /* column click */
     const onClick = (e, item) => {
         console.log("⭕ click item: ", item);
@@ -133,8 +189,6 @@ const DataTable = (props) => {
         //setTableData(dummyData);
         //setIsLoading(true); // 로딩 화면 활성화
         try {
-            $(dataTableRef.current).DataTable().destroy();
-
             if (suffixUrl === "") return;
             let url = ``;
             if (customerList) {
@@ -145,9 +199,10 @@ const DataTable = (props) => {
             const requestData = { lockAt: "Y" };
             $(dataTableRef.current).DataTable().destroy();
             const resultData = await axiosFetch(url, requestData);
-            console.log(resultData, "불러온값");
             if (updateColumns) {
+                console.log(resultData);
             } else if (resultData) {
+                console.log(resultData);
                 setTableData(resultData);
             }
             setIsLoading(false); // 로딩 화면 비활성화
@@ -182,11 +237,11 @@ const DataTable = (props) => {
     };
 
     /* 데이터 삭제 */
-    const deleteData = async () => {
+    const deleteData = async (value) => {
         if (suffixUrl === "") return;
         const url = `/api${suffixUrl}/${currentPage}/removeAll.do`;
         const resultData = await axiosDelete(url, {
-            data: changeInt,
+            data: newGupId,
         });
 
         if (resultData) {
@@ -197,7 +252,7 @@ const DataTable = (props) => {
     };
 
     /* 데이터 추가하기 */
-    const postData = async (postData) => {
+    const axiosPostPersonel = async (postData) => {
         setIsLoading(true); // 로딩 화면 활성화
 
         // 필수 필드가 비어있는지 확인
@@ -223,7 +278,6 @@ const DataTable = (props) => {
 
             if (resultData) {
                 fetchAllData();
-                alert("추가 되었습니다!✅✅✅✅");
                 setPostModalOpen(false);
             }
         } catch (error) {
@@ -305,6 +359,8 @@ const DataTable = (props) => {
     }, [tableData, pageLength]);
 
     const handleModalClick = (e, item) => {
+        console.log(item);
+        console.log(e);
         setModalItem(item);
         setModalOpen(true);
     };
@@ -373,6 +429,30 @@ const DataTable = (props) => {
         };
     }, [returnKeyWord]);
 
+    const groupedData = {};
+    tableData.forEach((item) => {
+        const groupKey = item.guppName; // 직급으로 그룹화
+        if (!groupedData[groupKey]) {
+            groupedData[groupKey] = [];
+        }
+        groupedData[groupKey].push(item);
+    });
+
+    const uniqueBaseNames = [...new Set(tableData.map((item) => item.gupDesc))];
+
+    const handleClick = (data) => {
+        const dataString = Object.entries(data)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join("\n");
+        const newData = Object.assign({}, thisData[0], data);
+        setThisData([newData]);
+        setModalOpen(true);
+    };
+
+    const handleChangeCost = (value) => {
+        setThisData(value);
+    };
+
     return (
         <>
             <div className="buttonBody">
@@ -414,131 +494,113 @@ const DataTable = (props) => {
                                                 <input
                                                     id="thCheckBox"
                                                     type="checkbox"
-                                                    checked={isCheck}
+                                                    checked={isChecked}
                                                     onChange={selectAllData}
                                                 />
                                             </th>
-                                            {columns.map((column, index) => {
-                                                if (column.notView) {
-                                                    return null; // notView 값이 false인 컬럼의 제목은 출력하지 않음
-                                                }
-                                                return (
+                                            {/* 고정된 값으로 헤더를 생성 */}
+                                            <th>기준명</th>
+                                            {columns
+                                                .slice(1)
+                                                .map((header, index) => (
                                                     <th key={index}>
-                                                        {column.header}
+                                                        {header}
                                                     </th>
-                                                );
-                                            })}
+                                                ))}
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {tableData.map((item, index) => (
-                                            <tr key={index}>
-                                                <td>
-                                                    <input
-                                                        type="checkbox"
-                                                        id="checkBoxItem"
-                                                        checked={selectedData.some(
-                                                            (selectedItem) =>
-                                                                selectedItem[
-                                                                    columns[0]
-                                                                        .col
-                                                                ] ===
-                                                                item[
-                                                                    columns[0]
-                                                                        .col
-                                                                ]
-                                                        )}
-                                                        onChange={(e) =>
-                                                            ItemCheckboxClick(
-                                                                item,
-                                                                e
+                                        {uniqueBaseNames.map(
+                                            (baseName, baseNameIndex) => (
+                                                <tr key={baseNameIndex}>
+                                                    <td>
+                                                        <input
+                                                            type="checkbox"
+                                                            id={`checkBoxItem-${baseNameIndex}`}
+                                                            checked={
+                                                                bodyCheckboxes[
+                                                                    baseName
+                                                                ] || false
+                                                            }
+                                                            onChange={(e) =>
+                                                                ItemCheckboxClick(
+                                                                    e,
+                                                                    baseName
+                                                                )
+                                                            }
+                                                        />
+                                                    </td>
+                                                    {/* "기준명" 열에 기준명 값을 직접 출력 */}
+                                                    <td>{baseName}</td>
+                                                    {columns
+                                                        .slice(1)
+                                                        .map(
+                                                            (
+                                                                header,
+                                                                colIndex
+                                                            ) => (
+                                                                <td
+                                                                    key={
+                                                                        colIndex
+                                                                    }>
+                                                                    {tableData
+                                                                        .filter(
+                                                                            (
+                                                                                item
+                                                                            ) =>
+                                                                                item.gupDesc ===
+                                                                                    baseName &&
+                                                                                item.guppName ===
+                                                                                    header
+                                                                        )
+                                                                        .map(
+                                                                            (
+                                                                                item,
+                                                                                rowIndex
+                                                                            ) => (
+                                                                                <div
+                                                                                    key={
+                                                                                        rowIndex
+                                                                                    }
+                                                                                    onDoubleClick={() =>
+                                                                                        handleClick(
+                                                                                            item
+                                                                                        )
+                                                                                    } // 클릭 이벤트 추가
+                                                                                    style={{
+                                                                                        cursor: "pointer",
+                                                                                    }}>
+                                                                                    {/* gupPrice 값을 출력 */}
+                                                                                    {item.gupPrice.toLocaleString()}
+                                                                                </div>
+                                                                            )
+                                                                        )}
+                                                                </td>
                                                             )
-                                                        }
-                                                    />
-                                                </td>
-                                                {columns.map(
-                                                    (column, colIndex) => {
-                                                        if (column.notView) {
-                                                            return null; // notView 값이 false인 컬럼은 출력하지 않음
-                                                        }
-                                                        const cellValue =
-                                                            item[column.col] ||
-                                                            (item[
-                                                                column.col
-                                                            ] === 0
-                                                                ? "0"
-                                                                : "No data yet.");
-                                                        let formattedValue;
-                                                        if (
-                                                            typeof cellValue ===
-                                                            "number"
-                                                        ) {
-                                                            formattedValue =
-                                                                cellValue.toLocaleString();
-                                                        } else if (
-                                                            column.col ===
-                                                            "createDate"
-                                                        ) {
-                                                            // 시, 분 나오는 부분 자르고 연도/월/일 까지만(공백기준 자르기)
-                                                            const datePart =
-                                                                cellValue.split(
-                                                                    " "
-                                                                )[0];
-                                                            formattedValue =
-                                                                datePart;
-                                                        } else if (
-                                                            column.col ===
-                                                            "lastModifyDate"
-                                                        ) {
-                                                            // 시, 분 나오는 부분 자르고 연도/월/일 까지만(공백기준 자르기)
-                                                            const datePart =
-                                                                cellValue.split(
-                                                                    " "
-                                                                )[0];
-                                                            formattedValue =
-                                                                datePart;
-                                                        } else {
-                                                            formattedValue =
-                                                                cellValue;
-                                                        }
-                                                        return (
-                                                            <td
-                                                                className="tdStyle"
-                                                                key={colIndex}
-                                                                onDoubleClick={(
-                                                                    e
-                                                                ) => {
-                                                                    handleModalClick(
-                                                                        e,
-                                                                        item
-                                                                    );
-                                                                }}>
-                                                                {formattedValue}
-                                                                {/* 기존코드 {item[column.col]}*/}
-                                                            </td>
-                                                        );
-                                                    }
-                                                )}
-                                            </tr>
-                                        ))}
+                                                        )}
+                                                </tr>
+                                            )
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
                         </>
                     </div>
                     {modalOpen && (
-                        <DataPutModal
+                        <DataPutModalRow
                             onClose={() => {
                                 setModalOpen(false);
                             }}
                             columns={columns}
+                            thisData={thisData}
+                            handleChangeCost={handleChangeCost}
                             initialData={modalItem}
                             updateData={updateData}
                         />
                     )}
                     {postModalOpen && (
-                        <DataPostModal
-                            postData={postData}
+                        <DataPostModalRow
+                            postData={axiosPostPersonel}
                             columns={columns}
                             saveList={saveList}
                             fetchAllData={fetchAllData}
@@ -557,4 +619,4 @@ const DataTable = (props) => {
         </>
     );
 };
-export default DataTable;
+export default DataTableRow;

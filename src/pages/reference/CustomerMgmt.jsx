@@ -13,7 +13,8 @@ function CustomerMgmt() {
             col: "cltType",
             cellWidth: "30%",
             enable: false,
-            itemType: ["타입을 선택해 주세요[C:고객사,P:협력사]", "C", "P"],
+            itemType: ["거래처타입을 선택해 주세요", "고객사", "협력사"],
+            itemTypeSymbol: ["", "C", "P"],
             modify: true,
             add: true,
             require: true,
@@ -33,6 +34,7 @@ function CustomerMgmt() {
             cellWidth: "30%",
             modify: true,
             add: true,
+            require: true,
         },
         {
             header: "거래처코드",
@@ -40,6 +42,7 @@ function CustomerMgmt() {
             cellWidth: "30%",
             modify: true,
             add: true,
+            require: true,
         },
         {
             header: "기업회원ID",
@@ -47,6 +50,7 @@ function CustomerMgmt() {
             cellWidth: "30%",
             modify: true,
             add: true,
+            require: true,
         },
         //{
         //    header: "사업자번호",
@@ -61,6 +65,7 @@ function CustomerMgmt() {
             cellWidth: "30%",
             modify: true,
             add: true,
+            require: true,
         },
         //{
         //    header: "법인번호",

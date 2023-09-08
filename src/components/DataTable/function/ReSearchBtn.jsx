@@ -14,12 +14,11 @@ const ReSearchBtn = ({
     const handleRefreshClick = async () => {
         //searchKeyword("");
         //searchCondition("");
-        if (
-            dataTableRef.current &&
-            $.fn.DataTable.isDataTable(dataTableRef.current)
-        ) {
-            $(dataTableRef.current).DataTable().destroy();
-        }
+        //if (
+        //    dataTableRef.current &&
+        //    $.fn.DataTable.isDataTable(dataTableRef.current)
+        //) {
+        //}
         //setIsSearching(!isSearching); // 로딩 상태 활성화
         $(dataTableRef.current).DataTable().destroy();
 

@@ -1,19 +1,34 @@
 import React, { useEffect, useState } from "react";
 import ModalSearch from "components/modal/ModalSearch";
 
-function ApprovalForm({ title, children, save, projectName }) {
-
+function ApprovalForm({
+    title,
+    children,
+    save,
+    projectName,
+    listData,
+    handleChangeName,
+    mainProjectName,
+    mainProjectCode,
+}) {
     const [flag, setFlag] = useState(true);
-    const [userInfo, serUserInfo] = useState({id: "", name: ""})
+    const [userInfo, serUserInfo] = useState({ id: "", name: "" });
 
     useEffect(() => {
-        const sessionUser = sessionStorage.getItem('loginUser');
+        const sessionUser = sessionStorage.getItem("loginUser");
         const sessionUserId = JSON.parse(sessionUser)?.id;
-        serUserInfo({id: sessionUserId})
-    }, [])
+        serUserInfo({ id: sessionUserId });
+    }, []);
 
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-    const currentTime = new Date().toLocaleString('ko-KR', options);
+    const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+    };
+    const currentTime = new Date().toLocaleString("ko-KR", options);
+    const [projectCode, setProjectCode] = useState("");
 
     const handleClose = () => {
         window.close();
@@ -22,12 +37,15 @@ function ApprovalForm({ title, children, save, projectName }) {
     const handlFlag = (value) => {
         setFlag(value);
         save(value);
-    }
+    };
 
     const handleProjectName = (name) => {
-        projectName(name)
-    }
+        projectName(name);
+    };
 
+    const handleProjectCode = (code) => {
+        setProjectCode(code);
+    };
 
     return (
         <>
@@ -38,14 +56,27 @@ function ApprovalForm({ title, children, save, projectName }) {
                 <div className="app-buttons mg-b-20">
                     {/* <button className="btn app-btn app-btn-tertiary">결재선</button>
                     <button className="btn app-btn app-btn-tertiary">결재요청</button> */}
-                    { flag ? <button className="btn app-btn app-btn-primary" onClick={() => handlFlag(false)}>저장</button>
-                        : <button className="btn app-btn app-btn-primary" onClick={() => handlFlag(true)}>수정</button>
-                    }
-                    <button className="btn app-btn app-btn-secondary" onClick={handleClose}>취소</button>
-                    
+                    {flag ? (
+                        <button
+                            className="btn app-btn app-btn-primary"
+                            onClick={() => handlFlag(false)}>
+                            저장
+                        </button>
+                    ) : (
+                        <button
+                            className="btn app-btn app-btn-primary"
+                            onClick={() => handlFlag(true)}>
+                            수정
+                        </button>
+                    )}
+                    <button
+                        className="btn app-btn app-btn-secondary"
+                        onClick={handleClose}>
+                        취소
+                    </button>
                 </div>
             </div>
-            
+
             <div className="approval-form">
                 {/* <div className="approval-row mg-b-20">
                     <span className="approval-title">{title} 계획 등록</span>
@@ -65,10 +96,16 @@ function ApprovalForm({ title, children, save, projectName }) {
                             <tr>
                                 <th>프로젝트명</th>
                                 <td>
-                                    <ModalSearch projectName={handleProjectName}/>
+                                    <ModalSearch
+                                        listData={listData}
+                                        projectName={handleProjectName}
+                                        projectCode={handleProjectCode}
+                                        handleChangeName={handleChangeName}
+                                        mainProjectName={mainProjectName}
+                                    />
                                 </td>
                                 <th>프로젝트코드</th>
-                                <td></td>
+                                <td>{mainProjectCode}</td>
                             </tr>
                             <tr>
                                 <th>작성일</th>

@@ -167,7 +167,10 @@ export default function DataPostModal({
                                                                                 index
                                                                             }
                                                                             value={
-                                                                                item
+                                                                                column
+                                                                                    .itemTypeSymbol[
+                                                                                    index
+                                                                                ]
                                                                             }>
                                                                             {
                                                                                 item

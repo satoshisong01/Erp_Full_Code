@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react";
 import PopupButton from "./PopupButton";
 import XLSX from "xlsx-js-style";
 import URL from "constants/url";
-import { faArrowRotateRight } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function DataTableButton({
     excelClick,
@@ -13,25 +11,12 @@ export default function DataTableButton({
     deleteClick,
     addClick,
     dataTableRef,
-    refreshClick,
+    fetchAllData,
     addBtn,
     selectedData,
     columns,
 }) {
-
-    // <button
-    //     className="btn btn-primary refreshIcon"
-    //     onClick={handleRefreshClick}>
-    //         <FontAwesomeIcon icon={faArrowRotateRight} className="refreshI" />
-    // </button>
-
     const buttons = [
-        {
-            id: "refreshIcon",
-            iconClass: "fa fa-file-excel-o utilIcon",
-            label: <FontAwesomeIcon icon={faArrowRotateRight} className="refreshI" />,
-            clickHandler: refreshClick,
-        },
         {
             id: "csvIcon",
             iconClass: "fa fa-file-excel-o utilIcon",
@@ -183,13 +168,13 @@ export default function DataTableButton({
                 title: "실행 원가 계산서",
             },
         },
-        planPage: {
-            targetUrl: URL.ApprovalContainer,
-            data: {
-                btnName: "수주계획",
-                title: "사전 원가 계획",
-            },
-        },
+        //planPage: {
+        //    targetUrl: URL.ApprovalContainer,
+        //    data: {
+        //        btnName: "수주계획",
+        //        title: "사전 원가 계획",
+        //    },
+        //},
         runPlanPage: {
             targetUrl: URL.ApprovalContainer,
             data: {
@@ -246,7 +231,10 @@ export default function DataTableButton({
 
     return (
         <div className="tableBtn">
-            
+            <ReSearchBtn
+                dataTableRef={dataTableRef}
+                fetchAllData={fetchAllData}
+            />
             {addBtn.map((btn, index) => {
                 const popupButtonProps = buttonPropsMap[btn];
                 if (popupButtonProps) {

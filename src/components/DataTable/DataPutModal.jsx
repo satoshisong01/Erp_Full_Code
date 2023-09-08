@@ -19,6 +19,8 @@ export default function DataPutModal({
     const [data, setData] = useState(initialData);
     const [errorMessages, setErrorMessages] = useState({}); // 각 필드에 대한 에러 메시지 상태 추가
 
+    console.log(data, "이게머더라");
+
     useEffect(() => {
         initializeState(); // 모달이 열릴 때 상태를 초기화합니다.
     }, [initialData]);
@@ -29,6 +31,8 @@ export default function DataPutModal({
 
     const inputChange = (e) => {
         const { name, value } = e.target;
+        console.log(name, "네임", value, "받아오는건");
+
         setData((prevData) => ({ ...prevData, [name]: value }));
 
         // 에러 메시지 상태 업데이트
