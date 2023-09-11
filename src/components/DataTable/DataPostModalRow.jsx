@@ -3,6 +3,8 @@ import $ from "jquery";
 import "../../components/modal/ModalSearch.css";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 //import { v4 as uuidv4 } from "uuid";
 //import axios from "axios";
 
@@ -102,7 +104,12 @@ export default function DataPostModalRow({
                             </div>
                             <div
                                 className="product-modal-close-btn"
-                                onClick={onClose}></div>
+                                onClick={onClose}>
+                                <FontAwesomeIcon
+                                    icon={faXmark}
+                                    className="xBtn"
+                                />
+                            </div>
                         </div>
                         <form className="product-modal-body">
                             <div className="submitProduct">

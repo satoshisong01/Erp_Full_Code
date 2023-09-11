@@ -10,7 +10,7 @@ import { PageContext } from "./PageProvider";
 
 /* 데이터 테이블 검색 */
 export default function SearchList({ conditionList }) {
-    const { setSearchData, setNameOfButton } = useContext(PageContext)
+    const { setSearchData, setNameOfButton } = useContext(PageContext);
 
     const [fieldList, setFieldList] = useState([]);
     const [searchKeyword, setSearchKeyword] = useState({});
@@ -134,7 +134,7 @@ export default function SearchList({ conditionList }) {
             radioOption: radioOption,
         };
         setSearchData(dataToSend); // 전역상태
-        setNameOfButton('search'); // 전역상태
+        setNameOfButton("search"); // 전역상태
         setSearchKeyword({}); // 초기화
         console.log("❤️ dataToSend: ", dataToSend);
     };

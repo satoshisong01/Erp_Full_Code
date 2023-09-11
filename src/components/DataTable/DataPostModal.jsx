@@ -3,6 +3,8 @@ import $ from "jquery";
 import "../../components/modal/ModalSearch.css";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 //import { v4 as uuidv4 } from "uuid";
 //import axios from "axios";
 
@@ -60,6 +62,7 @@ export default function DataPostModal({
 
         //const hasPrimaryKey = columns.some((column) => column.pk);
 
+        console.log(data, "나오는데이터");
         if (hasEmptyRequiredFields) {
             setShowAlert(true); // 알림 메시지 표시
         } else {
@@ -80,7 +83,12 @@ export default function DataPostModal({
                             </div>
                             <div
                                 className="product-modal-close-btn"
-                                onClick={onClose}></div>
+                                onClick={onClose}>
+                                <FontAwesomeIcon
+                                    icon={faXmark}
+                                    className="xBtn"
+                                />
+                            </div>
                         </div>
                         <form className="product-modal-body">
                             <div className="submitProduct">

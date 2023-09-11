@@ -1,15 +1,9 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import $ from "jquery";
+import React, { useContext, useState } from "react";
 import "../../components/modal/ModalSearch.css";
-import "datatables.net-dt/css/jquery.dataTables.css";
-import "datatables.net-dt/js/dataTables.dataTables";
 import { PageContext } from "components/PageProvider";
-//import { v4 as uuidv4 } from "uuid";
-//import axios from "axios";
 
 export default function TableAddModal({ columns }) {
-
-    const { setNewRowData, setIsOpenModal } = useContext(PageContext)
+    const { setNewRowData, setIsOpenModal } = useContext(PageContext);
 
     const [data, setData] = useState({});
     const [showAlert, setShowAlert] = useState(false); // 필수값 알림
@@ -53,9 +47,7 @@ export default function TableAddModal({ columns }) {
                             </div>
                             <div
                                 className="product-modal-close-btn"
-                                onClick={() => setIsOpenModal(false)}
-                            >
-                            </div>
+                                onClick={() => setIsOpenModal(false)}></div>
                         </div>
                         <form className="product-modal-body">
                             <div className="submitProduct">
@@ -201,7 +193,7 @@ export default function TableAddModal({ columns }) {
                                     className="btn btn-default"
                                     data-dismiss="modal"
                                     onClick={() => {
-                                        setIsOpenModal(false)
+                                        setIsOpenModal(false);
                                     }}>
                                     취소
                                 </button>

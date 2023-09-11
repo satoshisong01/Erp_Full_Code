@@ -1,5 +1,7 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { Navigate, Routes, Route, useLocation } from "react-router-dom";
+import { PageContext, PageProvider } from "components/PageProvider";
+import { axiosFetch } from "api/axiosFetch";
 
 import URL from "constants/url";
 // import CODE from 'constants/code';
@@ -85,6 +87,25 @@ const usePrevLocation = (location) => {
 };
 
 const RootRoutes = () => {
+    const { projectItem, setProjectItem } = useContext(PageContext);
+    useEffect(() => {
+        basicFetchData();
+    }, []);
+
+    const basicFetchData = async () => {
+        const url = `/api/baseInfrm/product/pjOrdrInfo/totalList.do`;
+        const requestData = { useAt: "Y" };
+        const resultData = await axiosFetch(url, requestData);
+        console.log(resultData, "나온값은?");
+        console.log(resultData.content, "나온값은?");
+        setProjectItem(
+            resultData.content.map((item) => ({
+                poiNm: item.poiNm,
+                poiCode: item.poiCode,
+            }))
+        );
+    };
+    console.log(projectItem, "받아온값");
     //useLocation객체를 이용하여 에러페이시 이동 전 location 객체를 저장하는 코드 추가(아래 2줄) */}
     const location = useLocation();
     const prevLocation = usePrevLocation(location);

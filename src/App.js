@@ -10,14 +10,17 @@ import "./css/egov-component.css";
 import "./css/egov-page.css";
 import "./css/egov-response.css";
 import "./css/custom-style.css";
+import { PageProvider } from "components/PageProvider";
 
 function App() {
     return (
-        <div className="wrap">
-            <Provider store={store}>
-                <RootRoutes />
-            </Provider>
-        </div>
+        <PageProvider>
+            <div className="wrap">
+                <Provider store={store}>
+                    <RootRoutes />
+                </Provider>
+            </div>
+        </PageProvider>
     );
 }
 

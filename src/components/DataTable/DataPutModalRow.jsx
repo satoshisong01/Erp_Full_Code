@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../components/modal/ModalSearch.css";
-import "../../components/modal/ModalSearch.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export default function DataPutModalRow({
     onClose,
@@ -89,7 +90,12 @@ export default function DataPutModalRow({
                             </div>
                             <div
                                 className="product-modal-close-btn"
-                                onClick={onClose}></div>
+                                onClick={onClose}>
+                                <FontAwesomeIcon
+                                    icon={faXmark}
+                                    className="xBtn"
+                                />
+                            </div>
                         </div>
                         <form className="product-modal-body">
                             <div className="submitProduct">

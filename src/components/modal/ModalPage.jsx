@@ -1,27 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { PageContext } from "components/PageProvider";
 
-export default function ModalPage({
-    onClose,
-    clickData,
-    refresh,
-    urlName,
-    listData,
-    onSelect,
-    projectCode,
-    handleChangeName,
-}) {
-    const columns = [
-        { header: "프로젝트 이름", col: "poiNm", cellWidth: "100%" },
-    ];
+export default function ModalPage() {
+    const { projectItem, projectId, setProjectId, setIsOpenModal } =
+        useContext(PageContext);
 
-    const handleSaveCode = (value, value2) => {
-        projectCode(value);
-        onSelect(value2);
-        handleChangeName(value2, value);
-        onClose();
-    };
+    function handleItemClick(poiNm, poiCode) {
+        setProjectId({ poiNm, poiCode });
+        setIsOpenModal(false);
+    }
+
+    console.log(projectId);
+
+    useEffect(() => {
+        console.log(projectItem, "프로젝트네임 불러온것");
+    }, []);
 
     return (
         <div
@@ -36,20 +31,20 @@ export default function ModalPage({
                                     프로젝트 목록
                                 </span>
                             </div>
-                            <button onClick={onClose}>
+                            <button onClick={() => setIsOpenModal(false)}>
                                 <FontAwesomeIcon icon={faTimes} />
                             </button>
                         </div>
                         <div className="modalBody">
                             <div className="modalContent">
-                                {listData.map((item, index) => (
+                                {projectItem.map((item, index) => (
                                     <div
                                         className="listItems"
                                         key={index}
                                         onClick={() =>
-                                            handleSaveCode(
-                                                item.poiCode,
-                                                item.poiNm
+                                            handleItemClick(
+                                                item.poiNm,
+                                                item.poiCode
                                             )
                                         }>
                                         <p className="listItem">{item.poiNm}</p>
@@ -64,7 +59,7 @@ export default function ModalPage({
                                         type="button"
                                         className="btn btn-default"
                                         data-dismiss="modal"
-                                        onClick={onClose}>
+                                        onClick={() => setIsOpenModal(false)}>
                                         Close
                                     </button>
                                     <button

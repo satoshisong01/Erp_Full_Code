@@ -1,16 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ModalSearch from "components/modal/ModalSearch";
+import { PageContext } from "components/PageProvider";
 
-function ApprovalForm({
-    title,
-    children,
-    save,
-    projectName,
-    listData,
-    handleChangeName,
-    mainProjectName,
-    mainProjectCode,
-}) {
+function ApprovalForm({ children, save }) {
+    const { projectId } = useContext(PageContext);
     const [flag, setFlag] = useState(true);
     const [userInfo, serUserInfo] = useState({ id: "", name: "" });
 
@@ -28,7 +21,6 @@ function ApprovalForm({
         minute: "2-digit",
     };
     const currentTime = new Date().toLocaleString("ko-KR", options);
-    const [projectCode, setProjectCode] = useState("");
 
     const handleClose = () => {
         window.close();
@@ -37,14 +29,6 @@ function ApprovalForm({
     const handlFlag = (value) => {
         setFlag(value);
         save(value);
-    };
-
-    const handleProjectName = (name) => {
-        projectName(name);
-    };
-
-    const handleProjectCode = (code) => {
-        setProjectCode(code);
     };
 
     return (
@@ -96,16 +80,10 @@ function ApprovalForm({
                             <tr>
                                 <th>프로젝트명</th>
                                 <td>
-                                    <ModalSearch
-                                        listData={listData}
-                                        projectName={handleProjectName}
-                                        projectCode={handleProjectCode}
-                                        handleChangeName={handleChangeName}
-                                        mainProjectName={mainProjectName}
-                                    />
+                                    <ModalSearch />
                                 </td>
                                 <th>프로젝트코드</th>
-                                <td>{mainProjectCode}</td>
+                                <td>{projectId.poiCode}</td>
                             </tr>
                             <tr>
                                 <th>작성일</th>

@@ -1,47 +1,29 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./ModalSearch.css";
-import { useState } from "react";
 import ModalPage from "./ModalPage";
+import { PageContext } from "components/PageProvider";
 
-export default function ModalSearch({
-    listData,
-    projectCode,
-    handleChangeName,
-    mainProjectName,
-}) {
-    const [modalOpen, setModalOpen] = useState(false);
-    const [name, setName] = useState("");
-
-    const columns = [
-        { header: "프로젝트 이름", col: "poiNm", cellWidth: "100%" },
-    ];
-
-    const handleSelect = (value) => {
-        setName(value);
-    };
+export default function ModalSearch({}) {
+    const { projectId, setIsOpenModal, isOpenModal } = useContext(PageContext);
 
     return (
         <div>
             <input
-                onClick={() => setModalOpen(true)}
+                onClick={() => setIsOpenModal(true)}
                 type="text"
                 placeholder={
-                    mainProjectName
-                        ? mainProjectName
+                    projectId.poiNm
+                        ? projectId.poiNm
                         : `프로젝트를 선택해 주세요.`
                 }
-                value={mainProjectName}
+                value={projectId.poiNm}
                 readOnly
             />
-            {modalOpen && (
+            {isOpenModal && (
                 <ModalPage
                     onClose={() => {
-                        setModalOpen(false);
+                        setIsOpenModal(false);
                     }}
-                    listData={listData}
-                    handleChangeName={handleChangeName}
-                    projectCode={projectCode}
-                    onSelect={handleSelect}
                 />
             )}
         </div>
