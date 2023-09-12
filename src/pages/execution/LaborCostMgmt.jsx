@@ -4,6 +4,7 @@ import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
+import ReactDataTable from "components/DataTable/ReactDataTable";
 
 /** 실행관리-인건비관리 */
 function LaborCostMgmt() {
@@ -56,14 +57,19 @@ function LaborCostMgmt() {
         <>
             <Location pathList={locationPath.LaborCostMgmt} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
-            <DataTable
+            <ReactDataTable
+                columns={columns}
+                suffixUrl="/baseInfrm/product/prmn"
+                detailUrl="/"
+            />
+            {/* <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
                 suffixUrl="/system/code"
                 currentPage="clCode"
                 addBtn={addBtn}
-            />
-            <PersonnelMgmts />
+            /> */}
+            {/* <PersonnelMgmts /> */}
         </>
     );
 }

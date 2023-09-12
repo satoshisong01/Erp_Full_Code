@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Location from "components/Location/Location";
 import ApprovalForm from "components/form/ApprovalForm";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { locationPath } from "constants/locationPath";
+import { PageContext } from "components/PageProvider";
 
 /** 영업관리-수주계획관리 */
 function DraftQuotation() {
@@ -46,16 +47,12 @@ function DraftQuotation() {
     ];
 
     const [currentTask, setCurrentTask] = useState("인건비")
-    const [flag, setFlag] = useState(true)
-    
-    const save = (flag) => {
-        setFlag(flag === true ? true : false)
-    }
+    const {isSaveFormTable} = useContext(PageContext);
 
     return (
         <>
             <Location pathList={locationPath.DraftQuotation} />
-            <div className="mini_board_2">
+            <div className="common_board_style mini_board_2">
                 <ul className="tab">
                     <li onClick={() => setCurrentTask("인건비")}><a href="#인건비" className="on">인건비</a></li>
                     <li onClick={() => setCurrentTask("경비")}><a href="#경비">경비</a></li>
@@ -63,43 +60,37 @@ function DraftQuotation() {
                 </ul>
                 <div className="list">
                     <div className="first">
-                        <ApprovalForm title={currentTask +' 초안 등록'} save={save}>
+                        <ApprovalForm title={currentTask +' 초안 등록'}>
                             <h2 className="blind">인건비</h2>
                             <ul>
                                 <ReactDataTable
                                     columns={laborColumns}
-                                    suffixUrl="/baseInfrm/product"
-                                    currentPage="pjOrdrInfo"
-                                    flag={currentTask === '인건비' && flag}
-                                    currentTask={currentTask}
+                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    flag={currentTask === '인건비' && isSaveFormTable}
                                 />
                             </ul>
                         </ApprovalForm>
                     </div>
                     <div className="second">
-                        <ApprovalForm title={currentTask +' 초안 등록'} save={save}>
+                        <ApprovalForm title={currentTask +' 초안 등록'}>
                             <h2 className="blind">경비</h2>
                             <ul>
                                 <ReactDataTable
                                     columns={expensesColumns}
-                                    suffixUrl="/baseInfrm/product"
-                                    currentPage="pjOrdrInfo"
-                                    flag={currentTask === '경비' && flag}
-                                    currentTask={currentTask}
+                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    flag={currentTask === '경비' && isSaveFormTable}
                                 />
                             </ul>
                         </ApprovalForm>
                     </div>
                     <div className="third">
-                        <ApprovalForm title={currentTask +' 초안 등록'} save={save}>
+                        <ApprovalForm title={currentTask +' 초안 등록'}>
                             <h2 className="blind">구매(재료비)</h2>
                             <ul>
                                 <ReactDataTable
                                     columns={purchaseColumns}
-                                    suffixUrl="/baseInfrm/product"
-                                    currentPage="pjOrdrInfo"
-                                    flag={currentTask === '구매(재료비)' && flag}
-                                    currentTask={currentTask}
+                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    flag={currentTask === '구매(재료비)' && isSaveFormTable}
                                 />
                             </ul>
                         </ApprovalForm>
