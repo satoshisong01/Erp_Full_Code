@@ -9,72 +9,32 @@ import { locationPath } from "constants/locationPath";
 function OrderPlanMgmt() {
     const { isSaveFormTable, setIsSaveFormTable } = useContext(PageContext);
 
-    // { header: "수주시작일", col: "poiBeginDt", cellWidth: "25%", type: "select", options: [{value: '1', label: 'op1'}, {value: '2', label: 'op2'}]},
-
-    const laborColumns = [
-        // 인건비
-        {
-            header: "품목그룹명",
-            col: "poiTitle",
-            cellWidth: "20%",
-            type: "select",
-            options: [],
-        },
-        { header: "연월", col: "poiNm", cellWidth: "10%", type: "input" },
-        { header: "M/M계", col: "poiCode", cellWidth: "10%", type: "input" },
-        {
-            header: "인건비계",
-            col: "poiBeginDt1",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "특급기술사",
-            col: "poiBeginDt2",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "고급기술사",
-            col: "poiBeginDt3",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "중급기술사",
-            col: "poiBeginDt4",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "초급기술사",
-            col: "poiBeginDt5",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "중급기술사",
-            col: "poiBeginDt6",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "고급기능사",
-            col: "poiBeginDt7",
-            cellWidth: "10%",
-            type: "input",
-        },
+    const laborColumns = [ // 인건비
+        { header: "품목그룹명", col: "poiTitle", cellWidth: "20%", type: "select", options:[]},
+        { header: "연월", col: "poiNm", cellWidth: "10%", type: "input"},
+        { header: "M/M계", col: "poiCode", cellWidth: "10%", type: "input"},
+        { header: "인건비계", col: "poiBeginDt1", cellWidth: "10%", type: "input"},
+        { header: "특급기술사", col: "poiBeginDt2", cellWidth: "10%", type: "input"},
+        { header: "고급기술사", col: "poiBeginDt3", cellWidth: "10%", type: "input"},
+        { header: "중급기술사", col: "poiBeginDt4", cellWidth: "10%", type: "input"},
+        { header: "초급기술사", col: "poiBeginDt5", cellWidth: "10%", type: "input"},
+        { header: "중급기술사", col: "poiBeginDt6", cellWidth: "10%", type: "input"},
+        { header: "고급기능사", col: "poiBeginDt7", cellWidth: "10%", type: "input"},
     ];
-    const expensesColumns = [
-        // 경비
+    const expensesColumns = [ // 경비
         {
-            header: "경비목록",
-            col: "poiTitle",
-            cellWidth: "25%",
-            type: "input",
+            header: "경비목록", col: "poiTitle", cellWidth: "25%", type: "select",
+            options:[
+                {value: 'EXPNS01', label: '교통비'},
+                {value: 'EXPNS02', label: '숙박비'},
+                {value: 'EXPNS03', label: '일비/파견비'},
+                {value: 'EXPNS04', label: '식비'},
+                {value: 'EXPNS05', label: '자재/소모품외'},
+                {value: 'EXPNS06', label: '영업비'},
+            ]   
         },
-        { header: "비고", col: "poiTitle2", cellWidth: "50%", type: "input" },
-        { header: "금액", col: "poiTitle3", cellWidth: "25%", type: "input" },
+        { header: "비고", col: "poiTitle2", cellWidth: "50%", type: "input"},
+        { header: "금액", col: "poiTitle3", cellWidth: "25%", type: "input"},
     ];
     const purchaseColumns = [
         // 구매비
@@ -172,28 +132,14 @@ function OrderPlanMgmt() {
     return (
         <>
             <Location pathList={locationPath.OrderPlanMgmt} />
-            <div className="mini_board">
+            <div className="common_board_style mini_board_1">
                 <ul className="tab">
-                    <li onClick={() => chageTabs("인건비")}>
-                        <a href="#인건비" className="on">
-                            인건비
-                        </a>
-                    </li>
-                    <li onClick={() => chageTabs("경비")}>
-                        <a href="#경비">경비</a>
-                    </li>
-                    <li onClick={() => chageTabs("구매(재료비)")}>
-                        <a href="#구매(재료비)">구매(재료비)</a>
-                    </li>
-                    <li onClick={() => chageTabs("기업이윤")}>
-                        <a href="#기업이윤">기업이윤</a>
-                    </li>
-                    <li onClick={() => chageTabs("일반관리비")}>
-                        <a href="#일반관리비">일반관리비</a>
-                    </li>
-                    <li onClick={() => chageTabs("네고")}>
-                        <a href="#네고">네고</a>
-                    </li>
+                    <li onClick={() => chageTabs("인건비")}><a href="#인건비" className="on">인건비</a></li>
+                    <li onClick={() => chageTabs("경비")}><a href="#경비">경비</a></li>
+                    <li onClick={() => chageTabs("구매(재료비)")}><a href="#구매(재료비)">구매(재료비)</a></li>
+                    <li onClick={() => chageTabs("기업이윤")}><a href="#기업이윤">기업이윤</a></li>
+                    <li onClick={() => chageTabs("일반관리비")}><a href="#일반관리비">일반관리비</a></li>
+                    <li onClick={() => chageTabs("네고")}><a href="#네고">네고</a></li>
                 </ul>
 
                 <div className="list">
@@ -202,13 +148,9 @@ function OrderPlanMgmt() {
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ul>
                                     <ReactDataTable
-                                        columns={laborColumns}
-                                        suffixUrl="/baseInfrm/product"
-                                        currentPage="pjOrdrInfo"
-                                        flag={
-                                            currentTask === "인건비" &&
-                                            isSaveFormTable
-                                        }
+                                            columns={laborColumns}
+                                            suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                            flag={currentTask === '인건비' && isSaveFormTable}
                                     />
                                 </ul>
                             </ApprovalForm>
@@ -220,12 +162,8 @@ function OrderPlanMgmt() {
                             <ul>
                                 <ReactDataTable
                                     columns={expensesColumns}
-                                    suffixUrl="/baseInfrm/product"
-                                    currentPage="pjOrdrInfo"
-                                    flag={
-                                        currentTask === "경비" &&
-                                        isSaveFormTable
-                                    }
+                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    flag={currentTask === '경비' && isSaveFormTable}
                                 />
                             </ul>
                         </ApprovalForm>
@@ -237,12 +175,8 @@ function OrderPlanMgmt() {
                             <ul>
                                 <ReactDataTable
                                     columns={purchaseColumns}
-                                    suffixUrl="/baseInfrm/product"
-                                    currentPage="pjOrdrInfo"
-                                    flag={
-                                        currentTask === "구매(재료비)" &&
-                                        isSaveFormTable
-                                    }
+                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    flag={currentTask === '구매(재료비)' && isSaveFormTable}
                                 />
                             </ul>
                         </ApprovalForm>
@@ -253,12 +187,8 @@ function OrderPlanMgmt() {
                             <ul>
                                 <ReactDataTable
                                     columns={companyProfitColumns}
-                                    suffixUrl="/baseInfrm/product"
-                                    currentPage="pjOrdrInfo"
-                                    flag={
-                                        currentTask === "기업이윤" &&
-                                        isSaveFormTable
-                                    }
+                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    flag={currentTask === '기업이윤' && isSaveFormTable}
                                 />
                             </ul>
                         </ApprovalForm>
@@ -269,12 +199,8 @@ function OrderPlanMgmt() {
                             <ul>
                                 <ReactDataTable
                                     columns={generalExpensesColumns}
-                                    suffixUrl="/baseInfrm/product"
-                                    currentPage="pjOrdrInfo"
-                                    flag={
-                                        currentTask === "일반관리비" &&
-                                        isSaveFormTable
-                                    }
+                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    flag={currentTask === '일반관리비' && isSaveFormTable}
                                 />
                             </ul>
                         </ApprovalForm>
@@ -285,12 +211,8 @@ function OrderPlanMgmt() {
                             <ul>
                                 <ReactDataTable
                                     columns={negoColumns}
-                                    suffixUrl="/baseInfrm/product"
-                                    currentPage="pjOrdrInfo"
-                                    flag={
-                                        currentTask === "네고" &&
-                                        isSaveFormTable
-                                    }
+                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    flag={currentTask === '네고' && isSaveFormTable}
                                 />
                             </ul>
                         </ApprovalForm>

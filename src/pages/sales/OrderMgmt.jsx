@@ -7,15 +7,19 @@ import ReactTableButton from "components/button/ReactTableButton";
 import { PageContext } from "components/PageProvider";
 import { locationPath } from "constants/locationPath";
 import TableAddModal from "components/modal/TableAddModal";
+import EventButtonDefault from "components/button/EventButtonDefault";
+import RefreshButton from "components/button/RefreshButton";
+import EventButtonPrimary from "components/button/EventButtonPrimary";
+import EventButtonWarning from "components/button/EventButtonWarning";
 
 
 /** 영업관리-수주등록관리 */
 function OrderMgmt() {
 
-    const {isOpenModal} = useContext(PageContext);
+    const {isOpenModal, setNameOfButton} = useContext(PageContext);
 
     const columns = [
-        { header: "프로젝트 이름", col: "poiNm", cellWidth: '50%', type: "input", enable: false, modify: true, add: true, notView: true, require: true,},
+        { header: "프로젝트 이름", col: "poiNm", cellWidth: '50%', type: "input", enable: false, modify: true, add: true, notView: true, require: true},
         { header: "프로젝트 코드", col: "poiCode", cellWidth: '25%', type: "input"},
         { header: "수주시작일", col: "poiBeginDt", cellWidth: '25%', type: "select", options: [{value: '1', label: 'op1'}, {value: '2', label: 'op2'}]},
     ];
@@ -89,15 +93,23 @@ function OrderMgmt() {
         ],
     ];
 
+    const onClick = () => {
+    }
+
     return (
         <>
             <Location pathList={locationPath.OrderMgmt} />
             <SearchList conditionList={conditionList}/>
-            <ReactTableButton showButton={['refresh', 'delete', 'add']}/>
+            <div className="table-buttons">
+                <EventButtonPrimary label={'사전원가서'} onClick={onClick} />
+                <EventButtonDefault label={'수정'} onClick={() => setNameOfButton('add')} />
+                <EventButtonWarning label={'삭제'} onClick={() => setNameOfButton('delete')} />
+                <RefreshButton onClick={onClick}/>
+            </div>
+            {/* <ReactTableButton showButton={['orderModify', 'preCost', 'refresh', 'delete']}/> */}
             <ReactDataTable
                 columns={columns}
-                suffixUrl="/baseInfrm/product"
-                currentPage="pjOrdrInfo"
+                suffixUrl="/baseInfrm/product/pjOrdrInfo"
             />
             <FormDataTable
                 formTableColumns={formTableColumns}
