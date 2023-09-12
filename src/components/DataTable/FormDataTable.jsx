@@ -1,7 +1,11 @@
+import { PageContext } from "components/PageProvider";
 import Status from "components/button/Status";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
-export default function FormDataTable({ formTableColumns, onAddRow }) {
+export default function FormDataTable({ formTableColumns, onAddRow, title, useStatus }) {
+
+    const { setNewRowData } = useContext(PageContext)
+
     const initialFormData = {}; // 폼 초기 데이터
 
     formTableColumns.forEach((row) => {
@@ -10,8 +14,13 @@ export default function FormDataTable({ formTableColumns, onAddRow }) {
         });
     });
 
+    useEffect(() => { // 버튼 사용 여부
+        setIsUse(useStatus)
+    }, [useStatus])
+
     const [formData, setFormData] = useState(initialFormData);
     const [errors, setErrors] = useState({});
+    const [isUse, setIsUse] = useState(useStatus)
 
     const inputChange = (fieldName, value) => {
         setFormData((prevData) => ({
@@ -45,7 +54,7 @@ export default function FormDataTable({ formTableColumns, onAddRow }) {
         e.preventDefault();
         if (validateForm()) {
             const updatedFormData = { ...formData, poiStatus: "작성완료" }; // state 속성 변경
-            onAddRow(updatedFormData);
+            setNewRowData(updatedFormData);
             setFormData(initialFormData); // 초기화
         }
     };
@@ -57,8 +66,8 @@ export default function FormDataTable({ formTableColumns, onAddRow }) {
 
     return (
         <>
-            <div className="flex-between mg-b-10">
-                <span className="table-title">프로젝트 신규 등록</span>
+           { isUse && <div className="flex-between mg-b-10">
+                <span className="table-title">{title}</span>
                 <span>
                     <button onClick={onReset} className="btn-outline mg-r-10" type="submit">
                         초기화
@@ -67,7 +76,7 @@ export default function FormDataTable({ formTableColumns, onAddRow }) {
                         등록
                     </button>
                 </span>
-            </div>
+            </div> }
             <div className="table-Container">
                 <form onSubmit={onSubmit}>
                     <table className="table-styled">
@@ -75,7 +84,7 @@ export default function FormDataTable({ formTableColumns, onAddRow }) {
                             {formTableColumns.map((row, rowIndex) => (
                                 <tr key={rowIndex}>
                                     {row.map(
-                                        ({ label, key, type, colSpan, option, require }, colIndex) => {
+                                        ({ label, key, type, colSpan, option, require, value }, colIndex) => {
                                             return (
                                                 <React.Fragment key={colIndex}>
                                                     <th>
@@ -115,6 +124,10 @@ export default function FormDataTable({ formTableColumns, onAddRow }) {
                                                     ) : label === '상태' ? (
                                                         <td colSpan={colSpan || '1'}>
                                                             <span><Status status="작성중" /></span>
+                                                        </td>
+                                                    ) : type === 'data' ? (
+                                                        <td colSpan={colSpan || '1'}>
+                                                            <span>{value}</span>
                                                         </td>
                                                     ) : null}
                                                 </React.Fragment>

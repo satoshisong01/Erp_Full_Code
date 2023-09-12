@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import ApprovalForm from "components/form/ApprovalForm";
 import ReactDataTable from "components/DataTable/ReactDataTable";
@@ -8,6 +8,13 @@ import { locationPath } from "constants/locationPath";
 /** 영업관리-수주계획관리 */
 function OrderPlanMgmt() {
     const { isSaveFormTable, setIsSaveFormTable } = useContext(PageContext);
+
+    const orderPlanMgmtTable1 = useRef(null);
+    const orderPlanMgmtTable2 = useRef(null);
+    const orderPlanMgmtTable3 = useRef(null);
+    const orderPlanMgmtTable4 = useRef(null);
+    const orderPlanMgmtTable5 = useRef(null);
+    const orderPlanMgmtTable6 = useRef(null);
 
     const laborColumns = [ // 인건비
         { header: "품목그룹명", col: "poiTitle", cellWidth: "20%", type: "select", options:[]},
@@ -119,7 +126,7 @@ function OrderPlanMgmt() {
         { header: "비고", col: "poiTitle2", cellWidth: "50%", type: "input" },
     ];
 
-    const [currentTask, setCurrentTask] = useState("인건비");
+    const [currentTask, setCurrentTask] = useState("");
 
     const chageTabs = (task) => {
         setCurrentTask(task);
@@ -146,76 +153,78 @@ function OrderPlanMgmt() {
                     <div className="first">
                         <ul>
                             <ApprovalForm title={currentTask + " 계획 등록"}>
-                                <ul>
-                                    <ReactDataTable
-                                            columns={laborColumns}
-                                            suffixUrl="/baseInfrm/product/pjOrdrInfo"
-                                            flag={currentTask === '인건비' && isSaveFormTable}
-                                    />
-                                </ul>
+                                <ReactDataTable
+                                    columns={laborColumns}
+                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    flag={currentTask === '인건비' && isSaveFormTable}
+                                    tableRef={orderPlanMgmtTable1}
+                                />
                             </ApprovalForm>
                         </ul>
                     </div>
-
                     <div className="second">
-                        <ApprovalForm title={currentTask + " 계획 등록"}>
-                            <ul>
+                        <ul>
+                            <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={expensesColumns}
                                     suffixUrl="/baseInfrm/product/pjOrdrInfo"
                                     flag={currentTask === '경비' && isSaveFormTable}
+                                    tableRef={orderPlanMgmtTable2}
                                 />
-                            </ul>
-                        </ApprovalForm>
+                            </ApprovalForm>
+                        </ul>
                     </div>
 
                     <div className="third">
-                        <ApprovalForm title={currentTask + " 계획 등록"}>
-                            <h2 className="blind">구매(재료비)</h2>
-                            <ul>
+                        <ul>
+                            <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={purchaseColumns}
                                     suffixUrl="/baseInfrm/product/pjOrdrInfo"
                                     flag={currentTask === '구매(재료비)' && isSaveFormTable}
+                                    tableRef={orderPlanMgmtTable3}
                                 />
-                            </ul>
-                        </ApprovalForm>
+                            </ApprovalForm>
+                        </ul>
                     </div>
 
                     <div className="fourth">
-                        <ApprovalForm title={currentTask + " 계획 등록"}>
-                            <ul>
+                        <ul>
+                            <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={companyProfitColumns}
                                     suffixUrl="/baseInfrm/product/pjOrdrInfo"
                                     flag={currentTask === '기업이윤' && isSaveFormTable}
+                                    tableRef={orderPlanMgmtTable4}
                                 />
-                            </ul>
-                        </ApprovalForm>
+                            </ApprovalForm>
+                        </ul>
                     </div>
 
                     <div className="fifth">
-                        <ApprovalForm title={currentTask + " 계획 등록"}>
-                            <ul>
+                        <ul>
+                            <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={generalExpensesColumns}
                                     suffixUrl="/baseInfrm/product/pjOrdrInfo"
                                     flag={currentTask === '일반관리비' && isSaveFormTable}
+                                    tableRef={orderPlanMgmtTable5}
                                 />
-                            </ul>
-                        </ApprovalForm>
+                            </ApprovalForm>
+                        </ul>
                     </div>
 
                     <div className="sixth">
-                        <ApprovalForm title={currentTask + " 계획 등록"}>
-                            <ul>
+                        <ul>
+                            <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={negoColumns}
                                     suffixUrl="/baseInfrm/product/pjOrdrInfo"
                                     flag={currentTask === '네고' && isSaveFormTable}
+                                    tableRef={orderPlanMgmtTable6}
                                 />
-                            </ul>
-                        </ApprovalForm>
+                            </ApprovalForm>
+                        </ul>
                     </div>
                 </div>
             </div>

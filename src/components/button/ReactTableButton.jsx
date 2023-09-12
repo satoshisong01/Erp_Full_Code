@@ -9,35 +9,41 @@ export default function ReactTableButton({ showButton }) {
     const buttons = useMemo(() => [
         {
             id: "refresh",
-            btnClass: "refreshIcon",
-            label: <FontAwesomeIcon icon={faArrowRotateRight} className="refreshI" />,
+            // btnClass: "btn btn-primary refreshIcon",
+            btnClass: "table-btn table-btn-default refresh",
+            label: <FontAwesomeIcon icon={faArrowRotateRight} className="refresh-Icon" />,
         },
         {
             id: "csv",
-            btnClass: "csvIcon",
-            iconClass: "fa fa-file-excel-o utilIcon",
+            // btnClass: "btn btn-primary csvIcon",
+            btnClass: "table-btn",
+            iconClass: "fa fa-file-excel-o",
             label: "CSV",
         },
         {
             id: "copy",
-            btnClass: "copyIcon",
-            iconClass: "fa fa-copy utilIcon",
+            // btnClass: "btn btn-primary copyIcon",
+            btnClass: "table-btn",
+            iconClass: "fa fa-copy",
             label: "Copy",
         },
         {
             id: "print",
-            btnClass: "printIcon",
-            iconClass: "fa fa-print utilIcon",
+            // btnClass: "btn btn-primary printIcon",
+            btnClass: "table-btn",
+            iconClass: "fa fa-print",
             label: "Print",
         },
         {
             id: "delete",
-            btnClass: "delIcon",
+            // btnClass: "btn btn-primary delIcon",
+            btnClass: "table-btn table-btn-warning",
             label: "삭제",
         },
         {
             id: "add",
-            btnClass: "addIcon",
+            // btnClass: "btn btn-primary addIcon",
+            btnClass: "table-btn table-btn-primary",
             label: "추가",
         },
     ], [showButton]);
@@ -66,12 +72,12 @@ export default function ReactTableButton({ showButton }) {
                     buttonState[button.id] && (
                         <button
                             key={button.id}
-                            className={`btn btn-primary ${button.btnClass}`}
+                            className={`${button.btnClass}`}
                             onClick={() => setNameOfButton(button.id)}
-                            id="utilBtn"
                         >
-                                <i className={button.iconClass} />
-                                {button.label}
+                                <i className={button.iconClass}>
+                                    {button.label}
+                                </i>
                         </button>
                     )
             )}

@@ -2,33 +2,22 @@ import React, { useContext, useEffect, useState } from "react";
 import ModalSearch from "components/modal/ModalSearch";
 import { PageContext } from "components/PageProvider";
 
-function ApprovalForm({ children, save }) {
-    const { projectId } = useContext(PageContext);
-    const [flag, setFlag] = useState(true);
+function ApprovalForm({ title, children }) {
+    const { isSaveFormTable, setIsSaveFormTable, projectId } = useContext(PageContext);
     const [userInfo, serUserInfo] = useState({ id: "", name: "" });
 
     useEffect(() => {
         const sessionUser = sessionStorage.getItem("loginUser");
         const sessionUserId = JSON.parse(sessionUser)?.id;
         serUserInfo({ id: sessionUserId });
+        console.log("⭐⭐⭐⭐⭐ title: ", title);
     }, []);
 
-    const options = {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-    };
-    const currentTime = new Date().toLocaleString("ko-KR", options);
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+    const currentTime = new Date().toLocaleString('ko-KR', options);
 
     const handleClose = () => {
         window.close();
-    };
-
-    const handlFlag = (value) => {
-        setFlag(value);
-        save(value);
     };
 
     return (
@@ -36,28 +25,14 @@ function ApprovalForm({ children, save }) {
             <div className="flex-between">
                 <span></span>
                 {/* <span className="approval-title">{title}</span> */}
-                {/* <span style={{fontSize: '14px'}}>{title}</span> */}
+                <span style={{fontSize: '15px'}}>{title}</span>
                 <div className="app-buttons mg-b-20">
                     {/* <button className="btn app-btn app-btn-tertiary">결재선</button>
                     <button className="btn app-btn app-btn-tertiary">결재요청</button> */}
-                    {flag ? (
-                        <button
-                            className="btn app-btn app-btn-primary"
-                            onClick={() => handlFlag(false)}>
-                            저장
-                        </button>
-                    ) : (
-                        <button
-                            className="btn app-btn app-btn-primary"
-                            onClick={() => handlFlag(true)}>
-                            수정
-                        </button>
-                    )}
-                    <button
-                        className="btn app-btn app-btn-secondary"
-                        onClick={handleClose}>
-                        취소
-                    </button>
+                    { isSaveFormTable ? <button className="btn app-btn app-btn-primary" onClick={() => setIsSaveFormTable(false)}>저장</button>
+                        : <button className="btn app-btn app-btn-primary" onClick={() => setIsSaveFormTable(true)}>수정</button>
+                    }
+                    <button className="btn app-btn app-btn-secondary" onClick={handleClose}>취소</button>
                 </div>
             </div>
 

@@ -16,6 +16,9 @@ export function PageProvider({ children }) {
     const [projectItem, setProjectItem] = useState([]);
     const [projectId, setProjectId] = useState([]);
     const [tableDestroy, setTableDestroy] = useState();
+    // const [selectDatas, setSelectDatas] = useState([]); // 체크박스로 선택된 데이터
+    const [selectDatas, setSelectDatas] = useState({currentTable: null, datas: []}); // 체크박스로 선택된 데이터
+    const [currentTable, setCurrentTable] = useState(null); // 유니크한 현재 데이터 테이블
 
     const contextValue = {
         nameOfButton,
@@ -34,6 +37,10 @@ export function PageProvider({ children }) {
         setProjectId,
         tableDestroy,
         setTableDestroy,
+        selectDatas,
+        setSelectDatas,
+        currentTable,
+        setCurrentTable,
     };
 
     return (
