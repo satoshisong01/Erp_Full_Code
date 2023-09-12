@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import FormDataTable from "components/DataTable/FormDataTable";
@@ -17,6 +17,7 @@ import EventButtonWarning from "components/button/EventButtonWarning";
 function OrderMgmt() {
 
     const {isOpenModal, setNameOfButton} = useContext(PageContext);
+    const orderMgmtTable = useRef(null);
 
     const columns = [
         { header: "프로젝트 이름", col: "poiNm", cellWidth: '50%', type: "input", enable: false, modify: true, add: true, notView: true, require: true},
@@ -110,6 +111,7 @@ function OrderMgmt() {
             <ReactDataTable
                 columns={columns}
                 suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                tableRef={orderMgmtTable}
             />
             <FormDataTable
                 formTableColumns={formTableColumns}

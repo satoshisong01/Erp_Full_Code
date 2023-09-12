@@ -769,10 +769,19 @@ td > input {
     color: #aaa;
     font-size: 16px;
 }
-.common_board_style .second {
+.common_board_style .list .second {
     display: none;
 }
-.common_board_style .third {
+.common_board_style .list .third {
+    display: none;
+}
+.common_board_style .list .fourth {
+    display: none;
+}
+.common_board_style .list .fifth {
+    display: none;
+}
+.common_board_style .list .sixth {
     display: none;
 }
 

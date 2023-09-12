@@ -1,8 +1,8 @@
 import React from "react";
 
-export default function BasicDataTable({ colums, data, datatableRef, tableStyle, subtitle }) {
+export default function BasicDataTable({ colums, data, datatableRef, tableSize, subtitle }) {
     const tableContainerStyle = {
-        ...tableStyle,
+        ...tableSize,
         overflowY: "auto", // 내용이 넘칠 때 세로 스크롤 생성
     };
 
@@ -14,7 +14,7 @@ export default function BasicDataTable({ colums, data, datatableRef, tableStyle,
     };
 
     return (
-        <>
+        <div className="basic-table">
             <div className="table-sub">
                 { subtitle }
             </div>
@@ -42,6 +42,6 @@ export default function BasicDataTable({ colums, data, datatableRef, tableStyle,
                     </tbody>
                 </table>
             </div>
-        </>
+        </div>
     );
 };
