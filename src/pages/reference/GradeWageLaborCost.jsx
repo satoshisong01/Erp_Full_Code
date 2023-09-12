@@ -17,7 +17,6 @@ function GradeWageLaborCost() {
         //    classCode: "guppCode",
         //},
         "기준명",
-        "임원",
         "특급기술사",
         "고급기술사",
         "중급기술사",

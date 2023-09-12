@@ -15,6 +15,7 @@ export function PageProvider({ children }) {
     const [isOpenModal, setIsOpenModal] = useState(false); // 모달창
     const [projectItem, setProjectItem] = useState([]);
     const [projectId, setProjectId] = useState([]);
+    const [tableDestroy, setTableDestroy] = useState();
 
     const contextValue = {
         nameOfButton,
@@ -31,6 +32,8 @@ export function PageProvider({ children }) {
         setProjectItem,
         projectId,
         setProjectId,
+        tableDestroy,
+        setTableDestroy,
     };
 
     return (
