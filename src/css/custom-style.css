@@ -48,6 +48,41 @@
     margin-bottom: 10px;
 }
 
+
+/* react-table button */
+.table-buttons {
+    display: flex;
+    justify-content: right;
+    margin-bottom: -60px;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+  
+    .table-btn {
+        display: inline-block; font-weight: 400; text-align: center; vertical-align: middle;
+        touch-action: manipulation; cursor: pointer; background-image: none; white-space: nowrap;
+        padding: 5px 12px; font-size: 14px; line-height: 1.42857143; border-radius: 4px;
+        -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+    }
+    .table-btn-default { color: #007bff; border: 1px solid #007bff; background-color: white; }
+    .table-btn-primary { color: #fff; border: 1px solid #007bff; background-color: #007bff; }
+    .table-btn-warning { color: #fff; border: 1px solid #fd3d6b; background-color: #fd3d6b; }
+    .table-btn-primary:hover { background-color: #005cbe; }
+    .table-btn-warning:hover { background-color: #bd2e4f; }
+    .table-btn-default:hover {  border: 1px solid #005cbe; }
+    .table-btn-default.disabled,
+    .table-btn-primary.disabled,
+    .table-btn-warning.disabled {
+        color: #fff; background-color: gray; opacity: 0.5; border: 1px solid gray; pointer-events: none;
+    }
+    @keyframes rotate { /* 애니메이션 정의 */
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .refresh:hover .refresh-Icon { animation: rotate 0.5s linear; }
+}
+
+
 .logo-center-container {
     display: flex;
     justify-content: center;
@@ -254,23 +289,17 @@
 .table-content td {
     text-align: center;
     padding: 4px 0 4px 0;
-    border-left: 1px solid #cccccccc;
+    border-left: 1px solid #cccc;
 }
 .table-content tbody tr:not(:first-child) {
-    border-top: 1px solid #cccccccc;
+    border-top: 1px solid #cccc;
 }
 .table-content tr {
-    border-right: 1px solid #cccccccc;
+    border-right: 1px solid #cccc;
 }
 .table-content tbody tr:last-child {
-    border-bottom: 1px solid #cccccccc;
+    border-bottom: 1px solid #cccc;
 }
-.table-title {
-    font-weight: bold;
-    font-size: large;
-    margin-bottom: 5px;
-}
-
 .table-sub {
     font-weight: bold;
     margin-bottom: 3px;
@@ -299,10 +328,13 @@
             flex: 4;
         }
     }
+    .table-radius-half {
+        border-radius: 10px;
+    }
 }
 
-/* 사전원가계산서 */
-.popup-container {
+/* 사전원가 계산서 */
+.precost-container {
     background-color: var(--background-white);
     width: 100%;
     margin: 0 auto;
@@ -340,6 +372,11 @@
     .line-t-b {
         border-top: 1px solid rgba(112, 128, 144, 0.5);
         border-bottom: 1px solid rgba(112, 128, 144, 0.5);
+    }
+    .precost-title {
+        font-weight: bold;
+        font-size: large;
+        margin-bottom: 5px;
     }
 }
 
@@ -628,11 +665,11 @@ select {
     border-left: 1px solid #ddd;
 }
 
-tr,
+/* tr,
 td,
 th {
     border: 1px solid #ddd;
-}
+} */
 
 /*.other-column {
     padding: 0;
@@ -656,21 +693,21 @@ td > input {
 }
 
 /* 심플 탭 */
-.mini_board {
+.common_board_style {
     position: relative;
 }
-.mini_board .tab::after {
+.common_board_style .tab::after {
     content: "";
     display: block;
     clear: both;
 }
-.mini_board .tab li {
+.common_board_style .tab li {
     float: left;
 }
-.mini_board .tab li + li {
+.common_board_style .tab li + li {
     margin-left: 40px;
 }
-.mini_board .tab li a {
+.common_board_style .tab li a {
     display: block;
     position: relative;
     padding-bottom: 12px;
@@ -678,10 +715,10 @@ td > input {
     font-size: 30px;
     font-weight: 700;
 }
-.mini_board .tab li a.on {
+.common_board_style .tab li a.on {
     color: #222;
 }
-.mini_board .tab li a.on::after {
+.common_board_style .tab li a.on::after {
     content: "";
     display: block;
     position: absolute;
@@ -691,7 +728,7 @@ td > input {
     height: 4px;
     background: #0465be;
 }
-.mini_board .more {
+.common_board_style .more {
     display: block;
     position: absolute;
     right: 0;
@@ -703,16 +740,16 @@ td > input {
     line-height: 16px;
     background: url(css/images/ico_plus.png) no-repeat;
 }
-.mini_board .list ul {
+.common_board_style .list ul {
     margin-top: 33px;
 }
-.mini_board .list ul > li {
+.common_board_style .list ul > li {
     position: relative;
 }
-.mini_board .list ul > li + li {
+.common_board_style .list ul > li + li {
     margin-top: 10px;
 }
-.mini_board .list ul > li a {
+.common_board_style .list ul > li a {
     display: block;
     width: calc(100% - 100px);
     color: #666;
@@ -721,88 +758,32 @@ td > input {
     white-space: nowrap;
     overflow: hidden;
 }
-.mini_board .list ul > li a:hover {
+.common_board_style .list ul > li a:hover {
     color: #222;
     text-decoration: underline;
 }
-.mini_board .list ul > li span {
+.common_board_style .list ul > li span {
     position: absolute;
     right: 0;
     top: 4px;
     color: #aaa;
     font-size: 16px;
 }
-.mini_board .second {
+.common_board_style .second {
     display: none;
 }
-.mini_board .third {
+.common_board_style .third {
     display: none;
 }
 
-.mini_board .tab li + li {
+.common_board_style .tab li + li {
     margin-left: 25px;
 }
-.mini_board .tab li a {
+.common_board_style .tab li a {
     padding-bottom: 10px;
     font-size: 18px;
 }
 
-/* 심플 탭 */
-.mini_board .blind {position: absolute; left: -9999px; top: -9999px;}
-.mini_board {position: relative;}
-.mini_board .tab::after {content: ""; display: block; clear: both;}
-.mini_board .tab li {float: left;}
-.mini_board .tab li + li {margin-left: 40px;}
-.mini_board .tab li a {display: block; position: relative; padding-bottom: 12px; color: #ccc; font-size: 30px; font-weight: 700;}
-.mini_board .tab li a.on {color: #222;}
-.mini_board .tab li a.on::after {content: ""; display: block; position: absolute; left: 0; bottom: 0; width: 100%; height: 4px; background: #0465be;}
-.mini_board .more {display: block; position: absolute; right: 0; top: 16px; height: 16px; padding-left: 27px; color: #444; font-size: 18px; line-height: 16px; background: url(css/images/ico_plus.png) no-repeat;}
-.mini_board .list ul {margin-top: 33px;}
-.mini_board .list ul > li {position: relative;}
-.mini_board .list ul > li + li {margin-top: 10px;}
-.mini_board .list ul > li a {display: block; width: calc(100% - 100px); color: #666; font-size: 20px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
-.mini_board .list ul > li a:hover {color: #222; text-decoration: underline;}
-.mini_board .list ul > li span {position: absolute; right: 0; top: 4px; color: #aaa; font-size: 16px;}
-.mini_board .second, .mini_board .third, .mini_board .fifth, .mini_board .fourth, .mini_board .sixth {display: none;}
-
-.mini_board .tab li + li {margin-left: 25px;}
-.mini_board .tab li a {padding-bottom: 10px; font-size: 18px;}
-
-.mini_board {margin: 0 -20px; padding: 30px 20px 40px 20px; background: #fff;}
-.mini_board .tab li + li {margin-left: 25px;}
-.mini_board .tab li a {padding-bottom: 10px; font-size: 18px;}
-.mini_board .list ul {margin-top: 26px;}
-.mini_board .list ul > li a {width: calc(100% - 60px); font-size: 12px;}
-.mini_board .list ul > li span {top: 1px; font-size: 11px;}
-.mini_board .more {right: 20px; top: 37px; height: 10px; padding-left: 13px; font-size: 11px; line-height: 10px; background-size: auto 8px;}
-
-.mini_board_2 .blind {position: absolute; left: -9999px; top: -9999px;}
-.mini_board_2 {position: relative;}
-.mini_board_2 .tab::after {content: ""; display: block; clear: both;}
-.mini_board_2 .tab li {float: left;}
-.mini_board_2 .tab li + li {margin-left: 40px;}
-.mini_board_2 .tab li a {display: block; position: relative; padding-bottom: 12px; color: #ccc; font-size: 30px; font-weight: 700;}
-.mini_board_2 .tab li a.on {color: #222;}
-.mini_board_2 .tab li a.on::after {content: ""; display: block; position: absolute; left: 0; bottom: 0; width: 100%; height: 4px; background: #0465be;}
-.mini_board_2 .more {display: block; position: absolute; right: 0; top: 16px; height: 16px; padding-left: 27px; color: #444; font-size: 18px; line-height: 16px; background: url(css/images/ico_plus.png) no-repeat;}
-.mini_board_2 .list ul {margin-top: 33px;}
-.mini_board_2 .list ul > li {position: relative;}
-.mini_board_2 .list ul > li + li {margin-top: 10px;}
-.mini_board_2 .list ul > li a {display: block; width: calc(100% - 100px); color: #666; font-size: 20px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
-.mini_board_2 .list ul > li a:hover {color: #222; text-decoration: underline;}
-.mini_board_2 .list ul > li span {position: absolute; right: 0; top: 4px; color: #aaa; font-size: 16px;}
-.mini_board_2 .second, .mini_board_2 .third {display: none;}
-
-.mini_board_2 .tab li + li {margin-left: 25px;}
-.mini_board_2 .tab li a {padding-bottom: 10px; font-size: 18px;}
-
-.mini_board_2 {margin: 0 -20px; padding: 30px 20px 40px 20px; background: #fff;}
-.mini_board_2 .tab li + li {margin-left: 25px;}
-.mini_board_2 .tab li a {padding-bottom: 10px; font-size: 18px;}
-.mini_board_2 .list ul {margin-top: 26px;}
-.mini_board_2 .list ul > li a {width: calc(100% - 60px); font-size: 12px;}
-.mini_board_2 .list ul > li span {top: 1px; font-size: 11px;}
-.mini_board_2 .more {right: 20px; top: 37px; height: 10px; padding-left: 13px; font-size: 11px; line-height: 10px; background-size: auto 8px;}
 
 /* 반응형 스타일 */
 @media (max-width: 768px) {
