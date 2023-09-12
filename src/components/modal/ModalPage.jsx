@@ -7,14 +7,13 @@ export default function ModalPage() {
     const { projectItem, projectId, setProjectId, setIsOpenModal } =
         useContext(PageContext);
 
-    function handleItemClick(poiNm, poiCode) {
-        setProjectId({ poiNm, poiCode });
+    function handleItemClick(poiId, poiNm, poiCode) {
+        setProjectId({ poiId, poiNm, poiCode });
         setIsOpenModal(false);
     }
 
-    console.log(projectId);
-
     useEffect(() => {
+        console.log(projectId);
         console.log(projectItem, "프로젝트네임 불러온것");
     }, []);
 
@@ -43,6 +42,7 @@ export default function ModalPage() {
                                         key={index}
                                         onClick={() =>
                                             handleItemClick(
+                                                item.poiId,
                                                 item.poiNm,
                                                 item.poiCode
                                             )

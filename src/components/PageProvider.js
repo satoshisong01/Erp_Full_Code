@@ -13,9 +13,8 @@ export function PageProvider({ children }) {
     const [newRowData, setNewRowData] = useState({}); // 외부에서 추가된 table row data (수주등록, 팝업으로 추가)
     const [searchData, setSearchData] = useState(""); // 검색 조건
     const [isOpenModal, setIsOpenModal] = useState(false); // 모달창
-    const [projectItem, setProjectItem] = useState([]);
-    const [projectId, setProjectId] = useState([]);
-    const [tableDestroy, setTableDestroy] = useState();
+    const [projectItem, setProjectItem] = useState([]); //프로젝트이름, 코드 받는 변수
+    const [projectId, setProjectId] = useState([]); //선택한 프로젝트이름, 코드 저장
 
     const contextValue = {
         nameOfButton,
@@ -32,8 +31,6 @@ export function PageProvider({ children }) {
         setProjectItem,
         projectId,
         setProjectId,
-        tableDestroy,
-        setTableDestroy,
     };
 
     return (

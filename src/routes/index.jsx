@@ -100,6 +100,7 @@ const RootRoutes = () => {
         console.log(resultData.content, "나온값은?");
         setProjectItem(
             resultData.content.map((item) => ({
+                poiId: item.poiId,
                 poiNm: item.poiNm,
                 poiCode: item.poiCode,
             }))
