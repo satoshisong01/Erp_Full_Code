@@ -4,11 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PageContext } from "components/PageProvider";
 
 export default function ModalPage() {
-    const { projectItem, projectId, setProjectId, setIsOpenModal } =
+    const { projectItem, projectId, setProjectInfo, setIsOpenModal } =
         useContext(PageContext);
 
     function handleItemClick(poiId, poiNm, poiCode) {
-        setProjectId({ poiId, poiNm, poiCode });
+        setProjectInfo({ poiId, poiNm, poiCode });
         setIsOpenModal(false);
     }
 

@@ -144,9 +144,9 @@ function OrderPlanMgmt() {
                     <li onClick={() => chageTabs("인건비")}><a href="#인건비" className="on">인건비</a></li>
                     <li onClick={() => chageTabs("경비")}><a href="#경비">경비</a></li>
                     <li onClick={() => chageTabs("구매(재료비)")}><a href="#구매(재료비)">구매(재료비)</a></li>
-                    <li onClick={() => chageTabs("기업이윤")}><a href="#기업이윤">기업이윤</a></li>
-                    <li onClick={() => chageTabs("일반관리비")}><a href="#일반관리비">일반관리비</a></li>
-                    <li onClick={() => chageTabs("네고")}><a href="#네고">네고</a></li>
+                    {/* <li onClick={() => chageTabs("기업이윤")}><a href="#기업이윤">기업이윤</a></li> */}
+                    {/* <li onClick={() => chageTabs("일반관리비")}><a href="#일반관리비">일반관리비</a></li>
+                    <li onClick={() => chageTabs("네고")}><a href="#네고">네고</a></li> */}
                 </ul>
 
                 <div className="list">
@@ -155,7 +155,7 @@ function OrderPlanMgmt() {
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={laborColumns}
-                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    suffixUrl="/cost/costPrmnPlan"
                                     flag={currentTask === '인건비' && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable1}
                                 />
@@ -167,7 +167,7 @@ function OrderPlanMgmt() {
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={expensesColumns}
-                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    suffixUrl="/cost/costPjbudget/type"
                                     flag={currentTask === '경비' && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable2}
                                 />
@@ -180,7 +180,7 @@ function OrderPlanMgmt() {
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={purchaseColumns}
-                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    suffixUrl="/cost/costPdOrdr"
                                     flag={currentTask === '구매(재료비)' && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable3}
                                 />
@@ -188,7 +188,7 @@ function OrderPlanMgmt() {
                         </ul>
                     </div>
 
-                    <div className="fourth">
+                    {/* <div className="fourth">
                         <ul>
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
@@ -199,9 +199,9 @@ function OrderPlanMgmt() {
                                 />
                             </ApprovalForm>
                         </ul>
-                    </div>
+                    </div> */}
 
-                    <div className="fifth">
+                    {/* <div className="fifth">
                         <ul>
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
@@ -225,7 +225,7 @@ function OrderPlanMgmt() {
                                 />
                             </ApprovalForm>
                         </ul>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </>

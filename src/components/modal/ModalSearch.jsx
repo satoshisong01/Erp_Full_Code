@@ -4,7 +4,7 @@ import ModalPage from "./ModalPage";
 import { PageContext } from "components/PageProvider";
 
 export default function ModalSearch({}) {
-    const { projectId, setIsOpenModal, isOpenModal } = useContext(PageContext);
+    const { projectInfo, setIsOpenModal, isOpenModal } = useContext(PageContext);
 
     return (
         <div>
@@ -12,11 +12,11 @@ export default function ModalSearch({}) {
                 onClick={() => setIsOpenModal(true)}
                 type="text"
                 placeholder={
-                    projectId.poiNm
-                        ? projectId.poiNm
+                    projectInfo.poiNm
+                        ? projectInfo.poiNm
                         : `프로젝트를 선택해 주세요.`
                 }
-                value={projectId.poiNm}
+                value={projectInfo.poiNm}
                 readOnly
             />
             {isOpenModal && (

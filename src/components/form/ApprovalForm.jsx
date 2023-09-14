@@ -3,7 +3,7 @@ import ModalSearch from "components/modal/ModalSearch";
 import { PageContext } from "components/PageProvider";
 
 function ApprovalForm({ title, children }) {
-    const { isSaveFormTable, setIsSaveFormTable, projectId } = useContext(PageContext);
+    const { isSaveFormTable, setIsSaveFormTable, projectInfo } = useContext(PageContext);
     const [userInfo, serUserInfo] = useState({ id: "", name: "" });
 
     useEffect(() => {
@@ -58,7 +58,7 @@ function ApprovalForm({ title, children }) {
                                     <ModalSearch />
                                 </td>
                                 <th>프로젝트코드</th>
-                                <td>{projectId.poiCode}</td>
+                                <td>{projectInfo.poiCode}</td>
                             </tr>
                             <tr>
                                 <th>작성일</th>

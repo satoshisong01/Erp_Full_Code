@@ -14,7 +14,7 @@ export function PageProvider({ children }) {
     const [searchData, setSearchData] = useState(""); // 검색 조건
     const [isOpenModal, setIsOpenModal] = useState(false); // 모달창
     const [projectItem, setProjectItem] = useState([]); //프로젝트 id, 이름, 코드 저장
-    const [projectId, setProjectId] = useState([]); // 선택한 id 저장
+    const [projectInfo, setProjectInfo] = useState({poiId: '', poiNm: '', poiCode: ''}); // 선택한 id 저장
     const [currentTable, setCurrentTable] = useState(null); // 유니크한 현재 데이터 테이블
 
     const contextValue = {
@@ -30,8 +30,8 @@ export function PageProvider({ children }) {
         setIsOpenModal,
         projectItem,
         setProjectItem,
-        projectId,
-        setProjectId,
+        projectInfo,
+        setProjectInfo,
         currentTable,
         setCurrentTable,
     };
