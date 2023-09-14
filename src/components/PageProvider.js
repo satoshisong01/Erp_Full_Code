@@ -15,12 +15,6 @@ export function PageProvider({ children }) {
     const [isOpenModal, setIsOpenModal] = useState(false); // 모달창
     const [projectItem, setProjectItem] = useState([]); //프로젝트 id, 이름, 코드 저장
     const [projectId, setProjectId] = useState([]); // 선택한 id 저장
-    const [tableDestroy, setTableDestroy] = useState();
-    // const [selectDatas, setSelectDatas] = useState([]); // 체크박스로 선택된 데이터
-    const [selectDatas, setSelectDatas] = useState({
-        currentTable: null,
-        datas: [],
-    }); // 체크박스로 선택된 데이터
     const [currentTable, setCurrentTable] = useState(null); // 유니크한 현재 데이터 테이블
 
     const contextValue = {
@@ -38,10 +32,6 @@ export function PageProvider({ children }) {
         setProjectItem,
         projectId,
         setProjectId,
-        tableDestroy,
-        setTableDestroy,
-        selectDatas,
-        setSelectDatas,
         currentTable,
         setCurrentTable,
     };

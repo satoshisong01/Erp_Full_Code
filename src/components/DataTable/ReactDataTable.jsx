@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import DataTableButton from "components/button/DataTableButton";
 import { axiosFetch, axiosPost, axiosScan } from "api/axiosFetch";
 import { useTable, usePagination, useSortBy, useRowSelect } from "react-table";
 import { PageContext } from "components/PageProvider";
@@ -9,8 +8,8 @@ const ReactDataTable = (props) => {
     // 컴포넌트가 닫힐때 초기화 해야함
     const { columns, suffixUrl, flag, detailUrl, defaultPageSize, tableRef } = props;
     const {
-        nameOfButton, setNameOfButton, newRowData, setNewRowData, searchData,
-        setSearchData, setIsOpenModal, codeForProject, selectDatas, setSelectDatas, currentTable, setCurrentTable
+        nameOfButton, setNameOfButton, newRowData, setNewRowData, searchData, currentTable,
+        setSearchData, setIsOpenModal, codeForProject, setCurrentTable
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -20,23 +19,20 @@ const ReactDataTable = (props) => {
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
         fetchAllData();
-        if(tableRef) {
-            setCurrentTable(tableRef.current); //현재 테이블
-        }
 
-        // return () => { // 컴포넌트 종료 시
-        //     tableInit();
-        //     console.log('ReactDataTable unMount');
-        // };
+        if(tableRef) {
+            setCurrentTable(tableRef)
+            console.log("❤️ DOM: ", tableRef);
+        }
     }, []);
+
 
     useEffect(() => {
         setIsEditing(flag);
     }, [flag]);
 
     useEffect(() => {
-        console.log(" ⭐selectDatas> ", selectDatas);
-    }, [selectDatas]);
+    }, [tableData]);
 
     useEffect(() => {
         if(nameOfButton === 'refresh') {
@@ -54,14 +50,8 @@ const ReactDataTable = (props) => {
         } else if(nameOfButton === 'search') {
             searchClick();
         }
-
         setNameOfButton(''); //초기화
     }, [nameOfButton])
-
-    useEffect(() => {
-        console.log("테이블데이터: ", tableData);
-    }, [tableData])
-
 
     const columnsConfig = useMemo(
         () =>
@@ -97,22 +87,22 @@ const ReactDataTable = (props) => {
         const requestData = { useAt: "Y" };
         const resultData = await axiosFetch(url, requestData);
 
-        console.log(" ⭐resultData: " , resultData);
-        console.log(" resultData.length > 0: " , resultData.length > 0);
+        // console.log(" ⭐resultData: " , resultData);
+        // console.log(" resultData.length > 0: " , resultData.length > 0);
         
         if (resultData) { //⭐ length로 보는거 맞는지 확인
             /* column과 서버 데이터의 column이 일치하는지 확인, 불일치시 삭제 에러 해결을 위한 코드(임시) */
             if( resultData.length > 0) {
-                const keys = Object.keys(resultData[0])
-                const col = columns.map((arr) => arr.col);
-                col.forEach((col) => { // 임시로 사용 중
-                    if (!keys.includes(col)) {
-                        console.log("⚠️Column not found:", col);
-                        resultData.forEach((data) => {
-                            data[col] = null;
-                        })
-                    }
-                })
+                // const keys = Object.keys(resultData[0])
+                // const col = columns.map((arr) => arr.col);
+                // col.forEach((col) => { // 임시로 사용 중
+                //     if (!keys.includes(col)) {
+                //         console.log("⚠️Column not found:", col);
+                //         resultData.forEach((data) => {
+                //             data[col] = null;
+                //         })
+                //     }
+                // })
                 setTableData([...resultData]);
             }
         } else {
@@ -128,13 +118,8 @@ const ReactDataTable = (props) => {
     /* 데이터 삭제 */
     const deleteClick = async () => {
         if (suffixUrl === "") return;
-        if (selectDatas) {
-            setTableData((prevTableDatas) =>
-                prevTableDatas.filter((item) => !selectDatas.includes(item))
-            );
-            setSelectDatas((prevSelectDatas) =>
-                prevSelectDatas.filter((item) => !selectDatas.includes(item.datas))
-            );
+        if (selectedFlatRows.length > 0) {
+            /* 데이터 삭제 로직 추가 해야 함 */
         }
     };
 
@@ -177,38 +162,6 @@ const ReactDataTable = (props) => {
 
             setSearchData({}); //초기화
         }
-       
-        
-    };
-
-    /* 전체 선택 시 selectDatas에 저장 또는 삭제 */
-    const onSelectAll = (e) => {
-        const isSelected = e.target.checked;
-
-        if (isSelected && tableData) {
-            setTableData((resultData) => {
-                setSelectDatas(resultData);
-                return resultData;
-            });
-        } else {
-            setSelectDatas([]);
-        }
-    };
-
-    /* 체크박스로 선택된 행 selectDatas에 저장 또는 삭제 */
-    const onSelectRow = (e, row) => {
-        const data = row.original;
-        const isSelected = e.target.checked;
-
-        if (isSelected) {
-            if (!selectDatas.includes(data)) {
-                setSelectDatas((prevSelectDatas) => [...prevSelectDatas, data]);
-            }
-        } else {
-            setSelectDatas((prevSelectDatas) =>
-                prevSelectDatas.filter((item) => item !== data)
-            );
-        }
     };
 
     /* 셀 클릭 */
@@ -218,7 +171,7 @@ const ReactDataTable = (props) => {
 
     /* 로우 클릭 */
     const onCLickRow = (index, rowData) => {
-        console.log("⭐ row click - index: ", index, ", data:", rowData);
+        // console.log("⭐ row click - index: ", index, ", data:", rowData);
         if(rowData.poiNm) { //프로젝트에 해당하는 상세 테이블
             /* 서버 통신 */
             // const url = `/api${detailUrl}/listAll.do`;
@@ -246,11 +199,12 @@ const ReactDataTable = (props) => {
         gotoPage,
         setPageSize,
         pageCount,
+        selectedFlatRows, //선택된 행 데이터
     } = useTable(
         {
             columns: columnsConfig,
             data: tableData,
-            initialState: { pageIndex: 0, pageSize: defaultPageSize || 10 }, // 초기값
+            initialState: { pageIndex: 0, pageSize: defaultPageSize || 10, selectedRowIds: {} }, // 초기값
         },
         useSortBy,
         usePagination,
@@ -264,7 +218,6 @@ const ReactDataTable = (props) => {
                             <input
                                 type="checkbox"
                                 {...getToggleAllPageRowsSelectedProps()}
-                                onClick={onSelectAll}
                                 className="table-checkbox"
                                 indeterminate="false"
                             />
@@ -275,7 +228,6 @@ const ReactDataTable = (props) => {
                             <input
                                 type="checkbox"
                                 {...row.getToggleRowSelectedProps()}
-                                onClick={(e) => onSelectRow(e, row)}
                                 className="table-checkbox"
                                 indeterminate="false"
                             />
@@ -287,6 +239,10 @@ const ReactDataTable = (props) => {
             ]);
         }
     );
+
+    useEffect(() => {
+        console.log("❤️ selectedFlatRows: ", selectedFlatRows);
+    }, [selectedFlatRows]);
 
     const onChange = (e, preRow) => {
         const { name, value } = e.target;
@@ -315,6 +271,15 @@ const ReactDataTable = (props) => {
         setTableData([...updateTableData])
     };
 
+    const tableOnClick = () => {
+        setCurrentTable(tableRef);
+    }
+
+    const pageSizeChange = (value) => {
+        setPageSize(Number(value)); // 페이지 크기 변경
+        gotoPage(0); // 첫 페이지로 이동
+    }
+
     return (
         <>
             <div className="flex-between mg-b-20 mg-t-20">
@@ -323,11 +288,8 @@ const ReactDataTable = (props) => {
                     <select
                         className="select"
                         value={pageSize}
-                        onChange={(e) => {
-                            const newSize = Number(e.target.value);
-                            setPageSize(newSize); // 페이지 크기 변경
-                            gotoPage(0); // 첫 페이지로 이동
-                        }}>
+                        onChange={(e) => pageSizeChange(e.target.value)}
+                    >
                         {pageSizeOptions.map((size) => (
                             <option key={size} value={size}>
                                 {size}
@@ -337,31 +299,20 @@ const ReactDataTable = (props) => {
                 </div>
             </div>
             
-            <table {...getTableProps()} className="table-styled" ref={tableRef}>
+            <table {...getTableProps()} className="table-styled" onClick={tableOnClick}>
                 <thead>
                     {headerGroups.map((headerGroup, headerGroupIndex) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map((column, columnIndex) => (
                                 <th
-                                    {...column.getHeaderProps(
-                                        column.getSortByToggleProps()
-                                    )}
-                                    className={
-                                        columnIndex === 0 ? "first-column" : ""
-                                    }
+                                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                                    className={columnIndex === 0 ? "first-column" : ""}
                                     style={{ width: column.width }}
-                                    >
+                                >
                                     {column.render("Header")}
-                                    <span>
-                                        {column.isSorted
-                                            ? column.isSortedDesc
-                                                ? " 🔽"
-                                                : " 🔼"
-                                            : ""}
-                                    </span>
+                                    <span>{column.isSorted ? column.isSortedDesc ? " 🔽" : " 🔼" : ""}</span>
                                 </th>
                             ))}
-                            {/* 수정 중일 때는 "Save" 버튼을, 아닐 때는 "Edit All" 버튼을 표시 */}
                             {isEditing && (
                                 <th style={{ width: '70px', textAlign: 'center' }}>
                                     <button className="btn-primary" onClick={onAddRow} style={{margin: 0}}>추가</button>
@@ -376,7 +327,6 @@ const ReactDataTable = (props) => {
                         return (
                             <tr
                                 {...row.getRowProps()}
-                                style={{ borderBottom: "1px solid #ddd" }} // 아이템 사이에 선 추가
                                 onClick={(e) => onCLickRow(row.index, row.original)}
                             >
                                 {row.cells.map((cell, cellIndex) => (
@@ -428,7 +378,8 @@ const ReactDataTable = (props) => {
                                     <td style={{ textAlign: 'center' }}>
                                         <button
                                             className="btnR btn-primary redDelete"
-                                            onClick={() => onDeleteRow(row)}>
+                                            onClick={() => onDeleteRow(row)}
+                                        >
                                             삭제
                                         </button>
                                     </td>
@@ -438,26 +389,13 @@ const ReactDataTable = (props) => {
                     })}
                 </tbody>
             </table>
+
             <div className="pagination">
-                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                    처음
-                </button>
-                <button
-                    onClick={() => previousPage()}
-                    disabled={!canPreviousPage}>
-                    이전
-                </button>
-                <span>
-                    페이지 {pageIndex + 1} / {pageOptions.length}
-                </span>
-                <button onClick={() => nextPage()} disabled={!canNextPage}>
-                    다음
-                </button>
-                <button
-                    onClick={() => gotoPage(pageCount - 1)}
-                    disabled={!canNextPage}>
-                    마지막
-                </button>
+                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}> 처음 </button>
+                <button  onClick={() => previousPage()} disabled={!canPreviousPage}> 이전 </button>
+                <span> 페이지 {pageIndex + 1} / {pageOptions.length} </span>
+                <button onClick={() => nextPage()} disabled={!canNextPage}> 다음 </button>
+                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}> 마지막 </button>
             </div>
         </>
     );
