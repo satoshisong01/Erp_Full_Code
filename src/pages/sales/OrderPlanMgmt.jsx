@@ -4,10 +4,11 @@ import ApprovalForm from "components/form/ApprovalForm";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { PageContext } from "components/PageProvider";
 import { locationPath } from "constants/locationPath";
+import { axiosFetch } from "api/axiosFetch";
 
 /** 영업관리-수주계획관리 */
 function OrderPlanMgmt() {
-    const { isSaveFormTable, setIsSaveFormTable } = useContext(PageContext);
+    const { isSaveFormTable, setIsSaveFormTable, projectInfo } = useContext(PageContext);
 
     const orderPlanMgmtTable1 = useRef(null);
     const orderPlanMgmtTable2 = useRef(null);
@@ -127,6 +128,9 @@ function OrderPlanMgmt() {
     ];
 
     const [currentTask, setCurrentTask] = useState("");
+    const [prmnPlanDatas, setPrmnPlanDatas] = useState([]); // 인건비
+    const [pjbudgetDatas, setPjbudgetDatas] = useState([]); // 경비
+    const [pdOrdrDatas, setPdOrdrDatas] = useState([]); // 구매(재료비)
 
     const chageTabs = (task) => {
         setCurrentTask(task);
@@ -134,6 +138,32 @@ function OrderPlanMgmt() {
             //자신 일때 수정 창으로 변동 되지 않기 위한 조건
             setIsSaveFormTable(true);
         }
+    };
+
+    useEffect(() => {
+        if(currentTask === '인건비') {
+            setPrmnPlanDatas(fetchAllData('/cost/costPrmnPlan')); // 인건비
+        } else if(currentTask === '경비') {
+            setPjbudgetDatas(fetchAllData('/cost/costPjbudget/type')); // 경비
+        } else if(currentTask === '구매(재료비)') {
+            setPdOrdrDatas(fetchAllData('/cost/costPdOrdr')); // 구매(재료비)
+        }
+    }, [projectInfo.poiId]);
+
+    const fetchAllData = async (tableUrl) => {
+            const url = `/api${tableUrl}/listAll.do`;
+            let requestData = {poiId: projectInfo.poiId};
+
+            if(tableUrl === '/cost/costPjbudget/type') { //requestData 값 담기
+                requestData = { poiId: projectInfo.poiId, pjbgModeCode: "slsp", };
+            }
+
+            const resultData = await axiosFetch(url, requestData);
+            if (resultData) {
+                return resultData;
+            } else {
+                return Array(5).fill({}); // 빈 배열 보내주기
+            }
     };
 
     return (
@@ -155,9 +185,9 @@ function OrderPlanMgmt() {
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={laborColumns}
-                                    suffixUrl="/cost/costPrmnPlan"
                                     flag={currentTask === '인건비' && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable1}
+                                    customDatas={prmnPlanDatas}
                                 />
                             </ApprovalForm>
                         </ul>
@@ -167,9 +197,9 @@ function OrderPlanMgmt() {
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={expensesColumns}
-                                    suffixUrl="/cost/costPjbudget/type"
                                     flag={currentTask === '경비' && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable2}
+                                    customDatas={pjbudgetDatas}
                                 />
                             </ApprovalForm>
                         </ul>
@@ -180,9 +210,9 @@ function OrderPlanMgmt() {
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={purchaseColumns}
-                                    suffixUrl="/cost/costPdOrdr"
                                     flag={currentTask === '구매(재료비)' && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable3}
+                                    customDatas={pdOrdrDatas}
                                 />
                             </ApprovalForm>
                         </ul>
@@ -193,7 +223,7 @@ function OrderPlanMgmt() {
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={companyProfitColumns}
-                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    singleUrl="/baseInfrm/product/pjOrdrInfo"
                                     flag={currentTask === '기업이윤' && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable4}
                                 />
@@ -206,7 +236,7 @@ function OrderPlanMgmt() {
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={generalExpensesColumns}
-                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    singleUrl="/baseInfrm/product/pjOrdrInfo"
                                     flag={currentTask === '일반관리비' && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable5}
                                 />

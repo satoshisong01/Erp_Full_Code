@@ -6,7 +6,7 @@ import { PageContext } from "components/PageProvider";
 const ReactDataTable = (props) => {
 
     // 컴포넌트가 닫힐때 초기화 해야함
-    const { columns, suffixUrl, flag, detailUrl, defaultPageSize, tableRef } = props;
+    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef } = props;
     const {
         nameOfButton, setNameOfButton, newRowData, setNewRowData, searchData, currentTable,
         setSearchData, setIsOpenModal, codeForProject, setCurrentTable, projectInfo
@@ -18,16 +18,19 @@ const ReactDataTable = (props) => {
 
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
-        fetchAllData();
-
+        if(suffixUrl || detailUrl) {
+            fetchAllData();
+        }
+        if(customDatas) {
+            setTableData(customDatas);
+        }
         if(tableRef) {
             setCurrentTable(tableRef)
-            console.log("❤️ DOM: ", tableRef);
         }
     }, []);
 
     useEffect(() => {
-        singleFetchAllData(projectInfo.poiId);
+        fetchAllData(projectInfo.poiId);
     }, [projectInfo.poiId]);
 
 
@@ -78,63 +81,21 @@ const ReactDataTable = (props) => {
     }, [newRowData]);
 
     
+    /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
-        if(!suffixUrl) return;
-
         let url = '';
-        let requestData = { useAt: 'Y' };
-
-        if(suffixUrl !== "" && suffixUrl !== undefined) { // 기본 조회
+        if(suffixUrl) { // 기본 조회
             url = `/api${suffixUrl}/listAll.do`;
-        } else if(detailUrl !== "" &&  detailUrl !== undefined && codeForProject) { // 상세내역 조회
+        } else if(detailUrl) { // 상세내역 조회
             url = `/api${detailUrl}/listAll.do`;
         } else return;
-
-        const resultData = await axiosFetch(url, requestData);
-        
-        if (resultData) { //⭐ length로 보는거 맞는지 확인
-            /* column과 서버 데이터의 column이 일치하는지 확인, 불일치시 삭제 에러 해결을 위한 코드(임시) */
-            // const keys = Object.keys(resultData[0])
-            // const col = columns.map((arr) => arr.col);
-            // col.forEach((col) => { // 임시로 사용 중
-            //     if (!keys.includes(col)) {
-            //         console.log("⚠️Column not found:", col);
-            //         resultData.forEach((data) => {
-            //             data[col] = null;
-            //         })
-            //     }
-            // })
+        const resultData = await axiosFetch(url, {useAt: "Y"});
+        if (resultData) { 
             setTableData([...resultData]);
         } else {
-            setTableData(Array(defaultPageSize).fill({}));
+            setTableData(Array(defaultPageSize).fill({})); // 빈 배열 추가
         }
     };
-
-    const singleFetchAllData = async (poiId) => {
-        if(!suffixUrl) return;
-        if(poiId) {
-            const url = `/api${suffixUrl}/listAll.do`;
-            let requestData = {};
-    
-            if(suffixUrl === '/cost/costPjbudget/type') { //requestData 값 담기
-                requestData = {
-                    poiId: poiId,
-                    pjbgModeCode: "slsp",
-                };
-
-            } else {
-                requestData = { poiId: poiId };
-            }
-            const resultData = await axiosFetch(url, requestData);
-            
-            if (resultData) {
-                setTableData([...resultData]);
-            } else {
-                setTableData(Array(defaultPageSize).fill({}));
-            }
-        }
-    };
-
 
     /* 데이터 수정 */
     const modifyClick = async () => {
@@ -184,7 +145,7 @@ const ReactDataTable = (props) => {
             };
 
             const resultData = await axiosScan(url, requestData);
-            console.log("❤️ 서치데이터 결과: ", resultData);
+            // console.log("❤️ 서치데이터 결과: ", resultData);
 
             setSearchData({}); //초기화
         }
@@ -204,9 +165,7 @@ const ReactDataTable = (props) => {
             // const requestData = { useAt: "Y" };
             // const resultData = await axiosFetch(url, requestData);
     
-            // console.log("⭐ 리액트테이블 resultData: ", resultData);
-            
-            // if (resultData && resultData.length > 0) {} //⭐ length로 보는거 맞는지 확인
+            console.log("⭐ 상세 테이블: ", rowData.poiNm);
         }
     }
 
