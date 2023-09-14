@@ -133,8 +133,7 @@ function WorkMemberMgmt() {
             <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl="/baseInfrm/member"
-                currentPage="employMember"
+                suffixUrl="/baseInfrm/member/employMember"
                 addBtn={addBtn}
             />
         </>

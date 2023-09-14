@@ -22,8 +22,7 @@ function CostIndex() {
             <Location pathList={locationPath.CostIndex} />
             <DataTable
                 columns={columns}
-                suffixUrl="/baseInfrm/product"
-                currentPage="costBase"
+                suffixUrl="/baseInfrm/product/costBase"
                 addBtn={addBtn}
             />
         </>

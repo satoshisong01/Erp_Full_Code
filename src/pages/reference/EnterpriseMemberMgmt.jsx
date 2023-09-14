@@ -146,8 +146,7 @@ function EnterpriseMemberMgmt() {
             <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl="/baseInfrm/member"
-                currentPage="entrprsMember"
+                suffixUrl="/baseInfrm/member/entrprsMember"
                 addBtn={addBtn}
             />
         </>

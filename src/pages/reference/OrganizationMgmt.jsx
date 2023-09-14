@@ -83,8 +83,7 @@ function OrganizationMgmt() {
             <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl="/baseInfrm/member"
-                currentPage="orgNzt"
+                suffixUrl="/baseInfrm/member/orgNzt"
                 addBtn={addBtn}
             />
         </>

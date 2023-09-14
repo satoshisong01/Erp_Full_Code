@@ -101,8 +101,7 @@ function PermissionGroupMgmt() {
             <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl="/baseInfrm/member"
-                currentPage="authorGroup"
+                suffixUrl="/baseInfrm/member/authorGroup"
                 addBtn={addBtn}
             />
         </>

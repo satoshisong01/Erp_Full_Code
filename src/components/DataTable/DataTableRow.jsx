@@ -192,9 +192,9 @@ const DataTableRow = (props) => {
             if (suffixUrl === "") return;
             let url = ``;
             if (customerList) {
-                url = `/api${suffixUrl}/${currentPage}/${customerList}/listAll.do`;
+                url = `/api${suffixUrl}/${customerList}/listAll.do`;
             } else {
-                url = `/api${suffixUrl}/${currentPage}/listAll.do`;
+                url = `/api${suffixUrl}/listAll.do`;
             }
             const requestData = { lockAt: "Y" };
             $(dataTableRef.current).DataTable().destroy();
@@ -217,7 +217,7 @@ const DataTableRow = (props) => {
     const updateData = async (updatedData) => {
         console.log(updatedData, "수정된값");
         if (suffixUrl === "") return;
-        const url = `/api${suffixUrl}/${currentPage}/edit.do`;
+        const url = `/api${suffixUrl}/edit.do`;
         const requestData = { ...updatedData, lockAt: "Y", userAt: "Y" };
 
         // API 호출 등의 로직 실행
@@ -239,7 +239,7 @@ const DataTableRow = (props) => {
     /* 데이터 삭제 */
     const deleteData = async (value) => {
         if (suffixUrl === "") return;
-        const url = `/api${suffixUrl}/${currentPage}/removeAll.do`;
+        const url = `/api${suffixUrl}/removeAll.do`;
         const resultData = await axiosDelete(url, {
             data: newGupId,
         });
@@ -268,7 +268,7 @@ const DataTableRow = (props) => {
 
         console.log(postData, "받아온데이터");
         if (suffixUrl === "") return;
-        const url = `/api${suffixUrl}/${currentPage}/add.do`;
+        const url = `/api${suffixUrl}/add.do`;
         const requestData = { ...postData, lockAt: "Y", userAt: "Y" };
 
         try {
@@ -296,9 +296,9 @@ const DataTableRow = (props) => {
         if (suffixUrl === "") return;
         let url = ``;
         if (customerList) {
-            url = `/api${suffixUrl}/${currentPage}/${customerList}/listAll.do`;
+            url = `/api${suffixUrl}/${customerList}/listAll.do`;
         } else {
-            url = `/api${suffixUrl}/${currentPage}/totalListAll.do`;
+            url = `/api${suffixUrl}/totalListAll.do`;
         }
         //const url = `/api${suffixUrl}/${currentPage}/totalListAll.do`;
         const requestData = {

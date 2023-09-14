@@ -109,8 +109,7 @@ function ItemDetailMgmt() {
             <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl="/baseInfrm/product"
-                currentPage="productInfo"
+                suffixUrl="/baseInfrm/product/productInfo"
                 addBtn={addBtn}
             />
         </>

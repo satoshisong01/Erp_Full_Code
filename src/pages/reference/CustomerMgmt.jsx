@@ -181,8 +181,7 @@ function CustomerMgmt() {
             <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl="/baseInfrm/client"
-                currentPage="client"
+                suffixUrl="/baseInfrm/client/client"
                 customerList="type/c"
                 addBtn={addBtn}
             />

@@ -15,15 +15,7 @@ import DataTableButton from "components/button/DataTableButton";
 import DataPostModal from "./DataPostModal";
 
 const DataTable = (props) => {
-    const {
-        returnKeyWord,
-        columns,
-        suffixUrl,
-        currentPage,
-        addBtn,
-        customerList,
-        updateColumns,
-    } = props;
+    const { returnKeyWord, columns, suffixUrl, addBtn, customerList } = props;
 
     const [modalItem, setModalItem] = useState(""); //모달창에 넘겨주는 데이터
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창 true, false
@@ -64,6 +56,8 @@ const DataTable = (props) => {
     const changePage = (newPage) => {
         setCurrentPages(newPage);
     };
+
+    console.log(tableData, "********************");
 
     //const handleErrorCtrl = (value) => {
     //    setErrorOn(value);
@@ -133,21 +127,16 @@ const DataTable = (props) => {
         //setTableData(dummyData);
         //setIsLoading(true); // 로딩 화면 활성화
         try {
-            $(dataTableRef.current).DataTable().destroy();
-
             if (suffixUrl === "") return;
-            let url = ``;
-            if (customerList) {
-                url = `/api${suffixUrl}/${currentPage}/${customerList}/listAll.do`;
-            } else {
-                url = `/api${suffixUrl}/${currentPage}/listAll.do`;
-            }
+
+            const url = `/api${suffixUrl}/listAll.do`;
+
             const requestData = { lockAt: "Y" };
-            $(dataTableRef.current).DataTable().destroy();
+
             const resultData = await axiosFetch(url, requestData);
             console.log(resultData, "불러온값");
-            if (updateColumns) {
-            } else if (resultData) {
+            if (resultData) {
+                $(dataTableRef.current).DataTable().destroy();
                 setTableData(resultData);
             }
             setIsLoading(false); // 로딩 화면 비활성화
@@ -162,8 +151,8 @@ const DataTable = (props) => {
     const updateData = async (updatedData) => {
         console.log(updatedData, "수정된값");
         if (suffixUrl === "") return;
-        const url = `/api${suffixUrl}/${currentPage}/edit.do`;
-        const requestData = { ...updatedData, lockAt: "Y", userAt: "Y" };
+        const url = `/api${suffixUrl}/edit.do`;
+        const requestData = { ...updatedData, lockAt: "Y", useAt: "Y" };
 
         // API 호출 등의 로직 실행
         const resultData = await axiosUpdate(url, requestData);
@@ -174,9 +163,11 @@ const DataTable = (props) => {
                 ? updatedData
                 : item
         );
+        console.log(updatedTableData, "이거머지");
         setTableData(updatedTableData);
+        console.log(tableData, "바뀌고 난값");
         if (resultData) {
-            fetchAllData();
+            //fetchAllData();
             alert("값을 변경했습니다💚💚");
         }
     };
@@ -184,7 +175,7 @@ const DataTable = (props) => {
     /* 데이터 삭제 */
     const deleteData = async () => {
         if (suffixUrl === "") return;
-        const url = `/api${suffixUrl}/${currentPage}/removeAll.do`;
+        const url = `/api${suffixUrl}/removeAll.do`;
         const resultData = await axiosDelete(url, {
             data: changeInt,
         });
@@ -213,7 +204,7 @@ const DataTable = (props) => {
 
         console.log(postData, "받아온데이터");
         if (suffixUrl === "") return;
-        const url = `/api${suffixUrl}/${currentPage}/add.do`;
+        const url = `/api${suffixUrl}/add.do`;
         const requestData = { ...postData, lockAt: "Y", userAt: "Y" };
 
         try {
@@ -242,9 +233,9 @@ const DataTable = (props) => {
         if (suffixUrl === "") return;
         let url = ``;
         if (customerList) {
-            url = `/api${suffixUrl}/${currentPage}/${customerList}/listAll.do`;
+            url = `/api${suffixUrl}/${customerList}/listAll.do`;
         } else {
-            url = `/api${suffixUrl}/${currentPage}/totalListAll.do`;
+            url = `/api${suffixUrl}/totalListAll.do`;
         }
         //const url = `/api${suffixUrl}/${currentPage}/totalListAll.do`;
         const requestData = {
@@ -261,7 +252,7 @@ const DataTable = (props) => {
             setTableData(resultData);
         } catch (error) {
             alert("날짜를 모두 입력해주세요");
-            fetchAllData();
+            //fetchAllData();
         }
     };
 

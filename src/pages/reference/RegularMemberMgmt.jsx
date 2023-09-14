@@ -126,8 +126,7 @@ function RegularMemberMgmt() {
             <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl="/baseInfrm/member"
-                currentPage="generalMember"
+                suffixUrl="/baseInfrm/member/generalMember"
                 addBtn={addBtn}
             />
         </>

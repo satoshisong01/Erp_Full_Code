@@ -30,8 +30,7 @@ function GradeWageExpense() {
             <Location pathList={locationPath.GradeWageExpense} />
             <DataTableRow
                 columns={columns}
-                suffixUrl="/baseInfrm/product"
-                currentPage="gradeunitPrice"
+                suffixUrl="/baseInfrm/product/gradeunitPrice"
                 customerList="type/g"
                 addBtn={addBtn}
             />

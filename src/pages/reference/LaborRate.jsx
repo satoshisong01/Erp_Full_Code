@@ -72,8 +72,7 @@ function LaborRate() {
             <Location pathList={locationPath.LaborRate} />
             <DataTable
                 columns={columns}
-                suffixUrl="/baseInfrm/product"
-                currentPage="personelXp"
+                suffixUrl="/baseInfrm/product/personelXp"
                 addBtn={addBtn}
             />
         </>

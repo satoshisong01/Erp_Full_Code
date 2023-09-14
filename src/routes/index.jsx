@@ -93,13 +93,13 @@ const RootRoutes = () => {
     }, []);
 
     const basicFetchData = async () => {
-        const url = `/api/baseInfrm/product/pjOrdrInfo/totalList.do`;
+        const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
         const requestData = { useAt: "Y" };
         const resultData = await axiosFetch(url, requestData);
         console.log(resultData, "나온값은?");
-        console.log(resultData.content, "나온값은?");
+        console.log(resultData, "나온값은?");
         setProjectItem(
-            resultData.content.map((item) => ({
+            resultData.map((item) => ({
                 poiId: item.poiId,
                 poiNm: item.poiNm,
                 poiCode: item.poiCode,

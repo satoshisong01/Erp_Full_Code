@@ -17,6 +17,7 @@ function GradeWageLaborCost() {
         //    classCode: "guppCode",
         //},
         "기준명",
+        "임원",
         "특급기술사",
         "고급기술사",
         "중급기술사",
@@ -41,8 +42,7 @@ function GradeWageLaborCost() {
             <DataTableRow
                 columns={columns}
                 //updateColumns={updateColumns}
-                suffixUrl="/baseInfrm/product"
-                currentPage="gradeunitPrice"
+                suffixUrl="/baseInfrm/product/gradeunitPrice"
                 customerList="type/p"
                 addBtn={addBtn}
             />

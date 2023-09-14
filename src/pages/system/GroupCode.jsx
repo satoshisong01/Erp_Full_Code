@@ -111,8 +111,7 @@ function GroupCode() {
             <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl="/system/code"
-                currentPage="groupCode"
+                suffixUrl="/system/code/groupCode"
                 addBtn={addBtn}
             />
         </>

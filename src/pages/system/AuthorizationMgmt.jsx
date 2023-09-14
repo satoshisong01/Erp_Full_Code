@@ -75,8 +75,7 @@ function AuthorizationMgmt() {
             <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl="/system/code"
-                currentPage="clCode"
+                suffixUrl="/system/code/clCode"
                 addBtn={addBtn}
             />
         </>

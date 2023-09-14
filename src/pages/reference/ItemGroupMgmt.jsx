@@ -83,8 +83,7 @@ function ItemGroupMgmt() {
             <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl="/baseInfrm/product"
-                currentPage="productGroup"
+                suffixUrl="/baseInfrm/product/productGroup"
                 addBtn={addBtn}
             />
         </>

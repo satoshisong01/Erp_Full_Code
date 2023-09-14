@@ -100,8 +100,7 @@ function AccessHistoryMgmt() {
             <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl="/system/code"
-                currentPage="detailCode"
+                suffixUrl="/system/code/detailCode"
                 addBtn={addBtn}
             />
         </>

@@ -179,8 +179,7 @@ function PartnerMgmt() {
             <DataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl="/baseInfrm/client"
-                currentPage="client"
+                suffixUrl="/baseInfrm/client/client"
                 customerList="type/p"
                 addBtn={addBtn}
             />
