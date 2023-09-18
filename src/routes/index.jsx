@@ -75,6 +75,8 @@ import CostStatement from "pages/approval/CostStatement";
 
 //견적서 페이지
 import EstimatePopupContainer from "pages/approval/EstimatePopupContainer";
+import BusiCalculateDoc from "pages/sales/Business/BusiCalculateDoc";
+import ExcutionCostsDoc from "pages/execution/excutionCost/ExcutionCostsDoc";
 
 // 에러 페이지와 같은 상단(EgovHeader) 소스가 제외된 페이지에서 ui.js의 햄버거버튼 작동오류가 발생한다.
 // 즉, ui.js가 작동되지 않아서 재 로딩 해야 한다. 그래서, useRef객체를 사용하여 이전 페이지 URL을 구하는 코드 추가(아래)
@@ -96,8 +98,8 @@ const RootRoutes = () => {
         const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
         const requestData = { useAt: "Y" };
         const resultData = await axiosFetch(url, requestData);
-        console.log(resultData, "나온값은?");
-        console.log(resultData, "나온값은?");
+        // console.log(resultData, "나온값은?");
+        // console.log(resultData, "나온값은?");
         setProjectItem(
             resultData.map((item) => ({
                 poiId: item.poiId,
@@ -106,7 +108,7 @@ const RootRoutes = () => {
             }))
         );
     };
-    console.log(projectItem, "받아온값");
+    // console.log(projectItem, "받아온값");
     //useLocation객체를 이용하여 에러페이시 이동 전 location 객체를 저장하는 코드 추가(아래 2줄) */}
     const location = useLocation();
     const prevLocation = usePrevLocation(location);
@@ -141,16 +143,16 @@ const RootRoutes = () => {
                     element={<EgovError prevUrl={prevLocation} />}
                 />
                 <Route path="*" element={<SecondRoutes />} />
-                {/* 새창(팝업) */}
-                <Route
-                    path={URL.ApprovalContainer}
-                    element={<ApprovalContainer />}
-                />
-                <Route
-                    path={URL.EstimatePopupContainer}
-                    element={<EstimatePopupContainer />}
-                />
-                <Route path={URL.CostStatement} element={<CostStatement />} />
+
+                {/* <Route path={URL.ApprovalContainer} element={<ApprovalContainer />} />
+                <Route path={URL.CostStatement} element={<CostStatement />} /> */}
+
+                <Route path={URL.EstimatePopupContainer} element={<EstimatePopupContainer />} />
+                
+                {/* 새창(팝업) : 사전원가계산서 */}
+                <Route path={URL.BusiCalculateDoc} element={<BusiCalculateDoc />} />
+                {/* 새창(팝업) : 실행원가계산서 */}
+                <Route path={URL.ExcutionCostsDoc} element={<ExcutionCostsDoc />} />
             </Routes>
         );
     }

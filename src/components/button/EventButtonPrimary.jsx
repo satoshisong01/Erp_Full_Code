@@ -2,16 +2,16 @@ import { PageContext } from "components/PageProvider";
 import React, { useContext, useEffect, useState } from "react";
 
 export default function EventButtonPrimary({ label, onClick }) {
-    const { selectDatas } = useContext(PageContext)
+    const { lengthSelectRow } = useContext(PageContext)
     const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {
-        if(selectDatas.length > 0) {
+        if(lengthSelectRow && lengthSelectRow === 1) {
             setDisabled(false)
-        } else if (selectDatas.length === 0) {
+        } else {
             setDisabled(true)
         }
-    }, [selectDatas]);
+    }, [lengthSelectRow]);
 
     const buttonClassName = `table-btn table-btn-primary${disabled ? ' disabled' : ''}`;
 

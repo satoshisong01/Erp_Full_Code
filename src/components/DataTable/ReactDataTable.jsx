@@ -1,27 +1,31 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { axiosFetch, axiosPost, axiosScan } from "api/axiosFetch";
+import { axiosFetch, axiosPost, axiosScan, axiosUpdate } from "api/axiosFetch";
 import { useTable, usePagination, useSortBy, useRowSelect } from "react-table";
 import { PageContext } from "components/PageProvider";
+import DataPutModal from "./DataPutModal";
+import DataPostModal2 from "./DataPostModal2";
 
 const ReactDataTable = (props) => {
 
     // 컴포넌트가 닫힐때 초기화 해야함
-    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef } = props;
+    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, selectList } = props;
     const {
-        nameOfButton, setNameOfButton, newRowData, setNewRowData, searchData, currentTable,
-        setSearchData, setIsOpenModal, codeForProject, setCurrentTable, projectInfo
+        nameOfButton, setNameOfButton, newRowData, searchData,
+        setSearchData, setCurrentTable, projectInfo, setLengthSelectRow,
     } = useContext(PageContext);
 
+    
     const [tableData, setTableData] = useState([]);
     const pageSizeOptions = [5, 10, 15, 20, 30, 50, 100];
     const [isEditing, setIsEditing] = useState(false);
+    const [openModalMod, setOpenModalMod] = useState(false);
+    const [openModalAdd, setOpenModalAdd] = useState(false);
 
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
         if(suffixUrl || detailUrl) {
             fetchAllData();
-        }
-        if(customDatas) {
+        } else if(customDatas) {
             setTableData(customDatas);
         }
         if(tableRef) {
@@ -54,8 +58,12 @@ const ReactDataTable = (props) => {
             deleteClick();
         } else if(nameOfButton === 'add') {
             addClick();
+        } else if(nameOfButton === 'modify') {
+            modifyClick();
         } else if(nameOfButton === 'search') {
             searchClick();
+        } else if(nameOfButton === 'refresh') {
+            fetchAllData();
         }
         setNameOfButton(''); //초기화
     }, [nameOfButton])
@@ -98,8 +106,22 @@ const ReactDataTable = (props) => {
     };
 
     /* 데이터 수정 */
-    const modifyClick = async () => {
-        if (suffixUrl === "") return;
+    const modifyClick = async (updatedData) => {
+        if(!updatedData) {
+            setOpenModalMod(true); 
+        } else { // 수정데이터가 있다면
+            if (suffixUrl === "" || suffixUrl === undefined) return;
+            const url = `/api${suffixUrl}/edit.do`;
+            const requestData = { ...updatedData, lockAt: "Y", useAt: "Y" };
+    
+            const resultData = await axiosUpdate(url, requestData);
+    
+            if (resultData) {
+                setTableData(resultData);
+                console.log(tableData, "바뀌고 난값");
+                alert("값을 변경했습니다💚💚");
+            }
+        }
     };
 
     /* 데이터 삭제 */
@@ -116,20 +138,18 @@ const ReactDataTable = (props) => {
     };
 
     /* 데이터 추가 */
-    const addClick = async (newData) => {
+    const addClick = async (addData) => {
         if (suffixUrl === "") return;
-        if(newData) { // row 추가
+        if(addData && typeof addData === 'object' && !Array.isArray(addData)) { // 객체 row 추가
             const url = `/api${suffixUrl}/add.do`;
-            const dataToSend = { ...newData };
+            const dataToSend = { ...addData, lockAt: "Y", useAt: "Y" };
             const resultData = await axiosPost(url, dataToSend);
-
-            if (resultData) {
-                fetchAllData(); //새로고침
-                setNewRowData({}); //초기화
+            if(resultData) {
+                fetchAllData();
+                alert("✅추가 완료");
             }
-
-        } else if(!newData) { //파라미터로 넘어온 데이터가 없다면, 팝업으로 추가
-            setIsOpenModal(true);
+        }else if(!addData) { //파라미터로 넘어온 데이터가 없다면, 팝업으로 추가
+            setOpenModalAdd(true)
         }
     };
 
@@ -157,15 +177,16 @@ const ReactDataTable = (props) => {
     }
 
     /* 로우 클릭 */
-    const onCLickRow = (index, rowData) => {
+    const onCLickRow = (row) => {
+        toggleRowSelected(row.id)
         // console.log("⭐ row click - index: ", index, ", data:", rowData);
-        if(rowData.poiNm) { //프로젝트에 해당하는 상세 테이블
+        if(row.poiNm) { //프로젝트에 해당하는 상세 테이블
             /* 서버 통신 */
             // const url = `/api${detailUrl}/listAll.do`;
             // const requestData = { useAt: "Y" };
             // const resultData = await axiosFetch(url, requestData);
     
-            console.log("⭐ 상세 테이블: ", rowData.poiNm);
+            // console.log("⭐ 상세 테이블: ", row.poiNm);
         }
     }
 
@@ -175,7 +196,7 @@ const ReactDataTable = (props) => {
         headerGroups,
         prepareRow,
         page,
-        state: { pageIndex, pageSize },
+        state: { pageIndex, pageSize}, // 선택된 행 데이터
         previousPage,
         nextPage,
         canPreviousPage,
@@ -184,12 +205,13 @@ const ReactDataTable = (props) => {
         gotoPage,
         setPageSize,
         pageCount,
-        selectedFlatRows, //선택된 행 데이터
+        selectedFlatRows, //선택된 체크박스 행 데이터
+        toggleRowSelected, //이건또 모냐
     } = useTable(
         {
             columns: columnsConfig,
             data: tableData,
-            initialState: { pageIndex: 0, pageSize: defaultPageSize || 10, selectedRowIds: {} }, // 초기값
+            initialState: { pageIndex: 0, pageSize: defaultPageSize || 10 }, // 초기값
         },
         useSortBy,
         usePagination,
@@ -215,6 +237,7 @@ const ReactDataTable = (props) => {
                                 {...row.getToggleRowSelectedProps()}
                                 className="table-checkbox"
                                 indeterminate="false"
+                                onClick={(e) => e.stopPropagation()}
                             />
                         </div>
                     ),
@@ -226,7 +249,9 @@ const ReactDataTable = (props) => {
     );
 
     useEffect(() => {
-        // console.log("❤️ selectedFlatRows: ", selectedFlatRows);
+        if(selectedFlatRows) {
+            setLengthSelectRow(selectedFlatRows.length) // button 활성화
+        }
     }, [selectedFlatRows]);
 
     const onChange = (e, preRow) => {
@@ -312,7 +337,8 @@ const ReactDataTable = (props) => {
                         return (
                             <tr
                                 {...row.getRowProps()}
-                                onClick={(e) => onCLickRow(row.index, row.original)}
+                                onClick={(e) => onCLickRow(row)}
+                                // onClick={(e) => }
                             >
                                 {row.cells.map((cell, cellIndex) => (
                                     <td
@@ -382,6 +408,26 @@ const ReactDataTable = (props) => {
                 <button onClick={() => nextPage()} disabled={!canNextPage}> 다음 </button>
                 <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}> 마지막 </button>
             </div>
+
+            {openModalMod && (
+                <DataPutModal
+                    columns={columns}
+                    initialData={selectedFlatRows[0]}
+                    updateData={modifyClick}
+                    onClose={() => {setOpenModalMod(false)}}
+                />
+            )}
+            {openModalAdd && (
+                <DataPostModal2
+                    columns={columns}
+                    postData={addClick}
+                    selectList={selectList}
+                    fetchAllData={fetchAllData}
+                    // errorOn={errorOn}
+                    // handleSendLoading={handleSendLoading}
+                    onClose={() => { setOpenModalAdd(false) }}
+                />
+            )}
         </>
     );
 };
