@@ -218,7 +218,7 @@ const DataTableRow = (props) => {
         console.log(updatedData, "수정된값");
         if (suffixUrl === "") return;
         const url = `/api${suffixUrl}/edit.do`;
-        const requestData = { ...updatedData, lockAt: "Y", userAt: "Y" };
+        const requestData = { ...updatedData, lockAt: "Y", useAt: "Y" };
 
         // API 호출 등의 로직 실행
         const resultData = await axiosUpdate(url, requestData);
