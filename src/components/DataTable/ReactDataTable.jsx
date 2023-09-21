@@ -274,21 +274,14 @@ const ReactDataTable = (props) => {
         });
         setTableData(newTableData);
     };
-    const [testsetting, setTestSetting] = useState([]);
 
     const onChangeSelect = (a, b, c) => {
-        console.log(a, b, "@@@@@@@@@@@");
-        console.log(a.target.value, "********타겟벨류******");
-        console.log(b.index, "인덱스번호@@#@#@#");
-
         let testCount = "";
-
         c.forEach((item) => {
             if (item.value === a.target.value) {
-                testCount = item.label;
+                testCount = item.value;
             }
         });
-
         // b.index번 배열의 pjbgTypeCode 값을 testCount로 대체
         const updatedTableData = [...tableData];
         updatedTableData[b.index].pjbgTypeCode = testCount;
@@ -434,7 +427,7 @@ const ReactDataTable = (props) => {
                                               "select" ? (
                                                 <select
                                                     name={cell.column.id}
-                                                    value={
+                                                    defaultValue={
                                                         tableData[row.index] &&
                                                         tableData[row.index][
                                                             cell.column.id
