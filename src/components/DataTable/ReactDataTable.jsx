@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { axiosFetch, axiosPost, axiosScan, axiosUpdate } from "api/axiosFetch";
+import { axiosDelete, axiosFetch, axiosPost, axiosScan, axiosUpdate } from "api/axiosFetch";
 import { useTable, usePagination, useSortBy, useRowSelect } from "react-table";
 import { PageContext } from "components/PageProvider";
 import DataPutModal from "./DataPutModal";
@@ -15,7 +15,6 @@ const ReactDataTable = (props) => {
         customDatas,
         defaultPageSize,
         tableRef,
-        selectList,
     } = props;
     const {
         nameOfButton,
@@ -45,17 +44,11 @@ const ReactDataTable = (props) => {
         if (tableRef) {
             setCurrentTable(tableRef);
         }
-    }, [customDatas]);
-
-    useEffect(() => {
-        fetchAllData(projectInfo.poiId);
-    }, [projectInfo.poiId]);
+    }, []);
 
     useEffect(() => {
         setIsEditing(flag);
     }, [flag]);
-
-    useEffect(() => {}, [tableData]);
 
     useEffect(() => {
         if (nameOfButton === "refresh") {
@@ -86,8 +79,7 @@ const ReactDataTable = (props) => {
         [columns]
     );
 
-    /* newRowData 변동 시 새로운 행 추가 */
-    useEffect(() => {
+    useEffect(() => { //newRowData 변동 시 새로운 행 추가
         if (newRowData && Object.keys(newRowData).length !== 0) {
             addClick(newRowData);
         }
@@ -95,14 +87,9 @@ const ReactDataTable = (props) => {
 
     /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
-        let url = "";
-        if (suffixUrl) {
-            // 기본 조회
-            url = `/api${suffixUrl}/listAll.do`;
-        } else if (detailUrl) {
-            // 상세내역 조회
-            url = `/api${detailUrl}/listAll.do`;
-        } else return;
+        if (!suffixUrl && !detailUrl) return;
+        console.log("fetchAllData>>>>>>> ", suffixUrl || detailUrl);
+        const url = `/api${suffixUrl || detailUrl}/listAll.do`;
         const resultData = await axiosFetch(url, { useAt: "Y" });
         if (resultData) {
             setTableData([...resultData]);
@@ -117,15 +104,14 @@ const ReactDataTable = (props) => {
             setOpenModalMod(true);
         } else {
             // 수정데이터가 있다면
-            if (suffixUrl === "" || suffixUrl === undefined) return;
-            const url = `/api${suffixUrl}/edit.do`;
+            if(!suffixUrl && !detailUrl) return;
+            const url = `/api${suffixUrl || detailUrl}/edit.do`;
             const requestData = { ...updatedData, lockAt: "Y", useAt: "Y" };
 
             const resultData = await axiosUpdate(url, requestData);
 
             if (resultData) {
                 setTableData(resultData);
-                console.log(tableData, "바뀌고 난값");
                 alert("값을 변경했습니다💚💚");
             }
         }
@@ -133,40 +119,48 @@ const ReactDataTable = (props) => {
 
     /* 데이터 삭제 */
     const deleteClick = async () => {
-        if (suffixUrl === "") return;
-        if (selectedFlatRows.length > 0) {
-            /* 데이터 삭제 로직 추가 해야 함 */
+        if(!suffixUrl && !detailUrl) return;
+        if (selectedFlatRows && selectedFlatRows.length > 0) {
+            const pkColumn = columns[0].col;
+            const deleteRows = selectedFlatRows.map((row) => row.original);
+            const deletePkArr = deleteRows.map((item) => item[pkColumn]);
+            const url = `/api${suffixUrl || detailUrl}/removeAll.do`;
+            const resultData = await axiosDelete(url, {
+                data: deletePkArr,
+            });
+            if (resultData) {
+                fetchAllData();
+                alert("삭제되었습니다🧹🧹");
+            }
         }
     };
 
     /* 새로고침 */
     const refreshClick = () => {
-        fetchAllData(); // 임시
+        fetchAllData();
     };
 
     /* 데이터 추가 */
     const addClick = async (addData) => {
-        if (suffixUrl === "") return;
-        if (addData && typeof addData === "object" && !Array.isArray(addData)) {
-            // 객체 row 추가
-            const url = `/api${suffixUrl}/add.do`;
+        if(!suffixUrl && !detailUrl) return;
+        if(addData && typeof addData === 'object' && !Array.isArray(addData)) {
+            const url = `/api${suffixUrl || detailUrl}/add.do`;
             const dataToSend = { ...addData, lockAt: "Y", useAt: "Y" };
             const resultData = await axiosPost(url, dataToSend);
-            if (resultData) {
+            if(resultData) {
                 fetchAllData();
                 alert("✅추가 완료");
             }
-        } else if (!addData) {
-            //파라미터로 넘어온 데이터가 없다면, 팝업으로 추가
-            setOpenModalAdd(true);
+        }else if(!addData) { //파라미터로 넘어온 데이터가 없다면, 팝업으로 추가
+            setOpenModalAdd(true)
         }
     };
 
     /* 데이터 검색 */
     const searchClick = async () => {
-        if (suffixUrl === "") return;
+        if(!suffixUrl && !detailUrl) return;
         if (searchData) {
-            const url = `/api${suffixUrl}/listAll.do`;
+            const url = `/api${suffixUrl || detailUrl}/listAll.do`;
             const requestData = {
                 useAt: searchData.radioOption,
                 searchKeyword: searchData.searchKeyword,
@@ -174,7 +168,6 @@ const ReactDataTable = (props) => {
             };
 
             const resultData = await axiosScan(url, requestData);
-            // console.log("❤️ 서치데이터 결과: ", resultData);
 
             setSearchData({}); //초기화
         }
@@ -182,20 +175,17 @@ const ReactDataTable = (props) => {
 
     /* 셀 클릭 */
     const onClickCell = (e, cell) => {
-        // console.log("⭐ cell click: ", e.target, cell);
     };
 
     /* 로우 클릭 */
     const onCLickRow = (row) => {
         toggleRowSelected(row.id);
-        // console.log("⭐ row click - index: ", index, ", data:", rowData);
         if (row.poiNm) {
             //프로젝트에 해당하는 상세 테이블
             /* 서버 통신 */
             // const url = `/api${detailUrl}/listAll.do`;
             // const requestData = { useAt: "Y" };
             // const resultData = await axiosFetch(url, requestData);
-            // console.log("⭐ 상세 테이블: ", row.poiNm);
         }
     };
 
@@ -263,8 +253,8 @@ const ReactDataTable = (props) => {
         }
     }, [selectedFlatRows]);
 
+    /* 변경된 value 값을 column과 같은 이름의 변수에 담아서 테이블에 넣어줌 */
     const onChange = (e, preRow) => {
-        console.log(e, "나오나 타겟값");
         const { name, value } = e.target;
         const newTableData = tableData.map((rowData, rowIndex) => {
             if (rowIndex === preRow.index) {
@@ -273,24 +263,6 @@ const ReactDataTable = (props) => {
             return rowData;
         });
         setTableData(newTableData);
-    };
-
-    const onChangeSelect = (a, b, c) => {
-        let testCount = "";
-        c.forEach((item) => {
-            if (item.value === a.target.value) {
-                testCount = item.value;
-            }
-        });
-        // b.index번 배열의 pjbgTypeCode 값을 testCount로 대체
-        const updatedTableData = [...tableData];
-        updatedTableData[b.index].pjbgTypeCode = testCount;
-
-        // 대체된 tableData를 state로 설정
-        setTableData(updatedTableData);
-
-        console.log(testCount);
-        console.log(tableData, "변경한값은??@@@@!@!@");
     };
 
     /* 새로운 빈 row 추가 */
@@ -312,16 +284,10 @@ const ReactDataTable = (props) => {
         setTableData([...updateTableData]);
     };
 
-    const tableOnClick = () => {
-        setCurrentTable(tableRef);
-    };
-
     const pageSizeChange = (value) => {
         setPageSize(Number(value)); // 페이지 크기 변경
         gotoPage(0); // 첫 페이지로 이동
     };
-
-    console.log(tableData, "받아와서 뿌리는게 뭘까");
 
     return (
         <>
@@ -344,7 +310,7 @@ const ReactDataTable = (props) => {
             <table
                 {...getTableProps()}
                 className="table-styled"
-                onClick={tableOnClick}>
+                onClick={() => setCurrentTable(tableRef)}>
                 <thead>
                     {headerGroups.map((headerGroup, headerGroupIndex) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
@@ -353,30 +319,20 @@ const ReactDataTable = (props) => {
                                     {...column.getHeaderProps(
                                         column.getSortByToggleProps()
                                     )}
-                                    className={
-                                        columnIndex === 0 ? "first-column" : ""
-                                    }
-                                    style={{ width: column.width }}>
+                                    className={columnIndex === 0 ? "first-column" : ""}
+                                    style={{ width: column.width }}
+                                >
                                     {column.render("Header")}
-                                    <span>
-                                        {column.isSorted
-                                            ? column.isSortedDesc
-                                                ? " 🔽"
-                                                : " 🔼"
-                                            : ""}
-                                    </span>
+                                    <span>{column.isSorted ? column.isSortedDesc ? " 🔽" : " 🔼" : ""}</span>
                                 </th>
                             ))}
                             {isEditing && (
-                                <th
-                                    style={{
-                                        width: "70px",
-                                        textAlign: "center",
-                                    }}>
+                                <th style={{width: "70px", textAlign: "center",}}>
                                     <button
                                         className="btn-primary"
                                         onClick={onAddRow}
-                                        style={{ margin: 0 }}>
+                                        style={{margin:0}}
+                                    >
                                         추가
                                     </button>
                                 </th>
@@ -408,20 +364,12 @@ const ReactDataTable = (props) => {
                                                     type="text"
                                                     value={
                                                         tableData[row.index] &&
-                                                        tableData[row.index][
-                                                            cell.column.id
-                                                        ] !== undefined
-                                                            ? tableData[
-                                                                  row.index
-                                                              ][
-                                                                  cell.column.id
-                                                              ] || cell.value
+                                                        tableData[row.index][cell.column.id] !== undefined
+                                                            ? tableData[row.index][cell.column.id] || cell.value
                                                             : cell.value
                                                     }
                                                     name={cell.column.id}
-                                                    onChange={(e) =>
-                                                        onChange(e, row)
-                                                    }
+                                                    onChange={(e) =>onChange(e, row)}
                                                 />
                                             ) : cell.column.type ===
                                               "select" ? (
@@ -429,31 +377,18 @@ const ReactDataTable = (props) => {
                                                     name={cell.column.id}
                                                     defaultValue={
                                                         tableData[row.index] &&
-                                                        tableData[row.index][
-                                                            cell.column.id
-                                                        ] !== undefined
-                                                            ? tableData[
-                                                                  row.index
-                                                              ][cell.column.id]
-                                                            : cell.column
-                                                                  .options[
-                                                                  row.index
-                                                              ].value || "" // 기본값: 해당 행의 인덱스에 해당하는 옵션의 value 값 또는 빈 문자열
+                                                        tableData[row.index][cell.column.id] !== undefined
+                                                            ? tableData[row.index][cell.column.id]
+                                                            : cell.column.options[row.index].value || "" // 기본값: 해당 행의 인덱스에 해당하는 옵션의 value 값 또는 빈 문자열
                                                     }
-                                                    onChange={(e) =>
-                                                        onChangeSelect(
-                                                            e,
-                                                            row,
-                                                            cell.column.options
-                                                        )
-                                                    }>
+                                                    onChange={(e) => onChange(e, row)}
+                                                >
                                                     {cell.column.options.map(
                                                         (option, index) => (
                                                             <option
                                                                 key={index}
-                                                                value={
-                                                                    option.value
-                                                                }>
+                                                                value={option.value}
+                                                            >
                                                                 {option.label}
                                                             </option>
                                                         )
@@ -483,55 +418,31 @@ const ReactDataTable = (props) => {
             </table>
 
             <div className="pagination">
-                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                    {" "}
-                    처음{" "}
-                </button>
-                <button
-                    onClick={() => previousPage()}
-                    disabled={!canPreviousPage}>
-                    {" "}
-                    이전{" "}
-                </button>
-                <span>
-                    {" "}
-                    페이지 {pageIndex + 1} / {pageOptions.length}{" "}
-                </span>
-                <button onClick={() => nextPage()} disabled={!canNextPage}>
-                    {" "}
-                    다음{" "}
-                </button>
-                <button
-                    onClick={() => gotoPage(pageCount - 1)}
-                    disabled={!canNextPage}>
-                    {" "}
-                    마지막{" "}
-                </button>
+                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}> 처음 </button>
+                <button  onClick={() => previousPage()} disabled={!canPreviousPage}> 이전 </button>
+                <span> 페이지 {pageIndex + 1} / {pageOptions && pageOptions.length} </span>
+                <button onClick={() => nextPage()} disabled={!canNextPage}> 다음 </button>
+                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}> 마지막 </button>
             </div>
 
-            {/*{openModalMod && (
+            {openModalMod && (
                 <DataPutModal
                     columns={columns}
                     initialData={selectedFlatRows[0]}
                     updateData={modifyClick}
-                    onClose={() => {
-                        setOpenModalMod(false);
-                    }}
+                    onClose={() => {setOpenModalMod(false)}}
                 />
             )}
             {openModalAdd && (
                 <DataPostModal2
                     columns={columns}
                     postData={addClick}
-                    selectList={selectList}
                     fetchAllData={fetchAllData}
                     // errorOn={errorOn}
                     // handleSendLoading={handleSendLoading}
-                    onClose={() => {
-                        setOpenModalAdd(false);
-                    }}
+                    onClose={() => {setOpenModalAdd(false)}}
                 />
-            )}*/}
+            )}
         </>
     );
 };
