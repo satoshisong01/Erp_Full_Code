@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useRef } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
-import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
+import AddButton from "components/button/AddButton";
+import ModButton from "components/button/ModButton";
+import DelButton from "components/button/DelButton";
+import RefreshButton from "components/button/RefreshButton";
+import ReactDataTable from "components/DataTable/ReactDataTable";
+import { PageContext } from "components/PageProvider";
 
 /** 기준정보관리-품목관리-품목상세관리 */
 function ItemDetailMgmt() {
-    const [returnKeyWord, setReturnKeyWord] = useState("");
+    const {setNameOfButton} = useContext(PageContext);
+    const itemDetailMgmtTable = useRef(null);
 
     const columns = [
         {
@@ -52,11 +58,17 @@ function ItemDetailMgmt() {
             col: "pgId",
             cellWidth: "20%",
             enable: false,
-            selectOption: true,
+            type: "select",
+            option: [ ///baseInfrm/product/productGroup
+            { value: "1", label: "교통비" },
+            { value: "2", label: "숙박비" },
+            { value: "3", label: "일비/파견비" },
+            { value: "4", label: "식비" },
+            { value: "5", label: "자재/소모품외" },
+            { value: "6", label: "영업비" },
+            ],
             modify: true,
             add: true,
-            listItem: "pgId",
-            addListURL: "/baseInfrm/product/productGroup",
             require: true,
         },
     ];
@@ -96,21 +108,20 @@ function ItemDetailMgmt() {
         },
     ];
 
-    const handleReturn = (value) => {
-        setReturnKeyWord(value);
-    };
-
-    const addBtn = [""];
-
     return (
         <>
             <Location pathList={locationPath.ItemDetailMgmt} />
-            <SearchList conditionList={conditionList} onSearch={handleReturn} />
-            <DataTable
-                returnKeyWord={returnKeyWord}
+            <SearchList conditionList={conditionList} />
+            <div className="table-buttons">
+                <AddButton label={'추가'} onClick={() => setNameOfButton('add')} />
+                <ModButton label={'수정'} onClick={() => setNameOfButton('modify')} />
+                <DelButton label={'삭제'} onClick={() => setNameOfButton('delete')} />
+                <RefreshButton onClick={() => setNameOfButton('refresh')} />
+            </div>
+            <ReactDataTable
                 columns={columns}
-                suffixUrl="/baseInfrm/product/productInfo"
-                addBtn={addBtn}
+                suffixUrl="/baseInfrm/product/productGroup"
+                tableRef={itemDetailMgmtTable}
             />
         </>
     );

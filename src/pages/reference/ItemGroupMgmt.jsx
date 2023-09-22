@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
-import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
+import ReactDataTable from "components/DataTable/ReactDataTable";
+import PopupButton from "components/button/PopupButton";
+import AddButton from "components/button/AddButton";
+import ModButton from "components/button/ModButton";
+import DelButton from "components/button/DelButton";
+import RefreshButton from "components/button/RefreshButton";
+import { PageContext } from "components/PageProvider";
 
 /** 기준정보관리-품목관리-품목그룹관리 */
 function ItemGroupMgmt() {
-    const [returnKeyWord, setReturnKeyWord] = useState("");
+    const {setNameOfButton} = useContext(PageContext);
+    const itemGroupMgmtTable = useRef(null);
 
     const columns = [
         {
@@ -70,21 +77,20 @@ function ItemGroupMgmt() {
         },
     ];
 
-    const handleReturn = (value) => {
-        setReturnKeyWord(value);
-    };
-
-    const addBtn = [""];
-
     return (
         <>
             <Location pathList={locationPath.ItemGroupMgmt} />
-            <SearchList conditionList={conditionList} onSearch={handleReturn} />
-            <DataTable
-                returnKeyWord={returnKeyWord}
+            <SearchList conditionList={conditionList} />
+            <div className="table-buttons">
+                <AddButton label={'추가'} onClick={() => setNameOfButton('add')} />
+                <ModButton label={'수정'} onClick={() => setNameOfButton('modify')} />
+                <DelButton label={'삭제'} onClick={() => setNameOfButton('delete')} />
+                <RefreshButton onClick={() => setNameOfButton('refresh')} />
+            </div>
+            <ReactDataTable
                 columns={columns}
                 suffixUrl="/baseInfrm/product/productGroup"
-                addBtn={addBtn}
+                tableRef={itemGroupMgmtTable}
             />
         </>
     );

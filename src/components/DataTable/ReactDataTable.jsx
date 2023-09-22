@@ -23,8 +23,8 @@ const ReactDataTable = (props) => {
         searchData,
         setSearchData,
         setCurrentTable,
-        projectInfo,
         setLengthSelectRow,
+        currentTable,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -32,6 +32,7 @@ const ReactDataTable = (props) => {
     const [isEditing, setIsEditing] = useState(false);
     const [openModalMod, setOpenModalMod] = useState(false);
     const [openModalAdd, setOpenModalAdd] = useState(false);
+    const [prevCurrentTable, setPrevCurrentTable] = useState(null);
 
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
@@ -42,7 +43,11 @@ const ReactDataTable = (props) => {
             setTableData(customDatas);
         }
         if (tableRef) {
-            setCurrentTable(tableRef);
+            // setCurrentTable(tableRef);
+            setCurrentTable((prevTable) => {
+                setPrevCurrentTable(prevTable);
+                return tableRef;
+            });
         }
     }, []);
 
@@ -60,6 +65,8 @@ const ReactDataTable = (props) => {
             deleteClick();
         } else if (nameOfButton === "add") {
             addClick();
+        } else if (nameOfButton === 'modify') {
+            modifyClick();
         } else if (nameOfButton === "search") {
             searchClick();
         }
@@ -102,16 +109,12 @@ const ReactDataTable = (props) => {
     const modifyClick = async (updatedData) => {
         if (!updatedData) {
             setOpenModalMod(true);
-        } else {
-            // 수정데이터가 있다면
-            if(!suffixUrl && !detailUrl) return;
+        } else { // 수정데이터가 있다면
             const url = `/api${suffixUrl || detailUrl}/edit.do`;
             const requestData = { ...updatedData, lockAt: "Y", useAt: "Y" };
-
             const resultData = await axiosUpdate(url, requestData);
-
             if (resultData) {
-                setTableData(resultData);
+                setTableData([resultData]);
                 alert("값을 변경했습니다💚💚");
             }
         }
@@ -142,12 +145,15 @@ const ReactDataTable = (props) => {
 
     /* 데이터 추가 */
     const addClick = async (addData) => {
+        setOpenModalAdd(false);
         if(!suffixUrl && !detailUrl) return;
         if(addData && typeof addData === 'object' && !Array.isArray(addData)) {
             const url = `/api${suffixUrl || detailUrl}/add.do`;
             const dataToSend = { ...addData, lockAt: "Y", useAt: "Y" };
             const resultData = await axiosPost(url, dataToSend);
-            if(resultData) {
+            if(typeof resultData === "number") {
+                alert(resultData + "error");
+            } else if(resultData){
                 fetchAllData();
                 alert("✅추가 완료");
             }
@@ -248,10 +254,18 @@ const ReactDataTable = (props) => {
     );
 
     useEffect(() => {
-        if (selectedFlatRows) {
-            setLengthSelectRow(selectedFlatRows.length); // button 활성화
+        console.log("❌❌ prevCurrentTable is... ", prevCurrentTable, ", tableRef는? : ", tableRef);
+        console.log("❌❌ 이전과 같은 테이블이야? ", prevCurrentTable === tableRef);
+        if(selectedFlatRows && (prevCurrentTable === tableRef ||  prevCurrentTable === null)) {
+            // if (selectedFlatRows) {
+                setLengthSelectRow(selectedFlatRows.length); // button 활성화
+                console.log(">>>>>> 같은 테이블이라 값 업데이트");
+            // }
+        } else {
+            console.log(">>>>>> 다른테이블^^");
         }
     }, [selectedFlatRows]);
+
 
     /* 변경된 value 값을 column과 같은 이름의 변수에 담아서 테이블에 넣어줌 */
     const onChange = (e, preRow) => {
@@ -310,7 +324,8 @@ const ReactDataTable = (props) => {
             <table
                 {...getTableProps()}
                 className="table-styled"
-                onClick={() => setCurrentTable(tableRef)}>
+                ref={tableRef}
+            >
                 <thead>
                     {headerGroups.map((headerGroup, headerGroupIndex) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
