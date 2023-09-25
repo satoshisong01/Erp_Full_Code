@@ -15,6 +15,7 @@ const ReactDataTable = (props) => {
         customDatas,
         defaultPageSize,
         tableRef,
+        setLengthSelectRow,
     } = props;
     const {
         nameOfButton,
@@ -23,8 +24,6 @@ const ReactDataTable = (props) => {
         searchData,
         setSearchData,
         setCurrentTable,
-        setLengthSelectRow,
-        currentTable,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -32,7 +31,6 @@ const ReactDataTable = (props) => {
     const [isEditing, setIsEditing] = useState(false);
     const [openModalMod, setOpenModalMod] = useState(false);
     const [openModalAdd, setOpenModalAdd] = useState(false);
-    const [prevCurrentTable, setPrevCurrentTable] = useState(null);
 
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
@@ -43,11 +41,7 @@ const ReactDataTable = (props) => {
             setTableData(customDatas);
         }
         if (tableRef) {
-            // setCurrentTable(tableRef);
-            setCurrentTable((prevTable) => {
-                setPrevCurrentTable(prevTable);
-                return tableRef;
-            });
+            setCurrentTable(tableRef);
         }
     }, []);
 
@@ -123,9 +117,13 @@ const ReactDataTable = (props) => {
     /* 데이터 삭제 */
     const deleteClick = async () => {
         if(!suffixUrl && !detailUrl) return;
-        if (selectedFlatRows && selectedFlatRows.length > 0) {
+        const deleteRows = selectedFlatRows.map((row) => row.original);
+
+        const result = window.confirm(deleteRows+'확인하시겠습니까?');
+
+        if (result && selectedFlatRows && selectedFlatRows.length > 0) {
             const pkColumn = columns[0].col;
-            const deleteRows = selectedFlatRows.map((row) => row.original);
+            
             const deletePkArr = deleteRows.map((item) => item[pkColumn]);
             const url = `/api${suffixUrl || detailUrl}/removeAll.do`;
             const resultData = await axiosDelete(url, {
@@ -254,16 +252,7 @@ const ReactDataTable = (props) => {
     );
 
     useEffect(() => {
-        console.log("❌❌ prevCurrentTable is... ", prevCurrentTable, ", tableRef는? : ", tableRef);
-        console.log("❌❌ 이전과 같은 테이블이야? ", prevCurrentTable === tableRef);
-        if(selectedFlatRows && (prevCurrentTable === tableRef ||  prevCurrentTable === null)) {
-            // if (selectedFlatRows) {
-                setLengthSelectRow(selectedFlatRows.length); // button 활성화
-                console.log(">>>>>> 같은 테이블이라 값 업데이트");
-            // }
-        } else {
-            console.log(">>>>>> 다른테이블^^");
-        }
+        setLengthSelectRow(selectedFlatRows.length); // button 활성화
     }, [selectedFlatRows]);
 
 

@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import { locationPath } from "constants/locationPath";
@@ -108,20 +108,26 @@ function ItemDetailMgmt() {
         },
     ];
 
+    const [length, setLength] = useState(0)
+    const setLengthSelectRow = (length) => {
+        setLength(length);
+    }
+
     return (
         <>
             <Location pathList={locationPath.ItemDetailMgmt} />
             <SearchList conditionList={conditionList} />
             <div className="table-buttons">
                 <AddButton label={'추가'} onClick={() => setNameOfButton('add')} />
-                <ModButton label={'수정'} onClick={() => setNameOfButton('modify')} />
-                <DelButton label={'삭제'} onClick={() => setNameOfButton('delete')} />
+                <ModButton label={'수정'} length={length} onClick={() => setNameOfButton('modify')} />
+                <DelButton label={'삭제'} length={length} onClick={() => setNameOfButton('delete')} />
                 <RefreshButton onClick={() => setNameOfButton('refresh')} />
             </div>
             <ReactDataTable
                 columns={columns}
                 suffixUrl="/baseInfrm/product/productGroup"
                 tableRef={itemDetailMgmtTable}
+                setLengthSelectRow={setLengthSelectRow}
             />
         </>
     );

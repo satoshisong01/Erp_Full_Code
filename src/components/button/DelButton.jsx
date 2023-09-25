@@ -1,17 +1,15 @@
-import { PageContext } from "components/PageProvider";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-export default function DelButton({ label, onClick }) {
-    const { lengthSelectRow } = useContext(PageContext)
+export default function DelButton({ label, length, onClick }) {
     const [disabled, setDisabled] = useState(true);
 
     useEffect(() => {
-        if(lengthSelectRow && lengthSelectRow >= 1) {
+        if(length && length >= 1) {
             setDisabled(false)
         } else {
             setDisabled(true)
         }
-    }, [lengthSelectRow]);
+    }, [length]);
 
     const buttonClassName = `table-btn table-btn-warning${disabled ? ' disabled' : ''}`;
 

@@ -16,7 +16,7 @@ export function PageProvider({ children }) {
     const [projectItem, setProjectItem] = useState([]); //프로젝트 id, 이름, 코드 저장
     const [projectInfo, setProjectInfo] = useState({poiId: '', poiNm: '', poiCode: ''}); // 선택한 id 저장
     const [currentTable, setCurrentTable] = useState(null); // 유니크한 현재 데이터 테이블
-    const [lengthSelectRow, setLengthSelectRow] = useState(0); // 테이블 ROW 클릭 시, 리액트 테이블 버튼 활성화를 위한 변수
+    const [isOpenModal ,setIsOpenModal] = useState(false)
 
     const contextValue = {
         nameOfButton,
@@ -35,8 +35,8 @@ export function PageProvider({ children }) {
         setProjectInfo,
         currentTable,
         setCurrentTable,
-        lengthSelectRow,
-        setLengthSelectRow
+        isOpenModal,
+        setIsOpenModal
     };
 
     return (
