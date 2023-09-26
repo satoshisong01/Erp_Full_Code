@@ -16,6 +16,9 @@
 .mg-t-5 {
     margin-top: 5px;
 }
+.mg-t-10 {
+    margin-top: 10px;
+}
 .mg-t-20 {
     margin-top: 20px;
 }
@@ -262,7 +265,8 @@
 .flex-column {
     display: flex;
     flex-direction: column;
-    /* justify-content: flex-start; */
+    height: 100%;
+    justify-content: space-between;
 }
 
 /* radio 버튼 */
@@ -791,6 +795,23 @@ td > input {
 .common_board_style .tab li a {
     padding-bottom: 10px;
     font-size: 18px;
+}
+
+
+/* delete modal */
+body > div.ReactModalPortal > div > div { /* 기존 CSS 무효화 */
+    overflow: visible !important
+}
+
+.ReactModal__Content {
+    width: 500px;
+    height: 200px;
+    margin: auto;
+}
+
+.scrollable {
+    max-height: 75px;
+    overflow-y: auto;
 }
 
 

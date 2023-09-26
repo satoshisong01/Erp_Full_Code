@@ -4,6 +4,7 @@ import { useTable, usePagination, useSortBy, useRowSelect } from "react-table";
 import { PageContext } from "components/PageProvider";
 import DataPutModal from "./DataPutModal";
 import DataPostModal2 from "./DataPostModal2";
+import DeleteModal from "components/modal/DeleteModal";
 
 const ReactDataTable = (props) => {
     // 컴포넌트가 닫힐때 초기화 해야함
@@ -24,6 +25,7 @@ const ReactDataTable = (props) => {
         searchData,
         setSearchData,
         setCurrentTable,
+        setIsOpenModal
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -31,6 +33,7 @@ const ReactDataTable = (props) => {
     const [isEditing, setIsEditing] = useState(false);
     const [openModalMod, setOpenModalMod] = useState(false);
     const [openModalAdd, setOpenModalAdd] = useState(false);
+    const [modalViewDatas, setModalViewDatas] = useState([]); //modal에 띄어줄 목록
 
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
@@ -115,15 +118,15 @@ const ReactDataTable = (props) => {
     };
 
     /* 데이터 삭제 */
-    const deleteClick = async () => {
+    const deleteClick = async (flag) => {
         if(!suffixUrl && !detailUrl) return;
-        const deleteRows = selectedFlatRows.map((row) => row.original);
+        const deleteRows = selectedFlatRows && selectedFlatRows.map((row) => row.original);
 
-        const result = window.confirm(deleteRows+'확인하시겠습니까?');
-
-        if (result && selectedFlatRows && selectedFlatRows.length > 0) {
+        if(!flag) { // 최초, 파라미터가 없을 때
+            setModalViewDatas(deleteRows);
+            setIsOpenModal(true);
+        } else if(flag === '확인') {
             const pkColumn = columns[0].col;
-            
             const deletePkArr = deleteRows.map((item) => item[pkColumn]);
             const url = `/api${suffixUrl || detailUrl}/removeAll.do`;
             const resultData = await axiosDelete(url, {
@@ -133,6 +136,8 @@ const ReactDataTable = (props) => {
                 fetchAllData();
                 alert("삭제되었습니다🧹🧹");
             }
+        } else {
+            setIsOpenModal(false)
         }
     };
 
@@ -252,7 +257,9 @@ const ReactDataTable = (props) => {
     );
 
     useEffect(() => {
-        setLengthSelectRow(selectedFlatRows.length); // button 활성화
+        if(setLengthSelectRow) {
+            setLengthSelectRow(selectedFlatRows.length); // button 활성화
+        }
     }, [selectedFlatRows]);
 
 
@@ -447,6 +454,8 @@ const ReactDataTable = (props) => {
                     onClose={() => {setOpenModalAdd(false)}}
                 />
             )}
+
+            <DeleteModal viewData={modalViewDatas} onConfirm={deleteClick}/>
         </>
     );
 };
