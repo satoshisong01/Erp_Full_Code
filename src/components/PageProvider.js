@@ -3,9 +3,7 @@ import React, { createContext, useState } from "react";
 export const PageContext = createContext();
 
 /**
- * tabs 안에 띄어지는 모든 page에서 공유하는 상태 값
- * 외부에서 <PageProvider>로 감싸야 children으로 인정 됨
- * ㅇㅋㅇㅋ
+ * children인 RootRoutes에서 선언된 모든 컴포넌트에서 공유하는 상태 값
  */
 export function PageProvider({ children }) {
     const [nameOfButton, setNameOfButton] = useState(""); // 클릭된 데이터 테이블의 CRUD 버튼 이름
@@ -16,24 +14,20 @@ export function PageProvider({ children }) {
     const [projectInfo, setProjectInfo] = useState({poiId: '', poiNm: '', poiCode: ''}); // 선택한 프로젝트
     const [currentTable, setCurrentTable] = useState(null); // 유니크한 현재 데이터 테이블
     const [isOpenModal ,setIsOpenModal] = useState(false) // 팝업 flag
+    const [currentPageName , setCurrentPageName] = useState('') // tab 현재페이지
+    const [prevPageName , setPrevPageName] = useState('') // tab 이전페이지
 
     const contextValue = {
-        nameOfButton,
-        setNameOfButton,
-        isSaveFormTable,
-        setIsSaveFormTable,
-        newRowData,
-        setNewRowData,
-        searchData,
-        setSearchData,
-        projectItem,
-        setProjectItem,
-        projectInfo,
-        setProjectInfo,
-        currentTable,
-        setCurrentTable,
-        isOpenModal,
-        setIsOpenModal
+        nameOfButton, setNameOfButton,
+        isSaveFormTable, setIsSaveFormTable,
+        newRowData, setNewRowData,
+        searchData, setSearchData,
+        projectItem, setProjectItem,
+        projectInfo, setProjectInfo,
+        currentTable, setCurrentTable,
+        isOpenModal, setIsOpenModal,
+        currentPageName, setCurrentPageName,
+        prevPageName , setPrevPageName,
     };
 
     return (

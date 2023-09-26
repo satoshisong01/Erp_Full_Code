@@ -4,26 +4,27 @@ import { connect } from "react-redux";
 import { Children } from "./Children.js";
 import store from "store/configureStore";
 import { selectSnb, selectLnb, selectGnb } from "components/tabs/TabsActions";
+import { PageContext } from "components/PageProvider.js";
 
 /* nav, header 클릭 시  label props로 전달 & 해당하는 화면(컴포넌트) children 으로 보여줌 */
 const AntTabs = (props) => {
     const { lnbLabel, snbLabel, gnbLabel } = props;
+    const  { setCurrentPageName, setPrevPageName } = useContext(PageContext);
     const [activeKey, setActiveKey] = useState(""); // 프로젝트 등록 키 0번(활성화)
     const [items, setItems] = useState([]);
 
     /* navi 클릭시 탭 생성 */
     useEffect(() => {
-        console.log(
-            "❤️ AntTabs> lnbLabel: ",
-            lnbLabel,
-            ", snbLabel: ",
-            snbLabel
-        );
         const tab = Children.find(
             (item) => item.label === lnbLabel || item.label === snbLabel
         );
         if (!tab) return;
         addTab(tab);
+
+        setCurrentPageName((pre) => {
+            setPrevPageName(pre);
+            return lnbLabel || snbLabel
+        })
     }, [lnbLabel, snbLabel]);
 
     const onChange = (key) => {

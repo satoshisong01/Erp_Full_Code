@@ -7,25 +7,11 @@ import DataPostModal2 from "./DataPostModal2";
 import DeleteModal from "components/modal/DeleteModal";
 
 const ReactDataTable = (props) => {
-    // 컴포넌트가 닫힐때 초기화 해야함
     const {
-        columns,
-        suffixUrl,
-        flag,
-        detailUrl,
-        customDatas,
-        defaultPageSize,
-        tableRef,
-        setLengthSelectRow,
+        columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, setLengthSelectRow,
     } = props;
     const {
-        nameOfButton,
-        setNameOfButton,
-        newRowData,
-        searchData,
-        setSearchData,
-        setCurrentTable,
-        setIsOpenModal
+        nameOfButton, setNameOfButton, newRowData, searchData, setSearchData, setCurrentTable, setIsOpenModal, currentPageName, prevPageName
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -37,21 +23,20 @@ const ReactDataTable = (props) => {
 
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
-        if (suffixUrl || detailUrl) {
-            fetchAllData();
-        }
-        if (customDatas) {
-            setTableData(customDatas);
-        }
-        if (tableRef) {
-            setCurrentTable(tableRef);
-        }
+        if (suffixUrl || detailUrl) { fetchAllData(); }
+        if (customDatas) { setTableData(customDatas); }
+        if (tableRef) { setCurrentTable(tableRef); }
     }, []);
 
+    /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
-        setIsEditing(flag);
-    }, [flag]);
+        if(currentPageName !== prevPageName) { toggleAllRowsSelected(false); }
+    }, [currentPageName, prevPageName]);
 
+    /* 테이블 cell에서 수정하는 경우의 on off */
+    useEffect(() => { setIsEditing(flag); }, [flag]);
+
+    /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
         if (nameOfButton === "refresh") {
             refreshClick();
@@ -84,15 +69,12 @@ const ReactDataTable = (props) => {
     );
 
     useEffect(() => { //newRowData 변동 시 새로운 행 추가
-        if (newRowData && Object.keys(newRowData).length !== 0) {
-            addClick(newRowData);
-        }
+        if (newRowData && Object.keys(newRowData).length !== 0) { addClick(newRowData); }
     }, [newRowData]);
 
     /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
         if (!suffixUrl && !detailUrl) return;
-        console.log("fetchAllData>>>>>>> ", suffixUrl || detailUrl);
         const url = `/api${suffixUrl || detailUrl}/listAll.do`;
         const resultData = await axiosFetch(url, { useAt: "Y" });
         if (resultData) {
@@ -142,9 +124,7 @@ const ReactDataTable = (props) => {
     };
 
     /* 새로고침 */
-    const refreshClick = () => {
-        fetchAllData();
-    };
+    const refreshClick = () => { fetchAllData(); };
 
     /* 데이터 추가 */
     const addClick = async (addData) => {
@@ -213,8 +193,9 @@ const ReactDataTable = (props) => {
         gotoPage,
         setPageSize,
         pageCount,
-        selectedFlatRows, //선택된 행 데이터
-        toggleRowSelected,
+        selectedFlatRows, // 선택된 행 데이터
+        toggleRowSelected, // 선택된 체크 박스
+        toggleAllRowsSelected, // 전체선택 on off
     } = useTable(
         {
             columns: columnsConfig,
