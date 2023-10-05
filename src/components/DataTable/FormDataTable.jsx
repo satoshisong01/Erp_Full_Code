@@ -22,6 +22,7 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
     const [errors, setErrors] = useState({});
     const [isUse, setIsUse] = useState(useStatus)
 
+
     const inputChange = (fieldName, value) => {
         setFormData((prevData) => ({
             ...prevData,
@@ -99,9 +100,10 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                                 type="text"
                                                                 value={formData[key]}
                                                                 onChange={(e) => inputChange(key, e.target.value)}
+                                                                // placeholder={key}
                                                             />
                                                             {errors[key] && (
-                                                                <div className="text-error">{errors[key]}</div>
+                                                                <div className="text-error-color">{errors[key]}</div>
                                                             )}
                                                         </td>
                                                     ) : type === 'select' ? (
@@ -109,6 +111,7 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                             <select
                                                                 value={formData[key]}
                                                                 onChange={(e) => inputChange(key, e.target.value)}
+                                                                // placeholder={errors[key]}
                                                             >
                                                                 <option value="">선택</option>
                                                                 {option.map((op) => (
@@ -118,7 +121,7 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                                 ))}
                                                             </select>
                                                             {errors[key] && (
-                                                                <div className="text-error">{errors[key]}</div>
+                                                                <div className="text-error-color">{errors[key]}</div>
                                                             )}
                                                         </td>
                                                     ) : label === '상태' ? (

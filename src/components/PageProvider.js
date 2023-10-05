@@ -13,9 +13,12 @@ export function PageProvider({ children }) {
     const [projectItem, setProjectItem] = useState([]); //프로젝트 목록
     const [projectInfo, setProjectInfo] = useState({poiId: '', poiNm: '', poiCode: ''}); // 선택한 프로젝트
     const [currentTable, setCurrentTable] = useState(null); // 유니크한 현재 데이터 테이블
-    const [isOpenModal ,setIsOpenModal] = useState(false) // 팝업 flag
-    const [currentPageName , setCurrentPageName] = useState('') // tab 현재페이지
-    const [prevPageName , setPrevPageName] = useState('') // tab 이전페이지
+    const [isOpenModal, setIsOpenModal] = useState(false); // 팝업 flag
+    const [currentPageName, setCurrentPageName] = useState(''); // tab 현재페이지
+    const [prevCurrentPageName, setPrevCurrentPageName] = useState(''); // tab 이전페이지
+    const [innerPageName, setInnerPageName] = useState(''); // snbLabel과 같은 역할. 컴포넌트 안의 탭 라벨
+    const [prevInnerPageName, setPrevInnerPageName] = useState('');
+    const [lengthSelectRow, setLengthSelectRow] = useState(0); // 테이블 버튼 플래그
 
     const contextValue = {
         nameOfButton, setNameOfButton,
@@ -27,7 +30,10 @@ export function PageProvider({ children }) {
         currentTable, setCurrentTable,
         isOpenModal, setIsOpenModal,
         currentPageName, setCurrentPageName,
-        prevPageName , setPrevPageName,
+        prevCurrentPageName , setPrevCurrentPageName,
+        innerPageName, setInnerPageName,
+        prevInnerPageName, setPrevInnerPageName,
+        lengthSelectRow, setLengthSelectRow,
     };
 
     return (

@@ -17,12 +17,12 @@ export default function DataPutModal({
         setData(initialState);
     };
 
-    const [data, setData] = useState(initialData.original);
+    const [data, setData] = useState(initialData);
     const [errorMessages, setErrorMessages] = useState({}); // 각 필드에 대한 에러 메시지 상태 추가
 
     useEffect(() => {
-        initializeState(); // 모달이 열릴 때 상태를 초기화합니다.
-        setData(initialData.original);
+        initializeState(); // 빈값으로 초기화
+        setData(initialData || {}); // 초기화 후 값 삽입
     }, [initialData]);
 
     const inputChange = (e) => {
@@ -87,37 +87,26 @@ export default function DataPutModal({
                                         return (
                                             <div
                                                 className="postBox"
-                                                key={index}>
+                                                key={index}
+                                            >
                                                 <div className="inputBox">
                                                     <label className="postLabel">
-                                                        {column.require && (
-                                                            <span className="redStar">
-                                                                *
-                                                            </span>
-                                                        )}
+                                                        {column.require && ( <span className="redStar">*</span> )}
                                                         {column.header}:
                                                     </label>
                                                     <input
-                                                        placeholder={
-                                                            column.header
-                                                        }
+                                                        placeholder={column.header}
                                                         className="postInput"
                                                         type="text"
                                                         name={column.col}
-                                                        value={data[column.col]}
+                                                        value={data[column.col] || ""}
                                                         //value={getNestedData(data, column.col) || ""}
                                                         onChange={inputChange}
-                                                        disabled={
-                                                            column.enable ===
-                                                            false
-                                                        }
+                                                        disabled={column.enable === false}
                                                     />
                                                 </div>
                                                 {errorMessages[column.col] && (
-                                                    <span className="error-message text-error">
-                                                        필수값이 입력되지
-                                                        않았습니다.
-                                                    </span>
+                                                    <span className="error-message text-error"> 필수값이 입력되지 않았습니다.</span>
                                                 )}
                                             </div>
                                         );
@@ -130,14 +119,16 @@ export default function DataPutModal({
                                     type="button"
                                     className="btn btn-default"
                                     data-dismiss="modal"
-                                    onClick={onClose}>
+                                    onClick={onClose}
+                                >
                                     취소
                                 </button>
                                 <button
                                     type="button"
                                     className="btn btn-primary modal-btn-close"
                                     id="modalSubmitBtn"
-                                    onClick={handleSaveChanges}>
+                                    onClick={handleSaveChanges}
+                                >
                                     수정
                                 </button>
                             </div>

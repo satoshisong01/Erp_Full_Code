@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PageContext } from "components/PageProvider";
 
 export default function ModalPage() {
-    const { projectItem, projectId, setProjectInfo, setIsOpenModal } =
+    const { projectItem, setProjectInfo, setIsOpenModal } =
         useContext(PageContext);
 
     function handleItemClick(poiId, poiNm, poiCode) {
@@ -13,7 +13,6 @@ export default function ModalPage() {
     }
 
     useEffect(() => {
-        console.log(projectId);
         console.log(projectItem, "프로젝트네임 불러온것");
     }, []);
 

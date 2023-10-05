@@ -1,28 +1,37 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import FormDataTable from "components/DataTable/FormDataTable";
 import ReactDataTable from "components/DataTable/ReactDataTable";
-import ReactTableButton from "components/button/ReactTableButton";
 import { PageContext } from "components/PageProvider";
 import { locationPath } from "constants/locationPath";
 import TableAddModal from "components/modal/TableAddModal";
-import EventButtonDefault from "components/button/EventButtonDefault";
 import RefreshButton from "components/button/RefreshButton";
-import EventButtonPrimary from "components/button/EventButtonPrimary";
-import EventButtonWarning from "components/button/EventButtonWarning";
+import DelButton from "components/button/DelButton";
+import ModButton from "components/button/ModButton";
+import PopupButton from "components/button/PopupButton";
+import URL from "constants/url";
 
 
 /** 영업관리-수주등록관리 */
 function OrderMgmt() {
 
-    const {isOpenModal, setNameOfButton} = useContext(PageContext);
+    const {setNameOfButton} = useContext(PageContext);
     const orderMgmtTable = useRef(null);
 
     const columns = [
-        { header: "프로젝트 이름", col: "poiNm", cellWidth: '50%', type: "input", enable: false, modify: true, add: true, notView: true, require: true},
-        { header: "프로젝트 코드", col: "poiCode", cellWidth: '25%', type: "input"},
-        { header: "수주시작일", col: "poiBeginDt", cellWidth: '25%', type: "select", options: [{value: '1', label: 'op1'}, {value: '2', label: 'op2'}]},
+        { header: "프로젝트 아이디", col: "poiId", cellWidth: '12%', type: "input", enable: false, modify: true, add: true, notView: true, require: true},
+        { header: "프로젝트 이름", col: "poiNm", cellWidth: '20%', type: "input", enable: true, modify: true, add: true, notView: true, require: true},
+        { header: "프로젝트 코드", col: "poiCode", cellWidth: '15%', type: "input", enable: false, modify: false, add: true, notView: true, require: true},
+        // { header: "프로젝트 타이틀", col: "poiTitle", cellWidth: '25%',  type: "input", enable: true, modify: true, add: true, notView: true, require: false},
+        { header: "거래처ID", col: "cltId", cellWidth: '15%', type: "input", enable: false, modify: true, add: false, notView: true, require: true},
+        { header: "수주부서", col: "poiGroupId", cellWidth: '10%',  type: "input", enable: true, modify: true, add: true, notView: true, require: false},
+        { header: "매출부서", col: "poiSalesGroupId", cellWidth: '10%',  type: "input", enable: true, modify: true, add: true, notView: true, require: false},
+        { header: "영업대표", col: "poiSalmanagerId", cellWidth: '10%',  type: "input", enable: true, modify: true, add: true, notView: true, require: false},
+        { header: "PM", col: "poiManagerId", cellWidth: '10%',  type: "input", enable: true, modify: true, add: true, notView: true, require: false},
+        { header: "통화", col: "poiCurrcy", cellWidth: '10%',  type: "input", enable: true, modify: true, add: true, notView: true, require: false},
+        { header: "기준이익률", col: "standardMargin", cellWidth: '10%',  type: "input", enable: true, modify: true, add: true, notView: false, require: false},
+        { header: "상태", col: "poiStatus", cellWidth: '10%',  type: "input", enable: true, modify: true, add: true, notView: true, require: false},
     ];
 
     const conditionList = [
@@ -89,36 +98,33 @@ function OrderMgmt() {
                 label: "사전원가 기준 이익률",
                 key: "standardMargin",
                 type: "input",
+                require: true
             },
             { label: "상태", key: "poiStatus" },
         ],
     ];
-
-    const onClick = () => {
-    }
 
     return (
         <>
             <Location pathList={locationPath.OrderMgmt} />
             <SearchList conditionList={conditionList}/>
             <div className="table-buttons">
-                <EventButtonPrimary label={'사전원가서'} onClick={onClick} />
-                <EventButtonDefault label={'수정'} onClick={() => setNameOfButton('add')} />
-                <EventButtonWarning label={'삭제'} onClick={() => setNameOfButton('delete')} />
-                <RefreshButton onClick={onClick}/>
+                <PopupButton targetUrl={URL.BusiCalculateDoc} data={{ label: "사전원가서", poiCode: ''}}/>
+                <ModButton label={'수정'} onClick={() => setNameOfButton('modify')} />
+                <DelButton label={'삭제'} onClick={() => setNameOfButton('delete')} />
+                <RefreshButton onClick={() => setNameOfButton('refresh')} />
             </div>
-            {/* <ReactTableButton showButton={['orderModify', 'preCost', 'refresh', 'delete']}/> */}
             <ReactDataTable
                 columns={columns}
                 suffixUrl="/baseInfrm/product/pjOrdrInfo"
                 tableRef={orderMgmtTable}
+                viewPageName="수주등록관리"
             />
             <FormDataTable
                 formTableColumns={formTableColumns}
                 title="프로젝트 신규 등록"
                 useStatus={true}
             />
-            { isOpenModal && <TableAddModal columns={columns} />}
         </>
     );
 }
