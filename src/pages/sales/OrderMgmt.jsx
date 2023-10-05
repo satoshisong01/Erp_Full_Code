@@ -1,15 +1,8 @@
-import React, {
-    createContext,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import FormDataTable from "components/DataTable/FormDataTable";
 import ReactDataTable from "components/DataTable/ReactDataTable";
-import ReactTableButton from "components/button/ReactTableButton";
 import { PageContext } from "components/PageProvider";
 import { locationPath } from "constants/locationPath";
 import TableAddModal from "components/modal/TableAddModal";
@@ -17,6 +10,10 @@ import TableAddModal from "components/modal/TableAddModal";
 import RefreshButton from "components/button/RefreshButton";
 import EventButtonPrimary from "components/button/EventButtonPrimary";
 //import EventButtonWarning from "components/button/EventButtonWarning";
+import DelButton from "components/button/DelButton";
+import ModButton from "components/button/ModButton";
+import PopupButton from "components/button/PopupButton";
+import URL from "constants/url";
 
 /** 영업관리-수주등록관리 */
 function OrderMgmt() {
@@ -127,6 +124,7 @@ function OrderMgmt() {
                 label: "사전원가 기준 이익률",
                 key: "standardMargin",
                 type: "input",
+                require: true,
             },
             { label: "상태", key: "poiStatus" },
         ],
@@ -143,18 +141,14 @@ function OrderMgmt() {
                 {/*<EventButtonDefault label={'수정'} onClick={() => setNameOfButton('add')} />*/}
                 {/*<EventButtonWarning label={'삭제'} onClick={() => setNameOfButton('delete')} />*/}
                 <RefreshButton onClick={onClick} />
+                <PopupButton targetUrl={URL.BusiCalculateDoc} data={{ label: "사전원가서", poiCode: "" }} />
+                <ModButton label={"수정"} onClick={() => setNameOfButton("modify")} />
+                <DelButton label={"삭제"} onClick={() => setNameOfButton("delete")} />
+                <RefreshButton onClick={() => setNameOfButton("refresh")} />
             </div>
             {/* <ReactTableButton showButton={['orderModify', 'preCost', 'refresh', 'delete']}/> */}
-            <ReactDataTable
-                columns={columns}
-                suffixUrl="/baseInfrm/product/pjOrdrInfo"
-                tableRef={orderMgmtTable}
-            />
-            <FormDataTable
-                formTableColumns={formTableColumns}
-                title="프로젝트 신규 등록"
-                useStatus={true}
-            />
+            <ReactDataTable columns={columns} suffixUrl="/baseInfrm/product/pjOrdrInfo" tableRef={orderMgmtTable} viewPageName="수주등록관리" />
+            <FormDataTable formTableColumns={formTableColumns} title="프로젝트 신규 등록" useStatus={true} />
             {isOpenModal && <TableAddModal columns={columns} />}
         </>
     );

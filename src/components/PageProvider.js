@@ -23,6 +23,13 @@ export function PageProvider({ children }) {
     const [pgNmList, setPgNmList] = useState([]) // 품목그룹명 선택
     const [returnKeyWord, setReturnKeyWord] = useState(""); //pmNm검색어 저장
     
+    const [isOpenModal, setIsOpenModal] = useState(false); // 팝업 flag
+    const [currentPageName, setCurrentPageName] = useState(''); // tab 현재페이지
+    const [prevCurrentPageName, setPrevCurrentPageName] = useState(''); // tab 이전페이지
+    const [innerPageName, setInnerPageName] = useState(''); // snbLabel과 같은 역할. 컴포넌트 안의 탭 라벨
+    const [prevInnerPageName, setPrevInnerPageName] = useState('');
+    const [lengthSelectRow, setLengthSelectRow] = useState(0); // 테이블 버튼 플래그
+
     const contextValue = {
         nameOfButton,
         setNameOfButton,
@@ -52,6 +59,19 @@ export function PageProvider({ children }) {
         setPgNmList,
         addPgNm,
         setAddPgNm
+        nameOfButton, setNameOfButton,
+        isSaveFormTable, setIsSaveFormTable,
+        newRowData, setNewRowData,
+        searchData, setSearchData,
+        projectItem, setProjectItem,
+        projectInfo, setProjectInfo,
+        currentTable, setCurrentTable,
+        isOpenModal, setIsOpenModal,
+        currentPageName, setCurrentPageName,
+        prevCurrentPageName , setPrevCurrentPageName,
+        innerPageName, setInnerPageName,
+        prevInnerPageName, setPrevInnerPageName,
+        lengthSelectRow, setLengthSelectRow,
     };
 
     return (

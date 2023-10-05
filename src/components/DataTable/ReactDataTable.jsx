@@ -4,19 +4,20 @@ import { useTable, usePagination, useSortBy, useRowSelect } from "react-table";
 import { PageContext } from "components/PageProvider";
 import DataPutModal from "./DataPutModal";
 import DataPostModal2 from "./DataPostModal2";
+import DeleteModal from "components/modal/DeleteModal";
 import ModalSearchPgNm from "components/modal/ModalSearchPgNm";
 import ModalPagePgNm from "components/modal/ModalPagePgNm";
 
 const ReactDataTable = (props) => {
-    // 컴포넌트가 닫힐때 초기화 해야함
     const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, setLengthSelectRow } = props;
-    const { nameOfButton, setNameOfButton, newRowData, searchData, setSearchData, setCurrentTable, isOpenModalPgNm, setIsOpenModalPgNm, projectPgNm, setProjectPgNm } = useContext(PageContext);
+    const { nameOfButton, setNameOfButton, newRowData, searchData, setSearchData, setCurrentTable, setIsOpenModal, currentPageName, prevPageName } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
     const pageSizeOptions = [5, 10, 15, 20, 30, 50, 100];
     const [isEditing, setIsEditing] = useState(false);
     const [openModalMod, setOpenModalMod] = useState(false);
     const [openModalAdd, setOpenModalAdd] = useState(false);
+    const [modalViewDatas, setModalViewDatas] = useState([]); //modal에 띄어줄 목록
 
     const [rowIndex, setRowIndex] = useState(0);
 
@@ -33,10 +34,19 @@ const ReactDataTable = (props) => {
         }
     }, [customDatas]);
 
+    /* tab에서 컴포넌트 화면 변경 시 초기화  */
+    useEffect(() => {
+        if (currentPageName !== prevPageName) {
+            toggleAllRowsSelected(false);
+        }
+    }, [currentPageName, prevPageName]);
+
+    /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
         setIsEditing(flag);
     }, [flag]);
 
+    /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
         if (nameOfButton === "refresh") {
             refreshClick();
@@ -78,7 +88,6 @@ const ReactDataTable = (props) => {
     /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
         if (!suffixUrl && !detailUrl) return;
-        console.log("fetchAllData>>>>>>> ", suffixUrl || detailUrl);
         const url = `/api${suffixUrl || detailUrl}/listAll.do`;
         const resultData = await axiosFetch(url, { useAt: "Y" });
         if (resultData) {
@@ -105,15 +114,16 @@ const ReactDataTable = (props) => {
     };
 
     /* 데이터 삭제 */
-    const deleteClick = async () => {
+    const deleteClick = async (flag) => {
         if (!suffixUrl && !detailUrl) return;
-        const deleteRows = selectedFlatRows.map((row) => row.original);
+        const deleteRows = selectedFlatRows && selectedFlatRows.map((row) => row.original);
 
-        const result = window.confirm(deleteRows + "확인하시겠습니까?");
-
-        if (result && selectedFlatRows && selectedFlatRows.length > 0) {
+        if (!flag) {
+            // 최초, 파라미터가 없을 때
+            setModalViewDatas(deleteRows);
+            setIsOpenModal(true);
+        } else if (flag === "확인") {
             const pkColumn = columns[0].col;
-
             const deletePkArr = deleteRows.map((item) => item[pkColumn]);
             const url = `/api${suffixUrl || detailUrl}/removeAll.do`;
             const resultData = await axiosDelete(url, {
@@ -123,6 +133,8 @@ const ReactDataTable = (props) => {
                 fetchAllData();
                 alert("삭제되었습니다🧹🧹");
             }
+        } else {
+            setIsOpenModal(false);
         }
     };
 
@@ -200,8 +212,9 @@ const ReactDataTable = (props) => {
         gotoPage,
         setPageSize,
         pageCount,
-        selectedFlatRows, //선택된 행 데이터
-        toggleRowSelected,
+        selectedFlatRows, // 선택된 행 데이터
+        toggleRowSelected, // 선택된 체크 박스
+        toggleAllRowsSelected, // 전체선택 on off
     } = useTable(
         {
             columns: columnsConfig,
@@ -235,10 +248,7 @@ const ReactDataTable = (props) => {
     useEffect(() => {
         if (setLengthSelectRow) {
             setLengthSelectRow(selectedFlatRows.length); // button 활성화
-        } else {
-            return;
         }
-        console.log(selectedFlatRows, "💚💚💚💚💚💚💚💚💚💚💚");
     }, [selectedFlatRows]);
 
     /* 변경된 value 값을 column과 같은 이름의 변수에 담아서 테이블에 넣어줌 */
@@ -472,7 +482,8 @@ const ReactDataTable = (props) => {
                     }}
                 />
             )}
-            {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
+
+            <DeleteModal viewData={modalViewDatas} onConfirm={deleteClick} />
         </>
     );
 };
