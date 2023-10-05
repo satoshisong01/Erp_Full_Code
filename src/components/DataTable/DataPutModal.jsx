@@ -88,6 +88,7 @@ export default function DataPutModal({
                                             <div
                                                 className="postBox"
                                                 key={index}>
+                                                    {console.log(data,"@@@@@@@@@✅✅✅✅✅")}
                                                 <div className="inputBox">
                                                     <label className="postLabel">
                                                         {column.require && (
