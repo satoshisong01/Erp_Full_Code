@@ -15,7 +15,14 @@ import DataTableButton from "components/button/DataTableButton";
 import DataPostModal from "./DataPostModal";
 
 const DataTable = (props) => {
-    const { returnKeyWord, columns, suffixUrl, addBtn, customerList } = props;
+    const {
+        returnKeyWord,
+        columns,
+        suffixUrl,
+        addBtn,
+        customerList,
+        dataTest,
+    } = props;
 
     const [modalItem, setModalItem] = useState(""); //모달창에 넘겨주는 데이터
     const [modalOpen, setModalOpen] = useState(false); // 클릭 수정 모달창 true, false
@@ -23,6 +30,7 @@ const DataTable = (props) => {
     const [isCheck, setIsCheck] = useState(false); //체크된 데이터 확인
     const [selectedData, setSelectedData] = useState([]); //체크된 데이터 저장
     const [tableData, setTableData] = useState([]); //데이터 저장
+    const [testtest, setTestTest] = useState([]);
     const dataTableRef = useRef(null); //dataTable Ref 지정
 
     const [errorOn, setErrorOn] = useState(false);
@@ -49,8 +57,13 @@ const DataTable = (props) => {
     //setChangeInt(selectedData.map((item) => item[removeInt]));
 
     useEffect(() => {
+        $(dataTableRef.current).DataTable().destroy();
         fetchAllData(); /* 맨 처음 전체 데이터 불러오기 */
     }, [currentPages]);
+
+    useEffect(() => {
+        setTestTest(dataTest);
+    }, [dataTest]);
 
     // 페이지 변경 함수
     const changePage = (newPage) => {
@@ -118,9 +131,9 @@ const DataTable = (props) => {
     };
 
     /* column click */
-    const onClick = (e, item) => {
-        console.log("⭕ click item: ", item);
-    };
+    //const onClick = (e, item) => {
+    //    console.log("⭕ click item: ", item);
+    //};
 
     /* 서버에서 전체 데이터 가져오기 */
     const fetchAllData = async () => {
@@ -252,12 +265,13 @@ const DataTable = (props) => {
             setTableData(resultData);
         } catch (error) {
             alert("날짜를 모두 입력해주세요");
-            //fetchAllData();
+            fetchAllData();
         }
     };
 
     useEffect(() => {
         if (returnKeyWord) {
+            $(dataTableRef.current).DataTable().destroy();
             searchData(returnKeyWord);
         }
     }, [returnKeyWord]);
@@ -296,7 +310,7 @@ const DataTable = (props) => {
     }, [tableData, pageLength]);
 
     const handleModalClick = (e, item) => {
-        setModalItem(item);
+        setModalItem({original:item});
         setModalOpen(true);
     };
 
@@ -422,96 +436,108 @@ const DataTable = (props) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {tableData.map((item, index) => (
-                                            <tr key={index}>
-                                                <td>
-                                                    <input
-                                                        type="checkbox"
-                                                        id="checkBoxItem"
-                                                        checked={selectedData.some(
-                                                            (selectedItem) =>
-                                                                selectedItem[
-                                                                    columns[0]
-                                                                        .col
-                                                                ] ===
-                                                                item[
-                                                                    columns[0]
-                                                                        .col
-                                                                ]
-                                                        )}
-                                                        onChange={(e) =>
-                                                            ItemCheckboxClick(
-                                                                item,
-                                                                e
-                                                            )
-                                                        }
-                                                    />
-                                                </td>
-                                                {columns.map(
-                                                    (column, colIndex) => {
-                                                        if (column.notView) {
-                                                            return null; // notView 값이 false인 컬럼은 출력하지 않음
-                                                        }
-                                                        const cellValue =
-                                                            item[column.col] ||
-                                                            (item[
-                                                                column.col
-                                                            ] === 0
-                                                                ? "0"
-                                                                : "No data yet.");
-                                                        let formattedValue;
-                                                        if (
-                                                            typeof cellValue ===
-                                                            "number"
-                                                        ) {
-                                                            formattedValue =
-                                                                cellValue.toLocaleString();
-                                                        } else if (
-                                                            column.col ===
-                                                            "createDate"
-                                                        ) {
-                                                            // 시, 분 나오는 부분 자르고 연도/월/일 까지만(공백기준 자르기)
-                                                            const datePart =
-                                                                cellValue.split(
-                                                                    " "
-                                                                )[0];
-                                                            formattedValue =
-                                                                datePart;
-                                                        } else if (
-                                                            column.col ===
-                                                            "lastModifyDate"
-                                                        ) {
-                                                            // 시, 분 나오는 부분 자르고 연도/월/일 까지만(공백기준 자르기)
-                                                            const datePart =
-                                                                cellValue.split(
-                                                                    " "
-                                                                )[0];
-                                                            formattedValue =
-                                                                datePart;
-                                                        } else {
-                                                            formattedValue =
-                                                                cellValue;
-                                                        }
-                                                        return (
-                                                            <td
-                                                                className="tdStyle"
-                                                                key={colIndex}
-                                                                onDoubleClick={(
+                                        {(testtest? testtest : tableData).map(
+                                            (item, index) => (
+                                                <tr key={index}>
+                                                    <td>
+                                                        <input
+                                                            type="checkbox"
+                                                            id="checkBoxItem"
+                                                            checked={selectedData.some(
+                                                                (
+                                                                    selectedItem
+                                                                ) =>
+                                                                    selectedItem[
+                                                                        columns[0]
+                                                                            .col
+                                                                    ] ===
+                                                                    item[
+                                                                        columns[0]
+                                                                            .col
+                                                                    ]
+                                                            )}
+                                                            onChange={(e) =>
+                                                                ItemCheckboxClick(
+                                                                    item,
                                                                     e
-                                                                ) => {
-                                                                    handleModalClick(
-                                                                        e,
-                                                                        item
-                                                                    );
-                                                                }}>
-                                                                {formattedValue}
-                                                                {/* 기존코드 {item[column.col]}*/}
-                                                            </td>
-                                                        );
-                                                    }
-                                                )}
-                                            </tr>
-                                        ))}
+                                                                )
+                                                            }
+                                                        />
+                                                    </td>
+                                                    {columns.map(
+                                                        (column, colIndex) => {
+                                                            if (
+                                                                column.notView
+                                                            ) {
+                                                                return null; // notView 값이 false인 컬럼은 출력하지 않음
+                                                            }
+                                                            const cellValue =
+                                                                item[
+                                                                    column.col
+                                                                ] ||
+                                                                (item[
+                                                                    column.col
+                                                                ] === 0
+                                                                    ? "0"
+                                                                    : "No data yet.");
+                                                            let formattedValue;
+                                                            if (
+                                                                typeof cellValue ===
+                                                                "number"
+                                                            ) {
+                                                                formattedValue =
+                                                                    cellValue.toLocaleString();
+                                                            } else if (
+                                                                column.col ===
+                                                                "createDate"
+                                                            ) {
+                                                                // 시, 분 나오는 부분 자르고 연도/월/일 까지만(공백기준 자르기)
+                                                                const datePart =
+                                                                    cellValue.split(
+                                                                        " "
+                                                                    )[0];
+                                                                formattedValue =
+                                                                    datePart;
+                                                            } else if (
+                                                                column.col ===
+                                                                "lastModifyDate"
+                                                            ) {
+                                                                // 시, 분 나오는 부분 자르고 연도/월/일 까지만(공백기준 자르기)
+                                                                const datePart =
+                                                                    cellValue.split(
+                                                                        " "
+                                                                    )[0];
+                                                                formattedValue =
+                                                                    datePart;
+                                                            } else {
+                                                                formattedValue =
+                                                                    cellValue;
+                                                            }
+                                                            return (
+                                                                <td
+                                                                    className="tdStyle"
+                                                                    key={
+                                                                        colIndex
+                                                                    }
+                                                                    onDoubleClick={(
+                                                                        e
+                                                                    ) => {
+                                                                        handleModalClick(
+                                                                            e,
+                                                                            item
+                                                                        );
+                                                                    }}>
+                                                                    {
+                                                                        formattedValue
+                                                                    }
+                                                                    {/* 기존코드 {item[column.col]}*/}
+                                                                </td>
+                                                            );
+                                                        }
+                                                    )}
+                                                </tr>
+                                            )
+                                        )}
                                     </tbody>
                                 </table>
                             </div>

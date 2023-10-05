@@ -15,9 +15,14 @@ export function PageProvider({ children }) {
     const [openModal, setOpenModal] = useState({type: '', isOpen: false}); // 모달창 open 조건  // type: add, modify
     const [projectItem, setProjectItem] = useState([]); //프로젝트 id, 이름, 코드 저장
     const [projectInfo, setProjectInfo] = useState({poiId: '', poiNm: '', poiCode: ''}); // 선택한 id 저장
+    const [projectPgNm, setProjectPgNm] = useState({pgNm: ''}); // 선택한 id 저장
+    const [addPgNm, setAddPgNm] = useState("");
     const [currentTable, setCurrentTable] = useState(null); // 유니크한 현재 데이터 테이블
     const [isOpenModal ,setIsOpenModal] = useState(false)
-
+    const [isOpenModalPgNm ,setIsOpenModalPgNm] = useState(false)
+    const [pgNmList, setPgNmList] = useState([]) // 품목그룹명 선택
+    const [returnKeyWord, setReturnKeyWord] = useState(""); //pmNm검색어 저장
+    
     const contextValue = {
         nameOfButton,
         setNameOfButton,
@@ -33,10 +38,20 @@ export function PageProvider({ children }) {
         setProjectItem,
         projectInfo,
         setProjectInfo,
+        projectPgNm,
+        setProjectPgNm,
         currentTable,
         setCurrentTable,
         isOpenModal,
-        setIsOpenModal
+        setIsOpenModal,
+        isOpenModalPgNm,
+        setIsOpenModalPgNm,
+        returnKeyWord,
+        setReturnKeyWord,
+        pgNmList,
+        setPgNmList,
+        addPgNm,
+        setAddPgNm
     };
 
     return (

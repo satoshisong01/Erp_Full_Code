@@ -1,10 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import "./ModalSearch.css";
 import ModalPage from "./ModalPage";
 import { PageContext } from "components/PageProvider";
 
 export default function ModalSearch({}) {
-    const { projectInfo, setIsOpenModal, isOpenModal } = useContext(PageContext);
+    const { projectInfo, setIsOpenModal, isOpenModal, setProjectInfo } =
+        useContext(PageContext);
+
+    useEffect(() => {
+        setProjectInfo({});
+    }, []);
 
     return (
         <div>

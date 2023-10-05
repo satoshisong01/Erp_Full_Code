@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+import React, {
+    createContext,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import FormDataTable from "components/DataTable/FormDataTable";
@@ -7,22 +13,44 @@ import ReactTableButton from "components/button/ReactTableButton";
 import { PageContext } from "components/PageProvider";
 import { locationPath } from "constants/locationPath";
 import TableAddModal from "components/modal/TableAddModal";
-import EventButtonDefault from "components/button/EventButtonDefault";
+//import EventButtonDefault from "components/button/EventButtonDefault";
 import RefreshButton from "components/button/RefreshButton";
 import EventButtonPrimary from "components/button/EventButtonPrimary";
-import EventButtonWarning from "components/button/EventButtonWarning";
-
+//import EventButtonWarning from "components/button/EventButtonWarning";
 
 /** 영업관리-수주등록관리 */
 function OrderMgmt() {
-
-    const {isOpenModal, setNameOfButton} = useContext(PageContext);
+    const { isOpenModal, setNameOfButton } = useContext(PageContext);
     const orderMgmtTable = useRef(null);
 
     const columns = [
-        { header: "프로젝트 이름", col: "poiNm", cellWidth: '50%', type: "input", enable: false, modify: true, add: true, notView: true, require: true},
-        { header: "프로젝트 코드", col: "poiCode", cellWidth: '25%', type: "input"},
-        { header: "수주시작일", col: "poiBeginDt", cellWidth: '25%', type: "select", options: [{value: '1', label: 'op1'}, {value: '2', label: 'op2'}]},
+        {
+            header: "프로젝트 이름",
+            col: "poiNm",
+            cellWidth: "50%",
+            type: "input",
+            enable: false,
+            modify: true,
+            add: true,
+            notView: true,
+            require: true,
+        },
+        {
+            header: "프로젝트 코드",
+            col: "poiCode",
+            cellWidth: "25%",
+            type: "input",
+        },
+        {
+            header: "수주시작일",
+            col: "poiBeginDt",
+            cellWidth: "25%",
+            type: "select",
+            options: [
+                { value: "1", label: "op1" },
+                { value: "2", label: "op2" },
+            ],
+        },
     ];
 
     const conditionList = [
@@ -83,8 +111,18 @@ function OrderMgmt() {
             { label: "PM", key: "poiManagerId", type: "input", require: true },
         ],
         [
-            { label: "수주 시작일", key: "poiBeginDt", type: "input", require: true },
-            { label: "수주 마감일", key: "poiEndDt", type: "input", require: true },
+            {
+                label: "수주 시작일",
+                key: "poiBeginDt",
+                type: "input",
+                require: true,
+            },
+            {
+                label: "수주 마감일",
+                key: "poiEndDt",
+                type: "input",
+                require: true,
+            },
             {
                 label: "사전원가 기준 이익률",
                 key: "standardMargin",
@@ -94,18 +132,17 @@ function OrderMgmt() {
         ],
     ];
 
-    const onClick = () => {
-    }
+    const onClick = () => {};
 
     return (
         <>
             <Location pathList={locationPath.OrderMgmt} />
-            <SearchList conditionList={conditionList}/>
+            <SearchList conditionList={conditionList} />
             <div className="table-buttons">
-                <EventButtonPrimary label={'사전원가서'} onClick={onClick} />
-                <EventButtonDefault label={'수정'} onClick={() => setNameOfButton('add')} />
-                <EventButtonWarning label={'삭제'} onClick={() => setNameOfButton('delete')} />
-                <RefreshButton onClick={onClick}/>
+                <EventButtonPrimary label={"사전원가서"} onClick={onClick} />
+                {/*<EventButtonDefault label={'수정'} onClick={() => setNameOfButton('add')} />*/}
+                {/*<EventButtonWarning label={'삭제'} onClick={() => setNameOfButton('delete')} />*/}
+                <RefreshButton onClick={onClick} />
             </div>
             {/* <ReactTableButton showButton={['orderModify', 'preCost', 'refresh', 'delete']}/> */}
             <ReactDataTable
@@ -118,7 +155,7 @@ function OrderMgmt() {
                 title="프로젝트 신규 등록"
                 useStatus={true}
             />
-            { isOpenModal && <TableAddModal columns={columns} />}
+            {isOpenModal && <TableAddModal columns={columns} />}
         </>
     );
 }

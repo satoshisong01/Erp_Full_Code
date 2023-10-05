@@ -8,7 +8,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
 /* 데이터 테이블 검색 */
-export default function SearchList({ conditionList, onSearch }) {
+export default function SearchListpgNm({ conditionList, onSearch }) {
     const [fieldList, setFieldList] = useState([]);
     const [searchData, setSearchData] = useState({});
     const [radioOption, setRadioOption] = useState("Y");
@@ -169,7 +169,9 @@ export default function SearchList({ conditionList, onSearch }) {
                     name={param.colName}
                     value={searchData[param.colName] || ""}
                     onChange={onChange}
+                    placeholder="검색할 품목그룹명을 입력해 주세요"
                     className="form-control flex-item"
+                    style={{width:"300px"}}
                 />
             );
         } else if (param.type === "select") {
@@ -242,8 +244,7 @@ export default function SearchList({ conditionList, onSearch }) {
 
     return (
         <>
-            <div className="flex-between">
-                <div className="radio-group">
+                {/*<div className="radio-group">
                     <input
                         type="radio"
                         value="Y"
@@ -262,34 +263,34 @@ export default function SearchList({ conditionList, onSearch }) {
                         }}
                     />
                     <label>삭제 항목</label>
-                </div>
-
-                <div>
-                    <button
-                        className="btn btn-primary clearIcon"
-                        onClick={resetClick}>
-                        초기화
-                    </button>
-                    <button
-                        className="btn btn-primary searchIcon"
-                        onClick={searchClick}>
-                        <FontAwesomeIcon icon={faMagnifyingGlass} />
-                    </button>
-                </div>
-            </div>
-
-            <div className="line" />
-
-            <div className="flex-container">
-                {fieldList.map((param) => (
-                    <div key={param.colName} className="flex-group mg-l-15">
-                        <div className="flex-label">
-                            <label>{param.title}</label>
+                </div>*/}
+                <div style={{display:"flex", width:"100%",justifyContent:"space-between",marginTop:"10px"}}>
+                    <div className="flex-container" style={{margin:"10px"}}>
+                    {fieldList.map((param) => (
+                        <div key={param.colName} className="flex-group mg-l-15">
+                            <div className="flex-label">
+                                <label>{param.title}</label>
+                            </div>
+                            <div
+                            style={{display:"flex", alignItems:"center",justifyContent:"center"}}
+                            className="flex-input">{renderField(param)}</div>
                         </div>
-                        <div className="flex-input">{renderField(param)}</div>
+                    ))}
+                </div>
+                    <div>
+                        <button
+                            className="btn btn-primary clearIcon"
+                            onClick={resetClick}>
+                            초기화
+                        </button>
+                        <button
+                            className="btn btn-primary searchIcon"
+                            onClick={searchClick}>
+                            <FontAwesomeIcon icon={faMagnifyingGlass} />
+                        </button>
                     </div>
-                ))}
-            </div>
+                </div>
+            
         </>
     );
 }
