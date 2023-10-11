@@ -410,7 +410,7 @@ function PurchasingMgmt() {
 
     return (
         <>
-            <Location pathList={locationPath.LaborCostMgmt} />
+            <Location pathList={locationPath.PurchasingMgmt} />
             <div className="common_board_style mini_board_1">
                 <ul className="tab">
                     <li onClick={() => changeTabs("조회관리")}>
