@@ -249,14 +249,14 @@ export const execution = [
         pLabel: "실행관리",
         activeKey: 304,
     },
-    {
-        title: "Approval",
-        path: URL.Approval,
-        component: <Approval />,
-        label: "전자결재",
-        pLabel: "실행관리",
-        activeKey: 305,
-    },
+    //{
+    //    title: "Approval",
+    //    path: URL.Approval,
+    //    component: <Approval />,
+    //    label: "전자결재",
+    //    pLabel: "실행관리",
+    //    activeKey: 305,
+    //},
 ];
 export const system = [
     //시스템관리
@@ -344,8 +344,6 @@ export const system = [
     //     label: "게시판열람권한관리",
     //     activeKey: 406,
     // },
-
-
 ];
 
 export const Children = [...reference, ...sales, ...execution, ...system];

@@ -9,14 +9,14 @@ export const locationPath = {
     DetailCode: ["코드관리", "시스템관리", "상세코드관리"],
     CategoryCode: ["코드관리", "시스템관리", "분류코드관리"],
     AccessHistoryMgmt: ["접속이력관리", "시스템관리", "접속이력관리"],
-    
+
     AuthorizationMgmt: ["권한관리", "실행관리", "권한관리"],
     PurchasingMgmt: ["구매관리", "실행관리", "구매관리"],
     LaborCostMgmt: ["인건비 관리", "실행관리", "인건비 관리"],
     ExpenseMgmt: ["경비관리", "실행관리", "경비관리"],
     ExecutionCost: ["실행원가", "실행관리", "실행 원가 관리"],
-    Approval: ["전자결재", "실행관리", "결재 수신함"],
-    ProgramList: ["메뉴관리", "실행관리", "프로그램 목록 관리",],
+    //Approval: ["전자결재", "실행관리", "결재 수신함"],
+    ProgramList: ["메뉴관리", "실행관리", "프로그램 목록 관리"],
 
     PermissionGroupMgmt: ["사용자관리", "기준정보관리", "권한그룹정보관리"],
     RegularMemberMgmt: ["사용자관리", "기준정보관리", "일반회원관리"],
@@ -32,6 +32,4 @@ export const locationPath = {
     GradeWageLaborCost: ["원가기준관리", "기준정보관리", "급별단가(인건비)"],
     GradeWageExpense: ["원가기준관리", "기준정보관리", "급별단가(경비)"],
     CostIndex: ["원가기준관리", "기준정보관리", "사전원가지표"],
-
-
-}
+};
