@@ -89,7 +89,7 @@ const usePrevLocation = (location) => {
 };
 
 const RootRoutes = () => {
-    const { projectItem, setProjectItem,returnKeyWord, setPgNmList, addPgNm } = useContext(PageContext);
+    const { projectItem, setProjectItem, returnKeyWord, setPgNmList, addPgNm } = useContext(PageContext);
     useEffect(() => {
         basicFetchData();
         pgNmItem();
@@ -99,7 +99,7 @@ const RootRoutes = () => {
         const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
         const requestData = { useAt: "Y" };
         const resultData = await axiosFetch(url, requestData);
-         console.log(resultData, "나온값은?");
+        console.log(resultData, "나온값은?");
         // console.log(resultData, "나온값은?");
         setProjectItem(
             resultData.map((item) => ({
@@ -110,20 +110,18 @@ const RootRoutes = () => {
         );
     };
 
-
     const pgNmItem = async () => {
         let requestData = "";
-        const url = `/api/baseInfrm/product/productGroup/listAll.do`;
-        if(returnKeyWord){
-        requestData = returnKeyWord;
-        }else{
-        requestData = { useAt: "Y" };
-
+        const url = `/api/baseInfrm/product/productGroup/totalListAll.do`;
+        if (returnKeyWord) {
+            requestData = returnKeyWord;
+        } else {
+            requestData = { useAt: "Y" };
         }
         const resultData = await axiosFetch(url, requestData);
         // console.log(resultData, "나온값은?");
-         console.log(resultData, "PgNm나온값은?@@@******");
-         setPgNmList(
+        console.log(resultData, "PgNm나온값은?@@@******");
+        setPgNmList(
             resultData.map((item) => ({
                 pgNm: item.pgNm,
             }))
@@ -132,16 +130,16 @@ const RootRoutes = () => {
 
     useEffect(() => {
         fnAddPgNm();
-    },[addPgNm])
+    }, [addPgNm]);
 
     const fnAddPgNm = async () => {
         const url = `/api/baseInfrm/product/productGroup/add.do`;
-        const requestData = {...addPgNm, lockAt: "Y", userAt: "Y"}
+        const requestData = { ...addPgNm, lockAt: "Y", userAt: "Y" };
 
-            const resultData = await axiosPost(url, requestData)
-            console.log(resultData,"추가되었습니다 pgnm")
-            pgNmItem()
-    }
+        const resultData = await axiosPost(url, requestData);
+        console.log(resultData, "추가되었습니다 pgnm");
+        pgNmItem();
+    };
 
     // console.log(projectItem, "받아온값");
     //useLocation객체를 이용하여 에러페이시 이동 전 location 객체를 저장하는 코드 추가(아래 2줄) */}
@@ -173,17 +171,11 @@ const RootRoutes = () => {
             <Routes>
                 {" "}
                 {/* 에러페지시 호출시 이전 prevUrl객체를 전송하는 코드 추가(아래) */}
-                <Route
-                    path={URL.ERROR}
-                    element={<EgovError prevUrl={prevLocation} />}
-                />
+                <Route path={URL.ERROR} element={<EgovError prevUrl={prevLocation} />} />
                 <Route path="*" element={<SecondRoutes />} />
-
                 {/* <Route path={URL.ApprovalContainer} element={<ApprovalContainer />} />
                 <Route path={URL.CostStatement} element={<CostStatement />} /> */}
-
                 <Route path={URL.EstimatePopupContainer} element={<EstimatePopupContainer />} />
-                
                 {/* 새창(팝업) : 사전원가계산서 */}
                 <Route path={URL.BusiCalculateDoc} element={<BusiCalculateDoc />} />
                 {/* 새창(팝업) : 실행원가계산서 */}
@@ -198,47 +190,30 @@ const SecondRoutes = () => {
 
     useEffect(() => {
         initPage();
-    },[]);
+    }, []);
 
     return (
         <>
-            <EgovHeader
-                loginUser={loginVO}
-                onChangeLogin={(user) => setLoginVO(user)}
-            />
+            <EgovHeader loginUser={loginVO} onChangeLogin={(user) => setLoginVO(user)} />
             <Routes>
                 {/* MAIN */}
                 <Route path={URL.MAIN} element={<EgovMain />} />
 
                 {/* 탭 화면 */}
                 <Route path={URL.Tabs} element={<TabContainer />} />
-                <Route
-                    path={URL.ExecutionTabPage}
-                    element={<ExecutionTabPage />}
-                />
-                <Route
-                    path={URL.ReferenceTabPage}
-                    element={<ReferenceTabPage />}
-                />
+                <Route path={URL.ExecutionTabPage} element={<ExecutionTabPage />} />
+                <Route path={URL.ReferenceTabPage} element={<ReferenceTabPage />} />
                 <Route path={URL.SalesTabPage} element={<SalesTabPage />} />
                 <Route path={URL.SystemTabPage} element={<SystemTabPage />} />
 
                 {/* LOGIN - URL : /login */}
-                <Route
-                    path={URL.LOGIN}
-                    element={
-                        <EgovLogin onChangeLogin={(user) => setLoginVO(user)} />
-                    }
-                />
+                <Route path={URL.LOGIN} element={<EgovLogin onChangeLogin={(user) => setLoginVO(user)} />} />
 
                 {/* ERROR */}
                 <Route path={URL.ERROR} element={<EgovError />} />
 
                 {/* 기준정보관리 */}
-                <Route
-                    path={URL.Reference}
-                    element={<Navigate to={URL.ItemGroupMgmt} />}
-                />
+                <Route path={URL.Reference} element={<Navigate to={URL.ItemGroupMgmt} />} />
                 <Route path={URL.ItemGroupMgmt} element={<ItemGroupMgmt />} />
                 <Route path={URL.ItemDetailMgmt} element={<ItemDetailMgmt />} />
 
@@ -248,39 +223,18 @@ const SecondRoutes = () => {
                 <Route path={URL.BusinessMgmt} element={<BusinessMgmt />} />
 
                 <Route path={URL.WorkMemberMgmt} element={<WorkMemberMgmt />} />
-                <Route
-                    path={URL.RegularMemberMgmt}
-                    element={<RegularMemberMgmt />}
-                />
-                <Route
-                    path={URL.EnterpriseMemberMgmt}
-                    element={<EnterpriseMemberMgmt />}
-                />
-                <Route
-                    path={URL.PermissionGroupMgmt}
-                    element={<PermissionGroupMgmt />}
-                />
-                <Route
-                    path={URL.OrganizationMgmt}
-                    element={<OrganizationMgmt />}
-                />
+                <Route path={URL.RegularMemberMgmt} element={<RegularMemberMgmt />} />
+                <Route path={URL.EnterpriseMemberMgmt} element={<EnterpriseMemberMgmt />} />
+                <Route path={URL.PermissionGroupMgmt} element={<PermissionGroupMgmt />} />
+                <Route path={URL.OrganizationMgmt} element={<OrganizationMgmt />} />
 
                 <Route path={URL.LaborRate} element={<LaborRate />} />
-                <Route
-                    path={URL.GradeWageLaborCost}
-                    element={<GradeWageLaborCost />}
-                />
-                <Route
-                    path={URL.GradeWageExpense}
-                    element={<GradeWageExpense />}
-                />
+                <Route path={URL.GradeWageLaborCost} element={<GradeWageLaborCost />} />
+                <Route path={URL.GradeWageExpense} element={<GradeWageExpense />} />
                 <Route path={URL.CostIndex} element={<CostIndex />} />
 
                 {/* 영업관리 */}
-                <Route
-                    path={URL.Sales}
-                    element={<Navigate to={URL.OrderMgmt} />}
-                />
+                <Route path={URL.Sales} element={<Navigate to={URL.OrderMgmt} />} />
                 <Route path={URL.OrderMgmt} element={<OrderMgmt />} />
                 <Route path={URL.SalesExpenses} element={<SalesExpenses />} />
                 <Route path={URL.Quotation} element={<Quotation />} />
@@ -288,10 +242,7 @@ const SecondRoutes = () => {
                 {/*<Route path={URL.ElectronicTaxInvoice} element={<ElectronicTaxInvoice />} />*/}
 
                 {/* 실행관리 */}
-                <Route
-                    path={URL.Execution}
-                    element={<Navigate to={URL.ExecutionCost} />}
-                />
+                <Route path={URL.Execution} element={<Navigate to={URL.ExecutionCost} />} />
                 <Route path={URL.ExecutionCost} element={<ExecutionCost />} />
                 <Route path={URL.LaborCostMgmt} element={<LaborCostMgmt />} />
                 <Route path={URL.PurchasingMgmt} element={<PurchasingMgmt />} />
@@ -299,14 +250,8 @@ const SecondRoutes = () => {
                 <Route path={URL.Approval} element={<Approval />} />
 
                 {/* 시스템관리 */}
-                <Route
-                    path={URL.System}
-                    element={<Navigate to={URL.AuthorizationMgmt} />}
-                />
-                <Route
-                    path={URL.AuthorizationMgmt}
-                    element={<AuthorizationMgmt />}
-                />
+                <Route path={URL.System} element={<Navigate to={URL.AuthorizationMgmt} />} />
+                <Route path={URL.AuthorizationMgmt} element={<AuthorizationMgmt />} />
                 <Route path={URL.MenuInfo} element={<MenuInfo />} />
                 <Route path={URL.ProgramList} element={<ProgramList />} />
                 <Route path={URL.PostMgmt} element={<PostMgmt />} />
@@ -316,10 +261,7 @@ const SecondRoutes = () => {
                 <Route path={URL.CategoryCode} element={<CategoryCode />} />
                 <Route path={URL.GroupCode} element={<GroupCode />} />
                 <Route path={URL.DetailCode} element={<DetailCode />} />
-                <Route
-                    path={URL.AccessHistoryMgmt}
-                    element={<AccessHistoryMgmt />}
-                />
+                <Route path={URL.AccessHistoryMgmt} element={<AccessHistoryMgmt />} />
 
                 {/* ADMIN */}
                 <Route path={URL.ADMIN} element={<div>관리자페이지</div>} />

@@ -8,8 +8,7 @@ import { axiosFetch } from "api/axiosFetch";
 
 /** 영업관리-수주계획관리 */
 function OrderPlanMgmt() {
-    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo } =
-        useContext(PageContext);
+    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo } = useContext(PageContext);
 
     useEffect(() => {
         return () => {
@@ -30,7 +29,7 @@ function OrderPlanMgmt() {
             header: "품목그룹명",
             col: "pgNm",
             cellWidth: "20%",
-            type: "select",
+            type: "button",
             options: [],
         },
         { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "input" },
@@ -103,7 +102,8 @@ function OrderPlanMgmt() {
             header: "품목그룹명",
             col: "pgNm",
             cellWidth: "20%",
-            type: "input",
+            type: "button",
+            options: [],
         },
         { header: "품명", col: "pdiNm", cellWidth: "20%", type: "input" },
         { header: "규격", col: "pdiStnd", cellWidth: "20%", type: "input" },
@@ -126,13 +126,6 @@ function OrderPlanMgmt() {
         {
             header: "제조사",
             col: "pdiMenufut",
-            cellWidth: "12%",
-            type: "input",
-        },
-        { header: "금액", col: "pdiDesc1", cellWidth: "10%", type: "input" },
-        {
-            header: "제조사",
-            col: "poiTitle12",
             cellWidth: "12%",
             type: "input",
         },
@@ -214,6 +207,7 @@ function OrderPlanMgmt() {
             사원: 12,
         };
 
+        //날짜포맷
         data.forEach((item) => {
             const key = `${item.pgNm}-${item.pmpMonth[0]}-${item.pmpMonth[1]}`;
             if (!groupedData[key]) {
@@ -245,15 +239,13 @@ function OrderPlanMgmt() {
     //    return option ? option.label : value; // 찾은 옵션의 label을 반환하거나 value 그대로 반환
     //};
 
-    const chageTabs = (task) => {
+    const changeTabs = (task) => {
         setCurrentTask(task);
         if (task !== currentTask) {
             //자신 일때 수정 창으로 변동 되지 않기 위한 조건
             setIsSaveFormTable(true);
         }
     };
-
-    console.log(projectInfo.poiId);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -285,12 +277,9 @@ function OrderPlanMgmt() {
         fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
     }, [projectInfo.poiId, currentTask]);
 
-    console.log(projectInfo.poiId);
-
     const fetchAllData = async (tableUrl) => {
-        const url = `/api${tableUrl}/listAll.do`;
+        const url = `/api${tableUrl}/totalListAll.do`;
         let requestData = { poiId: projectInfo.poiId };
-        console.log(tableUrl, "받아온주소");
         if (tableUrl === "/cost/costPdOrdr") {
             //requestData 값 담기
             requestData = { poiId: projectInfo.poiId, useAt: "Y" };
@@ -319,20 +308,20 @@ function OrderPlanMgmt() {
             <Location pathList={locationPath.OrderPlanMgmt} />
             <div className="common_board_style mini_board_1">
                 <ul className="tab">
-                    <li onClick={() => chageTabs("인건비")}>
+                    <li onClick={() => changeTabs("인건비")}>
                         <a href="#인건비" className="on">
                             인건비
                         </a>
                     </li>
-                    <li onClick={() => chageTabs("경비")}>
+                    <li onClick={() => changeTabs("경비")}>
                         <a href="#경비">경비</a>
                     </li>
-                    <li onClick={() => chageTabs("구매(재료비)")}>
+                    <li onClick={() => changeTabs("구매(재료비)")}>
                         <a href="#구매(재료비)">구매(재료비)</a>
                     </li>
-                    {/* <li onClick={() => chageTabs("기업이윤")}><a href="#기업이윤">기업이윤</a></li> */}
-                    {/* <li onClick={() => chageTabs("일반관리비")}><a href="#일반관리비">일반관리비</a></li>
-                    <li onClick={() => chageTabs("네고")}><a href="#네고">네고</a></li> */}
+                    {/* <li onClick={() => changeTabs("기업이윤")}><a href="#기업이윤">기업이윤</a></li> */}
+                    {/* <li onClick={() => changeTabs("일반관리비")}><a href="#일반관리비">일반관리비</a></li>
+                    <li onClick={() => changeTabs("네고")}><a href="#네고">네고</a></li> */}
                 </ul>
 
                 <div className="list">
@@ -341,10 +330,8 @@ function OrderPlanMgmt() {
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={laborColumns}
-                                    flag={
-                                        currentTask === "인건비" &&
-                                        isSaveFormTable
-                                    }
+                                    flag={currentTask === "인건비" && isSaveFormTable}
+                                    testTask={true}
                                     tableRef={orderPlanMgmtTable1}
                                     customDatas={prmnPlanDatas}
                                 />
@@ -356,10 +343,7 @@ function OrderPlanMgmt() {
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={expensesColumns}
-                                    flag={
-                                        currentTask === "경비" &&
-                                        isSaveFormTable
-                                    }
+                                    flag={currentTask === "경비" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable2}
                                     customDatas={pjbudgetDatas}
                                 />
@@ -372,10 +356,7 @@ function OrderPlanMgmt() {
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={purchaseColumns}
-                                    flag={
-                                        currentTask === "구매(재료비)" &&
-                                        isSaveFormTable
-                                    }
+                                    flag={currentTask === "구매(재료비)" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable3}
                                     customDatas={pdOrdrDatas}
                                 />

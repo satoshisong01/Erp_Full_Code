@@ -92,7 +92,7 @@ function Approval() {
     }, []);
 
     const fetchAllData = async (urlAddress) => {
-        const url = `api${urlAddress}/listAll.do`;
+        const url = `api${urlAddress}/totalListAll.do`;
         const requestData = {
             searchCondition: 1,
             searchKeyword: 13,
@@ -143,13 +143,7 @@ function Approval() {
         <>
             <Location pathList={locationPath.Approval} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
-            <DataTable
-                returnKeyWord={returnKeyWord}
-                columns={columns}
-                suffixUrl="/baseInfrm/product/sign"
-                addBtn={addBtn}
-                dataTest={changeData}
-            />
+            <DataTable returnKeyWord={returnKeyWord} columns={columns} suffixUrl="/baseInfrm/product/sign" addBtn={addBtn} dataTest={changeData} />
         </>
     );
 }

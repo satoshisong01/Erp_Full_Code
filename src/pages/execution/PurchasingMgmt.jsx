@@ -29,18 +29,194 @@ function PurchasingMgmt() {
         {
             header: "프로젝트명",
             col: "poiNm",
-            cellWidth: "50%",
+            cellWidth: "20%",
             type: "input",
         },
         {
-            header: "계획인건비",
+            header: "발주번호",
             col: "pmpmmNum1",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "발주일",
+            col: "pmpmmNum2",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "발주금액",
+            col: "pmpmmNum23",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "발주부서",
+            col: "pmpmmNum24",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "담당자",
+            col: "pmpmmNum25",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "구매요청유형",
+            col: "pmpmmNum26",
             cellWidth: "30%",
             type: "input",
         },
         {
-            header: "실행인건비",
+            header: "진행상태",
+            col: "pmpmmNum27",
+            cellWidth: "20%",
+            type: "input",
+        },
+    ];
+
+    const contractPlan = [
+        { header: "품목그룹명", col: "pmpMonth", cellWidth: "15%", type: "input" },
+        { header: "품명", col: "total", cellWidth: "15%", type: "input" },
+        {
+            header: "규격",
+            col: "poiBeginDt1",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "수량",
+            col: "pmpmmNum1",
+            cellWidth: "15%",
+            type: "input",
+        },
+        {
+            header: "단위",
             col: "pmpmmNum2",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "소비자단가",
+            col: "pmpmmNum3",
+            cellWidth: "15%",
+            type: "input",
+        },
+        {
+            header: "소비자금액",
+            col: "pmpmmNum31",
+            cellWidth: "15%",
+            type: "input",
+        },
+        {
+            header: "단가",
+            col: "pmpmmNum32",
+            cellWidth: "15%",
+            type: "input",
+        },
+        {
+            header: "금액",
+            col: "pmpmmNum33",
+            cellWidth: "15%",
+            type: "input",
+        },
+        {
+            header: "제조사",
+            col: "pmpmmNum34",
+            cellWidth: "15%",
+            type: "input",
+        },
+        {
+            header: "원단가",
+            col: "pmpmmNum35",
+            cellWidth: "15%",
+            type: "input",
+        },
+        {
+            header: "원가(견적가)",
+            col: "pmpmmNum36",
+            cellWidth: "15%",
+            type: "input",
+        },
+        {
+            header: "이익금",
+            col: "pmpmmNum37",
+            cellWidth: "15%",
+            type: "input",
+        },
+        {
+            header: "이익률",
+            col: "pmpmmNum38",
+            cellWidth: "15%",
+            type: "input",
+        },
+        {
+            header: "기준이익률",
+            col: "pmpmmNum39",
+            cellWidth: "15%",
+            type: "input",
+        },
+        {
+            header: "소비자가산출률",
+            col: "pmpmmNum310",
+            cellWidth: "15%",
+            type: "input",
+        },
+        {
+            header: "비고",
+            col: "pmpmmNum311",
+            cellWidth: "15%",
+            type: "input",
+        },
+    ];
+
+    const runCost = [
+        {
+            header: "품목그룹명",
+            col: "poiNm",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "품명",
+            col: "pmpmmNum1",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "규격",
+            col: "pmpmmNum2",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "수량",
+            col: "pmpmmNum23",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "단가",
+            col: "pmpmmNum24",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "금액",
+            col: "pmpmmNum25",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "구매예상일",
+            col: "pmpmmNum26",
+            cellWidth: "30%",
+            type: "input",
+        },
+        {
+            header: "비고",
+            col: "pmpmmNum27",
             cellWidth: "20%",
             type: "input",
         },
@@ -54,48 +230,84 @@ function PurchasingMgmt() {
             type: "button",
             options: [],
         },
-        { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "input" },
-        { header: "M/M계", col: "total", cellWidth: "10%", type: "input" },
+        { header: "품목명", col: "pmpMonth", cellWidth: "10%", type: "input" },
+        { header: "규격", col: "total", cellWidth: "10%", type: "input" },
         {
-            header: "인건비계",
+            header: "수량",
             col: "poiBeginDt1",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "부장",
+            header: "미입고",
             col: "pmpmmNum1",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "차장",
+            header: "입고",
             col: "pmpmmNum2",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "과장",
+            header: "단위",
             col: "pmpmmNum3",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "대리",
+            header: "단가",
             col: "pmpmmNum4",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "주임",
+            header: "금액",
             col: "pmpmmNum5",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "사원",
+            header: "구매거래처",
             col: "pmpmmNum6",
-            cellWidth: "10%",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "발주일",
+            col: "pmpmmNum61",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "제조사",
+            col: "pmpmmNum62",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "요청납기일",
+            col: "pmpmmNum63",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "입고일",
+            col: "pmpmmNum64",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "발주상태",
+            col: "pmpmmNum65",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "입고상태",
+            col: "pmpmmNum66",
+            cellWidth: "20%",
             type: "input",
         },
     ];
@@ -108,47 +320,35 @@ function PurchasingMgmt() {
             type: "button",
             options: [],
         },
-        { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "input" },
-        { header: "M/M계", col: "total", cellWidth: "10%", type: "input" },
+        { header: "품명", col: "pmpMonth", cellWidth: "10%", type: "button" },
+        { header: "규격", col: "total", cellWidth: "10%", type: "input" },
         {
-            header: "인건비계",
+            header: "수량",
             col: "poiBeginDt1",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "부장",
+            header: "단가",
             col: "pmpmmNum1",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "차장",
+            header: "금액",
             col: "pmpmmNum2",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "과장",
+            header: "구매예상일",
             col: "pmpmmNum3",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "대리",
+            header: "비고",
             col: "pmpmmNum4",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "주임",
-            col: "pmpmmNum5",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "사원",
-            col: "pmpmmNum6",
             cellWidth: "10%",
             type: "input",
         },
@@ -162,56 +362,62 @@ function PurchasingMgmt() {
             type: "button",
             options: [],
         },
-        { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "input" },
-        { header: "M/M계", col: "total", cellWidth: "10%", type: "input" },
+        { header: "품명", col: "pmpMonth", cellWidth: "10%", type: "input" },
+        { header: "규격", col: "total", cellWidth: "10%", type: "input" },
         {
-            header: "인건비계",
+            header: "수량",
             col: "poiBeginDt1",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "부장",
+            header: "단가",
             col: "pmpmmNum1",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "차장",
+            header: "금액",
             col: "pmpmmNum2",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "과장",
+            header: "구매거래처",
             col: "pmpmmNum3",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "대리",
+            header: "발주일",
             col: "pmpmmNum4",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "주임",
+            header: "제조사",
             col: "pmpmmNum5",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "사원",
+            header: "요청납기일",
             col: "pmpmmNum6",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "입고일",
+            col: "pmpmmNum7",
             cellWidth: "10%",
             type: "input",
         },
     ];
 
-    const [currentTask, setCurrentTask] = useState("조회관리");
-    const [budgetMgmt, setBudgetMgmt] = useState([]); // 예산관리
-    const [runMgmt, setRunMgmt] = useState([]); // 실행관리
-    const [inquiryMgmt, setInquiryMgmt] = useState([]); // 조회관리
+    const [currentTask, setCurrentTask] = useState("구매 조회관리");
+    const [budgetMgmt, setBudgetMgmt] = useState([]); // 구매 예산관리
+    const [runMgmt, setRunMgmt] = useState([]); // 구매 실행관리
+    const [inquiryMgmt, setInquiryMgmt] = useState([]); // 구매 조회관리
 
     const groupedData = {}; //인건비 바꿔서 넣어줄 빈 객체
 
@@ -263,12 +469,12 @@ function PurchasingMgmt() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if (currentTask === "조회관리") {
-                    const data = await fetchAllData("/cost/costPrmnPlan"); // 조회관리
+                if (currentTask === "구매 조회관리") {
+                    const data = await fetchAllData("/cost/costPrmnPlan"); // 구매 조회관리
                     console.log(data, "불러온 조회관리 값은?");
                     changePrmnPlanData(data);
-                } else if (currentTask === "예산관리") {
-                    const data = await fetchAllData("/cost/costPjbudget/type"); // 예산관리
+                } else if (currentTask === "구매 예산관리") {
+                    const data = await fetchAllData("/cost/costPjbudget/type"); // 구매 예산관리
                     setRunMgmt(data);
                     //.map((item) => ({
                     //    ...item,
@@ -278,7 +484,7 @@ function PurchasingMgmt() {
                     //        expensesColumns[0].options
                     //    ),
                     //}))
-                } else if (currentTask === "실행관리") {
+                } else if (currentTask === "구매 실행관리") {
                     const data = await fetchAllData("/cost/costPdOrdr"); // 실행관리
                     setInquiryMgmt(data);
                 }
@@ -411,18 +617,18 @@ function PurchasingMgmt() {
     return (
         <>
             <Location pathList={locationPath.PurchasingMgmt} />
-            <div className="common_board_style mini_board_1">
+            <div className="common_board_style mini_board_4">
                 <ul className="tab">
-                    <li onClick={() => changeTabs("조회관리")}>
-                        <a href="#조회관리" className="on">
-                            조회관리
+                    <li onClick={() => changeTabs("구매 조회관리")}>
+                        <a href="#구매 조회관리" className="on">
+                            구매 조회관리
                         </a>
                     </li>
-                    <li onClick={() => changeTabs("예산관리")}>
-                        <a href="#예산관리">예산관리</a>
+                    <li onClick={() => changeTabs("구매 예산관리")}>
+                        <a href="#구매 예산관리">구매 예산관리</a>
                     </li>
-                    <li onClick={() => changeTabs("실행관리")}>
-                        <a href="#실행관리">실행관리</a>
+                    <li onClick={() => changeTabs("구매 실행관리")}>
+                        <a href="#구매 실행관리">구매 실행관리</a>
                     </li>
                     {/* <li onClick={() => changeTabs("기업이윤")}><a href="#기업이윤">기업이윤</a></li> */}
                     {/* <li onClick={() => changeTabs("일반관리비")}><a href="#일반관리비">일반관리비</a></li>
@@ -437,7 +643,7 @@ function PurchasingMgmt() {
                             <ReactDataTable columns={projectColumns} defaultPageSize={5} justColumn={true} />
                             <ReactDataTable
                                 columns={inquiryColumns}
-                                flag={currentTask === "조회관리" && isSaveFormTable}
+                                flag={currentTask === "구매 조회관리" && isSaveFormTable}
                                 testTask={true}
                                 tableRef={orderPlanMgmtTable1}
                                 customDatas={inquiryMgmt}
@@ -448,9 +654,10 @@ function PurchasingMgmt() {
                     <div className="second">
                         <ul>
                             <ApprovalForm title={currentTask + " 계획 등록"}>
+                                <ReactDataTable columns={contractPlan} defaultPageSize={5} justColumn={true} />
                                 <ReactDataTable
                                     columns={budgetColumns}
-                                    flag={currentTask === "예산관리" && isSaveFormTable}
+                                    flag={currentTask === "구매 예산관리" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable2}
                                     customDatas={budgetMgmt}
                                 />
@@ -461,9 +668,10 @@ function PurchasingMgmt() {
                     <div className="third">
                         <ul>
                             <ApprovalForm title={currentTask + " 계획 등록"}>
+                                <ReactDataTable columns={runCost} defaultPageSize={5} justColumn={true} />
                                 <ReactDataTable
                                     columns={runColumns}
-                                    flag={currentTask === "실행관리)" && isSaveFormTable}
+                                    flag={currentTask === "구매 실행관리" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable3}
                                     customDatas={runMgmt}
                                 />

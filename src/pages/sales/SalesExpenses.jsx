@@ -1,30 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
 import { axiosFetch } from "api/axiosFetch";
+import ApprovalForm from "components/form/ApprovalForm";
+import ReactDataTable from "components/DataTable/ReactDataTable";
+import { PageContext } from "components/PageProvider";
 
 /** 영업관리-영업비용 */
 function SalesExpenses() {
+    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo } = useContext(PageContext);
+
     const [returnKeyWord, setReturnKeyWord] = useState("");
     const [salesCost, setSalesCost] = useState([]);
 
     const columns = [
         {
-            header: "프로젝트명",
+            header: "경비목록",
             col: "poiNm",
             cellWidth: "20%",
             update: false,
             updating: true,
             write: true,
+            type: "input",
         },
         {
-            header: "지출일",
+            header: "비고",
             col: "pjbgBeginDt",
             cellWidth: "20%",
             updating: true,
             write: true,
+            type: "input",
         },
         {
             header: "금액",
@@ -32,54 +39,47 @@ function SalesExpenses() {
             cellWidth: "50%",
             updating: true,
             write: true,
-        },
-        {
-            header: "비고",
-            col: "pjbgDesc",
-            cellWidth: "20%",
-            updating: true,
-            write: true,
+            type: "input",
         },
     ];
 
-    const conditionList = [
-        {
-            title: "분류코드",
-            colName: "clCode", //컬럼명
-            type: "input",
-            value: "",
-            searchLevel: "1",
-        },
-        {
-            title: "분류코드명",
-            colName: "clCodeNm", //컬럼명
-            type: "input",
-            value: "",
-            searchLevel: "2",
-        },
-        {
-            title: "분류코드설명",
-            colName: "clCodeDc", //컬럼명
-            type: "input",
-            value: "",
-            searchLevel: "3",
-        },
-        {
-            title: "이름",
-            colName: "name",
-            type: "select",
-            option: [
-                { value: "다섯글자의옵션1" },
-                { value: "다섯글자의옵션2" },
-            ],
-            searchLevel: "3",
-        },
-    ];
+    //const conditionList = [
+    //    {
+    //        title: "분류코드",
+    //        colName: "clCode", //컬럼명
+    //        type: "input",
+    //        value: "",
+    //        searchLevel: "1",
+    //    },
+    //    {
+    //        title: "분류코드명",
+    //        colName: "clCodeNm", //컬럼명
+    //        type: "input",
+    //        value: "",
+    //        searchLevel: "2",
+    //    },
+    //    {
+    //        title: "분류코드설명",
+    //        colName: "clCodeDc", //컬럼명
+    //        type: "input",
+    //        value: "",
+    //        searchLevel: "3",
+    //    },
+    //    {
+    //        title: "이름",
+    //        colName: "name",
+    //        type: "select",
+    //        option: [{ value: "다섯글자의옵션1" }, { value: "다섯글자의옵션2" }],
+    //        searchLevel: "3",
+    //    },
+    //];
 
-    const handleReturn = (value) => {
-        setReturnKeyWord(value);
-        console.log(value, "제대로 들어오냐");
-    };
+    //const handleReturn = (value) => {
+    //    setReturnKeyWord(value);
+    //    console.log(value, "제대로 들어오냐");
+    //};
+
+    const [currentTask, setCurrentTask] = useState("영업비용");
 
     const addBtn = [""];
 
@@ -99,7 +99,7 @@ function SalesExpenses() {
 
     const fetchAllData = async () => {
         try {
-            const url = `/api/baseInfrm/product/pjbudget/listAll.do`;
+            const url = `/api/baseInfrm/product/pjbudget/totalListAll.do`;
 
             const requestData = {
                 useAt: "Y",
@@ -141,17 +141,20 @@ function SalesExpenses() {
         }
     }
 
+    //setIsSaveFormTable(true);
+
     return (
         <>
             <Location pathList={locationPath.SalesExpenses} />
-            <SearchList conditionList={conditionList} onSearch={handleReturn} />
-            <DataTable
-                returnKeyWord={returnKeyWord}
-                columns={columns}
-                suffixUrl="/baseInfrm/product/pjbudget"
-                addBtn={addBtn}
-                dataTest={salesCost}
-            />
+            <ApprovalForm title={currentTask + " 실행 등록"}>
+                <ReactDataTable columns={columns} flag={isSaveFormTable} />
+            </ApprovalForm>
+            <div style={{ display: "flex" }}>
+                <span style={{ display: "flex", justifyContent: "center", width: "100px", backgroundColor: "#f2f2f2", border: "solid gray 1px" }}>
+                    경비 합계
+                </span>
+                <span style={{ display: "flex", justifyContent: "center", width: "100px", border: "solid gray 1px" }}>0</span>
+            </div>
         </>
     );
 }

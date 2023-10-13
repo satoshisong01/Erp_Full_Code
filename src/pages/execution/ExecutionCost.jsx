@@ -113,7 +113,7 @@ function ExecutionCost() {
                 <RefreshButton onClick={() => setNameOfButton("refresh")} />
             </div>
             <ReactDataTable columns={columns} suffixUrl="/baseInfrm/product/pjOrdrInfo" tableRef={orderMgmtTable} viewPageName="실행원가관리" />
-            <DataTable returnKeyWord={returnKeyWord} columns={columns} suffixUrl="/system/code/clCode" addBtn={addBtn} />
+            {/*<DataTable returnKeyWord={returnKeyWord} columns={columns} suffixUrl="/system/code/clCode" addBtn={addBtn} />*/}
         </>
     );
 }

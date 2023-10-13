@@ -41,63 +41,127 @@ function ExpenseMgmt() {
 
     const projectColumns = [
         {
-            header: "품목그룹명",
+            header: "프로젝트명",
+            col: "poiNm",
+            cellWidth: "50%",
+            type: "input",
+        },
+        {
+            header: "계획인건비",
+            col: "pmpmmNum1",
+            cellWidth: "30%",
+            type: "input",
+        },
+        {
+            header: "실행인건비",
+            col: "pmpmmNum2",
+            cellWidth: "20%",
+            type: "input",
+        },
+    ];
+    const planCost = [
+        { header: "교통비", col: "pmpMonth", cellWidth: "15%", type: "input" },
+        { header: "숙박비", col: "total", cellWidth: "15%", type: "input" },
+        {
+            header: "일비/파견비",
+            col: "poiBeginDt1",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "식비",
+            col: "pmpmmNum1",
+            cellWidth: "15%",
+            type: "input",
+        },
+        {
+            header: "자재/소모품외",
             col: "pmpmmNum2",
             cellWidth: "20%",
             type: "input",
         },
         {
-            header: "연월",
-            col: "pmpmmNum21",
-            cellWidth: "20%",
-            type: "input",
-        },
-        {
-            header: "M/M계",
-            col: "pmpmmNum22",
+            header: "영업비",
+            col: "pmpmmNum3",
             cellWidth: "15%",
             type: "input",
         },
+    ];
+
+    const runColumns = [
         {
-            header: "인건비계",
-            col: "pmpmmNum23",
+            header: "품목그룹명",
+            col: "pgNm",
+            cellWidth: "20%",
+            type: "select",
+            options: [],
+        },
+        { header: "월", col: "pmpMonth", cellWidth: "10%", type: "input" },
+        { header: "M/M계", col: "total", cellWidth: "10%", type: "input" },
+        {
+            header: "출장인",
+            col: "poiBeginDt1",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "시작일",
+            col: "pmpmmNum1",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "종료일",
+            col: "pmpmmNum2",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "교통비",
+            col: "pmpmmNum3",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "숙박비",
+            col: "pmpmmNum4",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "일비/파견비",
+            col: "pmpmmNum5",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "식비",
+            col: "pmpmmNum6",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "자재/소모품외",
+            col: "pmpmmNum61",
             cellWidth: "20%",
             type: "input",
         },
         {
-            header: "특급기술사",
-            col: "poiNm4",
-            cellWidth: "20%",
+            header: "지출합계",
+            col: "pmpmmNum62",
+            cellWidth: "10%",
             type: "input",
         },
         {
-            header: "고급기술사",
-            col: "pmpmmNum15",
-            cellWidth: "20%",
+            header: "월합계",
+            col: "pmpmmNum63",
+            cellWidth: "10%",
             type: "input",
         },
         {
-            header: "중급기술사",
-            col: "pmpmmNum26",
-            cellWidth: "20%",
-            type: "input",
-        },
-        {
-            header: "초급기술사",
-            col: "pmpmmNum27",
-            cellWidth: "20%",
-            type: "input",
-        },
-        {
-            header: "고급기능사",
-            col: "pmpmmNum28",
-            cellWidth: "20%",
-            type: "input",
-        },
-        {
-            header: "고급기능사",
-            col: "pmpmmNum29",
-            cellWidth: "20%",
+            header: "비고",
+            col: "pmpmmNum641",
+            cellWidth: "10%",
             type: "input",
         },
     ];
@@ -110,47 +174,71 @@ function ExpenseMgmt() {
             type: "button",
             options: [],
         },
-        { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "input" },
+        { header: "월", col: "pmpMonth", cellWidth: "10%", type: "input" },
         { header: "M/M계", col: "total", cellWidth: "10%", type: "input" },
         {
-            header: "인건비계",
+            header: "출장인",
             col: "poiBeginDt1",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "부장",
+            header: "시작일",
             col: "pmpmmNum1",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "차장",
+            header: "종료일",
             col: "pmpmmNum2",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "과장",
+            header: "교통비",
             col: "pmpmmNum3",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "대리",
+            header: "숙박비",
             col: "pmpmmNum4",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "주임",
+            header: "일비/파견비",
             col: "pmpmmNum5",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "사원",
+            header: "식비",
             col: "pmpmmNum6",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "자재/소모품외",
+            col: "pmpmmNum61",
+            cellWidth: "20%",
+            type: "input",
+        },
+        {
+            header: "지출합계",
+            col: "pmpmmNum62",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "월합계",
+            col: "pmpmmNum63",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "비고",
+            col: "pmpmmNum64",
             cellWidth: "10%",
             type: "input",
         },
@@ -164,61 +252,7 @@ function ExpenseMgmt() {
             type: "button",
             options: [],
         },
-        { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "input" },
-        { header: "M/M계", col: "total", cellWidth: "10%", type: "input" },
-        {
-            header: "인건비계",
-            col: "poiBeginDt1",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "부장",
-            col: "pmpmmNum1",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "차장",
-            col: "pmpmmNum2",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "과장",
-            col: "pmpmmNum3",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "대리",
-            col: "pmpmmNum4",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "주임",
-            col: "pmpmmNum5",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "사원",
-            col: "pmpmmNum6",
-            cellWidth: "10%",
-            type: "input",
-        },
-    ];
-
-    const runColumns = [
-        {
-            header: "품목그룹명",
-            col: "pgNm",
-            cellWidth: "20%",
-            type: "button",
-            options: [],
-        },
-        { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "input" },
+        { header: "월", col: "pmpMonth", cellWidth: "10%", type: "input" },
         { header: "M/M계", col: "total", cellWidth: "10%", type: "input" },
         {
             header: "인건비계",
@@ -287,10 +321,10 @@ function ExpenseMgmt() {
         },
     ];
 
-    const [currentTask, setCurrentTask] = useState("조회관리");
-    const [budgetMgmt, setBudgetMgmt] = useState([]); // 예산관리
-    const [runMgmt, setRunMgmt] = useState([]); // 실행관리
-    const [inquiryMgmt, setInquiryMgmt] = useState([]); // 조회관리
+    const [currentTask, setCurrentTask] = useState("경비 조회관리");
+    const [inquiryMgmt, setInquiryMgmt] = useState([]); // 경비 조회관리
+    const [budgetMgmt, setBudgetMgmt] = useState([]); // 경비 예산관리
+    const [runMgmt, setRunMgmt] = useState([]); // 경비 실행관리
 
     const groupedData = {}; //인건비 바꿔서 넣어줄 빈 객체
 
@@ -342,12 +376,12 @@ function ExpenseMgmt() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if (currentTask === "조회관리") {
-                    const data = await fetchAllData("/cost/costPrmnPlan"); // 조회관리
+                if (currentTask === "경비 조회관리") {
+                    const data = await fetchAllData("/cost/costPrmnPlan"); // 경비 조회관리
                     console.log(data, "불러온 조회관리 값은?");
                     changePrmnPlanData(data);
-                } else if (currentTask === "예산관리") {
-                    const data = await fetchAllData("/cost/costPjbudget/type"); // 예산관리
+                } else if (currentTask === "경비 예산관리") {
+                    const data = await fetchAllData("/cost/costPjbudget/type"); // 경비 예산관리
                     setRunMgmt(data);
                     //.map((item) => ({
                     //    ...item,
@@ -357,8 +391,8 @@ function ExpenseMgmt() {
                     //        expensesColumns[0].options
                     //    ),
                     //}))
-                } else if (currentTask === "실행관리") {
-                    const data = await fetchAllData("/cost/costPdOrdr"); // 실행관리
+                } else if (currentTask === "경비 실행관리") {
+                    const data = await fetchAllData("/cost/costPdOrdr"); // 경비 실행관리
                     setInquiryMgmt(data);
                 }
             } catch (error) {
@@ -400,18 +434,18 @@ function ExpenseMgmt() {
         <>
             <Location pathList={locationPath.ExpenseMgmt} />
             {/* <SearchList conditionList={conditionList} onSearch={handleReturn} /> */}
-            <div className="common_board_style mini_board_1">
+            <div className="common_board_style mini_board_3">
                 <ul className="tab">
-                    <li onClick={() => changeTabs("조회관리")}>
-                        <a href="#조회관리" className="on">
-                            조회관리
+                    <li onClick={() => changeTabs("경비 조회관리")}>
+                        <a href="#경비 조회관리" className="on">
+                            경비 조회관리
                         </a>
                     </li>
-                    <li onClick={() => changeTabs("예산관리")}>
-                        <a href="#예산관리">예산관리</a>
+                    <li onClick={() => changeTabs("경비 예산관리")}>
+                        <a href="#경비 예산관리">경비 예산관리</a>
                     </li>
-                    <li onClick={() => changeTabs("실행관리")}>
-                        <a href="#실행관리">실행관리</a>
+                    <li onClick={() => changeTabs("경비 실행관리")}>
+                        <a href="#경비 실행관리">경비 실행관리</a>
                     </li>
                     {/* <li onClick={() => changeTabs("기업이윤")}><a href="#기업이윤">기업이윤</a></li> */}
                     {/* <li onClick={() => changeTabs("일반관리비")}><a href="#일반관리비">일반관리비</a></li>
@@ -426,7 +460,7 @@ function ExpenseMgmt() {
                             <ReactDataTable columns={projectColumns} defaultPageSize={5} justColumn={true} />
                             <ReactDataTable
                                 columns={inquiryColumns}
-                                flag={currentTask === "조회관리" && isSaveFormTable}
+                                flag={currentTask === "경비 조회관리" && isSaveFormTable}
                                 testTask={true}
                                 tableRef={orderPlanMgmtTable1}
                                 customDatas={inquiryMgmt}
@@ -437,22 +471,23 @@ function ExpenseMgmt() {
                     <div className="second">
                         <ul>
                             <ApprovalForm title={currentTask + " 계획 등록"}>
+                                <ReactDataTable columns={planCost} defaultPageSize={5} justColumn={true} />
                                 <ReactDataTable
-                                    columns={budgetColumns}
-                                    flag={currentTask === "예산관리" && isSaveFormTable}
+                                    columns={inquiryColumns}
+                                    flag={currentTask === "경비 예산관리" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable2}
                                     customDatas={budgetMgmt}
                                 />
                             </ApprovalForm>
                         </ul>
                     </div>
-
                     <div className="third">
                         <ul>
                             <ApprovalForm title={currentTask + " 계획 등록"}>
+                                <ReactDataTable columns={runColumns} defaultPageSize={5} justColumn={true} />
                                 <ReactDataTable
-                                    columns={runColumns}
-                                    flag={currentTask === "실행관리)" && isSaveFormTable}
+                                    columns={inquiryColumns}
+                                    flag={currentTask === "경비 실행관리" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable3}
                                     customDatas={runMgmt}
                                 />

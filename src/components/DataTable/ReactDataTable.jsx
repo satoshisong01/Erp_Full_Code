@@ -50,7 +50,7 @@ const ReactDataTable = (props) => {
             setCurrentTable(tableRef);
         }
         setCurrent(viewPageName);
-    }, []);
+    }, [customDatas]);
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
@@ -93,6 +93,7 @@ const ReactDataTable = (props) => {
                 width: column.cellWidth,
                 type: column.type,
                 options: column.options,
+                notView: column.notView,
             })),
         [columns]
     );
@@ -107,12 +108,18 @@ const ReactDataTable = (props) => {
     /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
         if (!suffixUrl && !detailUrl) return;
-        const url = `/api${suffixUrl || detailUrl}/totalListAll.do`;
+        let url = ``;
+        if (customerList) {
+            url = `/api${suffixUrl}/${customerList}/listAll.do`;
+        } else {
+            url = `/api${suffixUrl || detailUrl}/totalListAll.do`;
+        }
         const resultData = await axiosFetch(url, { useAt: "Y" });
+        console.log(resultData, "@@@@@@@@@🧐🧐🧐🧐🧐");
         if (resultData) {
             setTableData([...resultData]);
         } else if (!resultData) {
-            setTableData(Array(defaultPageSize).fill({})); // 빈 배열 추가
+            setTableData(Array(defaultPageSize || 10).fill({})); // 빈 배열 추가
         }
     };
 
@@ -128,6 +135,7 @@ const ReactDataTable = (props) => {
             if (resultData) {
                 setTableData([resultData]);
                 alert("값을 변경했습니다💚💚");
+                fetchAllData();
             } else if (!resultData) {
                 alert("modify error: table");
             }
@@ -166,6 +174,7 @@ const ReactDataTable = (props) => {
         if (!suffixUrl && !detailUrl) return;
         if (addData && typeof addData === "object" && !Array.isArray(addData)) {
             const url = `/api${suffixUrl || detailUrl}/add.do`;
+            console.log(url, "url 나오는것 🥱🥱🥱🥱");
             const dataToSend = { ...addData, lockAt: "Y", useAt: "Y" };
             const resultData = await axiosPost(url, dataToSend);
             if (!resultData) {
@@ -366,10 +375,10 @@ const ReactDataTable = (props) => {
         setTableData(updatedTableData);
     };
 
-    useEffect(() => {
-        setTableData(projectItem);
-    }, justColumn);
-    console.log(projectItem, "@@@@@@@@@@");
+    //useEffect(() => {
+    //    setTableData(projectItem)
+    //},justColumn)
+    //console.log(projectItem, "@@@@@@@@@@");
 
     return (
         <>
@@ -390,15 +399,22 @@ const ReactDataTable = (props) => {
                 <thead>
                     {headerGroups.map((headerGroup, headerGroupIndex) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map((column, columnIndex) => (
-                                <th
-                                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                                    className={columnIndex === 0 ? "first-column" : ""}
-                                    style={{ width: column.width }}>
-                                    {column.render("Header")}
-                                    <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
-                                </th>
-                            ))}
+                            {headerGroup.headers.map((column, columnIndex) => {
+                                if (column.notView) {
+                                    // notView가 true인 경우, 헤더 셀을 출력하지 않음
+                                    return null;
+                                }
+
+                                return (
+                                    <th
+                                        {...column.getHeaderProps(column.getSortByToggleProps())}
+                                        className={columnIndex === 0 ? "first-column" : ""}
+                                        style={{ width: column.width }}>
+                                        {column.render("Header")}
+                                        <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
+                                    </th>
+                                );
+                            })}
                             {isEditing && (
                                 <th style={{ width: "70px", textAlign: "center" }}>
                                     <button className="btn-primary" onClick={onAddRow} style={{ margin: 0 }}>
@@ -409,66 +425,74 @@ const ReactDataTable = (props) => {
                         </tr>
                     ))}
                 </thead>
+
                 <tbody {...getTableBodyProps()}>
                     {page.map((row, rowIndex) => {
                         prepareRow(row);
                         return (
                             <tr {...row.getRowProps()} onClick={(e) => onCLickRow(row)}>
-                                {row.cells.map((cell, cellIndex) => (
-                                    <td
-                                        {...cell.getCellProps()}
-                                        className={cellIndex === 0 ? "first-column" : "other-column"}
-                                        onClick={(e) => onClickCell(e, cell)}>
-                                        {cell.column.id === "selection" ? (
-                                            cell.render("Cell")
-                                        ) : isEditing ? (
-                                            cell.column.type === "input" ? (
-                                                <input
-                                                    type="text"
-                                                    value={
-                                                        tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
-                                                            ? tableData[row.index][cell.column.id] || cell.value
-                                                            : cell.value
-                                                    }
-                                                    name={cell.column.id}
-                                                    onChange={(e) => onChange(e, row)}
-                                                />
-                                            ) : cell.column.type === "select" ? (
-                                                <select
-                                                    name={cell.column.id}
-                                                    defaultValue={
-                                                        tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
-                                                            ? tableData[row.index][cell.column.id]
-                                                            : cell.column.options[row.index].value || "" // 기본값: 해당 행의 인덱스에 해당하는 옵션의 value 값 또는 빈 문자열
-                                                    }
-                                                    onChange={(e) => onChange(e, row)}>
-                                                    {cell.column.options.map((option, index) => (
-                                                        <option key={index} value={option.value}>
-                                                            {option.label}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            ) : cell.column.type === "button" ? (
-                                                <div>
+                                {row.cells.map((cell, cellIndex) => {
+                                    if (cell.column.notView) {
+                                        // notView가 true인 경우, 셀을 출력하지 않음
+                                        return null;
+                                    }
+
+                                    return (
+                                        <td
+                                            {...cell.getCellProps()}
+                                            className={cellIndex === 0 ? "first-column" : "other-column"}
+                                            onClick={(e) => onClickCell(e, cell)}>
+                                            {cell.column.id === "selection" ? (
+                                                cell.render("Cell")
+                                            ) : isEditing ? (
+                                                cell.column.type === "input" ? (
                                                     <input
-                                                        id={cell.column.id}
-                                                        name={cell.column.id}
-                                                        onClick={() => setValueData(rowIndex)}
                                                         type="text"
-                                                        placeholder={projectPgNm.pgNm ? projectPgNm.pgNm : `품목그룹명을 선택해 주세요.`}
-                                                        value={tableData[rowIndex].pgNm || ""}
-                                                        onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
-                                                        readOnly
+                                                        value={
+                                                            tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
+                                                                ? tableData[row.index][cell.column.id] || cell.value
+                                                                : cell.value
+                                                        }
+                                                        name={cell.column.id}
+                                                        onChange={(e) => onChange(e, row)}
                                                     />
-                                                </div>
+                                                ) : cell.column.type === "select" ? (
+                                                    <select
+                                                        name={cell.column.id}
+                                                        defaultValue={
+                                                            tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
+                                                                ? tableData[row.index][cell.column.id]
+                                                                : cell.column.options[row.index].value || "" // 기본값: 해당 행의 인덱스에 해당하는 옵션의 value 값 또는 빈 문자열
+                                                        }
+                                                        onChange={(e) => onChange(e, row)}>
+                                                        {cell.column.options.map((option, index) => (
+                                                            <option key={index} value={option.value}>
+                                                                {option.label}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                ) : cell.column.type === "button" ? (
+                                                    <div>
+                                                        <input
+                                                            id={cell.column.id}
+                                                            name={cell.column.id}
+                                                            onClick={() => setValueData(rowIndex)}
+                                                            type="text"
+                                                            placeholder={projectPgNm.pgNm ? projectPgNm.pgNm : `품목그룹명을 선택해 주세요.`}
+                                                            value={tableData[rowIndex].pgNm || ""}
+                                                            onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
+                                                            readOnly
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    cell.render("Cell")
+                                                )
                                             ) : (
                                                 cell.render("Cell")
-                                            )
-                                        ) : (
-                                            cell.render("Cell")
-                                        )}
-                                    </td>
-                                ))}
+                                            )}
+                                        </td>
+                                    );
+                                })}
                                 {isEditing && (
                                     <td style={{ textAlign: "center" }}>
                                         <button className="btnR btn-primary redDelete" onClick={() => onDeleteRow(row)}>

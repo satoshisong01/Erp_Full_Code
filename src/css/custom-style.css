@@ -51,7 +51,6 @@
     margin-bottom: 10px;
 }
 
-
 /* react-table button */
 .table-buttons {
     display: flex;
@@ -60,31 +59,85 @@
     align-items: center;
     text-align: center;
     gap: 10px;
-  
+
     .table-btn {
-        display: inline-block; font-weight: 400; text-align: center; vertical-align: middle;
-        touch-action: manipulation; cursor: pointer; background-image: none; white-space: nowrap;
-        padding: 5px 12px; font-size: 14px; line-height: 1.42857143; border-radius: 4px;
-        -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        vertical-align: middle;
+        touch-action: manipulation;
+        cursor: pointer;
+        background-image: none;
+        white-space: nowrap;
+        padding: 5px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        border-radius: 4px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        transition: all 0.2s;
     }
-    .table-btn-default { color: #007bff; border: 1px solid #007bff; background-color: white; }
-    .table-btn-primary { color: #fff; border: 1px solid #007bff; background-color: #007bff; }
-    .table-btn-warning { color: #fff; border: 1px solid #fd3d6b; background-color: #fd3d6b; }
-    .table-btn-primary:hover { background-color: #005cbe; }
-    .table-btn-warning:hover { background-color: #bd2e4f; }
-    .table-btn-default:hover {  border: 1px solid #005cbe; }
+    .table-btn:hover {
+        transform: scale(1.05);
+    }
+
+    .table-btn:active {
+        background-color: #005cbe;
+        color: white;
+    }
+
+    .table-btn-default {
+        color: #007bff;
+        border: 1px solid #007bff;
+        background-color: white;
+    }
+    .table-btn-primary {
+        color: #fff;
+        border: 1px solid #007bff;
+        background-color: #007bff;
+    }
+    .table-btn-warning {
+        color: #fff;
+        border: 1px solid #fd3d6b;
+        background-color: #fd3d6b;
+    }
+    .table-btn-primary:hover {
+        background-color: #005cbe;
+    }
+    .table-btn-warning:hover {
+        background-color: #bd2e4f;
+    }
+    .table-btn-default:hover {
+        border: 1px solid #005cbe;
+    }
+    .table-btn-warning:active {
+        background-color: white;
+        color: #bd2e4f;
+    }
     .table-btn-default.disabled,
     .table-btn-primary.disabled,
     .table-btn-warning.disabled {
-        color: #fff; background-color: gray; opacity: 0.5; border: 1px solid gray; pointer-events: none;
+        color: #fff;
+        background-color: gray;
+        opacity: 0.5;
+        border: 1px solid gray;
+        pointer-events: none;
     }
-    @keyframes rotate { /* 애니메이션 정의 */
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+    @keyframes rotate {
+        /* 애니메이션 정의 */
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
     }
-    .refresh:hover .refresh-Icon { animation: rotate 0.5s linear; }
+    .refresh:hover .refresh-Icon {
+        animation: rotate 0.5s linear;
+    }
 }
-
 
 .logo-center-container {
     display: flex;
@@ -97,8 +150,7 @@
     width: auto;
     height: auto;
     opacity: 0;
-    animation: appearAndBounce 2s ease-in-out 1s forwards,
-        bounce 2s ease-in-out 3s infinite;
+    animation: appearAndBounce 2s ease-in-out 1s forwards, bounce 2s ease-in-out 3s infinite;
 }
 
 @keyframes appearAndBounce {
@@ -797,10 +849,10 @@ td > input {
     font-size: 18px;
 }
 
-
 /* delete modal */
-body > div.ReactModalPortal > div > div { /* 기존 CSS 무효화 */
-    overflow: visible !important
+body > div.ReactModalPortal > div > div {
+    /* 기존 CSS 무효화 */
+    overflow: visible !important;
 }
 
 .ReactModal__Content {
@@ -813,7 +865,6 @@ body > div.ReactModalPortal > div > div { /* 기존 CSS 무효화 */
     max-height: 75px;
     overflow-y: auto;
 }
-
 
 /* 반응형 스타일 */
 @media (max-width: 768px) {
