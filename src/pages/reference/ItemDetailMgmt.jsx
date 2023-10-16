@@ -128,6 +128,7 @@ function ItemDetailMgmt() {
                 suffixUrl="/baseInfrm/product/productGroup"
                 tableRef={itemDetailMgmtTable}
                 setLengthSelectRow={setLengthSelectRow}
+                viewPageName="품목상세관리"
             />
         </>
     );

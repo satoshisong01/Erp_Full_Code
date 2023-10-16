@@ -37,6 +37,9 @@
 .mg-l-5 {
     margin-left: 5px;
 }
+.mg-l-10 {
+    margin-left: 10px;
+}
 .mg-l-20 {
     margin-left: 20px;
 }
@@ -534,6 +537,7 @@
     justify-content: center;
     margin-top: 1rem;
     color: gray;
+    gap: 10px;
 }
 
 .pagination button {

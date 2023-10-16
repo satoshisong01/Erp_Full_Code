@@ -8,7 +8,7 @@ import DeleteModal from "components/modal/DeleteModal";
 import ModalPagePgNm from "components/modal/ModalPagePgNm";
 
 const ReactDataTable = (props) => {
-    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, justColumn } = props;
+    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -25,7 +25,6 @@ const ReactDataTable = (props) => {
         setLengthSelectRow,
         newRowData,
         currentPageName,
-        projectItem,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -115,7 +114,6 @@ const ReactDataTable = (props) => {
             url = `/api${suffixUrl || detailUrl}/totalListAll.do`;
         }
         const resultData = await axiosFetch(url, { useAt: "Y" });
-        console.log(resultData, "@@@@@@@@@🧐🧐🧐🧐🧐");
         if (resultData) {
             setTableData([...resultData]);
         } else if (!resultData) {
@@ -174,7 +172,6 @@ const ReactDataTable = (props) => {
         if (!suffixUrl && !detailUrl) return;
         if (addData && typeof addData === "object" && !Array.isArray(addData)) {
             const url = `/api${suffixUrl || detailUrl}/add.do`;
-            console.log(url, "url 나오는것 🥱🥱🥱🥱");
             const dataToSend = { ...addData, lockAt: "Y", useAt: "Y" };
             const resultData = await axiosPost(url, dataToSend);
             if (!resultData) {
@@ -280,14 +277,16 @@ const ReactDataTable = (props) => {
         }
     );
 
+    /* table button 활성화 on off */
     useEffect(() => {
-        if (selectedFlatRows && selectedFlatRows.length > 0) {
-            if (current === currentPageName || current === innerPageName) {
-                // 현재 보는 페이지라면
-                setLengthSelectRow(selectedFlatRows.length); // table button 활성화 on off
+        if (current === currentPageName || current === innerPageName) { // 현재 보는 페이지라면
+            if (selectedFlatRows.length > 0) {
+                setLengthSelectRow(selectedFlatRows.length);
+                setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values); // 선택한 rows의 마지막 배열
+            } else if (selectedFlatRows.length === 0) {
+                setLengthSelectRow(selectedFlatRows.length); 
             }
-            setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values); // 선택한 rows의 마지막 배열
-        }
+        } 
     }, [selectedFlatRows]);
 
     /* 변경된 value 값을 column과 같은 이름의 변수에 담아서 테이블에 넣어줌 */
@@ -331,7 +330,6 @@ const ReactDataTable = (props) => {
 
     useEffect(() => {
         setDataBuket(projectPgNm.pgNm);
-        console.log(projectPgNm.pgNm, "@@@@@@@");
         //setTableData()
     }, [projectPgNm]);
 
@@ -360,12 +358,6 @@ const ReactDataTable = (props) => {
         }
     }, [isOpenModalPgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
 
-    console.log(tableData, "받아와서 뿌리는게 뭘까");
-
-    useEffect(() => {
-        console.log(dataBuket, "55555555555555555555");
-    }, [dataBuket]);
-
     const handleChange = (e, rowIndex, accessor) => {
         const { value } = e.target;
         // tableData를 복제하여 수정
@@ -374,11 +366,6 @@ const ReactDataTable = (props) => {
         // 수정된 데이터로 tableData 업데이트
         setTableData(updatedTableData);
     };
-
-    //useEffect(() => {
-    //    setTableData(projectItem)
-    //},justColumn)
-    //console.log(projectItem, "@@@@@@@@@@");
 
     return (
         <>
@@ -507,26 +494,11 @@ const ReactDataTable = (props) => {
             </table>
 
             <div className="pagination">
-                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                    {" "}
-                    처음{" "}
-                </button>
-                <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-                    {" "}
-                    이전{" "}
-                </button>
-                <span>
-                    {" "}
-                    페이지 {pageIndex + 1} / {pageOptions && pageOptions.length}{" "}
-                </span>
-                <button onClick={() => nextPage()} disabled={!canNextPage}>
-                    {" "}
-                    다음{" "}
-                </button>
-                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-                    {" "}
-                    마지막{" "}
-                </button>
+                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}> 처음 </button>
+                <button onClick={() => previousPage()} disabled={!canPreviousPage}> 이전 </button>
+                <span> 페이지 {pageIndex + 1} / {pageOptions && pageOptions.length}{" "} </span>
+                <button onClick={() => nextPage()} disabled={!canNextPage}> 다음 </button>
+                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}> 마지막 </button>
             </div>
 
             {openModalMod && (
