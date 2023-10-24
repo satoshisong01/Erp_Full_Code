@@ -77,6 +77,7 @@ import CostStatement from "pages/approval/CostStatement";
 import EstimatePopupContainer from "pages/approval/EstimatePopupContainer";
 import BusiCalculateDoc from "pages/sales/Business/BusiCalculateDoc";
 import ExcutionCostsDoc from "pages/execution/excutionCost/ExcutionCostsDoc";
+import LaborPreCostDoc from "pages/sales/Business/LaborPreCostDoc";
 
 // 에러 페이지와 같은 상단(EgovHeader) 소스가 제외된 페이지에서 ui.js의 햄버거버튼 작동오류가 발생한다.
 // 즉, ui.js가 작동되지 않아서 재 로딩 해야 한다. 그래서, useRef객체를 사용하여 이전 페이지 URL을 구하는 코드 추가(아래)
@@ -206,7 +207,8 @@ const RootRoutes = () => {
                 <Route path={URL.CostStatement} element={<CostStatement />} /> */}
                 <Route path={URL.EstimatePopupContainer} element={<EstimatePopupContainer />} />
                 {/* 새창(팝업) : 사전원가계산서 */}
-                <Route path={URL.BusiCalculateDoc} element={<BusiCalculateDoc />} />
+                {/* <Route path={URL.BusiCalculateDoc} element={<BusiCalculateDoc />} /> */}
+                <Route path={URL.LaborPreCostDoc} element={<LaborPreCostDoc />} />
                 {/* 새창(팝업) : 실행원가계산서 */}
                 <Route path={URL.ExcutionCostsDoc} element={<ExcutionCostsDoc />} />
             </Routes>

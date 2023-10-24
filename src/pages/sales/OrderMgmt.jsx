@@ -130,7 +130,7 @@ function OrderMgmt() {
             <Location pathList={locationPath.OrderMgmt} />
             <SearchList conditionList={conditionList} />
             <div className="table-buttons">
-                <PopupButton targetUrl={URL.BusiCalculateDoc} data={{ label: "사전원가서", poiCode: "" }} />
+                <PopupButton targetUrl={URL.LaborPreCostDoc} data={{ label: "사전원가서", poiCode: "" }} />
                 <ModButton label={"수정"} onClick={() => setNameOfButton("modify")} />
                 <DelButton label={"삭제"} onClick={() => setNameOfButton("delete")} />
                 <RefreshButton onClick={() => setNameOfButton("refresh")} />

@@ -14,8 +14,9 @@ const URL = {
     ApprovalContainer: "/approvalContainer", //전자결재 페이지
     EstimatePopupContainer: "/estimatePopupContainer",
     CostStatement: "/costStatement", //전자결재 페이지
-    BusiCalculateDoc: "/busiCalculateDoc", //사전원가 계산서 팝업
-    ExcutionCostsDoc: "/excutionCostsDoc", //실행원가 계산서 팝업
+    LaborPreCostDoc: "/laborPreCostDoc", //인건비사전원가서 팝업
+    BusiCalculateDoc: "/buyingPreCostDoc", //구매사전원가서 팝업
+    ExcutionCostsDoc: "/excutionCostsDoc", //실행원가서(사후정산서) 팝업
 
     //REFERENCE 기준정보관리
     Reference: "/reference", //기준정보관리

@@ -16,25 +16,20 @@ export default function GeneralMemberTableSearchBar({
     const [inputLv, setInputLv] = useState("0");
     const [option, setOption] = useState("option2");
 
-    //검색 인풋값 핸들러
-    const handleSearchClick = () => {
-        onSearch(inputValue);
-    };
+    const condition = [
+        { text: '삭제 항목', type: 'input' }
+]
 
-    //검색 레벨 핸들러
-    const handleLvClick = () => {
-        onSearchLv(inputLv);
-    };
-
-    //옵션 변경 시 핸들러
-    const handleOption = () => {
-        onOption(option);
-    };
+    const searchBtnClick = () => {
+        onSearch(inputValue); //검색 인풋값 핸들러
+        onSearchLv(inputLv); //검색 레벨 핸들러
+        onOption(option); //옵션 변경 시 핸들러
+    }
 
     //데이터 검색
     const handleSearch = (e) => {
         e.preventDefault();
-        searchBtn();
+        searchBtn(); //부모의 handleSearchData() 발생 - 데이터 통신
     };
 
     // 초기화 버튼 클릭 시 핸들러 함수
@@ -82,6 +77,8 @@ export default function GeneralMemberTableSearchBar({
                                 </label>
                             </div>
                         </div>
+
+
                         <div className="buttonTool">
                             <button
                                 className="btn btn-primary refreshIcon"
@@ -94,17 +91,15 @@ export default function GeneralMemberTableSearchBar({
                                 초기화
                             </button>
                             <button
-                                onClick={() => {
-                                    handleSearchClick();
-                                    handleLvClick();
-                                    handleOption();
-                                }}
+                                onClick={searchBtnClick}
                                 type="submit"
                                 className="btn btn-primary searchIcon">
                                 <FontAwesomeIcon icon={faMagnifyingGlass} />
                             </button>
                         </div>
                     </div>
+
+
                     {/*<div className="searchLine" />*/}
                     <div className="box">
                         <div className="box1">
