@@ -415,6 +415,10 @@
     margin: auto;
 }
 
+.hideDivRun,
+.hideDivRun2,
+.hideDivRun3,
+.hideDivRun4,
 .hideDiv,
 .hideDiv2,
 .hideDiv3,
@@ -435,6 +439,10 @@
     margin: 0;
 }
 
+.hideDivRun.clicked,
+.hideDivRun2.clicked,
+.hideDivRun3.clicked,
+.hideDivRun4.clicked,
 .hideDiv.clicked,
 .hideDiv2.clicked,
 .hideDiv3.clicked,

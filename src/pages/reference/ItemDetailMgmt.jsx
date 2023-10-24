@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import { locationPath } from "constants/locationPath";
@@ -8,11 +8,13 @@ import DelButton from "components/button/DelButton";
 import RefreshButton from "components/button/RefreshButton";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { PageContext } from "components/PageProvider";
+import { axiosFetch } from "api/axiosFetch";
 
 /** 기준정보관리-품목관리-품목상세관리 */
 function ItemDetailMgmt() {
-    const {setNameOfButton} = useContext(PageContext);
+    const { setNameOfButton } = useContext(PageContext);
     const itemDetailMgmtTable = useRef(null);
+    const [pdIdArray, setPdIdArray] = useState([]);
 
     const columns = [
         {
@@ -59,19 +61,34 @@ function ItemDetailMgmt() {
             cellWidth: "20%",
             enable: false,
             type: "select",
-            option: [ ///baseInfrm/product/productGroup
-            { value: "1", label: "교통비" },
-            { value: "2", label: "숙박비" },
-            { value: "3", label: "일비/파견비" },
-            { value: "4", label: "식비" },
-            { value: "5", label: "자재/소모품외" },
-            { value: "6", label: "영업비" },
-            ],
+            option: pdIdArray,
             modify: true,
             add: true,
             require: true,
         },
     ];
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        const url = `/api/baseInfrm/product/productGroup/totalListAll.do`;
+        const requestData = { useAt: "Y" };
+        const resultData = await axiosFetch(url, requestData);
+        console.log(resultData, "🔥🔥🔥🔥🔥불러온거");
+        if (resultData) {
+            const ArrayList = resultData.map((item, index) => ({
+                value: index + 1,
+                label: item.pgId, // 원하는 속성 이름을 여기에 추가
+            }));
+            setPdIdArray(ArrayList);
+        }
+    };
+
+    useEffect(() => {
+        console.log(pdIdArray);
+    }, [pdIdArray]);
 
     const conditionList = [
         {
@@ -92,12 +109,7 @@ function ItemDetailMgmt() {
             title: "상태",
             colName: "createIdBy", //컬럼명
             type: "select",
-            option: [
-                { value: "사용" },
-                { value: "임시" },
-                { value: "거래중지" },
-                { value: "폐기" },
-            ],
+            option: [{ value: "사용" }, { value: "임시" }, { value: "거래중지" }, { value: "폐기" }],
             searchLevel: "3",
         },
         {
@@ -108,24 +120,24 @@ function ItemDetailMgmt() {
         },
     ];
 
-    const [length, setLength] = useState(0)
+    const [length, setLength] = useState(0);
     const setLengthSelectRow = (length) => {
         setLength(length);
-    }
-
+    };
     return (
         <>
             <Location pathList={locationPath.ItemDetailMgmt} />
             <SearchList conditionList={conditionList} />
             <div className="table-buttons">
-                <AddButton label={'추가'} onClick={() => setNameOfButton('add')} />
-                <ModButton label={'수정'} length={length} onClick={() => setNameOfButton('modify')} />
-                <DelButton label={'삭제'} length={length} onClick={() => setNameOfButton('delete')} />
-                <RefreshButton onClick={() => setNameOfButton('refresh')} />
+                <AddButton label={"추가"} onClick={() => setNameOfButton("add")} />
+                <ModButton label={"수정"} length={length} onClick={() => setNameOfButton("modify")} />
+                <DelButton label={"삭제"} length={length} onClick={() => setNameOfButton("delete")} />
+                <RefreshButton onClick={() => setNameOfButton("refresh")} />
             </div>
             <ReactDataTable
+                beforeItem={pdIdArray}
                 columns={columns}
-                suffixUrl="/baseInfrm/product/productGroup"
+                suffixUrl="/baseInfrm/product/productInfo"
                 tableRef={itemDetailMgmtTable}
                 setLengthSelectRow={setLengthSelectRow}
                 viewPageName="품목상세관리"

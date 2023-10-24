@@ -18,7 +18,7 @@ function SalesExpenses() {
     const columns = [
         {
             header: "경비목록",
-            col: "poiNm",
+            col: "esntlId",
             cellWidth: "20%",
             update: false,
             updating: true,
@@ -27,7 +27,7 @@ function SalesExpenses() {
         },
         {
             header: "비고",
-            col: "pjbgBeginDt",
+            col: "poiDesc",
             cellWidth: "20%",
             updating: true,
             write: true,
@@ -95,7 +95,7 @@ function SalesExpenses() {
         };
 
         fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
-    }, []);
+    }, [projectInfo.poiId]);
 
     const fetchAllData = async () => {
         try {
@@ -106,13 +106,12 @@ function SalesExpenses() {
                 deleteAt: "N",
                 searchCondition: "0",
                 searchKeyword: "",
-                pjbgId: 20230901007,
-                pjbgModeCode: "slsp",
+                poiId: projectInfo.poiId,
+                pjbgModeCode: "SLSP",
                 pjbgTypeCode: "EXPNS06",
             };
-
             const resultData = await axiosFetch(url, requestData);
-            console.log(resultData, "불러온값");
+            console.log(resultData, "불러온값💥💥💥💥💥💥");
             if (resultData) {
                 return resultData;
             }
@@ -120,7 +119,6 @@ function SalesExpenses() {
         } finally {
         }
     };
-
     function formatDate(dataArray) {
         if (Array.isArray(dataArray)) {
             return dataArray.map((data) => {
@@ -147,7 +145,7 @@ function SalesExpenses() {
         <>
             <Location pathList={locationPath.SalesExpenses} />
             <ApprovalForm title={currentTask + " 실행 등록"}>
-                <ReactDataTable columns={columns} flag={isSaveFormTable} />
+                <ReactDataTable columns={columns} flag={isSaveFormTable} customDatas={salesCost} />
             </ApprovalForm>
             <div style={{ display: "flex" }}>
                 <span style={{ display: "flex", justifyContent: "center", width: "100px", backgroundColor: "#f2f2f2", border: "solid gray 1px" }}>

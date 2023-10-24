@@ -7,8 +7,13 @@ import DataPostModal2 from "./DataPostModal2";
 import DeleteModal from "components/modal/DeleteModal";
 import ModalPagePgNm from "components/modal/ModalPagePgNm";
 
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
+import ModalPagePdiNm from "components/modal/ModalPagePdiNm";
+
 const ReactDataTable = (props) => {
-    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList } = props;
+    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, beforeItem } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -25,9 +30,18 @@ const ReactDataTable = (props) => {
         setLengthSelectRow,
         newRowData,
         currentPageName,
+        isCancelTable,
+        setIsCancelTable,
+        projectInfo,
+        isSaveFormTable,
+        projectPdiNm,
+        setIsOpenModalPdiNm,
+        isOpenModalPdiNm,
+        setProjectPdiNm,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
+    const [originTableData, setOriginTableData] = useState([]);
     const pageSizeOptions = [5, 10, 15, 20, 30, 50, 100];
     const [isEditing, setIsEditing] = useState(false);
     const [openModalMod, setOpenModalMod] = useState(false);
@@ -37,6 +51,67 @@ const ReactDataTable = (props) => {
     const [selectRow, setSelectRow] = useState({}); //마지막으로 선택한 row
     const [rowIndex, setRowIndex] = useState(0);
 
+    //------------------------------------------------ 달력부분
+
+    const [formattedDate, setFormattedDate] = useState(""); //날짜저장
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    //const [sendDate, setSendDate] = useState("");
+    const inputRef = useRef(null); //날짜
+    const calendarRef = useRef(null);
+
+    useEffect(() => {
+        if (isCancelTable === true) setTableData(originTableData);
+        setIsCancelTable(false);
+    }, [isCancelTable]);
+
+    const handleDateChange = (date) => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        //const day = date.getDate().toString().padStart(2, "0");
+
+        const formatted = `${year}-${month}`;
+        //setSendDate(`${year}-${month}-${day}`);
+        return formatted;
+    };
+
+    const handleDateClick = (date, index) => {
+        console.log(date, index, "💥💥💥💥");
+        const formatted = handleDateChange(date);
+        setSelectedDate(formatted);
+        const updatedTableData = [...tableData];
+        updatedTableData[index].pmpMonth = formatted;
+        updatedTableData[index].calendarVisible = !tableData[index].calendarVisible; //달력닫음
+
+        setTableData(updatedTableData);
+    };
+
+    const toggleCalendarVisible = (index) => {
+        const updatedTableData = [...tableData];
+        updatedTableData[index].calendarVisible = !tableData[index].calendarVisible;
+        setTableData(updatedTableData);
+    };
+
+    useEffect(() => {
+        // 문서의 다른 부분을 클릭했을 때 창을 닫기 위한 이벤트 핸들러 추가
+        const handleDocumentClick = (e) => {
+            if (calendarRef.current && !calendarRef.current.contains(e.target)) {
+                // 달력 요소 밖을 클릭한 경우
+                const updatedTableData = tableData.map((item) => ({ ...item, calendarVisible: false }));
+                setTableData(updatedTableData);
+            }
+        };
+
+        // 이벤트 핸들러 등록
+        document.addEventListener("mousedown", handleDocumentClick);
+
+        return () => {
+            // 컴포넌트 언마운트 시에 이벤트 핸들러 제거
+            document.removeEventListener("mousedown", handleDocumentClick);
+        };
+    }, []);
+
+    //------------------------------------------------
+
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
         if (suffixUrl || detailUrl) {
@@ -44,6 +119,7 @@ const ReactDataTable = (props) => {
         }
         if (customDatas) {
             setTableData(customDatas);
+            setOriginTableData(customDatas);
         }
         if (tableRef) {
             setCurrentTable(tableRef);
@@ -279,18 +355,42 @@ const ReactDataTable = (props) => {
 
     /* table button 활성화 on off */
     useEffect(() => {
-        if (current === currentPageName || current === innerPageName) { // 현재 보는 페이지라면
+        if (current === currentPageName || current === innerPageName) {
+            // 현재 보는 페이지라면
             if (selectedFlatRows.length > 0) {
                 setLengthSelectRow(selectedFlatRows.length);
                 setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values); // 선택한 rows의 마지막 배열
             } else if (selectedFlatRows.length === 0) {
-                setLengthSelectRow(selectedFlatRows.length); 
+                setLengthSelectRow(selectedFlatRows.length);
             }
-        } 
+        }
     }, [selectedFlatRows]);
 
     /* 변경된 value 값을 column과 같은 이름의 변수에 담아서 테이블에 넣어줌 */
-    const onChange = (e, preRow) => {
+    //const onChange = (e, preRow) => {
+    //    const { name, value } = e.target;
+    //    console.log(name, value, "💚💚🔺🔺");
+    //    const newTableData = tableData.map((rowData, rowIndex) => {
+    //        console.log(rowData, rowIndex, "💜💜🔺🔺");
+    //        if (rowIndex === preRow.index) {
+    //            return { ...rowData, [name]: value };
+    //        }
+    //        return rowData;
+    //    });
+    //    console.log(newTableData, "💥💥💥💥");
+    //    setTableData(newTableData);
+    //};
+    //const onChange = (e, preRow) => {
+    //    const { name, value } = e.target;
+    //    console.log(name, value, "💚💚🔺🔺");
+    //    setTableData(newTableData);
+    //};
+
+    // 상위 컴포넌트에서 pmpMonth 상태를 생성하고 관리
+
+    //const [newData, setNewData] = useState([]);
+
+    const onChangeInput = (e, preRow) => {
         const { name, value } = e.target;
         const newTableData = tableData.map((rowData, rowIndex) => {
             if (rowIndex === preRow.index) {
@@ -299,17 +399,34 @@ const ReactDataTable = (props) => {
             return rowData;
         });
         setTableData(newTableData);
+        //setNewData(newTableData);
     };
+    //setTableData(newTableData);
+    useEffect(() => {
+        console.log(tableData, "🐵🐵🐵🐵🐵🐵🐵");
+    }, [tableData]);
 
     /* 새로운 빈 row 추가 */
-    const onAddRow = () => {
-        const newRow = {};
-        columnsConfig.forEach((column) => {
-            newRow[column.accessor] = null; // 초기화
-        });
+    //const onAddRow = () => {
+    //    const newRow = {};
+    //    columnsConfig.forEach((column) => {
+    //        newRow[column.accessor] = null; // 초기화
+    //    });
 
+    //    setTableData((prevData) => {
+    //        const newData = [...prevData, { ...newRow }];
+    //        return newData;
+    //    });
+    //};
+
+    const onAddRow = () => {
         setTableData((prevData) => {
-            const newData = [...prevData, { ...newRow }];
+            const newRow = {};
+            columnsConfig.forEach((column) => {
+                newRow[column.accessor] = ""; // 빈 문자열로 초기화
+            });
+
+            const newData = [...prevData, newRow];
             return newData;
         });
     };
@@ -326,16 +443,25 @@ const ReactDataTable = (props) => {
     };
 
     const [dataBuket, setDataBuket] = useState({});
+    const [dataBuketPdiNm, setDataBuketPdiNm] = useState({});
     const [prevDataBuket, setPrevDataBuket] = useState({});
+    const [prevDataBuketPdiNm, setPrevDataBuketPdiNm] = useState({});
 
     useEffect(() => {
         setDataBuket(projectPgNm.pgNm);
+        setDataBuketPdiNm(projectPdiNm.pdiNm);
         //setTableData()
-    }, [projectPgNm]);
+    }, [projectPgNm, projectPdiNm]);
 
     const setValueData = (rowIndex) => {
         //setRowIndex()
         setIsOpenModalPgNm(true);
+        setRowIndex(rowIndex);
+    };
+
+    const setValueDataPdiNm = (rowIndex) => {
+        //setRowIndex()
+        setIsOpenModalPdiNm(true);
         setRowIndex(rowIndex);
     };
 
@@ -356,7 +482,21 @@ const ReactDataTable = (props) => {
                 setProjectPgNm("");
             }
         }
-    }, [isOpenModalPgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
+        if (!isOpenModalPdiNm) {
+            // dataBuket 객체 자체의 참조가 변경되었을 때만 코드 실행
+            if (dataBuketPdiNm !== prevDataBuketPdiNm) {
+                const updatedTableData = [...tableData];
+                if (dataBuketPdiNm && updatedTableData[rowIndex]) {
+                    updatedTableData[rowIndex].pdiNm = dataBuketPdiNm;
+                    setTableData(updatedTableData);
+                }
+
+                // dataBuketPdiNm 값을 업데이트할 때 prevDataBuket도 업데이트
+                setPrevDataBuketPdiNm(dataBuketPdiNm);
+                setProjectPdiNm("");
+            }
+        }
+    }, [isOpenModalPgNm, dataBuket, rowIndex, tableData, prevDataBuket, prevDataBuketPdiNm, isOpenModalPdiNm, dataBuketPdiNm]);
 
     const handleChange = (e, rowIndex, accessor) => {
         const { value } = e.target;
@@ -366,6 +506,113 @@ const ReactDataTable = (props) => {
         // 수정된 데이터로 tableData 업데이트
         setTableData(updatedTableData);
     };
+
+    //----------------------------데이터 추가시 보낼 데이터
+    //const newData = tableData.map((item) => {
+    //    // 현재 객체의 복사본 생성
+    //    const newItem = { ...item };
+    //    // calendarVisible와 total 필드 제거
+    //    delete newItem.calendarVisible;
+    //    delete newItem.total;
+    //    return newItem;
+    //});
+
+    //console.log(newData, "🆗🆗🆗🆗");
+    //----------------------------데이터 추가시 보낼 데이터
+
+    console.log(originTableData, "오리지날 데이터✨✨✨✨");
+
+    //------------------------------- 초기값과 비교하는 코드
+    const [toUpdate, setToUpdate] = useState([]);
+    const [removeItem, setRemoveItem] = useState([]);
+    const [addNewData, setAddNewData] = useState([]);
+
+    //-------------------------------배열 추가, 수정, 삭제
+
+    const addList = async (addNewData) => {
+        const url = `/api/baseInfrm/product/prmnPlan/addList.do`;
+        const resultData = await axiosPost(url, addNewData);
+        console.log(resultData, "🆗🆗🆗🆗잘 넘겨줍니다🆗🆗🆗🆗");
+    };
+    const updateList = async (toUpdate) => {
+        const url = `/api/baseInfrm/product/prmnPlan/editList.do`;
+        const resultData = await axiosUpdate(url, toUpdate);
+        console.log(resultData, "🔥🔥🔥🔥수정 받기🔥🔥🔥🔥");
+    };
+
+    const deleteList = async (removeItem) => {
+        const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
+        const resultData = await axiosDelete(url, removeItem);
+        console.log(resultData, "🧹🧹🧹🧹삭제 받기🧹🧹🧹🧹");
+    };
+
+    useEffect(() => {
+        console.log(isSaveFormTable, "📉📉📉");
+        if (isSaveFormTable === false) {
+            compareData(originTableData, tableData);
+        }
+    }, [isSaveFormTable]);
+
+    useEffect(() => {
+        console.log(originTableData, "❌🎉");
+    }, [originTableData]);
+    // 초기 데이터와 수정된 데이터를 비교하는 함수
+
+    const compareData = (originData, updatedData) => {
+        if (originData.length > updatedData.length) {
+            setToUpdate(updatedData);
+            for (let i = updatedData.length; i < originData.length; i++) {
+                setRemoveItem((prevRemoveItem) => [...prevRemoveItem, ...originData[i].pmpId]);
+            }
+        } else if (originData.length === updatedData.length) {
+            const toUpdates = updatedData.map((item) => {
+                return {
+                    ...item,
+                    pmpMonth2: "2111-11-28T15:30:00",
+                };
+            });
+            setToUpdate(toUpdates);
+        } else if (originData.length < updatedData.length) {
+            const toAdds = [];
+
+            for (let i = originData.length; i < updatedData.length; i++) {
+                const toAdd = { ...updatedData[i] };
+                console.log(updatedData, "🧐🧐🧐🧐🧐🧐🧐🧐🧐🧐🧐");
+                delete toAdd.total;
+                delete toAdd.poiBeginDt1;
+                toAdd.useAt = "Y";
+                toAdd.deleteAt = "N";
+                toAdd.pmpMonth = "2111-11-28T15:30:00";
+                toAdd.poiId = projectInfo.poiId;
+
+                for (let j = 1; j <= 13; j++) {
+                    if (toAdd[`pmpmmPositionCode${j}`] === null) {
+                        toAdd[`pmpmmPositionCode${j}`] = 0;
+                    }
+                }
+
+                toAdds.push(toAdd);
+            }
+            setAddNewData(toAdds);
+        }
+    };
+
+    useEffect(() => {
+        console.log(addNewData, "추가되어야할 배열들@@@@");
+        addList(addNewData);
+    }, [addNewData]);
+
+    //useEffect(() => {
+    //    console.log(toUpdate, "변경되어야할 ######");
+    //    updateList(toUpdate);
+    //}, [toUpdate]);
+
+    useEffect(() => {
+        console.log(removeItem, "삭제되어야할 **&^&*^*&^");
+        deleteList(removeItem);
+    }, [removeItem]);
+
+    //------------------------------- 초기값과 비교하는 코드
 
     return (
         <>
@@ -441,8 +688,26 @@ const ReactDataTable = (props) => {
                                                                 : cell.value
                                                         }
                                                         name={cell.column.id}
-                                                        onChange={(e) => onChange(e, row)}
+                                                        onChange={(e) => onChangeInput(e, row)}
                                                     />
+                                                ) : cell.column.type === "datepicker" ? (
+                                                    <div className="box3-1 boxDate">
+                                                        <DatePicker
+                                                            className="form-control flex-item"
+                                                            type="text"
+                                                            value={tableData[row.index].pmpMonth || formattedDate}
+                                                            ref={inputRef}
+                                                            dateFormat="yyyy-MM"
+                                                            showMonthYearPicker
+                                                            locale={ko} // 한국어로 설정
+                                                            onClick={() => toggleCalendarVisible(row.index)}
+                                                            onChange={(date) => {
+                                                                handleDateClick(date, row.index);
+                                                                const formatted = handleDateChange(selectedDate);
+                                                                setFormattedDate(formatted); // 이 부분은 formattedDate 대신 pmpMonth를 업데이트하는 코드로 변경해야 함
+                                                            }}
+                                                        />
+                                                    </div>
                                                 ) : cell.column.type === "select" ? (
                                                     <select
                                                         name={cell.column.id}
@@ -451,7 +716,7 @@ const ReactDataTable = (props) => {
                                                                 ? tableData[row.index][cell.column.id]
                                                                 : cell.column.options[row.index].value || "" // 기본값: 해당 행의 인덱스에 해당하는 옵션의 value 값 또는 빈 문자열
                                                         }
-                                                        onChange={(e) => onChange(e, row)}>
+                                                        onChange={(e) => onChangeInput(e, row)}>
                                                         {cell.column.options.map((option, index) => (
                                                             <option key={index} value={option.value}>
                                                                 {option.label}
@@ -461,12 +726,27 @@ const ReactDataTable = (props) => {
                                                 ) : cell.column.type === "button" ? (
                                                     <div>
                                                         <input
+                                                            className="buttonSelect"
                                                             id={cell.column.id}
                                                             name={cell.column.id}
                                                             onClick={() => setValueData(rowIndex)}
                                                             type="text"
                                                             placeholder={projectPgNm.pgNm ? projectPgNm.pgNm : `품목그룹명을 선택해 주세요.`}
                                                             value={tableData[rowIndex].pgNm || ""}
+                                                            onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
+                                                            readOnly
+                                                        />
+                                                    </div>
+                                                ) : cell.column.type === "buttonPdiNm" ? (
+                                                    <div>
+                                                        <input
+                                                            className="buttonSelect"
+                                                            id={cell.column.id}
+                                                            name={cell.column.id}
+                                                            onClick={() => setValueDataPdiNm(rowIndex)}
+                                                            type="text"
+                                                            placeholder={projectPdiNm.pdiNm ? projectPdiNm.pdiNm : `품명을 선택해 주세요.`}
+                                                            value={tableData[rowIndex].pdiNm || ""}
                                                             onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
                                                             readOnly
                                                         />
@@ -494,11 +774,26 @@ const ReactDataTable = (props) => {
             </table>
 
             <div className="pagination">
-                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}> 처음 </button>
-                <button onClick={() => previousPage()} disabled={!canPreviousPage}> 이전 </button>
-                <span> 페이지 {pageIndex + 1} / {pageOptions && pageOptions.length}{" "} </span>
-                <button onClick={() => nextPage()} disabled={!canNextPage}> 다음 </button>
-                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}> 마지막 </button>
+                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+                    {" "}
+                    처음{" "}
+                </button>
+                <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                    {" "}
+                    이전{" "}
+                </button>
+                <span>
+                    {" "}
+                    페이지 {pageIndex + 1} / {pageOptions && pageOptions.length}{" "}
+                </span>
+                <button onClick={() => nextPage()} disabled={!canNextPage}>
+                    {" "}
+                    다음{" "}
+                </button>
+                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+                    {" "}
+                    마지막{" "}
+                </button>
             </div>
 
             {openModalMod && (
@@ -525,6 +820,7 @@ const ReactDataTable = (props) => {
             )}
             <DeleteModal viewData={modalViewDatas} onConfirm={deleteClick} />
             {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
+            {isOpenModalPdiNm && <ModalPagePdiNm rowIndex={rowIndex} onClose={() => setIsOpenModalPdiNm(false)} />}
         </>
     );
 };

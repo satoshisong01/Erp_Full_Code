@@ -311,6 +311,11 @@
     flex: 2;
 }
 
+/*달력 크기(인건비 월별선택)*/
+.react-datepicker__month-container {
+    width: 140px;
+}
+
 .flex-between {
     display: flex;
     justify-content: space-between;
@@ -392,6 +397,22 @@
     }
 }
 
+/* 달력 */
+#rc-tabs-0-panel-200 {
+    position: relative;
+}
+
+.colbox,
+.table-Container {
+    position: relative;
+}
+
+.boxCalendar {
+    left: 0;
+    top: -520%;
+    height: 100%;
+}
+
 /* 사전원가 계산서 */
 .precost-container {
     background-color: var(--background-white);
@@ -442,7 +463,7 @@
 /* 수주등록 formDataTable */
 .table-Container {
     width: 100%;
-    overflow-x: auto;
+    /*overflow-x: auto;*/
     margin-bottom: 20px;
     font-size: 12px;
 }
@@ -529,6 +550,10 @@
         margin-left: 5px;
         color: lightgray;
     }
+}
+
+.buttonSelect:hover {
+    cursor: pointer;
 }
 
 .pagination {
@@ -650,6 +675,7 @@ select {
 
 .approval-form {
     font-size: 12px;
+    margin-bottom: 20px;
 
     .approval-row {
         display: flex;

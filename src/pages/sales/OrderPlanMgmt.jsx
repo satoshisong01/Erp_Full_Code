@@ -22,17 +22,18 @@ function OrderPlanMgmt() {
     const orderPlanMgmtTable4 = useRef(null);
     const orderPlanMgmtTable5 = useRef(null);
     const orderPlanMgmtTable6 = useRef(null);
+    const orderPlanMgmtTable7 = useRef(null);
 
     const laborColumns = [
         // 인건비
-        {
-            header: "품목그룹명",
-            col: "pgNm",
-            cellWidth: "20%",
-            type: "button",
-            options: [],
-        },
-        { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "input" },
+        //{
+        //    header: "품목그룹명",
+        //    col: "pgNm",
+        //    cellWidth: "20%",
+        //    type: "button",
+        //    options: [],
+        //},
+        { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "datepicker" },
         { header: "M/M계", col: "total", cellWidth: "10%", type: "input" },
         {
             header: "인건비계",
@@ -41,38 +42,87 @@ function OrderPlanMgmt() {
             type: "input",
         },
         {
-            header: "특급기술사",
-            col: "pmpmmNum1",
+            header: "임원",
+            col: "pmpmmPositionCode1",
             cellWidth: "10%",
             type: "input",
+            notView: "true",
+        },
+        {
+            header: "특급기술사",
+            col: "pmpmmPositionCode2",
+            cellWidth: "10%",
+            type: "input",
+            notView: "true",
         },
         {
             header: "고급기술사",
-            col: "pmpmmNum2",
+            col: "pmpmmPositionCode3",
             cellWidth: "10%",
             type: "input",
+            notView: "true",
         },
         {
             header: "중급기술사",
-            col: "pmpmmNum3",
+            col: "pmpmmPositionCode4",
             cellWidth: "10%",
             type: "input",
+            notView: "true",
         },
         {
             header: "초급기술사",
-            col: "pmpmmNum4",
+            col: "pmpmmPositionCode5",
             cellWidth: "10%",
             type: "input",
-        },
-        {
-            header: "중급기술사",
-            col: "pmpmmNum5",
-            cellWidth: "10%",
-            type: "input",
+            notView: "true",
         },
         {
             header: "고급기능사",
-            col: "pmpmmNum6",
+            col: "pmpmmPositionCode6",
+            cellWidth: "10%",
+            type: "input",
+            notView: "true",
+        },
+        {
+            header: "중급기능사",
+            col: "pmpmmPositionCode7",
+            cellWidth: "10%",
+            type: "input",
+            notView: "true",
+        },
+        {
+            header: "부장",
+            col: "pmpmmPositionCode8",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "차장",
+            col: "pmpmmPositionCode9",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "과장",
+            col: "pmpmmPositionCode10",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "대리",
+            col: "pmpmmPositionCode11",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "주임",
+            col: "pmpmmPositionCode12",
+            cellWidth: "10%",
+            type: "input",
+        },
+        {
+            header: "사원",
+            col: "pmpmmPositionCode13",
             cellWidth: "10%",
             type: "input",
         },
@@ -81,7 +131,7 @@ function OrderPlanMgmt() {
         // 경비
         {
             header: "경비목록",
-            col: "poiTitle",
+            col: "pjbgTypeCode",
             cellWidth: "25%",
             type: "select",
             options: [
@@ -105,7 +155,7 @@ function OrderPlanMgmt() {
             type: "button",
             options: [],
         },
-        { header: "품명", col: "pdiNm", cellWidth: "20%", type: "input" },
+        { header: "품명", col: "pdiNm", cellWidth: "20%", type: "buttonPdiNm", options: [] },
         { header: "규격", col: "pdiStnd", cellWidth: "20%", type: "input" },
         { header: "수량", col: "byQunty", cellWidth: "10%", type: "input" },
         { header: "단위", col: "pdiUnit", cellWidth: "10%", type: "input" },
@@ -183,6 +233,13 @@ function OrderPlanMgmt() {
         { header: "비고", col: "poiTitle2", cellWidth: "50%", type: "input" },
     ];
 
+    const outColumns = [
+        // 개발외주비
+        { header: "회사", col: "poiTitle1", cellWidth: "50%", type: "input" },
+        { header: "M/M", col: "poiTitle2", cellWidth: "50%", type: "input" },
+        { header: "금액", col: "poiTitle3", cellWidth: "50%", type: "input" },
+    ];
+
     const [currentTask, setCurrentTask] = useState("인건비");
     const [prmnPlanDatas, setPrmnPlanDatas] = useState([]); // 인건비
     const [pjbudgetDatas, setPjbudgetDatas] = useState([]); // 경비
@@ -193,36 +250,64 @@ function OrderPlanMgmt() {
     const changePrmnPlanData = (data) => {
         // 포지션에 대한 고정된 번호를 매핑하는 객체 생성
         const positionMapping = {
-            특급기술사: 1,
-            고급기술사: 2,
-            중급기술사: 3,
-            초급기술사: 4,
-            고급기능사: 5,
-            중급기능사: 6,
-            부장: 7,
-            차장: 8,
-            과장: 9,
-            대리: 10,
-            주임: 11,
-            사원: 12,
+            임원: 1,
+            특급기술사: 2,
+            고급기술사: 3,
+            중급기술사: 4,
+            초급기술사: 5,
+            고급기능사: 6,
+            중급기능사: 7,
+            부장: 8,
+            차장: 9,
+            과장: 10,
+            대리: 11,
+            주임: 12,
+            사원: 13,
         };
 
         //날짜포맷
         data.forEach((item) => {
+            console.log(item, "아이템@@#@#@#");
             const key = `${item.pgNm}-${item.pmpMonth[0]}-${item.pmpMonth[1]}`;
             if (!groupedData[key]) {
                 groupedData[key] = {
-                    pgNm: item.pgNm,
+                    //pgNm: item.pgNm,
+                    pmpId: [],
+                    poiId: projectInfo.poiId,
+                    useAt: "Y",
+                    deleteAt: "N",
+                    calendarVisible: false,
+                    pmpmmPositionCode1: 0,
+                    pmpmmPositionCode2: 0,
+                    pmpmmPositionCode3: 0,
+                    pmpmmPositionCode4: 0,
+                    pmpmmPositionCode5: 0,
+                    pmpmmPositionCode6: 0,
+                    pmpmmPositionCode7: 0,
+                    pmpmmPositionCode8: 0,
+                    pmpmmPositionCode9: 0,
+                    pmpmmPositionCode10: 0,
+                    pmpmmPositionCode11: 0,
+                    pmpmmPositionCode12: 0,
+                    pmpmmPositionCode13: 0,
                     pmpMonth: `${item.pmpMonth[0]}-${item.pmpMonth[1]}`,
                     total: 0,
                 };
             }
 
+            groupedData[key].pmpId.push(item.pmpId);
+
             // 포지션에 해당하는 번호를 가져오고, 해당 위치에 pmpmmNum을 저장
             const positionNumber = positionMapping[item.pmpmmPositionCode];
+            console.log(positionNumber, "🥱🥱🥱🥱");
+            console.log(item.pmpmmPositionCode, "🆗🆗🆗🆗");
+
             if (positionNumber) {
-                const pmpmmNumKey = `pmpmmNum${positionNumber}`;
+                const pmpmmNumKey = `pmpmmPositionCode${positionNumber}`;
                 groupedData[key][pmpmmNumKey] = item.pmpmmNum;
+
+                console.log(groupedData[key][pmpmmNumKey], "💚💚💚💚💚");
+
                 groupedData[key].total += item.pmpmmNum;
             }
         });
@@ -246,16 +331,15 @@ function OrderPlanMgmt() {
             setIsSaveFormTable(true);
         }
     };
-
     useEffect(() => {
         const fetchData = async () => {
             try {
                 if (currentTask === "인건비") {
-                    const data = await fetchAllData("/cost/costPrmnPlan"); // 인건비
+                    const data = await fetchAllData("/baseInfrm/product/prmnPlan"); // 인건비
                     console.log(data, "불러온 인건비의 값은?");
                     changePrmnPlanData(data);
                 } else if (currentTask === "경비") {
-                    const data = await fetchAllData("/cost/costPjbudget/type"); // 경비
+                    const data = await fetchAllData("/baseInfrm/product/pjbudget"); // 경비
                     setPjbudgetDatas(data);
                     //.map((item) => ({
                     //    ...item,
@@ -265,6 +349,7 @@ function OrderPlanMgmt() {
                     //        expensesColumns[0].options
                     //    ),
                     //}))
+                    ///baseInfrm/product/pdOrdr
                 } else if (currentTask === "구매(재료비)") {
                     const data = await fetchAllData("/cost/costPdOrdr"); // 구매(재료비)
                     setPdOrdrDatas(data);
@@ -286,7 +371,7 @@ function OrderPlanMgmt() {
         } else {
             requestData = {
                 poiId: projectInfo.poiId,
-                pjbgModeCode: "slsp",
+                pjbgModeCode: "SLSP",
                 useAt: "Y",
             };
         }
@@ -319,9 +404,18 @@ function OrderPlanMgmt() {
                     <li onClick={() => changeTabs("구매(재료비)")}>
                         <a href="#구매(재료비)">구매(재료비)</a>
                     </li>
-                    {/* <li onClick={() => changeTabs("기업이윤")}><a href="#기업이윤">기업이윤</a></li> */}
-                    {/* <li onClick={() => changeTabs("일반관리비")}><a href="#일반관리비">일반관리비</a></li>
-                    <li onClick={() => changeTabs("네고")}><a href="#네고">네고</a></li> */}
+                    <li onClick={() => changeTabs("기업이윤")}>
+                        <a href="#기업이윤">기업이윤</a>
+                    </li>
+                    <li onClick={() => changeTabs("일반관리비")}>
+                        <a href="#일반관리비">일반관리비</a>
+                    </li>
+                    <li onClick={() => changeTabs("네고")}>
+                        <a href="#네고">네고</a>
+                    </li>
+                    <li onClick={() => changeTabs("개발외주비")}>
+                        <a href="#개발외주비">개발외주비</a>
+                    </li>
                 </ul>
 
                 <div className="list">
@@ -364,26 +458,26 @@ function OrderPlanMgmt() {
                         </ul>
                     </div>
 
-                    {/* <div className="fourth">
+                    {/*<div className="fourth">
                         <ul>
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={companyProfitColumns}
                                     singleUrl="/baseInfrm/product/pjOrdrInfo"
-                                    flag={currentTask === '기업이윤' && isSaveFormTable}
+                                    flag={currentTask === "기업이윤" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable4}
                                 />
                             </ApprovalForm>
                         </ul>
-                    </div> */}
+                    </div>
 
-                    {/* <div className="fifth">
+                    <div className="fifth">
                         <ul>
                             <ApprovalForm title={currentTask + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={generalExpensesColumns}
                                     singleUrl="/baseInfrm/product/pjOrdrInfo"
-                                    flag={currentTask === '일반관리비' && isSaveFormTable}
+                                    flag={currentTask === "일반관리비" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable5}
                                 />
                             </ApprovalForm>
@@ -396,12 +490,25 @@ function OrderPlanMgmt() {
                                 <ReactDataTable
                                     columns={negoColumns}
                                     suffixUrl="/baseInfrm/product/pjOrdrInfo"
-                                    flag={currentTask === '네고' && isSaveFormTable}
+                                    flag={currentTask === "네고" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable6}
                                 />
                             </ApprovalForm>
                         </ul>
-                    </div> */}
+                    </div>
+
+                    <div className="seven">
+                        <ul>
+                            <ApprovalForm title={currentTask + " 계획 등록"}>
+                                <ReactDataTable
+                                    columns={outColumns}
+                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                                    flag={currentTask === "개발외주비" && isSaveFormTable}
+                                    tableRef={orderPlanMgmtTable7}
+                                />
+                            </ApprovalForm>
+                        </ul>
+                    </div>*/}
                 </div>
             </div>
         </>

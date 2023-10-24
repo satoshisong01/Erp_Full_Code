@@ -9,6 +9,9 @@ import { axiosFetch } from "api/axiosFetch";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import ApprovalForm from "components/form/ApprovalForm";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+
 /** 실행관리-구매관리 */
 function PurchasingMgmt() {
     const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo } = useContext(PageContext);
@@ -22,6 +25,27 @@ function PurchasingMgmt() {
     const orderPlanMgmtTable1 = useRef(null);
     const orderPlanMgmtTable2 = useRef(null);
     const orderPlanMgmtTable3 = useRef(null);
+    const orderPlanMgmtTable4 = useRef(null);
+
+    const [isClicked, setIsClicked] = useState(false);
+    const [isClicked2, setIsClicked2] = useState(false);
+    const [isClicked3, setIsClicked3] = useState(false);
+    const [isClicked4, setIsClicked4] = useState(false);
+
+    const handleClick1 = () => {
+        setIsClicked(!isClicked);
+    };
+
+    const handleClick2 = () => {
+        setIsClicked2(!isClicked2);
+    };
+
+    const handleClick3 = () => {
+        setIsClicked3(!isClicked3);
+    };
+    const handleClick4 = () => {
+        setIsClicked4(!isClicked4);
+    };
 
     const [returnKeyWord, setReturnKeyWord] = useState("");
 
@@ -415,9 +439,10 @@ function PurchasingMgmt() {
     ];
 
     const [currentTask, setCurrentTask] = useState("구매 조회관리");
+    const [inquiryMgmt, setInquiryMgmt] = useState([]); // 구매 조회관리
+    const [pgBudgetMgmt, setPgBudgetMgmt] = useState([]); // 구매 수주관리
     const [budgetMgmt, setBudgetMgmt] = useState([]); // 구매 예산관리
     const [runMgmt, setRunMgmt] = useState([]); // 구매 실행관리
-    const [inquiryMgmt, setInquiryMgmt] = useState([]); // 구매 조회관리
 
     const groupedData = {}; //인건비 바꿔서 넣어줄 빈 객체
 
@@ -473,6 +498,17 @@ function PurchasingMgmt() {
                     const data = await fetchAllData("/cost/costPrmnPlan"); // 구매 조회관리
                     console.log(data, "불러온 조회관리 값은?");
                     changePrmnPlanData(data);
+                } else if (currentTask === "구매 수주관리") {
+                    const data = await fetchAllData("/cost/costPjbudget/type"); // 구매 수주관리
+                    setRunMgmt(data);
+                    //.map((item) => ({
+                    //    ...item,
+                    //    pjbgTypeCode: changepjbudgetData(
+                    //        //영업 slsp만 추출
+                    //        item.pjbgTypeCode,
+                    //        expensesColumns[0].options
+                    //    ),
+                    //}))
                 } else if (currentTask === "구매 예산관리") {
                     const data = await fetchAllData("/cost/costPjbudget/type"); // 구매 예산관리
                     setRunMgmt(data);
@@ -624,6 +660,9 @@ function PurchasingMgmt() {
                             구매 조회관리
                         </a>
                     </li>
+                    <li onClick={() => changeTabs("구매 수주관리")}>
+                        <a href="#구매 수주관리">구매 수주관리</a>
+                    </li>
                     <li onClick={() => changeTabs("구매 예산관리")}>
                         <a href="#구매 예산관리">구매 예산관리</a>
                     </li>
@@ -640,7 +679,14 @@ function PurchasingMgmt() {
                         <ul>
                             <SearchList conditionList={conditionList} onSearch={handleReturn} />
                             {/*<ApprovalForm title={" 프로젝트 목록 " + currentTask}>*/}
-                            <ReactDataTable columns={projectColumns} defaultPageSize={5} justColumn={true} />
+                            <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
+                                <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick1}>
+                                    <FontAwesomeIcon className={`arrowBtn ${isClicked ? "" : "clicked"}`} icon={faArrowUp} />
+                                </button>
+                            </div>
+                            <div className={`hideDivRun ${isClicked ? "" : "clicked"}`}>
+                                <ReactDataTable columns={projectColumns} defaultPageSize={5} justColumn={true} />
+                            </div>
                             <ReactDataTable
                                 columns={inquiryColumns}
                                 flag={currentTask === "구매 조회관리" && isSaveFormTable}
@@ -653,29 +699,60 @@ function PurchasingMgmt() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalForm title={currentTask + " 계획 등록"}>
-                                <ReactDataTable columns={contractPlan} defaultPageSize={5} justColumn={true} />
-                                <ReactDataTable
-                                    columns={budgetColumns}
-                                    flag={currentTask === "구매 예산관리" && isSaveFormTable}
-                                    tableRef={orderPlanMgmtTable2}
-                                    customDatas={budgetMgmt}
-                                />
-                            </ApprovalForm>
+                            <ApprovalForm title={currentTask + " 등록"} />
+                            <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
+                                <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick2}>
+                                    <FontAwesomeIcon className={`arrowBtn ${isClicked2 ? "" : "clicked"}`} icon={faArrowUp} />
+                                </button>
+                            </div>
+                            <div className={`hideDivRun2 ${isClicked2 ? "" : "clicked"}`}>
+                                <ReactDataTable columns={projectColumns} defaultPageSize={5} justColumn={true} />
+                            </div>
+                            <ReactDataTable
+                                columns={budgetColumns}
+                                flag={currentTask === "구매 수주관리" && isSaveFormTable}
+                                tableRef={orderPlanMgmtTable2}
+                                customDatas={budgetMgmt}
+                            />
+                        </ul>
+                    </div>
+                    <div className="third">
+                        <ul>
+                            <ApprovalForm title={currentTask + " 등록"} />
+                            <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
+                                <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick3}>
+                                    <FontAwesomeIcon className={`arrowBtn ${isClicked3 ? "" : "clicked"}`} icon={faArrowUp} />
+                                </button>
+                            </div>
+                            <div className={`hideDivRun3 ${isClicked3 ? "" : "clicked"}`}>
+                                <ReactDataTable columns={projectColumns} defaultPageSize={5} justColumn={true} />
+                            </div>
+                            <ReactDataTable
+                                columns={budgetColumns}
+                                flag={currentTask === "구매 예산관리" && isSaveFormTable}
+                                tableRef={orderPlanMgmtTable3}
+                                customDatas={budgetMgmt}
+                            />
                         </ul>
                     </div>
 
-                    <div className="third">
+                    <div className="fourth">
                         <ul>
-                            <ApprovalForm title={currentTask + " 계획 등록"}>
-                                <ReactDataTable columns={runCost} defaultPageSize={5} justColumn={true} />
-                                <ReactDataTable
-                                    columns={runColumns}
-                                    flag={currentTask === "구매 실행관리" && isSaveFormTable}
-                                    tableRef={orderPlanMgmtTable3}
-                                    customDatas={runMgmt}
-                                />
-                            </ApprovalForm>
+                            <ApprovalForm title={currentTask + " 등록"} />
+                            <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
+                                <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick4}>
+                                    <FontAwesomeIcon className={`arrowBtn ${isClicked4 ? "" : "clicked"}`} icon={faArrowUp} />
+                                </button>
+                            </div>
+                            <div className={`hideDivRun4 ${isClicked4 ? "" : "clicked"}`}>
+                                <ReactDataTable columns={projectColumns} defaultPageSize={5} justColumn={true} />
+                            </div>
+                            <ReactDataTable
+                                columns={runColumns}
+                                flag={currentTask === "구매 실행관리" && isSaveFormTable}
+                                tableRef={orderPlanMgmtTable4}
+                                customDatas={runMgmt}
+                            />
                         </ul>
                     </div>
                 </div>

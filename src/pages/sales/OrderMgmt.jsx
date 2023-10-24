@@ -113,8 +113,8 @@ function OrderMgmt() {
             { label: "PM", key: "poiManagerId", type: "input", require: true },
         ],
         [
-            { label: "수주 시작일", key: "poiBeginDt", type: "input", require: false },
-            { label: "수주 마감일", key: "poiEndDt", type: "input", require: false },
+            { label: "수주 시작일", key: "poiBeginDt", type: "datepicker", require: true },
+            { label: "수주 마감일", key: "poiEndDt", type: "datepicker2", require: true },
             {
                 label: "사전원가 기준 이익률",
                 key: "standardMargin",

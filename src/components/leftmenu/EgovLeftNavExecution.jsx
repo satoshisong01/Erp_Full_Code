@@ -38,7 +38,7 @@ function EgovLeftNavExecution(props) {
     };
 
     const menuItems = [
-        { label: "실행원가관리", subMenus: [{ label: "사전원가(초안)관리" }, { label: "실행원가관리" }] },
+        { label: "실행원가관리", subMenus: [] },
         { label: "인건비관리", subMenus: [] },
         { label: "경비관리", subMenus: [] },
         { label: "구매관리", subMenus: [] },

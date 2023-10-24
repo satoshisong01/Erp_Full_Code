@@ -89,10 +89,11 @@ const usePrevLocation = (location) => {
 };
 
 const RootRoutes = () => {
-    const { projectItem, setProjectItem, returnKeyWord, setPgNmList, addPgNm } = useContext(PageContext);
+    const { projectItem, setProjectItem, returnKeyWord, setPgNmList, addPgNm, setPdiNmList, addPdiNm } = useContext(PageContext);
     useEffect(() => {
         basicFetchData();
         pgNmItem();
+        pdiNmItem();
     }, [returnKeyWord]);
 
     const basicFetchData = async () => {
@@ -128,17 +129,45 @@ const RootRoutes = () => {
         );
     };
 
+    const pdiNmItem = async () => {
+        let requestData = "";
+        const url = `/api/baseInfrm/product/productInfo/totalListAll.do`;
+        if (returnKeyWord) {
+            requestData = returnKeyWord;
+        } else {
+            requestData = { useAt: "Y" };
+        }
+        const resultData = await axiosFetch(url, requestData);
+        // console.log(resultData, "나온값은?");
+        console.log(resultData, "나온값은?pdiNm🔴🔴🔴@@@******");
+        setPdiNmList(
+            resultData.map((item) => ({
+                pdiNm: item.pdiNm,
+            }))
+        );
+    };
+
     useEffect(() => {
         fnAddPgNm();
-    }, [addPgNm]);
+        fnAddPdiNm();
+    }, [addPgNm, addPdiNm]);
 
     const fnAddPgNm = async () => {
         const url = `/api/baseInfrm/product/productGroup/add.do`;
         const requestData = { ...addPgNm, lockAt: "Y", userAt: "Y" };
 
         const resultData = await axiosPost(url, requestData);
-        console.log(resultData, "추가되었습니다 pgnm");
+        console.log(resultData, "추가되었습니다 pgNm");
         pgNmItem();
+    };
+
+    const fnAddPdiNm = async () => {
+        const url = `/api/baseInfrm/product/productInfo/add.do`;
+        const requestData = { ...addPdiNm, lockAt: "Y", userAt: "Y" };
+
+        const resultData = await axiosPost(url, requestData);
+        console.log(resultData, "추가되었습니다 pdiNm");
+        pdiNmItem();
     };
 
     // console.log(projectItem, "받아온값");
