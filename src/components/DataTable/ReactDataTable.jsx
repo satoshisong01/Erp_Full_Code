@@ -13,7 +13,7 @@ import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
 import ModalPagePdiNm from "components/modal/ModalPagePdiNm";
 
 const ReactDataTable = (props) => {
-    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, beforeItem } = props;
+    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, beforeItem, tableName } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -65,25 +65,26 @@ const ReactDataTable = (props) => {
     }, [isCancelTable]);
 
     const handleDateChange = (date) => {
+        console.log(date, "🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀");
         const year = date.getFullYear();
         const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        //const day = date.getDate().toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
 
-        const formatted = `${year}-${month}`;
+        const formatted = `${year}-${month}-${day}`;
         //setSendDate(`${year}-${month}-${day}`);
         return formatted;
     };
 
-    const handleDateClick = (date, index) => {
-        console.log(date, index, "💥💥💥💥");
-        const formatted = handleDateChange(date);
-        setSelectedDate(formatted);
-        const updatedTableData = [...tableData];
-        updatedTableData[index].pmpMonth = formatted;
-        updatedTableData[index].calendarVisible = !tableData[index].calendarVisible; //달력닫음
+    //const handleDateClick = (date, index) => {
+    //    console.log(date, index, "💥💥💥💥");
+    //    const formatted = handleDateChange(date);
+    //    setSelectedDate(formatted);
+    //    const updatedTableData = [...tableData];
+    //    updatedTableData[index].pmpMonth2 = formatted;
+    //    updatedTableData[index].calendarVisible = !tableData[index].calendarVisible; //달력닫음
 
-        setTableData(updatedTableData);
-    };
+    //    setTableData(updatedTableData);
+    //};
 
     const toggleCalendarVisible = (index) => {
         const updatedTableData = [...tableData];
@@ -407,29 +408,36 @@ const ReactDataTable = (props) => {
     }, [tableData]);
 
     /* 새로운 빈 row 추가 */
-    //const onAddRow = () => {
-    //    const newRow = {};
-    //    columnsConfig.forEach((column) => {
-    //        newRow[column.accessor] = null; // 초기화
-    //    });
-
-    //    setTableData((prevData) => {
-    //        const newData = [...prevData, { ...newRow }];
-    //        return newData;
-    //    });
-    //};
-
     const onAddRow = () => {
-        setTableData((prevData) => {
-            const newRow = {};
-            columnsConfig.forEach((column) => {
-                newRow[column.accessor] = ""; // 빈 문자열로 초기화
-            });
+        const newRow = {};
+        columnsConfig.forEach((column) => {
+            if (column.accessor === "poiId") {
+                newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 SLSP로 설정
+            } else {
+                newRow[column.accessor] = null; // 다른 열은 초기화
+            }
+        });
 
-            const newData = [...prevData, newRow];
+        setTableData((prevData) => {
+            const newData = [...prevData, { ...newRow }];
             return newData;
         });
     };
+
+    //const onAddRow = () => {
+    //    setTableData((prevData) => {
+    //        const newItemIndex = prevData.length; // 새로운 항목의 인덱스
+    //        const previousItemIndex = newItemIndex - 1; // 이전 항목의 인덱스
+
+    //        const newRow = { ...prevData[previousItemIndex] }; // 이전 항목을 복제
+    //        columnsConfig.forEach((column) => {
+    //            newRow[column.accessor] = ""; // 빈 문자열로 초기화
+    //        });
+
+    //        const newData = [...prevData, newRow];
+    //        return newData;
+    //    });
+    //};
 
     const onDeleteRow = (row) => {
         const rowId = row.index;
@@ -547,17 +555,15 @@ const ReactDataTable = (props) => {
     };
 
     useEffect(() => {
-        console.log(isSaveFormTable, "📉📉📉");
-        if (isSaveFormTable === false) {
-            compareData(originTableData, tableData);
-        }
-    }, [isSaveFormTable]);
+        compareData(originTableData, tableData);
+    }, [tableData]);
 
     useEffect(() => {
         console.log(originTableData, "❌🎉");
     }, [originTableData]);
     // 초기 데이터와 수정된 데이터를 비교하는 함수
 
+    //인건비용임
     const compareData = (originData, updatedData) => {
         if (originData.length > updatedData.length) {
             setToUpdate(updatedData);
@@ -565,13 +571,14 @@ const ReactDataTable = (props) => {
                 setRemoveItem((prevRemoveItem) => [...prevRemoveItem, ...originData[i].pmpId]);
             }
         } else if (originData.length === updatedData.length) {
-            const toUpdates = updatedData.map((item) => {
-                return {
-                    ...item,
-                    pmpMonth2: "2111-11-28T15:30:00",
-                };
-            });
-            setToUpdate(toUpdates);
+            //const toUpdates = updatedData.map((item) => {
+            //    return {
+            //        ...item,
+            //    };
+            //});
+            //console.log(toUpdates, formattedDate, "머지진짜🚨🚨🚨🚨🚨");
+            //setToUpdate(toUpdates);
+            setToUpdate(updatedData);
         } else if (originData.length < updatedData.length) {
             const toAdds = [];
 
@@ -582,7 +589,8 @@ const ReactDataTable = (props) => {
                 delete toAdd.poiBeginDt1;
                 toAdd.useAt = "Y";
                 toAdd.deleteAt = "N";
-                toAdd.pmpMonth = "2111-11-28T15:30:00";
+                toAdd.pmpMonth = tableData[i].pmpMonth;
+                toAdd.pmpMonth2 = formattedDate;
                 toAdd.poiId = projectInfo.poiId;
 
                 for (let j = 1; j <= 13; j++) {
@@ -598,19 +606,15 @@ const ReactDataTable = (props) => {
     };
 
     useEffect(() => {
-        console.log(addNewData, "추가되어야할 배열들@@@@");
-        addList(addNewData);
-    }, [addNewData]);
-
-    //useEffect(() => {
-    //    console.log(toUpdate, "변경되어야할 ######");
-    //    updateList(toUpdate);
-    //}, [toUpdate]);
-
-    useEffect(() => {
-        console.log(removeItem, "삭제되어야할 **&^&*^*&^");
-        deleteList(removeItem);
-    }, [removeItem]);
+        if (isSaveFormTable === false) {
+            console.log(addNewData, "추가되어야할 배열들@@@@");
+            console.log(toUpdate, "변경되어야할 ######");
+            console.log(removeItem, "삭제되어야할 **&^&*^*&^");
+            addList(addNewData);
+            updateList(toUpdate);
+            deleteList(removeItem);
+        }
+    }, [addNewData, toUpdate, removeItem]);
 
     //------------------------------- 초기값과 비교하는 코드
 
@@ -695,16 +699,21 @@ const ReactDataTable = (props) => {
                                                         <DatePicker
                                                             className="form-control flex-item"
                                                             type="text"
-                                                            value={tableData[row.index].pmpMonth || formattedDate}
+                                                            value={tableData[row.index].pmpMonth2 ? tableData[row.index].pmpMonth2.substring(0, 7) : ""}
                                                             ref={inputRef}
                                                             dateFormat="yyyy-MM"
                                                             showMonthYearPicker
                                                             locale={ko} // 한국어로 설정
                                                             onClick={() => toggleCalendarVisible(row.index)}
                                                             onChange={(date) => {
-                                                                handleDateClick(date, row.index);
-                                                                const formatted = handleDateChange(selectedDate);
-                                                                setFormattedDate(formatted); // 이 부분은 formattedDate 대신 pmpMonth를 업데이트하는 코드로 변경해야 함
+                                                                //handleDateClick(date, row.index);
+                                                                //const formatted = handleDateChange(selectedDate);
+                                                                //setFormattedDate(formatted); // 이 부분은 formattedDate 대신 pmpMonth를 업데이트하는 코드로 변경해야 함
+                                                                const formatted = handleDateChange(date);
+                                                                const updatedTableData = [...tableData];
+                                                                updatedTableData[row.index].pmpMonth2 = formatted;
+                                                                console.log(updatedTableData, "🚨🚫🚫🚫🚫🚫");
+                                                                setTableData(updatedTableData);
                                                             }}
                                                         />
                                                     </div>
