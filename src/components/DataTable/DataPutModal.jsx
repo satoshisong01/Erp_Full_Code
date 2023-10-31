@@ -79,16 +79,43 @@ export default function DataPutModal({ onClose, initialData, columns, updateData
                                                         {column.require && <span className="redStar">*</span>}
                                                         {column.header}:
                                                     </label>
-                                                    <input
-                                                        placeholder={column.header}
-                                                        className="postInput"
-                                                        type="text"
-                                                        name={column.col}
-                                                        value={data[column.col] || ""}
-                                                        //value={getNestedData(data, column.col) || ""}
-                                                        onChange={inputChange}
-                                                        disabled={column.enable === false}
-                                                    />
+                                                    {column.type === "select" ? (
+                                                        <select name={column.col} className="postInput" onChange={inputChange}>
+                                                            {column.option.map((op) => (
+                                                                <option key={op.value} value={op.label}>
+                                                                    {op.label}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    ) : column.lockAt ? (
+                                                        <select name={column.col} className="postInput" onChange={inputChange}>
+                                                            <option value="Y">Y</option>
+                                                            <option value="N">N</option>
+                                                        </select>
+                                                    ) : column.itemType && Array.isArray(column.itemType) ? (
+                                                        <select className="postInput" name={column.col} value={data[column.col] || ""} onChange={inputChange}>
+                                                            <option value={""}>{column.itemType[0]}</option>
+                                                            {column.itemType.map(
+                                                                (item, index) =>
+                                                                    index > 0 && (
+                                                                        <option key={index} value={column.itemTypeSymbol[index]}>
+                                                                            {item}
+                                                                        </option>
+                                                                    )
+                                                            )}
+                                                        </select>
+                                                    ) : (
+                                                        <input
+                                                            placeholder={column.header}
+                                                            className="postInput"
+                                                            type="text"
+                                                            name={column.col}
+                                                            value={data[column.col] || ""}
+                                                            //value={getNestedData(data, column.col) || ""}
+                                                            onChange={inputChange}
+                                                            disabled={column.enable === false}
+                                                        />
+                                                    )}
                                                 </div>
                                                 {errorMessages[column.col] && <span className="error-message text-error"> 필수값이 입력되지 않았습니다.</span>}
                                             </div>
