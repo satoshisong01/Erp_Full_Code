@@ -167,8 +167,12 @@ const RootRoutes = () => {
     };
 
     useEffect(() => {
-        fnAddPgNm();
-        fnAddPdiNm();
+        if (addPgNm === true) {
+            fnAddPgNm();
+        }
+        if (addPdiNm === true) {
+            fnAddPdiNm();
+        }
     }, [addPgNm, addPdiNm]);
 
     const fnAddPgNm = async () => {
