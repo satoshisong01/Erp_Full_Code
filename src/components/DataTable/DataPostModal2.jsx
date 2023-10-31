@@ -8,16 +8,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 //import { v4 as uuidv4 } from "uuid";
 //import axios from "axios";
 
-export default function DataPostModal2({
-    refresh,
-    postData,
-    columns,
-    onClose,
-    errorOn,
-    fetchAllData,
-    handleSendLoading,
-    selectList,
-}) {
+export default function DataPostModal2({ refresh, postData, columns, onClose, errorOn, fetchAllData, handleSendLoading, selectList }) {
     const [data, setData] = useState({});
     const [showAlert, setShowAlert] = useState(false);
     const [errorOnState, setErrorOnState] = useState(false);
@@ -56,9 +47,7 @@ export default function DataPostModal2({
 
         // 필수 필드가 비어있는지 확인
         const requiredColumns = columns.filter((column) => column.require);
-        const hasEmptyRequiredFields = requiredColumns.some(
-            (column) => !data[column.col]
-        );
+        const hasEmptyRequiredFields = requiredColumns.some((column) => !data[column.col]);
 
         //const hasPrimaryKey = columns.some((column) => column.pk);
 
@@ -81,13 +70,8 @@ export default function DataPostModal2({
                             <div className="modal-header">
                                 <h4 className="modal-title">프로젝트 목록</h4>
                             </div>
-                            <div
-                                className="product-modal-close-btn"
-                                onClick={onClose}>
-                                <FontAwesomeIcon
-                                    icon={faXmark}
-                                    className="xBtn"
-                                />
+                            <div className="product-modal-close-btn" onClick={onClose}>
+                                <FontAwesomeIcon icon={faXmark} className="xBtn" />
                             </div>
                         </div>
                         <form className="product-modal-body">
@@ -95,126 +79,53 @@ export default function DataPostModal2({
                                 {columns.map((column, index) => {
                                     if (column.add) {
                                         return (
-                                            <div
-                                                className="postBox"
-                                                key={index}>
+                                            <div className="postBox" key={index}>
                                                 <div className="inputBox">
                                                     <label className="postLabel">
-                                                        {column.require && (
-                                                            <span className="redStar">
-                                                                *
-                                                            </span>
-                                                        )}
+                                                        {column.require && <span className="redStar">*</span>}
                                                         {column.header}:
                                                     </label>
-                                                    {column.type === 'select' ? (
-                                                        <select
-                                                            name={column.col}
-                                                            className="postInput"
-                                                            onChange={
-                                                                inputChange
-                                                            }>
+                                                    {column.type === "select" ? (
+                                                        <select name={column.col} className="postInput" onChange={inputChange}>
                                                             {column.option.map((op) => (
-                                                                    <option key={op.value} value={op.value}>
-                                                                        {op.label}
-                                                                    </option>
-                                                                )
-                                                            )}
+                                                                <option key={op.value} value={op.value}>
+                                                                    {op.label}
+                                                                </option>
+                                                            ))}
                                                         </select>
                                                     ) : column.lockAt ? (
-                                                        <select
-                                                            name={column.col}
-                                                            className="postInput"
-                                                            onChange={
-                                                                inputChange
-                                                            }>
-                                                            <option value="Y">
-                                                                Y
-                                                            </option>
-                                                            <option value="N">
-                                                                N
-                                                            </option>
+                                                        <select name={column.col} className="postInput" onChange={inputChange}>
+                                                            <option value="Y">Y</option>
+                                                            <option value="N">N</option>
                                                         </select>
-                                                    ) : column.itemType &&
-                                                      Array.isArray(
-                                                          column.itemType
-                                                      ) ? (
-                                                        <select
-                                                            className="postInput"
-                                                            name={column.col}
-                                                            value={
-                                                                data[
-                                                                    column.col
-                                                                ] || ""
-                                                            }
-                                                            onChange={
-                                                                inputChange
-                                                            }>
-                                                            <option value={""}>
-                                                                {
-                                                                    column
-                                                                        .itemType[0]
-                                                                }
-                                                            </option>
+                                                    ) : column.itemType && Array.isArray(column.itemType) ? (
+                                                        <select className="postInput" name={column.col} value={data[column.col] || ""} onChange={inputChange}>
+                                                            <option value={""}>{column.itemType[0]}</option>
                                                             {column.itemType.map(
                                                                 (item, index) =>
-                                                                    index >
-                                                                        0 && (
-                                                                        <option
-                                                                            key={
-                                                                                index
-                                                                            }
-                                                                            value={
-                                                                                column
-                                                                                    .itemTypeSymbol[
-                                                                                    index
-                                                                                ]
-                                                                            }>
-                                                                            {
-                                                                                item
-                                                                            }
+                                                                    index > 0 && (
+                                                                        <option key={index} value={column.itemTypeSymbol[index]}>
+                                                                            {item}
                                                                         </option>
                                                                     )
                                                             )}
                                                         </select>
                                                     ) : (
                                                         <input
-                                                            placeholder={
-                                                                column.placeholder ||
-                                                                column.header
-                                                            }
+                                                            placeholder={column.placeholder || column.header}
                                                             className="postInput"
                                                             type="text"
                                                             name={column.col}
-                                                            value={
-                                                                data[
-                                                                    column.col
-                                                                ] || ""
-                                                            }
-                                                            onChange={
-                                                                inputChange
-                                                            }
+                                                            value={data[column.col] || ""}
+                                                            onChange={inputChange}
                                                         />
                                                     )}
                                                 </div>
-                                                {column.require &&
-                                                    showAlert &&
-                                                    !data[column.col] && (
-                                                        <span className="error-message text-error">
-                                                            필수값이
-                                                            비어있습니다.
-                                                        </span>
-                                                    )}
-                                                {errorOnState && column.pk && (
-                                                    <span className="error-message text-error">
-                                                        중복된 값입니다.
-                                                    </span>
+                                                {column.require && showAlert && !data[column.col] && (
+                                                    <span className="error-message text-error">필수값이 비어있습니다.</span>
                                                 )}
-                                                {!errorOnState && column.pk && (
-                                                    <span className="error-message text-error">
-                                                        {" "}
-                                                    </span>
-                                                )}
+                                                {errorOnState && column.pk && <span className="error-message text-error">중복된 값입니다.</span>}
+                                                {!errorOnState && column.pk && <span className="error-message text-error"> </span>}
                                             </div>
                                         );
                                     }
@@ -229,15 +140,11 @@ export default function DataPostModal2({
                                     onClick={() => {
                                         fetchAllData();
                                         onClose();
-                                        handleSendLoading(true);
+                                        //handleSendLoading(true);
                                     }}>
                                     취소
                                 </button>
-                                <button
-                                    type="button"
-                                    className="btn btn-primary modal-btn-close"
-                                    id="modalSubmitBtn"
-                                    onClick={onAdd}>
+                                <button type="button" className="btn btn-primary modal-btn-close" id="modalSubmitBtn" onClick={onAdd}>
                                     추가
                                 </button>
                             </div>

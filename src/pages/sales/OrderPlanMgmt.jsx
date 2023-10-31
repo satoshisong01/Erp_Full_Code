@@ -5,14 +5,17 @@ import ReactDataTable from "components/DataTable/ReactDataTable";
 import { PageContext } from "components/PageProvider";
 import { locationPath } from "constants/locationPath";
 import { axiosFetch } from "api/axiosFetch";
+import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
 
 /** 영업관리-수주계획관리 */
 function OrderPlanMgmt() {
-    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo } = useContext(PageContext);
+    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, innerPageName, setPrevInnerPageName, setInnerPageName } = useContext(PageContext);
 
     useEffect(() => {
+        setInnerPageName("인건비");
         return () => {
-            setProjectInfo({});
+            // 컴포넌트 종료
+            setProjectInfo({}); // 초기화
         };
     }, []);
 
@@ -145,7 +148,50 @@ function OrderPlanMgmt() {
         },
         { header: "비고", col: "pjbgDesc", cellWidth: "50%", type: "input" },
         { header: "금액", col: "pjbgPrice", cellWidth: "25%", type: "input" },
+        { header: "프로젝트ID", col: "poiId", cellWidth: "50%", type: "input", notView: "true" },
+        { header: "영업타입", col: "pjbgModeCode", cellWidth: "50%", type: "input", notView: "true" },
+        { header: "사용여부", col: "deleteAt", cellWidth: "50%", type: "input", notView: "true" },
+        { header: "삭제여부", col: "useAt", cellWidth: "50%", type: "input", notView: "true" },
     ];
+    const outsourcingColumns = [
+        // 개발외주비
+        {
+            header: "회사목록",
+            col: "esntlId",
+            cellWidth: "20%",
+            type: "button",
+            options: [],
+        },
+        { header: "금액", col: "pjbgPrice", cellWidth: "25%", type: "input" },
+        { header: "비고", col: "pjbgDesc", cellWidth: "50%", type: "input" },
+        { header: "프로젝트ID", col: "poiId", cellWidth: "50%", type: "input", notView: "true" },
+        { header: "영업타입", col: "pjbgModeCode", cellWidth: "50%", type: "input", notView: "true" },
+        { header: "경비타입", col: "pjbgTypeCode", cellWidth: "50%", type: "input", notView: "true" },
+        { header: "사용여부", col: "deleteAt", cellWidth: "50%", type: "input", notView: "true" },
+        { header: "삭제여부", col: "useAt", cellWidth: "50%", type: "input", notView: "true" },
+    ];
+
+    const generalExpensesColumns = [
+        // 영업관리비
+        {
+            header: "영업관리비 목록",
+            col: "pjbgTypeCode",
+            cellWidth: "25%",
+            type: "select",
+            options: [
+                { value: "EXPNS07", label: "기업이윤" },
+                { value: "EXPNS08", label: "일반관리비" },
+                { value: "EXPNS09", label: "네고" },
+            ],
+        },
+        { header: "비고", col: "pjbgDesc", cellWidth: "50%", type: "input" },
+        { header: "금액", col: "pjbgPrice", cellWidth: "25%", type: "input" },
+        { header: "프로젝트ID", col: "poiId", cellWidth: "50%", type: "input", notView: "true" },
+        { header: "영업타입", col: "pjbgModeCode", cellWidth: "50%", type: "input", notView: "true" },
+        { header: "사용여부", col: "deleteAt", cellWidth: "50%", type: "input", notView: "true" },
+        { header: "삭제여부", col: "useAt", cellWidth: "50%", type: "input", notView: "true" },
+    ];
+
     const purchaseColumns = [
         // 구매비
         {
@@ -217,16 +263,7 @@ function OrderPlanMgmt() {
             type: "input",
         },
     ];
-    const companyProfitColumns = [
-        // 기업이윤
-        { header: "금액", col: "poiTitle1", cellWidth: "50%", type: "input" },
-        { header: "비고", col: "poiTitle2", cellWidth: "50%", type: "input" },
-    ];
-    const generalExpensesColumns = [
-        // 일반관리비
-        { header: "금액", col: "poiTitle1", cellWidth: "50%", type: "input" },
-        { header: "비고", col: "poiTitle2", cellWidth: "50%", type: "input" },
-    ];
+
     const negoColumns = [
         // 네고
         { header: "금액", col: "poiTitle1", cellWidth: "50%", type: "input" },
@@ -244,6 +281,8 @@ function OrderPlanMgmt() {
     const [prmnPlanDatas, setPrmnPlanDatas] = useState([]); // 인건비
     const [pjbudgetDatas, setPjbudgetDatas] = useState([]); // 경비
     const [pdOrdrDatas, setPdOrdrDatas] = useState([]); // 구매(재료비)
+    const [outsourcingDatas, setOutsourcingDatas] = useState([]); // 개발외주비
+    const [generalExpensesDatas, setGeneralExpensesDatas] = useState([]); // 개발외주비
 
     const groupedData = {}; //인건비 바꿔서 넣어줄 빈 객체
 
@@ -267,8 +306,9 @@ function OrderPlanMgmt() {
 
         //날짜포맷
         data.forEach((item) => {
-            console.log(item, "아이템@@#@#@#");
-            const key = `${item.pgNm}-${item.pmpMonth[0]}-${item.pmpMonth[1]}`;
+            //console.log(item, "아이템@@#@#@#");
+            const key = `${item.pmpMonth}`;
+            console.log(key, "🔥🔥🔥key");
             if (!groupedData[key]) {
                 groupedData[key] = {
                     //pgNm: item.pgNm,
@@ -290,7 +330,8 @@ function OrderPlanMgmt() {
                     pmpmmPositionCode11: 0,
                     pmpmmPositionCode12: 0,
                     pmpmmPositionCode13: 0,
-                    pmpMonth: `${item.pmpMonth[0]}-${item.pmpMonth[1]}`,
+                    pmpMonth2: `${item.pmpMonth}`,
+                    pmpMonth: `${item.pmpMonth}`,
                     total: 0,
                 };
             }
@@ -299,14 +340,14 @@ function OrderPlanMgmt() {
 
             // 포지션에 해당하는 번호를 가져오고, 해당 위치에 pmpmmNum을 저장
             const positionNumber = positionMapping[item.pmpmmPositionCode];
-            console.log(positionNumber, "🥱🥱🥱🥱");
-            console.log(item.pmpmmPositionCode, "🆗🆗🆗🆗");
+            //console.log(positionNumber, "🥱🥱🥱🥱");
+            //console.log(item.pmpmmPositionCode, "🆗🆗🆗🆗");
 
             if (positionNumber) {
                 const pmpmmNumKey = `pmpmmPositionCode${positionNumber}`;
                 groupedData[key][pmpmmNumKey] = item.pmpmmNum;
 
-                console.log(groupedData[key][pmpmmNumKey], "💚💚💚💚💚");
+                //console.log(groupedData[key][pmpmmNumKey], "💚💚💚💚💚");
 
                 groupedData[key].total += item.pmpmmNum;
             }
@@ -315,7 +356,6 @@ function OrderPlanMgmt() {
         // groupedData 객체를 배열로 변환
         const transformedData = Object.values(groupedData);
         setPrmnPlanDatas(transformedData);
-        console.log(transformedData, "변환되고나서의 값을보여줌");
     };
 
     //const changepjbudgetData = (value, options) => {
@@ -325,20 +365,25 @@ function OrderPlanMgmt() {
     //};
 
     const changeTabs = (task) => {
-        setCurrentTask(task);
-        if (task !== currentTask) {
+        // setCurrentTask(task);
+        if (task !== innerPageName) {
             //자신 일때 수정 창으로 변동 되지 않기 위한 조건
             setIsSaveFormTable(true);
         }
+        setInnerPageName((prev) => {
+            setPrevInnerPageName(prev);
+            return task;
+        });
     };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if (currentTask === "인건비") {
+                if (innerPageName === "인건비") {
                     const data = await fetchAllData("/baseInfrm/product/prmnPlan"); // 인건비
                     console.log(data, "불러온 인건비의 값은?");
                     changePrmnPlanData(data);
-                } else if (currentTask === "경비") {
+                } else if (innerPageName === "경비") {
                     const data = await fetchAllData("/baseInfrm/product/pjbudget"); // 경비
                     setPjbudgetDatas(data);
                     //.map((item) => ({
@@ -350,9 +395,15 @@ function OrderPlanMgmt() {
                     //    ),
                     //}))
                     ///baseInfrm/product/pdOrdr
-                } else if (currentTask === "구매(재료비)") {
+                } else if (innerPageName === "구매(재료비)") {
                     const data = await fetchAllData("/cost/costPdOrdr"); // 구매(재료비)
                     setPdOrdrDatas(data);
+                } else if (innerPageName === "개발외주비") {
+                    const data = await fetchOutsourcingData("/baseInfrm/product/pjbudget");
+                    setOutsourcingDatas(data);
+                } else if (innerPageName === "영업관리비") {
+                    const data = await fetchAllData("/baseInfrm/product/pjbudget");
+                    setGeneralExpensesDatas(data);
                 }
             } catch (error) {
                 console.error("데이터를 가져오는 중에 오류 발생:", error);
@@ -360,7 +411,7 @@ function OrderPlanMgmt() {
         };
 
         fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
-    }, [projectInfo.poiId, currentTask]);
+    }, [projectInfo.poiId, innerPageName, isSaveFormTable]);
 
     const fetchAllData = async (tableUrl) => {
         const url = `/api${tableUrl}/totalListAll.do`;
@@ -384,9 +435,52 @@ function OrderPlanMgmt() {
         }
     };
 
-    console.log(prmnPlanDatas, "인건비");
-    console.log(pjbudgetDatas, "경비");
-    console.log(pdOrdrDatas, "구매(재료비");
+    const fetchOutsourcingData = async (tableUrl) => {
+        const url = `/api${tableUrl}/totalListAll.do`;
+        let requestData = { poiId: projectInfo.poiId };
+        //if (tableUrl === "/baseInfrm/product/pjbudget") {
+        requestData = {
+            poiId: projectInfo.poiId,
+            pjbgModeCode: "SLSP",
+            pjbgTypeCode: "EXPNS10",
+            useAt: "Y",
+            //};
+        };
+
+        const resultData = await axiosFetch(url, requestData);
+        if (resultData) {
+            return resultData;
+        } else {
+            return Array(5).fill({}); // 빈 배열 보내주기
+        }
+    };
+
+    const allowedPjbgTypeCodes = ["EXPNS01", "EXPNS02", "EXPNS03", "EXPNS04", "EXPNS05", "EXPNS06"];
+
+    const allowedPjbgTypeCodes2 = ["EXPNS07", "EXPNS08", "EXPNS09"];
+    const [filteredPjbudgetDatas, setFilteredPjbudgetDatas] = useState([]);
+    const [filteredPjbudgetDatas2, setFilteredPjbudgetDatas2] = useState([]);
+
+    useEffect(() => {
+        const filteredData = pjbudgetDatas.filter((data) => {
+            const pjbgTypeCode = data.pjbgTypeCode;
+            return allowedPjbgTypeCodes.includes(pjbgTypeCode);
+        });
+        setFilteredPjbudgetDatas(filteredData);
+
+        const filteredData2 = generalExpensesDatas.filter((data) => {
+            const pjbgTypeCode = data.pjbgTypeCode;
+            return allowedPjbgTypeCodes2.includes(pjbgTypeCode);
+        });
+        setFilteredPjbudgetDatas2(filteredData2);
+    }, [pjbudgetDatas, generalExpensesDatas]);
+
+    //console.log(prmnPlanDatas, "인건비");
+    //console.log(pjbudgetDatas, "경비");
+    //console.log(filteredPjbudgetDatas, "수정된 경비");
+    //console.log(pdOrdrDatas, "구매(재료비");
+    //console.log(outsourcingDatas, "개발외주비");
+    //console.log(filteredPjbudgetDatas2, "영업관리비");
 
     return (
         <>
@@ -398,48 +492,45 @@ function OrderPlanMgmt() {
                             인건비
                         </a>
                     </li>
-                    <li onClick={() => changeTabs("경비")}>
-                        <a href="#경비">경비</a>
-                    </li>
                     <li onClick={() => changeTabs("구매(재료비)")}>
                         <a href="#구매(재료비)">구매(재료비)</a>
                     </li>
-                    <li onClick={() => changeTabs("기업이윤")}>
-                        <a href="#기업이윤">기업이윤</a>
-                    </li>
-                    <li onClick={() => changeTabs("일반관리비")}>
-                        <a href="#일반관리비">일반관리비</a>
-                    </li>
-                    <li onClick={() => changeTabs("네고")}>
-                        <a href="#네고">네고</a>
-                    </li>
                     <li onClick={() => changeTabs("개발외주비")}>
                         <a href="#개발외주비">개발외주비</a>
+                    </li>
+                    <li onClick={() => changeTabs("경비")}>
+                        <a href="#경비">경비</a>
+                    </li>
+                    <li onClick={() => changeTabs("영업관리비")}>
+                        <a href="#영업관리비">영업관리비</a>
                     </li>
                 </ul>
 
                 <div className="list">
                     <div className="first">
                         <ul>
-                            <ApprovalForm title={currentTask + " 계획 등록"}>
+                            <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <ReactDataTable
                                     columns={laborColumns}
-                                    flag={currentTask === "인건비" && isSaveFormTable}
+                                    flag={innerPageName === "인건비" && isSaveFormTable}
                                     testTask={true}
                                     tableRef={orderPlanMgmtTable1}
                                     customDatas={prmnPlanDatas}
+                                    viewPageName="인건비"
                                 />
                             </ApprovalForm>
                         </ul>
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalForm title={currentTask + " 계획 등록"}>
+                            <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <ReactDataTable
-                                    columns={expensesColumns}
-                                    flag={currentTask === "경비" && isSaveFormTable}
-                                    tableRef={orderPlanMgmtTable2}
-                                    customDatas={pjbudgetDatas}
+                                    singleUrl="/baseInfrm/product/pdOrdr"
+                                    columns={purchaseColumns}
+                                    flag={innerPageName === "구매(재료비)" && isSaveFormTable}
+                                    tableRef={orderPlanMgmtTable3}
+                                    customDatas={pdOrdrDatas}
+                                    viewPageName="구매(재료비)"
                                 />
                             </ApprovalForm>
                         </ul>
@@ -447,25 +538,29 @@ function OrderPlanMgmt() {
 
                     <div className="third">
                         <ul>
-                            <ApprovalForm title={currentTask + " 계획 등록"}>
-                                <ReactDataTable
-                                    columns={purchaseColumns}
-                                    flag={currentTask === "구매(재료비)" && isSaveFormTable}
-                                    tableRef={orderPlanMgmtTable3}
-                                    customDatas={pdOrdrDatas}
+                            <ApprovalForm title={innerPageName + " 계획 등록"}>
+                                <ReactDataTableURL
+                                    singleUrl="/baseInfrm/product/pjbudget"
+                                    columns={outsourcingColumns}
+                                    flag={innerPageName === "개발외주비" && isSaveFormTable}
+                                    tableRef={orderPlanMgmtTable4}
+                                    customDatas={outsourcingDatas}
+                                    viewPageName="개발외주비"
                                 />
                             </ApprovalForm>
                         </ul>
                     </div>
 
-                    {/*<div className="fourth">
+                    <div className="fourth">
                         <ul>
-                            <ApprovalForm title={currentTask + " 계획 등록"}>
-                                <ReactDataTable
-                                    columns={companyProfitColumns}
-                                    singleUrl="/baseInfrm/product/pjOrdrInfo"
-                                    flag={currentTask === "기업이윤" && isSaveFormTable}
-                                    tableRef={orderPlanMgmtTable4}
+                            <ApprovalForm title={innerPageName + " 계획 등록"}>
+                                <ReactDataTableURL
+                                    singleUrl="/baseInfrm/product/pjbudget"
+                                    columns={expensesColumns}
+                                    flag={innerPageName === "경비" && isSaveFormTable}
+                                    tableRef={orderPlanMgmtTable2}
+                                    customDatas={filteredPjbudgetDatas}
+                                    viewPageName="경비"
                                 />
                             </ApprovalForm>
                         </ul>
@@ -473,42 +568,18 @@ function OrderPlanMgmt() {
 
                     <div className="fifth">
                         <ul>
-                            <ApprovalForm title={currentTask + " 계획 등록"}>
-                                <ReactDataTable
+                            <ApprovalForm title={innerPageName + " 계획 등록"}>
+                                <ReactDataTableURL
                                     columns={generalExpensesColumns}
-                                    singleUrl="/baseInfrm/product/pjOrdrInfo"
-                                    flag={currentTask === "일반관리비" && isSaveFormTable}
+                                    singleUrl="/baseInfrm/product/pjbudget"
+                                    flag={innerPageName === "영업관리비" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable5}
+                                    customDatas={filteredPjbudgetDatas2}
+                                    viewPageName="영업관리비"
                                 />
                             </ApprovalForm>
                         </ul>
                     </div>
-
-                    <div className="sixth">
-                        <ul>
-                            <ApprovalForm title={currentTask + " 계획 등록"}>
-                                <ReactDataTable
-                                    columns={negoColumns}
-                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
-                                    flag={currentTask === "네고" && isSaveFormTable}
-                                    tableRef={orderPlanMgmtTable6}
-                                />
-                            </ApprovalForm>
-                        </ul>
-                    </div>
-
-                    <div className="seven">
-                        <ul>
-                            <ApprovalForm title={currentTask + " 계획 등록"}>
-                                <ReactDataTable
-                                    columns={outColumns}
-                                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
-                                    flag={currentTask === "개발외주비" && isSaveFormTable}
-                                    tableRef={orderPlanMgmtTable7}
-                                />
-                            </ApprovalForm>
-                        </ul>
-                    </div>*/}
                 </div>
             </div>
         </>

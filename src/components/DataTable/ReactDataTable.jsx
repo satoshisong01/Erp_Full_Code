@@ -13,7 +13,7 @@ import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
 import ModalPagePdiNm from "components/modal/ModalPagePdiNm";
 
 const ReactDataTable = (props) => {
-    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, beforeItem, tableName } = props;
+    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -33,7 +33,6 @@ const ReactDataTable = (props) => {
         isCancelTable,
         setIsCancelTable,
         projectInfo,
-        isSaveFormTable,
         projectPdiNm,
         setIsOpenModalPdiNm,
         isOpenModalPdiNm,
@@ -42,6 +41,7 @@ const ReactDataTable = (props) => {
 
     const [tableData, setTableData] = useState([]);
     const [originTableData, setOriginTableData] = useState([]);
+    const [changeTable, setChangeTable] = useState([]);
     const pageSizeOptions = [5, 10, 15, 20, 30, 50, 100];
     const [isEditing, setIsEditing] = useState(false);
     const [openModalMod, setOpenModalMod] = useState(false);
@@ -59,18 +59,19 @@ const ReactDataTable = (props) => {
     const inputRef = useRef(null); //날짜
     const calendarRef = useRef(null);
 
+    //취소시에 오리지널 테이블로 돌아감
     useEffect(() => {
         if (isCancelTable === true) setTableData(originTableData);
         setIsCancelTable(false);
     }, [isCancelTable]);
 
     const handleDateChange = (date) => {
-        console.log(date, "🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀🎀");
         const year = date.getFullYear();
         const month = (date.getMonth() + 1).toString().padStart(2, "0");
         const day = date.getDate().toString().padStart(2, "0");
 
         const formatted = `${year}-${month}-${day}`;
+        setFormattedDate(formatted);
         //setSendDate(`${year}-${month}-${day}`);
         return formatted;
     };
@@ -120,7 +121,7 @@ const ReactDataTable = (props) => {
         }
         if (customDatas) {
             setTableData(customDatas);
-            setOriginTableData(customDatas);
+            setOriginTableData([...customDatas]);
         }
         if (tableRef) {
             setCurrentTable(tableRef);
@@ -139,6 +140,13 @@ const ReactDataTable = (props) => {
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
         setIsEditing(flag);
+        console.log(current, "🔥", currentPageName, "🔥", innerPageName);
+        setOriginTableData(changeTable);
+        if (current === currentPageName || (current === innerPageName && !flag)) {
+            //현재 페이지 이고, flag가 false일때 배열 이벤트 처리
+            compareData(originTableData, tableData);
+        }
+        console.log(flag);
     }, [flag]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
@@ -389,8 +397,6 @@ const ReactDataTable = (props) => {
 
     // 상위 컴포넌트에서 pmpMonth 상태를 생성하고 관리
 
-    //const [newData, setNewData] = useState([]);
-
     const onChangeInput = (e, preRow) => {
         const { name, value } = e.target;
         const newTableData = tableData.map((rowData, rowIndex) => {
@@ -400,11 +406,11 @@ const ReactDataTable = (props) => {
             return rowData;
         });
         setTableData(newTableData);
-        //setNewData(newTableData);
+        setChangeTable(newTableData);
     };
     //setTableData(newTableData);
     useEffect(() => {
-        console.log(tableData, "🐵🐵🐵🐵🐵🐵🐵");
+        console.log(tableData, "🐵 새로운 테이블 데이터");
     }, [tableData]);
 
     /* 새로운 빈 row 추가 */
@@ -439,11 +445,17 @@ const ReactDataTable = (props) => {
     //    });
     //};
 
+    const [deleteNumList, setDeleteNumList] = useState([]);
     const onDeleteRow = (row) => {
         const rowId = row.index;
+        const deleteNum = tableData[rowId].pmpId;
+        setDeleteNumList((prevIds) => prevIds.concat(deleteNum));
         const updateTableData = tableData.filter((_, index) => index !== rowId);
         setTableData([...updateTableData]);
     };
+    useEffect(() => {
+        console.log(deleteNumList, "삭제된 로우의 id값들은");
+    }, [deleteNumList]);
 
     const pageSizeChange = (value) => {
         setPageSize(Number(value)); // 페이지 크기 변경
@@ -473,6 +485,7 @@ const ReactDataTable = (props) => {
         setRowIndex(rowIndex);
     };
 
+    //아이템 선택후 중복할당 방지 코드
     useEffect(() => {
         if (!isOpenModalPgNm) {
             // isOpenModalPgNm이 false로 변경된 경우에 실행할 코드를 여기에 작성
@@ -528,69 +541,116 @@ const ReactDataTable = (props) => {
     //console.log(newData, "🆗🆗🆗🆗");
     //----------------------------데이터 추가시 보낼 데이터
 
-    console.log(originTableData, "오리지날 데이터✨✨✨✨");
-
-    //------------------------------- 초기값과 비교하는 코드
-    const [toUpdate, setToUpdate] = useState([]);
-    const [removeItem, setRemoveItem] = useState([]);
-    const [addNewData, setAddNewData] = useState([]);
-
     //-------------------------------배열 추가, 수정, 삭제
 
     const addList = async (addNewData) => {
+        console.log(addNewData, "➕➕ 받아서 서버로 넘겨주는 데이터➕➕");
         const url = `/api/baseInfrm/product/prmnPlan/addList.do`;
         const resultData = await axiosPost(url, addNewData);
-        console.log(resultData, "🆗🆗🆗🆗잘 넘겨줍니다🆗🆗🆗🆗");
+        if (resultData && resultData.length > 0) {
+            console.log("추가완료");
+        } else {
+            console.log("추가실패");
+        }
     };
     const updateList = async (toUpdate) => {
+        console.log(toUpdate, "🛠️🛠️ 받아서 서버로 넘겨주는 수정데이터🛠️🛠️");
         const url = `/api/baseInfrm/product/prmnPlan/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
-        console.log(resultData, "🔥🔥🔥🔥수정 받기🔥🔥🔥🔥");
+        if (resultData && resultData.length > 0) {
+            console.log("수정완료");
+        } else {
+            console.log("수정실패");
+        }
     };
 
     const deleteList = async (removeItem) => {
+        console.log(removeItem, "🧹🧹 받아서 서버로 넘겨주는 수정데이터🧹🧹");
         const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        console.log(resultData, "🧹🧹🧹🧹삭제 받기🧹🧹🧹🧹");
+        if (resultData && resultData.length > 0) {
+            console.log("삭제완료");
+        } else {
+            console.log("삭제실패");
+        }
     };
 
     useEffect(() => {
-        compareData(originTableData, tableData);
-    }, [tableData]);
-
-    useEffect(() => {
-        console.log(originTableData, "❌🎉");
+        console.log(originTableData, "❌오리지널 데이터🎉");
     }, [originTableData]);
     // 초기 데이터와 수정된 데이터를 비교하는 함수
+
+    //추가 함수
+    const upDateChange = (data) => {
+        for (let index = 0; index < data.length; index++) {
+            const item = data[index];
+
+            // null 값을 0으로 변경
+            for (let i = 1; i <= 13; i++) {
+                const key = `pmpmmPositionCode${i}`;
+                if (item[key] === null) {
+                    item[key] = 0;
+                }
+            }
+
+            // useAt이 없다면 "Y"로 설정
+            if (!item.hasOwnProperty("useAt")) {
+                item.useAt = "Y";
+            }
+
+            if (!item.hasOwnProperty("poiId")) {
+                item.poiId = projectInfo.poiId;
+            }
+
+            // deleteAt이 없다면 "N"로 설정
+            if (!item.hasOwnProperty("deleteAt")) {
+                item.deleteAt = "N";
+            }
+
+            // pmpMonth2가 없다면 값을 pmpMonth에서 가져옴
+            if (!item.hasOwnProperty("pmpMonth2")) {
+                item.pmpMonth2 = item.pmpMonth;
+                item.pmpMonth = originTableData[index].pmpMonth;
+            }
+        }
+    };
 
     //인건비용임
     const compareData = (originData, updatedData) => {
         if (originData.length > updatedData.length) {
-            setToUpdate(updatedData);
-            for (let i = updatedData.length; i < originData.length; i++) {
-                setRemoveItem((prevRemoveItem) => [...prevRemoveItem, ...originData[i].pmpId]);
-            }
+            console.log("오리지날 > 업데이트");
+            const updateData = updatedData;
+            upDateChange(updateData);
+            updateList(updateData);
+            const originAValues = originData.map((item) => item.pmpId);
+            const extraOriginData = originAValues.slice(updatedData.length);
+            const combinedAValues = extraOriginData.reduce((acc, current) => acc.concat(current), []);
+
+            console.log(combinedAValues, "추려진 삭제값들");
+            deleteList(combinedAValues);
         } else if (originData.length === updatedData.length) {
-            //const toUpdates = updatedData.map((item) => {
-            //    return {
-            //        ...item,
-            //    };
-            //});
-            //console.log(toUpdates, formattedDate, "머지진짜🚨🚨🚨🚨🚨");
-            //setToUpdate(toUpdates);
-            setToUpdate(updatedData);
+            console.log("오리지날 == 업데이트");
+            const updateData = updatedData;
+            upDateChange(updateData);
+            updateList(updateData);
+            //setToUpdate(updatedData);
         } else if (originData.length < updatedData.length) {
+            console.log("오리지날 < 업데이트");
+
             const toAdds = [];
+            const addUpdate = [];
+            for (let i = 0; i < originData.length; i++) {
+                addUpdate.push(updatedData[i]);
+            }
+            updateList(addUpdate);
 
             for (let i = originData.length; i < updatedData.length; i++) {
                 const toAdd = { ...updatedData[i] };
-                console.log(updatedData, "🧐🧐🧐🧐🧐🧐🧐🧐🧐🧐🧐");
                 delete toAdd.total;
                 delete toAdd.poiBeginDt1;
                 toAdd.useAt = "Y";
                 toAdd.deleteAt = "N";
-                toAdd.pmpMonth = tableData[i].pmpMonth;
-                toAdd.pmpMonth2 = formattedDate;
+                //toAdd.pmpMonth = formattedDate;
                 toAdd.poiId = projectInfo.poiId;
 
                 for (let j = 1; j <= 13; j++) {
@@ -601,20 +661,12 @@ const ReactDataTable = (props) => {
 
                 toAdds.push(toAdd);
             }
-            setAddNewData(toAdds);
+            addList(toAdds);
         }
+        // else if (updatedData.length === 0){
+        //    deleteList([111])
+        //}
     };
-
-    useEffect(() => {
-        if (isSaveFormTable === false) {
-            console.log(addNewData, "추가되어야할 배열들@@@@");
-            console.log(toUpdate, "변경되어야할 ######");
-            console.log(removeItem, "삭제되어야할 **&^&*^*&^");
-            addList(addNewData);
-            updateList(toUpdate);
-            deleteList(removeItem);
-        }
-    }, [addNewData, toUpdate, removeItem]);
 
     //------------------------------- 초기값과 비교하는 코드
 
@@ -699,7 +751,13 @@ const ReactDataTable = (props) => {
                                                         <DatePicker
                                                             className="form-control flex-item"
                                                             type="text"
-                                                            value={tableData[row.index].pmpMonth2 ? tableData[row.index].pmpMonth2.substring(0, 7) : ""}
+                                                            value={
+                                                                tableData[row.index].pmpMonth2
+                                                                    ? tableData[row.index].pmpMonth2.substring(0, 7)
+                                                                    : tableData[row.index].pmpMonth
+                                                                    ? tableData[row.index].pmpMonth.substring(0, 7)
+                                                                    : ""
+                                                            }
                                                             ref={inputRef}
                                                             dateFormat="yyyy-MM"
                                                             showMonthYearPicker
@@ -711,7 +769,12 @@ const ReactDataTable = (props) => {
                                                                 //setFormattedDate(formatted); // 이 부분은 formattedDate 대신 pmpMonth를 업데이트하는 코드로 변경해야 함
                                                                 const formatted = handleDateChange(date);
                                                                 const updatedTableData = [...tableData];
-                                                                updatedTableData[row.index].pmpMonth2 = formatted;
+                                                                updatedTableData[row.index].pmpMonth
+                                                                    ? (updatedTableData[row.index].pmpMonth2 = formatted)
+                                                                    : (updatedTableData[row.index].pmpMonth = formatted);
+                                                                //updatedTableData[row.index].pmpMonth2 = formatted;
+                                                                //    ? updatedTableData[row.index].pmpMonth
+                                                                //    : formatted;
                                                                 console.log(updatedTableData, "🚨🚫🚫🚫🚫🚫");
                                                                 setTableData(updatedTableData);
                                                             }}
@@ -763,6 +826,8 @@ const ReactDataTable = (props) => {
                                                 ) : (
                                                     cell.render("Cell")
                                                 )
+                                            ) : cell.column.Header === "연월" ? (
+                                                cell.value.substring(0, 7)
                                             ) : (
                                                 cell.render("Cell")
                                             )}

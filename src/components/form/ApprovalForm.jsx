@@ -3,7 +3,7 @@ import ModalSearch from "components/modal/ModalSearch";
 import { PageContext } from "components/PageProvider";
 
 function ApprovalForm({ title, children }) {
-    const { isSaveFormTable, setIsSaveFormTable, projectInfo } = useContext(PageContext);
+    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setIsCancelTable } = useContext(PageContext);
     const [userInfo, serUserInfo] = useState({ id: "", name: "" });
 
     useEffect(() => {
@@ -13,11 +13,17 @@ function ApprovalForm({ title, children }) {
         console.log("⭐⭐⭐⭐⭐ title: ", title);
     }, []);
 
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-    const currentTime = new Date().toLocaleString('ko-KR', options);
+    const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+    };
+    const currentTime = new Date().toLocaleString("ko-KR", options);
 
     const handleClose = () => {
-        window.close();
+        //window.close();
     };
 
     return (
@@ -25,14 +31,22 @@ function ApprovalForm({ title, children }) {
             <div className="flex-between">
                 <span></span>
                 {/* <span className="approval-title">{title}</span> */}
-                <span style={{fontSize: '15px'}}>{title}</span>
+                <span style={{ fontSize: "15px" }}>{title}</span>
                 <div className="app-buttons mg-b-20">
                     {/* <button className="btn app-btn app-btn-tertiary">결재선</button>
                     <button className="btn app-btn app-btn-tertiary">결재요청</button> */}
-                    { isSaveFormTable ? <button className="btn app-btn app-btn-primary" onClick={() => setIsSaveFormTable(false)}>저장</button>
-                        : <button className="btn app-btn app-btn-primary" onClick={() => setIsSaveFormTable(true)}>수정</button>
-                    }
-                    <button className="btn app-btn app-btn-secondary" onClick={handleClose}>취소</button>
+                    {isSaveFormTable ? (
+                        <button className="btn app-btn app-btn-primary" onClick={() => setIsSaveFormTable(false)}>
+                            저장
+                        </button>
+                    ) : (
+                        <button className="btn app-btn app-btn-primary" onClick={() => setIsSaveFormTable(true)}>
+                            수정
+                        </button>
+                    )}
+                    <button className="btn app-btn app-btn-secondary" onClick={() => setIsCancelTable(true)}>
+                        취소
+                    </button>
                 </div>
             </div>
 
@@ -65,6 +79,8 @@ function ApprovalForm({ title, children }) {
                                 <td>{currentTime}</td>
                                 <th>작성자</th>
                                 <td>{userInfo.id}</td>
+                                <th>프로젝트ID</th>
+                                <td>{projectInfo.poiId}</td>
                             </tr>
                             {/* <tr>
                                 <th>작성부서</th>

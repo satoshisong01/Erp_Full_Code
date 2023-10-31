@@ -90,11 +90,12 @@ const usePrevLocation = (location) => {
 };
 
 const RootRoutes = () => {
-    const { projectItem, setProjectItem, returnKeyWord, setPgNmList, addPgNm, setPdiNmList, addPdiNm } = useContext(PageContext);
+    const { projectItem, setProjectItem, returnKeyWord, setPgNmList, setCompanyList, addPgNm, setPdiNmList, addPdiNm } = useContext(PageContext);
     useEffect(() => {
         basicFetchData();
         pgNmItem();
         pdiNmItem();
+        companyItem();
     }, [returnKeyWord]);
 
     const basicFetchData = async () => {
@@ -108,6 +109,23 @@ const RootRoutes = () => {
                 poiId: item.poiId,
                 poiNm: item.poiNm,
                 poiCode: item.poiCode,
+            }))
+        );
+    };
+    const companyItem = async () => {
+        let requestData = "";
+        const url = `/api/baseInfrm/client/client/type/p/listAll.do`;
+        if (returnKeyWord) {
+            requestData = returnKeyWord;
+        } else {
+            requestData = { useAt: "Y" };
+        }
+        const resultData = await axiosFetch(url, requestData);
+        // console.log(resultData, "나온값은?");
+        console.log(resultData, "cltNm나온값은?@@@******");
+        setCompanyList(
+            resultData.map((item) => ({
+                esntlId: item.cltNm,
             }))
         );
     };

@@ -21,6 +21,11 @@ export function PageProvider({ children }) {
     const [pgNmList, setPgNmList] = useState([]); // 품목그룹명 선택
     const [returnKeyWord, setReturnKeyWord] = useState(""); //pmNm검색어 저장
 
+    const [saveCompany, setSaveCompany] = useState({ cltNm: "", esntlId: "" }); // 선택한 id 저장
+    const [projectCompany, setProjectCompany] = useState({ esntlId: "" }); // 선택한 id 저장
+    const [companyList, setCompanyList] = useState([]); // 회사명 선택
+    const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
+
     const [addPdiNm, setAddPdiNm] = useState("");
     const [pdiNmList, setPdiNmList] = useState([]); // 품목 선택
     const [projectPdiNm, setProjectPdiNm] = useState({ pdiNm: "" }); // 선택한 id 저장
@@ -88,6 +93,15 @@ export function PageProvider({ children }) {
         setIsOpenModalPdiNm,
         addPdiNm,
         setAddPdiNm,
+
+        companyList,
+        setCompanyList,
+        projectCompany,
+        setProjectCompany,
+        isOpenModalCompany,
+        setIsOpenModalCompany,
+        saveCompany,
+        setSaveCompany,
     };
 
     return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>;
