@@ -102,8 +102,6 @@ const RootRoutes = () => {
         const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
         const requestData = { useAt: "Y" };
         const resultData = await axiosFetch(url, requestData);
-        console.log(resultData, "나온값은?");
-        // console.log(resultData, "나온값은?");
         setProjectItem(
             resultData.map((item) => ({
                 poiId: item.poiId,
@@ -121,8 +119,6 @@ const RootRoutes = () => {
             requestData = { useAt: "Y" };
         }
         const resultData = await axiosFetch(url, requestData);
-        // console.log(resultData, "나온값은?");
-        console.log(resultData, "cltNm나온값은?@@@******");
         setCompanyList(
             resultData.map((item) => ({
                 esntlId: item.cltNm,
@@ -139,8 +135,6 @@ const RootRoutes = () => {
             requestData = { useAt: "Y" };
         }
         const resultData = await axiosFetch(url, requestData);
-        // console.log(resultData, "나온값은?");
-        console.log(resultData, "PgNm나온값은?@@@******");
         setPgNmList(
             resultData.map((item) => ({
                 pgNm: item.pgNm,
@@ -157,8 +151,6 @@ const RootRoutes = () => {
             requestData = { useAt: "Y" };
         }
         const resultData = await axiosFetch(url, requestData);
-        // console.log(resultData, "나온값은?");
-        console.log(resultData, "나온값은?pdiNm🔴🔴🔴@@@******");
         setPdiNmList(
             resultData.map((item) => ({
                 pdiNm: item.pdiNm,
@@ -176,7 +168,6 @@ const RootRoutes = () => {
         const requestData = { ...addPgNm, lockAt: "Y", userAt: "Y" };
 
         const resultData = await axiosPost(url, requestData);
-        console.log(resultData, "추가되었습니다 pgNm");
         pgNmItem();
     };
 
@@ -185,11 +176,9 @@ const RootRoutes = () => {
         const requestData = { ...addPdiNm, lockAt: "Y", userAt: "Y" };
 
         const resultData = await axiosPost(url, requestData);
-        console.log(resultData, "추가되었습니다 pdiNm");
         pdiNmItem();
     };
 
-    // console.log(projectItem, "받아온값");
     //useLocation객체를 이용하여 에러페이시 이동 전 location 객체를 저장하는 코드 추가(아래 2줄) */}
     const location = useLocation();
     const prevLocation = usePrevLocation(location);

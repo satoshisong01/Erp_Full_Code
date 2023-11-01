@@ -41,7 +41,6 @@ const ReactDataTable = (props) => {
 
     const [tableData, setTableData] = useState([]);
     const [originTableData, setOriginTableData] = useState([]);
-    const [changeTable, setChangeTable] = useState([]);
     const pageSizeOptions = [5, 10, 15, 20, 30, 50, 100];
     const [isEditing, setIsEditing] = useState(false);
     const [openModalMod, setOpenModalMod] = useState(false);
@@ -52,40 +51,22 @@ const ReactDataTable = (props) => {
     const [rowIndex, setRowIndex] = useState(0);
 
     //------------------------------------------------ 달력부분
-
-    const [formattedDate, setFormattedDate] = useState(""); //날짜저장
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    //const [sendDate, setSendDate] = useState("");
     const inputRef = useRef(null); //날짜
     const calendarRef = useRef(null);
 
     //취소시에 오리지널 테이블로 돌아감
     useEffect(() => {
         if (isCancelTable === true) setTableData(originTableData);
-        setIsCancelTable(false);
+        setIsCancelTable(false); //초기화
     }, [isCancelTable]);
 
     const handleDateChange = (date) => {
         const year = date.getFullYear();
         const month = (date.getMonth() + 1).toString().padStart(2, "0");
         const day = date.getDate().toString().padStart(2, "0");
-
         const formatted = `${year}-${month}-${day}`;
-        setFormattedDate(formatted);
-        //setSendDate(`${year}-${month}-${day}`);
         return formatted;
     };
-
-    //const handleDateClick = (date, index) => {
-    //    console.log(date, index, "💥💥💥💥");
-    //    const formatted = handleDateChange(date);
-    //    setSelectedDate(formatted);
-    //    const updatedTableData = [...tableData];
-    //    updatedTableData[index].pmpMonth2 = formatted;
-    //    updatedTableData[index].calendarVisible = !tableData[index].calendarVisible; //달력닫음
-
-    //    setTableData(updatedTableData);
-    //};
 
     const toggleCalendarVisible = (index) => {
         const updatedTableData = [...tableData];
@@ -119,7 +100,9 @@ const ReactDataTable = (props) => {
         if (suffixUrl || detailUrl) {
             fetchAllData();
         }
-        if (customDatas) {
+        if(customDatas && customDatas.length < 1) {
+            setTableData(Array(defaultPageSize || 10).fill({})); // 빈 배열 추가
+        } else if(customDatas && customDatas.length > 0) {
             setTableData(customDatas);
             setOriginTableData([...customDatas]);
         }
@@ -140,13 +123,10 @@ const ReactDataTable = (props) => {
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
         setIsEditing(flag);
-        console.log(current, "🔥", currentPageName, "🔥", innerPageName);
-        setOriginTableData(changeTable);
         if (current === currentPageName || (current === innerPageName && !flag)) {
             //현재 페이지 이고, flag가 false일때 배열 이벤트 처리
             compareData(originTableData, tableData);
         }
-        console.log(flag);
     }, [flag]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
@@ -168,7 +148,7 @@ const ReactDataTable = (props) => {
         setNameOfButton(""); //초기화
     }, [nameOfButton]);
 
-    const columnsConfig = useMemo(
+    const columnsConfig = useMemo( //컬럼 초기 상태
         () =>
             columns.map((column) => ({
                 Header: column.header,
@@ -375,44 +355,6 @@ const ReactDataTable = (props) => {
         }
     }, [selectedFlatRows]);
 
-    /* 변경된 value 값을 column과 같은 이름의 변수에 담아서 테이블에 넣어줌 */
-    //const onChange = (e, preRow) => {
-    //    const { name, value } = e.target;
-    //    console.log(name, value, "💚💚🔺🔺");
-    //    const newTableData = tableData.map((rowData, rowIndex) => {
-    //        console.log(rowData, rowIndex, "💜💜🔺🔺");
-    //        if (rowIndex === preRow.index) {
-    //            return { ...rowData, [name]: value };
-    //        }
-    //        return rowData;
-    //    });
-    //    console.log(newTableData, "💥💥💥💥");
-    //    setTableData(newTableData);
-    //};
-    //const onChange = (e, preRow) => {
-    //    const { name, value } = e.target;
-    //    console.log(name, value, "💚💚🔺🔺");
-    //    setTableData(newTableData);
-    //};
-
-    // 상위 컴포넌트에서 pmpMonth 상태를 생성하고 관리
-
-    const onChangeInput = (e, preRow) => {
-        const { name, value } = e.target;
-        const newTableData = tableData.map((rowData, rowIndex) => {
-            if (rowIndex === preRow.index) {
-                return { ...rowData, [name]: value };
-            }
-            return rowData;
-        });
-        setTableData(newTableData);
-        setChangeTable(newTableData);
-    };
-    //setTableData(newTableData);
-    useEffect(() => {
-        console.log(tableData, "🐵 새로운 테이블 데이터");
-    }, [tableData]);
-
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {
         const newRow = {};
@@ -430,32 +372,12 @@ const ReactDataTable = (props) => {
         });
     };
 
-    //const onAddRow = () => {
-    //    setTableData((prevData) => {
-    //        const newItemIndex = prevData.length; // 새로운 항목의 인덱스
-    //        const previousItemIndex = newItemIndex - 1; // 이전 항목의 인덱스
-
-    //        const newRow = { ...prevData[previousItemIndex] }; // 이전 항목을 복제
-    //        columnsConfig.forEach((column) => {
-    //            newRow[column.accessor] = ""; // 빈 문자열로 초기화
-    //        });
-
-    //        const newData = [...prevData, newRow];
-    //        return newData;
-    //    });
-    //};
-
-    const [deleteNumList, setDeleteNumList] = useState([]);
+    /* 데이터 테이블 UI에서 ROW 삭제 */
     const onDeleteRow = (row) => {
         const rowId = row.index;
-        const deleteNum = tableData[rowId].pmpId;
-        setDeleteNumList((prevIds) => prevIds.concat(deleteNum));
         const updateTableData = tableData.filter((_, index) => index !== rowId);
         setTableData([...updateTableData]);
     };
-    useEffect(() => {
-        console.log(deleteNumList, "삭제된 로우의 id값들은");
-    }, [deleteNumList]);
 
     const pageSizeChange = (value) => {
         setPageSize(Number(value)); // 페이지 크기 변경
@@ -470,17 +392,14 @@ const ReactDataTable = (props) => {
     useEffect(() => {
         setDataBuket(projectPgNm.pgNm);
         setDataBuketPdiNm(projectPdiNm.pdiNm);
-        //setTableData()
     }, [projectPgNm, projectPdiNm]);
 
     const setValueData = (rowIndex) => {
-        //setRowIndex()
         setIsOpenModalPgNm(true);
         setRowIndex(rowIndex);
     };
 
     const setValueDataPdiNm = (rowIndex) => {
-        //setRowIndex()
         setIsOpenModalPdiNm(true);
         setRowIndex(rowIndex);
     };
@@ -528,23 +447,9 @@ const ReactDataTable = (props) => {
         setTableData(updatedTableData);
     };
 
-    //----------------------------데이터 추가시 보낼 데이터
-    //const newData = tableData.map((item) => {
-    //    // 현재 객체의 복사본 생성
-    //    const newItem = { ...item };
-    //    // calendarVisible와 total 필드 제거
-    //    delete newItem.calendarVisible;
-    //    delete newItem.total;
-    //    return newItem;
-    //});
-
-    //console.log(newData, "🆗🆗🆗🆗");
-    //----------------------------데이터 추가시 보낼 데이터
-
     //-------------------------------배열 추가, 수정, 삭제
 
     const addList = async (addNewData) => {
-        console.log(addNewData, "➕➕ 받아서 서버로 넘겨주는 데이터➕➕");
         const url = `/api/baseInfrm/product/prmnPlan/addList.do`;
         const resultData = await axiosPost(url, addNewData);
         if (resultData && resultData.length > 0) {
@@ -554,7 +459,6 @@ const ReactDataTable = (props) => {
         }
     };
     const updateList = async (toUpdate) => {
-        console.log(toUpdate, "🛠️🛠️ 받아서 서버로 넘겨주는 수정데이터🛠️🛠️");
         const url = `/api/baseInfrm/product/prmnPlan/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData && resultData.length > 0) {
@@ -565,7 +469,6 @@ const ReactDataTable = (props) => {
     };
 
     const deleteList = async (removeItem) => {
-        console.log(removeItem, "🧹🧹 받아서 서버로 넘겨주는 수정데이터🧹🧹");
         const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         if (resultData && resultData.length > 0) {
@@ -575,11 +478,8 @@ const ReactDataTable = (props) => {
         }
     };
 
-    useEffect(() => {
-        console.log(originTableData, "❌오리지널 데이터🎉");
-    }, [originTableData]);
-    // 초기 데이터와 수정된 데이터를 비교하는 함수
 
+    // 초기 데이터와 수정된 데이터를 비교하는 함수
     //추가 함수
     const upDateChange = (data) => {
         for (let index = 0; index < data.length; index++) {
@@ -618,25 +518,22 @@ const ReactDataTable = (props) => {
     //인건비용임
     const compareData = (originData, updatedData) => {
         if (originData.length > updatedData.length) {
-            console.log("오리지날 > 업데이트");
             const updateData = updatedData;
             upDateChange(updateData);
             updateList(updateData);
+
             const originAValues = originData.map((item) => item.pmpId);
             const extraOriginData = originAValues.slice(updatedData.length);
             const combinedAValues = extraOriginData.reduce((acc, current) => acc.concat(current), []);
 
-            console.log(combinedAValues, "추려진 삭제값들");
             deleteList(combinedAValues);
+
         } else if (originData.length === updatedData.length) {
-            console.log("오리지날 == 업데이트");
             const updateData = updatedData;
             upDateChange(updateData);
             updateList(updateData);
-            //setToUpdate(updatedData);
-        } else if (originData.length < updatedData.length) {
-            console.log("오리지날 < 업데이트");
 
+        } else if (originData.length < updatedData.length) {
             const toAdds = [];
             const addUpdate = [];
             for (let i = 0; i < originData.length; i++) {
@@ -650,7 +547,6 @@ const ReactDataTable = (props) => {
                 delete toAdd.poiBeginDt1;
                 toAdd.useAt = "Y";
                 toAdd.deleteAt = "N";
-                //toAdd.pmpMonth = formattedDate;
                 toAdd.poiId = projectInfo.poiId;
 
                 for (let j = 1; j <= 13; j++) {
@@ -662,10 +558,13 @@ const ReactDataTable = (props) => {
                 toAdds.push(toAdd);
             }
             addList(toAdds);
+        } else if (!updatedData) {
+            console.log("💚 업데이트 데이터 없음");
+            console.log("💚 오리지널 데이터: ", originData);
+            console.log("💚 삭제할 데이터: ", combinedAValues);
+            const combinedAValues = originData.reduce((acc, current) => acc.concat(current), []);
+        //    deleteList(combinedAValues)
         }
-        // else if (updatedData.length === 0){
-        //    deleteList([111])
-        //}
     };
 
     //------------------------------- 초기값과 비교하는 코드
@@ -744,7 +643,7 @@ const ReactDataTable = (props) => {
                                                                 : cell.value
                                                         }
                                                         name={cell.column.id}
-                                                        onChange={(e) => onChangeInput(e, row)}
+                                                        onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
                                                     />
                                                 ) : cell.column.type === "datepicker" ? (
                                                     <div className="box3-1 boxDate">
@@ -775,7 +674,6 @@ const ReactDataTable = (props) => {
                                                                 //updatedTableData[row.index].pmpMonth2 = formatted;
                                                                 //    ? updatedTableData[row.index].pmpMonth
                                                                 //    : formatted;
-                                                                console.log(updatedTableData, "🚨🚫🚫🚫🚫🚫");
                                                                 setTableData(updatedTableData);
                                                             }}
                                                         />
@@ -788,7 +686,7 @@ const ReactDataTable = (props) => {
                                                                 ? tableData[row.index][cell.column.id]
                                                                 : cell.column.options[row.index].value || "" // 기본값: 해당 행의 인덱스에 해당하는 옵션의 value 값 또는 빈 문자열
                                                         }
-                                                        onChange={(e) => onChangeInput(e, row)}>
+                                                        onChange={(e) => handleChange(e, rowIndex, cell.column.id)}>
                                                         {cell.column.options.map((option, index) => (
                                                             <option key={index} value={option.value}>
                                                                 {option.label}
@@ -826,7 +724,7 @@ const ReactDataTable = (props) => {
                                                 ) : (
                                                     cell.render("Cell")
                                                 )
-                                            ) : cell.column.Header === "연월" ? (
+                                            ) : cell.column.Header === "연월" && cell.value ? (
                                                 cell.value.substring(0, 7)
                                             ) : (
                                                 cell.render("Cell")

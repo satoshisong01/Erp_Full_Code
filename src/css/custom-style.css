@@ -416,7 +416,7 @@
 /* 사전원가 계산서 */
 .precost-container {
     background-color: var(--background-white);
-    width: 100%;
+    width: 85%;
     margin: 0 auto;
     font-weight: 400;
     font-size: 15px;

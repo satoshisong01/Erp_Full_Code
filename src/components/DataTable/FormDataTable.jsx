@@ -250,7 +250,7 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                 label === "상태" ? (
                                                     <td colSpan={colSpan || "1"}>
                                                         <span>
-                                                            <Status status="작성중" />
+                                                            <Status status={value} />
                                                         </span>
                                                     </td>
                                                 ) : type === "data" ? (

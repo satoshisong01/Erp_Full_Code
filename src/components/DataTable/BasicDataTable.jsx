@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function BasicDataTable({ colums, data, datatableRef, tableSize, subtitle }) {
     const tableContainerStyle = {
@@ -33,8 +33,8 @@ export default function BasicDataTable({ colums, data, datatableRef, tableSize, 
                         {data.map((rowData, rowIndex) => (
                             <tr key={rowIndex} className="table-row">
                                 {rowData.data.map((cellData, colIndex) => (
-                                    <td key={colIndex} className={`${colums[colIndex].className} ${rowData.className[colIndex]}`}>
-                                        {cellData}
+                                    <td key={colIndex} className={`${colums[colIndex].className} ${rowData.className[colIndex]}`} style={{height: 26}}>
+                                        {typeof cellData === "number" ? cellData.toLocaleString() : cellData}
                                     </td>
                                 ))}
                             </tr>

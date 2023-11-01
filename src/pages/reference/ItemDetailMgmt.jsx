@@ -76,7 +76,6 @@ function ItemDetailMgmt() {
         const url = `/api/baseInfrm/product/productGroup/totalListAll.do`;
         const requestData = { useAt: "Y" };
         const resultData = await axiosFetch(url, requestData);
-        console.log(resultData, "🔥🔥🔥🔥🔥불러온거");
         if (resultData) {
             const ArrayList = resultData.map((item, index) => ({
                 value: index + 1,
@@ -85,10 +84,6 @@ function ItemDetailMgmt() {
             setPdIdArray(ArrayList);
         }
     };
-
-    useEffect(() => {
-        console.log(pdIdArray);
-    }, [pdIdArray]);
 
     const conditionList = [
         {

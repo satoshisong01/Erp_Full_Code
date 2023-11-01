@@ -1,8 +1,8 @@
 let init;
 
 export default function initPage() {
-    console.group("initPage()");
-    console.log("[Start] initPage ------------------------------");
+    // console.group("initPage()");
+    // console.log("[Start] initPage ------------------------------");
 	//모바일에서 관리자 메뉴가 동적으로 추가되었을 때 서브메뉴가 정상 작동되도록 코드 추가 : 2023.04.14(금) 김일국 추가
 	const sessionUser = sessionStorage.getItem('loginUser');
     const sessionUserSe = JSON.parse(sessionUser)?.userSe;
