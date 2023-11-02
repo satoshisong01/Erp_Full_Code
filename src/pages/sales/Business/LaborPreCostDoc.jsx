@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
 import { axiosFetch } from "api/axiosFetch";
@@ -19,31 +19,48 @@ const LaborPreCostDoc = () => {
     const [chargeTableData, setChargeTableData] = useState([{ data: [''], className: [''] }]); //경비
     const [outTableData, setOutTableData] = useState([{ data: ['', '', ''], className: [''] }]); //개발외주비
     const [laborTableData, setLaborTableData] = useState([{ data: [''], className: [''] }]); //인건비
-    const [projectInfo, setProjectInfo] = useState({});
+    const [ProjectInfoToServer, setProjectInfoToServer] = useState({});
 
+    /* 스타일 */
     const purStyle = { marginBottom: 20, maxHeight: 250 }
     const chargeStyle = { maxHeight: 860 }
 
     useEffect(() => {
-        getInitData(); // 종합집계표 데이터 가져오기
-    }, []);
+        // URL에서 "data" 파라미터 읽기
+        const dataParameter = getQueryParameterByName("data");
+        const data = JSON.parse(dataParameter);
+        if(data.projectInfo) {
+            getInitData(data.projectInfo.poiId); //서버에서 데이터 호출
+        }
+    }, [])
+
+    // URL에서 쿼리 문자열 파라미터를 읽는 함수
+    function getQueryParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+        const results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return "";
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
 
     const infoColumns = [
         [
-            { label: "프로젝트 이름", key: "poiNm", type: "data", colSpan: "3", value: projectInfo.poiNm},
-            { label: "프로젝트 코드", key: "poiCode", type: "data", colSpan: "3", value: projectInfo.poiCode},
+            { label: "프로젝트 이름", key: "poiNm", type: "data", colSpan: "3", value: ProjectInfoToServer.poiNm},
+            { label: "프로젝트 코드", key: "poiCode", type: "data", colSpan: "3", value: ProjectInfoToServer.poiCode},
         ],
         [
-            { label: "수주부서", key: "poiGroupId", type: "data", value: projectInfo.poiGroupId},
-            { label: "매출부서", key: "poiSalesGroupId", type: "data", value: projectInfo.poiSalesGroupId},
-            { label: "영업대표", key: "poiSalmanagerId", type: "data", value: projectInfo.poiSalmanagerId},
-            { label: "담당자(PM)", key: "poiManagerId", type: "data", value: projectInfo.poiManagerId},
+            { label: "수주부서", key: "poiGroupId", type: "data", value: ProjectInfoToServer.poiGroupId},
+            { label: "매출부서", key: "poiSalesGroupId", type: "data", value: ProjectInfoToServer.poiSalesGroupId},
+            { label: "영업대표", key: "poiSalmanagerId", type: "data", value: ProjectInfoToServer.poiSalmanagerId},
+            { label: "담당자(PM)", key: "poiManagerId", type: "data", value: ProjectInfoToServer.poiManagerId},
         ],
         [
-            { label: "수주 시작일", key: "poiBeginDt", type: "data", value: projectInfo.poiBeginDt},
-            { label: "수주 마감일", key: "poiEndDt", type: "data", value: projectInfo.poiEndDt},
-            { label: "사전원가 기준 이익률", key: "standardMargin", type: "data", value: projectInfo.standardMargin+'%'},
-            { label: "상태", key: "poiStatus", type: "data", value: projectInfo.poiStatus},
+            { label: "수주 시작일", key: "poiBeginDt", type: "data", value: ProjectInfoToServer.poiBeginDt},
+            { label: "수주 마감일", key: "poiEndDt", type: "data", value: ProjectInfoToServer.poiEndDt},
+            { label: "사전원가 기준 이익률", key: "standardMargin", type: "data", value: ProjectInfoToServer.standardMargin+'%'},
+            { label: "상태", key: "poiStatus", type: "data", value: ProjectInfoToServer.poiStatus},
         ],
     ];
 
@@ -98,14 +115,13 @@ const LaborPreCostDoc = () => {
         }
     }
     
-    const getInitData = async () => {
-        const url = "http://localhost:8080/api/baseInfrm/product/prstmCost/mm/listAll.do";
-        // const url = "/api/baseInfrm/product/prstmCost/mm/listAll.do";
-        const requestData = {poiId: 88820230824014};
+    const getInitData = async (poiId) => {
+        // const url = "http://localhost:8080/api/baseInfrm/product/prstmCost/mm/listAll.do";
+        const url = "/api/baseInfrm/product/prstmCost/mm/listAll.do";
+        const requestData = { poiId };
         const resultData = await axiosFetch(url, requestData);
-
         const {
-            projectInfo,//수주정보
+            projectInfoToServer,//수주정보
             salesBudgetIn, //수주액>자체용역
             laborTotalMM, //인건비 총 mm
             laborTotalPrice, //인건비 총 합
@@ -117,10 +133,11 @@ const LaborPreCostDoc = () => {
             outLaborTotalPrice, //개발외주비 총 합
             negoTotalPrice, //네고 합
             legalTotalPrice, //판관비 합
+            //구매데이터..
         } = resultData;
 
         /* 프로젝트 정보 */
-        setProjectInfo(projectInfo);
+        setProjectInfoToServer(projectInfoToServer);
 
         /* 경비 테이블 데이터 */
         if(budgetList) {
@@ -299,27 +316,22 @@ const LaborPreCostDoc = () => {
         /* 손익계산서 테이블 데이터 */
         setCoreTableData([
             {
-                // data: ['수주액', formattedValue.salesOrderTotal, salesBudgetIn, '', salesBudgetOut, '', salesBudgetHS, '', legalTotalPrice, negoTotalPrice, '', ''],
                 data: ['수주액', salesOrderTotal.toLocaleString(), salesBudgetIn.toLocaleString(), '', salesBudgetOut.toLocaleString(), '', salesBudgetHS.toLocaleString(), '', legalTotalPrice.toLocaleString(), negoTotalPrice.toLocaleString(), '', ''],
                 className: ['point', 'b-highlight', '', 'b-gray', '', 'b-gray', '', 'b-gray', '', '', 'b-gray', 'b-gray'],
             },
             {
-                // data: ['재료비', formattedValue.purchaseTotal, '', '', excOutPurchase, '', purchaseTotalPrice, '', '', '', '', ''],
                 data: ['재료비', purchaseTotal.toLocaleString(), '', '', excOutPurchase.toLocaleString(), '', purchaseTotalPrice.toLocaleString(), '', '', '', '', ''],
                 className: ['point', 'b-highlight', 'b-gray', 'b-gray', '', 'b-gray', '', 'b-gray', 'b-gray', 'b-gray', 'b-gray', 'b-gray'],
             },
             {
-                // data: ['인건비', formattedValue.laborTotal, laborTotalPrice, '', outLaborTotalPrice, '', '', '', '', '', '', ''],
                 data: ['인건비', laborTotal.toLocaleString(), laborTotalPrice.toLocaleString(), '', outLaborTotalPrice.toLocaleString(), '', '', '', '', '', '', ''],
                 className: ['point', 'b-highlight', '', 'b-gray', '', 'b-gray', 'b-gray', 'b-gray', 'b-gray', 'b-gray', 'b-gray', 'b-gray'],
             },
             {
-                // data: ['경비', formattedValue.chargeTotal, budgetTotalPrice, '', '', '', '', '', '', '', '', ''],
                 data: ['경비', chargeTotal.toLocaleString(), budgetTotalPrice.toLocaleString(), '', '', '', '', '', '', '', '', ''],
                 className: ['point', 'b-highlight', '', 'b-gray', 'b-gray', 'b-gray', 'b-gray', 'b-gray', 'b-gray', 'b-gray', 'b-gray', 'b-gray'],
             },
             {
-                // data: ['직접원가', formattedValue.exeCostTotal, formattedValue.exeInCost, '', formattedValue.exeOutCost, '', formattedValue.exePurCost, '', '', '', '', ''],
                 data: ['직접원가', exeCostTotal.toLocaleString(), exeInCost.toLocaleString(), '', exeOutCost.toLocaleString(), '', exePurCost.toLocaleString(), '', '', '', '', ''],
                 className: ['col-header', 'col-header', 'col-header', 'col-header', 'col-header', 'col-header', 'col-header', 'col-header', 'col-header', 'col-header', 'col-header', 'col-header'],
             },

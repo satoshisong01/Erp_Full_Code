@@ -14,7 +14,7 @@ import URL from "constants/url";
 
 /** 영업관리-수주등록관리 */
 function OrderMgmt() {
-    const { setNameOfButton } = useContext(PageContext);
+    const { setNameOfButton, projectInfo } = useContext(PageContext);
     const orderMgmtTable = useRef(null);
 
     const columns = [
@@ -130,7 +130,7 @@ function OrderMgmt() {
             <Location pathList={locationPath.OrderMgmt} />
             <SearchList conditionList={conditionList} />
             <div className="table-buttons">
-                <PopupButton targetUrl={URL.LaborPreCostDoc} data={{ label: "사전원가서", poiCode: "" }} />
+                <PopupButton targetUrl={URL.LaborPreCostDoc} data={{ label: "사전원가서", projectInfo }} />
                 <ModButton label={"수정"} onClick={() => setNameOfButton("modify")} />
                 <DelButton label={"삭제"} onClick={() => setNameOfButton("delete")} />
                 <RefreshButton onClick={() => setNameOfButton("refresh")} />
