@@ -3,14 +3,13 @@ import ModalSearch from "components/modal/ModalSearch";
 import { PageContext } from "components/PageProvider";
 
 function ApprovalForm({ title, children }) {
-    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setIsCancelTable } = useContext(PageContext);
+    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setIsCancelTable, innerPageName } = useContext(PageContext);
     const [userInfo, serUserInfo] = useState({ id: "", name: "" });
 
     useEffect(() => {
         const sessionUser = sessionStorage.getItem("loginUser");
         const sessionUserId = JSON.parse(sessionUser)?.id;
         serUserInfo({ id: sessionUserId });
-        console.log("⭐⭐⭐⭐⭐ title: ", title);
     }, []);
 
     const options = {
@@ -67,21 +66,34 @@ function ApprovalForm({ title, children }) {
                     <table className="table-styled header-width">
                         <tbody>
                             <tr>
-                                <th>프로젝트명</th>
-                                <td>
+                                <th >프로젝트 이름</th>
+                                <td colSpan={3}>
                                     <ModalSearch />
                                 </td>
-                                <th>프로젝트코드</th>
-                                <td>{projectInfo.poiCode}</td>
+                                <th>프로젝트 아이디</th>
+                                <td>{projectInfo.poiId}</td>
+                                <th>프로젝트 버전</th>
+                                <td>{projectInfo.version}</td>
                             </tr>
                             <tr>
                                 <th>작성일</th>
-                                <td>{currentTime}</td>
+                                <td colSpan={3}>{currentTime}</td>
                                 <th>작성자</th>
-                                <td>{userInfo.id}</td>
-                                <th>프로젝트ID</th>
-                                <td>{projectInfo.poiId}</td>
+                                <td colSpan={3}>{userInfo.id}</td>
+
                             </tr>
+                            {
+                                innerPageName === "구매(재료비)" ? (
+                                    <tr>
+                                        <th>구매 종류</th>
+                                        <td colSpan={3}>{}</td>
+                                        <th>거래처</th>
+                                        <td >{}</td>
+                                        <th>발주일</th>
+                                        <td >{}</td>
+                                    </tr>
+                                ) : null
+                            }
                             {/* <tr>
                                 <th>작성부서</th>
                                 <td>

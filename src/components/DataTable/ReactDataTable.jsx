@@ -37,6 +37,7 @@ const ReactDataTable = (props) => {
         setIsOpenModalPdiNm,
         isOpenModalPdiNm,
         setProjectPdiNm,
+        setProjectInfo,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -95,21 +96,31 @@ const ReactDataTable = (props) => {
 
     //------------------------------------------------
 
-    /* 최초 실행, 데이터 초기화  */
+    /* 최초 실행, 현재 보는 화면 정보 set */
     useEffect(() => {
-        if (suffixUrl || detailUrl) {
-            fetchAllData();
-        }
-        if(customDatas && customDatas.length < 1) {
-            setTableData(Array(defaultPageSize || 10).fill({})); // 빈 배열 추가
-        } else if(customDatas && customDatas.length > 0) {
-            setTableData(customDatas);
-            setOriginTableData([...customDatas]);
-        }
+        setCurrent(viewPageName);
         if (tableRef) {
             setCurrentTable(tableRef);
         }
-        setCurrent(viewPageName);
+    }, []);
+
+    useEffect(() => {
+        // 현재 보는 페이지(current)가 클릭한 페이지와 같은게 없다면 return
+        if (current !== currentPageName && current !== innerPageName) {
+            return
+        }
+        if (suffixUrl || detailUrl) {
+            fetchAllData();
+        }
+    }, [current]);
+
+    useEffect(() => {
+        if(customDatas && customDatas.length < 1) {
+            // setTableData(Array(defaultPageSize || 10).fill({})); // 빈 배열 추가
+        } else if(customDatas && customDatas.length > 0) {
+            setTableData([...customDatas]);
+            setOriginTableData([...customDatas]);
+        }
     }, [customDatas]);
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
@@ -279,7 +290,13 @@ const ReactDataTable = (props) => {
     /* 로우 클릭 */
     const onCLickRow = (row) => {
         toggleRowSelected(row.id);
-        if (row.poiNm) {
+        if (row.original.poiId) {
+            setProjectInfo({
+                poiId: row.original.poiId,
+                poiNm: row.original.poiNm,
+                poiCode: row.original.poiCode,
+                poiVersion: row.original.poiVersion
+            })
             //프로젝트에 해당하는 상세 테이블
             /* 서버 통신 */
             // const url = `/api${detailUrl}/listAll.do`;
@@ -438,11 +455,39 @@ const ReactDataTable = (props) => {
         }
     }, [isOpenModalPgNm, dataBuket, rowIndex, tableData, prevDataBuket, prevDataBuketPdiNm, isOpenModalPdiNm, dataBuketPdiNm]);
 
-    const handleChange = (e, rowIndex, accessor) => {
+    const handleChange = (e, row, accessor) => {
         const { value } = e.target;
-        // tableData를 복제하여 수정
+        const index = row.index;
         const updatedTableData = [...tableData];
-        updatedTableData[rowIndex][accessor] = value;
+        updatedTableData[row.index][accessor] = value;
+        
+        if(accessor === 'byUnitPrice' || accessor === 'standardMargin' || accessor === 'consumerOpRate' || accessor === 'byQunty') {
+            if(row.original.byUnitPrice && row.original.standardMargin && row.original.consumerOpRate && row.original.byQunty) {
+                // 1.원가(견적가) : 수량 * 원단가
+                const estimatedCost =  row.original.byQunty * row.original.byUnitPrice;
+                // 2.단가 : 원가(견적가) / (1 - 사전원가기준이익율)
+                const unitPrice = estimatedCost / (1 - (row.original.standardMargin/100));
+                // 3.금액 : 수량 * 단가
+                const planAmount = row.original.byQunty * unitPrice;
+                // 4.소비자단가 : 단가 / 소비자산출율
+                const consumerPrice = unitPrice / row.original.consumerOpRate;
+                // 5.소비자금액 : 수량 * 소비자단가
+                const consumerAmount = row.original.byQunty * consumerPrice;
+                // 6.이익금 : 금액 - 원가(견적가)
+                const plannedProfits = planAmount - estimatedCost;
+                // 7.이익률 : 이익금 / 금액
+                const plannedProfitMargin = (plannedProfits / planAmount);
+
+                updatedTableData[index]['estimatedCost'] = estimatedCost;
+                updatedTableData[index]['unitPrice'] = unitPrice;
+                updatedTableData[index]['planAmount'] = planAmount;
+                updatedTableData[index]['consumerPrice'] = (consumerPrice*100);
+                updatedTableData[index]['consumerAmount'] = (consumerAmount*100);
+                updatedTableData[index]['plannedProfits'] = plannedProfits;
+                updatedTableData[index]['plannedProfitMargin'] = (plannedProfitMargin*100);
+            }
+        }
+
         // 수정된 데이터로 tableData 업데이트
         setTableData(updatedTableData);
     };
@@ -559,9 +604,6 @@ const ReactDataTable = (props) => {
             }
             addList(toAdds);
         } else if (!updatedData) {
-            console.log("💚 업데이트 데이터 없음");
-            console.log("💚 오리지널 데이터: ", originData);
-            console.log("💚 삭제할 데이터: ", combinedAValues);
             const combinedAValues = originData.reduce((acc, current) => acc.concat(current), []);
         //    deleteList(combinedAValues)
         }
@@ -643,7 +685,7 @@ const ReactDataTable = (props) => {
                                                                 : cell.value
                                                         }
                                                         name={cell.column.id}
-                                                        onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
+                                                        onChange={(e) => handleChange(e, row, cell.column.id)}
                                                     />
                                                 ) : cell.column.type === "datepicker" ? (
                                                     <div className="box3-1 boxDate">
@@ -686,7 +728,7 @@ const ReactDataTable = (props) => {
                                                                 ? tableData[row.index][cell.column.id]
                                                                 : cell.column.options[row.index].value || "" // 기본값: 해당 행의 인덱스에 해당하는 옵션의 value 값 또는 빈 문자열
                                                         }
-                                                        onChange={(e) => handleChange(e, rowIndex, cell.column.id)}>
+                                                        onChange={(e) => handleChange(e, row, cell.column.id)}>
                                                         {cell.column.options.map((option, index) => (
                                                             <option key={index} value={option.value}>
                                                                 {option.label}
@@ -703,7 +745,7 @@ const ReactDataTable = (props) => {
                                                             type="text"
                                                             placeholder={projectPgNm.pgNm ? projectPgNm.pgNm : `품목그룹명을 선택해 주세요.`}
                                                             value={tableData[rowIndex].pgNm || ""}
-                                                            onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
+                                                            onChange={(e) => handleChange(e, row, cell.column.id)}
                                                             readOnly
                                                         />
                                                     </div>
@@ -717,7 +759,7 @@ const ReactDataTable = (props) => {
                                                             type="text"
                                                             placeholder={projectPdiNm.pdiNm ? projectPdiNm.pdiNm : `품명을 선택해 주세요.`}
                                                             value={tableData[rowIndex].pdiNm || ""}
-                                                            onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
+                                                            onChange={(e) => handleChange(e, row, cell.column.id)}
                                                             readOnly
                                                         />
                                                     </div>
