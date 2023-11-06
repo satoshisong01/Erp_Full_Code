@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import ModalSearch from "components/modal/ModalSearch";
 import { PageContext } from "components/PageProvider";
+import ModalPagePdOrder from "components/modal/ModalPagePdOrder";
 
 function ApprovalForm({ title, children }) {
     const { isSaveFormTable, setIsSaveFormTable, projectInfo, setIsCancelTable, innerPageName } = useContext(PageContext);
     const [userInfo, serUserInfo] = useState({ id: "", name: "" });
+    const [isOpenModal, setIsOpenModal] = useState(false)
 
     useEffect(() => {
         const sessionUser = sessionStorage.getItem("loginUser");
@@ -24,6 +26,14 @@ function ApprovalForm({ title, children }) {
     const handleClose = () => {
         //window.close();
     };
+
+    const onClick = () => {
+        if(projectInfo.poiId) {
+            setIsOpenModal(true);
+        } else if(!projectInfo.poiId){
+            alert('프로젝트를 선택해 주세요.')
+        }
+    }
 
     return (
         <>
@@ -86,7 +96,20 @@ function ApprovalForm({ title, children }) {
                                 innerPageName === "구매(재료비)" ? (
                                     <tr>
                                         <th>구매 종류</th>
-                                        <td colSpan={3}>{}</td>
+                                        <td colSpan={3}>
+                                            <input
+                                                onClick={onClick}
+                                                type="text"
+                                                placeholder="구매 종류를 선택해 주세요."
+                                                value={projectInfo.poNm || ""}
+                                                readOnly
+                                            />
+                                            {isOpenModal && (
+                                                <ModalPagePdOrder
+                                                    onClose={() => setIsOpenModal(false)}
+                                                />
+                                            )}
+                                        </td>
                                         <th>거래처</th>
                                         <td >{}</td>
                                         <th>발주일</th>

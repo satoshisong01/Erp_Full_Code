@@ -460,31 +460,38 @@ const ReactDataTable = (props) => {
                 // 1.원가(견적가) : 수량 * 원단가
                 const estimatedCost =  row.original.byQunty * row.original.byUnitPrice;
                 // 2.단가 : 원가(견적가) / (1 - 사전원가기준이익율)
-                const unitPrice = estimatedCost / (1 - (row.original.standardMargin/100));
+                const unitPrice = division(estimatedCost, (1 - (row.original.standardMargin/100)));
                 // 3.금액 : 수량 * 단가
                 const planAmount = row.original.byQunty * unitPrice;
                 // 4.소비자단가 : 단가 / 소비자산출율
-                const consumerPrice = unitPrice / row.original.consumerOpRate;
+                const consumerPrice = division(unitPrice, row.original.consumerOpRate);
                 // 5.소비자금액 : 수량 * 소비자단가
                 const consumerAmount = row.original.byQunty * consumerPrice;
                 // 6.이익금 : 금액 - 원가(견적가)
                 const plannedProfits = planAmount - estimatedCost;
                 // 7.이익률 : 이익금 / 금액
-                const plannedProfitMargin = (plannedProfits / planAmount);
+                const plannedProfitMargin = division(plannedProfits, planAmount);
 
-                updatedTableData[index]['estimatedCost'] = estimatedCost;
-                updatedTableData[index]['unitPrice'] = unitPrice;
-                updatedTableData[index]['planAmount'] = planAmount;
-                updatedTableData[index]['consumerPrice'] = (consumerPrice*100);
-                updatedTableData[index]['consumerAmount'] = (consumerAmount*100);
-                updatedTableData[index]['plannedProfits'] = plannedProfits;
-                updatedTableData[index]['plannedProfitMargin'] = (plannedProfitMargin*100);
+                updatedTableData[index]['estimatedCost'] = Math.round(estimatedCost);
+                updatedTableData[index]['unitPrice'] = Math.round(unitPrice);
+                updatedTableData[index]['planAmount'] = Math.round(planAmount);
+                updatedTableData[index]['consumerPrice'] = Math.round(consumerPrice*100);
+                updatedTableData[index]['consumerAmount'] = Math.round(consumerAmount*100);
+                updatedTableData[index]['plannedProfits'] = Math.round(plannedProfits);
+                updatedTableData[index]['plannedProfitMargin'] = Math.round(plannedProfitMargin*100);
             }
         }
 
         // 수정된 데이터로 tableData 업데이트
         setTableData(updatedTableData);
     };
+
+    const division = (value1, value2) => {
+        if (!value1 || !value2) {
+            return 0;
+        }
+        return Math.round(value1/value2);
+    }
 
     //-------------------------------배열 추가, 수정, 삭제
 
