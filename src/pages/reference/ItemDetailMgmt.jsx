@@ -24,10 +24,18 @@ function ItemDetailMgmt() {
             placeholder: "숫자만넣어주세요",
             enable: false,
             modify: true,
+            add: false,
+            require: true,
+            notView: true,
+        },
+        {
+            header: "품목그룹명",
+            col: "pgNm",
+            cellWidth: "20%",
+            modify: true,
             add: true,
             require: true,
         },
-
         {
             header: "품목명",
             col: "pdiNm",
@@ -51,10 +59,8 @@ function ItemDetailMgmt() {
             add: true,
         },
         { header: "내·외자구분", col: "pdiIotype", cellWidth: "20%" },
-        { header: "상태", col: "createDate", cellWidth: "20%" },
         { header: "단위", col: "pdiWght", cellWidth: "20%" },
         { header: "품목규격", col: "pdiStnd", cellWidth: "20%" },
-        //{ header: "모델/사양", col: "createDate", cellWidth: "20%" },
         {
             header: "품목그룹ID",
             col: "pgId",
@@ -135,7 +141,7 @@ function ItemDetailMgmt() {
                 <RefreshButton onClick={() => setNameOfButton("refresh")} />
             </div>
             <ReactDataTable
-                beforeItem={pdIdArray}
+                //beforeItem={pdIdArray}
                 columns={columns}
                 suffixUrl="/baseInfrm/product/productInfo"
                 tableRef={itemDetailMgmtTable}

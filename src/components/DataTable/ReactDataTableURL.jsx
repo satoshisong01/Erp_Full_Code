@@ -70,6 +70,10 @@ const ReactDataTableURL = (props) => {
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
 
+    useEffect(() => {
+        console.log(projectCompany, "기업 이름, 코드");
+    }, [projectCompany]);
+
     const columnsConfig = useMemo(
         () =>
             columns.map((column) => ({
@@ -142,6 +146,7 @@ const ReactDataTableURL = (props) => {
 
     const handleChange = (e, rowIndex, accessor) => {
         const { value } = e.target;
+        console.log(value, "🚨🚨🚨🚨🚨");
         // tableData를 복제하여 수정
         const updatedTableData = [...tableData];
         updatedTableData[rowIndex][accessor] = value;
@@ -228,6 +233,7 @@ const ReactDataTableURL = (props) => {
         setChangeTable(newTableData);
     };
     useEffect(() => {
+        calTotalPrice();
         console.log(tableData, "🐵🐵🐵🐵🐵🐵🐵");
     }, [tableData]);
 
@@ -371,6 +377,15 @@ const ReactDataTableURL = (props) => {
         }
     };
 
+    //-------총합 나타내기--------
+    const [totalPrice, setTotalPrice] = useState(0);
+    const calTotalPrice = () => {
+        let total = 0;
+        tableData.map((item) => {
+            total += item.pjbgPrice;
+            setTotalPrice(total);
+        });
+    };
     //------------------------------- 초기값과 비교하는 코드
 
     return (
@@ -467,7 +482,7 @@ const ReactDataTableURL = (props) => {
                                                             </option>
                                                         ))}
                                                     </select>
-                                                ) : cell.column.type === "button" ? (
+                                                ) : cell.column.type === "buttonCompany" ? (
                                                     <div>
                                                         <input
                                                             className="buttonSelect"
@@ -476,7 +491,7 @@ const ReactDataTableURL = (props) => {
                                                             onClick={() => setValueData(rowIndex)}
                                                             type="text"
                                                             placeholder={projectCompany.esntlId ? projectCompany.esntlId : `거래처명을 선택해 주세요.`}
-                                                            value={tableData[rowIndex].esntlId || ""}
+                                                            value={tableData[rowIndex].esntlId}
                                                             onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
                                                             readOnly
                                                         />
@@ -526,6 +541,14 @@ const ReactDataTableURL = (props) => {
                 </button>
             </div>
             {isOpenModalCompany && <ModalPageCompany rowIndex={rowIndex} onClose={() => setIsOpenModalCompany(false)} />}
+            <div style={{ display: "flex" }}>
+                <span style={{ display: "flex", justifyContent: "center", width: "100px", backgroundColor: "#f2f2f2", border: "solid gray 1px" }}>
+                    {current} 합계
+                </span>
+                <span style={{ display: "flex", justifyContent: "center", width: "100px", border: "solid gray 1px" }}>
+                    {`${totalPrice.toLocaleString("ko-KR")} 원`}
+                </span>
+            </div>
         </>
     );
 };

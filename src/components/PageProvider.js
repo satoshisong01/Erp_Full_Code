@@ -21,14 +21,14 @@ export function PageProvider({ children }) {
     const [pgNmList, setPgNmList] = useState([]); // 품목그룹명 선택
     const [returnKeyWord, setReturnKeyWord] = useState(""); //pmNm검색어 저장
 
-    const [saveCompany, setSaveCompany] = useState({ cltNm: "", esntlId: "" }); // 선택한 id 저장
-    const [projectCompany, setProjectCompany] = useState({ esntlId: "" }); // 선택한 id 저장
+    const [saveCompany, setSaveCompany] = useState({ cltNm: "", esntlId: "", esntlNm: "" }); // 선택한 id 저장
+    const [projectCompany, setProjectCompany] = useState({ esntlId: "", companyId: "" }); // 선택한 id 저장
     const [companyList, setCompanyList] = useState([]); // 회사명 선택
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
 
     const [addPdiNm, setAddPdiNm] = useState("");
-    const [pdiNmList, setPdiNmList] = useState([]); // 품목 선택
-    const [projectPdiNm, setProjectPdiNm] = useState({ pdiNm: "" }); // 선택한 id 저장
+    const [pdiNmList, setPdiNmList] = useState({ pdiId: "", pdiNm: "", pgNm: "", pdiWght: "", pdiStnd: "", pdiMenufut: "" }); // 품목 전체리스트
+    const [projectPdiNm, setProjectPdiNm] = useState({ pdiId: "", pdiNm: "", pgNm: "", pdiWght: "", pdiStnd: "", pdiMenufut: "" }); // 선택한 id 저장
     const [returnKeyWordPdiNm, setReturnKeyWordPdiNm] = useState(""); //pdiNm검색어 저장
     const [isOpenModalPdiNm, setIsOpenModalPdiNm] = useState(false);
 

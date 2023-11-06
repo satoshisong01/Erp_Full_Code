@@ -751,6 +751,11 @@ select {
     border-left: 1px solid #ddd;
 }
 
+input:disabled {
+    background-color: rgba(169, 169, 169, 0.512); /* 원하는 배경색으로 변경하세요 */
+    /* 다른 스타일 옵션도 추가할 수 있습니다. */
+}
+
 /* tr,
 td,
 th {

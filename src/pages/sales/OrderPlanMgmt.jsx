@@ -6,6 +6,7 @@ import { PageContext } from "components/PageProvider";
 import { locationPath } from "constants/locationPath";
 import { axiosFetch } from "api/axiosFetch";
 import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
+import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 
 /** 영업관리-수주계획관리 */
 function OrderPlanMgmt() {
@@ -159,7 +160,7 @@ function OrderPlanMgmt() {
             header: "회사목록",
             col: "esntlId",
             cellWidth: "20%",
-            type: "button",
+            type: "buttonCompany",
             options: [],
         },
         { header: "금액", col: "pjbgPrice", cellWidth: "25%", type: "input" },
@@ -194,38 +195,33 @@ function OrderPlanMgmt() {
 
     const purchaseColumns = [
         // 구매비
+        { header: "품명", col: "pdiNm", cellWidth: "20%", type: "buttonPdiNm", options: [] },
         {
             header: "품목그룹명",
             col: "pgNm",
             cellWidth: "20%",
-            type: "button",
-            options: [],
         },
-        { header: "품명", col: "pdiNm", cellWidth: "20%", type: "buttonPdiNm", options: [] },
-        { header: "규격", col: "pdiStnd", cellWidth: "20%", type: "input" },
+        { header: "규격", col: "pdiStnd", cellWidth: "10%" },
         { header: "수량", col: "byQunty", cellWidth: "10%", type: "input" },
-        { header: "단위", col: "pdiUnit", cellWidth: "10%", type: "input" },
+        { header: "단위", col: "pdiWght", cellWidth: "10%" },
         {
             header: "소비자\n단가",
             col: "consumerPrice",
             cellWidth: "14%",
-            type: "input",
         },
         {
             header: "소비자\n금액",
             col: "consumerAmount",
             cellWidth: "14%",
-            type: "input",
         },
-        { header: "단가", col: "unitPrice", cellWidth: "10%", type: "input" },
-        { header: "금액", col: "planAmount", cellWidth: "10%", type: "input" },
+        { header: "단가", col: "unitPrice", cellWidth: "10%" },
+        { header: "금액", col: "planAmount", cellWidth: "10%" },
         {
             header: "제조사",
             col: "pdiMenufut",
-            cellWidth: "12%",
-            type: "input",
+            cellWidth: "20%",
         },
-        { header: "비고", col: "pdiDesc", cellWidth: "20%", type: "input" },
+        { header: "비고", col: "pdiDesc", cellWidth: "10%", type: "input" },
         {
             header: "원단가",
             col: "byUnitPrice",
@@ -233,22 +229,19 @@ function OrderPlanMgmt() {
             type: "input",
         },
         {
-            header: "원가",
+            header: "원가(견적가)",
             col: "estimatedCost",
-            cellWidth: "10%",
-            type: "input",
+            cellWidth: "15%",
         },
         {
             header: "이익금",
             col: "plannedProfits",
             cellWidth: "12%",
-            type: "input",
         },
         {
             header: "이익률",
             col: "plannedProfitMargin",
             cellWidth: "12%",
-            type: "input",
         },
         {
             header: "기준\n이익률",
@@ -394,9 +387,10 @@ function OrderPlanMgmt() {
                     //        expensesColumns[0].options
                     //    ),
                     //}))
+                    ///cost/costPdOrdr
                     ///baseInfrm/product/pdOrdr
                 } else if (innerPageName === "구매(재료비)") {
-                    const data = await fetchAllData("/cost/costPdOrdr"); // 구매(재료비)
+                    const data = await fetchAllData("/baseInfrm/product/pdOrdr"); // 구매(재료비)
                     setPdOrdrDatas(data);
                 } else if (innerPageName === "개발외주비") {
                     const data = await fetchOutsourcingData("/baseInfrm/product/pjbudget");
@@ -409,7 +403,6 @@ function OrderPlanMgmt() {
                 console.error("데이터를 가져오는 중에 오류 발생:", error);
             }
         };
-
         fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
     }, [projectInfo.poiId, innerPageName, isSaveFormTable]);
 
@@ -524,7 +517,7 @@ function OrderPlanMgmt() {
                     <div className="second">
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
-                                <ReactDataTable
+                                <ReactDataTablePdorder
                                     singleUrl="/baseInfrm/product/pdOrdr"
                                     columns={purchaseColumns}
                                     flag={innerPageName === "구매(재료비)" && isSaveFormTable}
