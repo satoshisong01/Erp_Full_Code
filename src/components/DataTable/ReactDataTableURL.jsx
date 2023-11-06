@@ -32,6 +32,13 @@ const ReactDataTableURL = (props) => {
 
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
+        setCurrent(viewPageName);
+        if (tableRef) {
+            setCurrentTable(tableRef);
+        }
+    }, []);
+
+    useEffect(() => {
         //if (suffixUrl || detailUrl) {
         //    fetchAllData();
         //}
@@ -50,6 +57,10 @@ const ReactDataTableURL = (props) => {
         if (currentPageName !== prevCurrentPageName || innerPageName !== prevInnerPageName) {
             // 현재 페이지와 이전 페이지가 같지 않다면
             toggleAllRowsSelected(false);
+        }
+        // 현재 보는 페이지(current)가 클릭한 페이지와 같은게 없다면 return
+        if (current !== currentPageName && current !== innerPageName) {
+            return
         }
     }, [currentPageName, innerPageName]);
 

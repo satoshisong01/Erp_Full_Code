@@ -88,6 +88,9 @@ const ReactDataTable = (props) => {
         // 이벤트 핸들러 등록
         document.addEventListener("mousedown", handleDocumentClick);
 
+        setCurrent(viewPageName); //현재페이지
+        setCurrentTable(tableRef); //현재테이블
+        
         return () => {
             // 컴포넌트 언마운트 시에 이벤트 핸들러 제거
             document.removeEventListener("mousedown", handleDocumentClick);
@@ -95,24 +98,6 @@ const ReactDataTable = (props) => {
     }, []);
 
     //------------------------------------------------
-
-    /* 최초 실행, 현재 보는 화면 정보 set */
-    useEffect(() => {
-        setCurrent(viewPageName);
-        if (tableRef) {
-            setCurrentTable(tableRef);
-        }
-    }, []);
-
-    useEffect(() => {
-        // 현재 보는 페이지(current)가 클릭한 페이지와 같은게 없다면 return
-        if (current !== currentPageName && current !== innerPageName) {
-            return
-        }
-        if (suffixUrl || detailUrl) {
-            fetchAllData();
-        }
-    }, [current]);
 
     useEffect(() => {
         if(customDatas && customDatas.length < 1) {
@@ -128,6 +113,14 @@ const ReactDataTable = (props) => {
         if (currentPageName !== prevCurrentPageName || innerPageName !== prevInnerPageName) {
             // 현재 페이지와 이전 페이지가 같지 않다면
             toggleAllRowsSelected(false);
+        }
+        // 현재 보는 페이지(current)가 클릭한 페이지와 같은게 없다면 return
+        if (current !== currentPageName && current !== innerPageName) {
+            return
+        } else if(current !== "" && (current === currentPageName || current === innerPageName)) {
+            if (suffixUrl || detailUrl) {
+                fetchAllData();
+            }
         }
     }, [currentPageName, innerPageName]);
 
@@ -295,7 +288,8 @@ const ReactDataTable = (props) => {
                 poiId: row.original.poiId,
                 poiNm: row.original.poiNm,
                 poiCode: row.original.poiCode,
-                poiVersion: row.original.poiVersion
+                poiVersion: row.original.poiVersion,
+                poId: row.original.poId,
             })
             //프로젝트에 해당하는 상세 테이블
             /* 서버 통신 */
