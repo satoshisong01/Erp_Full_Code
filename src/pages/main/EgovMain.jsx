@@ -9,15 +9,15 @@ function EgovMain(props) {
     //const { projectName, setProjectName, projectCode, setProjectCode } =
     //    useContext(PageContext);
 
-    console.group("EgovMain");
-    console.log("[Start] EgovMain ------------------------------");
-    console.log("EgovMain [props] : ", props);
+    // console.group("EgovMain");
+    // console.log("[Start] EgovMain ------------------------------");
+    // console.log("EgovMain [props] : ", props);
 
-    const location = useLocation();
-    console.log("EgovMain [location] : ", location);
+    // const location = useLocation();
+    // console.log("EgovMain [location] : ", location);
 
-    console.log("------------------------------EgovMain [End]");
-    console.groupEnd("EgovMain");
+    // console.log("------------------------------EgovMain [End]");
+    // console.groupEnd("EgovMain");
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
@@ -35,8 +35,6 @@ function EgovMain(props) {
     //    const url = `/api/baseInfrm/product/pjOrdrInfo/totalList.do`;
     //    const requestData = { useAt: "Y" };
     //    const resultData = await axiosFetch(url, requestData);
-    //    console.log(resultData, "나온값은?");
-    //    console.log(resultData.content, "나온값은?");
     //    setProjectName(
     //        resultData.content.map((item) => ({
     //            poiNm: item.poiNm,
@@ -45,7 +43,6 @@ function EgovMain(props) {
     //    );
     //};
 
-    //console.log(projectCode, "나온코드만 모아둔것");
     return (
         <div className="egov-container">
             <div className="c_wrap">

@@ -6,8 +6,8 @@ import { PageContext } from "components/PageProvider";
 export default function ModalPage() {
     const { projectItem, setProjectInfo, setIsOpenModal } = useContext(PageContext);
 
-    function handleItemClick(poiId, poiNm, poiCode) {
-        setProjectInfo({ poiId, poiNm, poiCode });
+    function handleItemClick(poiId, poiNm, poiCode, poiVersion, poId) {
+        setProjectInfo({ poiId, poiNm, poiCode, poiVersion, poId });
         setIsOpenModal(false);
     }
 
@@ -28,7 +28,7 @@ export default function ModalPage() {
                             <div className="modalBody">
                                 <div className="modalContent">
                                     {projectItem.map((item, index) => (
-                                        <div className="listItems" key={index} onClick={() => handleItemClick(item.poiId, item.poiNm, item.poiCode)}>
+                                        <div className="listItems" key={index} onClick={() => handleItemClick(item.poiId, item.poiNm, item.poiCode, item.poiVersion, item.poId)}>
                                             <p className="listItem">{item.poiNm}</p>
                                         </div>
                                     ))}

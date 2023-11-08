@@ -8,17 +8,10 @@ import "react-calendar/dist/Calendar.css";
 export default function FormDataTable({ formTableColumns, onAddRow, title, useStatus }) {
     const [fieldList, setFieldList] = useState([]);
 
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [selectedDate2, setSelectedDate2] = useState(new Date());
     const [formattedDate, setFormattedDate] = useState("");
     const [formattedDate2, setFormattedDate2] = useState("");
     const [isCalendarVisible, setCalendarVisible] = useState(false);
     const [isCalendarVisible2, setCalendarVisible2] = useState(false);
-
-    useEffect(() => {
-        console.log(formattedDate, "앞에 날짜");
-        console.log(formattedDate2, "날짜받기");
-    }, [formattedDate, formattedDate2]);
 
     const inputRef = useRef(null);
     const inputRef2 = useRef(null);
@@ -41,15 +34,37 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
     };
 
     const handleDateClick = (date) => {
-        setSelectedDate(date);
-        setFormattedDate(handleDateChange(date));
+        //날짜 선택 후 저장하기
+        const tmp = handleDateChange(date);
+        setFormattedDate(tmp);
         setCalendarVisible(false);
+
+        setFormData((prevData) => ({
+            ...prevData,
+            poiBeginDt: tmp,
+        }));
+        setErrors((prevErrors) => ({
+            //에러 초기화
+            ...prevErrors,
+            poiBeginDt: "",
+        }));
     };
 
     const handleDateClick2 = (date) => {
-        setSelectedDate2(date);
-        setFormattedDate2(handleDateChange(date));
+        //날짜 선택 후 저장하기
+        const tmp = handleDateChange(date);
+        setFormattedDate2(tmp);
         setCalendarVisible2(false);
+
+        setFormData((prevData) => ({
+            ...prevData,
+            poiEndDt: tmp,
+        }));
+        setErrors((prevErrors) => ({
+            //에러 초기화
+            ...prevErrors,
+            poiEndDt: "",
+        }));
     };
 
     const handleOutsideClick = (event) => {
@@ -134,6 +149,7 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
         formTableColumns.forEach((row) => {
             row.forEach(({ key, require }) => {
                 if (require && !formData[key]) {
+                    console.log("몬데??: ", formData, key);
                     newErrors[key] = "This field is required.";
                     isValid = false;
                 }
@@ -141,6 +157,7 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
         });
 
         setErrors(newErrors);
+        console.log("2. isValid? ", isValid, formTableColumns);
         return isValid;
     };
 
@@ -223,11 +240,11 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                             onClick={handleInputClick}
                                                             readOnly
                                                             ref={inputRef}
-                                                            onChange={() => {
-                                                                const formatted = handleDateChange(selectedDate);
-                                                                setFormattedDate(formatted);
-                                                                inputChange(key, formattedDate);
-                                                            }}
+                                                            // onChange={() => {
+                                                            //     const formatted = handleDateChange(selectedDate);
+                                                            //     console.log("❗❗1. formatted: ", formatted);
+                                                            //     setFormattedDate(formatted);
+                                                            // }}
                                                         />
                                                         {isCalendarVisible && (
                                                             <div className="boxCalendar">
@@ -245,10 +262,10 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                             onClick={handleInputClick2}
                                                             readOnly
                                                             ref={inputRef2}
-                                                            onChange={() => {
-                                                                const formatted = handleDateChange(selectedDate2);
-                                                                setFormattedDate2(formatted);
-                                                            }}
+                                                            // onChange={() => {
+                                                            //     const formatted = handleDateChange(selectedDate2);
+                                                            //     setFormattedDate2(formatted);
+                                                            // }}
                                                         />
                                                         {isCalendarVisible2 && (
                                                             <div className="boxCalendar">
@@ -260,7 +277,7 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                 label === "상태" ? (
                                                     <td colSpan={colSpan || "1"}>
                                                         <span>
-                                                            <Status status="작성중" />
+                                                            <Status status={value} />
                                                         </span>
                                                     </td>
                                                 ) : type === "data" ? (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function BasicDataTable({ columns, data, datatableRef, tableSize, subtitle, defaultPageSize, justColumn, customDatas }) {
     const tableContainerStyle = {
@@ -17,53 +17,28 @@ export default function BasicDataTable({ columns, data, datatableRef, tableSize,
         <div className="basic-table">
             <div className="table-sub">{subtitle}</div>
             <div style={tableContainerStyle}>
-                {justColumn ? (
-                    <table className="table-content" ref={datatableRef}>
-                        <thead style={theadStyle}>
-                            <tr className="table-row table-header">
-                                {columns.map((column, index) => (
-                                    <th key={index} className={column.className}>
-                                        {column.header}
-                                    </th>
+                <table className="table-content" ref={datatableRef}>
+                    <thead style={theadStyle}>
+                        <tr className="table-row table-header">
+                            {colums.map((column, index) => (
+                                <th key={index} className={column.className}>
+                                    {column.header}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody className="flex-column">
+                        {data.map((rowData, rowIndex) => (
+                            <tr key={rowIndex} className="table-row">
+                                {rowData.data.map((cellData, colIndex) => (
+                                    <td key={colIndex} className={`${colums[colIndex].className} ${rowData.className[colIndex]}`} style={{ height: 26 }}>
+                                        {typeof cellData === "number" ? cellData.toLocaleString() : cellData}
+                                    </td>
                                 ))}
                             </tr>
-                        </thead>
-                        <tbody>
-                            {customDatas.map((rowData, rowIndex) => (
-                                <tr key={rowIndex} className="table-row">
-                                    {columns.map((column, colIndex) => (
-                                        <td key={colIndex} className={column.className}>
-                                            {rowData[column.col]}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <table className="table-content" ref={datatableRef}>
-                        <thead style={theadStyle}>
-                            <tr className="table-row table-header">
-                                {columns.map((column, index) => (
-                                    <th key={index} className={column.className}>
-                                        {column.header}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="flex-column">
-                            {data.map((rowData, rowIndex) => (
-                                <tr key={rowIndex} className="table-row">
-                                    {rowData.data.map((cellData, colIndex) => (
-                                        <td key={colIndex} className={`${columns[colIndex].className} ${rowData.className[colIndex]}`}>
-                                            {cellData}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                )}
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );

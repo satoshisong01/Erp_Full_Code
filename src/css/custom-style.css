@@ -416,7 +416,7 @@
 /* 사전원가 계산서 */
 .precost-container {
     background-color: var(--background-white);
-    width: 100%;
+    width: 85%;
     margin: 0 auto;
     font-weight: 400;
     font-size: 15px;
@@ -493,7 +493,7 @@
 }
 
 .table-styled select {
-    width: 100%;
+    /* width: 100%; */
     padding: 2px;
     border: 1px solid #ccc;
     border-radius: 3px;
@@ -888,6 +888,11 @@ td > input {
 body > div.ReactModalPortal > div > div {
     /* 기존 CSS 무효화 */
     overflow: visible !important;
+}
+
+/* modal 태그의 z-index*/
+body > div:nth-child(5) > div {
+    z-index: 9999;
 }
 
 .ReactModal__Content {

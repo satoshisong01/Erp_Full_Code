@@ -16,7 +16,7 @@ export default function ModalSearch({}) {
                 onClick={() => setIsOpenModal(true)}
                 type="text"
                 placeholder={projectInfo.poiNm ? projectInfo.poiNm : `프로젝트를 선택해 주세요.`}
-                value={projectInfo.poiNm}
+                value={projectInfo.poiNm || ""}
                 readOnly
             />
             {isOpenModal && (

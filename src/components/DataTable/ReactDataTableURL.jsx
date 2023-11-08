@@ -32,6 +32,13 @@ const ReactDataTableURL = (props) => {
 
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
+        setCurrent(viewPageName);
+        if (tableRef) {
+            setCurrentTable(tableRef);
+        }
+    }, []);
+
+    useEffect(() => {
         //if (suffixUrl || detailUrl) {
         //    fetchAllData();
         //}
@@ -51,17 +58,18 @@ const ReactDataTableURL = (props) => {
             // 현재 페이지와 이전 페이지가 같지 않다면
             toggleAllRowsSelected(false);
         }
+        // 현재 보는 페이지(current)가 클릭한 페이지와 같은게 없다면 return
+        if (current !== currentPageName && current !== innerPageName) {
+            return;
+        }
     }, [currentPageName, innerPageName]);
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
         setIsEditing(flag);
-        console.log(flag);
-        console.log("❤️❤️❤️", "current:", current, "currentPageName:", currentPageName, "innerPageName:", innerPageName, "❤️❤️❤️");
         //if (current === "경비") {
         if (current === currentPageName || (current === innerPageName && !flag)) {
             //현재 페이지 이고, flag가 false일때 배열 이벤트 처리
-            console.log("조건에 부합하지 않는가???🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨");
             compareData(originTableData, tableData);
         }
         setOriginTableData(changeTable);
@@ -314,7 +322,6 @@ const ReactDataTableURL = (props) => {
     const onDeleteRow = (row) => {
         const rowId = row.index;
         const deletedPjbgId = tableData[rowId].pjbgId;
-        console.log(deletedPjbgId, "🚫🚫🚫🚫"); // 삭제된 행의 pjbgId 값을 출력
         setDeleteNumList((prevIds) => [...prevIds, deletedPjbgId]);
         const updateTableData = tableData.filter((_, index) => index !== rowId);
         setTableData([...updateTableData]);
@@ -325,34 +332,24 @@ const ReactDataTableURL = (props) => {
         gotoPage(0); // 첫 페이지로 이동
     };
 
-    //console.log(originTableData, "오리지날 데이터✨✨✨✨");
-
     //-------------------------------배열 추가, 수정, 삭제
 
     const addItem = async (addData) => {
-        console.log(addData, "🔥🔥🔥🔥🔥");
         const url = `/api${singleUrl}/addList.do`;
         const resultData = await axiosPost(url, addData);
-        console.log(resultData, "결과값은~?");
     };
 
     const updateItem = async (toUpdate) => {
         const url = `/api${singleUrl}/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
-        console.log(resultData, "🛠️🛠️🛠️🛠️수정 받기🛠️🛠️🛠️🛠️");
     };
 
     const deleteItem = async (removeItem) => {
         const url = `/api${singleUrl}/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        console.log(resultData, "🧹🧹🧹🧹삭제 받기🧹🧹🧹🧹");
     };
 
-    useEffect(() => {
-        console.log(originTableData, "❌🎉");
-    }, [originTableData]);
     // 초기 데이터와 수정된 데이터를 비교하는 함수
-
     const compareData = (originData, updatedData) => {
         if (originData.length > updatedData.length) {
             updateItem(updatedData);

@@ -8,11 +8,9 @@ export async function axiosFetch(url, requestData) {
         Authorization: process.env.REACT_APP_POST,
         "Content-Type": "application/json",
     };
-    console.log(url);
 
     try {
         const response = await axios.post(url, requestData, { headers });
-        console.log(response, "패치한데이터");
         if (Number(response.data.resultCode) === Number(CODE.RCV_SUCCESS)) {
             return response.data.result.resultData;
         } else {
@@ -69,7 +67,6 @@ export async function axiosDelete(url, requestData) {
 
 /* axios 데이터 추가하기 */
 export async function axiosPost(url, requestData) {
-    console.log(requestData, "추가하기위해서 받는 데이터");
     const headers = {
         Authorization: process.env.REACT_APP_POST,
         "Content-Type": "application/json",
@@ -86,13 +83,10 @@ export async function axiosPost(url, requestData) {
     } catch (error) {
         console.error("❌server error: ", error);
         throw error;
-    } finally {
-        console.log("axios Post finally end");
     }
 }
 
 export async function axiosPostPersonel(url, requestData) {
-    console.log(requestData, "추가하기 위해서 받는 데이터");
     const headers = {
         Authorization: process.env.REACT_APP_POST,
         "Content-Type": "application/json",
@@ -135,8 +129,6 @@ export async function axiosPostPersonel(url, requestData) {
     } catch (error) {
         console.error("server error: ", error);
         throw error;
-    } finally {
-        console.log("axios Post finally end");
     }
 }
 
@@ -147,11 +139,8 @@ export async function axiosScan(url, requestData) {
         "Content-Type": "application/json",
     };
 
-    console.log(requestData, "axios에서 받은값");
-
     try {
         const response = await axios.post(url, requestData, { headers });
-        console.log(response, "패치한데이터");
         if (Number(response.data.resultCode) === Number(CODE.RCV_SUCCESS)) {
             return response.data.result.resultData;
         } else {
@@ -160,7 +149,25 @@ export async function axiosScan(url, requestData) {
     } catch (error) {
         console.error("server error: ", error);
         throw error;
-    } finally {
-        console.log("axios fetch finally end");
+    }
+}
+
+/* get */
+export async function axiosGet(url) {
+    const headers = {
+        Authorization: process.env.REACT_APP_POST,
+        "Content-Type": "application/json",
+    };
+
+    try {
+        const response = await axios.get(url, { headers });
+        if (Number(response.data.resultCode) === Number(CODE.RCV_SUCCESS)) {
+            return true;
+        } else {
+        console.error("❌axiosGet error: ");
+            return false;
+        }
+    } catch (error) {
+        throw error;
     }
 }

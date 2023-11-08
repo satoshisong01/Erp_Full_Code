@@ -4,15 +4,15 @@ import React, { useContext, useEffect, useState } from "react";
 /* 1개의 item에 대한 수정 버튼 */
 export default function ModButton({ label, onClick }) {
     const [disabled, setDisabled] = useState(true);
-    const {lengthSelectRow} = useContext(PageContext);
+    const {lengthSelectRow, modalLengthSelectRow} = useContext(PageContext);
 
     useEffect(() => {
-        if(lengthSelectRow && lengthSelectRow === 1) {
+        if(lengthSelectRow === 1 || modalLengthSelectRow === 1) {
             setDisabled(false)
-        } else {
+        } else if(lengthSelectRow === 0 || modalLengthSelectRow === 0) {
             setDisabled(true)
         }
-    }, [lengthSelectRow]);
+    }, [lengthSelectRow, modalLengthSelectRow]);
     
 
     const buttonClassName = `table-btn table-btn-default${disabled ? ' disabled' : ''}`;
