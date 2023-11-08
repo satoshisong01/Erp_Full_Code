@@ -12,7 +12,7 @@ import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
 import ModalPagePgNm from "components/modal/ModalPagePgNm";
 
 const ReactDataTable = (props) => {
-    const { columns, suffixUrl, flag, customDatas, defaultPageSize, tableRef, viewPageName, customDatasRefresh, singleUrl} = props;
+    const { columns, suffixUrl, flag, customDatas, defaultPageSize, tableRef, viewPageName, customDatasRefresh, singleUrl } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -37,6 +37,10 @@ const ReactDataTable = (props) => {
         isOpenModalPdiNm,
         setProjectPdiNm,
         setProjectInfo,
+        isOpenModalPgNm,
+        setIsOpenModalPgNm,
+        projectPgNm,
+        setProjectPgNm,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -89,7 +93,7 @@ const ReactDataTable = (props) => {
 
         setCurrent(viewPageName); //현재페이지
         setCurrentTable(tableRef); //현재테이블
-        
+
         return () => {
             // 컴포넌트 언마운트 시에 이벤트 핸들러 제거
             document.removeEventListener("mousedown", handleDocumentClick);
@@ -99,10 +103,10 @@ const ReactDataTable = (props) => {
     //------------------------------------------------
 
     useEffect(() => {
-        if(customDatas && customDatas.length < 1) {
-            setTableData([{}])
+        if (customDatas && customDatas.length < 1) {
+            setTableData([{}]);
             // setTableData(Array(defaultPageSize || 10).fill({})); // 빈 배열 추가
-        } else if(customDatas && customDatas.length > 0) {
+        } else if (customDatas && customDatas.length > 0) {
             setTableData([...customDatas]);
             setOriginTableData([...customDatas]);
         }
@@ -115,10 +119,10 @@ const ReactDataTable = (props) => {
             toggleAllRowsSelected(false);
         }
         // 현재 보는 페이지(current)가 클릭한 페이지와 같은게 없다면 return
-        if (current !== currentPageName && current !== innerPageName || current !== modalPageName && current !== innerPageName) {
-            return
-        } else if(current !== "" && (current === currentPageName || current === innerPageName)) {
-            if (suffixUrl ) {
+        if ((current !== currentPageName && current !== innerPageName) || (current !== modalPageName && current !== innerPageName)) {
+            return;
+        } else if (current !== "" && (current === currentPageName || current === innerPageName)) {
+            if (suffixUrl) {
                 fetchAllData();
             }
         }
@@ -154,7 +158,8 @@ const ReactDataTable = (props) => {
         }
     }, [nameOfButton]);
 
-    const columnsConfig = useMemo( //컬럼 초기 상태
+    const columnsConfig = useMemo(
+        //컬럼 초기 상태
         () =>
             columns.map((column) => ({
                 Header: column.header,
@@ -178,7 +183,7 @@ const ReactDataTable = (props) => {
 
     /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
-        if (!suffixUrl ) return;
+        if (!suffixUrl) return;
         const url = `/api${suffixUrl}/totalListAll.do`;
         const resultData = await axiosFetch(url, { useAt: "Y" });
         if (resultData) {
@@ -200,7 +205,7 @@ const ReactDataTable = (props) => {
             const resultData = await axiosUpdate(url, requestData);
             if (resultData) {
                 alert("값을 변경했습니다💚💚");
-                if(customDatas) {
+                if (customDatas) {
                     customDatasRefresh(); //부모로 반환
                 } else {
                     fetchAllData();
@@ -225,7 +230,7 @@ const ReactDataTable = (props) => {
             const url = `/api${suffixUrl || singleUrl}/removeAll.do`;
             const resultData = await axiosDelete(url, deletePkArr);
             if (resultData) {
-                if(customDatas) {
+                if (customDatas) {
                     customDatasRefresh(); //부모로 반환
                 } else {
                     fetchAllData();
@@ -399,17 +404,19 @@ const ReactDataTable = (props) => {
 
     /* current- 현재 보는페이지, table button 활성화 on off */
     useEffect(() => {
-            if(isModalTable && current === modalPageName) { //모달화면일때
-                setModalLengthSelectRow(selectedFlatRows.length);
-                if (selectedFlatRows.length > 0) { 
-                    setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
-                    projectInfo.poId = selectedFlatRows[selectedFlatRows.length - 1].original.poId; //품목수주
-                    projectInfo.poDesc = selectedFlatRows[selectedFlatRows.length - 1].original.poDesc;
-                }
-            } else if(!isModalTable && (current === currentPageName || current === innerPageName)) { //모달화면이 아닐때
-                setLengthSelectRow(selectedFlatRows.length);
-                selectedFlatRows.length > 0 && setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
+        if (isModalTable && current === modalPageName) {
+            //모달화면일때
+            setModalLengthSelectRow(selectedFlatRows.length);
+            if (selectedFlatRows.length > 0) {
+                setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
+                projectInfo.poId = selectedFlatRows[selectedFlatRows.length - 1].original.poId; //품목수주
+                projectInfo.poDesc = selectedFlatRows[selectedFlatRows.length - 1].original.poDesc;
             }
+        } else if (!isModalTable && (current === currentPageName || current === innerPageName)) {
+            //모달화면이 아닐때
+            setLengthSelectRow(selectedFlatRows.length);
+            selectedFlatRows.length > 0 && setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
+        }
     }, [selectedFlatRows]);
 
     const onChangeInput = (e, preRow) => {
@@ -461,13 +468,13 @@ const ReactDataTable = (props) => {
         const index = row.index;
         const updatedTableData = [...tableData];
         updatedTableData[row.index][accessor] = value;
-        
-        if(accessor === 'byUnitPrice' || accessor === 'standardMargin' || accessor === 'consumerOpRate' || accessor === 'byQunty') {
-            if(row.original.byUnitPrice && row.original.standardMargin && row.original.consumerOpRate && row.original.byQunty) {
+
+        if (accessor === "byUnitPrice" || accessor === "standardMargin" || accessor === "consumerOpRate" || accessor === "byQunty") {
+            if (row.original.byUnitPrice && row.original.standardMargin && row.original.consumerOpRate && row.original.byQunty) {
                 // 1.원가(견적가) : 수량 * 원단가
-                const estimatedCost =  row.original.byQunty * row.original.byUnitPrice;
+                const estimatedCost = row.original.byQunty * row.original.byUnitPrice;
                 // 2.단가 : 원가(견적가) / (1 - 사전원가기준이익율)
-                const unitPrice = division(estimatedCost, (1 - (row.original.standardMargin/100)));
+                const unitPrice = division(estimatedCost, 1 - row.original.standardMargin / 100);
                 // 3.금액 : 수량 * 단가
                 const planAmount = row.original.byQunty * unitPrice;
                 // 4.소비자단가 : 단가 / 소비자산출율
@@ -479,13 +486,13 @@ const ReactDataTable = (props) => {
                 // 7.이익률 : 이익금 / 금액
                 const plannedProfitMargin = division(plannedProfits, planAmount);
 
-                updatedTableData[index]['estimatedCost'] = Math.round(estimatedCost);
-                updatedTableData[index]['unitPrice'] = Math.round(unitPrice);
-                updatedTableData[index]['planAmount'] = Math.round(planAmount);
-                updatedTableData[index]['consumerPrice'] = Math.round(consumerPrice*100);
-                updatedTableData[index]['consumerAmount'] = Math.round(consumerAmount*100);
-                updatedTableData[index]['plannedProfits'] = Math.round(plannedProfits);
-                updatedTableData[index]['plannedProfitMargin'] = Math.round(plannedProfitMargin*100);
+                updatedTableData[index]["estimatedCost"] = Math.round(estimatedCost);
+                updatedTableData[index]["unitPrice"] = Math.round(unitPrice);
+                updatedTableData[index]["planAmount"] = Math.round(planAmount);
+                updatedTableData[index]["consumerPrice"] = Math.round(consumerPrice * 100);
+                updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount * 100);
+                updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits);
+                updatedTableData[index]["plannedProfitMargin"] = Math.round(plannedProfitMargin * 100);
             }
         }
         // 수정된 데이터로 tableData 업데이트
@@ -496,8 +503,8 @@ const ReactDataTable = (props) => {
         if (!value1 || !value2) {
             return 0;
         }
-        return Math.round(value1/value2);
-    }
+        return Math.round(value1 / value2);
+    };
 
     //-------------------------------배열 추가, 수정, 삭제
     const addList = async (addNewData) => {
@@ -513,7 +520,6 @@ const ReactDataTable = (props) => {
         const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
     };
-
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
     //추가 함수
@@ -563,12 +569,10 @@ const ReactDataTable = (props) => {
             const combinedAValues = extraOriginData.reduce((acc, current) => acc.concat(current), []);
 
             deleteList(combinedAValues);
-
         } else if (originData.length === updatedData.length) {
             const updateData = updatedData;
             upDateChange(updateData);
             updateList(updateData);
-
         } else if (originData.length < updatedData.length) {
             const toAdds = [];
             const addUpdate = [];
@@ -596,7 +600,7 @@ const ReactDataTable = (props) => {
             addList(toAdds);
         } else if (!updatedData) {
             const combinedAValues = originData.reduce((acc, current) => acc.concat(current), []);
-        //    deleteList(combinedAValues)
+            //    deleteList(combinedAValues)
         }
     };
 
@@ -633,13 +637,13 @@ const ReactDataTable = (props) => {
                                         className={columnIndex === 0 ? "first-column" : ""}
                                         style={{ width: column.width }}>
                                         {column.render("Header")}
-                                        <span style={{ overflow: 'auto' }}>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
+                                        <span style={{ overflow: "auto" }}>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
                                     </th>
                                 );
                             })}
                             {isEditing && (
                                 <th style={{ width: "70px", textAlign: "center" }}>
-                                    <button className="btn-primary" onClick={onAddRow} style={{ margin: 0, overflow: 'auto'}}>
+                                    <button className="btn-primary" onClick={onAddRow} style={{ margin: 0, overflow: "auto" }}>
                                         추가
                                     </button>
                                 </th>
@@ -743,7 +747,6 @@ const ReactDataTable = (props) => {
                                                 ) : (
                                                     cell.render("Cell")
                                                 )
-                                            ) : cell.column.Header === "연월" && cell.value ? (
                                             ) : cell.column.Header === "연월" && cell.value ? (
                                                 cell.value.substring(0, 7)
                                             ) : (
