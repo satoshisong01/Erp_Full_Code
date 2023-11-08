@@ -166,7 +166,7 @@ function DraftQuotation() {
         } else {
             requestData = {
                 poiId: projectInfo.poiId,
-                pjbgModeCode: "exdr",
+                modeCode: "EXDR",
                 useAt: "Y",
             };
         }

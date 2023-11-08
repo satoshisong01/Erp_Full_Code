@@ -7,6 +7,7 @@ import { axiosFetch } from "api/axiosFetch";
 import ApprovalForm from "components/form/ApprovalForm";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { PageContext } from "components/PageProvider";
+import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
 
 /** 영업관리-영업비용 */
 function SalesExpenses() {
@@ -107,7 +108,7 @@ function SalesExpenses() {
                 searchCondition: "0",
                 searchKeyword: "",
                 poiId: projectInfo.poiId,
-                pjbgModeCode: "SLSP",
+                modeCode: "SLSP",
                 pjbgTypeCode: "EXPNS06",
             };
             const resultData = await axiosFetch(url, requestData);
@@ -145,14 +146,8 @@ function SalesExpenses() {
         <>
             <Location pathList={locationPath.SalesExpenses} />
             <ApprovalForm title={currentTask + " 실행 등록"}>
-                <ReactDataTable columns={columns} flag={isSaveFormTable} customDatas={salesCost} />
+                <ReactDataTableURL columns={columns} flag={isSaveFormTable} customDatas={salesCost} />
             </ApprovalForm>
-            <div style={{ display: "flex" }}>
-                <span style={{ display: "flex", justifyContent: "center", width: "100px", backgroundColor: "#f2f2f2", border: "solid gray 1px" }}>
-                    경비 합계
-                </span>
-                <span style={{ display: "flex", justifyContent: "center", width: "100px", border: "solid gray 1px" }}>0</span>
-            </div>
         </>
     );
 }

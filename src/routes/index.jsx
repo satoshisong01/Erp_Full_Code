@@ -102,7 +102,7 @@ const RootRoutes = () => {
         const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
         const requestData = { useAt: "Y" };
         const resultData = await axiosFetch(url, requestData);
-        console.log(resultData, "나온값은?");
+        console.log(resultData, "pjOrdrInfo 나온값은?");
         // console.log(resultData, "나온값은?");
         setProjectItem(
             resultData.map((item) => ({
@@ -114,7 +114,7 @@ const RootRoutes = () => {
     };
     const companyItem = async () => {
         let requestData = "";
-        const url = `/api/baseInfrm/client/client/type/p/listAll.do`;
+        const url = `/api/baseInfrm/client/client/totalListAll.do`;
         if (returnKeyWord) {
             requestData = returnKeyWord;
         } else {
@@ -126,6 +126,7 @@ const RootRoutes = () => {
         setCompanyList(
             resultData.map((item) => ({
                 esntlId: item.cltNm,
+                companyId: item.cltId,
             }))
         );
     };
@@ -161,7 +162,12 @@ const RootRoutes = () => {
         console.log(resultData, "나온값은?pdiNm🔴🔴🔴@@@******");
         setPdiNmList(
             resultData.map((item) => ({
+                pdiId: item.pdiId,
                 pdiNm: item.pdiNm,
+                pgNm: item.pgNm,
+                pdiWght: item.pdiWght,
+                pdiStnd: item.pdiStnd,
+                pdiMenufut: item.pdiMenufut,
             }))
         );
     };

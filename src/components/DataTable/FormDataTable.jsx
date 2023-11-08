@@ -15,6 +15,11 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
     const [isCalendarVisible, setCalendarVisible] = useState(false);
     const [isCalendarVisible2, setCalendarVisible2] = useState(false);
 
+    useEffect(() => {
+        console.log(formattedDate, "앞에 날짜");
+        console.log(formattedDate2, "날짜받기");
+    }, [formattedDate, formattedDate2]);
+
     const inputRef = useRef(null);
     const inputRef2 = useRef(null);
 
@@ -118,6 +123,10 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
         }));
     };
 
+    useEffect(() => {
+        console.log(formData, "❤️❤️❤️❤️");
+    }, [formData]);
+
     const validateForm = () => {
         const newErrors = {};
         let isValid = true;
@@ -216,7 +225,8 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                             ref={inputRef}
                                                             onChange={() => {
                                                                 const formatted = handleDateChange(selectedDate);
-                                                                setFormattedDate2(formatted);
+                                                                setFormattedDate(formatted);
+                                                                inputChange(key, formattedDate);
                                                             }}
                                                         />
                                                         {isCalendarVisible && (
@@ -237,7 +247,7 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                             ref={inputRef2}
                                                             onChange={() => {
                                                                 const formatted = handleDateChange(selectedDate2);
-                                                                setFormattedDate(formatted);
+                                                                setFormattedDate2(formatted);
                                                             }}
                                                         />
                                                         {isCalendarVisible2 && (

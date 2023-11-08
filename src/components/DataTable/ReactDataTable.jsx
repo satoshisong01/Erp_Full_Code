@@ -9,9 +9,10 @@ import DeleteModal from "components/modal/DeleteModal";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
+import ModalPagePgNm from "components/modal/ModalPagePgNm";
 
 const ReactDataTable = (props) => {
-    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList } = props;
+    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -27,6 +28,10 @@ const ReactDataTable = (props) => {
         isCancelTable,
         setIsCancelTable,
         projectInfo,
+        setIsOpenModalPgNm,
+        projectPgNm,
+        isOpenModalPgNm,
+        setProjectPgNm,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -176,12 +181,8 @@ const ReactDataTable = (props) => {
     /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
         if (!suffixUrl && !detailUrl) return;
-        let url = ``;
-        if (customerList) {
-            url = `/api${suffixUrl}/${customerList}/listAll.do`;
-        } else {
-            url = `/api${suffixUrl || detailUrl}/totalListAll.do`;
-        }
+        const url = `/api${suffixUrl || detailUrl}/totalListAll.do`;
+
         const resultData = await axiosFetch(url, { useAt: "Y" });
         if (resultData) {
             setTableData([...resultData]);
@@ -259,13 +260,10 @@ const ReactDataTable = (props) => {
     /* 데이터 검색 */
     const searchClick = async () => {
         if (!suffixUrl && !detailUrl) return;
-        let url = ``;
+
         if (searchData) {
-            if (customerList) {
-                url = `/api${suffixUrl}/${customerList}/totalListAll.do`;
-            } else {
-                url = `/api${suffixUrl || detailUrl}/totalListAll.do`;
-            }
+            const url = `/api${suffixUrl || detailUrl}/totalListAll.do`;
+
             const requestData = {
                 useAt: searchData.radioOption,
                 searchKeyword: searchData.searchKeyword,
@@ -346,6 +344,40 @@ const ReactDataTable = (props) => {
             ]);
         }
     );
+
+    const [dataBuket, setDataBuket] = useState({});
+    const [prevDataBuket, setPrevDataBuket] = useState({});
+
+    useEffect(() => {
+        setDataBuket(projectPgNm.pgNm);
+        //setTableData()
+    }, [projectPgNm]);
+
+    //품목그룹 선택
+    const setValueData = (rowIndex) => {
+        //setRowIndex()
+        setIsOpenModalPgNm(true);
+        setRowIndex(rowIndex);
+    };
+
+    useEffect(() => {
+        if (!isOpenModalPgNm) {
+            // isOpenModalPgNm이 false로 변경된 경우에 실행할 코드를 여기에 작성
+
+            // dataBuket 객체 자체의 참조가 변경되었을 때만 코드 실행
+            if (dataBuket !== prevDataBuket) {
+                const updatedTableData = [...tableData];
+                if (dataBuket && updatedTableData[rowIndex]) {
+                    updatedTableData[rowIndex].pgNm = dataBuket;
+                    setTableData(updatedTableData);
+                }
+
+                // dataBuket 값을 업데이트할 때 prevDataBuket도 업데이트
+                setPrevDataBuket(dataBuket);
+                setProjectPgNm("");
+            }
+        }
+    }, [isOpenModalPgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
 
     /* table button 활성화 on off */
     useEffect(() => {
@@ -669,13 +701,27 @@ const ReactDataTable = (props) => {
                                                             </option>
                                                         ))}
                                                     </select>
+                                                ) : cell.column.type === "button" ? (
+                                                    <div>
+                                                        <input
+                                                            className="buttonSelect"
+                                                            id={cell.column.id}
+                                                            name={cell.column.id}
+                                                            onClick={() => setValueData(rowIndex)}
+                                                            type="text"
+                                                            placeholder={projectPgNm.pgNm ? projectPgNm.pgNm : `품목그룹명을 선택해 주세요.`}
+                                                            value={tableData[rowIndex].pgNm || ""}
+                                                            onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
+                                                            readOnly
+                                                        />
+                                                    </div>
                                                 ) : (
                                                     cell.render("Cell")
                                                 )
-                                            ) : cell.column.Header === "연월" ? (
+                                            ) : cell.column.Header === "연월" && cell.value ? (
                                                 cell.value.substring(0, 7)
                                             ) : (
-                                                cell.render("Cell")
+                                                cell.render("Cell") || ""
                                             )}
                                         </td>
                                     );
@@ -739,6 +785,7 @@ const ReactDataTable = (props) => {
                 />
             )}
             <DeleteModal viewData={modalViewDatas} onConfirm={deleteClick} />
+            {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
         </>
     );
 };

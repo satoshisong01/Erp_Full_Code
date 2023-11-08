@@ -243,8 +243,8 @@ const ReactDataTableURL = (props) => {
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
                 newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
-            } else if (column.accessor === "pjbgModeCode") {
-                newRow[column.accessor] = "SLSP"; // pjbgModeCode를 항상 "SLSP"로 설정
+            } else if (column.accessor === "modeCode") {
+                newRow[column.accessor] = "SLSP"; // modeCode 항상 "SLSP"로 설정
             } else if (column.accessor === "pjbgTypeCode") {
                 newRow[column.accessor] = "EXPNS01"; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "useAt") {
@@ -267,8 +267,8 @@ const ReactDataTableURL = (props) => {
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
                 newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
-            } else if (column.accessor === "pjbgModeCode") {
-                newRow[column.accessor] = "SLSP"; // pjbgModeCode를 항상 "SLSP"로 설정
+            } else if (column.accessor === "modeCode") {
+                newRow[column.accessor] = "SLSP"; // modeCode 항상 "SLSP"로 설정
             } else if (column.accessor === "pjbgTypeCode") {
                 newRow[column.accessor] = "EXPNS10"; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "useAt") {
@@ -291,8 +291,8 @@ const ReactDataTableURL = (props) => {
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
                 newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
-            } else if (column.accessor === "pjbgModeCode") {
-                newRow[column.accessor] = "SLSP"; // pjbgModeCode를 항상 "SLSP"로 설정
+            } else if (column.accessor === "modeCode") {
+                newRow[column.accessor] = "SLSP"; // modeCode 항상 "SLSP"로 설정
             } else if (column.accessor === "pjbgTypeCode") {
                 newRow[column.accessor] = "EXPNS07"; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "useAt") {
@@ -370,7 +370,7 @@ const ReactDataTableURL = (props) => {
             const toAdds = [];
             for (let i = originData.length; i < updatedData.length; i++) {
                 const toAdd = { ...updatedData[i] };
-                //toAdd.pjbgModeCode = "SLSP";
+                //toAdd.modeCode = "SLSP";
                 toAdds.push(toAdd);
                 addItem(toAdds);
             }

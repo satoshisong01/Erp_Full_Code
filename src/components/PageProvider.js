@@ -39,7 +39,11 @@ export function PageProvider({ children }) {
     const [prevInnerPageName, setPrevInnerPageName] = useState("");
     const [lengthSelectRow, setLengthSelectRow] = useState(0); // 테이블 버튼 플래그
 
+    const [saveSaleManCost, setSaveSaleManCost] = useState([]);
+
     const [isCancelTable, setIsCancelTable] = useState(false); // 테이블 초기값으로 돌리기
+
+    const [viewSetPoiId, setViewSetPoiId] = useState({ poiId: "" }); // 뷰페이지에서 선택한 poiId
 
     const contextValue = {
         openModal,
@@ -102,6 +106,12 @@ export function PageProvider({ children }) {
         setIsOpenModalCompany,
         saveCompany,
         setSaveCompany,
+
+        viewSetPoiId,
+        setViewSetPoiId,
+
+        saveSaleManCost,
+        setSaveSaleManCost,
     };
 
     return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>;

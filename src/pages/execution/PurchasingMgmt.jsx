@@ -541,7 +541,7 @@ function PurchasingMgmt() {
         } else {
             requestData = {
                 poiId: projectInfo.poiId,
-                pjbgModeCode: "slsp",
+                modeCode: "SLSP",
                 useAt: "Y",
             };
         }
