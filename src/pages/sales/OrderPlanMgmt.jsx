@@ -6,10 +6,13 @@ import { PageContext } from "components/PageProvider";
 import { locationPath } from "constants/locationPath";
 import { axiosFetch, axiosPost } from "api/axiosFetch";
 import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
+import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
+import { ChangePrmnPlanData } from "components/DataTable/function/ChangePrmnPlanData";
 
 /** 영업관리-수주계획관리 */
 function OrderPlanMgmt() {
-    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName } = useContext(PageContext);
+    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName } =
+        useContext(PageContext);
 
     useEffect(() => {
         setInnerPageName("인건비");
@@ -36,11 +39,11 @@ function OrderPlanMgmt() {
         //    options: [],
         //},
         { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "datepicker" },
-        { header: "M/M계", col: "total", cellWidth: "10%"},
+        { header: "M/M계", col: "total", cellWidth: "10%" },
         {
             header: "인건비계",
             col: "poiBeginDt1",
-            cellWidth: "10%"
+            cellWidth: "10%",
         },
         {
             header: "임원",
@@ -147,7 +150,7 @@ function OrderPlanMgmt() {
         { header: "비고", col: "pjbgDesc", cellWidth: "50%", type: "input" },
         { header: "금액", col: "pjbgPrice", cellWidth: "25%", type: "input" },
         { header: "프로젝트ID", col: "poiId", cellWidth: "50%", type: "input", notView: "true" },
-        { header: "영업타입", col: "pjbgModeCode", cellWidth: "50%", type: "input", notView: "true" },
+        { header: "영업타입", col: "modeCode", cellWidth: "50%", type: "input", notView: "true" },
         { header: "사용여부", col: "deleteAt", cellWidth: "50%", type: "input", notView: "true" },
         { header: "삭제여부", col: "useAt", cellWidth: "50%", type: "input", notView: "true" },
     ];
@@ -157,13 +160,13 @@ function OrderPlanMgmt() {
             header: "회사목록",
             col: "esntlId",
             cellWidth: "20%",
-            type: "button",
+            type: "buttonCompany",
             options: [],
         },
         { header: "금액", col: "pjbgPrice", cellWidth: "25%", type: "input" },
         { header: "비고", col: "pjbgDesc", cellWidth: "50%", type: "input" },
         { header: "프로젝트ID", col: "poiId", cellWidth: "50%", type: "input", notView: "true" },
-        { header: "영업타입", col: "pjbgModeCode", cellWidth: "50%", type: "input", notView: "true" },
+        { header: "영업타입", col: "modeCode", cellWidth: "50%", type: "input", notView: "true" },
         { header: "경비타입", col: "pjbgTypeCode", cellWidth: "50%", type: "input", notView: "true" },
         { header: "사용여부", col: "deleteAt", cellWidth: "50%", type: "input", notView: "true" },
         { header: "삭제여부", col: "useAt", cellWidth: "50%", type: "input", notView: "true" },
@@ -185,24 +188,23 @@ function OrderPlanMgmt() {
         { header: "비고", col: "pjbgDesc", cellWidth: "50%", type: "input" },
         { header: "금액", col: "pjbgPrice", cellWidth: "25%", type: "input" },
         { header: "프로젝트ID", col: "poiId", cellWidth: "50%", type: "input", notView: "true" },
-        { header: "영업타입", col: "pjbgModeCode", cellWidth: "50%", type: "input", notView: "true" },
+        { header: "영업타입", col: "modeCode", cellWidth: "50%", type: "input", notView: "true" },
         { header: "사용여부", col: "deleteAt", cellWidth: "50%", type: "input", notView: "true" },
         { header: "삭제여부", col: "useAt", cellWidth: "50%", type: "input", notView: "true" },
     ];
 
     const purchaseColumns = [
         // 구매비
+        { header: "품명", col: "pdiNm", cellWidth: "20%", type: "buttonPdiNm", options: [] },
         {
             header: "품목그룹명",
             col: "pgNm",
             cellWidth: "20%",
-            type: "button",
-            options: [],
         },
         { header: "품명", col: "pdiNm", cellWidth: "20%", type: "buttonPdiNm", options: [] },
-        { header: "규격", col: "pdiStnd", cellWidth: "20%", },
+        { header: "규격", col: "pdiStnd", cellWidth: "20%" },
         { header: "수량", col: "byQunty", cellWidth: "10%", type: "input" },
-        { header: "단위", col: "pdiUnit", cellWidth: "10%", },
+        { header: "단위", col: "pdiUnit", cellWidth: "10%" },
         {
             header: "소비자\n단가",
             col: "consumerPrice",
@@ -213,14 +215,14 @@ function OrderPlanMgmt() {
             col: "consumerAmount",
             cellWidth: "14%",
         },
-        { header: "단가", col: "unitPrice", cellWidth: "10%",},
-        { header: "금액", col: "planAmount", cellWidth: "10%",},
+        { header: "단가", col: "unitPrice", cellWidth: "10%" },
+        { header: "금액", col: "planAmount", cellWidth: "10%" },
         {
             header: "제조사",
             col: "pdiMenufut",
             cellWidth: "12%",
         },
-        { header: "비고", col: "pdiDesc", cellWidth: "20%", type: "input" },
+        { header: "비고", col: "pdiDesc", cellWidth: "10%", type: "input" },
         {
             header: "원단가",
             col: "byUnitPrice",
@@ -257,62 +259,15 @@ function OrderPlanMgmt() {
     ];
 
     const [prmnPlanDatas, setPrmnPlanDatas] = useState([]); // 인건비
-    const [pjbudgetDatas, setPjbudgetDatas] = useState([]); // 경비
     const [pdOrdrDatas, setPdOrdrDatas] = useState([]); // 구매(재료비)
     const [outsourcingDatas, setOutsourcingDatas] = useState([]); // 개발외주비
     const [generalExpensesDatas, setGeneralExpensesDatas] = useState([]); // 개발외주비
 
-    const groupedData = {}; //인건비 바꿔서 넣어줄 빈 객체
-    const changePrmnPlanData = (data) => {
-        // 포지션에 대한 고정된 번호를 매핑하는 객체 생성
-        const positionMapping = { 임원: 1, 특급기술사: 2, 고급기술사: 3, 중급기술사: 4, 초급기술사: 5, 고급기능사: 6, 중급기능사: 7, 부장: 8, 차장: 9, 과장: 10, 대리: 11, 주임: 12, 사원: 13 };
-
-        //날짜포맷
-        data.forEach((item) => {
-            const key = `${item.pmpMonth}`;
-            if (!groupedData[key]) {
-                groupedData[key] = {
-                    //pgNm: item.pgNm,
-                    pmpId: [],
-                    poiId: projectInfo.poiId,
-                    useAt: "Y",
-                    deleteAt: "N",
-                    calendarVisible: false,
-                    pmpmmPositionCode1: 0,
-                    pmpmmPositionCode2: 0,
-                    pmpmmPositionCode3: 0,
-                    pmpmmPositionCode4: 0,
-                    pmpmmPositionCode5: 0,
-                    pmpmmPositionCode6: 0,
-                    pmpmmPositionCode7: 0,
-                    pmpmmPositionCode8: 0,
-                    pmpmmPositionCode9: 0,
-                    pmpmmPositionCode10: 0,
-                    pmpmmPositionCode11: 0,
-                    pmpmmPositionCode12: 0,
-                    pmpmmPositionCode13: 0,
-                    pmpMonth2: `${item.pmpMonth}`,
-                    pmpMonth: `${item.pmpMonth}`,
-                    total: 0,
-                };
-            }
-
-            groupedData[key].pmpId.push(item.pmpId);
-
-            // 포지션에 해당하는 번호를 가져오고, 해당 위치에 pmpmmNum을 저장
-            const positionNumber = positionMapping[item.pmpmmPositionCode];
-
-            if (positionNumber) {
-                const pmpmmNumKey = `pmpmmPositionCode${positionNumber}`;
-                groupedData[key][pmpmmNumKey] = item.pmpmmNum;
-                groupedData[key].total += item.pmpmmNum;
-            }
-        });
-
-        // groupedData 객체를 배열로 변환
-        const transformedData = Object.values(groupedData);
-        setPrmnPlanDatas(transformedData);
-    };
+    //const changepjbudgetData = (value, options) => {
+    //    console.log(value, options, "@@@@@@@@@@@@@@@@@@@@@@@#@#@");
+    //    const option = options.find((opt) => opt.value === value);
+    //    return option ? option.label : value; // 찾은 옵션의 label을 반환하거나 value 그대로 반환
+    //};
 
     const changeTabs = (task) => {
         if (task !== innerPageName) {
@@ -331,12 +286,14 @@ function OrderPlanMgmt() {
             try {
                 if (innerPageName === "인건비") {
                     const data = await fetchAllData("/baseInfrm/product/prmnPlan"); // 인건비
-                    changePrmnPlanData(data);
+                    console.log(data, "불러온 인건비의 값은?");
+                    setPrmnPlanDatas(ChangePrmnPlanData(data, projectInfo));
+                    console.log(prmnPlanDatas);
                 } else if (innerPageName === "경비") {
                     const data = await fetchAllData("/baseInfrm/product/pjbudget"); // 경비
                     setPjbudgetDatas(data);
                 } else if (innerPageName === "구매(재료비)") {
-                    if(projectInfo.poiId && projectInfo.poId) {
+                    if (projectInfo.poiId && projectInfo.poId) {
                         const data = await fetchAllData("/baseInfrm/product/buyIngInfo");
                         setPdOrdrDatas([]); //초기화
                         const updatedData = data.map((row) => {
@@ -356,14 +313,14 @@ function OrderPlanMgmt() {
                                 ...row,
                                 consumerPrice: row.consumerPrice ? row.consumerPrice : 0,
                                 byStandardMargin: row.byStandardMargin ? row.byStandardMargin : 0,
-                                byConsumerOutputRate: row.byConsumerOutputRate ? row.byConsumerOutputRate : 0
+                                byConsumerOutputRate: row.byConsumerOutputRate ? row.byConsumerOutputRate : 0,
                             };
                             // 1.원가(견적가) : 수량 * 원단가
                             const updatedEstimatedCost = estimatedCost ? estimatedCost : byQunty * byUnitPrice;
                             // 2.단가 : 원가(견적가) / (1 - 사전원가기준이익율)
-                            const updatedUnitPrice = unitPrice ? unitPrice : division(updatedEstimatedCost, (1 - byStandardMargin/100));
+                            const updatedUnitPrice = unitPrice ? unitPrice : division(updatedEstimatedCost, 1 - byStandardMargin / 100);
                             // 3.금액 : 수량 * 단가
-                            const updatedPlanAmount = planAmount ? planAmount : byQunty * updatedUnitPrice ;
+                            const updatedPlanAmount = planAmount ? planAmount : byQunty * updatedUnitPrice;
                             // 4.소비자단가 : 단가 / 소비자산출율
                             const updatedConsumerPrice = consumerPrice ? consumerPrice : division(updatedUnitPrice, byConsumerOutputRate);
                             // 5.소비자금액 : 수량 * 소비자단가
@@ -372,22 +329,21 @@ function OrderPlanMgmt() {
                             const updatedPlannedProfits = plannedProfits ? plannedProfits : updatedPlanAmount - updatedEstimatedCost;
                             // 7.이익률 : 이익금 / 금액
                             const updatedPlannedProfitMargin = plannedProfitMargin ? plannedProfitMargin : division(updatedPlannedProfits, updatedPlanAmount);
-        
+
                             return {
                                 ...row,
                                 estimatedCost: Math.round(updatedEstimatedCost),
                                 unitPrice: Math.round(updatedUnitPrice),
                                 planAmount: Math.round(updatedPlanAmount),
-                                consumerPrice: Math.round(updatedConsumerPrice*100),
-                                consumerAmount: Math.round(updatedConsumerAmount*100),
+                                consumerPrice: Math.round(updatedConsumerPrice * 100),
+                                consumerAmount: Math.round(updatedConsumerAmount * 100),
                                 plannedProfits: Math.round(updatedPlannedProfits),
-                                plannedProfitMargin: Math.round(updatedPlannedProfitMargin*100),
+                                plannedProfitMargin: Math.round(updatedPlannedProfitMargin * 100),
                                 standardMargin: Math.round(byStandardMargin),
                                 consumerOpRate: Math.round(byConsumerOutputRate),
                             };
                         });
                         setPdOrdrDatas(updatedData);
-                        
                     }
                 } else if (innerPageName === "개발외주비") {
                     const data = await fetchOutsourcingData("/baseInfrm/product/pjbudget");
@@ -400,7 +356,6 @@ function OrderPlanMgmt() {
                 console.error("데이터를 가져오는 중에 오류 발생:", error);
             }
         };
-
         fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
     }, [innerPageName, projectInfo.poiId, projectInfo.poId]);
 
@@ -408,7 +363,7 @@ function OrderPlanMgmt() {
         const url = `/api${tableUrl}/totalListAll.do`;
         let requestData = {
             poiId: projectInfo.poiId,
-            useAt: "Y"
+            useAt: "Y",
         };
         if (tableUrl === "/baseInfrm/product/buyIngInfo") {
             requestData = {
@@ -421,13 +376,12 @@ function OrderPlanMgmt() {
         } else {
             requestData = {
                 poiId: projectInfo.poiId,
-                pjbgModeCode: "SLSP",
+                modeCode: "SLSP",
                 useAt: "Y",
             };
         }
-        
-        const resultData = await axiosFetch(url, requestData);
 
+        const resultData = await axiosFetch(url, requestData);
 
         if (resultData) {
             return resultData;
@@ -436,13 +390,14 @@ function OrderPlanMgmt() {
         }
     };
 
-    const fetchOutsourcingData = async (tableUrl) => { //개발외주비
+    const fetchOutsourcingData = async (tableUrl) => {
+        //개발외주비
         const url = `/api${tableUrl}/totalListAll.do`;
         let requestData = { poiId: projectInfo.poiId };
         //if (tableUrl === "/baseInfrm/product/pjbudget") {
         requestData = {
             poiId: projectInfo.poiId,
-            pjbgModeCode: "SLSP",
+            modeCode: "SLSP",
             pjbgTypeCode: "EXPNS10",
             useAt: "Y",
             //};
@@ -460,8 +415,8 @@ function OrderPlanMgmt() {
         if (!value1 || !value2) {
             return 0;
         }
-        return Math.round(value1/value2);
-    }
+        return Math.round(value1 / value2);
+    };
 
     const allowedPjbgTypeCodes = ["EXPNS01", "EXPNS02", "EXPNS03", "EXPNS04", "EXPNS05", "EXPNS06"];
     const allowedPjbgTypeCodes2 = ["EXPNS07", "EXPNS08", "EXPNS09"];
@@ -469,13 +424,15 @@ function OrderPlanMgmt() {
     const [filteredPjbudgetDatas2, setFilteredPjbudgetDatas2] = useState([]);
 
     useEffect(() => {
-        const filteredData = pjbudgetDatas.filter((data) => { //경비
+        const filteredData = pjbudgetDatas.filter((data) => {
+            //경비
             const pjbgTypeCode = data.pjbgTypeCode;
             return allowedPjbgTypeCodes.includes(pjbgTypeCode);
         });
         setFilteredPjbudgetDatas(filteredData);
 
-        const filteredData2 = generalExpensesDatas.filter((data) => { //영업관리비
+        const filteredData2 = generalExpensesDatas.filter((data) => {
+            //영업관리비
             const pjbgTypeCode = data.pjbgTypeCode;
             return allowedPjbgTypeCodes2.includes(pjbgTypeCode);
         });
@@ -485,7 +442,7 @@ function OrderPlanMgmt() {
     const addClick = async (addData) => {
         if (addData && typeof addData === "object" && !Array.isArray(addData)) {
             let url = "";
-            if(innerPageName === "구매(재료비)") {
+            if (innerPageName === "구매(재료비)") {
                 url = "/api/baseInfrm/product/pdOrdr/addList.do";
             }
             const dataToSend = {
@@ -532,7 +489,7 @@ function OrderPlanMgmt() {
                 </ul>
 
                 <div className="list">
-                    <div className="first" style={{ overflowX: 'auto' }}>
+                    <div className="first" style={{ overflowX: "auto" }}>
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <ReactDataTable
@@ -547,11 +504,11 @@ function OrderPlanMgmt() {
                             </ApprovalForm>
                         </ul>
                     </div>
-                    <div className="second" >
+                    <div className="second">
                         <ul>
-                            <ApprovalForm title={innerPageName + " 계획 등록"} >
-                                <ReactDataTable
-                                    singleUrl="/baseInfrm/product/buyIngInfo"
+                            <ApprovalForm title={innerPageName + " 계획 등록"}>
+                                <ReactDataTablePdorder
+                                    singleUrl="/baseInfrm/product/pdOrdr"
                                     columns={purchaseColumns}
                                     flag={innerPageName === "구매(재료비)" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable3}
@@ -562,7 +519,7 @@ function OrderPlanMgmt() {
                         </ul>
                     </div>
 
-                    <div className="third" style={{ overflowX: 'auto' }}>
+                    <div className="third" style={{ overflowX: "auto" }}>
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <ReactDataTableURL
@@ -577,7 +534,7 @@ function OrderPlanMgmt() {
                         </ul>
                     </div>
 
-                    <div className="fourth" style={{ overflowX: 'auto' }}>
+                    <div className="fourth" style={{ overflowX: "auto" }}>
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <ReactDataTableURL
@@ -592,7 +549,7 @@ function OrderPlanMgmt() {
                         </ul>
                     </div>
 
-                    <div className="fifth" style={{ overflowX: 'auto' }}>
+                    <div className="fifth" style={{ overflowX: "auto" }}>
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <ReactDataTableURL

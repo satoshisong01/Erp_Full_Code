@@ -433,7 +433,7 @@
     transition: opacity 300ms ease-in, transform 300ms ease-in;
     margin-top: 20px;
     /*background-color: aquamarine;*/
-    height: 100%;
+    height: 0;
     width: 100%;
     margin: auto;
     margin: 0;

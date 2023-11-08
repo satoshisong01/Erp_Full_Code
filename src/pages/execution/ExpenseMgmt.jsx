@@ -449,7 +449,7 @@ function ExpenseMgmt() {
         } else {
             requestData = {
                 poiId: projectInfo.poiId,
-                pjbgModeCode: "slsp",
+                modeCode: "SLSP",
                 useAt: "Y",
             };
         }

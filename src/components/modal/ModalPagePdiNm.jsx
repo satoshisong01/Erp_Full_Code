@@ -27,8 +27,8 @@ export default function ModalPagePdiNm({ rowIndex }) {
         console.log(value, "제대로 들어오냐");
     };
 
-    function handleItemClick(pdiNm) {
-        setProjectPdiNm({ pdiNm });
+    function handleItemClick(pdiNm, pgNm, pdiWght, pdiStnd, pdiMenufut, pdiId) {
+        setProjectPdiNm({ pdiNm, pgNm, pdiWght, pdiStnd, pdiMenufut, pdiId });
         setIsOpenModalPdiNm(false);
     }
 
@@ -75,9 +75,10 @@ export default function ModalPagePdiNm({ rowIndex }) {
                         onClick={() => handleClose()}>
                                 <FontAwesomeIcon icon={faTimes} />
                             </button>*/}
-                            <SearchListpdiNm conditionList={conditionList} onSearch={handleReturn} />
+                            {/*<SearchListpdiNm conditionList={conditionList} onSearch={handleReturn} />*/}
                             <div style={{ display: "flex", justifyContent: "space-between", margin: "10px" }}>
-                                <div style={{ display: "flex", alignItems: "center" }}>
+                                <h5 style={{ marginLeft: "35px", marginTop: "15px" }}>품명 선택</h5>
+                                {/*<div style={{ display: "flex", alignItems: "center" }}>
                                     <span className="redStar" style={{ marginLeft: "10px" }}>
                                         *
                                     </span>
@@ -92,7 +93,7 @@ export default function ModalPagePdiNm({ rowIndex }) {
                                 </div>
                                 <button type="button" className="btn btn-primary modal-btn-close" id="modalSubmitBtn" onClick={onAdd}>
                                     추가
-                                </button>
+                                </button>*/}
                             </div>
                             {/*<div className="product-modal-header">
                             <div className="modal-header">
@@ -103,7 +104,10 @@ export default function ModalPagePdiNm({ rowIndex }) {
                             <div className="modalBody">
                                 <div className="modalContent">
                                     {pdiNmList.map((item, index) => (
-                                        <div className="listItems" key={index} onClick={() => handleItemClick(item.pdiNm)}>
+                                        <div
+                                            className="listItems"
+                                            key={index}
+                                            onClick={() => handleItemClick(item.pdiNm, item.pgNm, item.pdiWght, item.pdiStnd, item.pdiMenufut, item.pdiId)}>
                                             <p className="listItem">{item.pdiNm}</p>
                                         </div>
                                     ))}

@@ -13,7 +13,6 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
     const [isCalendarVisible, setCalendarVisible] = useState(false);
     const [isCalendarVisible2, setCalendarVisible2] = useState(false);
 
-
     const inputRef = useRef(null);
     const inputRef2 = useRef(null);
 
@@ -34,35 +33,37 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
         return formatted;
     };
 
-    const handleDateClick = (date) => { //날짜 선택 후 저장하기
-        const tmp = (handleDateChange(date));
+    const handleDateClick = (date) => {
+        //날짜 선택 후 저장하기
+        const tmp = handleDateChange(date);
         setFormattedDate(tmp);
         setCalendarVisible(false);
 
         setFormData((prevData) => ({
             ...prevData,
-            ['poiBeginDt']: tmp,
+            poiBeginDt: tmp,
         }));
         setErrors((prevErrors) => ({
             //에러 초기화
             ...prevErrors,
-            ['poiBeginDt']: "",
+            poiBeginDt: "",
         }));
     };
 
-    const handleDateClick2 = (date) => { //날짜 선택 후 저장하기
-        const tmp = (handleDateChange(date));
+    const handleDateClick2 = (date) => {
+        //날짜 선택 후 저장하기
+        const tmp = handleDateChange(date);
         setFormattedDate2(tmp);
         setCalendarVisible2(false);
 
         setFormData((prevData) => ({
             ...prevData,
-            ['poiEndDt']: tmp,
+            poiEndDt: tmp,
         }));
         setErrors((prevErrors) => ({
             //에러 초기화
             ...prevErrors,
-            ['poiEndDt']: "",
+            poiEndDt: "",
         }));
     };
 
@@ -75,7 +76,6 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
         ) {
             setCalendarVisible(false);
         }
-
     };
 
     const handleOutsideClick2 = (event) => {
@@ -137,6 +137,10 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
             [fieldName]: "",
         }));
     };
+
+    useEffect(() => {
+        console.log(formData, "❤️❤️❤️❤️");
+    }, [formData]);
 
     const validateForm = () => {
         const newErrors = {};

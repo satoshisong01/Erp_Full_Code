@@ -114,7 +114,7 @@ const RootRoutes = () => {
     };
     const companyItem = async () => {
         let requestData = "";
-        const url = `/api/baseInfrm/client/client/type/p/listAll.do`;
+        const url = `/api/baseInfrm/client/client/totalListAll.do`;
         if (returnKeyWord) {
             requestData = returnKeyWord;
         } else {
@@ -124,6 +124,7 @@ const RootRoutes = () => {
         setCompanyList(
             resultData.map((item) => ({
                 esntlId: item.cltNm,
+                companyId: item.cltId,
             }))
         );
     };
@@ -155,7 +156,12 @@ const RootRoutes = () => {
         const resultData = await axiosFetch(url, requestData);
         setPdiNmList(
             resultData.map((item) => ({
+                pdiId: item.pdiId,
                 pdiNm: item.pdiNm,
+                pgNm: item.pgNm,
+                pdiWght: item.pdiWght,
+                pdiStnd: item.pdiStnd,
+                pdiMenufut: item.pdiMenufut,
             }))
         );
     };

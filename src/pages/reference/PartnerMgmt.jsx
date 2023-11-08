@@ -198,10 +198,9 @@ function PartnerMgmt() {
             <ReactDataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl="/baseInfrm/client/client"
+                suffixUrl="/baseInfrm/client/client/type/p"
                 tableRef={itemDetailMgmtTable}
                 setLengthSelectRow={setLengthSelectRow}
-                customerList="type/p"
                 viewPageName="협력사"
             />
         </>

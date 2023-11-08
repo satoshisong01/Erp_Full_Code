@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-export default function BasicDataTable({ colums, data, datatableRef, tableSize, subtitle }) {
+export default function BasicDataTable({ columns, data, datatableRef, tableSize, subtitle, defaultPageSize, justColumn, customDatas }) {
     const tableContainerStyle = {
         ...tableSize,
         overflowY: "auto", // 내용이 넘칠 때 세로 스크롤 생성
@@ -15,9 +15,7 @@ export default function BasicDataTable({ colums, data, datatableRef, tableSize, 
 
     return (
         <div className="basic-table">
-            <div className="table-sub">
-                { subtitle }
-            </div>
+            <div className="table-sub">{subtitle}</div>
             <div style={tableContainerStyle}>
                 <table className="table-content" ref={datatableRef}>
                     <thead style={theadStyle}>
@@ -33,7 +31,7 @@ export default function BasicDataTable({ colums, data, datatableRef, tableSize, 
                         {data.map((rowData, rowIndex) => (
                             <tr key={rowIndex} className="table-row">
                                 {rowData.data.map((cellData, colIndex) => (
-                                    <td key={colIndex} className={`${colums[colIndex].className} ${rowData.className[colIndex]}`} style={{height: 26}}>
+                                    <td key={colIndex} className={`${colums[colIndex].className} ${rowData.className[colIndex]}`} style={{ height: 26 }}>
                                         {typeof cellData === "number" ? cellData.toLocaleString() : cellData}
                                     </td>
                                 ))}
@@ -44,4 +42,4 @@ export default function BasicDataTable({ colums, data, datatableRef, tableSize, 
             </div>
         </div>
     );
-};
+}

@@ -57,6 +57,7 @@ export default function DataPostModal2({ refresh, postData, columns, onClose, er
         } else {
             postData(data); // 데이터 추가 함수 호출
         }
+        onClose();
     };
 
     return (

@@ -21,14 +21,14 @@ export function PageProvider({ children }) {
     const [pgNmList, setPgNmList] = useState([]); // 품목그룹명 선택
     const [returnKeyWord, setReturnKeyWord] = useState(""); //pmNm검색어 저장
 
-    const [saveCompany, setSaveCompany] = useState({ cltNm: "", esntlId: "" }); // 선택한 id 저장
-    const [projectCompany, setProjectCompany] = useState({ esntlId: "" }); // 선택한 id 저장
+    const [saveCompany, setSaveCompany] = useState({ cltNm: "", esntlId: "", esntlNm: "" }); // 선택한 id 저장
+    const [projectCompany, setProjectCompany] = useState({ esntlId: "", companyId: "" }); // 선택한 id 저장
     const [companyList, setCompanyList] = useState([]); // 회사명 선택
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
 
     const [addPdiNm, setAddPdiNm] = useState("");
-    const [pdiNmList, setPdiNmList] = useState([]); // 품목 선택
-    const [projectPdiNm, setProjectPdiNm] = useState({ pdiNm: "" }); // 선택한 id 저장
+    const [pdiNmList, setPdiNmList] = useState({ pdiId: "", pdiNm: "", pgNm: "", pdiWght: "", pdiStnd: "", pdiMenufut: "" }); // 품목 전체리스트
+    const [projectPdiNm, setProjectPdiNm] = useState({ pdiId: "", pdiNm: "", pgNm: "", pdiWght: "", pdiStnd: "", pdiMenufut: "" }); // 선택한 id 저장
     const [returnKeyWordPdiNm, setReturnKeyWordPdiNm] = useState(""); //pdiNm검색어 저장
     const [isOpenModalPdiNm, setIsOpenModalPdiNm] = useState(false);
 
@@ -42,7 +42,11 @@ export function PageProvider({ children }) {
     const [lengthSelectRow, setLengthSelectRow] = useState(0); // 테이블 버튼 플래그
     const [isModalTable, setIsModalTable] = useState(false);
 
+    const [saveSaleManCost, setSaveSaleManCost] = useState([]);
+
     const [isCancelTable, setIsCancelTable] = useState(false); // 테이블 초기값으로 돌리기
+
+    const [viewSetPoiId, setViewSetPoiId] = useState({ poiId: "" }); // 뷰페이지에서 선택한 poiId
 
     const contextValue = {
         openModal,
@@ -110,6 +114,12 @@ export function PageProvider({ children }) {
         setIsOpenModalCompany,
         saveCompany,
         setSaveCompany,
+
+        viewSetPoiId,
+        setViewSetPoiId,
+
+        saveSaleManCost,
+        setSaveSaleManCost,
     };
 
     return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>;

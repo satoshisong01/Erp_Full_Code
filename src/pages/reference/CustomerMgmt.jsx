@@ -200,10 +200,9 @@ function CustomerMgmt() {
             <ReactDataTable
                 returnKeyWord={returnKeyWord}
                 columns={columns}
-                suffixUrl="/baseInfrm/client/client"
+                suffixUrl="/baseInfrm/client/client/type/c"
                 tableRef={itemDetailMgmtTable}
                 setLengthSelectRow={setLengthSelectRow}
-                customerList="type/c"
                 viewPageName="고객사"
             />
         </>

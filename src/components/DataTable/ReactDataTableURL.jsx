@@ -60,7 +60,7 @@ const ReactDataTableURL = (props) => {
         }
         // 현재 보는 페이지(current)가 클릭한 페이지와 같은게 없다면 return
         if (current !== currentPageName && current !== innerPageName) {
-            return
+            return;
         }
     }, [currentPageName, innerPageName]);
 
@@ -77,6 +77,10 @@ const ReactDataTableURL = (props) => {
     }, [flag]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
+
+    useEffect(() => {
+        console.log(projectCompany, "기업 이름, 코드");
+    }, [projectCompany]);
 
     const columnsConfig = useMemo(
         () =>
@@ -150,6 +154,7 @@ const ReactDataTableURL = (props) => {
 
     const handleChange = (e, rowIndex, accessor) => {
         const { value } = e.target;
+        console.log(value, "🚨🚨🚨🚨🚨");
         // tableData를 복제하여 수정
         const updatedTableData = [...tableData];
         updatedTableData[rowIndex][accessor] = value;
@@ -235,6 +240,10 @@ const ReactDataTableURL = (props) => {
         setTableData(newTableData);
         setChangeTable(newTableData);
     };
+    useEffect(() => {
+        calTotalPrice();
+        console.log(tableData, "🐵🐵🐵🐵🐵🐵🐵");
+    }, [tableData]);
 
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {
@@ -242,8 +251,8 @@ const ReactDataTableURL = (props) => {
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
                 newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
-            } else if (column.accessor === "pjbgModeCode") {
-                newRow[column.accessor] = "SLSP"; // pjbgModeCode를 항상 "SLSP"로 설정
+            } else if (column.accessor === "modeCode") {
+                newRow[column.accessor] = "SLSP"; // modeCode 항상 "SLSP"로 설정
             } else if (column.accessor === "pjbgTypeCode") {
                 newRow[column.accessor] = "EXPNS01"; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "useAt") {
@@ -266,8 +275,8 @@ const ReactDataTableURL = (props) => {
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
                 newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
-            } else if (column.accessor === "pjbgModeCode") {
-                newRow[column.accessor] = "SLSP"; // pjbgModeCode를 항상 "SLSP"로 설정
+            } else if (column.accessor === "modeCode") {
+                newRow[column.accessor] = "SLSP"; // modeCode 항상 "SLSP"로 설정
             } else if (column.accessor === "pjbgTypeCode") {
                 newRow[column.accessor] = "EXPNS10"; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "useAt") {
@@ -290,8 +299,8 @@ const ReactDataTableURL = (props) => {
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
                 newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
-            } else if (column.accessor === "pjbgModeCode") {
-                newRow[column.accessor] = "SLSP"; // pjbgModeCode를 항상 "SLSP"로 설정
+            } else if (column.accessor === "modeCode") {
+                newRow[column.accessor] = "SLSP"; // modeCode 항상 "SLSP"로 설정
             } else if (column.accessor === "pjbgTypeCode") {
                 newRow[column.accessor] = "EXPNS07"; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "useAt") {
@@ -358,13 +367,22 @@ const ReactDataTableURL = (props) => {
             const toAdds = [];
             for (let i = originData.length; i < updatedData.length; i++) {
                 const toAdd = { ...updatedData[i] };
-                //toAdd.pjbgModeCode = "SLSP";
+                //toAdd.modeCode = "SLSP";
                 toAdds.push(toAdd);
                 addItem(toAdds);
             }
         }
     };
 
+    //-------총합 나타내기--------
+    const [totalPrice, setTotalPrice] = useState(0);
+    const calTotalPrice = () => {
+        let total = 0;
+        tableData.map((item) => {
+            total += item.pjbgPrice;
+            setTotalPrice(total);
+        });
+    };
     //------------------------------- 초기값과 비교하는 코드
 
     return (
@@ -461,7 +479,7 @@ const ReactDataTableURL = (props) => {
                                                             </option>
                                                         ))}
                                                     </select>
-                                                ) : cell.column.type === "button" ? (
+                                                ) : cell.column.type === "buttonCompany" ? (
                                                     <div>
                                                         <input
                                                             className="buttonSelect"
@@ -470,7 +488,7 @@ const ReactDataTableURL = (props) => {
                                                             onClick={() => setValueData(rowIndex)}
                                                             type="text"
                                                             placeholder={projectCompany.esntlId ? projectCompany.esntlId : `거래처명을 선택해 주세요.`}
-                                                            value={tableData[rowIndex].esntlId || ""}
+                                                            value={tableData[rowIndex].esntlId}
                                                             onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
                                                             readOnly
                                                         />
@@ -520,6 +538,14 @@ const ReactDataTableURL = (props) => {
                 </button>
             </div>
             {isOpenModalCompany && <ModalPageCompany rowIndex={rowIndex} onClose={() => setIsOpenModalCompany(false)} />}
+            <div style={{ display: "flex" }}>
+                <span style={{ display: "flex", justifyContent: "center", width: "100px", backgroundColor: "#f2f2f2", border: "solid gray 1px" }}>
+                    {current} 합계
+                </span>
+                <span style={{ display: "flex", justifyContent: "center", width: "100px", border: "solid gray 1px" }}>
+                    {`${totalPrice.toLocaleString("ko-KR")} 원`}
+                </span>
+            </div>
         </>
     );
 };
