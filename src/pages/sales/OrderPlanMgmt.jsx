@@ -4,7 +4,7 @@ import ApprovalForm from "components/form/ApprovalForm";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { PageContext } from "components/PageProvider";
 import { locationPath } from "constants/locationPath";
-import { axiosFetch } from "api/axiosFetch";
+import { axiosFetch, axiosPost } from "api/axiosFetch";
 import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
 
 /** 영업관리-수주계획관리 */
@@ -19,9 +19,6 @@ function OrderPlanMgmt() {
             setProjectInfo({}); // 초기화
         };
     }, []);
-
-
-
 
     const orderPlanMgmtTable1 = useRef(null);
     const orderPlanMgmtTable2 = useRef(null);
@@ -268,21 +265,7 @@ function OrderPlanMgmt() {
     const groupedData = {}; //인건비 바꿔서 넣어줄 빈 객체
     const changePrmnPlanData = (data) => {
         // 포지션에 대한 고정된 번호를 매핑하는 객체 생성
-        const positionMapping = {
-            임원: 1,
-            특급기술사: 2,
-            고급기술사: 3,
-            중급기술사: 4,
-            초급기술사: 5,
-            고급기능사: 6,
-            중급기능사: 7,
-            부장: 8,
-            차장: 9,
-            과장: 10,
-            대리: 11,
-            주임: 12,
-            사원: 13,
-        };
+        const positionMapping = { 임원: 1, 특급기술사: 2, 고급기술사: 3, 중급기술사: 4, 초급기술사: 5, 고급기능사: 6, 중급기능사: 7, 부장: 8, 차장: 9, 과장: 10, 대리: 11, 주임: 12, 사원: 13 };
 
         //날짜포맷
         data.forEach((item) => {
@@ -355,8 +338,7 @@ function OrderPlanMgmt() {
                 } else if (innerPageName === "구매(재료비)") {
                     if(projectInfo.poiId && projectInfo.poId) {
                         const data = await fetchAllData("/baseInfrm/product/buyIngInfo");
-                        console.log("구매비 data: ", data);
-
+                        setPdOrdrDatas([]); //초기화
                         const updatedData = data.map((row) => {
                             const {
                                 byQunty, // 수량
@@ -405,6 +387,7 @@ function OrderPlanMgmt() {
                             };
                         });
                         setPdOrdrDatas(updatedData);
+                        
                     }
                 } else if (innerPageName === "개발외주비") {
                     const data = await fetchOutsourcingData("/baseInfrm/product/pjbudget");
@@ -419,39 +402,37 @@ function OrderPlanMgmt() {
         };
 
         fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
-    }, [projectInfo, innerPageName, isSaveFormTable]);
+    }, [innerPageName, projectInfo.poiId, projectInfo.poId]);
 
     const fetchAllData = async (tableUrl) => {
         const url = `/api${tableUrl}/totalListAll.do`;
-        let requestData = { poiId: projectInfo.poiId };
-        if (tableUrl === "/cost/costPdOrdr") {
-            //requestData 값 담기
-            requestData = {
-                poiId: projectInfo.poiId, useAt: "Y"
-            };
-        } 
-        else if (tableUrl === "/baseInfrm/product/buyIngInfo") {
+        let requestData = {
+            poiId: projectInfo.poiId,
+            useAt: "Y"
+        };
+        if (tableUrl === "/baseInfrm/product/buyIngInfo") {
             requestData = {
                 searchCondition: "",
                 searchKeyword: "",
                 poiId: projectInfo.poiId,
-                buyModeCode: "SLSP",
+                modeCode: "SLSP",
                 poId: projectInfo.poId,
             };
-        }
-        else {
+        } else {
             requestData = {
                 poiId: projectInfo.poiId,
                 pjbgModeCode: "SLSP",
                 useAt: "Y",
             };
         }
-
+        
         const resultData = await axiosFetch(url, requestData);
+
+
         if (resultData) {
             return resultData;
         } else {
-            return Array(5).fill({}); // 빈 배열 보내주기
+            return Array(1).fill({}); // 빈 배열 보내주기
         }
     };
 
@@ -501,6 +482,31 @@ function OrderPlanMgmt() {
         setFilteredPjbudgetDatas2(filteredData2);
     }, [pjbudgetDatas, generalExpensesDatas]);
 
+    const addClick = async (addData) => {
+        if (addData && typeof addData === "object" && !Array.isArray(addData)) {
+            let url = "";
+            if(innerPageName === "구매(재료비)") {
+                url = "/api/baseInfrm/product/pdOrdr/addList.do";
+            }
+            const dataToSend = {
+                ...addData,
+                lockAt: "Y",
+                useAt: "Y",
+                deleteAt: "N",
+                poiId: projectInfo.poiId,
+                poiVersion: projectInfo.poiVersion,
+                poId: projectInfo.poId,
+            };
+            const resultData = await axiosPost(url, dataToSend);
+            if (!resultData) {
+                alert("add error: table");
+            } else if (resultData) {
+                fetchAllData();
+                alert("✅추가 완료");
+            }
+        }
+    };
+
     return (
         <>
             <Location pathList={locationPath.OrderPlanMgmt} />
@@ -526,7 +532,7 @@ function OrderPlanMgmt() {
                 </ul>
 
                 <div className="list">
-                    <div className="first">
+                    <div className="first" style={{ overflowX: 'auto' }}>
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <ReactDataTable
@@ -536,15 +542,16 @@ function OrderPlanMgmt() {
                                     tableRef={orderPlanMgmtTable1}
                                     customDatas={prmnPlanDatas}
                                     viewPageName="인건비"
+                                    sendToParentsAdd={addClick}
                                 />
                             </ApprovalForm>
                         </ul>
                     </div>
-                    <div className="second">
+                    <div className="second" >
                         <ul>
-                            <ApprovalForm title={innerPageName + " 계획 등록"}>
+                            <ApprovalForm title={innerPageName + " 계획 등록"} >
                                 <ReactDataTable
-                                    singleUrl="/baseInfrm/product/pdOrdr"
+                                    singleUrl="/baseInfrm/product/buyIngInfo"
                                     columns={purchaseColumns}
                                     flag={innerPageName === "구매(재료비)" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable3}
@@ -555,7 +562,7 @@ function OrderPlanMgmt() {
                         </ul>
                     </div>
 
-                    <div className="third">
+                    <div className="third" style={{ overflowX: 'auto' }}>
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <ReactDataTableURL
@@ -570,7 +577,7 @@ function OrderPlanMgmt() {
                         </ul>
                     </div>
 
-                    <div className="fourth">
+                    <div className="fourth" style={{ overflowX: 'auto' }}>
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <ReactDataTableURL
@@ -585,7 +592,7 @@ function OrderPlanMgmt() {
                         </ul>
                     </div>
 
-                    <div className="fifth">
+                    <div className="fifth" style={{ overflowX: 'auto' }}>
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <ReactDataTableURL

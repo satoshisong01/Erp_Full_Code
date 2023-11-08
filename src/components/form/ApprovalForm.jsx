@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import ModalSearch from "components/modal/ModalSearch";
 import { PageContext } from "components/PageProvider";
-import ModalPagePdOrder from "components/modal/ModalPagePdOrder";
+import PdOrderListModal from "components/modal/PdOrderListModal";
 
 function ApprovalForm({ title, children }) {
-    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setIsCancelTable, innerPageName } = useContext(PageContext);
+    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, setIsCancelTable, innerPageName, setIsModalTable, setModalPageName } = useContext(PageContext);
     const [userInfo, serUserInfo] = useState({ id: "", name: "" });
     const [isOpenModal, setIsOpenModal] = useState(false)
 
@@ -27,8 +27,9 @@ function ApprovalForm({ title, children }) {
         //window.close();
     };
 
-    const onClick = () => {
+    const onClick = () => { //구매클릭
         if(projectInfo.poiId) {
+            setProjectInfo((preValue) => ({...preValue, poId: ""}))
             setIsOpenModal(true);
         } else if(!projectInfo.poiId){
             alert('프로젝트를 선택해 주세요.')
@@ -42,8 +43,6 @@ function ApprovalForm({ title, children }) {
                 {/* <span className="approval-title">{title}</span> */}
                 <span style={{ fontSize: "15px" }}>{title}</span>
                 <div className="app-buttons mg-b-20">
-                    {/* <button className="btn app-btn app-btn-tertiary">결재선</button>
-                    <button className="btn app-btn app-btn-tertiary">결재요청</button> */}
                     {isSaveFormTable ? (
                         <button className="btn app-btn app-btn-primary" onClick={() => setIsSaveFormTable(false)}>
                             저장
@@ -60,18 +59,6 @@ function ApprovalForm({ title, children }) {
             </div>
 
             <div className="approval-form">
-                {/* <div className="approval-row mg-b-20">
-                    <span className="approval-title">{title} 계획 등록</span>
-                    <div className="approval-box">
-                            <div className="department">
-                                <span className="box-title">발 신 부 서</span>
-                            </div>
-                            <div className="area">
-                                <div className="top">팀 원</div>
-                                <div className="bottom">유지수</div>
-                            </div>
-                    </div>
-                </div> */}
                 <div className="gap">
                     <table className="table-styled header-width">
                         <tbody>
@@ -101,12 +88,16 @@ function ApprovalForm({ title, children }) {
                                                 onClick={onClick}
                                                 type="text"
                                                 placeholder="구매 종류를 선택해 주세요."
-                                                value={projectInfo.poNm || ""}
+                                                value={projectInfo.poDesc || ""}
                                                 readOnly
                                             />
                                             {isOpenModal && (
-                                                <ModalPagePdOrder
-                                                    onClose={() => setIsOpenModal(false)}
+                                                <PdOrderListModal
+                                                    onClose={() => {
+                                                        setIsOpenModal(false);
+                                                        setIsModalTable(false);
+                                                        setModalPageName("")
+                                                    }}
                                                 />
                                             )}
                                         </td>
@@ -117,50 +108,8 @@ function ApprovalForm({ title, children }) {
                                     </tr>
                                 ) : null
                             }
-                            {/* <tr>
-                                <th>작성부서</th>
-                                <td>
-                                    <select>
-                                        <option value="1">PS팀</option>
-                                        <option value="2">PA팀</option>
-                                    </select>
-                                </td>
-                                <th>수신처</th>
-                                <td>
-                                    <select>
-                                        <option>김유진</option>
-                                        <option>양회빈</option>
-                                    </select>
-                                </td>
-                            </tr> */}
                         </tbody>
                     </table>
-                    {/* <table className="table-styled">
-                        <tbody>
-                            <tr>
-                                <th>수주부서</th>
-                                <td>FMCS 그룹</td>
-                                <th>매출부서</th>
-                                <td>FMCS 그룹</td>
-                                <th>영업대표</th>
-                                <td>이수형 부장</td>
-                                <th>담장자</th>
-                                <td>손영훈 부장</td>
-                            </tr>
-                            <tr>
-                                <th>매출부서</th>
-                                <td>FMCS 그룹</td>
-                                <th>시작일</th>
-                                <td>2022/10/04</td>
-                                <th>종료일</th>
-                                <td>2022/12/30</td>
-                                <th>상태</th>
-                                <td>
-                                    <button>작성중</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table> */}
 
                     <div className="mg-t-20">{children}</div>
                 </div>

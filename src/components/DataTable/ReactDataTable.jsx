@@ -13,7 +13,7 @@ import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
 import ModalPagePdiNm from "components/modal/ModalPagePdiNm";
 
 const ReactDataTable = (props) => {
-    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList } = props;
+    const { columns, suffixUrl, flag, customDatas, defaultPageSize, tableRef, viewPageName, customDatasRefresh, singleUrl} = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -28,8 +28,12 @@ const ReactDataTable = (props) => {
         prevInnerPageName,
         setCurrentTable,
         setLengthSelectRow,
+        setModalLengthSelectRow,
+        isModalTable,
+        setIsModalTable,
         newRowData,
         currentPageName,
+        modalPageName,
         isCancelTable,
         setIsCancelTable,
         projectInfo,
@@ -101,6 +105,7 @@ const ReactDataTable = (props) => {
 
     useEffect(() => {
         if(customDatas && customDatas.length < 1) {
+            setTableData([{}])
             // setTableData(Array(defaultPageSize || 10).fill({})); // 빈 배열 추가
         } else if(customDatas && customDatas.length > 0) {
             setTableData([...customDatas]);
@@ -115,14 +120,14 @@ const ReactDataTable = (props) => {
             toggleAllRowsSelected(false);
         }
         // 현재 보는 페이지(current)가 클릭한 페이지와 같은게 없다면 return
-        if (current !== currentPageName && current !== innerPageName) {
+        if (current !== currentPageName && current !== innerPageName || current !== modalPageName && current !== innerPageName) {
             return
         } else if(current !== "" && (current === currentPageName || current === innerPageName)) {
-            if (suffixUrl || detailUrl) {
+            if (suffixUrl ) {
                 fetchAllData();
             }
         }
-    }, [currentPageName, innerPageName]);
+    }, [current, currentPageName, innerPageName]);
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
@@ -175,13 +180,8 @@ const ReactDataTable = (props) => {
 
     /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
-        if (!suffixUrl && !detailUrl) return;
-        let url = ``;
-        if (customerList) {
-            url = `/api${suffixUrl}/${customerList}/listAll.do`;
-        } else {
-            url = `/api${suffixUrl || detailUrl}/totalListAll.do`;
-        }
+        if (!suffixUrl ) return;
+        const url = `/api${suffixUrl}/totalListAll.do`;
         const resultData = await axiosFetch(url, { useAt: "Y" });
         if (resultData) {
             setTableData([...resultData]);
@@ -196,13 +196,17 @@ const ReactDataTable = (props) => {
             setOpenModalMod(true);
         } else {
             // 수정데이터가 있다면
-            const url = `/api${suffixUrl || detailUrl}/edit.do`;
+            // const url = `/api${suffixUrl || singleUrl}/edit.do`;
+            const url = `/api${suffixUrl}/edit.do`;
             const requestData = { ...updatedData, lockAt: "Y", useAt: "Y" };
             const resultData = await axiosUpdate(url, requestData);
             if (resultData) {
-                setTableData([resultData]);
                 alert("값을 변경했습니다💚💚");
-                fetchAllData();
+                if(customDatas) {
+                    customDatasRefresh(); //부모로 반환
+                } else {
+                    fetchAllData();
+                }
             } else if (!resultData) {
                 alert("modify error: table");
             }
@@ -211,7 +215,7 @@ const ReactDataTable = (props) => {
 
     /* 데이터 삭제 */
     const deleteClick = async (btnLabel) => {
-        if (!suffixUrl && !detailUrl) return;
+        if (!suffixUrl && !singleUrl) return;
         const deleteRows = selectedFlatRows && selectedFlatRows.map((row) => row.values);
         if (!btnLabel) {
             // 최초, 파라미터가 없을 때
@@ -219,10 +223,14 @@ const ReactDataTable = (props) => {
         } else if (btnLabel === "확인") {
             const pkColumn = columns[0].col;
             const deletePkArr = deleteRows.map((item) => item[pkColumn]); //값만 가져오는데...
-            const url = `/api${suffixUrl || detailUrl}/removeAll.do`;
+            const url = `/api${suffixUrl || singleUrl}/removeAll.do`;
             const resultData = await axiosDelete(url, deletePkArr);
             if (resultData) {
-                fetchAllData();
+                if(customDatas) {
+                    customDatasRefresh(); //부모로 반환
+                } else {
+                    fetchAllData();
+                }
                 alert("삭제되었습니다🧹🧹");
             } else if (!resultData) {
                 alert("delete error: table");
@@ -238,10 +246,18 @@ const ReactDataTable = (props) => {
     /* 데이터 추가 */
     const addClick = async (addData) => {
         setOpenModalAdd(false);
-        if (!suffixUrl && !detailUrl) return;
+        if (!suffixUrl && !singleUrl) return;
         if (addData && typeof addData === "object" && !Array.isArray(addData)) {
-            const url = `/api${suffixUrl || detailUrl}/add.do`;
-            const dataToSend = { ...addData, lockAt: "Y", useAt: "Y" };
+            const url = `/api${suffixUrl}/add.do`;
+            const dataToSend = {
+                ...addData,
+                lockAt: "Y",
+                useAt: "Y",
+                deleteAt: "N",
+                poiId: projectInfo.poiId,
+                poiVersion: projectInfo.poiVersion,
+                poId: projectInfo.poId,
+            };
             const resultData = await axiosPost(url, dataToSend);
             if (!resultData) {
                 alert("add error: table");
@@ -257,14 +273,9 @@ const ReactDataTable = (props) => {
 
     /* 데이터 검색 */
     const searchClick = async () => {
-        if (!suffixUrl && !detailUrl) return;
-        let url = ``;
+        if (!suffixUrl || !singleUrl) return;
         if (searchData) {
-            if (customerList) {
-                url = `/api${suffixUrl}/${customerList}/totalListAll.do`;
-            } else {
-                url = `/api${suffixUrl || detailUrl}/totalListAll.do`;
-            }
+            const url = `/api${suffixUrl || singleUrl}/totalListAll.do`;
             const requestData = {
                 useAt: searchData.radioOption,
                 searchKeyword: searchData.searchKeyword,
@@ -283,20 +294,6 @@ const ReactDataTable = (props) => {
     /* 로우 클릭 */
     const onCLickRow = (row) => {
         toggleRowSelected(row.id);
-        if (row.original.poiId) {
-            setProjectInfo({
-                poiId: row.original.poiId,
-                poiNm: row.original.poiNm,
-                poiCode: row.original.poiCode,
-                poiVersion: row.original.poiVersion,
-                poId: row.original.poId,
-            })
-            //프로젝트에 해당하는 상세 테이블
-            /* 서버 통신 */
-            // const url = `/api${detailUrl}/listAll.do`;
-            // const requestData = { useAt: "Y" };
-            // const resultData = await axiosFetch(url, requestData);
-        }
     };
 
     const {
@@ -353,17 +350,19 @@ const ReactDataTable = (props) => {
         }
     );
 
-    /* table button 활성화 on off */
+    /* current- 현재 보는페이지, table button 활성화 on off */
     useEffect(() => {
-        if (current === currentPageName || current === innerPageName) {
-            // 현재 보는 페이지라면
-            if (selectedFlatRows.length > 0) {
+            if(isModalTable && current === modalPageName) { //모달화면일때
+                setModalLengthSelectRow(selectedFlatRows.length);
+                if (selectedFlatRows.length > 0) { 
+                    setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
+                    projectInfo.poId = selectedFlatRows[selectedFlatRows.length - 1].original.poId; //품목수주
+                    projectInfo.poDesc = selectedFlatRows[selectedFlatRows.length - 1].original.poDesc;
+                }
+            } else if(!isModalTable && (current === currentPageName || current === innerPageName)) { //모달화면이 아닐때
                 setLengthSelectRow(selectedFlatRows.length);
-                setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values); // 선택한 rows의 마지막 배열
-            } else if (selectedFlatRows.length === 0) {
-                setLengthSelectRow(selectedFlatRows.length);
+                selectedFlatRows.length > 0 && setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
             }
-        }
     }, [selectedFlatRows]);
 
     /* 새로운 빈 row 추가 */
@@ -481,7 +480,6 @@ const ReactDataTable = (props) => {
                 updatedTableData[index]['plannedProfitMargin'] = Math.round(plannedProfitMargin*100);
             }
         }
-
         // 수정된 데이터로 tableData 업데이트
         setTableData(updatedTableData);
     };
@@ -494,34 +492,18 @@ const ReactDataTable = (props) => {
     }
 
     //-------------------------------배열 추가, 수정, 삭제
-
     const addList = async (addNewData) => {
         const url = `/api/baseInfrm/product/prmnPlan/addList.do`;
         const resultData = await axiosPost(url, addNewData);
-        if (resultData && resultData.length > 0) {
-            console.log("추가완료");
-        } else {
-            console.log("추가실패");
-        }
     };
     const updateList = async (toUpdate) => {
         const url = `/api/baseInfrm/product/prmnPlan/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
-        if (resultData && resultData.length > 0) {
-            console.log("수정완료");
-        } else {
-            console.log("수정실패");
-        }
     };
 
     const deleteList = async (removeItem) => {
         const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        if (resultData && resultData.length > 0) {
-            console.log("삭제완료");
-        } else {
-            console.log("삭제실패");
-        }
     };
 
 
@@ -643,13 +625,13 @@ const ReactDataTable = (props) => {
                                         className={columnIndex === 0 ? "first-column" : ""}
                                         style={{ width: column.width }}>
                                         {column.render("Header")}
-                                        <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
+                                        <span style={{ overflow: 'auto' }}>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
                                     </th>
                                 );
                             })}
                             {isEditing && (
                                 <th style={{ width: "70px", textAlign: "center" }}>
-                                    <button className="btn-primary" onClick={onAddRow} style={{ margin: 0 }}>
+                                    <button className="btn-primary" onClick={onAddRow} style={{ margin: 0, overflow: 'auto'}}>
                                         추가
                                     </button>
                                 </th>
@@ -811,7 +793,8 @@ const ReactDataTable = (props) => {
                 </button>
             </div>
 
-            {openModalMod && (
+            {Object.keys(selectRow).length > 0 && openModalMod && (
+                // 수정
                 <DataPutModal
                     columns={columns}
                     initialData={selectRow}
