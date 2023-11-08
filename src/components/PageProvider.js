@@ -13,7 +13,7 @@ export function PageProvider({ children }) {
     const [searchData, setSearchData] = useState(""); // 검색 조건
     const [openModal, setOpenModal] = useState({ type: "", isOpen: false }); // 모달창 open 조건  // type: add, modify
     const [projectItem, setProjectItem] = useState([]); //프로젝트 id, 이름, 코드 저장
-    const [projectInfo, setProjectInfo] = useState({ poiId: "", poiNm: "", poiCode: "", poiVersion: "", poId: ""  }); // 선택한 id 저장
+    const [projectInfo, setProjectInfo] = useState({ poiId: "", poiNm: "", poiCode: "", poiVersion: "", poId: "", poDesc: "" }); // 선택한 id 저장
     const [projectPgNm, setProjectPgNm] = useState({ pgNm: "" }); // 선택한 id 저장
     const [addPgNm, setAddPgNm] = useState("");
     const [currentTable, setCurrentTable] = useState(null); // 유니크한 현재 데이터 테이블
@@ -37,7 +37,10 @@ export function PageProvider({ children }) {
     const [prevCurrentPageName, setPrevCurrentPageName] = useState(""); // tab 이전페이지
     const [innerPageName, setInnerPageName] = useState(""); // snbLabel과 같은 역할. 컴포넌트 안의 탭 라벨
     const [prevInnerPageName, setPrevInnerPageName] = useState("");
+    const [modalPageName, setModalPageName] = useState("");
+    const [modalLengthSelectRow, setModalLengthSelectRow] = useState(0); //모달 테이블의 버튼 플래그
     const [lengthSelectRow, setLengthSelectRow] = useState(0); // 테이블 버튼 플래그
+    const [isModalTable, setIsModalTable] = useState(false);
 
     const [isCancelTable, setIsCancelTable] = useState(false); // 테이블 초기값으로 돌리기
 
@@ -78,11 +81,16 @@ export function PageProvider({ children }) {
         setInnerPageName,
         prevInnerPageName,
         setPrevInnerPageName,
+        modalPageName,
+        setModalPageName,
+        modalLengthSelectRow,
+        setModalLengthSelectRow,
         lengthSelectRow,
         setLengthSelectRow,
         isCancelTable,
         setIsCancelTable,
-
+        isModalTable,
+        setIsModalTable,
         pdiNmList,
         setPdiNmList,
         projectPdiNm,
