@@ -201,7 +201,6 @@ function OrderPlanMgmt() {
             col: "pgNm",
             cellWidth: "20%",
         },
-        { header: "품명", col: "pdiNm", cellWidth: "20%", type: "buttonPdiNm", options: [] },
         { header: "규격", col: "pdiStnd", cellWidth: "20%" },
         { header: "수량", col: "byQunty", cellWidth: "10%", type: "input" },
         { header: "단위", col: "pdiUnit", cellWidth: "10%" },
@@ -259,6 +258,7 @@ function OrderPlanMgmt() {
     ];
 
     const [prmnPlanDatas, setPrmnPlanDatas] = useState([]); // 인건비
+    const [pjbudgetDatas, setPjbudgetDatas] = useState([]); // 경비
     const [pdOrdrDatas, setPdOrdrDatas] = useState([]); // 구매(재료비)
     const [outsourcingDatas, setOutsourcingDatas] = useState([]); // 개발외주비
     const [generalExpensesDatas, setGeneralExpensesDatas] = useState([]); // 개발외주비

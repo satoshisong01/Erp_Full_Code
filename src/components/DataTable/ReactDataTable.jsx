@@ -355,6 +355,8 @@ const ReactDataTable = (props) => {
         }
     );
 
+    const [dataBuket, setDataBuket] = useState({});
+    const [prevDataBuket, setPrevDataBuket] = useState({});
     /* table button 활성화 on off */
     useEffect(() => {
         if (current === currentPageName || current === innerPageName) {
@@ -367,9 +369,6 @@ const ReactDataTable = (props) => {
             }
         }
     }, [isOpenModalPgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
-
-    const [dataBuket, setDataBuket] = useState({});
-    const [prevDataBuket, setPrevDataBuket] = useState({});
 
     useEffect(() => {
         setDataBuket(projectPgNm.pgNm);
