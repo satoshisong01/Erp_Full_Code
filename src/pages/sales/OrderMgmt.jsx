@@ -1,11 +1,10 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import FormDataTable from "components/DataTable/FormDataTable";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { PageContext } from "components/PageProvider";
 import { locationPath } from "constants/locationPath";
-import TableAddModal from "components/modal/TableAddModal";
 import RefreshButton from "components/button/RefreshButton";
 import DelButton from "components/button/DelButton";
 import ModButton from "components/button/ModButton";
@@ -18,11 +17,11 @@ function OrderMgmt() {
     const orderMgmtTable = useRef(null);
 
     const columns = [
-        { header: "수주 아이디디", col: "poiId", cellWidth: "20%", type: "input", enable: true, modify: true, add: true, require: true, notView: true },
+        { header: "수주 아이디", col: "poiId", cellWidth: "20%", type: "input", enable: true, modify: true, add: true, require: true, notView: true },
         { header: "프로젝트 이름", col: "poiNm", cellWidth: "20%", type: "input", enable: true, modify: true, add: true, require: true },
         { header: "프로젝트 코드", col: "poiCode", cellWidth: "15%", type: "input", enable: false, modify: false, add: true, require: true },
-        { header: "프로젝트 타이틀", col: "poiTitle", cellWidth: "25%", type: "input", enable: true, modify: true, add: true, require: false },
-        { header: "거래처ID", col: "cltId", cellWidth: "15%", type: "input", enable: false, modify: true, add: false, require: true },
+        // { header: "프로젝트 타이틀", col: "poiTitle", cellWidth: "25%", type: "input", enable: true, modify: true, add: true, require: false },
+        // { header: "거래처ID", col: "cltId", cellWidth: "15%", type: "input", enable: false, modify: true, add: false, require: true },
         { header: "거래처명", col: "cltNm", cellWidth: "15%", type: "input", enable: false, modify: true, add: false, require: true },
         { header: "수주부서", col: "poiGroupId", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
         { header: "매출부서", col: "poiSalesGroupId", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
@@ -35,8 +34,8 @@ function OrderMgmt() {
         { header: "종료일", col: "poiEndDt", cellWidth: "15%", type: "input", enable: true, modify: true, add: true, require: false },
         { header: "납기시작일", col: "poiDueBeginDt", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
         { header: "납기종료일", col: "poiDueEndDt", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
-        { header: "비고", col: "poiDesc", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
-        { header: "첨부파일", col: "poFileId", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
+        { header: "버전", col: "poiDesc", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
+        // { header: "첨부파일", col: "poFileId", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
     ];
 
     const conditionList = [
@@ -69,23 +68,12 @@ function OrderMgmt() {
                 label: "프로젝트 코드",
                 key: "poiCode",
                 type: "input",
-                colSpan: "3",
-                require: true,
-            },
-        ],
-        [
-            {
-                label: "프로젝트 타이틀",
-                key: "poiTitle",
-                type: "input",
-                colSpan: "3",
                 require: true,
             },
             {
-                label: "통화",
-                key: "poiCurrcy",
+                label: "프로젝트 버전",
+                key: "poiDesc",
                 type: "input",
-                colSpan: "3",
                 require: true,
             },
         ],

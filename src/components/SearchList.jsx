@@ -113,19 +113,13 @@ export default function SearchList({ conditionList, onSearch }) {
         const keyArr = Object.keys(searchData); //컬럼명
         let searchLevel = "1";
 
-        console.log(keyArr, "키키값");
-        console.log(fieldList, "나오는값을보자");
-        console.log(searchData, "나오는값을보자");
-
         if (keyArr.length === 1) {
             const fieldName = keyArr[0];
             const field = fieldList.find((item) => item.colName === fieldName);
             if (field) {
                 searchLevel = field.searchLevel;
             }
-            console.log(field, "이거잘나옴?");
         }
-        console.log(searchLevel);
 
         const dataToSend = {
             searchKeyword: formattedDate
@@ -138,7 +132,6 @@ export default function SearchList({ conditionList, onSearch }) {
             searchCondition: 1,
             radioOption: radioOption,
         };
-        console.log(dataToSend, "555555");
         onSearch(dataToSend);
     };
 
@@ -147,8 +140,6 @@ export default function SearchList({ conditionList, onSearch }) {
         const { name, value } = e.target;
         setSearchData((prevData) => {
             const newData = { ...prevData, [name]: value };
-
-            console.log(newData, "뉴데이터");
             // 빈 값을 가진 객체 제거
             Object.keys(newData).forEach((key) => {
                 if (newData[key] === "") {
@@ -281,8 +272,8 @@ export default function SearchList({ conditionList, onSearch }) {
             <div className="line" />
 
             <div className="flex-container">
-                {fieldList.map((param) => (
-                    <div key={param.colName} className="flex-group mg-l-15">
+                {fieldList.map((param, idx) => (
+                    <div key={param.colName + idx} className="flex-group mg-l-15">
                         <div className="flex-label">
                             <label>{param.title}</label>
                         </div>

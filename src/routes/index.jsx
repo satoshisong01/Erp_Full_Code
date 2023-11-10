@@ -107,7 +107,7 @@ const RootRoutes = () => {
                 poiId: item.poiId,
                 poiNm: item.poiNm,
                 poiCode: item.poiCode,
-                poiVersion: item.poiVersion,
+                poiVersion: item.poiDesc,
                 poId: item.poId,
             }))
         );

@@ -11,7 +11,7 @@ export function PageProvider({ children }) {
     const [isSaveFormTable, setIsSaveFormTable] = useState(true); // row 수정 테이블 저장, 수정 플래그
     const [newRowData, setNewRowData] = useState({}); // 외부에서 추가된 table row data (수주등록, 팝업으로 추가)
     const [searchData, setSearchData] = useState(""); // 검색 조건
-    const [openModal, setOpenModal] = useState({ type: "", isOpen: false }); // 모달창 open 조건  // type: add, modify
+    // const [openModal, setOpenModal] = useState({ type: "", isOpen: false }); // 모달창 open 조건  // type: add, modify
     const [projectItem, setProjectItem] = useState([]); //프로젝트 id, 이름, 코드 저장
     const [projectInfo, setProjectInfo] = useState({ poiId: "", poiNm: "", poiCode: "", poiVersion: "", poId: "", poDesc: "" }); // 선택한 id 저장
     const [projectPgNm, setProjectPgNm] = useState({ pgNm: "" }); // 선택한 id 저장
@@ -32,7 +32,7 @@ export function PageProvider({ children }) {
     const [returnKeyWordPdiNm, setReturnKeyWordPdiNm] = useState(""); //pdiNm검색어 저장
     const [isOpenModalPdiNm, setIsOpenModalPdiNm] = useState(false);
 
-    const [isOpenModal, setIsOpenModal] = useState(false); // 팝업 flag
+    // const [isOpenModal, setIsOpenModal] = useState(false); // 팝업 flag
     const [currentPageName, setCurrentPageName] = useState(""); // tab 현재페이지
     const [prevCurrentPageName, setPrevCurrentPageName] = useState(""); // tab 이전페이지
     const [innerPageName, setInnerPageName] = useState(""); // snbLabel과 같은 역할. 컴포넌트 안의 탭 라벨
@@ -43,14 +43,12 @@ export function PageProvider({ children }) {
     const [isModalTable, setIsModalTable] = useState(false);
 
     const [saveSaleManCost, setSaveSaleManCost] = useState([]);
-
     const [isCancelTable, setIsCancelTable] = useState(false); // 테이블 초기값으로 돌리기
-
     const [viewSetPoiId, setViewSetPoiId] = useState({ poiId: "" }); // 뷰페이지에서 선택한 poiId
 
     const contextValue = {
-        openModal,
-        setOpenModal,
+        // openModal,
+        // setOpenModal,
         isOpenModalPgNm,
         setIsOpenModalPgNm,
         returnKeyWord,
@@ -75,8 +73,8 @@ export function PageProvider({ children }) {
         setProjectInfo,
         currentTable,
         setCurrentTable,
-        isOpenModal,
-        setIsOpenModal,
+        // isOpenModal,
+        // setIsOpenModal,
         currentPageName,
         setCurrentPageName,
         prevCurrentPageName,
