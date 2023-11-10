@@ -84,6 +84,43 @@ function ExpenseMgmt() {
             type: "input",
         },
     ];
+
+    //{
+    //    header: "교통비",
+    //    col: "poiNm",
+    //    cellWidth: "50%",
+    //    type: "input",
+    //},
+    //{
+    //    header: "숙박비",
+    //    col: "pmpmmNum1",
+    //    cellWidth: "30%",
+    //    type: "input",
+    //},
+    //{
+    //    header: "일비/파견비",
+    //    col: "pmpmmNum2",
+    //    cellWidth: "20%",
+    //    type: "input",
+    //},
+    //{
+    //    header: "식비",
+    //    col: "pmpmmNum2",
+    //    cellWidth: "20%",
+    //    type: "input",
+    //},
+    //{
+    //    header: "자재/소모품외",
+    //    col: "pmpmmNum2",
+    //    cellWidth: "20%",
+    //    type: "input",
+    //},
+    //{
+    //    header: "영업비",
+    //    col: "pmpmmNum2",
+    //    cellWidth: "20%",
+    //    type: "input",
+    //},
     const planCost = [
         { header: "교통비", col: "pmpMonth", cellWidth: "15%", type: "input" },
         { header: "숙박비", col: "total", cellWidth: "15%", type: "input" },

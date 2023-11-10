@@ -102,13 +102,13 @@ const RootRoutes = () => {
         const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
         const requestData = { useAt: "Y" };
         const resultData = await axiosFetch(url, requestData);
+        //프로젝트 리스트 불러옴
         setProjectItem(
             resultData.map((item) => ({
                 poiId: item.poiId,
                 poiNm: item.poiNm,
                 poiCode: item.poiCode,
                 poiVersion: item.poiVersion,
-                poId: item.poId,
             }))
         );
     };
@@ -121,6 +121,7 @@ const RootRoutes = () => {
             requestData = { useAt: "Y" };
         }
         const resultData = await axiosFetch(url, requestData);
+        //기업이름 저장
         setCompanyList(
             resultData.map((item) => ({
                 esntlId: item.cltNm,
@@ -138,9 +139,11 @@ const RootRoutes = () => {
             requestData = { useAt: "Y" };
         }
         const resultData = await axiosFetch(url, requestData);
+        //품목그룹 저장
         setPgNmList(
             resultData.map((item) => ({
                 pgNm: item.pgNm,
+                pgId: item.pgId,
             }))
         );
     };
@@ -154,6 +157,9 @@ const RootRoutes = () => {
             requestData = { useAt: "Y" };
         }
         const resultData = await axiosFetch(url, requestData);
+        console.log(resultData, "품목 리스트");
+
+        //품목ID, 품명 , 품목그룹명,단위,품목규격,제조원 저장
         setPdiNmList(
             resultData.map((item) => ({
                 pdiId: item.pdiId,

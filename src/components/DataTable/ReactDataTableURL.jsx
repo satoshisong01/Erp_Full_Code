@@ -337,16 +337,25 @@ const ReactDataTableURL = (props) => {
     const addItem = async (addData) => {
         const url = `/api${singleUrl}/addList.do`;
         const resultData = await axiosPost(url, addData);
+        if (resultData) {
+            setOriginTableData(...tableData);
+        }
     };
 
     const updateItem = async (toUpdate) => {
         const url = `/api${singleUrl}/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
+        if (resultData) {
+            setOriginTableData(...tableData);
+        }
     };
 
     const deleteItem = async (removeItem) => {
         const url = `/api${singleUrl}/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
+        if (resultData) {
+            setOriginTableData(...tableData);
+        }
     };
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수

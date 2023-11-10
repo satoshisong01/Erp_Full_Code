@@ -56,10 +56,6 @@ const ReactDataTablePdorder = (props) => {
 
     //------------------------------------------------
 
-    useEffect(() => {
-        console.log(companyList, "받아온값 확인 🎀🎀🎀🎀");
-    }, [companyList]);
-
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
         if (suffixUrl || detailUrl) {
@@ -313,11 +309,8 @@ const ReactDataTablePdorder = (props) => {
     useEffect(() => {
         setDataBuket(projectPgNm.pgNm);
         setCompanyBuket(projectCompany.esntlId);
-        //setTableData()
         setDataBuketPdiNm(projectPdiNm.pdiId, projectPdiNm.pdiNm, projectPdiNm.pgNm, projectPdiNm.pdiWght, projectPdiNm.pdiStnd, projectPdiNm.pdiMenufut);
-        console.log(pdiNmList, "품명 전체정보가 나오려나");
-        console.log(projectPdiNm, "나오려나요오오오");
-    }, [projectPgNm, projectCompany, pdiNmList]);
+    }, [projectPgNm, projectCompany]);
 
     const [saveProjectPdiNm, setSaveProjectPdiNm] = useState([projectPdiNm]);
     useEffect(() => {
@@ -483,6 +476,7 @@ const ReactDataTablePdorder = (props) => {
         const resultData = await axiosPost(url, addNewData);
         if (resultData && resultData.length > 0) {
             console.log("추가완료");
+            setOriginTableData(...tableData);
         } else {
             console.log("추가실패");
         }
@@ -493,6 +487,7 @@ const ReactDataTablePdorder = (props) => {
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData && resultData.length > 0) {
             console.log("수정완료");
+            setOriginTableData(...tableData);
         } else {
             console.log("수정실패");
         }
@@ -504,6 +499,7 @@ const ReactDataTablePdorder = (props) => {
         const resultData = await axiosDelete(url, removeItem);
         if (resultData && resultData.length > 0) {
             console.log("삭제완료");
+            setOriginTableData(...tableData);
         } else {
             console.log("삭제실패");
         }

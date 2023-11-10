@@ -32,6 +32,7 @@ const ReactDataTable = (props) => {
         isCancelTable,
         setIsCancelTable,
         projectInfo,
+        pdiNmList,
         projectPdiNm,
         setIsOpenModalPdiNm,
         isOpenModalPdiNm,
@@ -58,6 +59,10 @@ const ReactDataTable = (props) => {
     const inputRef = useRef(null); //날짜
     const calendarRef = useRef(null);
 
+    useEffect(() => {
+        console.log(originTableData, "originTableData");
+    }, [originTableData]);
+
     //취소시에 오리지널 테이블로 돌아감
     useEffect(() => {
         if (isCancelTable === true) setTableData(originTableData);
@@ -79,6 +84,7 @@ const ReactDataTable = (props) => {
     };
 
     useEffect(() => {
+        fetchAllData();
         // 문서의 다른 부분을 클릭했을 때 창을 닫기 위한 이벤트 핸들러 추가
         const handleDocumentClick = (e) => {
             if (calendarRef.current && !calendarRef.current.contains(e.target)) {
@@ -103,13 +109,17 @@ const ReactDataTable = (props) => {
     //------------------------------------------------
 
     useEffect(() => {
-        if (customDatas && customDatas.length < 1) {
-            setTableData([{}]);
-            // setTableData(Array(defaultPageSize || 10).fill({})); // 빈 배열 추가
-        } else if (customDatas && customDatas.length > 0) {
+        //if (customDatas && customDatas.length < 1) {
+        //setTableData([{}]);
+        //setTableData(Array(defaultPageSize || 0).fill({})); // 빈 배열 추가
+        //} else
+        if (customDatas && customDatas.length > 0) {
             setTableData([...customDatas]);
             setOriginTableData([...customDatas]);
+        } else {
+            setTableData([]);
         }
+        console.log(customDatas, "customDatas");
     }, [customDatas]);
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
@@ -355,9 +365,6 @@ const ReactDataTable = (props) => {
         }
     );
 
-    const [dataBuket, setDataBuket] = useState({});
-    const [prevDataBuket, setPrevDataBuket] = useState({});
-    /* table button 활성화 on off */
     useEffect(() => {
         if (current === currentPageName || current === innerPageName) {
             // 현재 보는 페이지라면
@@ -368,13 +375,19 @@ const ReactDataTable = (props) => {
                 setLengthSelectRow(selectedFlatRows.length);
             }
         }
-    }, [isOpenModalPgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
+    }, [selectedFlatRows]);
+
+    const [dataBuket, setDataBuket] = useState({});
+    const [prevDataBuket, setPrevDataBuket] = useState({});
+
+    /* table button 활성화 on off */
 
     useEffect(() => {
-        setDataBuket(projectPgNm.pgNm);
-        //setTableData()
+        setSavePgNm(projectPgNm);
+        setDataBuket(projectPgNm.pgNm, projectPgNm.pgId);
     }, [projectPgNm]);
 
+    const [savePgNm, setSavePgNm] = useState([projectPgNm]);
     //품목그룹 선택
     const setValueData = (rowIndex) => {
         //setRowIndex()
@@ -385,21 +398,23 @@ const ReactDataTable = (props) => {
     useEffect(() => {
         if (!isOpenModalPgNm) {
             // isOpenModalPgNm이 false로 변경된 경우에 실행할 코드를 여기에 작성
-
-            // dataBuket 객체 자체의 참조가 변경되었을 때만 코드 실행
-            if (dataBuket !== prevDataBuket) {
+            if (savePgNm) {
                 const updatedTableData = [...tableData];
-                if (dataBuket && updatedTableData[rowIndex]) {
-                    updatedTableData[rowIndex].pgNm = dataBuket;
-                    setTableData(updatedTableData);
-                }
+                if (dataBuket !== prevDataBuket) {
+                    if (dataBuket && updatedTableData[rowIndex]) {
+                        updatedTableData[rowIndex].pgNm = savePgNm.pgNm;
+                        updatedTableData[rowIndex].pgId = savePgNm.pgId;
 
-                // dataBuket 값을 업데이트할 때 prevDataBuket도 업데이트
-                setPrevDataBuket(dataBuket);
-                setProjectPgNm("");
+                        console.log(updatedTableData, "updatedTableData");
+                        setTableData(updatedTableData);
+                    }
+
+                    setPrevDataBuket(dataBuket);
+                    setProjectPgNm("");
+                }
             }
         }
-    }, [isOpenModalPgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
+    }, [isOpenModalPgNm, savePgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
 
     /* current- 현재 보는페이지, table button 활성화 on off */
     useEffect(() => {
@@ -418,16 +433,16 @@ const ReactDataTable = (props) => {
         }
     }, [selectedFlatRows]);
 
-    const onChangeInput = (e, preRow) => {
-        const { name, value } = e.target;
-        const newTableData = tableData.map((rowData, rowIndex) => {
-            if (rowIndex === preRow.index) {
-                return { ...rowData, [name]: value };
-            }
-            return rowData;
-        });
-        setTableData(newTableData);
-    };
+    //const onChangeInput = (e, preRow) => {
+    //    const { name, value } = e.target;
+    //    const newTableData = tableData.map((rowData, rowIndex) => {
+    //        if (rowIndex === preRow.index) {
+    //            return { ...rowData, [name]: value };
+    //        }
+    //        return rowData;
+    //    });
+    //    setTableData(newTableData);
+    //};
     //setTableData(newTableData);
     useEffect(() => {
         console.log(tableData, "🐵 새로운 테이블 데이터");
@@ -509,15 +524,25 @@ const ReactDataTable = (props) => {
     const addList = async (addNewData) => {
         const url = `/api/baseInfrm/product/prmnPlan/addList.do`;
         const resultData = await axiosPost(url, addNewData);
+        console.log(resultData, "resultData");
+        if (resultData) {
+            setOriginTableData(...tableData);
+        }
     };
     const updateList = async (toUpdate) => {
         const url = `/api/baseInfrm/product/prmnPlan/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
+        if (resultData) {
+            setOriginTableData(...tableData);
+        }
     };
 
     const deleteList = async (removeItem) => {
         const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
+        if (resultData) {
+            setOriginTableData(...tableData);
+        }
     };
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
