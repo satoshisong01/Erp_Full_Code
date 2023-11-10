@@ -6,12 +6,16 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
 export default function FormDataTable({ formTableColumns, onAddRow, title, useStatus }) {
-    const [fieldList, setFieldList] = useState([]);
-
+    const { setNewRowData } = useContext(PageContext);
+    
     const [formattedDate, setFormattedDate] = useState("");
     const [formattedDate2, setFormattedDate2] = useState("");
     const [isCalendarVisible, setCalendarVisible] = useState(false);
     const [isCalendarVisible2, setCalendarVisible2] = useState(false);
+    const [initialFormData, setInitialFormData] = useState({})
+    const [formData, setFormData] = useState(initialFormData);
+    const [errors, setErrors] = useState({});
+    const [isUse, setIsUse] = useState(useStatus);
 
     const inputRef = useRef(null);
     const inputRef2 = useRef(null);
@@ -90,41 +94,32 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
     };
 
     useEffect(() => {
+        formTableColumns.forEach((row) => {
+            row.forEach(({ key }) => {
+                setInitialFormData(prevData => {
+                    return {
+                        ...prevData,
+                        [key]: ""
+                    };
+                });
+            });
+        });
+        setFormData({...initialFormData});
+
         document.addEventListener("click", handleOutsideClick);
+        document.addEventListener("click", handleOutsideClick2);
+
         return () => {
             document.removeEventListener("click", handleOutsideClick);
-        };
-    }, []);
-
-    useEffect(() => {
-        document.addEventListener("click", handleOutsideClick2);
-        return () => {
             document.removeEventListener("click", handleOutsideClick2);
         };
     }, []);
 
-    useEffect(() => {
-        setFieldList(formTableColumns);
-    }, [formTableColumns]);
-
-    const { setNewRowData } = useContext(PageContext);
-
-    const initialFormData = {}; // 폼 초기 데이터
-
-    formTableColumns.forEach((row) => {
-        row.forEach(({ key }) => {
-            initialFormData[key] = "";
-        });
-    });
 
     useEffect(() => {
         // 버튼 사용 여부
         setIsUse(useStatus);
     }, [useStatus]);
-
-    const [formData, setFormData] = useState(initialFormData);
-    const [errors, setErrors] = useState({});
-    const [isUse, setIsUse] = useState(useStatus);
 
     const inputChange = (fieldName, value) => {
         setFormData((prevData) => ({
@@ -138,9 +133,6 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
         }));
     };
 
-    useEffect(() => {
-        console.log(formData, "❤️❤️❤️❤️");
-    }, [formData]);
 
     const validateForm = () => {
         const newErrors = {};
@@ -149,7 +141,6 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
         formTableColumns.forEach((row) => {
             row.forEach(({ key, require }) => {
                 if (require && !formData[key]) {
-                    console.log("몬데??: ", formData, key);
                     newErrors[key] = "This field is required.";
                     isValid = false;
                 }
@@ -157,15 +148,18 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
         });
 
         setErrors(newErrors);
-        console.log("2. isValid? ", isValid, formTableColumns);
         return isValid;
     };
 
     const onSubmit = (e) => {
         e.preventDefault();
         if (validateForm()) {
-            const updatedFormData = { ...formData, poiStatus: "작성완료" }; // state 속성 변경
-            setNewRowData(updatedFormData);
+            if(title) {
+                const updatedFormData = { ...formData, poiStatus: "작성완료" }; // state 속성 변경
+                setNewRowData(updatedFormData);
+            } else {
+                setNewRowData(...formData);
+            }
             setFormData(initialFormData); // 초기화
         }
     };
@@ -206,19 +200,19 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                 {type === "input" ? (
                                                     <td colSpan={colSpan || "1"}>
                                                         <input
+                                                            id={key}
                                                             type="text"
                                                             value={formData[key]}
                                                             onChange={(e) => inputChange(key, e.target.value)}
-                                                            // placeholder={key}
                                                         />
                                                         {errors[key] && <div className="text-error-color">{errors[key]}</div>}
                                                     </td>
                                                 ) : type === "select" ? (
                                                     <td colSpan={colSpan || "1"}>
                                                         <select
+                                                            id={key}
                                                             value={formData[key]}
                                                             onChange={(e) => inputChange(key, e.target.value)}
-                                                            // placeholder={errors[key]}
                                                         >
                                                             <option value="">선택</option>
                                                             {option.map((op) => (
@@ -230,7 +224,6 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                         {errors[key] && <div className="text-error-color">{errors[key]}</div>}
                                                     </td>
                                                 ) : type === "datepicker" ? (
-                                                    //<div className="box3-0">
                                                     <td className="box3-1 boxDate">
                                                         <input
                                                             className="form-control flex-item"
@@ -240,11 +233,6 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                             onClick={handleInputClick}
                                                             readOnly
                                                             ref={inputRef}
-                                                            // onChange={() => {
-                                                            //     const formatted = handleDateChange(selectedDate);
-                                                            //     console.log("❗❗1. formatted: ", formatted);
-                                                            //     setFormattedDate(formatted);
-                                                            // }}
                                                         />
                                                         {isCalendarVisible && (
                                                             <div className="boxCalendar">
@@ -262,10 +250,6 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                             onClick={handleInputClick2}
                                                             readOnly
                                                             ref={inputRef2}
-                                                            // onChange={() => {
-                                                            //     const formatted = handleDateChange(selectedDate2);
-                                                            //     setFormattedDate2(formatted);
-                                                            // }}
                                                         />
                                                         {isCalendarVisible2 && (
                                                             <div className="boxCalendar">
@@ -277,7 +261,7 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                 label === "상태" ? (
                                                     <td colSpan={colSpan || "1"}>
                                                         <span>
-                                                            <Status status={value} />
+                                                            <Status status={formData[key]="작성중"} />
                                                         </span>
                                                     </td>
                                                 ) : type === "data" ? (

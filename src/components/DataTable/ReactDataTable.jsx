@@ -583,20 +583,26 @@ const ReactDataTable = (props) => {
 
     //인건비용임
     const compareData = (originData, updatedData) => {
+        console.log("originData:", originData, ", updatedData:", updatedData);
         if (originData.length > updatedData.length) {
             const updateData = updatedData;
             upDateChange(updateData);
+            console.log("1-1.변경데이터:", updateData);
             updateList(updateData);
+            console.log("1-2.수정데이터:", updateData);
 
             const originAValues = originData.map((item) => item.pmpId);
             const extraOriginData = originAValues.slice(updatedData.length);
             const combinedAValues = extraOriginData.reduce((acc, current) => acc.concat(current), []);
 
             deleteList(combinedAValues);
+            console.log("1-2.삭제데이터:", combinedAValues);
         } else if (originData.length === updatedData.length) {
             const updateData = updatedData;
             upDateChange(updateData);
+            console.log("2-1.변경데이터:", updateData);
             updateList(updateData);
+            console.log("2-2.수정데이터:", updateData);
         } else if (originData.length < updatedData.length) {
             const toAdds = [];
             const addUpdate = [];
@@ -604,6 +610,7 @@ const ReactDataTable = (props) => {
                 addUpdate.push(updatedData[i]);
             }
             updateList(addUpdate);
+            console.log("3-1.수정데이터:", addUpdate);
 
             for (let i = originData.length; i < updatedData.length; i++) {
                 const toAdd = { ...updatedData[i] };
@@ -622,9 +629,7 @@ const ReactDataTable = (props) => {
                 toAdds.push(toAdd);
             }
             addList(toAdds);
-        } else if (!updatedData) {
-            const combinedAValues = originData.reduce((acc, current) => acc.concat(current), []);
-            //    deleteList(combinedAValues)
+            console.log("3-2.추가데이터:", toAdds);
         }
     };
 

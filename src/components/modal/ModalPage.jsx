@@ -1,14 +1,12 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext } from "react";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PageContext } from "components/PageProvider";
 
-export default function ModalPage() {
-    const { projectItem, setProjectInfo, setIsOpenModal } = useContext(PageContext);
-
+export default function ModalPage({onClose}) {
+    const { projectItem, setProjectInfo } = useContext(PageContext);
     function handleItemClick(poiId, poiNm, poiCode, poiVersion, poId) {
         setProjectInfo({ poiId, poiNm, poiCode, poiVersion, poId });
-        setIsOpenModal(false);
     }
 
     return (
@@ -21,7 +19,7 @@ export default function ModalPage() {
                                 <div className="modal-header">
                                     <span className="modal-title">프로젝트 목록</span>
                                 </div>
-                                <button onClick={() => setIsOpenModal(false)}>
+                                <button onClick={() => onClose()}>
                                     <FontAwesomeIcon icon={faTimes} />
                                 </button>
                             </div>
@@ -29,7 +27,8 @@ export default function ModalPage() {
                                 <div className="modalContent">
                                     {projectItem.map((item, index) => (
                                         <div className="listItems" key={index} onClick={() => handleItemClick(item.poiId, item.poiNm, item.poiCode, item.poiVersion, item.poId)}>
-                                            <p className="listItem">{item.poiNm}</p>
+                                            <p className="listItem" style={{width: '50%'}}>{item.poiNm}</p>
+                                            <p className="listItem" style={{width: '50%'}}>{item.poiVersion}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -37,7 +36,7 @@ export default function ModalPage() {
                             <form className="product-modal-body">
                                 <div className="submitProduct">
                                     <div className="modal-footer flex-between">
-                                        <button type="button" className="btn btn-default" data-dismiss="modal" onClick={() => setIsOpenModal(false)}>
+                                        <button type="button" className="btn btn-default" data-dismiss="modal" onClick={() => onClose()}>
                                             Close
                                         </button>
                                         <button type="button" className="btn btn-primary" style={{ margin: "0" }}>

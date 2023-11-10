@@ -37,22 +37,23 @@ export function PageProvider({ children }) {
     const [returnKeyWordPdiNm, setReturnKeyWordPdiNm] = useState(""); //pdiNm검색어 저장
     const [isOpenModalPdiNm, setIsOpenModalPdiNm] = useState(false);
 
-    const [isOpenModal, setIsOpenModal] = useState(false); // 팝업 flag
+    // const [isOpenModal, setIsOpenModal] = useState(false); // 팝업 flag
     const [currentPageName, setCurrentPageName] = useState(""); // tab 현재페이지
     const [prevCurrentPageName, setPrevCurrentPageName] = useState(""); // tab 이전페이지
     const [innerPageName, setInnerPageName] = useState(""); // snbLabel과 같은 역할. 컴포넌트 안의 탭 라벨
     const [prevInnerPageName, setPrevInnerPageName] = useState("");
+    const [modalPageName, setModalPageName] = useState("");
+    const [modalLengthSelectRow, setModalLengthSelectRow] = useState(0); //모달 테이블의 버튼 플래그
     const [lengthSelectRow, setLengthSelectRow] = useState(0); // 테이블 버튼 플래그
+    const [isModalTable, setIsModalTable] = useState(false);
 
     const [saveSaleManCost, setSaveSaleManCost] = useState([]);
-
     const [isCancelTable, setIsCancelTable] = useState(false); // 테이블 초기값으로 돌리기
-
     const [viewSetPoiId, setViewSetPoiId] = useState({ poiId: "" }); // 뷰페이지에서 선택한 poiId
 
     const contextValue = {
-        openModal,
-        setOpenModal,
+        // openModal,
+        // setOpenModal,
         isOpenModalPgNm,
         setIsOpenModalPgNm,
         returnKeyWord,
@@ -77,8 +78,8 @@ export function PageProvider({ children }) {
         setProjectInfo,
         currentTable,
         setCurrentTable,
-        isOpenModal,
-        setIsOpenModal,
+        // isOpenModal,
+        // setIsOpenModal,
         currentPageName,
         setCurrentPageName,
         prevCurrentPageName,
@@ -87,11 +88,16 @@ export function PageProvider({ children }) {
         setInnerPageName,
         prevInnerPageName,
         setPrevInnerPageName,
+        modalPageName,
+        setModalPageName,
+        modalLengthSelectRow,
+        setModalLengthSelectRow,
         lengthSelectRow,
         setLengthSelectRow,
         isCancelTable,
         setIsCancelTable,
-
+        isModalTable,
+        setIsModalTable,
         pdiNmList,
         setPdiNmList,
         projectPdiNm,
