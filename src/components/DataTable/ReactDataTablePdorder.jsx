@@ -8,7 +8,7 @@ import ModalPagePdiNm from "components/modal/ModalPagePdiNm";
 import ModalPageCompany from "components/modal/ModalPageCompany";
 
 const ReactDataTablePdorder = (props) => {
-    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList } = props;
+    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendSelected } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -38,6 +38,9 @@ const ReactDataTablePdorder = (props) => {
         setIsOpenModalCompany,
         companyList,
         pdiNmList,
+        isModalTable,
+        modalPageName,
+        setModalLengthSelectRow
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -178,13 +181,6 @@ const ReactDataTablePdorder = (props) => {
     /* 로우 클릭 */
     const onCLickRow = (row) => {
         toggleRowSelected(row.id);
-        if (row.poiNm) {
-            //프로젝트에 해당하는 상세 테이블
-            /* 서버 통신 */
-            // const url = `/api${detailUrl}/listAll.do`;
-            // const requestData = { useAt: "Y" };
-            // const resultData = await axiosFetch(url, requestData);
-        }
     };
 
     const {
@@ -243,27 +239,21 @@ const ReactDataTablePdorder = (props) => {
 
     /* table button 활성화 on off */
     useEffect(() => {
-        if (current === currentPageName || current === innerPageName) {
-            // 현재 보는 페이지라면
-            if (selectedFlatRows.length > 0) {
-                setLengthSelectRow(selectedFlatRows.length);
-                setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values); // 선택한 rows의 마지막 배열
-            } else if (selectedFlatRows.length === 0) {
-                setLengthSelectRow(selectedFlatRows.length);
+        if(isModalTable && current === modalPageName) { //모달화면일때
+            setModalLengthSelectRow(selectedFlatRows.length);
+            if (selectedFlatRows.length > 0) { 
+                setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
+                projectInfo.poId = selectedFlatRows[selectedFlatRows.length - 1].original.poId; //품목수주
+                projectInfo.poDesc = selectedFlatRows[selectedFlatRows.length - 1].original.poDesc;
+                selectedFlatRows.length > 0 && sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
+        } else if(!isModalTable && (current === currentPageName || current === innerPageName)) { //모달화면이 아닐때
+            setLengthSelectRow(selectedFlatRows.length);
+            selectedFlatRows.length > 0 && setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
+            selectedFlatRows.length > 0 && sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
         }
     }, [selectedFlatRows]);
 
-    // const onChangeInput = (e, preRow) => {
-    //     const { name, value } = e.target;
-    //     const newTableData = tableData.map((rowData, rowIndex) => {
-    //         if (rowIndex === preRow.index) {
-    //             return { ...rowData, [name]: value };
-    //         }
-    //         return rowData;
-    //     });
-    //     setTableData(newTableData);
-    // };
 
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {

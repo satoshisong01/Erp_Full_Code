@@ -12,7 +12,7 @@ import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
 import ModalPagePgNm from "components/modal/ModalPagePgNm";
 
 const ReactDataTable = (props) => {
-    const { columns, suffixUrl, flag, customDatas, defaultPageSize, tableRef, viewPageName, customDatasRefresh, singleUrl } = props;
+    const { columns, suffixUrl, flag, customDatas, defaultPageSize, tableRef, viewPageName, customDatasRefresh, singleUrl, sendToParentsAdd, sendSelected } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -32,12 +32,6 @@ const ReactDataTable = (props) => {
         isCancelTable,
         setIsCancelTable,
         projectInfo,
-        pdiNmList,
-        projectPdiNm,
-        setIsOpenModalPdiNm,
-        isOpenModalPdiNm,
-        setProjectPdiNm,
-        setProjectInfo,
         isOpenModalPgNm,
         setIsOpenModalPgNm,
         projectPgNm,
@@ -51,7 +45,7 @@ const ReactDataTable = (props) => {
     const [openModalMod, setOpenModalMod] = useState(false);
     const [openModalAdd, setOpenModalAdd] = useState(false);
     const [modalViewDatas, setModalViewDatas] = useState([]); //modal에 띄어줄 목록
-    const [current, setCurrent] = useState(""); //==viewPageName
+    const [current, setCurrent] = useState(viewPageName); //==viewPageName
     const [selectRow, setSelectRow] = useState({}); //마지막으로 선택한 row
     const [rowIndex, setRowIndex] = useState(0);
 
@@ -84,6 +78,7 @@ const ReactDataTable = (props) => {
     };
 
     useEffect(() => {
+        console.log("current: ",current);
         fetchAllData();
         // 문서의 다른 부분을 클릭했을 때 창을 닫기 위한 이벤트 핸들러 추가
         const handleDocumentClick = (e) => {
@@ -136,12 +131,7 @@ const ReactDataTable = (props) => {
         if ((current !== currentPageName && current !== innerPageName) || (current !== modalPageName && current !== innerPageName)) {
             return;
         }
-        // else if (current !== "" && (current === currentPageName || current === innerPageName)) {
-        //     if (suffixUrl) {
-        //         fetchAllData();
-        //     }
-        // }
-    }, [current, currentPageName, innerPageName]);
+    }, [current, currentPageName, innerPageName, modalPageName]);
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
@@ -154,23 +144,21 @@ const ReactDataTable = (props) => {
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
-        if (current === currentPageName || current === innerPageName) {
-            if (nameOfButton === "refresh") {
-                refreshClick();
-            } else if (nameOfButton === "csv") {
-            } else if (nameOfButton === "copy") {
-            } else if (nameOfButton === "print") {
-            } else if (nameOfButton === "delete") {
-                deleteClick();
-            } else if (nameOfButton === "add") {
-                addClick();
-            } else if (nameOfButton === "modify") {
-                modifyClick();
-            } else if (nameOfButton === "search") {
-                searchClick();
-            }
-            setNameOfButton(""); //초기화
+        if (nameOfButton === "refresh") {
+            refreshClick();
+        } else if (nameOfButton === "csv") {
+        } else if (nameOfButton === "copy") {
+        } else if (nameOfButton === "print") {
+        } else if (nameOfButton === "delete") {
+            deleteClick();
+        } else if (nameOfButton === "add") {
+            addClick();
+        } else if (nameOfButton === "modify") {
+            modifyClick();
+        } else if (nameOfButton === "search") {
+            searchClick();
         }
+        setNameOfButton(""); //초기화
     }, [nameOfButton]);
 
     const columnsConfig = useMemo(
@@ -213,8 +201,12 @@ const ReactDataTable = (props) => {
         if (!updatedData) {
             setOpenModalMod(true);
         } else {
+            if(customDatas) {
+                sendToParentsAdd(selectRow);
+                setOpenModalMod(false);
+                return;
+            }
             // 수정데이터가 있다면
-            // const url = `/api${suffixUrl || singleUrl}/edit.do`;
             const url = `/api${suffixUrl}/edit.do`;
             const requestData = { ...updatedData, lockAt: "Y", useAt: "Y" };
             const resultData = await axiosUpdate(url, requestData);
@@ -265,6 +257,7 @@ const ReactDataTable = (props) => {
     /* 데이터 추가 */
     const addClick = async (addData) => {
         setOpenModalAdd(false);
+        console.log("");
         if (!suffixUrl && !singleUrl) return;
         if (addData && typeof addData === "object" && !Array.isArray(addData)) {
             const url = `/api${suffixUrl}/add.do`;
@@ -314,9 +307,6 @@ const ReactDataTable = (props) => {
     /* 로우 클릭 */
     const onCLickRow = (row) => {
         toggleRowSelected(row.id);
-        if(row.original.poiId) {
-            setProjectInfo({poiId: row.original.poiId});
-        }
     };
 
     const {
@@ -375,15 +365,19 @@ const ReactDataTable = (props) => {
 
     useEffect(() => {
         if(isModalTable && current === modalPageName) { //모달화면일때
+            // console.log("current:", current, "selectedFlatRows: ", selectedFlatRows);
             setModalLengthSelectRow(selectedFlatRows.length);
             if (selectedFlatRows.length > 0) { 
                 setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
+                sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values)
                 projectInfo.poId = selectedFlatRows[selectedFlatRows.length - 1].original.poId; //품목수주
                 projectInfo.poDesc = selectedFlatRows[selectedFlatRows.length - 1].original.poDesc;
             }
         } else if(!isModalTable && (current === currentPageName || current === innerPageName)) { //모달화면이 아닐때
             setLengthSelectRow(selectedFlatRows.length);
-            selectedFlatRows.length > 0 && setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
+            if (selectedFlatRows.length > 0) { 
+                setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
+            }
         }
     }, [selectedFlatRows]);
 
@@ -442,18 +436,6 @@ const ReactDataTable = (props) => {
             selectedFlatRows.length > 0 && setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
         }
     }, [selectedFlatRows]);
-
-    //const onChangeInput = (e, preRow) => {
-    //    const { name, value } = e.target;
-    //    const newTableData = tableData.map((rowData, rowIndex) => {
-    //        if (rowIndex === preRow.index) {
-    //            return { ...rowData, [name]: value };
-    //        }
-    //        return rowData;
-    //    });
-    //    setTableData(newTableData);
-    //};
-    //setTableData(newTableData);
 
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {
@@ -590,6 +572,7 @@ const ReactDataTable = (props) => {
 
     //인건비용임
     const compareData = (originData, updatedData) => {
+        if(!originData || !updatedData) return;
         if (originData.length > updatedData.length) {
             const updateData = updatedData;
             upDateChange(updateData);

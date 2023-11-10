@@ -12,11 +12,12 @@ import AddPdOrderModal from "./AddPdOrderModal";
 
 /* 구매 종류(품목수주) 목록 CRUD 팝업 */
 export default function PdOrderListModal({onClose}) {
-    const { projectInfo, setModalPageName, setIsModalTable } = useContext(PageContext);
+    const { projectInfo, setProjectInfo, setModalPageName, setIsModalTable } = useContext(PageContext);
     const {setNameOfButton} = useContext(PageContext);
     const pdOrderTable = useRef(null);
     const [ pdOrderList, setPdOrderList ] = useState([]);
     const [isOpenAddModal, setIsOpenAddModal] = useState(false)
+    const [row, setRow] = useState({});
 
     const columns = [
         {
@@ -52,6 +53,17 @@ export default function PdOrderListModal({onClose}) {
         setIsModalTable(true);
         getData();
     }, []);
+
+    const selected = (value) => {
+        if(typeof value === 'object') {
+            setRow(value);
+        }
+        if(value === "close") {
+            setProjectInfo(prev => ({...prev, poId: row.poId, poDesc: row.poDesc}))
+            console.log("ProjectInfo:", projectInfo);
+            onClose();
+        }
+    }
 
     const getData = async () => {
         const requestData = {
@@ -89,7 +101,6 @@ export default function PdOrderListModal({onClose}) {
                                 </button>
                             </div>
                             <div className="modal-table-Body">
-                                    {/* <div className="modal-table-buttons"> */}
                                     <div className="table-buttons modal-table-buttons">
                                         <AddButton label={'추가'} onClick={() => setIsOpenAddModal(true)} />
                                         <ModButton label={'수정'} onClick={() => setNameOfButton('modify')} />
@@ -103,10 +114,11 @@ export default function PdOrderListModal({onClose}) {
                                         viewPageName="품목수주관리"
                                         customDatas={pdOrderList}
                                         customDatasRefresh={refresh}
+                                        sendSelected={selected}
                                     />
                             </div>
                             <div className="modal-table-Body">
-                                <button className="btn full-width-button mg-b-20" onClick={() => onClose()}>종료</button>
+                                <button className="btn full-width-button mg-b-20" onClick={() => selected("close")}>종료</button>
                             </div>
                         </div>
                     </article> 

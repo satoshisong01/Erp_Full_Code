@@ -31,13 +31,6 @@ function OrderPlanMgmt() {
 
     const laborColumns = [
         // 인건비
-        //{
-        //    header: "품목그룹명",
-        //    col: "pgNm",
-        //    cellWidth: "20%",
-        //    type: "button",
-        //    options: [],
-        //},
         { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "datepicker" },
         { header: "M/M계", col: "total", cellWidth: "10%" },
         {
@@ -502,7 +495,6 @@ function OrderPlanMgmt() {
                                     tableRef={orderPlanMgmtTable1}
                                     customDatas={prmnPlanDatas}
                                     viewPageName="인건비"
-                                    sendToParentsAdd={addClick}
                                 />
                             </ApprovalForm>
                         </ul>
@@ -510,13 +502,14 @@ function OrderPlanMgmt() {
                     <div className="second">
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
-                                <ReactDataTablePdorder
+                                <ReactDataTable
                                     singleUrl="/baseInfrm/product/buyIngInfo"
                                     columns={purchaseColumns}
                                     flag={innerPageName === "구매(재료비)" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable3}
                                     customDatas={pdOrdrDatas}
                                     viewPageName="구매(재료비)"
+                                    sendToParentsAdd={addClick}
                                 />
                             </ApprovalForm>
                         </ul>
