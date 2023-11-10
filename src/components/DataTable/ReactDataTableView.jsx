@@ -62,7 +62,11 @@ const ReactDataTableView = (props) => {
     };
 
     const onRowClick = (rowIndex) => {
-        setSelectedPoiId(tableData[rowIndex].poiId);
+        const dataIndex = pageIndex * pageSize + rowIndex;
+
+        const clickedPoiId = tableData[dataIndex]?.poiId;
+
+        setSelectedPoiId(clickedPoiId);
         setSelectedRowIndex(rowIndex);
     };
 

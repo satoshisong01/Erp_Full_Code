@@ -200,60 +200,6 @@ function LaborCostMgmt() {
         },
     ];
 
-    const subColumnsLevels = [
-        {
-            header: "품목그룹명",
-            col: "pgNm",
-            cellWidth: "15%",
-            type: "select",
-            options: [],
-        },
-        { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "input" },
-        { header: "M/M계", col: "total", cellWidth: "10%", type: "input" },
-        {
-            header: "인건비계",
-            col: "poiBeginDt1",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "부장",
-            col: "pmpmmNum1",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "차장",
-            col: "pmpmmNum2",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "과장",
-            col: "pmpmmNum3",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "대리",
-            col: "pmpmmNum4",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "주임",
-            col: "pmpmmNum5",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "사원",
-            col: "pmpmmNum6",
-            cellWidth: "10%",
-            type: "input",
-        },
-    ];
-
     const inquiryColumns = [
         {
             header: "구분코드",
@@ -330,9 +276,7 @@ function LaborCostMgmt() {
         },
         {
             header: "금액",
-            col: "pmpmmNum1",
             cellWidth: "25%",
-            type: "input",
         },
     ];
 
@@ -348,7 +292,7 @@ function LaborCostMgmt() {
         {
             header: "직급",
             col: "pecPosition",
-            cellWidth: "25%",
+            cellWidth: "10%",
             type: "select",
             options: [
                 { value: "임원", label: "임원" },
@@ -375,7 +319,7 @@ function LaborCostMgmt() {
         {
             header: "금액",
             col: "pecUnitPrice222",
-            cellWidth: "25%",
+            cellWidth: "40%",
             type: "input",
         },
     ];
@@ -407,62 +351,79 @@ function LaborCostMgmt() {
             type: "button",
             options: [],
         },
-        { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "input" },
-        { header: "M/M계", col: "total", cellWidth: "10%", type: "input" },
+        { header: "인력", col: "pecManpower", cellWidth: "25%", type: "input" },
         {
-            header: "인건비계",
-            col: "poiBeginDt1",
+            header: "직급",
+            col: "pecPosition",
+            cellWidth: "10%",
+            type: "select",
+            options: [
+                { value: "임원", label: "임원" },
+                { value: "특급기술사", label: "특급기술사" },
+                { value: "고급기술사", label: "고급기술사" },
+                { value: "중급기술사", label: "중급기술사" },
+                { value: "초급기술사", label: "초급기술사" },
+                { value: "고급기능사", label: "고급기능사" },
+                { value: "중급기능사", label: "중급기능사" },
+                { value: "부장", label: "부장" },
+                { value: "차장", label: "차장" },
+                { value: "과장", label: "과장" },
+                { value: "대리", label: "대리" },
+                { value: "주임", label: "주임" },
+                { value: "사원", label: "사원" },
+            ],
+        },
+        {
+            header: "실행(M/M)",
+            col: "pecMm",
             cellWidth: "10%",
             type: "input",
         },
         {
-            header: "부장",
-            col: "pmpmmNum1",
+            header: "시작일",
+            col: "pecStartdate",
             cellWidth: "10%",
-            type: "input",
+            type: "datepicker",
         },
         {
-            header: "차장",
-            col: "pmpmmNum2",
+            header: "종료일",
+            col: "pecEnddate",
             cellWidth: "10%",
-            type: "input",
+            type: "datepicker",
         },
         {
-            header: "과장",
-            col: "pmpmmNum3",
+            header: "금액",
+            col: "pecUnitPrice111",
             cellWidth: "10%",
-            type: "input",
         },
         {
-            header: "대리",
-            col: "pmpmmNum4",
+            header: "투입률",
+            col: "pmpmmPositionCode1",
             cellWidth: "10%",
-            type: "input",
         },
         {
-            header: "주임",
-            col: "pmpmmNum5",
+            header: "누계율",
+            col: "pmpmmPositionCode2",
             cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "사원",
-            col: "pmpmmNum6",
-            cellWidth: "10%",
-            type: "input",
         },
     ];
 
     const [currentTask, setCurrentTask] = useState("인건비 조회관리");
     const [inquiryMgmt, setInquiryMgmt] = useState([]); // 인건비 조회관리
-
-    const [saleCostView, setSaleCostView] = useState([]); //영업인건비 저장
+    //
+    const [saleCostView, setSaleCostView] = useState([]); //영업 인건비 띄우기
     const [pgBudgetMgmt, setPgBudgetMgmt] = useState([]); // 인건비 수주관리
-
+    //
+    const [pgBudgetView, setPgBudgetView] = useState([]); //(실행) 수주띄우기
     const [budgetMgmt, setBudgetMgmt] = useState([]); // 인건비 예산관리
+    //
+    const [budgetView, setBudgetView] = useState([]); //(실행) 예산띄우기
     const [runMgmt, setRunMgmt] = useState([]); // 인건비 실행관리
 
-    const groupedData = {}; //인건비 바꿔서 넣어줄 빈 객체
+    useEffect(() => {
+        console.log(pgBudgetMgmt, "pgBudgetMgmt");
+        console.log(pgBudgetView, "pgBudgetView");
+    }, [pgBudgetView, pgBudgetMgmt]);
 
     const mapPecModeCodeToText = (data) => {
         for (let i = 0; i < data.length; i++) {
@@ -493,23 +454,30 @@ function LaborCostMgmt() {
         const fetchData = async () => {
             try {
                 if (currentTask === "인건비 조회관리") {
-                    const data = await fetchAllData("/baseInfrm/product/prstmCost"); // 인건비 조회관리
+                    const data = await fetchAllData("/baseInfrm/product/prstmCost", currentTask); // 인건비 조회관리
                     console.log(data, "불러온 조회관리 값은?");
                     const updatedData = mapPecModeCodeToText(data);
                     console.log(updatedData, "updatedData");
                     setInquiryMgmt(updatedData);
+                    //
                 } else if (currentTask === "인건비 수주관리") {
                     const data = await fetchAllData("/baseInfrm/product/prstmCost/", currentTask); // 인건비 수주관리
                     setPgBudgetMgmt(data);
-                    const dataView = await fetchAllDataView("/baseInfrm/product/prmnPlan");
+                    const dataView = await fetchAllDataView("/baseInfrm/product/prmnPlan", currentTask);
                     setSaleCostView(ChangePrmnPlanData(dataView, projectInfo));
                     console.log(saleCostView, "saleCostView");
+                    //
                 } else if (currentTask === "인건비 예산관리") {
-                    const data = await fetchAllData("/baseInfrm/product/prstmCost/"); // 인건비 예산관리
+                    const data = await fetchAllData("/baseInfrm/product/prstmCost/", currentTask); // 인건비 예산관리
                     setBudgetMgmt(data);
+                    const dataView = await fetchAllDataView("/baseInfrm/product/prstmCost/", currentTask);
+                    setPgBudgetView(dataView);
+                    //
                 } else if (currentTask === "인건비 실행관리") {
-                    const data = await fetchAllData("/cost/costPdOrdr"); // 인건비 실행관리
-                    setInquiryMgmt(data);
+                    const data = await fetchAllData("/baseInfrm/product/prstmCost/", currentTask); // 인건비 실행관리
+                    setRunMgmt(data);
+                    const dataView = await fetchAllDataView("/baseInfrm/product/prstmCost/", currentTask);
+                    setBudgetView(dataView);
                 }
             } catch (error) {
                 console.error("데이터를 가져오는 중에 오류 발생:", error);
@@ -523,7 +491,7 @@ function LaborCostMgmt() {
         const url = `/api${tableUrl}/totalListAll.do`;
         console.log(currentTask, "나오낭");
         let requestData = { poiId: viewSetPoiId || projectInfo.poiId, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
-        if (tableUrl === "/cost/costPdOrdr") {
+        if (currentTask === "인건비 조회관리") {
             //requestData 값 담기
             requestData = { poiId: viewSetPoiId, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
         } else if (currentTask === "인건비 수주관리") {
@@ -542,6 +510,16 @@ function LaborCostMgmt() {
                 useAt: "Y",
                 pecModeCode: "PDVSN02",
             };
+        } else if (currentTask === "인건비 실행관리") {
+            requestData = {
+                poiId: projectInfo.poiId,
+                pecSlsExcCode: "PEXC",
+                pecTypeCode: "MM",
+                useAt: "Y",
+                pecModeCode: "PDVSN03",
+            };
+        } else {
+            return;
         }
 
         console.log(requestData, "서버에 넘겨줘볼까");
@@ -557,13 +535,33 @@ function LaborCostMgmt() {
         const url = `/api${tableUrl}/totalListAll.do`;
         console.log(currentTask, "나오낭");
         let requestData = { poiId: projectInfo.poiId };
+
         if (currentTask === "인건비 수주관리") {
             requestData = {
                 poiId: projectInfo.poiId,
                 modeCode: "SLSP",
                 useAt: "Y",
             };
-            console.log("여길타야함");
+            //예산관리에서 수주관리 뷰 띄우기
+        } else if (currentTask === "인건비 예산관리") {
+            requestData = {
+                poiId: projectInfo.poiId,
+                pecSlsExcCode: "PEXC",
+                pecTypeCode: "MM",
+                useAt: "Y",
+                pecModeCode: "PDVSN01",
+            };
+            //실행에서 예산 뷰 띄우가
+        } else if (currentTask === "인건비 실행관리") {
+            requestData = {
+                poiId: projectInfo.poiId,
+                pecSlsExcCode: "PEXC",
+                pecTypeCode: "MM",
+                useAt: "Y",
+                pecModeCode: "PDVSN02",
+            };
+        } else {
+            return;
         }
 
         console.log(requestData, "서버에 넘겨줘볼까");
@@ -670,7 +668,7 @@ function LaborCostMgmt() {
                                 </button>
                             </div>
                             <div className={`hideDivRun3 ${isClicked3 ? "" : "clicked"}`}>
-                                <ReactDataTableView columns={budgetViewColumns} defaultPageSize={5} justColumn={true} />
+                                <ReactDataTableView columns={budgetViewColumns} customDatas={pgBudgetView} defaultPageSize={5} justColumn={true} />
                             </div>
                             <ReactDataTable
                                 columns={budgetColumns}
@@ -691,13 +689,14 @@ function LaborCostMgmt() {
                                 </button>
                             </div>
                             <div className={`hideDivRun4 ${isClicked4 ? "" : "clicked"}`}>
-                                <ReactDataTable columns={projectColumns} defaultPageSize={5} justColumn={true} />
+                                <ReactDataTableView columns={budgetColumns} customDatas={budgetView} defaultPageSize={5} justColumn={true} />
                             </div>
                             <ReactDataTable
                                 columns={runColumns}
                                 flag={currentTask === "인건비 실행관리" && isSaveFormTable}
                                 tableRef={orderPlanMgmtTable4}
                                 customDatas={runMgmt}
+                                viewPageName="인건비 실행관리"
                             />
                         </ul>
                     </div>

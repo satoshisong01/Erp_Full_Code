@@ -27,8 +27,8 @@ export default function ModalPagePgNm({ rowIndex }) {
         console.log(value, "제대로 들어오냐");
     };
 
-    function handleItemClick(pgNm, poiId, poiNm, poiCode, pdiWght, pdiStnd, pdiMenufut, pdiId) {
-        setProjectPgNm({ pgNm, poiId, poiNm, poiCode, pdiWght, pdiStnd, pdiMenufut, pdiId });
+    function handleItemClick(pgNm, pgId) {
+        setProjectPgNm({ pgNm, pgId });
         setIsOpenModalPgNm(false);
     }
 
@@ -103,21 +103,7 @@ export default function ModalPagePgNm({ rowIndex }) {
                             <div className="modalBody">
                                 <div className="modalContent">
                                     {pgNmList.map((item, index) => (
-                                        <div
-                                            className="listItems"
-                                            key={index}
-                                            onClick={() =>
-                                                handleItemClick(
-                                                    item.pgNm,
-                                                    item.poiId,
-                                                    item.poiNm,
-                                                    item.poiCode,
-                                                    item.pdiWght,
-                                                    item.pdiStnd,
-                                                    item.pdiMenufut,
-                                                    item.pdiId
-                                                )
-                                            }>
+                                        <div className="listItems" key={index} onClick={() => handleItemClick(item.pgNm, item.pgId)}>
                                             <p className="listItem">{item.pgNm}</p>
                                         </div>
                                     ))}

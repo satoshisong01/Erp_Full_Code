@@ -287,8 +287,11 @@ function OrderPlanMgmt() {
                 if (innerPageName === "인건비") {
                     const data = await fetchAllData("/baseInfrm/product/prmnPlan"); // 인건비
                     console.log(data, "불러온 인건비의 값은?");
+                    console.log(ChangePrmnPlanData(data, projectInfo), "@@@@@@@");
+                    //const newPrmnPlanData = ChangePrmnPlanData(data, projectInfo);
+
+                    // 데이터가 비어 있으면 빈 배열 대신 다른 값을 설정하여 렌더링을 트리거
                     setPrmnPlanDatas(ChangePrmnPlanData(data, projectInfo));
-                    console.log(prmnPlanDatas);
                 } else if (innerPageName === "경비") {
                     const data = await fetchAllData("/baseInfrm/product/pjbudget"); // 경비
                     setPjbudgetDatas(data);
@@ -508,7 +511,7 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <ReactDataTablePdorder
-                                    singleUrl="/baseInfrm/product/pdOrdr"
+                                    singleUrl="/baseInfrm/product/buyIngInfo"
                                     columns={purchaseColumns}
                                     flag={innerPageName === "구매(재료비)" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable3}

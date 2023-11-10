@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faMagnifyingGlass,
-    faArrowRotateRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faArrowRotateRight } from "@fortawesome/free-solid-svg-icons";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
@@ -122,9 +119,7 @@ export default function SearchList({ conditionList, onSearch }) {
         }
 
         const dataToSend = {
-            searchKeyword: formattedDate
-                ? `${formattedDate} , ${formattedDate2}`
-                : "",
+            searchKeyword: formattedDate ? `${formattedDate} , ${formattedDate2}` : "",
             ...searchData,
             //createDate: formattedDate
             //? `${formattedDate} , ${formattedDate2}`
@@ -154,15 +149,7 @@ export default function SearchList({ conditionList, onSearch }) {
     /* 검색 화면구현 */
     const renderField = (param) => {
         if (param.type === "input") {
-            return (
-                <input
-                    type="text"
-                    name={param.colName}
-                    value={searchData[param.colName] || ""}
-                    onChange={onChange}
-                    className="form-control flex-item"
-                />
-            );
+            return <input type="text" name={param.colName} value={searchData[param.colName] || ""} onChange={onChange} className="form-control flex-item" />;
         } else if (param.type === "select") {
             return (
                 <select
@@ -192,8 +179,7 @@ export default function SearchList({ conditionList, onSearch }) {
                             readOnly
                             ref={inputRef}
                             onChange={() => {
-                                const formatted =
-                                    handleDateChange(selectedDate);
+                                const formatted = handleDateChange(selectedDate);
                                 setFormattedDate2(formatted);
                             }}
                         />
@@ -214,8 +200,7 @@ export default function SearchList({ conditionList, onSearch }) {
                             readOnly
                             ref={inputRef2}
                             onChange={() => {
-                                const formatted =
-                                    handleDateChange(selectedDate2);
+                                const formatted = handleDateChange(selectedDate2);
                                 setFormattedDate(formatted);
                             }}
                         />
@@ -256,14 +241,10 @@ export default function SearchList({ conditionList, onSearch }) {
                 </div>
 
                 <div>
-                    <button
-                        className="btn btn-primary clearIcon"
-                        onClick={resetClick}>
+                    <button className="btn btn-primary clearIcon" onClick={resetClick}>
                         초기화
                     </button>
-                    <button
-                        className="btn btn-primary searchIcon"
-                        onClick={searchClick}>
+                    <button className="btn btn-primary searchIcon" onClick={searchClick}>
                         <FontAwesomeIcon icon={faMagnifyingGlass} />
                     </button>
                 </div>
