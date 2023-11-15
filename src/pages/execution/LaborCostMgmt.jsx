@@ -1,18 +1,16 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import PersonnelMgmts from "./personnelMgmt/PersonnelMgmts";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
-import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { axiosFetch } from "api/axiosFetch";
 import { PageContext } from "components/PageProvider";
 import ApprovalForm from "components/form/ApprovalForm";
+import { columns } from "constants/columns";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import ReactDataTableView from "components/DataTable/ReactDataTableView";
-import BasicDataTable from "components/DataTable/BasicDataTable";
 import { ChangePrmnPlanData } from "components/DataTable/function/ChangePrmnPlanData";
 import { columns } from "constants/columns";
 
@@ -39,7 +37,7 @@ function LaborCostMgmt() {
     const [isClicked3, setIsClicked3] = useState(false);
     const [isClicked4, setIsClicked4] = useState(false);
 
-    const [poiIdToSend, setPoiIdToSend] = useState({ poiId: "" });
+    const [poiIdToSend, setPoiIdToSend] = useState();
 
     const sendPoiId = (poiId) => {
         setPoiIdToSend(poiId);
@@ -60,6 +58,9 @@ function LaborCostMgmt() {
         setIsClicked4(!isClicked4);
     };
 
+    const [returnKeyWord, setReturnKeyWord] = useState("");
+
+    const [currentTask, setCurrentTask] = useState("인건비 조회관리");
     const [inquiryMgmt, setInquiryMgmt] = useState([]); // 인건비 조회관리
     const [saleCostView, setSaleCostView] = useState([]); //영업 인건비 띄우기
     const [pgBudgetMgmt, setPgBudgetMgmt] = useState([]); // 인건비 수주관리
@@ -82,7 +83,7 @@ function LaborCostMgmt() {
                     data[i].pecModeCode = "실행";
                     break;
                 default:
-                    data[i].pecModeCode = "";
+                    return;
             }
         }
         return data;
@@ -132,7 +133,8 @@ function LaborCostMgmt() {
         };
 
         fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
-    }, [poiIdToSend, currentTask, projectInfo.poiId]);
+        setProjectInfo((prev) => ({ ...prev, isSelected: false }));
+    }, [poiIdToSend, projectInfo.isSelected]);
 
     const fetchAllData = async (tableUrl, currentTask) => {
         const url = `/api${tableUrl}/totalListAll.do`;
@@ -231,12 +233,11 @@ function LaborCostMgmt() {
                             <div className={`hideDivRun ${isClicked ? "" : "clicked"}`}>
                                 <ReactDataTableView
                                     sendPoiId={sendPoiId}
-                                    columns={projectColumns}
+                                    columns={columns.laborCostMgmt.project}
                                     customDatas={projectItem}
                                     defaultPageSize={5}
                                     justColumn={true}
                                 />
-                                {/*<BasicDataTable columns={projectColumns} customDatas={projectItem} defaultPageSize={5} justColumn={true} />*/}
                             </div>
                             <ReactDataTable
                                 columns={columns.laborCostMgmt.inquiry}
@@ -261,7 +262,7 @@ function LaborCostMgmt() {
                             </div>
                             <ReactDataTable
                                 columns={columns.laborCostMgmt.orderPlan}
-                                flag={innerPageName === "인건비 수주관리" && isSaveFormTable}
+                                flag={currentTask === "인건비 수주관리" && isSaveFormTable}
                                 tableRef={orderPlanMgmtTable2}
                                 customDatas={pgBudgetMgmt}
                                 viewPageName="인건비 수주관리"
@@ -281,7 +282,7 @@ function LaborCostMgmt() {
                             </div>
                             <ReactDataTable
                                 columns={columns.laborCostMgmt.budget}
-                                flag={innerPageName === "인건비 예산관리" && isSaveFormTable}
+                                flag={currentTask === "인건비 예산관리" && isSaveFormTable}
                                 tableRef={orderPlanMgmtTable3}
                                 customDatas={budgetMgmt}
                                 viewPageName="인건비 예산관리"
@@ -302,7 +303,7 @@ function LaborCostMgmt() {
                             </div>
                             <ReactDataTable
                                 columns={columns.laborCostMgmt.run}
-                                flag={innerPageName === "인건비 실행관리" && isSaveFormTable}
+                                flag={currentTask === "인건비 실행관리" && isSaveFormTable}
                                 tableRef={orderPlanMgmtTable4}
                                 customDatas={runMgmt}
                                 viewPageName="인건비 실행관리"
