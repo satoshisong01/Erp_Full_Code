@@ -13,7 +13,7 @@ import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import ReactDataTableView from "components/DataTable/ReactDataTableView";
 /** 실행관리-경비관리 */
 function ExpenseMgmt() {
-    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem, viewSetPoiId } = useContext(PageContext);
+    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
 
     // const { showDetailTable } = useContext(PageContext);
     useEffect(() => {
@@ -31,6 +31,12 @@ function ExpenseMgmt() {
     const [isClicked2, setIsClicked2] = useState(false);
     const [isClicked3, setIsClicked3] = useState(false);
     const [isClicked4, setIsClicked4] = useState(false);
+
+    const [poiIdToSend, setPoiIdToSend] = useState({ poiId: "" });
+
+    const sendPoiId = (poiId) => {
+        setPoiIdToSend(poiId);
+    };
 
     const handleClick1 = () => {
         setIsClicked(!isClicked);
@@ -623,7 +629,7 @@ function ExpenseMgmt() {
         };
 
         fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
-    }, [viewSetPoiId, projectInfo.poiId, currentTask]);
+    }, [poiIdToSend, projectInfo.poiId, currentTask]);
 
     const fetchAllDataView = async (tableUrl, currentTask) => {
         const url = `/api${tableUrl}/totalListAll.do`;
@@ -663,10 +669,10 @@ function ExpenseMgmt() {
 
     const fetchAllData = async (tableUrl, currentTask) => {
         const url = `/api${tableUrl}/totalListAll.do`;
-        let requestData = { poiId: viewSetPoiId || projectInfo.poiId };
+        let requestData = { poiId: poiIdToSend || projectInfo.poiId };
         if (currentTask === "경비 조회관리") {
             //requestData 값 담기
-            requestData = { poiId: viewSetPoiId || projectInfo.poiId };
+            requestData = { poiId: poiIdToSend || projectInfo.poiId };
         } else if (currentTask === "경비 수주관리") {
             requestData = { poiId: projectInfo.poiId, modeCode: "EXDR" };
         } else if (currentTask === "경비 예산관리") {
@@ -675,7 +681,7 @@ function ExpenseMgmt() {
             requestData = { poiId: projectInfo.poiId, modeCode: "EXCU" };
         } else {
             requestData = {
-                poiId: viewSetPoiId || projectInfo.poiId,
+                poiId: poiIdToSend || projectInfo.poiId,
             };
             console.log("여긴타면안댐");
         }
@@ -726,7 +732,13 @@ function ExpenseMgmt() {
                                 </button>
                             </div>
                             <div className={`hideDivRun ${isClicked ? "" : "clicked"}`}>
-                                <ReactDataTableView columns={projectColumns} customDatas={projectItem} defaultPageSize={5} justColumn={true} />
+                                <ReactDataTableView
+                                    sendPoiId={sendPoiId}
+                                    columns={projectColumns}
+                                    customDatas={projectItem}
+                                    defaultPageSize={5}
+                                    justColumn={true}
+                                />
                             </div>
                             <ReactDataTable
                                 viewPageName="경비 조회관리"

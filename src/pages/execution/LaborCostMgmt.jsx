@@ -17,7 +17,7 @@ import { ChangePrmnPlanData } from "components/DataTable/function/ChangePrmnPlan
 
 /** 실행관리-인건비관리 */
 function LaborCostMgmt() {
-    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem, viewSetPoiId } = useContext(PageContext);
+    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
 
     useEffect(() => {
         return () => {
@@ -34,6 +34,12 @@ function LaborCostMgmt() {
     const [isClicked2, setIsClicked2] = useState(false);
     const [isClicked3, setIsClicked3] = useState(false);
     const [isClicked4, setIsClicked4] = useState(false);
+
+    const [poiIdToSend, setPoiIdToSend] = useState({ poiId: "" });
+
+    const sendPoiId = (poiId) => {
+        setPoiIdToSend(poiId);
+    };
 
     const handleClick1 = () => {
         setIsClicked(!isClicked);
@@ -486,15 +492,15 @@ function LaborCostMgmt() {
         };
 
         fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
-    }, [viewSetPoiId, currentTask, projectInfo.poiId]);
+    }, [poiIdToSend, currentTask, projectInfo.poiId]);
 
     const fetchAllData = async (tableUrl, currentTask) => {
         const url = `/api${tableUrl}/totalListAll.do`;
         //console.log(currentTask, "나오낭");
-        let requestData = { poiId: viewSetPoiId || projectInfo.poiId, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
+        let requestData = { poiId: poiIdToSend || projectInfo.poiId, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
         if (currentTask === "인건비 조회관리") {
             //requestData 값 담기
-            requestData = { poiId: viewSetPoiId, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
+            requestData = { poiId: poiIdToSend, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
         } else if (currentTask === "인건비 수주관리") {
             requestData = {
                 poiId: projectInfo.poiId,
@@ -626,7 +632,13 @@ function LaborCostMgmt() {
                                 </button>
                             </div>
                             <div className={`hideDivRun ${isClicked ? "" : "clicked"}`}>
-                                <ReactDataTableView columns={projectColumns} customDatas={projectItem} defaultPageSize={5} justColumn={true} />
+                                <ReactDataTableView
+                                    sendPoiId={sendPoiId}
+                                    columns={projectColumns}
+                                    customDatas={projectItem}
+                                    defaultPageSize={5}
+                                    justColumn={true}
+                                />
                                 {/*<BasicDataTable columns={projectColumns} customDatas={projectItem} defaultPageSize={5} justColumn={true} />*/}
                             </div>
                             <ReactDataTable

@@ -11,10 +11,11 @@ import ApprovalForm from "components/form/ApprovalForm";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import ReactDataTableView from "components/DataTable/ReactDataTableView";
 
 /** 실행관리-구매관리 */
 function PurchasingMgmt() {
-    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo } = useContext(PageContext);
+    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
 
     useEffect(() => {
         return () => {
@@ -31,6 +32,12 @@ function PurchasingMgmt() {
     const [isClicked2, setIsClicked2] = useState(false);
     const [isClicked3, setIsClicked3] = useState(false);
     const [isClicked4, setIsClicked4] = useState(false);
+
+    const [poiIdToSend, setPoiIdToSend] = useState({ poiId: "" });
+
+    const sendPoiId = (poiId) => {
+        setPoiIdToSend(poiId);
+    };
 
     const handleClick1 = () => {
         setIsClicked(!isClicked);
@@ -530,20 +537,25 @@ function PurchasingMgmt() {
         };
 
         fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
-    }, [projectInfo.poiId, currentTask]);
+    }, [poiIdToSend, projectInfo.poiId, currentTask]);
 
-    const fetchAllData = async (tableUrl) => {
+    const fetchAllData = async (tableUrl, currentTask) => {
         const url = `/api${tableUrl}/totalListAll.do`;
-        let requestData = { poiId: projectInfo.poiId };
-        if (tableUrl === "/cost/costPdOrdr") {
+        let requestData = { poiId: poiIdToSend || projectInfo.poiId };
+        if (currentTask === "경비 조회관리") {
             //requestData 값 담기
-            requestData = { poiId: projectInfo.poiId, useAt: "Y" };
+            requestData = { poiId: poiIdToSend || projectInfo.poiId };
+        } else if (currentTask === "경비 수주관리") {
+            requestData = { poiId: projectInfo.poiId, modeCode: "EXDR" };
+        } else if (currentTask === "경비 예산관리") {
+            requestData = { poiId: projectInfo.poiId, modeCode: "EXCP" };
+        } else if (currentTask === "경비 실행관리") {
+            requestData = { poiId: projectInfo.poiId, modeCode: "EXCU" };
         } else {
             requestData = {
-                poiId: projectInfo.poiId,
-                modeCode: "SLSP",
-                useAt: "Y",
+                poiId: poiIdToSend || projectInfo.poiId,
             };
+            console.log("여긴타면안댐");
         }
 
         const resultData = await axiosFetch(url, requestData);
@@ -685,7 +697,13 @@ function PurchasingMgmt() {
                                 </button>
                             </div>
                             <div className={`hideDivRun ${isClicked ? "" : "clicked"}`}>
-                                <ReactDataTable columns={projectColumns} defaultPageSize={5} justColumn={true} />
+                                <ReactDataTableView
+                                    sendPoiId={sendPoiId}
+                                    columns={projectColumns}
+                                    customDatas={projectItem}
+                                    defaultPageSize={5}
+                                    justColumn={true}
+                                />
                             </div>
                             <ReactDataTable
                                 columns={inquiryColumns}
@@ -706,7 +724,7 @@ function PurchasingMgmt() {
                                 </button>
                             </div>
                             <div className={`hideDivRun2 ${isClicked2 ? "" : "clicked"}`}>
-                                <ReactDataTable columns={projectColumns} defaultPageSize={5} justColumn={true} />
+                                <ReactDataTableView columns={projectColumns} customDatas={projectItem} defaultPageSize={5} justColumn={true} />
                             </div>
                             <ReactDataTable
                                 columns={budgetColumns}
