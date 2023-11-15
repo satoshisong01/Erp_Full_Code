@@ -8,7 +8,7 @@ import ModalPagePdiNm from "components/modal/ModalPagePdiNm";
 import ModalPageCompany from "components/modal/ModalPageCompany";
 
 const ReactDataTablePdorder = (props) => {
-    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendSelected } = props;
+    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendSelected, singleUrl } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -71,9 +71,12 @@ const ReactDataTablePdorder = (props) => {
     }, []);
 
     useEffect(() => {
-        if (customDatas) {
-            setTableData(customDatas);
+        if (customDatas && customDatas.length > 0) {
+            setTableData([...customDatas]);
             setOriginTableData([...customDatas]);
+        } else {
+            setTableData([]);
+            setOriginTableData([])
         }
     }, [customDatas]);
 
@@ -83,13 +86,16 @@ const ReactDataTablePdorder = (props) => {
             // 현재 페이지와 이전 페이지가 같지 않다면
             toggleAllRowsSelected(false);
         }
-    }, [currentPageName, innerPageName]);
+        // 현재 보는 페이지(current)가 클릭한 페이지와 같은게 없다면 return
+        if ((current !== currentPageName && current !== innerPageName) || (current !== modalPageName && current !== innerPageName)) {
+            return;
+        }
+    }, [current, currentPageName, innerPageName, modalPageName]);
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
         setIsEditing(flag);
-        if (current === currentPageName || (current === innerPageName && !flag)) {
-            //현재 페이지 이고, flag가 false일때 배열 이벤트 처리
+        if (current === currentPageName || (current === innerPageName && flag)) {
             compareData(originTableData, tableData);
         }
     }, [flag]);
@@ -245,12 +251,12 @@ const ReactDataTablePdorder = (props) => {
                 setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
                 projectInfo.poId = selectedFlatRows[selectedFlatRows.length - 1].original.poId; //품목수주
                 projectInfo.poDesc = selectedFlatRows[selectedFlatRows.length - 1].original.poDesc;
-                selectedFlatRows.length > 0 && sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
+                sendSelected && sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
         } else if(!isModalTable && (current === currentPageName || current === innerPageName)) { //모달화면이 아닐때
             setLengthSelectRow(selectedFlatRows.length);
             selectedFlatRows.length > 0 && setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
-            selectedFlatRows.length > 0 && sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
+            selectedFlatRows.length > 0 && sendSelected && sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
         }
     }, [selectedFlatRows]);
 
@@ -423,52 +429,14 @@ const ReactDataTablePdorder = (props) => {
         const index = row.index;
         const updatedTableData = [...tableData];
         updatedTableData[row.index][accessor] = value;
-
-        console.log("?? 계산을 왜 안타니?", accessor);
-        if (accessor === "byUnitPrice" || accessor === "standardMargin" || accessor === "consumerOpRate" || accessor === "byQunty") {
-            if (row.original.byUnitPrice && row.original.standardMargin && row.original.consumerOpRate && row.original.byQunty) {
-                // 1.원가(견적가) : 수량 * 원단가
-                const estimatedCost = row.original.byQunty * row.original.byUnitPrice;
-                // 2.단가 : 원가(견적가) / (1 - 사전원가기준이익율)
-                const unitPrice = division(estimatedCost, 1 - row.original.standardMargin / 100);
-                // 3.금액 : 수량 * 단가
-                const planAmount = row.original.byQunty * unitPrice;
-                // 4.소비자단가 : 단가 / 소비자산출율
-                const consumerPrice = division(unitPrice, row.original.consumerOpRate);
-                // 5.소비자금액 : 수량 * 소비자단가
-                const consumerAmount = row.original.byQunty * consumerPrice;
-                // 6.이익금 : 금액 - 원가(견적가)
-                const plannedProfits = planAmount - estimatedCost;
-                // 7.이익률 : 이익금 / 금액
-                const plannedProfitMargin = division(plannedProfits, planAmount);
-
-                updatedTableData[index]["estimatedCost"] = Math.round(estimatedCost);
-                updatedTableData[index]["unitPrice"] = Math.round(unitPrice);
-                updatedTableData[index]["planAmount"] = Math.round(planAmount);
-                updatedTableData[index]["consumerPrice"] = Math.round(consumerPrice * 100);
-                updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount * 100);
-                updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits);
-                updatedTableData[index]["plannedProfitMargin"] = Math.round(plannedProfitMargin * 100);
-            }
-        }
         // 수정된 데이터로 tableData 업데이트
         setTableData(updatedTableData);
     };
 
-    const division = (value1, value2) => {
-        if (!value1 || !value2) {
-            return 0;
-        }
-        return Math.round(value1 / value2);
-    };
-
-
-    //----------------------------데이터 추가시 보낼 데이터
-
     //-------------------------------배열 추가, 수정, 삭제
-
     const addList = async (addNewData) => {
-        const url = `/api/baseInfrm/product/prmnPlan/addList.do`;
+        if(!singleUrl) return;
+        const url = `/api${singleUrl}/addList.do`;
         const resultData = await axiosPost(url, addNewData);
         if (resultData && resultData.length > 0) {
             console.log("추가완료");
@@ -478,7 +446,8 @@ const ReactDataTablePdorder = (props) => {
         }
     };
     const updateList = async (toUpdate) => {
-        const url = `/api/baseInfrm/product/prmnPlan/editList.do`;
+        if(!singleUrl) return;
+        const url = `/api${singleUrl}/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData && resultData.length > 0) {
             console.log("수정완료");
@@ -489,7 +458,8 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const deleteList = async (removeItem) => {
-        const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
+        if(!singleUrl) return;
+        const url = `/api${singleUrl}/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         if (resultData && resultData.length > 0) {
             console.log("삭제완료");
@@ -530,52 +500,40 @@ const ReactDataTablePdorder = (props) => {
         }
     };
 
-    //인건비용임
+    //구매용
     const compareData = (originData, updatedData) => {
-        if (originData.length > updatedData.length) {
+        // const filterData = updatedData.filter((data) => data.pmpMonth); //pmpMonth가 없는 데이터 제외
+        const originDataLength = originData ? originData.length : 0;
+        const updatedDataLength = updatedData ? updatedData.length : 0;
+        if (originDataLength > updatedDataLength) {
             const updateData = updatedData;
             upDateChange(updateData);
             updateList(updateData);
+
             const originAValues = originData.map((item) => item.pmpId);
-            const extraOriginData = originAValues.slice(updatedData.length);
+            const extraOriginData = originAValues.slice(updatedDataLength);
             const combinedAValues = extraOriginData.reduce((acc, current) => acc.concat(current), []);
 
             deleteList(combinedAValues);
-        } else if (originData.length === updatedData.length) {
+
+        } else if (originDataLength === updatedDataLength) {
             const updateData = updatedData;
             upDateChange(updateData);
             updateList(updateData);
-            //setToUpdate(updatedData);
-        } else if (originData.length < updatedData.length) {
+
+        } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
             const addUpdate = [];
-            for (let i = 0; i < originData.length; i++) {
+            for (let i = 0; i < originDataLength; i++) {
                 addUpdate.push(updatedData[i]);
             }
             updateList(addUpdate);
 
-            for (let i = originData.length; i < updatedData.length; i++) {
-                const toAdd = { ...updatedData[i] };
-                delete toAdd.total;
-                delete toAdd.poiBeginDt1;
-                toAdd.useAt = "Y";
-                toAdd.deleteAt = "N";
-                //toAdd.pmpMonth = formattedDate;
-                toAdd.poiId = projectInfo.poiId;
-
-                for (let j = 1; j <= 13; j++) {
-                    if (toAdd[`pmpmmPositionCode${j}`] === null) {
-                        toAdd[`pmpmmPositionCode${j}`] = 0;
-                    }
-                }
-
-                toAdds.push(toAdd);
+            for (let i = originDataLength; i < updatedDataLength; i++) {
+                toAdds.push(updatedData[i]);
             }
             addList(toAdds);
         }
-        // else if (updatedData.length === 0){
-        //    deleteList([111])
-        //}
     };
 
     //------------------------------- 초기값과 비교하는 코드
