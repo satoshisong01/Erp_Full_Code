@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 
-export default function BasicDataTable({ columns, data, datatableRef, tableSize, subtitle, defaultPageSize, justColumn, customDatas }) {
+export default function BasicDataTable({ columns, data, datatableRef, tableSize, subtitle }) {
     const tableContainerStyle = {
         ...tableSize,
         overflowY: "auto", // 내용이 넘칠 때 세로 스크롤 생성

@@ -725,6 +725,60 @@ const ReactDataTable = (props) => {
                                                             }}
                                                         />
                                                     </div>
+                                                ) : cell.column.type === "costDateStart" ? (
+                                                    <div className="box3-1 boxDate">
+                                                        <DatePicker
+                                                            className="form-control flex-item"
+                                                            type="text"
+                                                            value={tableData[row.index].pjbgBeginDt ? tableData[row.index].pjbgBeginDt.substring(0, 7) : ""}
+                                                            ref={inputRef}
+                                                            dateFormat="yyyy-MM"
+                                                            showMonthYearPicker
+                                                            locale={ko} // 한국어로 설정
+                                                            onClick={() => toggleCalendarVisible(row.index)}
+                                                            onChange={(date) => {
+                                                                //handleDateClick(date, row.index);
+                                                                //const formatted = handleDateChange(selectedDate);
+                                                                //setFormattedDate(formatted); // 이 부분은 formattedDate 대신 pmpMonth를 업데이트하는 코드로 변경해야 함
+                                                                const formatted = handleDateChange(date);
+                                                                const updatedTableData = [...tableData];
+                                                                updatedTableData[row.index].pjbgBeginDt
+                                                                    ? (updatedTableData[row.index].pjbgBeginDt = formatted)
+                                                                    : (updatedTableData[row.index].pjbgBeginDt = formatted);
+                                                                //updatedTableData[row.index].pmpMonth2 = formatted;
+                                                                //    ? updatedTableData[row.index].pmpMonth
+                                                                //    : formatted;
+                                                                setTableData(updatedTableData);
+                                                            }}
+                                                        />
+                                                    </div>
+                                                ) : cell.column.type === "costDateEnd" ? (
+                                                    <div className="box3-1 boxDate">
+                                                        <DatePicker
+                                                            className="form-control flex-item"
+                                                            type="text"
+                                                            value={tableData[row.index].pjbgEndDt ? tableData[row.index].pjbgEndDt.substring(0, 7) : ""}
+                                                            ref={inputRef}
+                                                            dateFormat="yyyy-MM"
+                                                            showMonthYearPicker
+                                                            locale={ko} // 한국어로 설정
+                                                            onClick={() => toggleCalendarVisible(row.index)}
+                                                            onChange={(date) => {
+                                                                //handleDateClick(date, row.index);
+                                                                //const formatted = handleDateChange(selectedDate);
+                                                                //setFormattedDate(formatted); // 이 부분은 formattedDate 대신 pmpMonth를 업데이트하는 코드로 변경해야 함
+                                                                const formatted = handleDateChange(date);
+                                                                const updatedTableData = [...tableData];
+                                                                updatedTableData[row.index].pjbgEndDt
+                                                                    ? (updatedTableData[row.index].pjbgEndDt = formatted)
+                                                                    : (updatedTableData[row.index].pjbgEndDt = formatted);
+                                                                //updatedTableData[row.index].pmpMonth2 = formatted;
+                                                                //    ? updatedTableData[row.index].pmpMonth
+                                                                //    : formatted;
+                                                                setTableData(updatedTableData);
+                                                            }}
+                                                        />
+                                                    </div>
                                                 ) : cell.column.type === "select" ? (
                                                     <select
                                                         name={cell.column.id}

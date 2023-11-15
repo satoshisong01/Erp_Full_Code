@@ -420,11 +420,12 @@ function LaborCostMgmt() {
     const [budgetView, setBudgetView] = useState([]); //(실행) 예산띄우기
     const [runMgmt, setRunMgmt] = useState([]); // 인건비 실행관리
 
-    useEffect(() => {
-        console.log(pgBudgetMgmt, "pgBudgetMgmt");
-        console.log(pgBudgetView, "pgBudgetView");
-    }, [pgBudgetView, pgBudgetMgmt]);
+    //useEffect(() => {
+    //    console.log(pgBudgetMgmt, "pgBudgetMgmt");
+    //    console.log(pgBudgetView, "pgBudgetView");
+    //}, [pgBudgetView, pgBudgetMgmt]);
 
+    //인건비 수주, 예산, 실행 표기
     const mapPecModeCodeToText = (data) => {
         for (let i = 0; i < data.length; i++) {
             switch (data[i].pecModeCode) {
@@ -455,9 +456,9 @@ function LaborCostMgmt() {
             try {
                 if (currentTask === "인건비 조회관리") {
                     const data = await fetchAllData("/baseInfrm/product/prstmCost", currentTask); // 인건비 조회관리
-                    console.log(data, "불러온 조회관리 값은?");
+                    //console.log(data, "불러온 조회관리 값은?");
                     const updatedData = mapPecModeCodeToText(data);
-                    console.log(updatedData, "updatedData");
+                    //console.log(updatedData, "updatedData");
                     setInquiryMgmt(updatedData);
                     //
                 } else if (currentTask === "인건비 수주관리") {
@@ -489,7 +490,7 @@ function LaborCostMgmt() {
 
     const fetchAllData = async (tableUrl, currentTask) => {
         const url = `/api${tableUrl}/totalListAll.do`;
-        console.log(currentTask, "나오낭");
+        //console.log(currentTask, "나오낭");
         let requestData = { poiId: viewSetPoiId || projectInfo.poiId, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
         if (currentTask === "인건비 조회관리") {
             //requestData 값 담기
@@ -522,7 +523,7 @@ function LaborCostMgmt() {
             return;
         }
 
-        console.log(requestData, "서버에 넘겨줘볼까");
+        //console.log(requestData, "서버에 넘겨줘볼까");
         const resultData = await axiosFetch(url, requestData);
         if (resultData) {
             return resultData;
