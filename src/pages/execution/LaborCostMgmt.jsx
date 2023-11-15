@@ -1,18 +1,16 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import PersonnelMgmts from "./personnelMgmt/PersonnelMgmts";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
-import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { axiosFetch } from "api/axiosFetch";
 import { PageContext } from "components/PageProvider";
 import ApprovalForm from "components/form/ApprovalForm";
+import { columns } from "constants/columns";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import ReactDataTableView from "components/DataTable/ReactDataTableView";
-import BasicDataTable from "components/DataTable/BasicDataTable";
 import { ChangePrmnPlanData } from "components/DataTable/function/ChangePrmnPlanData";
 
 /** 실행관리-인건비관리 */
@@ -35,7 +33,7 @@ function LaborCostMgmt() {
     const [isClicked3, setIsClicked3] = useState(false);
     const [isClicked4, setIsClicked4] = useState(false);
 
-    const [poiIdToSend, setPoiIdToSend] = useState({ poiId: "" });
+    const [poiIdToSend, setPoiIdToSend] = useState();
 
     const sendPoiId = (poiId) => {
         setPoiIdToSend(poiId);
@@ -57,362 +55,6 @@ function LaborCostMgmt() {
     };
 
     const [returnKeyWord, setReturnKeyWord] = useState("");
-
-    const conditionList = [
-        {
-            title: "프로젝트명",
-            colName: "clCode", //컬럼명
-            type: "input",
-            value: "",
-            searchLevel: "1",
-        },
-        {
-            title: "품목그룹명",
-            colName: "clCode", //컬럼명
-            type: "input",
-            value: "",
-            searchLevel: "1",
-        },
-        {
-            title: "연월",
-            colName: "clCodeNm", //컬럼명
-            type: "input",
-            value: "",
-            searchLevel: "2",
-        },
-    ];
-
-    const projectColumns = [
-        {
-            header: "프로젝트명",
-            col: "poiNm",
-            cellWidth: "50%",
-            type: "input",
-        },
-        {
-            header: "계획인건비",
-            col: "pmpmmNum1",
-            cellWidth: "30%",
-            type: "input",
-        },
-        {
-            header: "실행인건비",
-            col: "pmpmmNum2",
-            cellWidth: "20%",
-            type: "input",
-        },
-    ];
-
-    const subColumnsGrades = [
-        //{
-        //    header: "품목그룹명",
-        //    col: "pgNm",
-        //    cellWidth: "15%",
-        //    type: "input",
-        //    options: [],
-        //},
-        { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "datepicker" },
-        { header: "M/M계", col: "total", cellWidth: "10%", type: "input" },
-        {
-            header: "인건비계",
-            col: "poiBeginDt1",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "임원",
-            col: "pmpmmPositionCode1",
-            cellWidth: "10%",
-            type: "input",
-            notView: "true",
-        },
-        {
-            header: "특급기술사",
-            col: "pmpmmPositionCode2",
-            cellWidth: "10%",
-            type: "input",
-            notView: "true",
-        },
-        {
-            header: "고급기술사",
-            col: "pmpmmPositionCode3",
-            cellWidth: "10%",
-            type: "input",
-            notView: "true",
-        },
-        {
-            header: "중급기술사",
-            col: "pmpmmPositionCode4",
-            cellWidth: "10%",
-            type: "input",
-            notView: "true",
-        },
-        {
-            header: "초급기술사",
-            col: "pmpmmPositionCode5",
-            cellWidth: "10%",
-            type: "input",
-            notView: "true",
-        },
-        {
-            header: "고급기능사",
-            col: "pmpmmPositionCode6",
-            cellWidth: "10%",
-            type: "input",
-            notView: "true",
-        },
-        {
-            header: "중급기능사",
-            col: "pmpmmPositionCode7",
-            cellWidth: "10%",
-            type: "input",
-            notView: "true",
-        },
-        {
-            header: "부장",
-            col: "pmpmmPositionCode8",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "차장",
-            col: "pmpmmPositionCode9",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "과장",
-            col: "pmpmmPositionCode10",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "대리",
-            col: "pmpmmPositionCode11",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "주임",
-            col: "pmpmmPositionCode12",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "사원",
-            col: "pmpmmPositionCode13",
-            cellWidth: "10%",
-            type: "input",
-        },
-    ];
-
-    const inquiryColumns = [
-        {
-            header: "구분코드",
-            col: "pecModeCode",
-            cellWidth: "10%",
-        },
-        {
-            header: "품목그룹명",
-            col: "pgNm",
-            cellWidth: "15%",
-            //type: "button",
-            //options: [],
-        },
-        {
-            header: "인력",
-            col: "pecManpower",
-            cellWidth: "10%",
-        },
-        {
-            header: "직급",
-            col: "pecPosition",
-            cellWidth: "10%",
-            type: "input",
-            notView: "true",
-        },
-        {
-            header: "실행(M/M)",
-            col: "pecMm",
-            cellWidth: "10%",
-        },
-        {
-            header: "시작일",
-            col: "pecStartdate",
-            cellWidth: "10%",
-            // type: "datepicker"
-        },
-        {
-            header: "종료일",
-            col: "pecEnddate",
-            cellWidth: "10%",
-            // type: "datepicker"
-        },
-        {
-            header: "금액",
-            col: "pecUnitPrice111",
-            cellWidth: "10%",
-        },
-        {
-            header: "투입률",
-            col: "pmpmmPositionCode1",
-            cellWidth: "10%",
-        },
-        {
-            header: "누계율",
-            col: "pmpmmPositionCode2",
-            cellWidth: "10%",
-        },
-    ];
-
-    const orderPlanColumns = [
-        {
-            header: "품목그룹명",
-            col: "pgNm",
-            cellWidth: "25%",
-            type: "button",
-            options: [],
-        },
-        { header: "수주수량(M/M)", col: "pecMm", cellWidth: "25%", type: "input" },
-        {
-            header: "단가",
-            col: "pecUnitPrice",
-            cellWidth: "25%",
-            type: "input",
-        },
-        {
-            header: "금액",
-            cellWidth: "25%",
-        },
-    ];
-
-    const budgetColumns = [
-        {
-            header: "품목그룹명",
-            col: "pgNm",
-            cellWidth: "25%",
-            type: "button",
-            options: [],
-        },
-        { header: "인력", col: "pecManpower", cellWidth: "25%", type: "input" },
-        {
-            header: "직급",
-            col: "pecPosition",
-            cellWidth: "10%",
-            type: "select",
-            options: [
-                { value: "임원", label: "임원" },
-                { value: "특급기술사", label: "특급기술사" },
-                { value: "고급기술사", label: "고급기술사" },
-                { value: "중급기술사", label: "중급기술사" },
-                { value: "초급기술사", label: "초급기술사" },
-                { value: "고급기능사", label: "고급기능사" },
-                { value: "중급기능사", label: "중급기능사" },
-                { value: "부장", label: "부장" },
-                { value: "차장", label: "차장" },
-                { value: "과장", label: "과장" },
-                { value: "대리", label: "대리" },
-                { value: "주임", label: "주임" },
-                { value: "사원", label: "사원" },
-            ],
-        },
-        {
-            header: "예산(M/M)",
-            col: "pecMm",
-            cellWidth: "25%",
-            type: "input",
-        },
-        {
-            header: "금액",
-            col: "pecUnitPrice222",
-            cellWidth: "40%",
-            type: "input",
-        },
-    ];
-
-    const budgetViewColumns = [
-        {
-            header: "품목그룹명",
-            col: "pgNm",
-            cellWidth: "25%",
-        },
-        { header: "수주수량(M/M)", col: "pecMm", cellWidth: "25%" },
-        {
-            header: "단가",
-            col: "pecUnitPrice",
-            cellWidth: "25%",
-        },
-        {
-            header: "금액",
-            col: "pmpmmNum1",
-            cellWidth: "25%",
-        },
-    ];
-
-    const runColumns = [
-        {
-            header: "품목그룹명",
-            col: "pgNm",
-            cellWidth: "15%",
-            type: "button",
-            options: [],
-        },
-        { header: "인력", col: "pecManpower", cellWidth: "25%", type: "input" },
-        {
-            header: "직급",
-            col: "pecPosition",
-            cellWidth: "10%",
-            type: "select",
-            options: [
-                { value: "임원", label: "임원" },
-                { value: "특급기술사", label: "특급기술사" },
-                { value: "고급기술사", label: "고급기술사" },
-                { value: "중급기술사", label: "중급기술사" },
-                { value: "초급기술사", label: "초급기술사" },
-                { value: "고급기능사", label: "고급기능사" },
-                { value: "중급기능사", label: "중급기능사" },
-                { value: "부장", label: "부장" },
-                { value: "차장", label: "차장" },
-                { value: "과장", label: "과장" },
-                { value: "대리", label: "대리" },
-                { value: "주임", label: "주임" },
-                { value: "사원", label: "사원" },
-            ],
-        },
-        {
-            header: "실행(M/M)",
-            col: "pecMm",
-            cellWidth: "10%",
-            type: "input",
-        },
-        {
-            header: "시작일",
-            col: "pecStartdate",
-            cellWidth: "10%",
-            type: "datepicker",
-        },
-        {
-            header: "종료일",
-            col: "pecEnddate",
-            cellWidth: "10%",
-            type: "datepicker",
-        },
-        {
-            header: "금액",
-            col: "pecUnitPrice111",
-            cellWidth: "10%",
-        },
-        {
-            header: "투입률",
-            col: "pmpmmPositionCode1",
-            cellWidth: "10%",
-        },
-        {
-            header: "누계율",
-            col: "pmpmmPositionCode2",
-            cellWidth: "10%",
-        },
-    ];
 
     const [currentTask, setCurrentTask] = useState("인건비 조회관리");
     const [inquiryMgmt, setInquiryMgmt] = useState([]); // 인건비 조회관리
@@ -444,7 +86,8 @@ function LaborCostMgmt() {
                 case "PDVSN03":
                     data[i].pecModeCode = "실행";
                     break;
-                // 다른 경우에 대한 처리를 추가할 수도 있습니다.
+                default:
+                    return;
             }
         }
         return data;
@@ -492,7 +135,8 @@ function LaborCostMgmt() {
         };
 
         fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
-    }, [poiIdToSend, currentTask, projectInfo.poiId]);
+        setProjectInfo((prev) => ({ ...prev, isSelected: false }));
+    }, [poiIdToSend, projectInfo.isSelected]);
 
     const fetchAllData = async (tableUrl, currentTask) => {
         const url = `/api${tableUrl}/totalListAll.do`;
@@ -589,16 +233,6 @@ function LaborCostMgmt() {
 
     return (
         <>
-            {/*<Location pathList={locationPath.LaborCostMgmt} />*/}
-            {/*<ReactDataTable columns={columns} suffixUrl="/baseInfrm/product/prmn" detailUrl="/" />*/}
-            {/* <DataTable
-                returnKeyWord={returnKeyWord}
-                columns={columns}
-                suffixUrl="/system/code"
-                currentPage="clCode"
-                addBtn={addBtn}
-            /> */}
-            {/* <PersonnelMgmts /> */}
             <Location pathList={locationPath.LaborCostMgmt} />
             <div className="common_board_style mini_board_2">
                 <ul className="tab">
@@ -616,16 +250,12 @@ function LaborCostMgmt() {
                     <li onClick={() => changeTabs("인건비 실행관리")}>
                         <a href="#인건비 실행관리">인건비 실행관리</a>
                     </li>
-                    {/* <li onClick={() => changeTabs("기업이윤")}><a href="#기업이윤">기업이윤</a></li> */}
-                    {/* <li onClick={() => changeTabs("일반관리비")}><a href="#일반관리비">일반관리비</a></li>
-                    <li onClick={() => changeTabs("네고")}><a href="#네고">네고</a></li> */}
                 </ul>
 
                 <div className="list">
                     <div className="first">
                         <ul>
-                            <SearchList conditionList={conditionList} onSearch={handleReturn} />
-                            {/*<ApprovalForm title={" 프로젝트 목록 " + currentTask}>*/}
+                            <SearchList conditionList={columns.laborCostMgmt.condition} onSearch={handleReturn} />
                             <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick1}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked ? "" : "clicked"}`} icon={faArrowUp} />
@@ -634,22 +264,20 @@ function LaborCostMgmt() {
                             <div className={`hideDivRun ${isClicked ? "" : "clicked"}`}>
                                 <ReactDataTableView
                                     sendPoiId={sendPoiId}
-                                    columns={projectColumns}
+                                    columns={columns.laborCostMgmt.project}
                                     customDatas={projectItem}
                                     defaultPageSize={5}
                                     justColumn={true}
                                 />
-                                {/*<BasicDataTable columns={projectColumns} customDatas={projectItem} defaultPageSize={5} justColumn={true} />*/}
                             </div>
                             <ReactDataTable
-                                columns={inquiryColumns}
+                                columns={columns.laborCostMgmt.inquiry}
                                 flag={false}
                                 testTask={true}
                                 tableRef={orderPlanMgmtTable1}
                                 customDatas={inquiryMgmt}
                                 viewPageName="인건비 조회관리"
                             />
-                            {/*</ApprovalForm>*/}
                         </ul>
                     </div>
                     <div className="second">
@@ -661,10 +289,10 @@ function LaborCostMgmt() {
                                 </button>
                             </div>
                             <div className={`hideDivRun2 ${isClicked2 ? "" : "clicked"}`}>
-                                <ReactDataTableView columns={subColumnsGrades} customDatas={saleCostView} defaultPageSize={5} justColumn={true} />
+                                <ReactDataTableView columns={columns.laborCostMgmt.sub} customDatas={saleCostView} defaultPageSize={5} />
                             </div>
                             <ReactDataTable
-                                columns={orderPlanColumns}
+                                columns={columns.laborCostMgmt.orderPlan}
                                 flag={currentTask === "인건비 수주관리" && isSaveFormTable}
                                 tableRef={orderPlanMgmtTable2}
                                 customDatas={pgBudgetMgmt}
@@ -681,10 +309,10 @@ function LaborCostMgmt() {
                                 </button>
                             </div>
                             <div className={`hideDivRun3 ${isClicked3 ? "" : "clicked"}`}>
-                                <ReactDataTableView columns={budgetViewColumns} customDatas={pgBudgetView} defaultPageSize={5} justColumn={true} />
+                                <ReactDataTableView columns={columns.laborCostMgmt.budgetView} customDatas={pgBudgetView} defaultPageSize={5} />
                             </div>
                             <ReactDataTable
-                                columns={budgetColumns}
+                                columns={columns.laborCostMgmt.budget}
                                 flag={currentTask === "인건비 예산관리" && isSaveFormTable}
                                 tableRef={orderPlanMgmtTable3}
                                 customDatas={budgetMgmt}
@@ -702,10 +330,10 @@ function LaborCostMgmt() {
                                 </button>
                             </div>
                             <div className={`hideDivRun4 ${isClicked4 ? "" : "clicked"}`}>
-                                <ReactDataTableView columns={budgetColumns} customDatas={budgetView} defaultPageSize={5} justColumn={true} />
+                                <ReactDataTableView columns={columns.laborCostMgmt.budget} customDatas={budgetView} defaultPageSize={5} />
                             </div>
                             <ReactDataTable
-                                columns={runColumns}
+                                columns={columns.laborCostMgmt.run}
                                 flag={currentTask === "인건비 실행관리" && isSaveFormTable}
                                 tableRef={orderPlanMgmtTable4}
                                 customDatas={runMgmt}
