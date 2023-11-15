@@ -4,16 +4,13 @@ import { useTable, usePagination, useSortBy } from "react-table";
 import { PageContext } from "components/PageProvider";
 
 const ReactDataTableView = (props) => {
-    const { columns, suffixUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList } = props;
-    const { prevCurrentPageName, innerPageName, prevInnerPageName, setCurrentTable, currentPageName, projectInfo, setViewSetPoiId } = useContext(PageContext);
+    const { columns, suffixUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendPoiId } = props;
+    const { prevCurrentPageName, innerPageName, prevInnerPageName, setCurrentTable, currentPageName, projectInfo } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
     const pageSizeOptions = [5, 10, 15, 20, 30, 50, 100];
     const [current, setCurrent] = useState("");
     const [selectedRowIndex, setSelectedRowIndex] = useState(-1);
-
-    // 클릭한 row의 poiId를 저장하는 변수
-    const [selectedPoiId, setSelectedPoiId] = useState(null);
 
     useEffect(() => {
         if (suffixUrl) {
@@ -65,14 +62,9 @@ const ReactDataTableView = (props) => {
         const dataIndex = pageIndex * pageSize + rowIndex;
 
         const clickedPoiId = tableData[dataIndex]?.poiId;
-
-        setSelectedPoiId(clickedPoiId);
+        sendPoiId(clickedPoiId);
         setSelectedRowIndex(rowIndex);
     };
-
-    useEffect(() => {
-        setViewSetPoiId(selectedPoiId);
-    }, [selectedPoiId]);
 
     const {
         getTableProps,

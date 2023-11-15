@@ -39,6 +39,12 @@ function LaborCostMgmt() {
     const [isClicked3, setIsClicked3] = useState(false);
     const [isClicked4, setIsClicked4] = useState(false);
 
+    const [poiIdToSend, setPoiIdToSend] = useState({ poiId: "" });
+
+    const sendPoiId = (poiId) => {
+        setPoiIdToSend(poiId);
+    };
+
     const handleClick1 = () => {
         setIsClicked(!isClicked);
     };
@@ -126,11 +132,12 @@ function LaborCostMgmt() {
         };
 
         fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
-    }, [projectInfo.isSelected]);
+    }, [poiIdToSend, currentTask, projectInfo.poiId]);
 
-    /* 최초 조회 */
-    const fetchAllData = async (url, currentTask) => {
-        let requestData = { poiId: projectInfo.poiId, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
+    const fetchAllData = async (tableUrl, currentTask) => {
+        const url = `/api${tableUrl}/totalListAll.do`;
+        //console.log(currentTask, "나오낭");
+        let requestData = { poiId: poiIdToSend || projectInfo.poiId, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
         if (currentTask === "인건비 조회관리") {
             requestData = { ...requestData, poiId: viewSetPoiId };
         } else if (currentTask === "인건비 수주관리") {
@@ -223,10 +230,13 @@ function LaborCostMgmt() {
                             </div>
                             <div className={`hideDivRun ${isClicked ? "" : "clicked"}`}>
                                 <ReactDataTableView
-                                    columns={columns.laborCostMgmt.project}
+                                    sendPoiId={sendPoiId}
+                                    columns={projectColumns}
                                     customDatas={projectItem}
                                     defaultPageSize={5}
+                                    justColumn={true}
                                 />
+                                {/*<BasicDataTable columns={projectColumns} customDatas={projectItem} defaultPageSize={5} justColumn={true} />*/}
                             </div>
                             <ReactDataTable
                                 columns={columns.laborCostMgmt.inquiry}

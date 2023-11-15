@@ -47,7 +47,6 @@ export function PageProvider({ children }) {
 
     const [saveSaleManCost, setSaveSaleManCost] = useState([]);
     const [isCancelTable, setIsCancelTable] = useState(false); // 테이블 초기값으로 돌리기
-    const [viewSetPoiId, setViewSetPoiId] = useState({ poiId: "" }); // 뷰페이지에서 선택한 poiId
 
     const contextValue = {
         isOpenModalPgNm,
@@ -111,9 +110,6 @@ export function PageProvider({ children }) {
         setIsOpenModalCompany,
         saveCompany,
         setSaveCompany,
-
-        viewSetPoiId,
-        setViewSetPoiId,
 
         saveSaleManCost,
         setSaveSaleManCost,
