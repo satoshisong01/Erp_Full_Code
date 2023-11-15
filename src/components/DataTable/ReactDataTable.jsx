@@ -129,7 +129,7 @@ const ReactDataTable = (props) => {
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
         setIsEditing(flag);
-        if (current === currentPageName || (current === innerPageName && flag)) {
+        if (current === currentPageName || (current === innerPageName && !flag)) {
             compareData(originTableData, tableData);
         }
     }, [flag]);
@@ -299,7 +299,7 @@ const ReactDataTable = (props) => {
     const onCLickRow = (row) => {
         toggleRowSelected(row.id);
         if (row.original.poiId) {
-            setProjectInfo({poiId: row.original.poiId})
+            setProjectInfo((prev) => ({...prev, poiId: row.original.poiId}))
         }
     };
 

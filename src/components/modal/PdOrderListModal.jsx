@@ -59,8 +59,7 @@ export default function PdOrderListModal({onClose}) {
             setRow(value);
         }
         if(value === "close") {
-            setProjectInfo(prev => ({...prev, poId: row.poId, poDesc: row.poDesc}))
-            console.log("ProjectInfo:", projectInfo);
+            setProjectInfo(prev => ({...prev, poDesc: row.poDesc}))
             onClose();
         }
     }

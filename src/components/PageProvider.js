@@ -8,7 +8,7 @@ export const PageContext = createContext();
  */
 export function PageProvider({ children }) {
     const [nameOfButton, setNameOfButton] = useState(""); // 클릭된 데이터 테이블의 CRUD 버튼 이름
-    const [isSaveFormTable, setIsSaveFormTable] = useState(false); // row 수정 테이블 저장(true:버튼없음), 수정(false:버튼생성) 플래그
+    const [isSaveFormTable, setIsSaveFormTable] = useState(true); // 버튼 on/off, false일때 저장 실행
     const [newRowData, setNewRowData] = useState({}); // 외부에서 추가된 table row data (수주등록, 팝업으로 추가)
     const [searchData, setSearchData] = useState(""); // 검색 조건
 

@@ -62,8 +62,9 @@ const ReactDataTableURL = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
+        console.log("flag:", flag, "current === innerPageName? ", current === innerPageName);
         setIsEditing(flag);
-        if (current === currentPageName || (current === innerPageName && flag)) {
+        if (current === currentPageName || (current === innerPageName && !flag)) {
             compareData(originTableData, tableData);
         }
     }, [flag]);

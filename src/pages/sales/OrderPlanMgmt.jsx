@@ -13,7 +13,7 @@ import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 
 /** 영업관리-수주계획관리 */
 function OrderPlanMgmt() {
-    const { isSaveFormTable, projectInfo, setProjectInfo, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName } = useContext(PageContext);
+    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName } = useContext(PageContext);
     const orderPlanMgmtTable1 = useRef(null);
     const orderPlanMgmtTable2 = useRef(null);
     const orderPlanMgmtTable3 = useRef(null);
@@ -34,7 +34,6 @@ function OrderPlanMgmt() {
         };
     }, []);
     
-
     useEffect(() => {
         if(projectInfo.isSelected) { //프로젝트 모달창에서 선택 했을 때
             fetchAllData();
@@ -43,6 +42,9 @@ function OrderPlanMgmt() {
     }, [projectInfo.isSelected]);
 
     const changeTabs = (task) => {
+        if (task !== innerPageName) { //다른 페이지의 버튼 변경 막기
+            setIsSaveFormTable(true);
+        }
         setInnerPageName((prev) => {
             setCurrentPageName("");
             setPrevInnerPageName(prev);
@@ -87,7 +89,6 @@ function OrderPlanMgmt() {
     }
 
     const fetchAllData = async () => {
-        console.log("orderPlanMgmt fetchAllData()");
         try {
             let requestData = { poiId: projectInfo.poiId, useAt: "Y" };
             if (innerPageName === "인건비") {
@@ -204,7 +205,7 @@ function OrderPlanMgmt() {
                                 </div>
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.labor}
-                                    flag={innerPageName === "인건비" && isSaveFormTable}
+                                    flag={innerPageName === "인건비" && isSaveFormTable} 
                                     tableRef={orderPlanMgmtTable1}
                                     customDatas={prmnPlanDatas}
                                     viewPageName="인건비"

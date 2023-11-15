@@ -8,7 +8,7 @@ import ModalPagePdiNm from "components/modal/ModalPagePdiNm";
 import ModalPageCompany from "components/modal/ModalPageCompany";
 
 const ReactDataTablePdorder = (props) => {
-    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendSelected, singleUrl } = props;
+    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendSelected, singleUrl, sendToParentsAdd } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -95,7 +95,7 @@ const ReactDataTablePdorder = (props) => {
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
         setIsEditing(flag);
-        if (current === currentPageName || (current === innerPageName && flag)) {
+        if (current === currentPageName || (current === innerPageName && !flag)) {
             compareData(originTableData, tableData);
         }
     }, [flag]);
@@ -430,13 +430,49 @@ const ReactDataTablePdorder = (props) => {
         const updatedTableData = [...tableData];
         updatedTableData[row.index][accessor] = value;
         // 수정된 데이터로 tableData 업데이트
+        if (accessor === "byUnitPrice" || accessor === "standardMargin" || accessor === "consumerOpRate" || accessor === "byQunty") {
+            if (row.original.byUnitPrice && row.original.standardMargin && row.original.consumerOpRate && row.original.byQunty) {
+                // 1.원가(견적가) : 수량 * 원단가
+                const estimatedCost = row.original.byQunty * row.original.byUnitPrice;
+                // 2.단가 : 원가(견적가) / (1 - 사전원가기준이익율)
+                const unitPrice = division(estimatedCost, 1 - row.original.standardMargin / 100);
+                // 3.금액 : 수량 * 단가
+                const planAmount = row.original.byQunty * unitPrice;
+                // 4.소비자단가 : 단가 / 소비자산출율
+                const consumerPrice = division(unitPrice, row.original.consumerOpRate);
+                // 5.소비자금액 : 수량 * 소비자단가
+                const consumerAmount = row.original.byQunty * consumerPrice;
+                // 6.이익금 : 금액 - 원가(견적가)
+                const plannedProfits = planAmount - estimatedCost;
+                // 7.이익률 : 이익금 / 금액
+                const plannedProfitMargin = division(plannedProfits, planAmount);
+
+                updatedTableData[index]["estimatedCost"] = Math.round(estimatedCost);
+                updatedTableData[index]["unitPrice"] = Math.round(unitPrice);
+                updatedTableData[index]["planAmount"] = Math.round(planAmount);
+                updatedTableData[index]["consumerPrice"] = Math.round(consumerPrice * 100);
+                updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount * 100);
+                updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits);
+                updatedTableData[index]["plannedProfitMargin"] = Math.round(plannedProfitMargin * 100);
+            }
+        }
         setTableData(updatedTableData);
+    };
+
+    const division = (value1, value2) => {
+        if (!value1 || !value2) {
+            return 0;
+        }
+        return Math.round(value1 / value2);
     };
 
     //-------------------------------배열 추가, 수정, 삭제
     const addList = async (addNewData) => {
+        // sendToParentsAdd(addNewData);//구매
+        console.log("addList: ", addNewData);
         if(!singleUrl) return;
         const url = `/api${singleUrl}/addList.do`;
+        console.log("url: ", url);
         const resultData = await axiosPost(url, addNewData);
         if (resultData && resultData.length > 0) {
             console.log("추가완료");

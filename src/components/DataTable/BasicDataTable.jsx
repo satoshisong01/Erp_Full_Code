@@ -20,7 +20,7 @@ export default function BasicDataTable({ columns, data, datatableRef, tableSize,
                 <table className="table-content" ref={datatableRef}>
                     <thead style={theadStyle}>
                         <tr className="table-row table-header">
-                            {colums.map((column, index) => (
+                            {columns.map((column, index) => (
                                 <th key={index} className={column.className}>
                                     {column.header}
                                 </th>
@@ -31,7 +31,7 @@ export default function BasicDataTable({ columns, data, datatableRef, tableSize,
                         {data.map((rowData, rowIndex) => (
                             <tr key={rowIndex} className="table-row">
                                 {rowData.data.map((cellData, colIndex) => (
-                                    <td key={colIndex} className={`${colums[colIndex].className} ${rowData.className[colIndex]}`} style={{ height: 26 }}>
+                                    <td key={colIndex} className={`${columns[colIndex].className} ${rowData.className[colIndex]}`} style={{ height: 26 }}>
                                         {typeof cellData === "number" ? cellData.toLocaleString() : cellData}
                                     </td>
                                 ))}
