@@ -5,7 +5,7 @@ import { PageContext } from "components/PageProvider";
 import ModalPageCompany from "components/modal/ModalPageCompany";
 
 const ReactDataTableURL = (props) => {
-    const { columns, flag, customDatas, defaultPageSize, tableRef, viewPageName, singleUrl, customDatasRefresh } = props;
+    const { flag, columns, customDatas, defaultPageSize, tableRef, viewPageName, singleUrl, customDatasRefresh } = props;
     const {
         prevCurrentPageName,
         innerPageName,
@@ -19,6 +19,7 @@ const ReactDataTableURL = (props) => {
         setIsOpenModalCompany,
         projectCompany,
         setProjectCompany,
+        isSaveFormTable,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -62,9 +63,8 @@ const ReactDataTableURL = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        console.log("flag:", flag, "current === innerPageName? ", current === innerPageName);
         setIsEditing(flag);
-        if (current === currentPageName || (current === innerPageName && !flag)) {
+        if (current === currentPageName || (current === innerPageName && !isSaveFormTable)) {
             compareData(originTableData, tableData);
         }
     }, [flag]);

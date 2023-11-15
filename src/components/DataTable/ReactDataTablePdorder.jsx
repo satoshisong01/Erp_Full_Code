@@ -36,11 +36,10 @@ const ReactDataTablePdorder = (props) => {
         isOpenModalCompany,
         setProjectCompany,
         setIsOpenModalCompany,
-        companyList,
-        pdiNmList,
         isModalTable,
         modalPageName,
-        setModalLengthSelectRow
+        setModalLengthSelectRow,
+        isSaveFormTable
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -95,7 +94,7 @@ const ReactDataTablePdorder = (props) => {
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
         setIsEditing(flag);
-        if (current === currentPageName || (current === innerPageName && !flag)) {
+        if (current === currentPageName || (current === innerPageName && !isSaveFormTable)) {
             compareData(originTableData, tableData);
         }
     }, [flag]);
@@ -469,7 +468,6 @@ const ReactDataTablePdorder = (props) => {
     //-------------------------------배열 추가, 수정, 삭제
     const addList = async (addNewData) => {
         // sendToParentsAdd(addNewData);//구매
-        console.log("addList: ", addNewData);
         if(!singleUrl) return;
         const url = `/api${singleUrl}/addList.do`;
         console.log("url: ", url);
