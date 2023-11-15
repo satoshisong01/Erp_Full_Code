@@ -16,8 +16,8 @@ function PopupButton({ targetUrl, data }) {
         window.open(url, "newWindow", windowFeatures);
     };
 
-    const { lengthSelectRow } = useContext(PageContext)
-    const [disabled, setDisabled] = useState(true);
+    const [disabled, setDisabled] = useState(false);
+    const {lengthSelectRow} = useContext(PageContext)
 
     useEffect(() => {
         if(lengthSelectRow && lengthSelectRow === 1) {

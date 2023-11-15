@@ -6,7 +6,8 @@ import { PageContext } from "components/PageProvider";
 export default function ModalPage({onClose}) {
     const { projectItem, setProjectInfo } = useContext(PageContext);
     function handleItemClick(poiId, poiNm, poiCode, poiVersion, poId) {
-        setProjectInfo({ poiId, poiNm, poiCode, poiVersion, poId });
+        setProjectInfo({ poiId, poiNm, poiCode, poiVersion, poId, isSelected: true });
+        onClose();
     }
 
     return (

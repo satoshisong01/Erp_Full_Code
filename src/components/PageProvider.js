@@ -8,13 +8,12 @@ export const PageContext = createContext();
  */
 export function PageProvider({ children }) {
     const [nameOfButton, setNameOfButton] = useState(""); // 클릭된 데이터 테이블의 CRUD 버튼 이름
-    const [isSaveFormTable, setIsSaveFormTable] = useState(true); // row 수정 테이블 저장, 수정 플래그
+    const [isSaveFormTable, setIsSaveFormTable] = useState(true); // 버튼 on/off, false일때 저장 실행
     const [newRowData, setNewRowData] = useState({}); // 외부에서 추가된 table row data (수주등록, 팝업으로 추가)
     const [searchData, setSearchData] = useState(""); // 검색 조건
-    const [openModal, setOpenModal] = useState({ type: "", isOpen: false }); // 모달창 open 조건  // type: add, modify
 
     const [projectItem, setProjectItem] = useState([]); //프로젝트 id, 이름, 코드 저장(프로젝트 수주발주)
-    const [projectInfo, setProjectInfo] = useState({ poiId: "", poiNm: "", poiCode: "", poiVersion: "" }); // 선택한 프로젝트 이름, id,코드,버전 저장
+    const [projectInfo, setProjectInfo] = useState({ poiId: "", poiNm: "", poiCode: "", poiVersion: "", isSelected: false }); // 선택한 프로젝트 이름, id,코드,버전 저장
 
     const [pgNmList, setPgNmList] = useState([]); // 품목그룹 ID, 품목그룹명 저장
     const [projectPgNm, setProjectPgNm] = useState({ pgNm: "", pgId: "" }); // 클릭한 품목그룹명, 품목그룹id 저장
@@ -37,7 +36,6 @@ export function PageProvider({ children }) {
     const [returnKeyWordPdiNm, setReturnKeyWordPdiNm] = useState(""); //pdiNm검색어 저장
     const [isOpenModalPdiNm, setIsOpenModalPdiNm] = useState(false);
 
-    // const [isOpenModal, setIsOpenModal] = useState(false); // 팝업 flag
     const [currentPageName, setCurrentPageName] = useState(""); // tab 현재페이지
     const [prevCurrentPageName, setPrevCurrentPageName] = useState(""); // tab 이전페이지
     const [innerPageName, setInnerPageName] = useState(""); // snbLabel과 같은 역할. 컴포넌트 안의 탭 라벨
@@ -52,8 +50,6 @@ export function PageProvider({ children }) {
     const [viewSetPoiId, setViewSetPoiId] = useState({ poiId: "" }); // 뷰페이지에서 선택한 poiId
 
     const contextValue = {
-        // openModal,
-        // setOpenModal,
         isOpenModalPgNm,
         setIsOpenModalPgNm,
         returnKeyWord,
@@ -78,8 +74,6 @@ export function PageProvider({ children }) {
         setProjectInfo,
         currentTable,
         setCurrentTable,
-        // isOpenModal,
-        // setIsOpenModal,
         currentPageName,
         setCurrentPageName,
         prevCurrentPageName,
