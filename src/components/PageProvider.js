@@ -28,7 +28,7 @@ export function PageProvider({ children }) {
 
     const [saveCompany, setSaveCompany] = useState({ cltNm: "", esntlId: "", esntlNm: "" }); // 선택한 id 저장
     const [companyList, setCompanyList] = useState([]); // 회사명 선택
-    const [projectCompany, setProjectCompany] = useState({ esntlId: "", companyId: "" }); // 선택한 id 저장
+    const [companyInfo, setCompanyInfo] = useState({ esntlId: "", companyId: "" }); // 선택한 id 저장
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
 
     const [addPdiNm, setAddPdiNm] = useState("");
@@ -104,8 +104,8 @@ export function PageProvider({ children }) {
 
         companyList,
         setCompanyList,
-        projectCompany,
-        setProjectCompany,
+        companyInfo,
+        setCompanyInfo,
         isOpenModalCompany,
         setIsOpenModalCompany,
         saveCompany,

@@ -17,8 +17,7 @@ const ReactDataTableURL = (props) => {
         projectInfo,
         isOpenModalCompany,
         setIsOpenModalCompany,
-        projectCompany,
-        setProjectCompany,
+        companyInfo,
         isSaveFormTable,
     } = useContext(PageContext);
 
@@ -45,7 +44,7 @@ const ReactDataTableURL = (props) => {
             setOriginTableData([...customDatas]);
         } else {
             setTableData([]);
-            setOriginTableData([])
+            setOriginTableData([]);
         }
     }, [customDatas]);
 
@@ -103,8 +102,8 @@ const ReactDataTableURL = (props) => {
     const [prevDataBuket, setPrevDataBuket] = useState({});
 
     useEffect(() => {
-        setDataBuket(projectCompany.esntlId);
-    }, [projectCompany]);
+        setDataBuket(companyInfo.esntlId);
+    }, [companyInfo]);
 
     const setValueData = (rowIndex) => {
         setIsOpenModalCompany(true);
@@ -126,7 +125,7 @@ const ReactDataTableURL = (props) => {
 
                 // dataBuket 값을 업데이트할 때 prevDataBuket도 업데이트
                 setPrevDataBuket(dataBuket);
-                setProjectCompany("");
+                //setCompanyInfo("");
             }
         }
     }, [isOpenModalCompany, dataBuket, rowIndex, tableData, prevDataBuket]);
@@ -169,9 +168,7 @@ const ReactDataTableURL = (props) => {
         usePagination,
         useRowSelect,
         (hooks) => {
-            hooks.visibleColumns.push((columns) => [
-                ...columns,
-            ]);
+            hooks.visibleColumns.push((columns) => [...columns]);
         }
     );
 
@@ -330,23 +327,21 @@ const ReactDataTableURL = (props) => {
             const delListTest = [];
             for (let i = updatedDataLength; i < originDataLength; i++) {
                 delList.push(originData[i].pjbgId);
-                delListTest.push(originData[i])
+                delListTest.push(originData[i]);
             }
             deleteItem(delList); //삭제
-
         } else if (originDataLength === updatedDataLength) {
             updateItem(filterData); //수정
-
         } else if (originDataLength < updatedDataLength) {
             const updateList = [];
-            
-            for (let i = 0; i < originDataLength; i++) { 
+
+            for (let i = 0; i < originDataLength; i++) {
                 updateList.push(filterData[i]);
             }
             updateItem(updateList); //수정
-            
+
             const addList = [];
-            for (let i = originDataLength; i < updatedDataLength; i++) { 
+            for (let i = originDataLength; i < updatedDataLength; i++) {
                 addList.push(filterData[i]);
             }
             addItem(addList); //추가
@@ -425,10 +420,7 @@ const ReactDataTableURL = (props) => {
                                     }
 
                                     return (
-                                        <td
-                                            {...cell.getCellProps()}
-                                            className={cellIndex === 0 ? "first-column" : "other-column"}
-                                        >
+                                        <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"}>
                                             {cell.column.id === "selection" ? (
                                                 cell.render("Cell")
                                             ) : isEditing ? (
@@ -466,7 +458,7 @@ const ReactDataTableURL = (props) => {
                                                             name={cell.column.id}
                                                             onClick={() => setValueData(rowIndex)}
                                                             type="text"
-                                                            placeholder={projectCompany.esntlId ? projectCompany.esntlId : `거래처명을 선택해 주세요.`}
+                                                            placeholder={`거래처명을 선택해 주세요.`}
                                                             value={tableData[rowIndex].esntlId}
                                                             onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
                                                             readOnly

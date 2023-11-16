@@ -142,11 +142,10 @@ const ReactDataTableView = (props) => {
                     {page.map((row, rowIndex) => {
                         prepareRow(row);
                         const isRowSelected = rowIndex === selectedRowIndex;
-
                         return (
                             <tr
                                 {...row.getRowProps()}
-                                onClick={() => onRowClick(rowIndex)}
+                                onClick={() => sendPoiId && onRowClick(rowIndex)} // onClick 핸들러 변경
                                 style={{
                                     color: isRowSelected ? "#0465BE" : "inherit",
                                     fontSize: isRowSelected ? "14px" : "inherit",
