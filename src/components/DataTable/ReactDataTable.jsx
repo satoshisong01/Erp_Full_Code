@@ -124,12 +124,11 @@ const ReactDataTable = (props) => {
             setTableData([]);
             setOriginTableData([]);
         }
-        console.log(customDatas, "나온데이터");
     }, [customDatas]);
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
-        console.log("currentPage:", current, "navName:", currentPageName, "innerTabName:", innerPageName, "ModalName:", modalPageName);
+        // console.log("currentPage:", current, "navName:", currentPageName, "innerTabName:", innerPageName, "ModalName:", modalPageName);
         if (currentPageName !== prevCurrentPageName || innerPageName !== prevInnerPageName) {
             // 현재 페이지와 이전 페이지가 같지 않다면
             toggleAllRowsSelected(false);
@@ -142,6 +141,7 @@ const ReactDataTable = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
+        console.log("🎮isSaveFormTable: ", isSaveFormTable);
         setIsEditing(flag);
         if (current === currentPageName || (current === innerPageName && !isSaveFormTable)) {
             if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {

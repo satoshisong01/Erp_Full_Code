@@ -11,6 +11,7 @@ import "./css/egov-page.css";
 import "./css/egov-response.css";
 import "./css/custom-style.css";
 import { PageProvider } from "components/PageProvider";
+import Modal from "react-modal";
 
 function App() {
     return (
@@ -23,6 +24,8 @@ function App() {
         </PageProvider>
     );
 }
+
+Modal.setAppElement('#root')
 
 console.log("process.env.NODE_ENV", process.env.NODE_ENV);
 console.log(
