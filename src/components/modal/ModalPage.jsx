@@ -6,7 +6,7 @@ import { PageContext } from "components/PageProvider";
 export default function ModalPage({onClose}) {
     const { projectItem, setProjectInfo } = useContext(PageContext);
     function handleItemClick(poiId, poiNm, poiCode, poiVersion, poId) {
-        setProjectInfo({ poiId, poiNm, poiCode, poiVersion, poId, isSelected: true });
+        setProjectInfo({ poiId, poiNm, poiCode, poiVersion, poId });
         onClose();
     }
 
@@ -28,8 +28,8 @@ export default function ModalPage({onClose}) {
                                 <div className="modalContent">
                                     {projectItem.map((item, index) => (
                                         <div className="listItems" key={index} onClick={() => handleItemClick(item.poiId, item.poiNm, item.poiCode, item.poiVersion, item.poId)}>
-                                            <p className="listItem" style={{width: '50%'}}>{item.poiNm}</p>
-                                            <p className="listItem" style={{width: '50%'}}>{item.poiVersion}</p>
+                                            <p className="listItem" style={{width: '70%'}}>{item.poiNm}</p>
+                                            <p className="listItem" style={{width: '30%'}}>{item.poiVersion}</p>
                                         </div>
                                     ))}
                                 </div>

@@ -894,7 +894,9 @@ body > div.ReactModalPortal > div > div {
 body > div:nth-child(5) > div {
     z-index: 9999;
 }
-
+body > div:nth-child(4) > div {
+    z-index: 9999;
+}
 .ReactModal__Content {
     width: 500px;
     height: 200px;

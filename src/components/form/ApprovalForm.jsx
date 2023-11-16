@@ -23,10 +23,6 @@ function ApprovalForm({ title, children }) {
     };
     const currentTime = new Date().toLocaleString("ko-KR", options);
 
-    const handleClose = () => {
-        //window.close();
-    };
-
     const onClick = () => { //구매클릭
         if(projectInfo.poiId) {
             setProjectInfo((preValue) => ({...preValue, poId: ""}))
@@ -70,7 +66,7 @@ function ApprovalForm({ title, children }) {
                                 <th>프로젝트 아이디</th>
                                 <td>{projectInfo.poiId}</td>
                                 <th>프로젝트 버전</th>
-                                <td>{projectInfo.version}</td>
+                                <td>{projectInfo.poiVersion}</td>
                             </tr>
                             <tr>
                                 <th>작성일</th>

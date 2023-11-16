@@ -16,9 +16,23 @@ import RefreshButton from "components/button/RefreshButton";
 
 /** 실행관리-인건비관리 */
 function LaborCostMgmt() {
-    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
+    const {
+        innerPageName,
+        setCurrentPageName,
+        setPrevInnerPageName,
+        setInnerPageName,
+        isSaveFormTable,
+        setIsSaveFormTable,
+        projectInfo,
+        setProjectInfo,
+        projectItem,
+        viewSetPoiId,
+    } = useContext(PageContext);
 
     useEffect(() => {
+        setInnerPageName("인건비 조회관리");
+        setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
+
         return () => {
             setProjectInfo({});
         };
@@ -59,13 +73,10 @@ function LaborCostMgmt() {
 
     const [currentTask, setCurrentTask] = useState("인건비 조회관리");
     const [inquiryMgmt, setInquiryMgmt] = useState([]); // 인건비 조회관리
-    //
     const [saleCostView, setSaleCostView] = useState([]); //영업 인건비 띄우기
     const [pgBudgetMgmt, setPgBudgetMgmt] = useState([]); // 인건비 수주관리
-    //
     const [pgBudgetView, setPgBudgetView] = useState([]); //(실행) 수주띄우기
     const [budgetMgmt, setBudgetMgmt] = useState([]); // 인건비 예산관리
-    //
     const [budgetView, setBudgetView] = useState([]); //(실행) 예산띄우기
     const [runMgmt, setRunMgmt] = useState([]); // 인건비 실행관리
 
@@ -99,11 +110,15 @@ function LaborCostMgmt() {
     };
 
     const changeTabs = (task) => {
-        setCurrentTask(task);
-        if (task !== currentTask) {
-            //자신 일때 수정 창으로 변동 되지 않기 위한 조건
+        if (task !== innerPageName) {
+            //다른 페이지의 버튼 변경 막기
             setIsSaveFormTable(true);
         }
+        setInnerPageName((prev) => {
+            setCurrentPageName("");
+            setPrevInnerPageName(prev);
+            return task;
+        });
     };
 
     const fetchData = async () => {
@@ -148,48 +163,22 @@ function LaborCostMgmt() {
         //console.log(currentTask, "나오낭");
         let requestData = { poiId: poiIdToSend || projectInfo.poiId, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
         if (currentTask === "인건비 조회관리") {
-            //requestData 값 담기
-            requestData = { poiId: poiIdToSend, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
+            requestData = { ...requestData, poiId: viewSetPoiId };
         } else if (currentTask === "인건비 수주관리") {
-            requestData = {
-                poiId: projectInfo.poiId,
-                pecSlsExcCode: "PEXC",
-                pecTypeCode: "MM",
-                useAt: "Y",
-                pecModeCode: "PDVSN01",
-            };
+            requestData = { ...requestData, pecModeCode: "PDVSN01" };
         } else if (currentTask === "인건비 예산관리") {
-            requestData = {
-                poiId: projectInfo.poiId,
-                pecSlsExcCode: "PEXC",
-                pecTypeCode: "MM",
-                useAt: "Y",
-                pecModeCode: "PDVSN02",
-            };
+            requestData = { ...requestData, pecModeCode: "PDVSN02" };
         } else if (currentTask === "인건비 실행관리") {
-            requestData = {
-                poiId: projectInfo.poiId,
-                pecSlsExcCode: "PEXC",
-                pecTypeCode: "MM",
-                useAt: "Y",
-                pecModeCode: "PDVSN03",
-            };
+            requestData = { ...requestData, pecModeCode: "PDVSN03" };
         } else {
             return;
         }
-
-        //console.log(requestData, "서버에 넘겨줘볼까");
-        const resultData = await axiosFetch(url, requestData);
-        if (resultData) {
-            return resultData;
-        } else {
-            return Array(5).fill({}); // 빈 배열 보내주기
-        }
+        return await axiosFetch(url, requestData);
     };
 
+    /* 조회 테이블 */
     const fetchAllDataView = async (tableUrl, currentTask) => {
         const url = `/api${tableUrl}/totalListAll.do`;
-        console.log(currentTask, "나오낭");
         let requestData = { poiId: projectInfo.poiId };
 
         if (currentTask === "인건비 수주관리") {
@@ -219,22 +208,19 @@ function LaborCostMgmt() {
         } else {
             return;
         }
-
-        console.log(requestData, "서버에 넘겨줘볼까");
-        const resultData = await axiosFetch(url, requestData);
-        if (resultData) {
-            return resultData;
-        } else {
-            return Array(5).fill({}); // 빈 배열 보내주기
-        }
+        // const resultData = await axiosFetch(url, requestData);
+        // if (resultData) {
+        //     return resultData;
+        // } else {
+        //     return Array(5).fill({}); // 빈 배열 보내주기
+        // }
+        return await axiosFetch(url, requestData);
     };
 
     const handleReturn = (value) => {
-        setReturnKeyWord(value);
+        // setReturnKeyWord(value);
         console.log(value, "제대로 들어오냐");
     };
-
-    const addBtn = [""];
 
     return (
         <>
@@ -291,7 +277,7 @@ function LaborCostMgmt() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalForm title={currentTask + " 등록"} />
+                            <ApprovalForm title={innerPageName + " 등록"} />
                             <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick2}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked2 ? "" : "clicked"}`} icon={faArrowUp} />
@@ -315,7 +301,7 @@ function LaborCostMgmt() {
                     </div>
                     <div className="third">
                         <ul>
-                            <ApprovalForm title={currentTask + " 등록"} />
+                            <ApprovalForm title={innerPageName + " 등록"} />
                             <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick3}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked3 ? "" : "clicked"}`} icon={faArrowUp} />
@@ -340,7 +326,7 @@ function LaborCostMgmt() {
 
                     <div className="fourth">
                         <ul>
-                            <ApprovalForm title={currentTask + " 등록"} />
+                            <ApprovalForm title={innerPageName + " 등록"} />
                             <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick4}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked4 ? "" : "clicked"}`} icon={faArrowUp} />

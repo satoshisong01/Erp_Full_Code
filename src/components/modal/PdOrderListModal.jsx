@@ -27,11 +27,12 @@ export default function PdOrderListModal({onClose}) {
         },
         {
             header: "거래처",
-            col: "cltId",
+            col: "cltNm",
             cellWidth: "50%",
             modify: true,
             add: true,
             require: true,
+            type: "buttonCompany"
         },
         {
             header: "구매 종류",
