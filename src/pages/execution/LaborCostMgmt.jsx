@@ -3,7 +3,7 @@ import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import { locationPath } from "constants/locationPath";
 import ReactDataTable from "components/DataTable/ReactDataTable";
-import { axiosFetch } from "api/axiosFetch";
+import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 import { PageContext } from "components/PageProvider";
 import ApprovalForm from "components/form/ApprovalForm";
 import { columns } from "constants/columns";
@@ -12,11 +12,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import ReactDataTableView from "components/DataTable/ReactDataTableView";
 import { ChangePrmnPlanData } from "components/DataTable/function/ChangePrmnPlanData";
-import { columns } from "constants/columns";
+import RefreshButton from "components/button/RefreshButton";
 
 /** 실행관리-인건비관리 */
 function LaborCostMgmt() {
-    const { innerPageName, setCurrentPageName, setPrevInnerPageName, setInnerPageName, isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem, viewSetPoiId } = useContext(PageContext);
+    const { setPrevInnerPageName, setCurrentPageName, setInnerPageName, innerPageName, isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
 
     useEffect(() => {
         setInnerPageName("인건비 조회관리");
@@ -60,12 +60,14 @@ function LaborCostMgmt() {
 
     const [returnKeyWord, setReturnKeyWord] = useState("");
 
-    const [currentTask, setCurrentTask] = useState("인건비 조회관리");
     const [inquiryMgmt, setInquiryMgmt] = useState([]); // 인건비 조회관리
+    //
     const [saleCostView, setSaleCostView] = useState([]); //영업 인건비 띄우기
     const [pgBudgetMgmt, setPgBudgetMgmt] = useState([]); // 인건비 수주관리
+    //
     const [pgBudgetView, setPgBudgetView] = useState([]); //(실행) 수주띄우기
     const [budgetMgmt, setBudgetMgmt] = useState([]); // 인건비 예산관리
+    //
     const [budgetView, setBudgetView] = useState([]); //(실행) 예산띄우기
     const [runMgmt, setRunMgmt] = useState([]); // 인건비 실행관리
 
@@ -100,61 +102,79 @@ function LaborCostMgmt() {
         });
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (innerPageName === "인건비 조회관리") {
-                    const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 조회관리
-                    const updatedData = mapPecModeCodeToText(data);
-                    setInquiryMgmt(updatedData);
-
-                } else if (innerPageName === "인건비 수주관리") {
-                    const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 수주관리
-                    setPgBudgetMgmt(data);
-                    const dataView = await fetchAllDataView("/api/baseInfrm/product/prmnPlan/totalListAll.do", innerPageName);
-                    setSaleCostView(ChangePrmnPlanData(dataView, projectInfo));
-
-                } else if (innerPageName === "인건비 예산관리") {
-                    const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 예산관리
-                    setBudgetMgmt(data);
-                    const dataView = await fetchAllDataView("/baseInfrm/product/prstmCost/totalListAll.do", innerPageName);
-                    setPgBudgetView(dataView);
-
-                } else if (innerPageName === "인건비 실행관리") {
-                    const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 실행관리
-                    setRunMgmt(data);
-                    const dataView = await fetchAllDataView("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName);
-                    setBudgetView(dataView);
-                }
-
-            } catch (error) {
-                console.error("데이터를 가져오는 중에 오류 발생:", error);
+    const fetchData = async () => {
+        try {
+            if (innerPageName === "인건비 조회관리") {
+                const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 조회관리
+                const updatedData = mapPecModeCodeToText(data);
+                setInquiryMgmt(updatedData);
+                //
+            } else if (innerPageName === "인건비 수주관리") {
+                const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 수주관리
+                setPgBudgetMgmt(data);
+                const dataView = await fetchAllDataView("/api/baseInfrm/product/prmnPlan/totalListAll.do", innerPageName);
+                setSaleCostView(ChangePrmnPlanData(dataView, projectInfo));
+                console.log(saleCostView, "saleCostView");
+                //
+            } else if (innerPageName === "인건비 예산관리") {
+                const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 예산관리
+                setBudgetMgmt(data);
+                const dataView = await fetchAllDataView("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName);
+                setPgBudgetView(dataView);
+                //
+            } else if (innerPageName === "인건비 실행관리") {
+                const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 실행관리
+                setRunMgmt(data);
+                const dataView = await fetchAllDataView("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName);
+                setBudgetView(dataView);
             }
-        };
-
-        fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
-        setProjectInfo((prev) => ({ ...prev, isSelected: false }));
-    }, [poiIdToSend, projectInfo.isSelected]);
-
-    const fetchAllData = async (tableUrl, currentTask) => {
-        const url = `/api${tableUrl}/totalListAll.do`;
-        //console.log(currentTask, "나오낭");
-        let requestData = { poiId: poiIdToSend || projectInfo.poiId, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
-        if (currentTask === "인건비 조회관리") {
-            requestData = { ...requestData, poiId: viewSetPoiId };
-        } else if (currentTask === "인건비 수주관리") {
-            requestData = { ...requestData, pecModeCode: "PDVSN01" };
-        } else if (currentTask === "인건비 예산관리") {
-            requestData = { ...requestData, pecModeCode: "PDVSN02" };
-        } else if (currentTask === "인건비 실행관리") {
-            requestData = { ...requestData, pecModeCode: "PDVSN03" };
-        } else {
-            return;
+        } catch (error) {
+            console.error("데이터를 가져오는 중에 오류 발생:", error);
         }
-        return await axiosFetch(url, requestData);
     };
 
-    /* 조회 테이블 */
+    useEffect(() => {
+        fetchData();
+    }, [innerPageName]);
+
+    const fetchAllData = async (url, currentTask) => {
+        let requestData = { poiId: poiIdToSend || projectInfo.poiId, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
+        if (currentTask === "인건비 조회관리") {
+            requestData = { poiId: poiIdToSend, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
+        } else if (currentTask === "인건비 수주관리") {
+            requestData = {
+                poiId: projectInfo.poiId,
+                pecSlsExcCode: "PEXC",
+                pecTypeCode: "MM",
+                useAt: "Y",
+                pecModeCode: "PDVSN01",
+            };
+        } else if (currentTask === "인건비 예산관리") {
+            requestData = {
+                poiId: projectInfo.poiId,
+                pecSlsExcCode: "PEXC",
+                pecTypeCode: "MM",
+                useAt: "Y",
+                pecModeCode: "PDVSN02",
+            };
+        } else if (currentTask === "인건비 실행관리") {
+            requestData = {
+                poiId: projectInfo.poiId,
+                pecSlsExcCode: "PEXC",
+                pecTypeCode: "MM",
+                useAt: "Y",
+                pecModeCode: "PDVSN03",
+            };
+        }
+
+        const resultData = await axiosFetch(url, requestData);
+        if (resultData) {
+            return resultData;
+        } else {
+            return Array(5).fill({}); // 빈 배열 보내주기
+        }
+    };
+
     const fetchAllDataView = async (tableUrl, currentTask) => {
         const url = `/api${tableUrl}/totalListAll.do`;
         let requestData = { poiId: projectInfo.poiId };
@@ -186,18 +206,85 @@ function LaborCostMgmt() {
         } else {
             return;
         }
-        // const resultData = await axiosFetch(url, requestData);
-        // if (resultData) {
-        //     return resultData;
-        // } else {
-        //     return Array(5).fill({}); // 빈 배열 보내주기
-        // }
-        return await axiosFetch(url, requestData);
+
+        console.log(requestData, "서버에 넘겨줘볼까");
+        const resultData = await axiosFetch(url, requestData);
+        if (resultData) {
+            return resultData;
+        } else {
+            return Array(5).fill({}); // 빈 배열 보내주기
+        }
     };
 
     const handleReturn = (value) => {
-        // setReturnKeyWord(value);
+        setReturnKeyWord(value);
         console.log(value, "제대로 들어오냐");
+    };
+
+    const refresh = () => {
+        fetchData();
+    }
+
+    const compareData = (originData, updatedData) => {
+        const filterData = updatedData.filter((data) => data.pgNm); //pgNm 없는 데이터 제외
+        const originDataLength = originData ? originData.length : 0;
+        const updatedDataLength = filterData ? filterData.length : 0;
+
+        if (originDataLength > updatedDataLength) {
+            updateList(filterData);
+
+            const toDelete = [];
+            for (let i = updatedDataLength; i < originDataLength; i++) {
+                toDelete.push(originData[i].pecId);
+            }
+            deleteList(toDelete);
+
+        } else if (originDataLength === updatedDataLength) {
+            updateList(filterData);
+
+        } else if (originDataLength < updatedDataLength) {
+            const toAdds = [];
+            const addUpdate = [];
+            for (let i = 0; i < originDataLength; i++) {
+                addUpdate.push(filterData[i]);
+            }
+            updateList(addUpdate);
+
+            for (let i = originDataLength; i < updatedDataLength; i++) {
+                const add = { poiId: poiIdToSend || projectInfo.poiId }
+                toAdds.push({ ...filterData[i], ...add });
+            }
+            addList(toAdds);
+        }
+    };
+
+    const addList = async (addNewData) => {
+        console.log("❗addList:", addNewData);
+        // http://192.168.0.113:8080/api/baseInfrm/product/prstmCost/addList.do
+        const url = `/api/baseInfrm/product/prstmCost/addList.do`;
+        const resultData = await axiosPost(url, addNewData);
+        if (resultData) {
+            refresh();
+        }
+    };
+    const updateList = async (toUpdate) => {
+        console.log("❗updateList:", toUpdate);
+        // http://192.168.0.113:8080/api/baseInfrm/product/prstmCost/editList.do
+        const url = `/api/baseInfrm/product/prstmCost/editList.do`;
+        const resultData = await axiosUpdate(url, toUpdate);
+        if (resultData) {
+            refresh();
+        }
+    };
+
+    const deleteList = async (removeItem) => {
+        console.log("❗deleteList:", removeItem);
+        // http://192.168.0.113:8080/api/baseInfrm/product/prstmCost/removeAll.do
+        const url = `/api/baseInfrm/product/prstmCost/removeAll.do`;
+        const resultData = await axiosDelete(url, removeItem);
+        if (resultData) {
+            refresh();
+        }
     };
 
     return (
@@ -239,6 +326,9 @@ function LaborCostMgmt() {
                                     justColumn={true}
                                 />
                             </div>
+                            <div className="table-buttons">
+                                    <RefreshButton onClick={refresh} />
+                            </div>
                             <ReactDataTable
                                 columns={columns.laborCostMgmt.inquiry}
                                 flag={false}
@@ -251,63 +341,77 @@ function LaborCostMgmt() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalForm title={innerPageName + " 등록"} />
-                            <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
-                                <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick2}>
-                                    <FontAwesomeIcon className={`arrowBtn ${isClicked2 ? "" : "clicked"}`} icon={faArrowUp} />
-                                </button>
-                            </div>
-                            <div className={`hideDivRun2 ${isClicked2 ? "" : "clicked"}`}>
-                                <ReactDataTableView columns={columns.laborCostMgmt.sub} customDatas={saleCostView} defaultPageSize={5} />
-                            </div>
-                            <ReactDataTable
-                                columns={columns.laborCostMgmt.orderPlan}
-                                flag={currentTask === "인건비 수주관리" && isSaveFormTable}
-                                tableRef={orderPlanMgmtTable2}
-                                customDatas={pgBudgetMgmt}
-                                viewPageName="인건비 수주관리"
-                            />
+                            <ApprovalForm title={innerPageName + " 등록"} >
+                                <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
+                                    <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick2}>
+                                        <FontAwesomeIcon className={`arrowBtn ${isClicked2 ? "" : "clicked"}`} icon={faArrowUp} />
+                                    </button>
+                                </div>
+                                <div className={`hideDivRun2 ${isClicked2 ? "" : "clicked"}`}>
+                                    <ReactDataTableView columns={columns.laborCostMgmt.sub} customDatas={saleCostView} defaultPageSize={5} />
+                                </div>
+                                <div className="table-buttons">
+                                    <RefreshButton onClick={refresh} />
+                                </div>
+                                <ReactDataTable
+                                    columns={columns.laborCostMgmt.orderPlan}
+                                    singleUrl="/baseInfrm/product/prstmCost"
+                                    flag={innerPageName === "인건비 수주관리" && isSaveFormTable}
+                                    tableRef={orderPlanMgmtTable2}
+                                    customDatas={pgBudgetMgmt}
+                                    viewPageName="인건비 수주관리"
+                                    sendToParentTables={compareData}
+                                />
+                            </ApprovalForm>
                         </ul>
                     </div>
                     <div className="third">
                         <ul>
-                            <ApprovalForm title={innerPageName + " 등록"} />
-                            <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
-                                <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick3}>
-                                    <FontAwesomeIcon className={`arrowBtn ${isClicked3 ? "" : "clicked"}`} icon={faArrowUp} />
-                                </button>
-                            </div>
-                            <div className={`hideDivRun3 ${isClicked3 ? "" : "clicked"}`}>
-                                <ReactDataTableView columns={columns.laborCostMgmt.budgetView} customDatas={pgBudgetView} defaultPageSize={5} />
-                            </div>
-                            <ReactDataTable
-                                columns={columns.laborCostMgmt.budget}
-                                flag={currentTask === "인건비 예산관리" && isSaveFormTable}
-                                tableRef={orderPlanMgmtTable3}
-                                customDatas={budgetMgmt}
-                                viewPageName="인건비 예산관리"
-                            />
+                            <ApprovalForm title={innerPageName + " 등록"} >
+                                <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
+                                    <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick3}>
+                                        <FontAwesomeIcon className={`arrowBtn ${isClicked3 ? "" : "clicked"}`} icon={faArrowUp} />
+                                    </button>
+                                </div>
+                                <div className={`hideDivRun3 ${isClicked3 ? "" : "clicked"}`}>
+                                    <ReactDataTableView columns={columns.laborCostMgmt.budgetView} customDatas={pgBudgetView} defaultPageSize={5} />
+                                </div>
+                                <div className="table-buttons">
+                                    <RefreshButton onClick={refresh} />
+                                </div>
+                                <ReactDataTable
+                                    columns={columns.laborCostMgmt.budget}
+                                    flag={innerPageName === "인건비 예산관리" && isSaveFormTable}
+                                    tableRef={orderPlanMgmtTable3}
+                                    customDatas={budgetMgmt}
+                                    viewPageName="인건비 예산관리"
+                                />
+                            </ApprovalForm>
                         </ul>
                     </div>
 
                     <div className="fourth">
                         <ul>
-                            <ApprovalForm title={innerPageName + " 등록"} />
-                            <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
-                                <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick4}>
-                                    <FontAwesomeIcon className={`arrowBtn ${isClicked4 ? "" : "clicked"}`} icon={faArrowUp} />
-                                </button>
-                            </div>
-                            <div className={`hideDivRun4 ${isClicked4 ? "" : "clicked"}`}>
-                                <ReactDataTableView columns={columns.laborCostMgmt.budget} customDatas={budgetView} defaultPageSize={5} />
-                            </div>
-                            <ReactDataTable
-                                columns={columns.laborCostMgmt.run}
-                                flag={currentTask === "인건비 실행관리" && isSaveFormTable}
-                                tableRef={orderPlanMgmtTable4}
-                                customDatas={runMgmt}
-                                viewPageName="인건비 실행관리"
-                            />
+                            <ApprovalForm title={innerPageName + " 등록"} >
+                                <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
+                                    <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick4}>
+                                        <FontAwesomeIcon className={`arrowBtn ${isClicked4 ? "" : "clicked"}`} icon={faArrowUp} />
+                                    </button>
+                                </div>
+                                <div className={`hideDivRun4 ${isClicked4 ? "" : "clicked"}`}>
+                                    <ReactDataTableView columns={columns.laborCostMgmt.budget} customDatas={budgetView} defaultPageSize={5} />
+                                </div>
+                                <div className="table-buttons">
+                                    <RefreshButton onClick={refresh} />
+                                </div>
+                                <ReactDataTable
+                                    columns={columns.laborCostMgmt.run}
+                                    flag={innerPageName === "인건비 실행관리" && isSaveFormTable}
+                                    tableRef={orderPlanMgmtTable4}
+                                    customDatas={runMgmt}
+                                    viewPageName="인건비 실행관리"
+                                />
+                            </ApprovalForm>
                         </ul>
                     </div>
                 </div>
