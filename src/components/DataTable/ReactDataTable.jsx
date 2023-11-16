@@ -150,7 +150,7 @@ const ReactDataTable = (props) => {
                 compareData(originTableData, tableData);
             }
         }
-    }, [isSaveFormTable]);
+    }, [flag, isSaveFormTable]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {

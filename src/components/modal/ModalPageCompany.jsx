@@ -27,7 +27,7 @@ export default function ModalPageCompany({ rowIndex }) {
     };
 
     function handleItemClick(item) {
-        setProjectCompany({ esntlId: item.esntlId, companyId: item.companyId });
+        setCompanyInfo({ esntlId: item.esntlId, companyId: item.companyId });
         setIsOpenModalCompany(false);
     }
 

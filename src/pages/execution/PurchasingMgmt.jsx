@@ -745,7 +745,7 @@ function PurchasingMgmt() {
                         <ul>
                             <SearchList conditionList={conditionList} onSearch={handleReturn} />
                             {/*<ApprovalForm title={" 프로젝트 목록 " + currentTask}>*/}
-                            <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
+                            <div className={`buttonBody  ${isClicked ? "" : "clicked"}`}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick1}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked ? "" : "clicked"}`} icon={faArrowUp} />
                                 </button>
@@ -777,7 +777,7 @@ function PurchasingMgmt() {
                     <div className="second">
                         <ul>
                             <ApprovalForm title={currentTask + " 등록"} />
-                            <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
+                            <div className={`buttonBody  ${isClicked2 ? "" : "clicked"}`}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick2}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked2 ? "" : "clicked"}`} icon={faArrowUp} />
                                 </button>
@@ -801,7 +801,7 @@ function PurchasingMgmt() {
                     <div className="third">
                         <ul>
                             <ApprovalForm title={currentTask + " 등록"} />
-                            <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
+                            <div className={`buttonBody  ${isClicked3 ? "" : "clicked"}`}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick3}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked3 ? "" : "clicked"}`} icon={faArrowUp} />
                                 </button>
@@ -826,7 +826,7 @@ function PurchasingMgmt() {
                     <div className="fourth">
                         <ul>
                             <ApprovalForm title={currentTask + " 등록"} />
-                            <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", position: "absolute" }}>
+                            <div className={`buttonBody  ${isClicked4 ? "" : "clicked"}`}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick4}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked4 ? "" : "clicked"}`} icon={faArrowUp} />
                                 </button>

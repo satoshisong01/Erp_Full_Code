@@ -91,8 +91,8 @@ export const columns = {
             { header: "원가(견적가)", col: "estimatedCost", cellWidth: "10%" },
             { header: "이익금", col: "plannedProfits", cellWidth: "12%" },
             { header: "이익률", col: "plannedProfitMargin", cellWidth: "12%" },
-            { header: "기준 이익률", col: "standardMargin", cellWidth: "15%", type: "input" },
-            { header: "소비자가 산출률", col: "consumerOpRate", cellWidth: "15%", type: "input" },
+            { header: "기준 이익률", col: "byStandardMargin", cellWidth: "15%", type: "input" },
+            { header: "소비자가 산출률", col: "byConsumerOutputRate", cellWidth: "15%", type: "input" },
         ],
     },
 

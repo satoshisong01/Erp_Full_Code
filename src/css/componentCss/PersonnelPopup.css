@@ -664,6 +664,20 @@ table > tbody > tr > .sorting_1 > #checkBoxItem {
     margin-top: 0;
 }
 
+.buttonBody {
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+    width: 100%;
+}
+
+.buttonBody.clicked {
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    width: 100%;
+}
+
 .arrowBtnStyle {
     background-color: #fff;
     /*border: 1;*/
