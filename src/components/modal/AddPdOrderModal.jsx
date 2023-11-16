@@ -9,7 +9,22 @@ export default function AddPdOrderModal({ columns, onClose }) {
     const [data, setData] = useState({});
     const [showAlert, setShowAlert] = useState(false);
     // const [errorOnState, setErrorOnState] = useState(false);
-    const {projectInfo} = useContext(PageContext);
+    const {projectInfo,projectCompany,setIsOpenModalCompany,setProjectCompany} = useContext(PageContext);
+
+    useEffect(() => {
+        return () => { //컴포넌트 종료시
+            setProjectCompany({});//초기화
+        }
+    }, [])
+    useEffect(() => {
+        if (projectCompany.companyId !== data.cltId) {
+            setData((prevData) => ({
+                ...prevData,
+                cltId: projectCompany.companyId, //id
+                cltNm: projectCompany.esntlId //이름
+            }));
+        }
+    }, [projectCompany, data]);
 
     useEffect(() => {
         const initialData = {
@@ -30,9 +45,9 @@ export default function AddPdOrderModal({ columns, onClose }) {
         }));
     };
 
+
     // 데이터 추가 버튼을 눌렀을 때 실행되는 함수
     const onAdd = async (e) => {
-        console.log("💜1. onAdd");
         e.preventDefault();
         // 필수 필드가 비어있는지 확인
         const requiredColumns = columns.filter((column) => column.require);
@@ -46,7 +61,6 @@ export default function AddPdOrderModal({ columns, onClose }) {
 
     /* 데이터 추가 */
     const postData = async (addData) => {
-        console.log("💜2. postData");
         if (addData && typeof addData === "object" && !Array.isArray(addData)) {
             const dataToSend = [{
                 ...addData,
@@ -57,8 +71,6 @@ export default function AddPdOrderModal({ columns, onClose }) {
                 poiVersion: projectInfo.poiVersion,
                 poId: projectInfo.poId,
             }];
-            
-            console.log("💜3. dataToSend: ", dataToSend);
 
             const resultData = await axiosPost("/api/baseInfrm/product/pdOrdr/addList.do", dataToSend);
             if (!resultData) {
@@ -121,6 +133,17 @@ export default function AddPdOrderModal({ columns, onClose }) {
                                                                     )
                                                             )}
                                                         </select>
+                                                    ) : column.type === "buttonCompany" ? (
+                                                        <input
+                                                            className="buttonSelect"
+                                                            id={column.id}
+                                                            name={column.col}
+                                                            onClick={() => setIsOpenModalCompany(true)}
+                                                            type="text"
+                                                            placeholder={`거래처명을 선택해 주세요.`}
+                                                            value={data[column.col] || ""}
+                                                            readOnly
+                                                        />
                                                     ) : (
                                                         <input
                                                             placeholder={column.placeholder || column.header}

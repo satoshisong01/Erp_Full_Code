@@ -35,11 +35,8 @@ function OrderPlanMgmt() {
     }, []);
     
     useEffect(() => {
-        if(projectInfo.isSelected) { //프로젝트 모달창에서 선택 했을 때
             fetchAllData();
-            setProjectInfo((prev) =>({...prev, isSelected: false})); //초기화
-        }
-    }, [projectInfo.isSelected]);
+    }, [innerPageName, projectInfo]);
 
     const changeTabs = (task) => {
         if (task !== innerPageName) { //다른 페이지의 버튼 변경 막기
@@ -57,31 +54,6 @@ function OrderPlanMgmt() {
             return 0;
         }
         return Math.round(value1 / value2);
-    };
-
-    const addClick = async (addData) => {
-        if (addData && typeof addData === "object" && !Array.isArray(addData)) {
-            let url = "";
-            if (innerPageName === "구매(재료비)") {
-                url = "/api/baseInfrm/product/pdOrdr/addList.do";
-            }
-            const dataToSend = {
-                ...addData,
-                lockAt: "Y",
-                useAt: "Y",
-                deleteAt: "N",
-                poiId: projectInfo.poiId,
-                poiVersion: projectInfo.poiVersion,
-                poId: projectInfo.poId,
-            };
-            const resultData = await axiosPost(url, dataToSend);
-            if (!resultData) {
-                alert("add error: table");
-            } else if (resultData) {
-                fetchAllData();
-                alert("✅추가 완료");
-            }
-        }
     };
 
     const refresh = () => {
@@ -149,8 +121,8 @@ function OrderPlanMgmt() {
                             consumerAmount: Math.round(updatedConsumerAmount * 100),
                             plannedProfits: Math.round(updatedPlannedProfits),
                             plannedProfitMargin: Math.round(updatedPlannedProfitMargin * 100),
-                            standardMargin: Math.round(byStandardMargin),
-                            consumerOpRate: Math.round(byConsumerOutputRate),
+                            byStandardMargin: Math.round(byStandardMargin),
+                            byConsumerOutputRate: Math.round(byConsumerOutputRate),
                         };
                     });
                     setPdOrdrDatas(updatedData);
@@ -227,7 +199,7 @@ function OrderPlanMgmt() {
                                     tableRef={orderPlanMgmtTable2}
                                     customDatas={pdOrdrDatas}
                                     viewPageName="구매(재료비)"
-                                    sendToParentsAdd={addClick}
+                                    customDatasRefresh={refresh}
                                 />
                             </ApprovalForm>
                         </ul>

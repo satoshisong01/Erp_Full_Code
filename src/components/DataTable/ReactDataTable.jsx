@@ -12,7 +12,7 @@ import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
 import ModalPagePgNm from "components/modal/ModalPagePgNm";
 
 const ReactDataTable = (props) => {
-    const { columns, suffixUrl, flag, customDatas, defaultPageSize, tableRef, viewPageName, customDatasRefresh, singleUrl, sendToParentsAdd, sendSelected } = props;
+    const { columns, suffixUrl, flag, customDatas, defaultPageSize, tableRef, viewPageName, customDatasRefresh, singleUrl, sendToParentsAdd, sendToParentTables, sendSelected } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -129,10 +129,14 @@ const ReactDataTable = (props) => {
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
         setIsEditing(flag);
-        if (current === currentPageName || (current === innerPageName && !isSaveFormTable)) { //저장을 누르면 flase로 flag가 들어옴 --- false:수정/true:저장
-            compareData(originTableData, tableData);
+        if (current === currentPageName || (current === innerPageName && !isSaveFormTable)) {
+            if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리"  || innerPageName === "인건비 실행관리") {
+                sendToParentTables(originTableData, tableData);
+            } else {
+                compareData(originTableData, tableData);
+            }
         }
-    }, [flag]);
+    }, [isSaveFormTable]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {

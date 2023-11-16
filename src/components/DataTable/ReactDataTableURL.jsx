@@ -126,7 +126,7 @@ const ReactDataTableURL = (props) => {
 
                 // dataBuket 값을 업데이트할 때 prevDataBuket도 업데이트
                 setPrevDataBuket(dataBuket);
-                setProjectCompany("");
+                // setProjectCompany("");
             }
         }
     }, [isOpenModalCompany, dataBuket, rowIndex, tableData, prevDataBuket]);

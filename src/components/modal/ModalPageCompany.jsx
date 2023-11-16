@@ -24,11 +24,10 @@ export default function ModalPageCompany({ rowIndex }) {
 
     const handleReturn = (value) => {
         setReturnKeyWord(value);
-        console.log(value, "제대로 들어오냐");
     };
 
-    function handleItemClick(esntlId) {
-        setProjectCompany({ esntlId });
+    function handleItemClick(item) {
+        setProjectCompany({ esntlId: item.esntlId, companyId: item.companyId });
         setIsOpenModalCompany(false);
     }
 
@@ -77,7 +76,7 @@ export default function ModalPageCompany({ rowIndex }) {
                             <div className="modalBody">
                                 <div className="modalContent">
                                     {companyList.map((item, index) => (
-                                        <div className="listItems" key={index} onClick={() => handleItemClick(item.esntlId)}>
+                                        <div className="listItems" key={index} onClick={() => handleItemClick(item)}>
                                             <p className="listItem">{item.esntlId}</p>
                                         </div>
                                     ))}

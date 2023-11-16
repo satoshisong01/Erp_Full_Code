@@ -1,5 +1,5 @@
-/* 영업관리 */
 export const columns = {
+    /* 영업관리 */
     orderPlanMgmt: { // 수주계획관리
         labor: [ //인건비
             { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "datepicker" },
@@ -79,8 +79,338 @@ export const columns = {
             { header: "원가(견적가)", col: "estimatedCost", cellWidth: "10%", },
             { header: "이익금", col: "plannedProfits", cellWidth: "12%", },
             { header: "이익률", col: "plannedProfitMargin", cellWidth: "12%", },
-            { header: "기준 이익률", col: "standardMargin", cellWidth: "15%", type: "input", },
-            { header: "소비자가 산출률", col: "consumerOpRate", cellWidth: "15%", type: "input", },
+            { header: "기준 이익률", col: "byStandardMargin", cellWidth: "15%", type: "input", },
+            { header: "소비자가 산출률", col: "byConsumerOutputRate", cellWidth: "15%", type: "input", },
         ],
+    },
+
+    /* 실행관리 */
+    laborCostMgmt: { //인건비관리
+        condition: [
+            { title: "프로젝트명", colName: "clCode", type: "input", value: "", searchLevel: "1", },
+            { title: "품목그룹명", colName: "clCode", type: "input", value: "", searchLevel: "1", },
+            { title: "연월", colName: "clCodeNm", type: "input", value: "", searchLevel: "2", },
+        ],
+        project: [
+            {
+                header: "프로젝트명",
+                col: "poiNm",
+                cellWidth: "50%",
+                type: "input",
+            },
+            {
+                header: "계획인건비",
+                col: "pmpmmNum1",
+                cellWidth: "30%",
+                type: "input",
+            },
+            {
+                header: "실행인건비",
+                col: "pmpmmNum2",
+                cellWidth: "20%",
+                type: "input",
+            },
+        ],
+        sub: [
+            { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "datepicker" },
+            { header: "M/M계", col: "total", cellWidth: "10%", type: "input" },
+            {
+                header: "인건비계",
+                col: "poiBeginDt1",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "임원",
+                col: "pmpmmPositionCode1",
+                cellWidth: "10%",
+                type: "input",
+                notView: "true",
+            },
+            {
+                header: "특급기술사",
+                col: "pmpmmPositionCode2",
+                cellWidth: "10%",
+                type: "input",
+                notView: "true",
+            },
+            {
+                header: "고급기술사",
+                col: "pmpmmPositionCode3",
+                cellWidth: "10%",
+                type: "input",
+                notView: "true",
+            },
+            {
+                header: "중급기술사",
+                col: "pmpmmPositionCode4",
+                cellWidth: "10%",
+                type: "input",
+                notView: "true",
+            },
+            {
+                header: "초급기술사",
+                col: "pmpmmPositionCode5",
+                cellWidth: "10%",
+                type: "input",
+                notView: "true",
+            },
+            {
+                header: "고급기능사",
+                col: "pmpmmPositionCode6",
+                cellWidth: "10%",
+                type: "input",
+                notView: "true",
+            },
+            {
+                header: "중급기능사",
+                col: "pmpmmPositionCode7",
+                cellWidth: "10%",
+                type: "input",
+                notView: "true",
+            },
+            {
+                header: "부장",
+                col: "pmpmmPositionCode8",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "차장",
+                col: "pmpmmPositionCode9",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "과장",
+                col: "pmpmmPositionCode10",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "대리",
+                col: "pmpmmPositionCode11",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "주임",
+                col: "pmpmmPositionCode12",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "사원",
+                col: "pmpmmPositionCode13",
+                cellWidth: "10%",
+                type: "input",
+            },
+        ],
+        inquiry: [
+            {
+                header: "구분코드",
+                col: "pecModeCode",
+                cellWidth: "10%",
+            },
+            {
+                header: "품목그룹명",
+                col: "pgNm",
+                cellWidth: "15%",
+            },
+            {
+                header: "인력",
+                col: "pecManpower",
+                cellWidth: "10%",
+            },
+            {
+                header: "직급",
+                col: "pecPosition",
+                cellWidth: "10%",
+                type: "input",
+                notView: "true",
+            },
+            {
+                header: "실행(M/M)",
+                col: "pecMm",
+                cellWidth: "10%",
+            },
+            {
+                header: "시작일",
+                col: "pecStartdate",
+                cellWidth: "10%",
+                // type: "datepicker"
+            },
+            {
+                header: "종료일",
+                col: "pecEnddate",
+                cellWidth: "10%",
+                // type: "datepicker"
+            },
+            {
+                header: "금액",
+                col: "pecUnitPrice111",
+                cellWidth: "10%",
+            },
+            {
+                header: "투입률",
+                col: "pmpmmPositionCode1",
+                cellWidth: "10%",
+            },
+            {
+                header: "누계율",
+                col: "pmpmmPositionCode2",
+                cellWidth: "10%",
+            },
+        ],
+        orderPlan: [
+            {
+                header: "인건비아이디",
+                col: "pecId",
+                notView: "true"
+            },
+            {
+                header: "품목그룹명",
+                col: "pgNm",
+                cellWidth: "25%",
+                type: "button",
+                options: [],
+            },
+            { header: "수주수량(M/M)", col: "pecMm", cellWidth: "25%", type: "input" },
+            {
+                header: "단가",
+                col: "pecUnitPrice",
+                cellWidth: "25%",
+                type: "input",
+            },
+            {
+                header: "금액",
+                cellWidth: "25%",
+            },
+        ],
+        budget: [
+            {
+                header: "품목그룹명",
+                col: "pgNm",
+                cellWidth: "25%",
+                type: "button",
+                options: [],
+            },
+            { header: "인력", col: "pecManpower", cellWidth: "25%", type: "input" },
+            {
+                header: "직급",
+                col: "pecPosition",
+                cellWidth: "10%",
+                type: "select",
+                options: [
+                    { value: "임원", label: "임원" },
+                    { value: "특급기술사", label: "특급기술사" },
+                    { value: "고급기술사", label: "고급기술사" },
+                    { value: "중급기술사", label: "중급기술사" },
+                    { value: "초급기술사", label: "초급기술사" },
+                    { value: "고급기능사", label: "고급기능사" },
+                    { value: "중급기능사", label: "중급기능사" },
+                    { value: "부장", label: "부장" },
+                    { value: "차장", label: "차장" },
+                    { value: "과장", label: "과장" },
+                    { value: "대리", label: "대리" },
+                    { value: "주임", label: "주임" },
+                    { value: "사원", label: "사원" },
+                ],
+            },
+            {
+                header: "예산(M/M)",
+                col: "pecMm",
+                cellWidth: "25%",
+                type: "input",
+            },
+            {
+                header: "금액",
+                col: "pecUnitPrice222",
+                cellWidth: "40%",
+                type: "input",
+            },
+        ],
+        budgetView: [
+            {
+                header: "품목그룹명",
+                col: "pgNm",
+                cellWidth: "25%",
+            },
+            { header: "수주수량(M/M)", col: "pecMm", cellWidth: "25%" },
+            {
+                header: "단가",
+                col: "pecUnitPrice",
+                cellWidth: "25%",
+            },
+            {
+                header: "금액",
+                col: "pmpmmNum1",
+                cellWidth: "25%",
+            },
+        ],
+        run: [
+            {
+                header: "품목그룹명",
+                col: "pgNm",
+                cellWidth: "15%",
+                type: "button",
+                options: [],
+            },
+            { header: "인력", col: "pecManpower", cellWidth: "25%", type: "input" },
+            {
+                header: "직급",
+                col: "pecPosition",
+                cellWidth: "10%",
+                type: "select",
+                options: [
+                    { value: "임원", label: "임원" },
+                    { value: "특급기술사", label: "특급기술사" },
+                    { value: "고급기술사", label: "고급기술사" },
+                    { value: "중급기술사", label: "중급기술사" },
+                    { value: "초급기술사", label: "초급기술사" },
+                    { value: "고급기능사", label: "고급기능사" },
+                    { value: "중급기능사", label: "중급기능사" },
+                    { value: "부장", label: "부장" },
+                    { value: "차장", label: "차장" },
+                    { value: "과장", label: "과장" },
+                    { value: "대리", label: "대리" },
+                    { value: "주임", label: "주임" },
+                    { value: "사원", label: "사원" },
+                ],
+            },
+            {
+                header: "실행(M/M)",
+                col: "pecMm",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "시작일",
+                col: "pecStartdate",
+                cellWidth: "10%",
+                type: "datepicker",
+            },
+            {
+                header: "종료일",
+                col: "pecEnddate",
+                cellWidth: "10%",
+                type: "datepicker",
+            },
+            {
+                header: "금액",
+                col: "pecUnitPrice111",
+                cellWidth: "10%",
+            },
+            {
+                header: "투입률",
+                col: "pmpmmPositionCode1",
+                cellWidth: "10%",
+            },
+            {
+                header: "누계율",
+                col: "pmpmmPositionCode2",
+                cellWidth: "10%",
+            },
+        ]
     }
 }

@@ -8,7 +8,7 @@ import ModalPagePdiNm from "components/modal/ModalPagePdiNm";
 import ModalPageCompany from "components/modal/ModalPageCompany";
 
 const ReactDataTablePdorder = (props) => {
-    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendSelected, singleUrl, sendToParentsAdd } = props;
+    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendSelected, singleUrl, customDatasRefresh } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -97,7 +97,7 @@ const ReactDataTablePdorder = (props) => {
         if (current === currentPageName || (current === innerPageName && !isSaveFormTable)) {
             compareData(originTableData, tableData);
         }
-    }, [flag]);
+    }, [flag, isSaveFormTable]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
@@ -138,13 +138,8 @@ const ReactDataTablePdorder = (props) => {
 
     /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
-        if (!suffixUrl && !detailUrl) return;
-        let url = ``;
-        if (customerList) {
-            url = `/api${suffixUrl}/${customerList}/listAll.do`;
-        } else {
-            url = `/api${suffixUrl || detailUrl}/totalListAll.do`;
-        }
+        if (!suffixUrl) return;
+        const url = `/api${suffixUrl}/totalListAll.do`;
         const resultData = await axiosFetch(url, { useAt: "Y" });
         if (resultData) {
             setTableData([...resultData]);
@@ -370,7 +365,7 @@ const ReactDataTablePdorder = (props) => {
 
                 // companyBuket 값을 업데이트할 때 prevDataBuket도 업데이트
                 setPreCompanyBuket(companyBuket);
-                setProjectCompany("");
+                // setProjectCompany("");
             }
         }
     }, [
@@ -429,16 +424,16 @@ const ReactDataTablePdorder = (props) => {
         const updatedTableData = [...tableData];
         updatedTableData[row.index][accessor] = value;
         // 수정된 데이터로 tableData 업데이트
-        if (accessor === "byUnitPrice" || accessor === "standardMargin" || accessor === "consumerOpRate" || accessor === "byQunty") {
-            if (row.original.byUnitPrice && row.original.standardMargin && row.original.consumerOpRate && row.original.byQunty) {
+        if (accessor === "byUnitPrice" || accessor === "byStandardMargin" || accessor === "byConsumerOutputRate" || accessor === "byQunty") {
+            if (row.original.byUnitPrice && row.original.byStandardMargin && row.original.byConsumerOutputRate && row.original.byQunty) {
                 // 1.원가(견적가) : 수량 * 원단가
                 const estimatedCost = row.original.byQunty * row.original.byUnitPrice;
                 // 2.단가 : 원가(견적가) / (1 - 사전원가기준이익율)
-                const unitPrice = division(estimatedCost, 1 - row.original.standardMargin / 100);
+                const unitPrice = division(estimatedCost, 1 - row.original.byStandardMargin / 100);
                 // 3.금액 : 수량 * 단가
                 const planAmount = row.original.byQunty * unitPrice;
                 // 4.소비자단가 : 단가 / 소비자산출율
-                const consumerPrice = division(unitPrice, row.original.consumerOpRate);
+                const consumerPrice = division(unitPrice, row.original.byConsumerOutputRate);
                 // 5.소비자금액 : 수량 * 소비자단가
                 const consumerAmount = row.original.byQunty * consumerPrice;
                 // 6.이익금 : 금액 - 원가(견적가)
@@ -467,14 +462,12 @@ const ReactDataTablePdorder = (props) => {
 
     //-------------------------------배열 추가, 수정, 삭제
     const addList = async (addNewData) => {
-        // sendToParentsAdd(addNewData);//구매
         if(!singleUrl) return;
         const url = `/api${singleUrl}/addList.do`;
-        console.log("url: ", url);
         const resultData = await axiosPost(url, addNewData);
         if (resultData && resultData.length > 0) {
             console.log("추가완료");
-            setOriginTableData(...tableData);
+            customDatasRefresh();
         } else {
             console.log("추가실패");
         }
@@ -485,7 +478,7 @@ const ReactDataTablePdorder = (props) => {
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData && resultData.length > 0) {
             console.log("수정완료");
-            setOriginTableData(...tableData);
+            customDatasRefresh();
         } else {
             console.log("수정실패");
         }
@@ -496,8 +489,7 @@ const ReactDataTablePdorder = (props) => {
         const url = `/api${singleUrl}/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         if (resultData && resultData.length > 0) {
-            console.log("삭제완료");
-            setOriginTableData(...tableData);
+            customDatasRefresh();
         } else {
             console.log("삭제실패");
         }
@@ -505,66 +497,47 @@ const ReactDataTablePdorder = (props) => {
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
 
-    //추가 함수
-    const upDateChange = (data) => {
-        for (let index = 0; index < data.length; index++) {
-            const item = data[index];
-
-            // null 값을 0으로 변경
-            for (let i = 1; i <= 13; i++) {
-                const key = `pmpmmPositionCode${i}`;
-                if (item[key] === null) {
-                    item[key] = 0;
-                }
-            }
-
-            // useAt이 없다면 "Y"로 설정
-            if (!item.hasOwnProperty("useAt")) {
-                item.useAt = "Y";
-            }
-
-            if (!item.hasOwnProperty("poiId")) {
-                item.poiId = projectInfo.poiId;
-            }
-
-            // deleteAt이 없다면 "N"로 설정
-            if (!item.hasOwnProperty("deleteAt")) {
-                item.deleteAt = "N";
-            }
-        }
-    };
 
     //구매용
     const compareData = (originData, updatedData) => {
-        // const filterData = updatedData.filter((data) => data.pmpMonth); //pmpMonth가 없는 데이터 제외
+        // const filterData = updatedData.filter((data) => data.pmpMonth); //필수값 체크
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = updatedData ? updatedData.length : 0;
         if (originDataLength > updatedDataLength) {
-            const updateData = updatedData;
-            upDateChange(updateData);
-            updateList(updateData);
+            updatedData.forEach((data) => {
+                data.poId = projectInfo.poId;
+                data.modeCode = "SLSP"
+            });
+            updateList(updatedData);
 
-            const originAValues = originData.map((item) => item.pmpId);
+            const originAValues = originData.map((item) => item.byId); //삭제할 id 추출
             const extraOriginData = originAValues.slice(updatedDataLength);
-            const combinedAValues = extraOriginData.reduce((acc, current) => acc.concat(current), []);
 
-            deleteList(combinedAValues);
+            deleteList(extraOriginData);
 
         } else if (originDataLength === updatedDataLength) {
-            const updateData = updatedData;
-            upDateChange(updateData);
-            updateList(updateData);
+            updatedData.forEach((data) => {
+                data.poId = projectInfo.poId;
+                data.modeCode = "SLSP"
+            });
+            updateList(updatedData);
 
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
             const addUpdate = [];
             for (let i = 0; i < originDataLength; i++) {
-                addUpdate.push(updatedData[i]);
+                const temp = {...updatedData[i]};
+                temp.poId = projectInfo.poId
+                temp.modeCode = "SLSP"
+                addUpdate.push(temp);
             }
             updateList(addUpdate);
 
             for (let i = originDataLength; i < updatedDataLength; i++) {
-                toAdds.push(updatedData[i]);
+                const temp = {...updatedData[i]};
+                temp.poId = projectInfo.poId
+                temp.modeCode = "SLSP"
+                toAdds.push(temp);
             }
             addList(toAdds);
         }
@@ -645,13 +618,13 @@ const ReactDataTablePdorder = (props) => {
                                                                 ? tableData[row.index][cell.column.id] || cell.value
                                                                 : cell.value
                                                         }
-                                                        name={cell.column.id}
+                                                        name={cell.column.col}
                                                         onChange={(e) => handleChange(e, row, cell.column.id)}
                                                         disabled={cell.column.disabled}
                                                     />
                                                 ) : cell.column.type === "select" ? (
                                                     <select
-                                                        name={cell.column.id}
+                                                        name={cell.column.col}
                                                         defaultValue={
                                                             tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
                                                                 ? tableData[row.index][cell.column.id]
@@ -684,10 +657,10 @@ const ReactDataTablePdorder = (props) => {
                                                         <input
                                                             className="buttonSelect"
                                                             id={cell.column.id}
-                                                            name={cell.column.id}
+                                                            name={cell.column.col}
                                                             onClick={() => goSetting(rowIndex)}
                                                             type="text"
-                                                            placeholder={projectPdiNm.pdiNm ? projectPdiNm.pdiNm : `품명을 선택해 주세요.`}
+                                                            placeholder={`품명을 선택해 주세요.`}
                                                             value={tableData[rowIndex].pdiNm || ""}
                                                             onChange={(e) => handleChange(e, row, cell.column.id)}
                                                             readOnly
@@ -698,10 +671,10 @@ const ReactDataTablePdorder = (props) => {
                                                         <input
                                                             className="buttonSelect"
                                                             id={cell.column.id}
-                                                            name={cell.column.id}
+                                                            name={cell.column.col}
                                                             onClick={() => setValueCompany(rowIndex)}
                                                             type="text"
-                                                            placeholder={projectCompany.esntlId ? projectCompany.esntlId : `거래처명을 선택해 주세요.`}
+                                                            placeholder={`거래처명을 선택해 주세요.`}
                                                             value={tableData[rowIndex].esntlId || ""}
                                                             onChange={(e) => handleChange(e, row, cell.column.id)}
                                                             readOnly

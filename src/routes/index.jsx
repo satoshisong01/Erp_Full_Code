@@ -108,7 +108,7 @@ const RootRoutes = () => {
                 poiId: item.poiId,
                 poiNm: item.poiNm,
                 poiCode: item.poiCode,
-                poiVersion: item.poiVersion,
+                poiVersion: item.poiDesc,
             }))
         );
     };
@@ -157,7 +157,6 @@ const RootRoutes = () => {
             requestData = { useAt: "Y" };
         }
         const resultData = await axiosFetch(url, requestData);
-        console.log(resultData, "품목 리스트");
 
         //품목ID, 품명 , 품목그룹명,단위,품목규격,제조원 저장
         setPdiNmList(
