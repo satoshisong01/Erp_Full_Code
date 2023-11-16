@@ -142,7 +142,6 @@ const ReactDataTableView = (props) => {
                     {page.map((row, rowIndex) => {
                         prepareRow(row);
                         const isRowSelected = rowIndex === selectedRowIndex;
-
                         return (
                             <tr
                                 {...row.getRowProps()}

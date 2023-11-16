@@ -1,27 +1,33 @@
 export const columns = {
     /* 영업관리 */
-    orderPlanMgmt: { // 수주계획관리
-        labor: [ //인건비
+    orderPlanMgmt: {
+        // 수주계획관리
+        labor: [
+            //인건비
             { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "datepicker" },
             { header: "M/M계", col: "total", cellWidth: "10%" },
-            { header: "인건비계", col: "poiBeginDt1", cellWidth: "10%", },
-            { header: "임원", col: "pmpmmPositionCode1", cellWidth: "10%", type: "input", notView: "true", },
-            { header: "특급기술사", col: "pmpmmPositionCode2", cellWidth: "10%", type: "input", notView: "true", },
-            { header: "고급기술사", col: "pmpmmPositionCode3", cellWidth: "10%", type: "input",  notView: "true", },
-            { header: "중급기술사", col: "pmpmmPositionCode4", cellWidth: "10%", type: "input", notView: "true", },
-            { header: "초급기술사", col: "pmpmmPositionCode5", cellWidth: "10%", type: "input", notView: "true", },
-            { header: "고급기능사", col: "pmpmmPositionCode6", cellWidth: "10%", type: "input", notView: "true", },
-            { header: "중급기능사", col: "pmpmmPositionCode7", cellWidth: "10%", type: "input", notView: "true", },
-            { header: "부장", col: "pmpmmPositionCode8", cellWidth: "10%", type: "input", },
-            { header: "차장", col: "pmpmmPositionCode9", cellWidth: "10%", type: "input", },
-            { header: "과장", col: "pmpmmPositionCode10", cellWidth: "10%", type: "input", },
-            { header: "대리", col: "pmpmmPositionCode11", cellWidth: "10%", type: "input", },
-            { header: "주임", col: "pmpmmPositionCode12", cellWidth: "10%", type: "input", },
-            { header: "사원", col: "pmpmmPositionCode13", cellWidth: "10%", type: "input", },
+            { header: "인건비계", col: "poiBeginDt1", cellWidth: "10%" },
+            { header: "임원", col: "pmpmmPositionCode1", cellWidth: "10%", type: "input", notView: "true" },
+            { header: "특급기술사", col: "pmpmmPositionCode2", cellWidth: "10%", type: "input", notView: "true" },
+            { header: "고급기술사", col: "pmpmmPositionCode3", cellWidth: "10%", type: "input", notView: "true" },
+            { header: "중급기술사", col: "pmpmmPositionCode4", cellWidth: "10%", type: "input", notView: "true" },
+            { header: "초급기술사", col: "pmpmmPositionCode5", cellWidth: "10%", type: "input", notView: "true" },
+            { header: "고급기능사", col: "pmpmmPositionCode6", cellWidth: "10%", type: "input", notView: "true" },
+            { header: "중급기능사", col: "pmpmmPositionCode7", cellWidth: "10%", type: "input", notView: "true" },
+            { header: "부장", col: "pmpmmPositionCode8", cellWidth: "10%", type: "input" },
+            { header: "차장", col: "pmpmmPositionCode9", cellWidth: "10%", type: "input" },
+            { header: "과장", col: "pmpmmPositionCode10", cellWidth: "10%", type: "input" },
+            { header: "대리", col: "pmpmmPositionCode11", cellWidth: "10%", type: "input" },
+            { header: "주임", col: "pmpmmPositionCode12", cellWidth: "10%", type: "input" },
+            { header: "사원", col: "pmpmmPositionCode13", cellWidth: "10%", type: "input" },
         ],
-        expenses: [ // 경비
+        expenses: [
+            // 경비
             {
-                header: "경비목록", col: "pjbgTypeCode", cellWidth: "25%", type: "select",
+                header: "경비목록",
+                col: "pjbgTypeCode",
+                cellWidth: "25%",
+                type: "select",
                 options: [
                     { value: "EXPNS01", label: "교통비" },
                     { value: "EXPNS02", label: "숙박비" },
@@ -37,8 +43,9 @@ export const columns = {
             { header: "사용여부", col: "deleteAt", cellWidth: "50%", type: "input", notView: "true" },
             { header: "삭제여부", col: "useAt", cellWidth: "50%", type: "input", notView: "true" },
         ],
-        outsourcing: [ // 개발외주비
-            { header: "회사목록", col: "esntlId",  cellWidth: "50%", type: "buttonCompany", options: [], },
+        outsourcing: [
+            // 개발외주비
+            { header: "회사목록", col: "esntlId", cellWidth: "50%", type: "buttonCompany", options: [] },
             { header: "턴키/MM", col: "pjbgDesc", cellWidth: "25%", type: "input" },
             { header: "금액", col: "pjbgPrice", cellWidth: "25%", type: "input" },
             { header: "프로젝트ID", col: "poiId", cellWidth: "50%", type: "input", notView: "true" },
@@ -47,9 +54,13 @@ export const columns = {
             { header: "사용여부", col: "deleteAt", cellWidth: "50%", type: "input", notView: "true" },
             { header: "삭제여부", col: "useAt", cellWidth: "50%", type: "input", notView: "true" },
         ],
-        generalExpenses: [ // 영업관리비
+        generalExpenses: [
+            // 영업관리비
             {
-                header: "영업관리비 목록", col: "pjbgTypeCode", cellWidth: "25%", type: "select",
+                header: "영업관리비 목록",
+                col: "pjbgTypeCode",
+                cellWidth: "25%",
+                type: "select",
                 options: [
                     { value: "EXPNS07", label: "기업이윤" },
                     { value: "EXPNS08", label: "일반관리비" },
@@ -63,33 +74,35 @@ export const columns = {
             { header: "사용여부", col: "deleteAt", cellWidth: "50%", type: "input", notView: "true" },
             { header: "삭제여부", col: "useAt", cellWidth: "50%", type: "input", notView: "true" },
         ],
-        purchase: [ // 구매비
+        purchase: [
+            // 구매비
             { header: "품명", col: "pdiNm", cellWidth: "20%", type: "buttonPdiNm", options: [] },
-            { header: "품목그룹명", col: "pgNm", cellWidth: "20%", },
+            { header: "품목그룹명", col: "pgNm", cellWidth: "20%" },
             { header: "규격", col: "pdiStnd", cellWidth: "20%" },
             { header: "수량", col: "byQunty", cellWidth: "10%", type: "input" },
             { header: "단위", col: "pdiUnit", cellWidth: "10%" },
-            { header: "소비자 단가", col: "consumerPrice", cellWidth: "14%", },
-            { header: "소비자 금액", col: "consumerAmount", cellWidth: "14%", },
+            { header: "소비자 단가", col: "consumerPrice", cellWidth: "14%" },
+            { header: "소비자 금액", col: "consumerAmount", cellWidth: "14%" },
             { header: "단가", col: "unitPrice", cellWidth: "10%" },
             { header: "금액", col: "planAmount", cellWidth: "10%" },
-            { header: "제조사", col: "pdiMenufut", cellWidth: "12%", },
+            { header: "제조사", col: "pdiMenufut", cellWidth: "12%" },
             { header: "비고", col: "pdiDesc", cellWidth: "10%", type: "input" },
-            { header: "원단가", col: "byUnitPrice", cellWidth: "12%", type: "input", },
-            { header: "원가(견적가)", col: "estimatedCost", cellWidth: "10%", },
-            { header: "이익금", col: "plannedProfits", cellWidth: "12%", },
-            { header: "이익률", col: "plannedProfitMargin", cellWidth: "12%", },
-            { header: "기준 이익률", col: "byStandardMargin", cellWidth: "15%", type: "input", },
-            { header: "소비자가 산출률", col: "byConsumerOutputRate", cellWidth: "15%", type: "input", },
+            { header: "원단가", col: "byUnitPrice", cellWidth: "12%", type: "input" },
+            { header: "원가(견적가)", col: "estimatedCost", cellWidth: "10%" },
+            { header: "이익금", col: "plannedProfits", cellWidth: "12%" },
+            { header: "이익률", col: "plannedProfitMargin", cellWidth: "12%" },
+            { header: "기준 이익률", col: "standardMargin", cellWidth: "15%", type: "input" },
+            { header: "소비자가 산출률", col: "consumerOpRate", cellWidth: "15%", type: "input" },
         ],
     },
 
     /* 실행관리 */
-    laborCostMgmt: { //인건비관리
+    laborCostMgmt: {
+        //인건비관리
         condition: [
-            { title: "프로젝트명", colName: "clCode", type: "input", value: "", searchLevel: "1", },
-            { title: "품목그룹명", colName: "clCode", type: "input", value: "", searchLevel: "1", },
-            { title: "연월", colName: "clCodeNm", type: "input", value: "", searchLevel: "2", },
+            { title: "프로젝트명", colName: "clCode", type: "input", value: "", searchLevel: "1" },
+            { title: "품목그룹명", colName: "clCode", type: "input", value: "", searchLevel: "1" },
+            { title: "연월", colName: "clCodeNm", type: "input", value: "", searchLevel: "2" },
         ],
         project: [
             {
@@ -264,11 +277,6 @@ export const columns = {
         ],
         orderPlan: [
             {
-                header: "인건비아이디",
-                col: "pecId",
-                notView: "true"
-            },
-            {
                 header: "품목그룹명",
                 col: "pgNm",
                 cellWidth: "25%",
@@ -411,6 +419,210 @@ export const columns = {
                 col: "pmpmmPositionCode2",
                 cellWidth: "10%",
             },
-        ]
-    }
-}
+        ],
+    },
+    expenseMgmt: {
+        condition: [
+            { title: "프로젝트명", colName: "clCode", type: "input", value: "", searchLevel: "1" },
+            { title: "기간검색", colName: "selectedDate", type: "datepicker", value: "", searchLevel: "1" },
+            { title: "출장인", colName: "clCodeNm", type: "input", value: "", searchLevel: "2" },
+        ],
+        projectView: [
+            {
+                header: "프로젝트명",
+                col: "poiNm",
+                cellWidth: "50%",
+                type: "input",
+            },
+            {
+                header: "계획인건비",
+                col: "pmpmmNum1",
+                cellWidth: "30%",
+                type: "input",
+            },
+            {
+                header: "실행인건비",
+                col: "pmpmmNum2",
+                cellWidth: "20%",
+                type: "input",
+            },
+        ],
+        inquiry: [
+            {
+                header: "구분코드",
+                col: "modeCode",
+                cellWidth: "10%",
+            },
+            {
+                header: "품목그룹명",
+                col: "pgNm",
+                cellWidth: "20%",
+                type: "button",
+                options: [],
+            },
+            { header: "연/월", col: "pjbgDt", cellWidth: "10%" },
+            {
+                header: "출장인",
+                col: "pjbgManpower",
+                cellWidth: "10%",
+            },
+            {
+                header: "시작일",
+                col: "pjbgBeginDt",
+                cellWidth: "10%",
+            },
+            {
+                header: "종료일",
+                col: "pjbgEndDt",
+                cellWidth: "10%",
+            },
+            {
+                header: "교통비",
+                col: "pjbgPrice01",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "숙박비",
+                col: "pjbgPrice02",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "일비/파견비",
+                col: "pjbgPrice03",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "식비",
+                col: "pjbgPrice04",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "자재/소모품외",
+                col: "pjbgPrice05",
+                cellWidth: "20%",
+                type: "input",
+            },
+            {
+                header: "지출합계",
+                col: "pmpmmNum62",
+                cellWidth: "10%",
+            },
+            {
+                header: "월합계",
+                col: "pmpmmNum63",
+                cellWidth: "10%",
+            },
+            {
+                header: "비고",
+                col: "pjbgDesc",
+                cellWidth: "10%",
+                type: "input",
+            },
+        ],
+        contract: [
+            { header: "교통비", col: "EXPNS01", cellWidth: "15%", type: "input" },
+            { header: "숙박비", col: "EXPNS02", cellWidth: "15%", type: "input" },
+            {
+                header: "일비/파견비",
+                col: "EXPNS03",
+                cellWidth: "20%",
+                type: "input",
+            },
+            {
+                header: "식비",
+                col: "EXPNS04",
+                cellWidth: "15%",
+                type: "input",
+            },
+            {
+                header: "자재/소모품외",
+                col: "EXPNS05",
+                cellWidth: "20%",
+                type: "input",
+            },
+            {
+                header: "영업비",
+                col: "EXPNS06",
+                cellWidth: "15%",
+                type: "input",
+            },
+        ],
+        budget: [
+            {
+                header: "품목그룹명",
+                col: "pgNm",
+                cellWidth: "20%",
+                type: "button",
+                options: [],
+            },
+            { header: "연/월", col: "pjbgDt", cellWidth: "10%", type: "costDateStart" },
+            {
+                header: "출장인",
+                col: "pjbgManpower",
+                cellWidth: "10%",
+            },
+            {
+                header: "시작일",
+                col: "pjbgBeginDt",
+                cellWidth: "10%",
+                type: "costDateStart",
+            },
+            {
+                header: "종료일",
+                col: "pjbgEndDt",
+                cellWidth: "10%",
+                type: "costDateEnd",
+            },
+            {
+                header: "교통비",
+                col: "pjbgPrice01",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "숙박비",
+                col: "pjbgPrice02",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "일비/파견비",
+                col: "pjbgPrice03",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "식비",
+                col: "pjbgPrice04",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "자재/소모품외",
+                col: "pjbgPrice05",
+                cellWidth: "20%",
+                type: "input",
+            },
+            {
+                header: "지출합계",
+                col: "pmpmmNum62",
+                cellWidth: "10%",
+            },
+            {
+                header: "월합계",
+                col: "pmpmmNum63",
+                cellWidth: "10%",
+            },
+            {
+                header: "비고",
+                col: "pjbgDesc",
+                cellWidth: "10%",
+                type: "input",
+            },
+        ],
+    },
+};

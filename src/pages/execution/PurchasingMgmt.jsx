@@ -12,6 +12,7 @@ import ApprovalForm from "components/form/ApprovalForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import ReactDataTableView from "components/DataTable/ReactDataTableView";
+import RefreshButton from "components/button/RefreshButton";
 
 /** 실행관리-구매관리 */
 function PurchasingMgmt() {
@@ -33,7 +34,7 @@ function PurchasingMgmt() {
     const [isClicked3, setIsClicked3] = useState(false);
     const [isClicked4, setIsClicked4] = useState(false);
 
-    const [poiIdToSend, setPoiIdToSend] = useState({ poiId: "" });
+    const [poiIdToSend, setPoiIdToSend] = useState();
 
     const sendPoiId = (poiId) => {
         setPoiIdToSend(poiId);
@@ -52,6 +53,10 @@ function PurchasingMgmt() {
     };
     const handleClick4 = () => {
         setIsClicked4(!isClicked4);
+    };
+
+    const refresh = () => {
+        fetchData();
     };
 
     const [returnKeyWord, setReturnKeyWord] = useState("");
@@ -261,11 +266,11 @@ function PurchasingMgmt() {
             type: "button",
             options: [],
         },
-        { header: "품목명", col: "pmpMonth", cellWidth: "10%", type: "input" },
-        { header: "규격", col: "total", cellWidth: "10%", type: "input" },
+        { header: "품명", col: "pdiNm", cellWidth: "30%", type: "input" },
+        { header: "규격", col: "pdiStnd", cellWidth: "10%", type: "input" },
         {
             header: "수량",
-            col: "poiBeginDt1",
+            col: "byQunty",
             cellWidth: "10%",
             type: "input",
         },
@@ -283,13 +288,13 @@ function PurchasingMgmt() {
         },
         {
             header: "단위",
-            col: "pmpmmNum3",
+            col: "pdiUnit",
             cellWidth: "10%",
             type: "input",
         },
         {
             header: "단가",
-            col: "pmpmmNum4",
+            col: "byUnitPrice",
             cellWidth: "10%",
             type: "input",
         },
@@ -301,19 +306,19 @@ function PurchasingMgmt() {
         },
         {
             header: "구매거래처",
-            col: "pmpmmNum6",
+            col: "cltNm",
             cellWidth: "20%",
             type: "input",
         },
         {
             header: "발주일",
-            col: "pmpmmNum61",
+            col: "byOrderDt",
             cellWidth: "20%",
             type: "input",
         },
         {
             header: "제조사",
-            col: "pmpmmNum62",
+            col: "pdiMenufut",
             cellWidth: "20%",
             type: "input",
         },
@@ -325,7 +330,7 @@ function PurchasingMgmt() {
         },
         {
             header: "입고일",
-            col: "pmpmmNum64",
+            col: "createDate",
             cellWidth: "20%",
             type: "input",
         },
@@ -351,17 +356,17 @@ function PurchasingMgmt() {
             type: "button",
             options: [],
         },
-        { header: "품명", col: "pmpMonth", cellWidth: "10%", type: "button" },
-        { header: "규격", col: "total", cellWidth: "10%", type: "input" },
+        { header: "품명", col: "pdiNm", cellWidth: "10%", type: "button" },
+        { header: "규격", col: "pdiStnd", cellWidth: "10%", type: "input" },
         {
             header: "수량",
-            col: "poiBeginDt1",
+            col: "byQunty",
             cellWidth: "10%",
             type: "input",
         },
         {
             header: "단가",
-            col: "pmpmmNum1",
+            col: "byUnitPrice",
             cellWidth: "10%",
             type: "input",
         },
@@ -369,7 +374,6 @@ function PurchasingMgmt() {
             header: "금액",
             col: "pmpmmNum2",
             cellWidth: "10%",
-            type: "input",
         },
         {
             header: "구매예상일",
@@ -379,7 +383,7 @@ function PurchasingMgmt() {
         },
         {
             header: "비고",
-            col: "pmpmmNum4",
+            col: "byDesc",
             cellWidth: "10%",
             type: "input",
         },
@@ -393,8 +397,8 @@ function PurchasingMgmt() {
             type: "button",
             options: [],
         },
-        { header: "품명", col: "pmpMonth", cellWidth: "10%", type: "input" },
-        { header: "규격", col: "total", cellWidth: "10%", type: "input" },
+        { header: "품명", col: "pdiNm", cellWidth: "10%", type: "input" },
+        { header: "규격", col: "pdiStnd", cellWidth: "10%", type: "input" },
         {
             header: "수량",
             col: "poiBeginDt1",
@@ -403,7 +407,7 @@ function PurchasingMgmt() {
         },
         {
             header: "단가",
-            col: "pmpmmNum1",
+            col: "byUnitPrice",
             cellWidth: "10%",
             type: "input",
         },
@@ -421,7 +425,7 @@ function PurchasingMgmt() {
         },
         {
             header: "발주일",
-            col: "pmpmmNum4",
+            col: "byOrderDt",
             cellWidth: "10%",
             type: "input",
         },
@@ -453,41 +457,109 @@ function PurchasingMgmt() {
 
     const groupedData = {}; //인건비 바꿔서 넣어줄 빈 객체
 
-    const changePrmnPlanData = (data) => {
-        // 포지션에 대한 고정된 번호를 매핑하는 객체 생성
-        const positionMapping = {
-            부장: 1,
-            부장: 2,
-            차장: 3,
-            과장: 4,
-            대리: 5,
-            주임: 6,
-            사원: 7,
-        };
+    //const changePrmnPlanData = (data) => {
+    //    // 포지션에 대한 고정된 번호를 매핑하는 객체 생성
+    //    const positionMapping = {
+    //        부장: 1,
+    //        부장: 2,
+    //        차장: 3,
+    //        과장: 4,
+    //        대리: 5,
+    //        주임: 6,
+    //        사원: 7,
+    //    };
 
-        data.forEach((item) => {
-            const key = `${item.pgNm}-${item.pmpMonth[0]}-${item.pmpMonth[1]}`;
-            if (!groupedData[key]) {
-                groupedData[key] = {
-                    pgNm: item.pgNm,
-                    pmpMonth: `${item.pmpMonth[0]}-${item.pmpMonth[1]}`,
-                    total: 0,
-                };
+    //    data.forEach((item) => {
+    //        const key = `${item.pgNm}-${item.pmpMonth[0]}-${item.pmpMonth[1]}`;
+    //        if (!groupedData[key]) {
+    //            groupedData[key] = {
+    //                pgNm: item.pgNm,
+    //                pmpMonth: `${item.pmpMonth[0]}-${item.pmpMonth[1]}`,
+    //                total: 0,
+    //            };
+    //        }
+
+    //        // 포지션에 해당하는 번호를 가져오고, 해당 위치에 pmpmmNum을 저장
+    //        const positionNumber = positionMapping[item.pmpmmPositionCode];
+    //        if (positionNumber) {
+    //            const pmpmmNumKey = `pmpmmNum${positionNumber}`;
+    //            groupedData[key][pmpmmNumKey] = item.pmpmmNum;
+    //            groupedData[key].total += item.pmpmmNum;
+    //        }
+    //    });
+
+    //    // groupedData 객체를 배열로 변환
+    //    const transformedData = Object.values(groupedData);
+    //    setBudgetMgmt(transformedData);
+    //    console.log(transformedData, "변환되고나서의 값을보여줌");
+    //};
+
+    const processResultData = (resultData) => {
+        const transformedData = resultData.reduce((accumulator, item) => {
+            const { pjbgTypeCode, modeCode, pjbgPrice, pjbgBeginDt, pjbgEndDt, pjbgManpower, pjbgDt, pgNm, pjbgDesc } = item;
+
+            if (/^EXPNS\d{2}$/.test(pjbgTypeCode) && ["EXDR", "EXCP", "EXCU"].includes(modeCode)) {
+                const key = `${modeCode}_${pjbgBeginDt}_${pjbgEndDt}`;
+                if (!accumulator[key]) {
+                    accumulator[key] = {
+                        pjbgTypeCodes: [],
+                        modeCode,
+                        pjbgPrices: [],
+                        pjbgBeginDt,
+                        pjbgEndDt,
+                        pjbgManpower,
+                        pjbgDt,
+                        pgNm,
+                        pjbgDesc,
+                    };
+                }
+
+                accumulator[key].pjbgTypeCodes.push(pjbgTypeCode);
+                accumulator[key].pjbgPrices.push(pjbgPrice);
+
+                return accumulator;
             }
 
-            // 포지션에 해당하는 번호를 가져오고, 해당 위치에 pmpmmNum을 저장
-            const positionNumber = positionMapping[item.pmpmmPositionCode];
-            if (positionNumber) {
-                const pmpmmNumKey = `pmpmmNum${positionNumber}`;
-                groupedData[key][pmpmmNumKey] = item.pmpmmNum;
-                groupedData[key].total += item.pmpmmNum;
-            }
+            return accumulator;
+        }, {});
+
+        const mergedData = Object.values(transformedData).map((mergedItem, index) => {
+            const newObj = {};
+            mergedItem.pjbgTypeCodes.forEach((code, innerIndex) => {
+                newObj[`pjbgTypeCode${code.replace("EXPNS", "")}`] = code;
+                newObj[`pjbgPrice${code.replace("EXPNS", "")}`] = mergedItem.pjbgPrices[innerIndex];
+            });
+            newObj["modeCode"] = mergedItem.modeCode;
+            newObj["pjbgBeginDt"] = mergedItem.pjbgBeginDt;
+            newObj["pjbgEndDt"] = mergedItem.pjbgEndDt;
+            newObj["pjbgManpower"] = mergedItem.pjbgManpower;
+            newObj["pjbgDt"] = mergedItem.pjbgDt;
+            newObj["pgNm"] = mergedItem.pgNm;
+            newObj["pjbgDesc"] = mergedItem.pjbgDesc;
+
+            return newObj;
         });
 
-        // groupedData 객체를 배열로 변환
-        const transformedData = Object.values(groupedData);
-        setBudgetMgmt(transformedData);
-        console.log(transformedData, "변환되고나서의 값을보여줌");
+        return mapPecModeCodeToText(mergedData);
+    };
+
+    const mapPecModeCodeToText = (data) => {
+        for (let i = 0; i < data.length; i++) {
+            switch (data[i].modeCode) {
+                case "EXDR":
+                    data[i].modeCode = "수주";
+                    break;
+                case "EXCP":
+                    data[i].modeCode = "예산";
+                    break;
+                case "EXCU":
+                    data[i].modeCode = "실행";
+                    break;
+                default:
+                    return;
+            }
+        }
+        return data;
     };
 
     const changeTabs = (task) => {
@@ -497,59 +569,41 @@ function PurchasingMgmt() {
             setIsSaveFormTable(true);
         }
     };
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (currentTask === "구매 조회관리") {
-                    const data = await fetchAllData("/cost/costPrmnPlan"); // 구매 조회관리
-                    console.log(data, "불러온 조회관리 값은?");
-                    changePrmnPlanData(data);
-                } else if (currentTask === "구매 수주관리") {
-                    const data = await fetchAllData("/cost/costPjbudget/type"); // 구매 수주관리
-                    setRunMgmt(data);
-                    //.map((item) => ({
-                    //    ...item,
-                    //    pjbgTypeCode: changepjbudgetData(
-                    //        //영업 slsp만 추출
-                    //        item.pjbgTypeCode,
-                    //        expensesColumns[0].options
-                    //    ),
-                    //}))
-                } else if (currentTask === "구매 예산관리") {
-                    const data = await fetchAllData("/cost/costPjbudget/type"); // 구매 예산관리
-                    setRunMgmt(data);
-                    //.map((item) => ({
-                    //    ...item,
-                    //    pjbgTypeCode: changepjbudgetData(
-                    //        //영업 slsp만 추출
-                    //        item.pjbgTypeCode,
-                    //        expensesColumns[0].options
-                    //    ),
-                    //}))
-                } else if (currentTask === "구매 실행관리") {
-                    const data = await fetchAllData("/cost/costPdOrdr"); // 실행관리
-                    setInquiryMgmt(data);
-                }
-            } catch (error) {
-                console.error("데이터를 가져오는 중에 오류 발생:", error);
+    const fetchData = async () => {
+        try {
+            if (currentTask === "구매 조회관리") {
+                const data = await fetchAllData("/api/baseInfrm/product/buyIngInfo/totalListAll.do"); // 구매 조회관리
+                console.log(data, "불러온 조회관리 값은?");
+                setInquiryMgmt(data);
+            } else if (currentTask === "구매 수주관리") {
+                const data = await fetchAllData("/api/baseInfrm/product/buyIngInfo/totalListAll.do"); // 구매 수주관리
+                setPgBudgetMgmt(data);
+            } else if (currentTask === "구매 예산관리") {
+                const data = await fetchAllData("/api/baseInfrm/product/buyIngInfo/totalListAll.do"); // 구매 예산관리
+                setBudgetMgmt(data);
+            } else if (currentTask === "구매 실행관리") {
+                const data = await fetchAllData("/api/baseInfrm/product/buyIngInfo/totalListAll.do"); // 실행관리
+                setRunMgmt(data);
             }
-        };
-
+        } catch (error) {
+            console.error("데이터를 가져오는 중에 오류 발생:", error);
+        }
+    };
+    useEffect(() => {
         fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
     }, [poiIdToSend, projectInfo.poiId, currentTask]);
 
     const fetchAllData = async (tableUrl, currentTask) => {
-        const url = `/api${tableUrl}/totalListAll.do`;
-        let requestData = { poiId: poiIdToSend || projectInfo.poiId };
-        if (currentTask === "경비 조회관리") {
-            //requestData 값 담기
-            requestData = { poiId: poiIdToSend || projectInfo.poiId };
-        } else if (currentTask === "경비 수주관리") {
+        const url = tableUrl;
+        console.log(url);
+        let requestData = { poiId: poiIdToSend };
+        if (currentTask === "구매 조회관리") {
+            requestData = { poiId: poiIdToSend };
+        } else if (currentTask === "구매 수주관리") {
             requestData = { poiId: projectInfo.poiId, modeCode: "EXDR" };
-        } else if (currentTask === "경비 예산관리") {
+        } else if (currentTask === "구매 예산관리") {
             requestData = { poiId: projectInfo.poiId, modeCode: "EXCP" };
-        } else if (currentTask === "경비 실행관리") {
+        } else if (currentTask === "구매 실행관리") {
             requestData = { poiId: projectInfo.poiId, modeCode: "EXCU" };
         } else {
             requestData = {
@@ -705,12 +759,17 @@ function PurchasingMgmt() {
                                     justColumn={true}
                                 />
                             </div>
+                            <div className="table-buttons">
+                                <RefreshButton onClick={refresh} />
+                            </div>
                             <ReactDataTable
+                                viewPageName="구매 조회관리"
                                 columns={inquiryColumns}
-                                flag={currentTask === "구매 조회관리" && isSaveFormTable}
+                                flag={false}
                                 testTask={true}
                                 tableRef={orderPlanMgmtTable1}
                                 customDatas={inquiryMgmt}
+                                customDatasRefresh={refresh}
                             />
                             {/*</ApprovalForm>*/}
                         </ul>
@@ -726,11 +785,16 @@ function PurchasingMgmt() {
                             <div className={`hideDivRun2 ${isClicked2 ? "" : "clicked"}`}>
                                 <ReactDataTableView columns={projectColumns} customDatas={projectItem} defaultPageSize={5} justColumn={true} />
                             </div>
+                            <div className="table-buttons">
+                                <RefreshButton onClick={refresh} />
+                            </div>
                             <ReactDataTable
+                                viewPageName="구매 수주관리"
                                 columns={budgetColumns}
                                 flag={currentTask === "구매 수주관리" && isSaveFormTable}
                                 tableRef={orderPlanMgmtTable2}
-                                customDatas={budgetMgmt}
+                                customDatas={pgBudgetMgmt}
+                                customDatasRefresh={refresh}
                             />
                         </ul>
                     </div>
@@ -743,13 +807,18 @@ function PurchasingMgmt() {
                                 </button>
                             </div>
                             <div className={`hideDivRun3 ${isClicked3 ? "" : "clicked"}`}>
-                                <ReactDataTable columns={projectColumns} defaultPageSize={5} justColumn={true} />
+                                <ReactDataTableView columns={projectColumns} defaultPageSize={5} justColumn={true} />
+                            </div>
+                            <div className="table-buttons">
+                                <RefreshButton onClick={refresh} />
                             </div>
                             <ReactDataTable
+                                viewPageName="구매 예산관리"
                                 columns={budgetColumns}
                                 flag={currentTask === "구매 예산관리" && isSaveFormTable}
                                 tableRef={orderPlanMgmtTable3}
                                 customDatas={budgetMgmt}
+                                customDatasRefresh={refresh}
                             />
                         </ul>
                     </div>
@@ -763,13 +832,18 @@ function PurchasingMgmt() {
                                 </button>
                             </div>
                             <div className={`hideDivRun4 ${isClicked4 ? "" : "clicked"}`}>
-                                <ReactDataTable columns={projectColumns} defaultPageSize={5} justColumn={true} />
+                                <ReactDataTableView columns={projectColumns} defaultPageSize={5} justColumn={true} />
+                            </div>
+                            <div className="table-buttons">
+                                <RefreshButton onClick={refresh} />
                             </div>
                             <ReactDataTable
+                                viewPageName="구매 실행관리"
                                 columns={runColumns}
                                 flag={currentTask === "구매 실행관리" && isSaveFormTable}
                                 tableRef={orderPlanMgmtTable4}
                                 customDatas={runMgmt}
+                                customDatasRefresh={refresh}
                             />
                         </ul>
                     </div>

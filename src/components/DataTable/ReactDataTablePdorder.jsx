@@ -8,7 +8,20 @@ import ModalPagePdiNm from "components/modal/ModalPagePdiNm";
 import ModalPageCompany from "components/modal/ModalPageCompany";
 
 const ReactDataTablePdorder = (props) => {
-    const { columns, suffixUrl, flag, detailUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendSelected, singleUrl, customDatasRefresh } = props;
+    const {
+        columns,
+        suffixUrl,
+        flag,
+        detailUrl,
+        customDatas,
+        defaultPageSize,
+        tableRef,
+        viewPageName,
+        customerList,
+        sendSelected,
+        singleUrl,
+        customDatasRefresh,
+    } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -32,14 +45,13 @@ const ReactDataTablePdorder = (props) => {
         setIsOpenModalPdiNm,
         isOpenModalPdiNm,
         setProjectPdiNm,
-        projectCompany,
+        companyInfo,
         isOpenModalCompany,
-        setProjectCompany,
         setIsOpenModalCompany,
         isModalTable,
         modalPageName,
         setModalLengthSelectRow,
-        isSaveFormTable
+        isSaveFormTable,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -75,7 +87,7 @@ const ReactDataTablePdorder = (props) => {
             setOriginTableData([...customDatas]);
         } else {
             setTableData([]);
-            setOriginTableData([])
+            setOriginTableData([]);
         }
     }, [customDatas]);
 
@@ -239,21 +251,22 @@ const ReactDataTablePdorder = (props) => {
 
     /* table button 활성화 on off */
     useEffect(() => {
-        if(isModalTable && current === modalPageName) { //모달화면일때
+        if (isModalTable && current === modalPageName) {
+            //모달화면일때
             setModalLengthSelectRow(selectedFlatRows.length);
-            if (selectedFlatRows.length > 0) { 
-                setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
+            if (selectedFlatRows.length > 0) {
+                setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
                 projectInfo.poId = selectedFlatRows[selectedFlatRows.length - 1].original.poId; //품목수주
                 projectInfo.poDesc = selectedFlatRows[selectedFlatRows.length - 1].original.poDesc;
                 sendSelected && sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
-        } else if(!isModalTable && (current === currentPageName || current === innerPageName)) { //모달화면이 아닐때
+        } else if (!isModalTable && (current === currentPageName || current === innerPageName)) {
+            //모달화면이 아닐때
             setLengthSelectRow(selectedFlatRows.length);
-            selectedFlatRows.length > 0 && setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
+            selectedFlatRows.length > 0 && setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
             selectedFlatRows.length > 0 && sendSelected && sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
         }
     }, [selectedFlatRows]);
-
 
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {
@@ -292,15 +305,14 @@ const ReactDataTablePdorder = (props) => {
 
     useEffect(() => {
         setDataBuket(projectPgNm.pgNm);
-        setCompanyBuket(projectCompany.esntlId);
+        setCompanyBuket(companyInfo.esntlId);
         setDataBuketPdiNm(projectPdiNm.pdiId, projectPdiNm.pdiNm, projectPdiNm.pgNm, projectPdiNm.pdiWght, projectPdiNm.pdiStnd, projectPdiNm.pdiMenufut);
-    }, [projectPgNm, projectCompany]);
+    }, [projectPgNm, companyInfo]);
 
     const [saveProjectPdiNm, setSaveProjectPdiNm] = useState([projectPdiNm]);
     useEffect(() => {
         setSaveProjectPdiNm(projectPdiNm);
     }, [projectPdiNm]);
-
 
     const setValueData = (rowIndex) => {
         setIsOpenModalPgNm(true);
@@ -365,7 +377,7 @@ const ReactDataTablePdorder = (props) => {
 
                 // companyBuket 값을 업데이트할 때 prevDataBuket도 업데이트
                 setPreCompanyBuket(companyBuket);
-                // setProjectCompany("");
+                //setCompanyInfo("");
             }
         }
     }, [
@@ -462,7 +474,7 @@ const ReactDataTablePdorder = (props) => {
 
     //-------------------------------배열 추가, 수정, 삭제
     const addList = async (addNewData) => {
-        if(!singleUrl) return;
+        if (!singleUrl) return;
         const url = `/api${singleUrl}/addList.do`;
         const resultData = await axiosPost(url, addNewData);
         if (resultData && resultData.length > 0) {
@@ -473,7 +485,7 @@ const ReactDataTablePdorder = (props) => {
         }
     };
     const updateList = async (toUpdate) => {
-        if(!singleUrl) return;
+        if (!singleUrl) return;
         const url = `/api${singleUrl}/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData && resultData.length > 0) {
@@ -485,7 +497,7 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const deleteList = async (removeItem) => {
-        if(!singleUrl) return;
+        if (!singleUrl) return;
         const url = `/api${singleUrl}/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         if (resultData && resultData.length > 0) {
@@ -497,7 +509,6 @@ const ReactDataTablePdorder = (props) => {
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
 
-
     //구매용
     const compareData = (originData, updatedData) => {
         // const filterData = updatedData.filter((data) => data.pmpMonth); //필수값 체크
@@ -506,7 +517,7 @@ const ReactDataTablePdorder = (props) => {
         if (originDataLength > updatedDataLength) {
             updatedData.forEach((data) => {
                 data.poId = projectInfo.poId;
-                data.modeCode = "SLSP"
+                data.modeCode = "SLSP";
             });
             updateList(updatedData);
 
@@ -514,29 +525,27 @@ const ReactDataTablePdorder = (props) => {
             const extraOriginData = originAValues.slice(updatedDataLength);
 
             deleteList(extraOriginData);
-
         } else if (originDataLength === updatedDataLength) {
             updatedData.forEach((data) => {
                 data.poId = projectInfo.poId;
-                data.modeCode = "SLSP"
+                data.modeCode = "SLSP";
             });
             updateList(updatedData);
-
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
             const addUpdate = [];
             for (let i = 0; i < originDataLength; i++) {
-                const temp = {...updatedData[i]};
-                temp.poId = projectInfo.poId
-                temp.modeCode = "SLSP"
+                const temp = { ...updatedData[i] };
+                temp.poId = projectInfo.poId;
+                temp.modeCode = "SLSP";
                 addUpdate.push(temp);
             }
             updateList(addUpdate);
 
             for (let i = originDataLength; i < updatedDataLength; i++) {
-                const temp = {...updatedData[i]};
-                temp.poId = projectInfo.poId
-                temp.modeCode = "SLSP"
+                const temp = { ...updatedData[i] };
+                temp.poId = projectInfo.poId;
+                temp.modeCode = "SLSP";
                 toAdds.push(temp);
             }
             addList(toAdds);

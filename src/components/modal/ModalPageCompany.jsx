@@ -5,7 +5,7 @@ import { PageContext } from "components/PageProvider";
 import SearchListCompany from "components/SearchListCompany";
 
 export default function ModalPageCompany({ rowIndex }) {
-    const { companyList, setProjectCompany, setIsOpenModalCompany, setReturnKeyWord } = useContext(PageContext);
+    const { companyList, setCompanyInfo, setIsOpenModalCompany, setReturnKeyWord } = useContext(PageContext);
     //const [savePgNm, setSavePgNm] = useState("");
 
     useEffect(() => {

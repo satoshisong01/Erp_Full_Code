@@ -13,10 +13,22 @@ import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import ReactDataTableView from "components/DataTable/ReactDataTableView";
 import { ChangePrmnPlanData } from "components/DataTable/function/ChangePrmnPlanData";
 import RefreshButton from "components/button/RefreshButton";
+import RefreshButton from "components/button/RefreshButton";
 
 /** 실행관리-인건비관리 */
 function LaborCostMgmt() {
-    const { setPrevInnerPageName, setCurrentPageName, setInnerPageName, innerPageName, isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
+    const {
+        innerPageName,
+        setCurrentPageName,
+        setPrevInnerPageName,
+        setInnerPageName,
+        isSaveFormTable,
+        setIsSaveFormTable,
+        projectInfo,
+        setProjectInfo,
+        projectItem,
+        viewSetPoiId,
+    } = useContext(PageContext);
 
     useEffect(() => {
         setInnerPageName("인건비 조회관리");
@@ -71,6 +83,15 @@ function LaborCostMgmt() {
     const [budgetView, setBudgetView] = useState([]); //(실행) 예산띄우기
     const [runMgmt, setRunMgmt] = useState([]); // 인건비 실행관리
 
+    //useEffect(() => {
+    //    console.log(pgBudgetMgmt, "pgBudgetMgmt");
+    //    console.log(pgBudgetView, "pgBudgetView");
+    //}, [pgBudgetView, pgBudgetMgmt]);
+
+    const refresh = () => {
+        fetchData();
+    };
+
     //인건비 수주, 예산, 실행 표기
     const mapPecModeCodeToText = (data) => {
         for (let i = 0; i < data.length; i++) {
@@ -92,7 +113,8 @@ function LaborCostMgmt() {
     };
 
     const changeTabs = (task) => {
-        if (task !== innerPageName) { //다른 페이지의 버튼 변경 막기
+        if (task !== innerPageName) {
+            //다른 페이지의 버튼 변경 막기
             setIsSaveFormTable(true);
         }
         setInnerPageName((prev) => {
@@ -336,6 +358,7 @@ function LaborCostMgmt() {
                                 tableRef={orderPlanMgmtTable1}
                                 customDatas={inquiryMgmt}
                                 viewPageName="인건비 조회관리"
+                                customDatasRefresh={refresh}
                             />
                         </ul>
                     </div>

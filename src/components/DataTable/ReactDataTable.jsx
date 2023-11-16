@@ -12,7 +12,20 @@ import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
 import ModalPagePgNm from "components/modal/ModalPagePgNm";
 
 const ReactDataTable = (props) => {
-    const { columns, suffixUrl, flag, customDatas, defaultPageSize, tableRef, viewPageName, customDatasRefresh, singleUrl, sendToParentsAdd, sendToParentTables, sendSelected } = props;
+    const {
+        columns,
+        suffixUrl,
+        flag,
+        customDatas,
+        defaultPageSize,
+        tableRef,
+        viewPageName,
+        customDatasRefresh,
+        singleUrl,
+        sendToParentsAdd,
+        sendToParentTables,
+        sendSelected,
+    } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -109,13 +122,14 @@ const ReactDataTable = (props) => {
             setOriginTableData([...customDatas]);
         } else {
             setTableData([]);
-            setOriginTableData([])
+            setOriginTableData([]);
         }
+        console.log(customDatas, "나온데이터");
     }, [customDatas]);
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
-        console.log("currentPage:",current,"navName:",currentPageName,"innerTabName:",innerPageName,"ModalName:",modalPageName);
+        console.log("currentPage:", current, "navName:", currentPageName, "innerTabName:", innerPageName, "ModalName:", modalPageName);
         if (currentPageName !== prevCurrentPageName || innerPageName !== prevInnerPageName) {
             // 현재 페이지와 이전 페이지가 같지 않다면
             toggleAllRowsSelected(false);
@@ -130,7 +144,7 @@ const ReactDataTable = (props) => {
     useEffect(() => {
         setIsEditing(flag);
         if (current === currentPageName || (current === innerPageName && !isSaveFormTable)) {
-            if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리"  || innerPageName === "인건비 실행관리") {
+            if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
                 sendToParentTables(originTableData, tableData);
             } else {
                 compareData(originTableData, tableData);
@@ -197,7 +211,7 @@ const ReactDataTable = (props) => {
         if (!updatedData) {
             setOpenModalMod(true);
         } else {
-            if(customDatas) {
+            if (customDatas) {
                 sendToParentsAdd(selectRow);
                 setOpenModalMod(false);
                 return;
@@ -303,7 +317,7 @@ const ReactDataTable = (props) => {
     const onCLickRow = (row) => {
         toggleRowSelected(row.id);
         if (row.original.poiId) {
-            setProjectInfo((prev) => ({...prev, poiId: row.original.poiId}))
+            setProjectInfo((prev) => ({ ...prev, poiId: row.original.poiId }));
         }
     };
 
@@ -362,21 +376,23 @@ const ReactDataTable = (props) => {
     );
 
     useEffect(() => {
-        if(isModalTable && current === modalPageName) { //모달화면일때
+        if (isModalTable && current === modalPageName) {
+            //모달화면일때
             setModalLengthSelectRow(selectedFlatRows.length);
-            if (selectedFlatRows.length > 0) { 
-                setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
+            if (selectedFlatRows.length > 0) {
+                setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
                 projectInfo.poId = selectedFlatRows[selectedFlatRows.length - 1].original.poId; //품목수주
                 projectInfo.poDesc = selectedFlatRows[selectedFlatRows.length - 1].original.poDesc;
                 sendSelected && sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
-        } else if(!isModalTable && (current === currentPageName || current === innerPageName)) { //모달화면이 아닐때
+        } else if (!isModalTable && (current === currentPageName || current === innerPageName)) {
+            //모달화면이 아닐때
             setLengthSelectRow(selectedFlatRows.length);
-            selectedFlatRows.length > 0 && setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values)
+            selectedFlatRows.length > 0 && setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
             selectedFlatRows.length > 0 && sendSelected && sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
         }
     }, [selectedFlatRows]);
-    
+
     const [dataBuket, setDataBuket] = useState({});
     const [prevDataBuket, setPrevDataBuket] = useState({});
 
@@ -580,11 +596,9 @@ const ReactDataTable = (props) => {
             const combinedAValues = extraOriginData.reduce((acc, current) => acc.concat(current), []);
 
             deleteList(combinedAValues);
-
         } else if (originDataLength === updatedDataLength) {
             upDateChange(filterData);
             updateList(filterData);
-
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
             const addUpdate = [];
@@ -610,7 +624,6 @@ const ReactDataTable = (props) => {
                 toAdds.push(toAdd);
             }
             addList(toAdds);
-
         }
     };
 
@@ -662,7 +675,7 @@ const ReactDataTable = (props) => {
                     ))}
                 </thead>
                 {tableData.length <= 0 && (
-                    <div style={{display: 'flex', width: '1000px', margin: 'auto', alignItems: 'center', justifyContent: 'center'}}>
+                    <div style={{ display: "flex", width: "1000px", margin: "auto", alignItems: "center", justifyContent: "center" }}>
                         <div style={{}}>no data</div>
                     </div>
                 )}
@@ -806,7 +819,7 @@ const ReactDataTable = (props) => {
                                                             name={cell.column.id}
                                                             onClick={() => setValueData(rowIndex)}
                                                             type="text"
-                                                            placeholder={projectPgNm.pgNm ? projectPgNm.pgNm : `품목그룹명을 선택해 주세요.`}
+                                                            placeholder={`품목그룹명을 선택해 주세요.`}
                                                             value={tableData[rowIndex].pgNm || ""}
                                                             onChange={(e) => handleChange(e, row, cell.column.id)}
                                                             readOnly
