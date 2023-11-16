@@ -13,7 +13,6 @@ import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import ReactDataTableView from "components/DataTable/ReactDataTableView";
 import { ChangePrmnPlanData } from "components/DataTable/function/ChangePrmnPlanData";
 import RefreshButton from "components/button/RefreshButton";
-import RefreshButton from "components/button/RefreshButton";
 
 /** 실행관리-인건비관리 */
 function LaborCostMgmt() {
@@ -27,7 +26,7 @@ function LaborCostMgmt() {
         projectInfo,
         setProjectInfo,
         projectItem,
-        viewSetPoiId,
+        // viewSetPoiId,
     } = useContext(PageContext);
 
     useEffect(() => {
@@ -70,23 +69,15 @@ function LaborCostMgmt() {
         setIsClicked4(!isClicked4);
     };
 
-    const [returnKeyWord, setReturnKeyWord] = useState("");
+    // const [returnKeyWord, setReturnKeyWord] = useState("");
 
     const [inquiryMgmt, setInquiryMgmt] = useState([]); // 인건비 조회관리
-    //
     const [saleCostView, setSaleCostView] = useState([]); //영업 인건비 띄우기
     const [pgBudgetMgmt, setPgBudgetMgmt] = useState([]); // 인건비 수주관리
-    //
     const [pgBudgetView, setPgBudgetView] = useState([]); //(실행) 수주띄우기
     const [budgetMgmt, setBudgetMgmt] = useState([]); // 인건비 예산관리
-    //
     const [budgetView, setBudgetView] = useState([]); //(실행) 예산띄우기
     const [runMgmt, setRunMgmt] = useState([]); // 인건비 실행관리
-
-    //useEffect(() => {
-    //    console.log(pgBudgetMgmt, "pgBudgetMgmt");
-    //    console.log(pgBudgetView, "pgBudgetView");
-    //}, [pgBudgetView, pgBudgetMgmt]);
 
     const refresh = () => {
         fetchData();
@@ -130,20 +121,19 @@ function LaborCostMgmt() {
                 const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 조회관리
                 const updatedData = mapPecModeCodeToText(data);
                 setInquiryMgmt(updatedData);
-                //
+
             } else if (innerPageName === "인건비 수주관리") {
                 const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 수주관리
                 setPgBudgetMgmt(data);
                 const dataView = await fetchAllDataView("/api/baseInfrm/product/prmnPlan/totalListAll.do", innerPageName);
                 setSaleCostView(ChangePrmnPlanData(dataView, projectInfo));
-                console.log(saleCostView, "saleCostView");
-                //
+
             } else if (innerPageName === "인건비 예산관리") {
                 const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 예산관리
                 setBudgetMgmt(data);
                 const dataView = await fetchAllDataView("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName);
                 setPgBudgetView(dataView);
-                //
+                
             } else if (innerPageName === "인건비 실행관리") {
                 const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 실행관리
                 setRunMgmt(data);
@@ -157,7 +147,7 @@ function LaborCostMgmt() {
 
     useEffect(() => {
         fetchData();
-    }, [innerPageName]);
+    }, [innerPageName, projectInfo]);
 
     const fetchAllData = async (url, currentTask) => {
         let requestData = { poiId: poiIdToSend || projectInfo.poiId, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
@@ -193,12 +183,11 @@ function LaborCostMgmt() {
         if (resultData) {
             return resultData;
         } else {
-            return Array(5).fill({}); // 빈 배열 보내주기
+            return []; // 빈 배열 보내주기
         }
     };
 
-    const fetchAllDataView = async (tableUrl, currentTask) => {
-        const url = `/api${tableUrl}/totalListAll.do`;
+    const fetchAllDataView = async (url, currentTask) => {
         let requestData = { poiId: projectInfo.poiId };
 
         if (currentTask === "인건비 수주관리") {
@@ -229,26 +218,21 @@ function LaborCostMgmt() {
             return;
         }
 
-        console.log(requestData, "서버에 넘겨줘볼까");
         const resultData = await axiosFetch(url, requestData);
         if (resultData) {
             return resultData;
         } else {
-            return Array(5).fill({}); // 빈 배열 보내주기
+            return [];
         }
     };
 
     const handleReturn = (value) => {
-        setReturnKeyWord(value);
-        console.log(value, "제대로 들어오냐");
+        // setReturnKeyWord(value);
     };
-
-    const refresh = () => {
-        fetchData();
-    }
 
     const compareData = (originData, updatedData) => {
         const filterData = updatedData.filter((data) => data.pgNm); //pgNm 없는 데이터 제외
+        console.log("💜originData:", originData, "filterData: ", filterData);
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
 
@@ -285,18 +269,14 @@ function LaborCostMgmt() {
         // http://192.168.0.113:8080/api/baseInfrm/product/prstmCost/addList.do
         const url = `/api/baseInfrm/product/prstmCost/addList.do`;
         const resultData = await axiosPost(url, addNewData);
-        if (resultData) {
-            refresh();
-        }
+        refresh();
     };
     const updateList = async (toUpdate) => {
         console.log("❗updateList:", toUpdate);
         // http://192.168.0.113:8080/api/baseInfrm/product/prstmCost/editList.do
         const url = `/api/baseInfrm/product/prstmCost/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
-        if (resultData) {
-            refresh();
-        }
+        refresh();
     };
 
     const deleteList = async (removeItem) => {
@@ -304,9 +284,7 @@ function LaborCostMgmt() {
         // http://192.168.0.113:8080/api/baseInfrm/product/prstmCost/removeAll.do
         const url = `/api/baseInfrm/product/prstmCost/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        if (resultData) {
-            refresh();
-        }
+        refresh();
     };
 
     return (

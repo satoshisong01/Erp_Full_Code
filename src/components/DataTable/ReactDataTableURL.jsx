@@ -66,7 +66,7 @@ const ReactDataTableURL = (props) => {
         if (current === currentPageName || (current === innerPageName && !isSaveFormTable)) {
             compareData(originTableData, tableData);
         }
-    }, [flag]);
+    }, [flag, isSaveFormTable]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
 

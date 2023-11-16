@@ -91,10 +91,6 @@ const ReactDataTableView = (props) => {
         usePagination
     );
 
-    useEffect(() => {
-        console.log(tableData, "🐵 새로운 테이블 데이터");
-    }, [tableData]);
-
     const pageSizeChange = (value) => {
         setPageSize(Number(value));
         gotoPage(0);
