@@ -8,29 +8,30 @@ import { axiosPost } from "api/axiosFetch";
 export default function AddPdOrderModal({ columns, onClose }) {
     const [data, setData] = useState({});
     const [showAlert, setShowAlert] = useState(false);
-    // const [errorOnState, setErrorOnState] = useState(false);
-    const {projectInfo,projectCompany,setIsOpenModalCompany,setProjectCompany} = useContext(PageContext);
+    const {projectInfo,companyInfo,setIsOpenModalCompany,setCompanyInfo} = useContext(PageContext);
 
     useEffect(() => {
         return () => { //컴포넌트 종료시
-            setProjectCompany({});//초기화
+            setCompanyInfo({});//초기화
         }
     }, [])
+
     useEffect(() => {
-        if (projectCompany.companyId !== data.cltId) {
+        if (companyInfo.companyId !== undefined && companyInfo.companyId !== data.cltId) {
             setData((prevData) => ({
                 ...prevData,
-                cltId: projectCompany.companyId, //id
-                cltNm: projectCompany.esntlId //이름
+                cltId: companyInfo.companyId, //id
+                cltNm: companyInfo.esntlId //이름
             }));
         }
-    }, [projectCompany, data]);
+    }, [companyInfo, data]);
 
     useEffect(() => {
         const initialData = {
             poiId: projectInfo.poiId,
             poiVersion: "",
             cltId: "",
+            cltNm: "",
             poId: "",
         }
         setData(initialData);

@@ -19,6 +19,7 @@ const ReactDataTableURL = (props) => {
         setIsOpenModalCompany,
         companyInfo,
         isSaveFormTable,
+        setCompanyInfo,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -102,7 +103,9 @@ const ReactDataTableURL = (props) => {
     const [prevDataBuket, setPrevDataBuket] = useState({});
 
     useEffect(() => {
-        setDataBuket(companyInfo.esntlId);
+        if (current === currentPageName || (current === innerPageName && !isSaveFormTable)) {
+            setDataBuket(companyInfo.esntlId);
+        }
     }, [companyInfo]);
 
     const setValueData = (rowIndex) => {
@@ -123,9 +126,10 @@ const ReactDataTableURL = (props) => {
                     setTableData(updatedTableData);
                 }
 
+                
                 // dataBuket 값을 업데이트할 때 prevDataBuket도 업데이트
                 setPrevDataBuket(dataBuket);
-                //setCompanyInfo("");
+                setCompanyInfo({});
             }
         }
     }, [isOpenModalCompany, dataBuket, rowIndex, tableData, prevDataBuket]);

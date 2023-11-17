@@ -58,8 +58,7 @@ function ItemDetailMgmt() {
             modify: true,
             add: true,
         },
-        { header: "내·외자구분", col: "pdiIotype", cellWidth: "20%" },
-        { header: "단위", col: "pdiWght", cellWidth: "20%" },
+        { header: "단위", col: "pdiWght", cellWidth: "20%", modify: true, add: true,},
         { header: "품목규격", col: "pdiStnd", cellWidth: "20%" },
         {
             header: "품목그룹ID",
