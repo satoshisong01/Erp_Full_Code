@@ -67,6 +67,28 @@ const ReactDataTable = (props) => {
 
     //------------------------------------------------ 달력 날짜 선택
 
+    //useEffect(() => {
+    //    if (!isOpenModalPgNm) {
+    //        // isOpenModalPgNm이 false로 변경된 경우에 실행할 코드를 여기에 작성
+    //        if (savePgNm) {
+    //            const updatedTableData = [...tableData];
+    //            if (dataBuket !== prevDataBuket) {
+    //                if (dataBuket && updatedTableData[rowIndex]) {
+    //                    console.log(rowIndex, "rowIndex");
+    //                    updatedTableData[rowIndex].pgNm = savePgNm.pgNm;
+    //                    updatedTableData[rowIndex].pgId = savePgNm.pgId;
+
+    //                    console.log(updatedTableData, "updatedTableData");
+    //                    setTableData(updatedTableData);
+    //                }
+
+    //                setPrevDataBuket(dataBuket);
+    //                setProjectPgNm("");
+    //            }
+    //        }
+    //    }
+    //}, [isOpenModalPgNm, savePgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
+
     //const [formattedDate, setFormattedDate] = useState("");
     //const [formattedDate2, setFormattedDate2] = useState("");
     const [isCalendarVisible, setCalendarVisible] = useState(false);
@@ -75,35 +97,38 @@ const ReactDataTable = (props) => {
     const inputRefDay = useRef(null);
     const inputRefDay2 = useRef(null);
 
-    const [selectedInput, setSelectedInput] = useState(null);
-
-    const handleInputClick = (rowIndex) => {
-        setCalendarVisible(true);
-        setSelectedInput(`dayPicker${rowIndex}`);
+    const handleInputClick = () => {
+        setCalendarVisible((prev) => !prev);
     };
 
-    const handleInputClick2 = (rowIndex) => {
-        setCalendarVisible2(true);
-        setSelectedInput(`dayPicker2${rowIndex}`);
+    const handleInputClick2 = () => {
+        setCalendarVisible2((prev) => !prev);
     };
 
-    const handleDateClick = (date) => {
-        console.log(date);
+    useEffect(() => {
+        console.log("isCalendarVisible을 위한 useEffect");
+        document.addEventListener("click", handleOutsideClick);
+        return () => {
+            document.removeEventListener("click", handleOutsideClick);
+        };
+    }, [isCalendarVisible]);
+
+    const handleDateClick = (date, rowIndex) => {
+        console.log(date, rowIndex, "시ㅡ발");
         const formatted = handleDateChange(date);
-        setCalendarVisible(false);
-
         const updatedTableData = [...tableData];
         updatedTableData[rowIndex].pecStartdate = formatted;
         setTableData(updatedTableData);
+        setCalendarVisible(false);
     };
 
     const handleDateClick2 = (date, rowIndex) => {
+        console.log(date, rowIndex);
         const formatted = handleDateChange2(date);
-        setCalendarVisible2(false);
-
         const updatedTableData = [...tableData];
         updatedTableData[rowIndex].pecEnddate = formatted;
         setTableData(updatedTableData);
+        setCalendarVisible2(false);
     };
 
     const handleOutsideClick = (event) => {
@@ -142,14 +167,6 @@ const ReactDataTable = (props) => {
         };
     }, []);
 
-    //useEffect(() => {
-    //    if (formattedDate || formattedDate2) {
-    //        const updatedTableData = [...tableData];
-    //        updatedTableData[rowIndex].pecStartdate = formattedDate;
-    //        updatedTableData[rowIndex].pecEnddate = formattedDate2;
-    //        setTableData(updatedTableData);
-    //    }
-    //}, [formattedDate, formattedDate2]);
     const [isEditing, setIsEditing] = useState(false);
 
     //------------------------------------------------ 달력부분
@@ -850,7 +867,6 @@ const ReactDataTable = (props) => {
                                                             name={cell.column.col}
                                                             className="form-control flex-item"
                                                             type="text"
-                                                            name={cell.column.id}
                                                             value={
                                                                 tableData[row.index].pmpMonth2
                                                                     ? tableData[row.index].pmpMonth2.substring(0, 7)
@@ -879,14 +895,13 @@ const ReactDataTable = (props) => {
                                                             className="form-control flex-item"
                                                             type="text"
                                                             name={cell.column.id}
-                                                            id={`dayPicker${rowIndex}`}
                                                             value={tableData[row.index].pecStartdate ? tableData[row.index].pecStartdate : ""}
-                                                            onClick={() => handleInputClick(rowIndex)}
+                                                            onClick={() => handleInputClick()}
                                                             readOnly
                                                             ref={inputRefDay}
                                                         />
-                                                        {isCalendarVisible[rowIndex] && selectedInput === `dayPicker${rowIndex}` && (
-                                                            <div className="boxCalendar" id={`dayPicker${rowIndex}`} ref={inputRefDay}>
+                                                        {isCalendarVisible && (
+                                                            <div className="boxCalendar">
                                                                 <Calendar onClickDay={(data) => handleDateClick(data, rowIndex)} />
                                                             </div>
                                                         )}
@@ -899,12 +914,14 @@ const ReactDataTable = (props) => {
                                                             name={cell.column.id}
                                                             id={`dayPicker2${rowIndex}`}
                                                             value={tableData[row.index].pecEnddate ? tableData[row.index].pecEnddate : ""}
-                                                            onClick={() => handleInputClick2(rowIndex)}
+                                                            onClick={() => {
+                                                                handleInputClick2();
+                                                            }}
                                                             readOnly
                                                             ref={inputRefDay2}
                                                         />
-                                                        {isCalendarVisible2[rowIndex] && selectedInput === `dayPicker2${rowIndex}` && (
-                                                            <div className="boxCalendar" id={`dayPicker2${rowIndex}`} ref={inputRefDay2}>
+                                                        {isCalendarVisible2 && (
+                                                            <div className="boxCalendar">
                                                                 <Calendar onClickDay={(data) => handleDateClick2(data, rowIndex)} />
                                                             </div>
                                                         )}
@@ -915,7 +932,6 @@ const ReactDataTable = (props) => {
                                                             key={cell.column.id + row.index}
                                                             name={cell.column.col}
                                                             className="form-control flex-item"
-                                                            name={cell.column.id}
                                                             type="text"
                                                             value={tableData[row.index].pjbgBeginDt ? tableData[row.index].pjbgBeginDt.substring(0, 7) : ""}
                                                             ref={inputRef}
@@ -945,7 +961,6 @@ const ReactDataTable = (props) => {
                                                             key={cell.column.id + row.index}
                                                             name={cell.column.col}
                                                             className="form-control flex-item"
-                                                            name={cell.column.id}
                                                             type="text"
                                                             value={tableData[row.index].pjbgEndDt ? tableData[row.index].pjbgEndDt.substring(0, 7) : ""}
                                                             ref={inputRef}
