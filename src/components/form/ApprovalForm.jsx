@@ -76,7 +76,7 @@ function ApprovalForm({ title, children }) {
                                 <td colSpan={3}>{userInfo.id}</td>
                             </tr>
                             {
-                                innerPageName === "구매(재료비)" ? (
+                                innerPageName.includes("구매") ? (
                                     <tr>
                                         <th>구매 종류</th>
                                         <td colSpan={3}>

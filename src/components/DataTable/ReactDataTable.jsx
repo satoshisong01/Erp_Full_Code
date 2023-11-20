@@ -128,7 +128,6 @@ const ReactDataTable = (props) => {
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
-        // console.log("currentPage:", current, "navName:", currentPageName, "innerTabName:", innerPageName, "ModalName:", modalPageName);
         if (currentPageName !== prevCurrentPageName || innerPageName !== prevInnerPageName) {
             // 현재 페이지와 이전 페이지가 같지 않다면
             toggleAllRowsSelected(false);
@@ -313,7 +312,6 @@ const ReactDataTable = (props) => {
     /* 로우 클릭 */
     const onCLickRow = (row) => {
         toggleRowSelected(row.id);
-        // console.log("더블클릭:", row.original, ", poiId?:", row.original.poiId);
         if (row.original.poiId) {
             setProjectInfo((prev) => ({ ...prev, poiId: row.original.poiId }));
         }
@@ -366,6 +364,7 @@ const ReactDataTable = (props) => {
                             <div>
                                 <input
                                     id={uuidv4()}
+                                    // id={row.id + Date.now()}
                                     type="checkbox"
                                     {...row.getToggleRowSelectedProps()}
                                     className="table-checkbox"
@@ -381,21 +380,22 @@ const ReactDataTable = (props) => {
         }
     );
 
+    /* current- 현재 보는페이지, table button 활성화 on off */
     useEffect(() => {
         if (isModalTable && current === modalPageName) {
             //모달화면일때
             setModalLengthSelectRow(selectedFlatRows.length);
             if (selectedFlatRows.length > 0) {
                 setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
-                projectInfo.poId = selectedFlatRows[selectedFlatRows.length - 1].original.poId; //품목수주
-                projectInfo.poDesc = selectedFlatRows[selectedFlatRows.length - 1].original.poDesc;
+                // projectInfo.poId = selectedFlatRows[selectedFlatRows.length - 1].original.poId; //품목수주
+                // projectInfo.poDesc = selectedFlatRows[selectedFlatRows.length - 1].original.poDesc;
                 sendSelected && sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
         } else if (!isModalTable && (current === currentPageName || current === innerPageName)) {
             //모달화면이 아닐때
             setLengthSelectRow(selectedFlatRows.length);
             selectedFlatRows.length > 0 && setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
-            selectedFlatRows.length > 0 && sendSelected && sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
+            // selectedFlatRows.length > 0 && sendSelected && sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
         }
     }, [selectedFlatRows]);
 
@@ -426,8 +426,6 @@ const ReactDataTable = (props) => {
                     if (dataBuket && updatedTableData[rowIndex]) {
                         updatedTableData[rowIndex].pgNm = savePgNm.pgNm;
                         updatedTableData[rowIndex].pgId = savePgNm.pgId;
-
-                        console.log(updatedTableData, "updatedTableData");
                         setTableData(updatedTableData);
                     }
 
@@ -438,22 +436,6 @@ const ReactDataTable = (props) => {
         }
     }, [isOpenModalPgNm, savePgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
 
-    /* current- 현재 보는페이지, table button 활성화 on off */
-    useEffect(() => {
-        if (isModalTable && current === modalPageName) {
-            //모달화면일때
-            setModalLengthSelectRow(selectedFlatRows.length);
-            if (selectedFlatRows.length > 0) {
-                setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
-                projectInfo.poId = selectedFlatRows[selectedFlatRows.length - 1].original.poId; //품목수주
-                projectInfo.poDesc = selectedFlatRows[selectedFlatRows.length - 1].original.poDesc;
-            }
-        } else if (!isModalTable && (current === currentPageName || current === innerPageName)) {
-            //모달화면이 아닐때
-            setLengthSelectRow(selectedFlatRows.length);
-            selectedFlatRows.length > 0 && setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
-        }
-    }, [selectedFlatRows]);
 
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {
