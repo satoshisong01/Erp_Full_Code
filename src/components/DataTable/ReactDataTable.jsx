@@ -141,7 +141,6 @@ const ReactDataTable = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        console.log("🎮isSaveFormTable: ", isSaveFormTable);
         setIsEditing(flag);
         if (current === currentPageName || (current === innerPageName && !isSaveFormTable)) {
             if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
@@ -183,6 +182,7 @@ const ReactDataTable = (props) => {
                 options: column.options,
                 notView: column.notView,
                 disabled: column.disabled,
+                require: column.require,
             })),
         [columns]
     );
@@ -211,11 +211,11 @@ const ReactDataTable = (props) => {
         if (!updatedData) {
             setOpenModalMod(true);
         } else {
-            if (customDatas) {
-                sendToParentsAdd(selectRow);
-                setOpenModalMod(false);
-                return;
-            }
+            // if (customDatas) {
+            //     sendToParentsAdd(selectRow);
+            //     setOpenModalMod(false);
+            //     return;
+            // }
             // 수정데이터가 있다면
             const url = `/api${suffixUrl}/edit.do`;
             const requestData = { ...updatedData, lockAt: "Y", useAt: "Y" };
@@ -316,6 +316,7 @@ const ReactDataTable = (props) => {
     /* 로우 클릭 */
     const onCLickRow = (row) => {
         toggleRowSelected(row.id);
+        // console.log("더블클릭:", row.original, ", poiId?:", row.original.poiId);
         if (row.original.poiId) {
             setProjectInfo((prev) => ({ ...prev, poiId: row.original.poiId }));
         }
@@ -660,6 +661,7 @@ const ReactDataTable = (props) => {
                                         className={columnIndex === 0 ? "first-column" : ""}
                                         style={{ width: column.width }}>
                                         {column.render("Header")}
+                                        <span style={{color: 'red', margin: 0}}>{column.require === true ? ("*") : ""}</span>
                                         <span style={{ overflow: "auto" }}>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
                                     </th>
                                 );
@@ -683,7 +685,7 @@ const ReactDataTable = (props) => {
                     {page.map((row, rowIndex) => {
                         prepareRow(row);
                         return (
-                            <tr {...row.getRowProps()} onClick={(e) => onCLickRow(row)}>
+                            <tr {...row.getRowProps()} onDoubleClick={(e) => onCLickRow(row)}>
                                 {row.cells.map((cell, cellIndex) => {
                                     if (cell.column.notView) {
                                         // notView가 true인 경우, 셀을 출력하지 않음

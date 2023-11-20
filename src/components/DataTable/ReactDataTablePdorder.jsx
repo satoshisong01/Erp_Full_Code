@@ -137,6 +137,7 @@ const ReactDataTablePdorder = (props) => {
                 options: column.options,
                 notView: column.notView,
                 disabled: column.disabled,
+                require: column.require,
             })),
         [columns]
     );
@@ -324,75 +325,6 @@ const ReactDataTablePdorder = (props) => {
         setIsOpenModalCompany(true);
         setRowIndex(rowIndex);
     };
-
-    //아이템 선택후 중복할당 방지 코드
-    useEffect(() => {
-        if (!isOpenModalPgNm) {
-            // isOpenModalPgNm이 false로 변경된 경우에 실행할 코드를 여기에 작성
-
-            // dataBuket 객체 자체의 참조가 변경되었을 때만 코드 실행
-            if (dataBuket !== prevDataBuket) {
-                const updatedTableData = [...tableData];
-                if (dataBuket && updatedTableData[rowIndex]) {
-                    updatedTableData[rowIndex].pgNm = dataBuket;
-                    setTableData(updatedTableData);
-                }
-
-                // dataBuket 값을 업데이트할 때 prevDataBuket도 업데이트
-                setPrevDataBuket(dataBuket);
-                setProjectPgNm("");
-            }
-        }
-
-        if (!isOpenModalPdiNm) {
-            // dataBuket 객체 자체의 참조가 변경되었을 때만 코드 실행
-            if (saveProjectPdiNm) {
-                if (dataBuketPdiNm !== prevDataBuketPdiNm) {
-                    const updatedTableData = [...tableData];
-                    if (dataBuketPdiNm && updatedTableData[rowIndex]) {
-                        updatedTableData[rowIndex].pdiNm = dataBuketPdiNm.pdiNm;
-                        updatedTableData[rowIndex].pgNm = dataBuketPdiNm.pgNm;
-                        updatedTableData[rowIndex].pdiWght = dataBuketPdiNm.pdiWght;
-                        updatedTableData[rowIndex].pdiStnd = dataBuketPdiNm.pdiStnd;
-                        updatedTableData[rowIndex].pdiMenufut = dataBuketPdiNm.pdiMenufut;
-                        updatedTableData[rowIndex].pdiId = dataBuketPdiNm.pdiId;
-                        setTableData(updatedTableData);
-                    }
-
-                    // dataBuketPdiNm 값을 업데이트할 때 prevDataBuket도 업데이트
-                    setPrevDataBuketPdiNm(dataBuketPdiNm);
-                    setProjectPdiNm("");
-                }
-            }
-        }
-
-        if (!isOpenModalCompany) {
-            // dataBuket 객체 자체의 참조가 변경되었을 때만 코드 실행
-            if (companyBuket !== preCompanyBuket) {
-                const updatedTableData = [...tableData];
-                if (companyBuket && updatedTableData[rowIndex]) {
-                    updatedTableData[rowIndex].esntlId = companyBuket;
-                    setTableData(updatedTableData);
-                }
-
-                // companyBuket 값을 업데이트할 때 prevDataBuket도 업데이트
-                setPreCompanyBuket(companyBuket);
-                //setCompanyInfo("");
-            }
-        }
-    }, [
-        isOpenModalCompany,
-        isOpenModalPgNm,
-        isOpenModalPdiNm,
-        dataBuket,
-        dataBuketPdiNm,
-        companyBuket,
-        rowIndex,
-        tableData,
-        prevDataBuket,
-        prevDataBuketPdiNm,
-        preCompanyBuket,
-    ]);
 
     //선택된 항목 순서(인덱스)별
     const [countIndex, setCountIndex] = useState(0);
@@ -585,6 +517,7 @@ const ReactDataTablePdorder = (props) => {
                                         className={columnIndex === 0 ? "first-column" : ""}
                                         style={{ width: column.width }}>
                                         {column.render("Header")}
+                                        <span style={{color: 'red', margin: 0}}>{column.require === true ? ("*") : ""}</span>
                                         <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
                                     </th>
                                 );

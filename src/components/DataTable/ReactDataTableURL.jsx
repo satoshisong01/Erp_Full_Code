@@ -81,6 +81,7 @@ const ReactDataTableURL = (props) => {
                 type: column.type,
                 options: column.options,
                 notView: column.notView,
+                require: column.require,
             })),
         [columns]
     );
@@ -394,6 +395,7 @@ const ReactDataTableURL = (props) => {
                                         className={columnIndex === 0 ? "first-column" : ""}
                                         style={{ width: column.width }}>
                                         {column.render("Header")}
+                                        <span style={{color: 'red', margin: 0}}>{column.require === true ? ("*") : ""}</span>
                                         <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
                                     </th>
                                 );
