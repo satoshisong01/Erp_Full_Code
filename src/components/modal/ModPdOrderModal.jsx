@@ -1,25 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../../components/modal/ModalSearch.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { PageContext } from "components/PageProvider";
+import { axiosUpdate } from "api/axiosFetch";
+import ModalPageCompany from "./ModalPageCompany";
 
-export default function DataPutModal({ onClose, initialData, columns, updateData }) {
-    const initializeState = () => {
-        const initialState = columns.reduce((acc, curr) => {
-            acc[curr.col] = "";
-            return acc;
-        }, {});
-        setData(initialState);
-    };
-
-    const [data, setData] = useState(initialData);
+export default function ModPdOrderModal({ onClose, columns, updateData }) {
+    const [data, setData] = useState(updateData);
     const [errorMessages, setErrorMessages] = useState({}); // 각 필드에 대한 에러 메시지 상태 추가
-
-    useEffect(() => {
-        initializeState(); // 빈값으로 초기화
-        setData(initialData || {}); // 초기화 후 값 삽입
-    }, [initialData]);
+    const [isLocalCompanyModal, setIsLocalCompanyModal] = useState(false);
 
     const inputChange = (e) => {
         const { name, value } = e.target;
@@ -31,6 +20,15 @@ export default function DataPutModal({ onClose, initialData, columns, updateData
             [name]: false,
         }));
     };
+
+    const returnInfo = (item) => { //선택한 정보
+        setIsLocalCompanyModal(false);
+        setData((prevData) => ({
+            ...prevData,
+            cltId: item.cltId,
+            cltNm: item.cltNm
+        }));
+    }
 
     const handleSaveChanges = () => {
         // 필수값이 비어있는지 확인
@@ -49,10 +47,30 @@ export default function DataPutModal({ onClose, initialData, columns, updateData
                 return newErrors;
             });
         } else {
-            updateData(data);
-            onClose();
+            // updateData(data);
+            putData(data)
         }
     };
+
+    const putData = async (modData) => {
+        if (modData && typeof modData === "object" && !Array.isArray(modData)) {
+            const dataToSend = {
+                ...modData,
+                useAt: "Y",
+                deleteAt: "N",
+            };
+
+            console.log("dataToSend:",dataToSend);
+
+            const resultData = await axiosUpdate("/api/baseInfrm/product/pdOrdr/edit.do", dataToSend);
+            if (!resultData) {
+                alert("add error: table");
+            } else if (resultData) {
+                alert("✅추가 완료");
+            }
+        }
+        onClose(); //모달창 닫기
+    }
 
     return (
         <div className="modal-dialog demo-modal">
@@ -105,7 +123,18 @@ export default function DataPutModal({ onClose, initialData, columns, updateData
                                                                     )
                                                             )}
                                                         </select>
-                                                    ): (
+                                                    ) : column.type === "buttonCompany" ? (
+                                                        <input
+                                                            className="buttonSelect"
+                                                            id={column.id}
+                                                            name={column.col}
+                                                            onClick={() => setIsLocalCompanyModal(true)}
+                                                            type="text"
+                                                            placeholder={`거래처명을 선택해 주세요.`}
+                                                            value={data[column.col] || ""}
+                                                            readOnly
+                                                        />
+                                                    ) :  (
                                                         <input
                                                             placeholder={column.header}
                                                             className="postInput"
@@ -134,7 +163,11 @@ export default function DataPutModal({ onClose, initialData, columns, updateData
                                 </button>
                             </div>
                         </form>
+                        {isLocalCompanyModal && (
+                            <ModalPageCompany returnInfo={returnInfo} closeLocal={() => setIsLocalCompanyModal(false)} />
+                        )}
                     </div>
+
                 </article>
             </div>
         </div>

@@ -3,9 +3,20 @@ import { axiosDelete, axiosFetch, axiosPost, axiosScan, axiosUpdate } from "api/
 import { useTable, usePagination, useSortBy, useRowSelect } from "react-table";
 import { PageContext } from "components/PageProvider";
 import ModalPageCompany from "components/modal/ModalPageCompany";
+import { v4 as uuidv4 } from 'uuid';
 
 const ReactDataTableURL = (props) => {
-    const { flag, columns, customDatas, defaultPageSize, tableRef, viewPageName, singleUrl, customDatasRefresh } = props;
+    const {
+        columns,
+        customDatas,
+        defaultPageSize,
+        tableRef,
+        viewPageName,
+        customDatasRefresh,
+        singleUrl,
+        editing,
+        hideCheckBox,
+    } = props;
     const {
         prevCurrentPageName,
         innerPageName,
@@ -15,10 +26,10 @@ const ReactDataTableURL = (props) => {
         newRowData,
         currentPageName,
         projectInfo,
-        isOpenModalCompany,
-        setIsOpenModalCompany,
-        companyInfo,
         isSaveFormTable,
+        companyInfo,
+        setIsOpenModalCompany,
+        isOpenModalCompany,
         setCompanyInfo,
     } = useContext(PageContext);
 
@@ -63,11 +74,13 @@ const ReactDataTableURL = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        setIsEditing(flag);
-        if (current === currentPageName || (current === innerPageName && !isSaveFormTable)) {
+        if(current === innerPageName) {
+            setIsEditing(editing !== undefined ? editing : isSaveFormTable); //테이블 상태 //inner tab일 때 테이블 조작
+        }
+        if (current === innerPageName && !isSaveFormTable) {
             compareData(originTableData, tableData);
         }
-    }, [flag, isSaveFormTable]);
+    }, [innerPageName, isSaveFormTable]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
 
@@ -173,7 +186,37 @@ const ReactDataTableURL = (props) => {
         usePagination,
         useRowSelect,
         (hooks) => {
-            hooks.visibleColumns.push((columns) => [...columns]);
+            hooks.visibleColumns.push((columns) => [
+                ...(hideCheckBox !== undefined && hideCheckBox ? []
+                    : [{
+                        id: "selection",
+                        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+                            <div>
+                                <input
+                                    id={uuidv4()}
+                                    type="checkbox"
+                                    {...getToggleAllPageRowsSelectedProps()}
+                                    className="table-checkbox"
+                                    indeterminate="false"
+                                />
+                            </div>
+                        ),
+                        Cell: ({ row }) => (
+                            <div>
+                                <input
+                                    id={uuidv4()}
+                                    type="checkbox"
+                                    {...row.getToggleRowSelectedProps()}
+                                    className="table-checkbox"
+                                    indeterminate="false"
+                                    onClick={(e) => e.stopPropagation()}
+                                />
+                            </div>
+                        ),
+                        width: 35,
+                    },]),
+                ...columns,
+            ]);
         }
     );
 
@@ -369,7 +412,7 @@ const ReactDataTableURL = (props) => {
             <div className="flex-between mg-b-20 mg-t-20">
                 <div className="page-size">
                     <span className="mg-r-10">페이지 크기 :</span>
-                    <select className="select" value={pageSize} onChange={(e) => pageSizeChange(e.target.value)}>
+                    <select className="select" id={uuidv4()} value={pageSize || defaultPageSize} onChange={(e) => pageSizeChange(e.target.value)}>
                         {pageSizeOptions.map((size) => (
                             <option key={size} value={size}>
                                 {size}
@@ -436,7 +479,7 @@ const ReactDataTableURL = (props) => {
                                                         value={
                                                             tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
                                                                 ? tableData[row.index][cell.column.id] || cell.value
-                                                                : cell.value
+                                                                : cell.value || ""
                                                         }
                                                         name={cell.column.id}
                                                         onChange={(e) => onChangeInput(e, row)}
@@ -451,7 +494,7 @@ const ReactDataTableURL = (props) => {
                                                         }
                                                         onChange={(e) => onChangeInput(e, row)}>
                                                         {cell.column.options.map((option, index) => (
-                                                            <option key={index} value={option.value} selected={index === 0 ? true : false}>
+                                                            <option key={index} value={option.value || ""} selected={index === 0 ? true : false}>
                                                                 {option.label}
                                                             </option>
                                                         ))}
@@ -465,7 +508,7 @@ const ReactDataTableURL = (props) => {
                                                             onClick={() => setValueData(rowIndex)}
                                                             type="text"
                                                             placeholder={`거래처명을 선택해 주세요.`}
-                                                            value={tableData[rowIndex].esntlId}
+                                                            value={tableData[rowIndex].esntlId || ""}
                                                             onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
                                                             readOnly
                                                         />

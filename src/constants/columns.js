@@ -381,6 +381,7 @@ export const columns = {
             },
             {
                 header: "금액",
+                col: "price",
                 cellWidth: "25%",
             },
         ],
@@ -426,7 +427,7 @@ export const columns = {
             },
             {
                 header: "금액",
-                col: "pecUnitPrice222",
+                col: "price",
                 cellWidth: "40%",
                 type: "input",
             },

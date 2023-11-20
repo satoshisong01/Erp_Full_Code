@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import ModalSearch from "components/modal/ModalSearch";
 import { PageContext } from "components/PageProvider";
 import PdOrderListModal from "components/modal/PdOrderListModal";
+import { v4 as uuidv4 } from 'uuid';
 
 function ApprovalForm({ title, children }) {
     const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, setIsCancelTable, innerPageName, setIsModalTable, setModalPageName } = useContext(PageContext);
@@ -73,7 +74,6 @@ function ApprovalForm({ title, children }) {
                                 <td colSpan={3}>{currentTime}</td>
                                 <th>작성자</th>
                                 <td colSpan={3}>{userInfo.id}</td>
-
                             </tr>
                             {
                                 innerPageName === "구매(재료비)" ? (
@@ -81,6 +81,7 @@ function ApprovalForm({ title, children }) {
                                         <th>구매 종류</th>
                                         <td colSpan={3}>
                                             <input
+                                                id={uuidv4()}
                                                 onClick={onClick}
                                                 type="text"
                                                 placeholder="구매 종류를 선택해 주세요."

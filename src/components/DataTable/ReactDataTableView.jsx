@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { axiosFetch } from "api/axiosFetch";
 import { useTable, usePagination, useSortBy } from "react-table";
 import { PageContext } from "components/PageProvider";
+import { v4 as uuidv4 } from 'uuid';
 
 const ReactDataTableView = (props) => {
     const { columns, suffixUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendPoiId } = props;
@@ -101,7 +102,7 @@ const ReactDataTableView = (props) => {
             <div className="flex-between mg-b-20 mg-t-20">
                 <div className="page-size">
                     <span className="mg-r-10">페이지 크기 :</span>
-                    <select className="select" value={pageSize} onChange={(e) => pageSizeChange(e.target.value)}>
+                    <select className="select" id={uuidv4()} value={pageSize} onChange={(e) => pageSizeChange(e.target.value)}>
                         {pageSizeOptions.map((size) => (
                             <option key={size} value={size}>
                                 {size}

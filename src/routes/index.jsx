@@ -90,13 +90,14 @@ const usePrevLocation = (location) => {
 };
 
 const RootRoutes = () => {
-    const { projectItem, setProjectItem, returnKeyWord, setPgNmList, setCompanyList, addPgNm, setPdiNmList, addPdiNm } = useContext(PageContext);
+    const { setUnitPriceList, projectItem, setProjectItem, returnKeyWord, setPgNmList, setCompanyList, addPgNm, setPdiNmList, addPdiNm } = useContext(PageContext);
     useEffect(() => {
         basicFetchData();
         pgNmItem();
         pdiNmItem();
         companyItem();
-    }, [returnKeyWord]);
+        unitPriceItem();
+    }, []);
 
     const basicFetchData = async () => {
         const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
@@ -128,6 +129,11 @@ const RootRoutes = () => {
                 companyId: item.cltId,
             }))
         );
+    };
+
+    const unitPriceItem = async () => { //급별단가
+        const resultData = await axiosFetch("/api/baseInfrm/product/gradeunitPrice/totalListAll.do", {searchCondition: "1", searchKeyword: "13"});
+        setUnitPriceList([...resultData]);
     };
 
     const pgNmItem = async () => {

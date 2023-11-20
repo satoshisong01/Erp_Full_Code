@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { PageContext } from "components/PageProvider";
 import { axiosPost } from "api/axiosFetch";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function AddPdOrderModal({ columns, onClose }) {
     const [data, setData] = useState({});
@@ -11,13 +12,11 @@ export default function AddPdOrderModal({ columns, onClose }) {
     const {projectInfo,companyInfo,setIsOpenModalCompany,setCompanyInfo} = useContext(PageContext);
 
     useEffect(() => {
-        return () => { //컴포넌트 종료시
-            setCompanyInfo({});//초기화
-        }
-    }, [])
+        setCompanyInfo({});
+    }, []);
 
     useEffect(() => {
-        if (companyInfo.companyId !== undefined && companyInfo.companyId !== data.cltId) {
+        if (companyInfo.companyId && companyInfo.esntlId && companyInfo.companyId !== data.cltId) {
             setData((prevData) => ({
                 ...prevData,
                 cltId: companyInfo.companyId, //id
@@ -110,7 +109,7 @@ export default function AddPdOrderModal({ columns, onClose }) {
                                                         {column.header}:
                                                     </label>
                                                     {column.type === "select" ? (
-                                                        <select name={column.col} className="postInput" onChange={inputChange}>
+                                                        <select id={uuidv4()} name={column.col} className="postInput" onChange={inputChange}>
                                                             {column.option.map((op) => (
                                                                 <option key={op.value} value={op.value}>
                                                                     {op.label}
@@ -118,12 +117,12 @@ export default function AddPdOrderModal({ columns, onClose }) {
                                                             ))}
                                                         </select>
                                                     ) : column.lockAt ? (
-                                                        <select name={column.col} className="postInput" onChange={inputChange}>
+                                                        <select id={uuidv4()} name={column.col} className="postInput" onChange={inputChange}>
                                                             <option value="Y">Y</option>
                                                             <option value="N">N</option>
                                                         </select>
                                                     ) : column.itemType && Array.isArray(column.itemType) ? (
-                                                        <select className="postInput" name={column.col} value={data[column.col] || ""} onChange={inputChange}>
+                                                        <select className="postInput"id={uuidv4()}  name={column.col} value={data[column.col] || ""} onChange={inputChange}>
                                                             <option value={""}>{column.itemType[0]}</option>
                                                             {column.itemType.map(
                                                                 (item, index) =>
@@ -137,7 +136,7 @@ export default function AddPdOrderModal({ columns, onClose }) {
                                                     ) : column.type === "buttonCompany" ? (
                                                         <input
                                                             className="buttonSelect"
-                                                            id={column.id}
+                                                            id={uuidv4()}
                                                             name={column.col}
                                                             onClick={() => setIsOpenModalCompany(true)}
                                                             type="text"
@@ -147,6 +146,7 @@ export default function AddPdOrderModal({ columns, onClose }) {
                                                         />
                                                     ) : (
                                                         <input
+                                                            id={uuidv4()}
                                                             placeholder={column.placeholder || column.header}
                                                             className="postInput"
                                                             type="text"
