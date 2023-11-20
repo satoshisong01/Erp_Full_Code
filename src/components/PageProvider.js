@@ -13,7 +13,7 @@ export function PageProvider({ children }) {
     const [searchData, setSearchData] = useState(""); // 검색 조건
 
     const [projectItem, setProjectItem] = useState([]); //프로젝트 id, 이름, 코드 저장(프로젝트 수주발주)
-    const [projectInfo, setProjectInfo] = useState({ poiId: "", poiNm: "", poiCode: "", poiVersion: "", isSelected: false }); // 선택한 프로젝트 이름, id,코드,버전 저장
+    const [projectInfo, setProjectInfo] = useState({ poiId: "", poiNm: "", poiCode: "", poiVersion: "", poId: "", isPoIdSelected: false }); // 선택한 프로젝트 이름, id,코드,버전 저장
 
     const [pgNmList, setPgNmList] = useState([]); // 품목그룹 ID, 품목그룹명 저장
     const [projectPgNm, setProjectPgNm] = useState({ pgNm: "", pgId: "" }); // 클릭한 품목그룹명, 품목그룹id 저장
