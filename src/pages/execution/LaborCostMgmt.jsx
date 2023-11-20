@@ -30,6 +30,10 @@ function LaborCostMgmt() {
     } = useContext(PageContext);
 
     useEffect(() => {
+        console.log(innerPageName, "innerPageName");
+    }, [innerPageName]);
+
+    useEffect(() => {
         setInnerPageName("인건비 조회관리");
         setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
 
@@ -234,26 +238,42 @@ function LaborCostMgmt() {
         const updatedDataLength = filterData ? filterData.length : 0;
 
         if (originDataLength > updatedDataLength) {
+            console.log(filterData, "filterData 이게이상한것같음");
             updateList(filterData);
 
             const toDelete = [];
             for (let i = updatedDataLength; i < originDataLength; i++) {
                 toDelete.push(originData[i].pecId);
+                console.log("어디가문제냐1");
             }
             deleteList(toDelete);
         } else if (originDataLength === updatedDataLength) {
             updateList(filterData);
+            console.log("어디가문제냐2");
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
             const addUpdate = [];
             for (let i = 0; i < originDataLength; i++) {
                 addUpdate.push(filterData[i]);
+                console.log("어디가문제냐3");
             }
+            console.log("어디가문제냐4");
             updateList(addUpdate);
 
             for (let i = originDataLength; i < updatedDataLength; i++) {
+                console.log("어디가문제냐5");
                 const add = { poiId: poiIdToSend || projectInfo.poiId };
-                toAdds.push({ ...filterData[i], ...add });
+                const addType = { pecTypeCode: "MM" };
+                const addMode = { pecSlsExcCode: "PEXC" };
+                let addExCode = { pecModeCode: "PDVSN01" };
+                if (innerPageName === "인건비 수주관리") {
+                    addExCode = { pecModeCode: "PDVSN01" };
+                } else if (innerPageName === "인건비 예산관리") {
+                    addExCode = { pecModeCode: "PDVSN02" };
+                } else if (innerPageName === "인건비 실행관리") {
+                    addExCode = { pecModeCode: "PDVSN03" };
+                }
+                toAdds.push({ ...filterData[i], ...add, ...addType, ...addMode, ...addExCode });
             }
             addList(toAdds);
         }
@@ -264,13 +284,20 @@ function LaborCostMgmt() {
         // http://192.168.0.113:8080/api/baseInfrm/product/prstmCost/addList.do
         const url = `/api/baseInfrm/product/prstmCost/addList.do`;
         const resultData = await axiosPost(url, addNewData);
+        console.log(resultData, "잘 추가되었으면 좋겠습니다 🌠🤩🤩🤩🤩");
         refresh();
     };
     const updateList = async (toUpdate) => {
         console.log("❗updateList:", toUpdate);
+        const updatedFilterData = toUpdate.map((data) => ({
+            ...data,
+            useAt: "Y",
+            deleteAt: "N",
+        }));
         // http://192.168.0.113:8080/api/baseInfrm/product/prstmCost/editList.do
         const url = `/api/baseInfrm/product/prstmCost/editList.do`;
-        const resultData = await axiosUpdate(url, toUpdate);
+        const resultData = await axiosUpdate(url, updatedFilterData);
+        console.log(resultData, "잘 수정이 되었으면 좋것습니다 🧟‍♀️🧟‍♀️🧟‍♂️🧟‍♂️🧟🧟🧌🧌");
         refresh();
     };
 
@@ -279,6 +306,7 @@ function LaborCostMgmt() {
         // http://192.168.0.113:8080/api/baseInfrm/product/prstmCost/removeAll.do
         const url = `/api/baseInfrm/product/prstmCost/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
+        console.log(resultData, "잘 삭제가 되어야할텐데말입니다 🙏🙏🙏🙏🙏🙏");
         refresh();
     };
 
@@ -381,6 +409,7 @@ function LaborCostMgmt() {
                                     tableRef={orderPlanMgmtTable3}
                                     customDatas={budgetMgmt}
                                     viewPageName="인건비 예산관리"
+                                    sendToParentTables={compareData}
                                 />
                             </ApprovalForm>
                         </ul>
@@ -406,6 +435,7 @@ function LaborCostMgmt() {
                                     tableRef={orderPlanMgmtTable4}
                                     customDatas={runMgmt}
                                     viewPageName="인건비 실행관리"
+                                    sendToParentTables={compareData}
                                 />
                             </ApprovalForm>
                         </ul>

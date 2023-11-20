@@ -48,7 +48,6 @@ export const ChangePrmnPlanData = (data, projectInfo) => {
     data.forEach((item) => {
         //console.log(item, "아이템@@#@#@#");
         const key = `${item.pmpMonth}`;
-        console.log(key, "🔥🔥🔥key");
         if (!groupedData[key]) {
             groupedData[key] = {
                 //pgNm: item.pgNm,
