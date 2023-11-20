@@ -10,21 +10,21 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
 import ModalPagePgNm from "components/modal/ModalPagePgNm";
-
+import { v4 as uuidv4 } from 'uuid';
 const ReactDataTable = (props) => {
     const {
         columns,
         suffixUrl,
-        flag,
         customDatas,
         defaultPageSize,
         tableRef,
         viewPageName,
         customDatasRefresh,
         singleUrl,
-        sendToParentsAdd,
         sendToParentTables,
         sendSelected,
+        hideCheckBox,
+        editing
     } = props;
     const {
         nameOfButton,
@@ -55,13 +55,13 @@ const ReactDataTable = (props) => {
     const [tableData, setTableData] = useState([]);
     const [originTableData, setOriginTableData] = useState([]);
     const pageSizeOptions = [5, 10, 15, 20, 30, 50, 100];
-    const [isEditing, setIsEditing] = useState(false);
     const [openModalMod, setOpenModalMod] = useState(false);
     const [openModalAdd, setOpenModalAdd] = useState(false);
     const [modalViewDatas, setModalViewDatas] = useState([]); //modal에 띄어줄 목록
     const [current, setCurrent] = useState(viewPageName); //==viewPageName
     const [selectRow, setSelectRow] = useState({}); //마지막으로 선택한 row
     const [rowIndex, setRowIndex] = useState(0);
+    const [isEditing, setIsEditing] = useState(false);
 
     //------------------------------------------------ 달력부분
     const inputRef = useRef(null); //날짜
@@ -141,15 +141,17 @@ const ReactDataTable = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        setIsEditing(flag);
-        if (current === currentPageName || (current === innerPageName && !isSaveFormTable)) {
+        if(current === innerPageName) {
+            setIsEditing(editing !== undefined ? editing : isSaveFormTable); //테이블 상태 //inner tab일 때 테이블 조작
+        }
+        if (current === innerPageName && !isSaveFormTable) { //inner tab에서 저장을 눌렀을 때
             if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
                 sendToParentTables(originTableData, tableData);
             } else {
                 compareData(originTableData, tableData);
             }
         }
-    }, [flag, isSaveFormTable]);
+    }, [innerPageName, isSaveFormTable]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
@@ -211,11 +213,6 @@ const ReactDataTable = (props) => {
         if (!updatedData) {
             setOpenModalMod(true);
         } else {
-            // if (customDatas) {
-            //     sendToParentsAdd(selectRow);
-            //     setOpenModalMod(false);
-            //     return;
-            // }
             // 수정데이터가 있다면
             const url = `/api${suffixUrl}/edit.do`;
             const requestData = { ...updatedData, lockAt: "Y", useAt: "Y" };
@@ -351,26 +348,34 @@ const ReactDataTable = (props) => {
         useRowSelect,
         (hooks) => {
             hooks.visibleColumns.push((columns) => [
-                {
-                    id: "selection",
-                    Header: ({ getToggleAllPageRowsSelectedProps }) => (
-                        <div>
-                            <input type="checkbox" {...getToggleAllPageRowsSelectedProps()} className="table-checkbox" indeterminate="false" />
-                        </div>
-                    ),
-                    Cell: ({ row }) => (
-                        <div>
-                            <input
-                                type="checkbox"
-                                {...row.getToggleRowSelectedProps()}
-                                className="table-checkbox"
-                                indeterminate="false"
-                                onClick={(e) => e.stopPropagation()}
-                            />
-                        </div>
-                    ),
-                    width: 35,
-                },
+                ...(hideCheckBox !== undefined && hideCheckBox ? []
+                    : [{
+                        id: "selection",
+                        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+                            <div>
+                                <input
+                                    id={uuidv4()}
+                                    type="checkbox"
+                                    {...getToggleAllPageRowsSelectedProps()}
+                                    className="table-checkbox"
+                                    indeterminate="false"
+                                />
+                            </div>
+                        ),
+                        Cell: ({ row }) => (
+                            <div>
+                                <input
+                                    id={uuidv4()}
+                                    type="checkbox"
+                                    {...row.getToggleRowSelectedProps()}
+                                    className="table-checkbox"
+                                    indeterminate="false"
+                                    onClick={(e) => e.stopPropagation()}
+                                />
+                            </div>
+                        ),
+                        width: 35,
+                    },]),
                 ...columns,
             ]);
         }
@@ -485,6 +490,19 @@ const ReactDataTable = (props) => {
         const updatedTableData = [...tableData];
         updatedTableData[row.index][accessor] = value;
 
+        if (innerPageName === "인건비 수주관리") {
+            if(row.original.pecUnitPrice && row.original.pecMm) {
+                const price = row.original.pecUnitPrice * row.original.pecMm;
+                updatedTableData[index]["price"] = price;
+            }
+        } else if (innerPageName === "인건비 예산관리") {
+            if(row.original.pecPosition && row.original.pecMm) {
+                const price = row.original.pecMm;
+                updatedTableData[index]["price"] = price;
+            }
+        }
+
+        //구매
         if (accessor === "byUnitPrice" || accessor === "standardMargin" || accessor === "consumerOpRate" || accessor === "byQunty") {
             if (row.original.byUnitPrice && row.original.standardMargin && row.original.consumerOpRate && row.original.byQunty) {
                 // 1.원가(견적가) : 수량 * 원단가
@@ -635,9 +653,9 @@ const ReactDataTable = (props) => {
             <div className="flex-between mg-b-20 mg-t-20">
                 <div className="page-size">
                     <span className="mg-r-10">페이지 크기 :</span>
-                    <select className="select" value={pageSize} onChange={(e) => pageSizeChange(e.target.value)}>
-                        {pageSizeOptions.map((size) => (
-                            <option key={size} value={size}>
+                    <select className="select" id={uuidv4()} value={pageSize} onChange={(e) => pageSizeChange(e.target.value)}>
+                        {pageSizeOptions.map((size, index) => (
+                            <option key={size + index} value={size}>
                                 {size}
                             </option>
                         ))}
@@ -658,6 +676,7 @@ const ReactDataTable = (props) => {
                                 return (
                                     <th
                                         {...column.getHeaderProps(column.getSortByToggleProps())}
+                                        id={`header-${column.id}`}
                                         className={columnIndex === 0 ? "first-column" : ""}
                                         style={{ width: column.width }}>
                                         {column.render("Header")}
@@ -676,11 +695,11 @@ const ReactDataTable = (props) => {
                         </tr>
                     ))}
                 </thead>
-                {tableData.length <= 0 && (
+                {/* {tableData.length <= 0 && (
                     <div style={{ display: "flex", width: "1000px", margin: "auto", alignItems: "center", justifyContent: "center" }}>
                         <div style={{}}>no data</div>
                     </div>
-                )}
+                )} */}
                 <tbody {...getTableBodyProps()}>
                     {page.map((row, rowIndex) => {
                         prepareRow(row);
@@ -702,18 +721,21 @@ const ReactDataTable = (props) => {
                                             ) : isEditing ? (
                                                 cell.column.type === "input" ? (
                                                     <input
+                                                        key={cell.column.id+row.index}
                                                         type="text"
                                                         value={
                                                             tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
                                                                 ? tableData[row.index][cell.column.id] || cell.value
                                                                 : cell.value
                                                         }
-                                                        name={cell.column.id}
+                                                        name={cell.column.col}
                                                         onChange={(e) => handleChange(e, row, cell.column.id)}
                                                     />
                                                 ) : cell.column.type === "datepicker" ? (
                                                     <div className="box3-1 boxDate">
                                                         <DatePicker
+                                                            key={cell.column.id+row.index}
+                                                            name={cell.column.col}
                                                             className="form-control flex-item"
                                                             type="text"
                                                             value={
@@ -729,17 +751,11 @@ const ReactDataTable = (props) => {
                                                             locale={ko} // 한국어로 설정
                                                             onClick={() => toggleCalendarVisible(row.index)}
                                                             onChange={(date) => {
-                                                                //handleDateClick(date, row.index);
-                                                                //const formatted = handleDateChange(selectedDate);
-                                                                //setFormattedDate(formatted); // 이 부분은 formattedDate 대신 pmpMonth를 업데이트하는 코드로 변경해야 함
                                                                 const formatted = handleDateChange(date);
                                                                 const updatedTableData = [...tableData];
                                                                 updatedTableData[row.index].pmpMonth
                                                                     ? (updatedTableData[row.index].pmpMonth2 = formatted)
                                                                     : (updatedTableData[row.index].pmpMonth = formatted);
-                                                                //updatedTableData[row.index].pmpMonth2 = formatted;
-                                                                //    ? updatedTableData[row.index].pmpMonth
-                                                                //    : formatted;
                                                                 setTableData(updatedTableData);
                                                             }}
                                                         />
@@ -747,6 +763,8 @@ const ReactDataTable = (props) => {
                                                 ) : cell.column.type === "costDateStart" ? (
                                                     <div className="box3-1 boxDate">
                                                         <DatePicker
+                                                            key={cell.column.id+row.index}
+                                                            name={cell.column.col}
                                                             className="form-control flex-item"
                                                             type="text"
                                                             value={tableData[row.index].pjbgBeginDt ? tableData[row.index].pjbgBeginDt.substring(0, 7) : ""}
@@ -774,6 +792,8 @@ const ReactDataTable = (props) => {
                                                 ) : cell.column.type === "costDateEnd" ? (
                                                     <div className="box3-1 boxDate">
                                                         <DatePicker
+                                                            key={cell.column.id+row.index}
+                                                            name={cell.column.col}
                                                             className="form-control flex-item"
                                                             type="text"
                                                             value={tableData[row.index].pjbgEndDt ? tableData[row.index].pjbgEndDt.substring(0, 7) : ""}
@@ -800,7 +820,8 @@ const ReactDataTable = (props) => {
                                                     </div>
                                                 ) : cell.column.type === "select" ? (
                                                     <select
-                                                        name={cell.column.id}
+                                                        key={cell.column.id+row.index}
+                                                        name={cell.column.col}
                                                         defaultValue={
                                                             tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
                                                                 ? tableData[row.index][cell.column.id]
@@ -808,7 +829,7 @@ const ReactDataTable = (props) => {
                                                         }
                                                         onChange={(e) => handleChange(e, row, cell.column.id)}>
                                                         {cell.column.options.map((option, index) => (
-                                                            <option key={index} value={option.value}>
+                                                            <option key={cell.column.id+index} value={option.value}>
                                                                 {option.label}
                                                             </option>
                                                         ))}
@@ -818,7 +839,8 @@ const ReactDataTable = (props) => {
                                                         <input
                                                             className="buttonSelect"
                                                             id={cell.column.id}
-                                                            name={cell.column.id}
+                                                            name={cell.column.col}
+                                                            key={cell.column.id+row.index}
                                                             onClick={() => setValueData(rowIndex)}
                                                             type="text"
                                                             placeholder={`품목그룹명을 선택해 주세요.`}

@@ -27,6 +27,7 @@ function LaborCostMgmt() {
         setProjectInfo,
         projectItem,
         // viewSetPoiId,
+        unitPriceList,
     } = useContext(PageContext);
 
     useEffect(() => {
@@ -118,22 +119,33 @@ function LaborCostMgmt() {
     const fetchData = async () => {
         try {
             if (innerPageName === "인건비 조회관리") {
-                const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 조회관리
-                const updatedData = mapPecModeCodeToText(data);
+                const datas = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 조회관리
+                const updatedData = mapPecModeCodeToText(datas);
                 setInquiryMgmt(updatedData);
             } else if (innerPageName === "인건비 수주관리") {
-                const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 수주관리
-                setPgBudgetMgmt(data);
+                const datas = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 수주관리
+                const updatedDatas = datas.map(data => {
+                    const price = data.pecMm * data.pecUnitPrice * 1000;
+                    return { ...data, price: price };
+                });
+                setPgBudgetMgmt(updatedDatas);
                 const dataView = await fetchAllDataView("/api/baseInfrm/product/prmnPlan/totalListAll.do", innerPageName);
                 setSaleCostView(ChangePrmnPlanData(dataView, projectInfo));
             } else if (innerPageName === "인건비 예산관리") {
-                const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 예산관리
-                setBudgetMgmt(data);
+                const datas = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 예산관리
+                if(unitPriceList && datas) {
+                    const updatedDatas = datas.map(data => {
+                        const unit = unitPriceList.find(unit => data.pecPosition === unit.guppName && unit.gupBaseDate[0] === new Date().getFullYear());
+                        const price = unit ? data.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
+                        return { ...data, price: price };
+                    });
+                    setBudgetMgmt(updatedDatas);
+                }
                 const dataView = await fetchAllDataView("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName);
                 setPgBudgetView(dataView);
             } else if (innerPageName === "인건비 실행관리") {
-                const data = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 실행관리
-                setRunMgmt(data);
+                const datas = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 실행관리
+                setRunMgmt(datas);
                 const dataView = await fetchAllDataView("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName);
                 setBudgetView(dataView);
             }
@@ -143,6 +155,14 @@ function LaborCostMgmt() {
     };
 
     useEffect(() => {
+        setInquiryMgmt([]); //초기화
+        setSaleCostView([]);
+        setPgBudgetMgmt([]);
+        setPgBudgetView([]);
+        setBudgetMgmt([]);
+        setBudgetView([]);
+        setRunMgmt([]);
+        
         fetchData();
     }, [innerPageName, projectInfo]);
 
@@ -178,8 +198,10 @@ function LaborCostMgmt() {
 
         const resultData = await axiosFetch(url, requestData);
         if (resultData) {
+            console.log("get data success:)");
             return resultData;
         } else {
+            console.log("get data fail:(");
             return []; // 빈 배열 보내주기
         }
     };
@@ -229,7 +251,6 @@ function LaborCostMgmt() {
 
     const compareData = (originData, updatedData) => {
         const filterData = updatedData.filter((data) => data.pgNm); //pgNm 없는 데이터 제외
-        console.log("💜originData:", originData, "filterData: ", filterData);
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
 
@@ -326,12 +347,13 @@ function LaborCostMgmt() {
                             </div>
                             <ReactDataTable
                                 columns={columns.laborCostMgmt.inquiry}
-                                flag={false}
                                 testTask={true}
                                 tableRef={orderPlanMgmtTable1}
                                 customDatas={inquiryMgmt}
                                 viewPageName="인건비 조회관리"
                                 customDatasRefresh={refresh}
+                                hideCheckBox={true}
+                                editing={false}
                             />
                         </ul>
                     </div>
@@ -344,7 +366,7 @@ function LaborCostMgmt() {
                                     </button>
                                 </div>
                                 <div className={`hideDivRun2 ${isClicked2 ? "" : "clicked"}`}>
-                                    <ReactDataTableView columns={columns.laborCostMgmt.sub} customDatas={saleCostView} defaultPageSize={5} />
+                                    {/* <ReactDataTableView columns={columns.laborCostMgmt.sub} customDatas={saleCostView} defaultPageSize={5} /> */}
                                 </div>
                                 <div className="table-buttons">
                                     <RefreshButton onClick={refresh} />
@@ -352,11 +374,11 @@ function LaborCostMgmt() {
                                 <ReactDataTable
                                     columns={columns.laborCostMgmt.orderPlan}
                                     singleUrl="/baseInfrm/product/prstmCost"
-                                    flag={innerPageName === "인건비 수주관리" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable2}
                                     customDatas={pgBudgetMgmt}
                                     viewPageName="인건비 수주관리"
                                     sendToParentTables={compareData}
+                                    hideCheckBox={true}
                                 />
                             </ApprovalForm>
                         </ul>
@@ -370,22 +392,21 @@ function LaborCostMgmt() {
                                     </button>
                                 </div>
                                 <div className={`hideDivRun3 ${isClicked3 ? "" : "clicked"}`}>
-                                    <ReactDataTableView columns={columns.laborCostMgmt.budgetView} customDatas={pgBudgetView} defaultPageSize={5} />
+                                    {/* <ReactDataTableView columns={columns.laborCostMgmt.budgetView} customDatas={pgBudgetView} defaultPageSize={5} /> */}
                                 </div>
                                 <div className="table-buttons">
                                     <RefreshButton onClick={refresh} />
                                 </div>
                                 <ReactDataTable
                                     columns={columns.laborCostMgmt.budget}
-                                    flag={innerPageName === "인건비 예산관리" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable3}
                                     customDatas={budgetMgmt}
                                     viewPageName="인건비 예산관리"
+                                    hideCheckBox={true}
                                 />
                             </ApprovalForm>
                         </ul>
                     </div>
-
                     <div className="fourth">
                         <ul>
                             <ApprovalForm title={innerPageName + " 등록"}>
@@ -395,17 +416,17 @@ function LaborCostMgmt() {
                                     </button>
                                 </div>
                                 <div className={`hideDivRun4 ${isClicked4 ? "" : "clicked"}`}>
-                                    <ReactDataTableView columns={columns.laborCostMgmt.budget} customDatas={budgetView} defaultPageSize={5} />
+                                    {/* <ReactDataTableView columns={columns.laborCostMgmt.budget} customDatas={budgetView} defaultPageSize={5} /> */}
                                 </div>
                                 <div className="table-buttons">
                                     <RefreshButton onClick={refresh} />
                                 </div>
                                 <ReactDataTable
                                     columns={columns.laborCostMgmt.run}
-                                    flag={innerPageName === "인건비 실행관리" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable4}
                                     customDatas={runMgmt}
                                     viewPageName="인건비 실행관리"
+                                    hideCheckBox={true}
                                 />
                             </ApprovalForm>
                         </ul>

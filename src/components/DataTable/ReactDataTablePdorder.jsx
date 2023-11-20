@@ -6,29 +6,25 @@ import ModalPagePgNm from "components/modal/ModalPagePgNm";
 
 import ModalPagePdiNm from "components/modal/ModalPagePdiNm";
 import ModalPageCompany from "components/modal/ModalPageCompany";
+import { v4 as uuidv4 } from 'uuid';
 
 const ReactDataTablePdorder = (props) => {
     const {
         columns,
         suffixUrl,
-        flag,
-        detailUrl,
         customDatas,
         defaultPageSize,
         tableRef,
         viewPageName,
-        customerList,
-        sendSelected,
-        singleUrl,
         customDatasRefresh,
+        singleUrl,
+        sendSelected,
+        hideCheckBox,
+        editing
     } = props;
     const {
         nameOfButton,
         setNameOfButton,
-        isOpenModalPgNm,
-        setIsOpenModalPgNm,
-        projectPgNm,
-        setProjectPgNm,
         searchData,
         setSearchData,
         prevCurrentPageName,
@@ -36,22 +32,24 @@ const ReactDataTablePdorder = (props) => {
         prevInnerPageName,
         setCurrentTable,
         setLengthSelectRow,
+        setModalLengthSelectRow,
+        isModalTable,
         newRowData,
         currentPageName,
+        modalPageName,
         isCancelTable,
         setIsCancelTable,
         projectInfo,
+        isOpenModalPgNm,
+        setIsOpenModalPgNm,
+        projectPgNm,
+        isSaveFormTable,
+        companyInfo,
         projectPdiNm,
+        setIsOpenModalCompany,
         setIsOpenModalPdiNm,
         isOpenModalPdiNm,
-        setProjectPdiNm,
-        companyInfo,
         isOpenModalCompany,
-        setIsOpenModalCompany,
-        isModalTable,
-        modalPageName,
-        setModalLengthSelectRow,
-        isSaveFormTable,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -72,7 +70,7 @@ const ReactDataTablePdorder = (props) => {
 
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
-        if (suffixUrl || detailUrl) {
+        if (suffixUrl) {
             fetchAllData();
         }
         if (tableRef) {
@@ -105,11 +103,13 @@ const ReactDataTablePdorder = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        setIsEditing(flag);
-        if (current === currentPageName || (current === innerPageName && !isSaveFormTable)) {
+        if(current === innerPageName) {
+            setIsEditing(editing !== undefined ? editing : isSaveFormTable); //테이블 상태 //inner tab일 때 테이블 조작
+        }
+        if (current === innerPageName && !isSaveFormTable) {
             compareData(originTableData, tableData);
         }
-    }, [flag, isSaveFormTable]);
+    }, [innerPageName, isSaveFormTable]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
@@ -168,14 +168,9 @@ const ReactDataTablePdorder = (props) => {
 
     /* 데이터 검색 */
     const searchClick = async () => {
-        if (!suffixUrl && !detailUrl) return;
-        let url = ``;
+        if (!suffixUrl) return;
+        let url = `/api${suffixUrl}/totalListAll.do`;
         if (searchData) {
-            if (customerList) {
-                url = `/api${suffixUrl}/${customerList}/totalListAll.do`;
-            } else {
-                url = `/api${suffixUrl || detailUrl}/totalListAll.do`;
-            }
             const requestData = {
                 useAt: searchData.radioOption,
                 searchKeyword: searchData.searchKeyword,
@@ -225,26 +220,34 @@ const ReactDataTablePdorder = (props) => {
         useRowSelect,
         (hooks) => {
             hooks.visibleColumns.push((columns) => [
-                {
-                    id: "selection",
-                    Header: ({ getToggleAllPageRowsSelectedProps }) => (
-                        <div>
-                            <input type="checkbox" {...getToggleAllPageRowsSelectedProps()} className="table-checkbox" indeterminate="false" />
-                        </div>
-                    ),
-                    Cell: ({ row }) => (
-                        <div>
-                            <input
-                                type="checkbox"
-                                {...row.getToggleRowSelectedProps()}
-                                className="table-checkbox"
-                                indeterminate="false"
-                                onClick={(e) => e.stopPropagation()}
-                            />
-                        </div>
-                    ),
-                    width: 35,
-                },
+                ...(hideCheckBox !== undefined && hideCheckBox ? []
+                    : [{
+                        id: "selection",
+                        Header: ({ getToggleAllPageRowsSelectedProps }) => (
+                            <div>
+                                <input
+                                    id={uuidv4()}
+                                    type="checkbox"
+                                    {...getToggleAllPageRowsSelectedProps()}
+                                    className="table-checkbox"
+                                    indeterminate="false"
+                                />
+                            </div>
+                        ),
+                        Cell: ({ row }) => (
+                            <div>
+                                <input
+                                    id={uuidv4()}
+                                    type="checkbox"
+                                    {...row.getToggleRowSelectedProps()}
+                                    className="table-checkbox"
+                                    indeterminate="false"
+                                    onClick={(e) => e.stopPropagation()}
+                                />
+                            </div>
+                        ),
+                        width: 35,
+                    },]),
                 ...columns,
             ]);
         }
@@ -491,7 +494,7 @@ const ReactDataTablePdorder = (props) => {
             <div className="flex-between mg-b-20 mg-t-20">
                 <div className="page-size">
                     <span className="mg-r-10">페이지 크기 :</span>
-                    <select className="select" value={pageSize} onChange={(e) => pageSizeChange(e.target.value)}>
+                    <select className="select" id={uuidv4()} value={pageSize} onChange={(e) => pageSizeChange(e.target.value)}>
                         {pageSizeOptions.map((size) => (
                             <option key={size} value={size}>
                                 {size}

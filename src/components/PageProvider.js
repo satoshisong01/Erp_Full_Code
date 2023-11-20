@@ -21,6 +21,8 @@ export function PageProvider({ children }) {
     const [pdiNmList, setPdiNmList] = useState([]); // 품목ID,품명,(품목그룹명),단위,규격,제조사
     const [projectPdiNm, setProjectPdiNm] = useState({ pdiId: "", pdiNm: "", pgNm: "", pdiWght: "", pdiStnd: "", pdiMenufut: "" }); // 선택한 id 저장
 
+    const [unitPriceList, setUnitPriceList] = useState([]); // 급별단가 목록
+
     const [addPgNm, setAddPgNm] = useState("");
     const [currentTable, setCurrentTable] = useState(null); // 유니크한 현재 데이터 테이블
     const [isOpenModalPgNm, setIsOpenModalPgNm] = useState(false);
@@ -101,7 +103,8 @@ export function PageProvider({ children }) {
         setIsOpenModalPdiNm,
         addPdiNm,
         setAddPdiNm,
-
+        unitPriceList,
+        setUnitPriceList,
         companyList,
         setCompanyList,
         companyInfo,

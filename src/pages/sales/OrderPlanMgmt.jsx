@@ -182,6 +182,7 @@ function OrderPlanMgmt() {
                                     customDatas={prmnPlanDatas}
                                     viewPageName="인건비"
                                     customDatasRefresh={refresh}
+                                    hideCheckBox={true}
                                 />
                             </ApprovalForm>
                         </ul>
@@ -195,11 +196,11 @@ function OrderPlanMgmt() {
                                 <ReactDataTablePdorder
                                     singleUrl="/baseInfrm/product/buyIngInfo"
                                     columns={columns.orderPlanMgmt.purchase}
-                                    flag={innerPageName === "구매(재료비)" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable2}
                                     customDatas={pdOrdrDatas}
                                     viewPageName="구매(재료비)"
                                     customDatasRefresh={refresh}
+                                    hideCheckBox={true}
                                 />
                             </ApprovalForm>
                         </ul>
@@ -214,11 +215,11 @@ function OrderPlanMgmt() {
                                 <ReactDataTableURL
                                     singleUrl="/baseInfrm/product/pjbudget"
                                     columns={columns.orderPlanMgmt.outsourcing}
-                                    flag={innerPageName === "개발외주비" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable3}
                                     customDatas={outsourcingDatas}
                                     viewPageName="개발외주비"
                                     customDatasRefresh={refresh}
+                                    hideCheckBox={true}
                                 />
                             </ApprovalForm>
                         </ul>
@@ -233,11 +234,11 @@ function OrderPlanMgmt() {
                                 <ReactDataTableURL
                                     singleUrl="/baseInfrm/product/pjbudget"
                                     columns={columns.orderPlanMgmt.expenses}
-                                    flag={innerPageName === "경비" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable4}
                                     customDatas={pjbudgetDatas}
                                     viewPageName="경비"
                                     customDatasRefresh={refresh}
+                                    hideCheckBox={true}
                                 />
                             </ApprovalForm>
                         </ul>
@@ -252,11 +253,11 @@ function OrderPlanMgmt() {
                                 <ReactDataTableURL
                                     columns={columns.orderPlanMgmt.generalExpenses}
                                     singleUrl="/baseInfrm/product/pjbudget"
-                                    flag={innerPageName === "영업관리비" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable5}
                                     customDatas={generalExpensesDatas}
                                     viewPageName="영업관리비"
                                     customDatasRefresh={refresh}
+                                    hideCheckBox={true}
                                 />
                             </ApprovalForm>
                         </ul>

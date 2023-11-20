@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PageContext } from "components/PageProvider";
 import SearchListCompany from "components/SearchListCompany";
 
-export default function ModalPageCompany({ rowIndex }) {
+export default function ModalPageCompany({ rowIndex, returnInfo, closeLocal }) {
     const { companyList, setCompanyInfo, setIsOpenModalCompany, setReturnKeyWord } = useContext(PageContext);
     //const [savePgNm, setSavePgNm] = useState("");
 
@@ -27,6 +27,7 @@ export default function ModalPageCompany({ rowIndex }) {
     };
 
     function handleItemClick(item) {
+        returnInfo && returnInfo({ cltNm: item.esntlId, cltId: item.companyId })
         setCompanyInfo({ esntlId: item.esntlId, companyId: item.companyId });
         setIsOpenModalCompany(false);
     }
@@ -85,7 +86,7 @@ export default function ModalPageCompany({ rowIndex }) {
                             <form className="product-modal-body">
                                 <div className="submitProduct">
                                     <div className="modal-footer flex-between">
-                                        <button type="button" className="btn btn-default" data-dismiss="modal" onClick={() => handleClose()}>
+                                        <button type="button" className="btn btn-default" data-dismiss="modal" onClick={() => closeLocal()}>
                                             Close
                                         </button>
                                         <button type="button" className="btn btn-primary" style={{ margin: "0" }}>

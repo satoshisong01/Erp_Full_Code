@@ -9,6 +9,7 @@ import ReactDataTable from "components/DataTable/ReactDataTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import AddPdOrderModal from "./AddPdOrderModal";
+import ModPdOrderModal from "./ModPdOrderModal";
 
 /* 구매 종류(품목수주) 목록 CRUD 팝업 */
 export default function PdOrderListModal({onClose}) {
@@ -17,6 +18,7 @@ export default function PdOrderListModal({onClose}) {
     const pdOrderTable = useRef(null);
     const [ pdOrderList, setPdOrderList ] = useState([]);
     const [isOpenAddModal, setIsOpenAddModal] = useState(false)
+    const [isOpenModModal, setIsOpenModModal] = useState(false)
     const [row, setRow] = useState({});
 
     const columns = [
@@ -57,7 +59,7 @@ export default function PdOrderListModal({onClose}) {
 
     const selected = (value) => {
         if(typeof value === 'object') {
-            setRow(value);
+            setRow({...value});
         }
         if(value === "close") {
             setProjectInfo(prev => ({...prev, poDesc: row.poDesc}))
@@ -81,8 +83,9 @@ export default function PdOrderListModal({onClose}) {
         getData();
     }
 
-    const addModalClose = () => {
+    const modalClose = () => {
         setIsOpenAddModal(false);
+        setIsOpenModModal(false);
         refresh();
     }
 
@@ -103,7 +106,7 @@ export default function PdOrderListModal({onClose}) {
                             <div className="modal-table-Body">
                                     <div className="table-buttons modal-table-buttons">
                                         <AddButton label={'추가'} onClick={() => setIsOpenAddModal(true)} />
-                                        <ModButton label={'수정'} onClick={() => setNameOfButton('modify')} />
+                                        <ModButton label={'수정'} onClick={() => setIsOpenModModal(true)} />
                                         <DelButton label={'삭제'} onClick={() => setNameOfButton('delete')} />
                                         <RefreshButton onClick={refresh} />
                                     </div>
@@ -127,7 +130,16 @@ export default function PdOrderListModal({onClose}) {
                     isOpenAddModal && (
                         <AddPdOrderModal
                             columns={columns}
-                            onClose={addModalClose}
+                            onClose={modalClose}
+                        />
+                    )
+                }
+                {
+                    isOpenModModal && (
+                        <ModPdOrderModal
+                            columns={columns}
+                            onClose={modalClose}
+                            updateData={row}
                         />
                     )
                 }
