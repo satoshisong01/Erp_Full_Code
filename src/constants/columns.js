@@ -179,10 +179,8 @@ export const columns = {
             },
         ],
     },
-    laborCostMgmt: {
-        //인건비관리
-        condition: [
-            //조건
+    laborCostMgmt: { //인건비관리
+        condition: [ //조건
             { header: "프로젝트명", col: "clCode", type: "input", value: "", searchLevel: "1" },
             { header: "품목그룹명", col: "clCode", type: "input", value: "", searchLevel: "1" },
             { header: "연월", col: "clCodeNm", type: "input", value: "", searchLevel: "2" },
@@ -518,7 +516,7 @@ export const columns = {
             },
         ],
     },
-    expenseMgmt: {
+    expenseMgmt: { //경비관리
         condition: [
             { header: "프로젝트명", col: "clCode", type: "input", value: "", searchLevel: "1" },
             { header: "기간검색", col: "selectedDate", type: "datepicker", value: "", searchLevel: "1" },
@@ -723,4 +721,274 @@ export const columns = {
             },
         ],
     },
+    purchasingMgmt: { //구매관리
+        project: [
+            {
+                header: "프로젝트명",
+                col: "poiNm",
+                cellWidth: "20%",
+            },
+            {
+                header: "발주번호",
+                col: "pmpmmNum1",
+                cellWidth: "20%",
+            },
+            {
+                header: "발주일",
+                col: "pmpmmNum2",
+                cellWidth: "20%",
+            },
+            {
+                header: "발주금액",
+                col: "pmpmmNum23",
+                cellWidth: "20%",
+            },
+            {
+                header: "발주부서",
+                col: "pmpmmNum24",
+                cellWidth: "20%",
+            },
+            {
+                header: "담당자",
+                col: "pmpmmNum25",
+                cellWidth: "20%",
+            },
+            {
+                header: "구매요청유형",
+                col: "pmpmmNum26",
+                cellWidth: "30%",
+            },
+            {
+                header: "진행상태",
+                col: "pmpmmNum27",
+                cellWidth: "20%",
+            },
+        ],
+        inquiry: [ //조회
+            { header: "품목그룹명", col: "pgNm", cellWidth: "15%" },
+            { header: "품명", col: "pdiNm", cellWidth: "30%"},
+            { header: "규격", col: "pdiStnd", cellWidth: "35%", type: "input" },
+            {
+                header: "수량",
+                col: "byQunty",
+                cellWidth: "10%",
+            },
+            {
+                header: "미입고",
+                col: "pmpmmNum1",
+                cellWidth: "10%",
+            },
+            {
+                header: "입고",
+                col: "pmpmmNum2",
+                cellWidth: "10%",
+            },
+            {
+                header: "단위",
+                col: "pdiUnit",
+                cellWidth: "10%",
+            },
+            {
+                header: "단가",
+                col: "byUnitPrice",
+                cellWidth: "15%",
+            },
+            {
+                header: "금액",
+                col: "pmpmmNum5",
+                cellWidth: "15%",
+            },
+            {
+                header: "구매거래처",
+                col: "cltNm",
+                cellWidth: "20%",
+            },
+            {
+                header: "발주일",
+                col: "byOrderDt",
+                cellWidth: "15%",
+            },
+            {
+                header: "제조사",
+                col: "pdiMenufut",
+                cellWidth: "20%",
+            },
+            {
+                header: "요청납기일",
+                col: "pmpmmNum63",
+                cellWidth: "15%",
+            },
+            {
+                header: "입고일",
+                col: "createDate",
+                cellWidth: "15%",
+            },
+            {
+                header: "발주상태",
+                col: "pmpmmNum65",
+                cellWidth: "15%",
+            },
+            {
+                header: "입고상태",
+                col: "pmpmmNum66",
+                cellWidth: "15%",
+            },
+        ],
+        budget: [ //수주
+            {
+                header: "품목그룹명",
+                col: "pgNm",
+                cellWidth: "15%",
+                type: "button",
+                options: [],
+            },
+            { header: "품명", col: "pdiNm", cellWidth: "15%", type: "buttonPdiNm"},
+            { header: "규격", col: "pdiStnd", cellWidth: "20%", type: "input" },
+            {
+                header: "수량",
+                col: "byQunty",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "단가",
+                col: "byUnitPrice",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "금액",
+                col: "pmpmmNum2",
+                cellWidth: "10%",
+            },
+            {
+                header: "구매예상일",
+                col: "pmpmmNum3",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "비고",
+                col: "byDesc",
+                cellWidth: "20%",
+                type: "input",
+            },
+        ],
+        run: [
+            {
+                header: "품목그룹명",
+                col: "pgNm",
+                cellWidth: "20%",
+                type: "button",
+                options: [],
+            },
+            { header: "품명", col: "pdiNm", cellWidth: "10%", type: "input" },
+            { header: "규격", col: "pdiStnd", cellWidth: "10%", type: "input" },
+            {
+                header: "수량",
+                col: "poiBeginDt1",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "단가",
+                col: "byUnitPrice",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "금액",
+                col: "pmpmmNum2",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "구매거래처",
+                col: "pmpmmNum3",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "발주일",
+                col: "byOrderDt",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "제조사",
+                col: "pmpmmNum5",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "요청납기일",
+                col: "pmpmmNum6",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "입고일",
+                col: "pmpmmNum7",
+                cellWidth: "10%",
+                type: "input",
+            },
+        ],
+        condition: [
+            {
+                title: "프로젝트명",
+                colName: "clCode", //컬럼명
+                type: "input",
+                value: "",
+                searchLevel: "1",
+            },
+            {
+                title: "기간검색",
+                colName: "selectedDate",
+                type: "datepicker",
+                searchLevel: "0",
+            },
+            {
+                title: "품목그룹명",
+                colName: "clCodeNm", //컬럼명
+                type: "input",
+                value: "",
+                searchLevel: "2",
+            },
+            {
+                title: "품목명",
+                colName: "clCodeNm", //컬럼명
+                type: "input",
+                value: "",
+                searchLevel: "2",
+            },
+            {
+                title: "구매거래처",
+                colName: "clCodeNm", //컬럼명
+                type: "input",
+                value: "",
+                searchLevel: "2",
+            },
+            {
+                title: "발주부서",
+                colName: "clCodeNm", //컬럼명
+                type: "input",
+                value: "",
+                searchLevel: "2",
+            },
+            {
+                title: "발주상태",
+                colName: "name",
+                type: "select",
+                option: [{ value: "발주완료" }, { value: "미발주" }],
+                searchLevel: "3",
+            },
+            {
+                title: "입고상태",
+                colName: "name",
+                type: "select",
+                option: [{ value: "입고완료" }, { value: "미입고" }],
+                searchLevel: "3",
+            },
+        ],
+    }
 };

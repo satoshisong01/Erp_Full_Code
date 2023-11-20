@@ -62,7 +62,13 @@ export default function PdOrderListModal({onClose}) {
             setRow({...value});
         }
         if(value === "close") {
-            setProjectInfo(prev => ({...prev, poDesc: row.poDesc}))
+            // setProjectInfo(prev => ({...prev, poDesc: row.poDesc}))
+            setProjectInfo(prev => ({
+                ...prev,
+                poDesc: row.poDesc,
+                poId: row.poId,
+                isPoIdSelected: true,
+            }))
             onClose();
         }
     }

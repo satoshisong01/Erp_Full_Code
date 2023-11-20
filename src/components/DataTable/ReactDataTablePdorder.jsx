@@ -106,6 +106,7 @@ const ReactDataTablePdorder = (props) => {
         if(current === innerPageName) {
             setIsEditing(editing !== undefined ? editing : isSaveFormTable); //테이블 상태 //inner tab일 때 테이블 조작
         }
+        console.log("💜current:", current, "innerPageName:", innerPageName);
         if (current === innerPageName && !isSaveFormTable) {
             compareData(originTableData, tableData);
         }
@@ -377,7 +378,7 @@ const ReactDataTablePdorder = (props) => {
                 const estimatedCost = row.original.byQunty * row.original.byUnitPrice;
                 // 2.단가 : 원가(견적가) / (1 - 사전원가기준이익율)
                 const unitPrice = division(estimatedCost, 1 - row.original.byStandardMargin / 100);
-                // 3.금액 : 수량 * 단가
+                // 3.금액 : 수량 * 단가ㅔ
                 const planAmount = row.original.byQunty * unitPrice;
                 // 4.소비자단가 : 단가 / 소비자산출율
                 const consumerPrice = division(unitPrice, row.original.byConsumerOutputRate);
@@ -410,10 +411,30 @@ const ReactDataTablePdorder = (props) => {
     //-------------------------------배열 추가, 수정, 삭제
     const addList = async (addNewData) => {
         if (!singleUrl) return;
+        if (current==="구매(재료비)") { //영업
+            addNewData.forEach((data) => {
+                data.poId = projectInfo.poId;
+                data.modeCode = "SLSP";
+            });
+        } else if (current==="구매 수주관리") {
+            addNewData.forEach((data) => {
+                data.poId = projectInfo.poId;
+                data.modeCode = "EXDR";
+            });
+        } else if (current==="구매 예산관리") {
+            addNewData.forEach((data) => {
+                data.poId = projectInfo.poId;
+                data.modeCode = "EXCP";
+            });
+        } else if (current==="구매 실행관리") {
+            addNewData.forEach((data) => {
+                data.poId = projectInfo.poId;
+                data.modeCode = "EXCU";
+            });
+        }
         const url = `/api${singleUrl}/addList.do`;
         const resultData = await axiosPost(url, addNewData);
         if (resultData && resultData.length > 0) {
-            console.log("추가완료");
             customDatasRefresh();
         } else {
             console.log("추가실패");
@@ -421,10 +442,30 @@ const ReactDataTablePdorder = (props) => {
     };
     const updateList = async (toUpdate) => {
         if (!singleUrl) return;
+        if (current==="구매(재료비)") { //영업
+            toUpdate.forEach((data) => {
+                data.poId = projectInfo.poId;
+                data.modeCode = "SLSP";
+            });
+        } else if (current==="구매 수주관리") {
+            toUpdate.forEach((data) => {
+                data.poId = projectInfo.poId;
+                data.modeCode = "EXDR";
+            });
+        } else if (current==="구매 예산관리") {
+            toUpdate.forEach((data) => {
+                data.poId = projectInfo.poId;
+                data.modeCode = "EXCP";
+            });
+        } else if (current==="구매 실행관리") {
+            toUpdate.forEach((data) => {
+                data.poId = projectInfo.poId;
+                data.modeCode = "EXCU";
+            });
+        }
         const url = `/api${singleUrl}/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData && resultData.length > 0) {
-            console.log("수정완료");
             customDatasRefresh();
         } else {
             console.log("수정실패");
@@ -444,16 +485,14 @@ const ReactDataTablePdorder = (props) => {
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
 
-    //구매용
+    //구매용(영업완료/실행미완료)
     const compareData = (originData, updatedData) => {
+        console.log("저장하자!!!!! 💜originData:", originData, "updatedData:",updatedData);
         // const filterData = updatedData.filter((data) => data.pmpMonth); //필수값 체크
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = updatedData ? updatedData.length : 0;
         if (originDataLength > updatedDataLength) {
-            updatedData.forEach((data) => {
-                data.poId = projectInfo.poId;
-                data.modeCode = "SLSP";
-            });
+            console.log("1");
             updateList(updatedData);
 
             const originAValues = originData.map((item) => item.byId); //삭제할 id 추출
@@ -461,26 +500,23 @@ const ReactDataTablePdorder = (props) => {
 
             deleteList(extraOriginData);
         } else if (originDataLength === updatedDataLength) {
-            updatedData.forEach((data) => {
-                data.poId = projectInfo.poId;
-                data.modeCode = "SLSP";
-            });
+            console.log("2");
             updateList(updatedData);
         } else if (originDataLength < updatedDataLength) {
+            console.log("3");
             const toAdds = [];
             const addUpdate = [];
             for (let i = 0; i < originDataLength; i++) {
                 const temp = { ...updatedData[i] };
-                temp.poId = projectInfo.poId;
-                temp.modeCode = "SLSP";
                 addUpdate.push(temp);
             }
             updateList(addUpdate);
-
             for (let i = originDataLength; i < updatedDataLength; i++) {
+                // const temp = { ...updatedData[i] };
+                // temp.poId = projectInfo.poId;
+                // temp.modeCode = "SLSP";
+                // toAdds.push(temp);
                 const temp = { ...updatedData[i] };
-                temp.poId = projectInfo.poId;
-                temp.modeCode = "SLSP";
                 toAdds.push(temp);
             }
             addList(toAdds);
@@ -494,7 +530,7 @@ const ReactDataTablePdorder = (props) => {
             <div className="flex-between mg-b-20 mg-t-20">
                 <div className="page-size">
                     <span className="mg-r-10">페이지 크기 :</span>
-                    <select className="select" id={uuidv4()} value={pageSize} onChange={(e) => pageSizeChange(e.target.value)}>
+                    <select className="select" id={uuidv4()} value={pageSize || defaultPageSize} onChange={(e) => pageSizeChange(e.target.value)}>
                         {pageSizeOptions.map((size) => (
                             <option key={size} value={size}>
                                 {size}
@@ -561,7 +597,7 @@ const ReactDataTablePdorder = (props) => {
                                                         value={
                                                             tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
                                                                 ? tableData[row.index][cell.column.id] || cell.value
-                                                                : cell.value
+                                                                : cell.value || ""
                                                         }
                                                         name={cell.column.col}
                                                         onChange={(e) => handleChange(e, row, cell.column.id)}
@@ -577,26 +613,12 @@ const ReactDataTablePdorder = (props) => {
                                                         }
                                                         onChange={(e) => handleChange(e, row, cell.column.id)}>
                                                         {cell.column.options.map((option, index) => (
-                                                            <option key={index} value={option.value}>
+                                                            <option key={index} value={option.value || ""}>
                                                                 {option.label}
                                                             </option>
                                                         ))}
                                                     </select>
-                                                ) : // : cell.column.type === "button" ? (
-                                                //    <div>
-                                                //        <input
-                                                //            className="buttonSelect"
-                                                //            id={cell.column.id}
-                                                //            name={cell.column.id}
-                                                //            onClick={() => setValueData(rowIndex)}
-                                                //            type="text"
-                                                //            placeholder={projectPgNm.pgNm ? projectPgNm.pgNm : `품목그룹명을 선택해 주세요.`}
-                                                //            value={tableData[rowIndex].pgNm || ""}
-                                                //            onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
-                                                //            readOnly
-                                                //        />
-                                                //    </div>
-                                                //)
+                                                ) : 
                                                 cell.column.type === "buttonPdiNm" ? (
                                                     <div>
                                                         <input

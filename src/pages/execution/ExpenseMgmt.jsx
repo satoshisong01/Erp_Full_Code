@@ -15,7 +15,7 @@ import ReactDataTableView from "components/DataTable/ReactDataTableView";
 import RefreshButton from "components/button/RefreshButton";
 /** 실행관리-경비관리 */
 function ExpenseMgmt() {
-    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
+    const { innerPageName, setInnerPageName, setCurrentPageName, setPrevInnerPageName, isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
 
     // const { showDetailTable } = useContext(PageContext);
     useEffect(() => {
@@ -185,18 +185,21 @@ function ExpenseMgmt() {
     };
 
     const changeTabs = (task) => {
-        setCurrentTask(task);
-        if (task !== currentTask) {
-            //자신 일때 수정 창으로 변동 되지 않기 위한 조건
+        if (task !== innerPageName) { //다른 페이지의 버튼 변경 막기
             setIsSaveFormTable(true);
         }
+        setInnerPageName((prev) => {
+            setCurrentPageName("");
+            setPrevInnerPageName(prev);
+            return task;
+        });
     };
 
     const fetchData = async () => {
         try {
             if (currentTask === "경비 조회관리") {
                 const data = await fetchAllData("/baseInfrm/product/pjbudget", currentTask); // 경비 조회관리
-                console.log(data, "불러온 조회관리 값은?");
+                // console.log(data, "불러온 조회관리 값은?");
                 const updatedData = processResultData(data);
                 console.log(updatedData, "updatedData 🔥🔥🔥🔥🔥");
                 setInquiryMgmt(updatedData);
@@ -345,11 +348,12 @@ function ExpenseMgmt() {
                             <ReactDataTable
                                 viewPageName="경비 조회관리"
                                 columns={columns.expenseMgmt.inquiry}
-                                flag={false}
                                 testTask={true}
                                 tableRef={orderPlanMgmtTable1}
                                 customDatas={inquiryMgmt}
                                 customDatasRefresh={refresh}
+                                hideCheckBox={true}
+                                editing={false}
                             />
                             {/*</ApprovalForm>*/}
                         </ul>
@@ -370,10 +374,11 @@ function ExpenseMgmt() {
                             </div>
                             <ReactDataTable
                                 columns={columns.expenseMgmt.budget}
-                                flag={currentTask === "경비 수주관리" && isSaveFormTable}
                                 tableRef={orderPlanMgmtTable2}
+                                viewPageName="경비 수주관리"
                                 customDatas={pgBudgetMgmt}
                                 customDatasRefresh={refresh}
+                                hideCheckBox={true}
                             />
                         </ul>
                     </div>
@@ -393,10 +398,11 @@ function ExpenseMgmt() {
                             </div>
                             <ReactDataTable
                                 columns={columns.expenseMgmt.budget}
-                                flag={currentTask === "경비 예산관리" && isSaveFormTable}
                                 tableRef={orderPlanMgmtTable3}
+                                viewPageName="경비 예산관리"
                                 customDatas={budgetMgmt}
                                 customDatasRefresh={refresh}
+                                hideCheckBox={true}
                             />
                         </ul>
                     </div>
@@ -416,10 +422,11 @@ function ExpenseMgmt() {
                             </div>
                             <ReactDataTable
                                 columns={columns.expenseMgmt.budget}
-                                flag={currentTask === "경비 실행관리" && isSaveFormTable}
                                 tableRef={orderPlanMgmtTable4}
+                                viewPageName="경비 실행관리"
                                 customDatas={runMgmt}
                                 customDatasRefresh={refresh}
+                                hideCheckBox={true}
                             />
                         </ul>
                     </div>
