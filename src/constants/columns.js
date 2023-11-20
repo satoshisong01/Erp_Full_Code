@@ -97,8 +97,10 @@ export const columns = {
     },
 
     /* 실행관리 */
-    executionCost: { //실행원가관리
-        project: [ //프로젝트 목록
+    executionCost: {
+        //실행원가관리
+        project: [
+            //프로젝트 목록
             { header: "프로젝트ID", col: "poiId", cellWidth: "12%", type: "input", enable: false, modify: true, add: true, require: true },
             { header: "프로젝트 이름", col: "poiNm", cellWidth: "20%", type: "input", enable: true, modify: true, add: true, require: true },
             { header: "프로젝트 코드", col: "poiCode", cellWidth: "15%", type: "input", enable: false, modify: false, add: true, require: true },
@@ -119,7 +121,8 @@ export const columns = {
             { header: "비고", col: "poiDesc", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
             { header: "첨부파일", col: "poFileId", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
         ],
-        condition: [ //조건
+        condition: [
+            //조건
             {
                 header: "프로젝트명",
                 col: "clCode", //컬럼명
@@ -174,7 +177,7 @@ export const columns = {
                 value: "",
                 searchLevel: "2",
             },
-        ]
+        ],
     },
     laborCostMgmt: { //인건비관리
         condition: [ //조건
@@ -182,7 +185,8 @@ export const columns = {
             { header: "품목그룹명", col: "clCode", type: "input", value: "", searchLevel: "1" },
             { header: "연월", col: "clCodeNm", type: "input", value: "", searchLevel: "2" },
         ],
-        project: [ //프로젝트 목록
+        project: [
+            //프로젝트 목록
             {
                 header: "프로젝트명",
                 col: "poiNm",
@@ -202,7 +206,8 @@ export const columns = {
                 type: "input",
             },
         ],
-        sub: [ //인건비 상세
+        sub: [
+            //인건비 상세
             { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "datepicker" },
             { header: "M/M계", col: "total", cellWidth: "10%", type: "input" },
             {
@@ -297,7 +302,8 @@ export const columns = {
                 type: "input",
             },
         ],
-        inquiry: [ //인건비 조회
+        inquiry: [
+            //인건비 조회
             {
                 header: "구분코드",
                 col: "pecModeCode",
@@ -353,7 +359,8 @@ export const columns = {
                 cellWidth: "10%",
             },
         ],
-        orderPlan: [ //인건비 수주
+        orderPlan: [
+            //인건비 수주
             {
                 header: "품목그룹명",
                 col: "pgNm",
@@ -362,7 +369,7 @@ export const columns = {
                 options: [],
                 require: true,
             },
-            { header: "수주수량(M/M)", col: "pecMm", cellWidth: "25%", type: "input", require: true, },
+            { header: "수주수량(M/M)", col: "pecMm", cellWidth: "25%", type: "input", require: true },
             {
                 header: "단가",
                 col: "pecUnitPrice",
@@ -376,7 +383,8 @@ export const columns = {
                 cellWidth: "25%",
             },
         ],
-        budget: [ //인건비 예산
+        budget: [
+            //인건비 예산
             {
                 header: "품목그룹명",
                 col: "pgNm",
@@ -483,13 +491,13 @@ export const columns = {
                 header: "시작일",
                 col: "pecStartdate",
                 cellWidth: "10%",
-                type: "datepicker",
+                type: "daypicker",
             },
             {
                 header: "종료일",
                 col: "pecEnddate",
                 cellWidth: "10%",
-                type: "datepicker",
+                type: "daypicker2",
             },
             {
                 header: "금액",
@@ -547,7 +555,7 @@ export const columns = {
                 type: "button",
                 options: [],
             },
-            { header: "연/월", col: "pjbgDt", cellWidth: "10%" },
+            { header: "연월", col: "pjbgDt", cellWidth: "10%" },
             {
                 header: "출장인",
                 col: "pjbgManpower",
@@ -646,11 +654,12 @@ export const columns = {
                 type: "button",
                 options: [],
             },
-            { header: "연/월", col: "pjbgDt", cellWidth: "10%", type: "costDateStart" },
+            { header: "연월", col: "pjbgDt", cellWidth: "10%", type: "costDateStart" },
             {
                 header: "출장인",
                 col: "pjbgManpower",
                 cellWidth: "10%",
+                type: "input",
             },
             {
                 header: "시작일",

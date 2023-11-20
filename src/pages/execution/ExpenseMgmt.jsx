@@ -328,13 +328,12 @@ function ExpenseMgmt() {
                     <div className="first">
                         <ul>
                             <SearchList conditionList={columns.expenseMgmt.condition} onSearch={handleReturn} />
-                            {/*<ApprovalForm title={" 프로젝트 목록 " + currentTask}>*/}
                             <div className={`buttonBody ${isClicked ? "" : "clicked"}`}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick1}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked ? "" : "clicked"}`} icon={faArrowUp} />
                                 </button>
                             </div>
-                            <div className={`hideDivRun${isClicked ? "" : "clicked"}`}>
+                            <div className={`hideDivRun ${isClicked ? "" : "clicked"}`}>
                                 <ReactDataTableView
                                     sendPoiId={sendPoiId}
                                     columns={columns.expenseMgmt.projectView}
