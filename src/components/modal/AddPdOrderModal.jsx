@@ -6,6 +6,7 @@ import { PageContext } from "components/PageProvider";
 import { axiosPost } from "api/axiosFetch";
 import { v4 as uuidv4 } from 'uuid';
 
+/* 품목수주 추가 모달 */
 export default function AddPdOrderModal({ columns, onClose }) {
     const [data, setData] = useState({});
     const [showAlert, setShowAlert] = useState(false);
@@ -16,11 +17,11 @@ export default function AddPdOrderModal({ columns, onClose }) {
     }, []);
 
     useEffect(() => {
-        if (companyInfo.companyId && companyInfo.esntlId && companyInfo.companyId !== data.cltId) {
+        if (companyInfo.cltId && companyInfo.cltNm && companyInfo.cltId !== data.cltId) {
             setData((prevData) => ({
                 ...prevData,
-                cltId: companyInfo.companyId, //id
-                cltNm: companyInfo.esntlId //이름
+                cltId: companyInfo.cltId, //id
+                cltNm: companyInfo.cltNm //이름
             }));
         }
     }, [companyInfo, data]);

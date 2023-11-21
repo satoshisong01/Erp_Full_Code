@@ -113,44 +113,28 @@ const ReactDataTableURL = (props) => {
         toggleRowSelected(row.id);
     };
 
-    const [dataBuket, setDataBuket] = useState({});
-    const [prevDataBuket, setPrevDataBuket] = useState({});
-
-    useEffect(() => {
-        if (current === currentPageName || (current === innerPageName && !isSaveFormTable)) {
-            setDataBuket(companyInfo.esntlId);
-        }
-    }, [companyInfo]);
-
     const setValueData = (rowIndex) => {
         setIsOpenModalCompany(true);
         setRowIndex(rowIndex);
     };
-
-    //아이템 선택후 중복할당 방지 코드
+    
     useEffect(() => {
-        if (!isOpenModalCompany) {
-            // isOpenModalCompany false로 변경된 경우에 실행할 코드를 여기에 작성
-
-            // dataBuket 객체 자체의 참조가 변경되었을 때만 코드 실행
-            if (dataBuket !== prevDataBuket) {
-                const updatedTableData = [...tableData];
-                if (dataBuket && updatedTableData[rowIndex]) {
-                    updatedTableData[rowIndex].esntlId = dataBuket;
-                    setTableData(updatedTableData);
-                }
-
-                
-                // dataBuket 값을 업데이트할 때 prevDataBuket도 업데이트
-                setPrevDataBuket(dataBuket);
-                setCompanyInfo({});
+        if (current === innerPageName && Object.keys(companyInfo).length > 0) {
+            const updatedTableData = [...tableData];
+            if (!updatedTableData[rowIndex]) {
+                updatedTableData[rowIndex] = {}; // 해당 인덱스가 없으면 빈 객체 생성
             }
+            if (updatedTableData[rowIndex].esntlId !== companyInfo.cltNm) { //중복할당 방지 코드
+                updatedTableData[rowIndex].esntlId = companyInfo.cltNm;
+                updatedTableData[rowIndex].cltId = companyInfo.cltId;
+                setTableData(updatedTableData);
+            }
+            setCompanyInfo({}); // 초기화
         }
-    }, [isOpenModalCompany, dataBuket, rowIndex, tableData, prevDataBuket]);
+    }, [companyInfo, rowIndex, tableData]);
 
     const handleChange = (e, rowIndex, accessor) => {
         const { value } = e.target;
-        console.log(value, "🚨🚨🚨🚨🚨");
         // tableData를 복제하여 수정
         const updatedTableData = [...tableData];
         updatedTableData[rowIndex][accessor] = value;
@@ -508,7 +492,7 @@ const ReactDataTableURL = (props) => {
                                                             onClick={() => setValueData(rowIndex)}
                                                             type="text"
                                                             placeholder={`거래처명을 선택해 주세요.`}
-                                                            value={tableData[rowIndex].esntlId || ""}
+                                                            value={tableData[rowIndex][cell.column.id] || ""}
                                                             onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
                                                             readOnly
                                                         />

@@ -4,9 +4,8 @@ import { PageContext } from "components/PageProvider";
 import ModalPageCompany from "./ModalPageCompany";
 
 export default function ModalSearchCompany({ stableData, tableData }) {
-    const { saveCompany, setIsOpenModalPgNm, isOpenModalPgNm, setSaveCompany } = useContext(PageContext);
+    const { companyInfo, setIsOpenModalPgNm, isOpenModalPgNm, setSaveCompany } = useContext(PageContext);
 
-    console.log(tableData, "받아온데이터뭉치⭐⭐⭐⭐⭐⭐⭐");
     const [newData, setNewData] = useState([]);
     const [saveCount, setSaveCount] = useState([]);
 
@@ -17,7 +16,6 @@ export default function ModalSearchCompany({ stableData, tableData }) {
     useEffect(() => {
         if (stableData > -1) {
             setSaveCount(stableData);
-            console.log(saveCount, "넘겨온 선택값 ❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️😁😁😁");
         }
     }, [stableData]);
 
@@ -31,17 +29,13 @@ export default function ModalSearchCompany({ stableData, tableData }) {
         }
     }, [tableData]);
 
-    console.log(newData, "새로운 데이터💚💚💚💚💚💚💚");
-
-    console.log(newData.length, "새로운 데이터 갯수🎉🎉🎉🎉🎉🎉🎉🎉🎉");
-
     return (
         <div>
             <input
                 onClick={() => setIsOpenModalPgNm(true)}
                 type="text"
-                placeholder={saveCompany.esntlId ? saveCompany.esntlId : `협력사명을 선택해 주세요.`}
-                value={saveCompany.esntlId}
+                placeholder={`협력사명을 선택해 주세요.`}
+                value={companyInfo.cltNm}
                 readOnly
             />
             {isOpenModalPgNm && (

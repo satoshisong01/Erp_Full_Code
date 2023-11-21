@@ -15,7 +15,7 @@ export default function ModalPageCompany({ rowIndex, returnInfo, closeLocal }) {
     const conditionList = [
         {
             title: "협력사",
-            colName: "esntlId", //컬럼명
+            colName: "cltNm", //컬럼명
             type: "input",
             value: "",
             searchLevel: "5",
@@ -27,8 +27,8 @@ export default function ModalPageCompany({ rowIndex, returnInfo, closeLocal }) {
     };
 
     function handleItemClick(item) {
-        returnInfo && returnInfo({ cltNm: item.esntlId, cltId: item.companyId })
-        setCompanyInfo({ esntlId: item.esntlId, companyId: item.companyId });
+        returnInfo && returnInfo({ cltNm: item.cltNm, cltId: item.cltId })
+        setCompanyInfo({ cltNm: item.cltNm, cltId: item.cltId });
         setIsOpenModalCompany(false);
     }
 
@@ -78,7 +78,7 @@ export default function ModalPageCompany({ rowIndex, returnInfo, closeLocal }) {
                                 <div className="modalContent">
                                     {companyList.map((item, index) => (
                                         <div className="listItems" key={index} onClick={() => handleItemClick(item)}>
-                                            <p className="listItem">{item.esntlId}</p>
+                                            <p className="listItem">{item.cltNm}</p>
                                         </div>
                                     ))}
                                 </div>

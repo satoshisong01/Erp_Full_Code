@@ -28,11 +28,9 @@ function LaborCostMgmt() {
         projectItem,
         // viewSetPoiId,
         unitPriceList,
+        currentPageName,
     } = useContext(PageContext);
 
-    useEffect(() => {
-        console.log(innerPageName, "innerPageName");
-    }, [innerPageName]);
 
     useEffect(() => {
         setInnerPageName("인건비 조회관리");
@@ -83,6 +81,22 @@ function LaborCostMgmt() {
     const [budgetMgmt, setBudgetMgmt] = useState([]); // 인건비 예산관리
     const [budgetView, setBudgetView] = useState([]); //(실행) 예산띄우기
     const [runMgmt, setRunMgmt] = useState([]); // 인건비 실행관리
+
+
+    useEffect(() => {
+        if (projectInfo.poiId === undefined || projectInfo.poId === "") { //테이블 초기화
+            setInquiryMgmt([]);
+            setPgBudgetMgmt([]);
+            setBudgetMgmt([]);
+            setRunMgmt([]);
+        }
+        if(currentPageName === "인건비관리") {
+            const activeTab = document.querySelector('.mini_board_5 .tab li a.on');
+            const activeTabText = activeTab.textContent;
+            console.log("여기 인건비인데요:",activeTabText);
+            setInnerPageName(activeTabText); //마지막으로 활성화 된 탭
+        }
+    }, [currentPageName, innerPageName, projectInfo]);
 
     const refresh = () => {
         fetchData();
@@ -334,7 +348,7 @@ function LaborCostMgmt() {
     return (
         <>
             <Location pathList={locationPath.LaborCostMgmt} />
-            <div className="common_board_style mini_board_2">
+            <div className="common_board_style mini_board_5">
                 <ul className="tab">
                     <li onClick={() => changeTabs("인건비 조회관리")}>
                         <a href="#인건비 조회관리" className="on">
@@ -394,7 +408,7 @@ function LaborCostMgmt() {
                                     </button>
                                 </div>
                                 <div className={`hideDivRun2 ${isClicked2 ? "" : "clicked"}`}>
-                                    {/* <ReactDataTableView columns={columns.laborCostMgmt.sub} customDatas={saleCostView} defaultPageSize={5} /> */}
+                                    <ReactDataTableView columns={columns.laborCostMgmt.sub} customDatas={saleCostView} defaultPageSize={5} />
                                 </div>
                                 <div className="table-buttons">
                                     <RefreshButton onClick={refresh} />
@@ -420,7 +434,7 @@ function LaborCostMgmt() {
                                     </button>
                                 </div>
                                 <div className={`hideDivRun3 ${isClicked3 ? "" : "clicked"}`}>
-                                    {/* <ReactDataTableView columns={columns.laborCostMgmt.budgetView} customDatas={pgBudgetView} defaultPageSize={5} /> */}
+                                    <ReactDataTableView columns={columns.laborCostMgmt.budgetView} customDatas={pgBudgetView} defaultPageSize={5} />
                                 </div>
                                 <div className="table-buttons">
                                     <RefreshButton onClick={refresh} />
@@ -445,7 +459,7 @@ function LaborCostMgmt() {
                                     </button>
                                 </div>
                                 <div className={`hideDivRun4 ${isClicked4 ? "" : "clicked"}`}>
-                                    {/* <ReactDataTableView columns={columns.laborCostMgmt.budget} customDatas={budgetView} defaultPageSize={5} /> */}
+                                    <ReactDataTableView columns={columns.laborCostMgmt.budget} customDatas={budgetView} defaultPageSize={5} />
                                 </div>
                                 <div className="table-buttons">
                                     <RefreshButton onClick={refresh} />
