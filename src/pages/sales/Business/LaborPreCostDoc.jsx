@@ -29,9 +29,10 @@ const LaborPreCostDoc = () => {
         // URL에서 "data" 파라미터 읽기
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
-        if (data.projectInfo) {
+        if (data.projectInfo.poiId) {
             getInitData(data.projectInfo.poiId); //서버에서 데이터 호출
         }
+        console.log("사전원가 들어옴");
     }, []);
 
     // URL에서 쿼리 문자열 파라미터를 읽는 함수
@@ -48,7 +49,8 @@ const LaborPreCostDoc = () => {
     const infoColumns = [
         [
             { label: "프로젝트 이름", key: "poiNm", type: "data", colSpan: "3", value: ProjectInfoToServer.poiNm },
-            { label: "프로젝트 코드", key: "poiCode", type: "data", colSpan: "3", value: ProjectInfoToServer.poiCode },
+            { label: "프로젝트 아이디", key: "poiId", type: "data", value: ProjectInfoToServer.poiId },
+            { label: "프로젝트 버전", key: "poiDesc", type: "data", value: ProjectInfoToServer.poiDesc },
         ],
         [
             { label: "수주부서", key: "poiGroupId", type: "data", value: ProjectInfoToServer.poiGroupId },
@@ -118,12 +120,16 @@ const LaborPreCostDoc = () => {
     const getInitData = async (poiId) => {
         // const url = "http://localhost:8080/api/baseInfrm/product/prstmCost/mm/listAll.do";
         const url = "/api/baseInfrm/product/prstmCost/mm/listAll.do";
-        const requestData = { poiId };
-        const resultData = await axiosFetch(url, requestData);
+        // const requestData = { poiId };
+        console.log("💜 사전원가서 poiId:",poiId,"url:",url);
+        const resultData = await axiosFetch(url, { poiId });
+        console.log("💜 사전원가서 resultData:",resultData);
         const {
             projectInfoToServer, //수주정보
             salesBudgetIn, //수주액>자체용역
             laborTotalMM, //인건비 총 mm
+            salesBudgetHS, //수주액>구매
+
             laborTotalPrice, //인건비 총 합
             insuranceTotalPrice, //인건비성복후비
             budgetList, //경비목록
@@ -134,7 +140,9 @@ const LaborPreCostDoc = () => {
             negoTotalPrice, //네고 합
             legalTotalPrice, //판관비 합
             //구매데이터..
-        } = resultData;
+            buyingList, //구매리스트
+            buyingTotalPrice //구매총합
+        } = resultData || {};
 
         /* 프로젝트 정보 */
         setProjectInfoToServer(projectInfoToServer);
@@ -165,6 +173,18 @@ const LaborPreCostDoc = () => {
 
             setChargeTableData(newChargeTableData);
         }
+        /* 구매재료비 테이블 데이터 */
+        const updatedPurchasingData = buyingList.map(item => {
+            return {
+                data: [item.pgNm, item.type, item.totalPrice],
+                className: ['', '', '']
+            };
+        });
+        const purTotalRow = {
+            data: ['합계', '', buyingTotalPrice],
+            className: ['point line-t', 'line-t', 'line-t']
+        };
+        setPurchasingTableData([...updatedPurchasingData, purTotalRow]);
 
         /* 외주비 테이블 데이터 */
         if (outLaborList) {
@@ -253,8 +273,7 @@ const LaborPreCostDoc = () => {
 
         // const salesBudgetIn = 110260622; // 수주액>자체용역⭐
         const salesBudgetOut = 0; // 수주액>외주⭐
-        const salesBudgetHS = 0; // 수주액>H/W및S/W⭐
-        const purchaseTotalPrice = 0; //구매 총 합 //현재없음⭐
+        // const purchaseTotalPrice = 0; //구매 총 합 //현재없음⭐
         const excOutPurchase = 0; // 재료비>외주 //현재없음⭐
 
         /* 손익계산서 변수들 */
@@ -341,7 +360,7 @@ const LaborPreCostDoc = () => {
                     "",
                     excOutPurchase.toLocaleString(),
                     "",
-                    purchaseTotalPrice.toLocaleString(),
+                    buyingTotalPrice.toLocaleString(),
                     "",
                     "",
                     "",

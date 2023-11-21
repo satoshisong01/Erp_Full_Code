@@ -155,7 +155,7 @@ function LaborCostMgmt() {
                     const updatedDatas = datas.map((data) => {
                         const unit = unitPriceList.find((unit) => data.pecPosition === unit.guppName && unit.gupBaseDate[0] === new Date().getFullYear());
                         const price = unit ? data.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
-                        return { ...data, price: price };
+                        return { ...data, price: price, positionPrice: unit.gupPrice };
                     });
                     setBudgetMgmt(updatedDatas);
                 }
@@ -163,7 +163,14 @@ function LaborCostMgmt() {
                 setPgBudgetView(dataView);
             } else if (innerPageName === "인건비 실행관리") {
                 const datas = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 실행관리
-                setRunMgmt(datas);
+                if (unitPriceList && datas) {
+                    const updatedDatas = datas.map((data) => {
+                        const unit = unitPriceList.find((unit) => data.pecPosition === unit.guppName && unit.gupBaseDate[0] === new Date().getFullYear());
+                        const price = unit ? data.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
+                        return { ...data, price: price, positionPrice: unit.gupPrice };
+                    });
+                    setRunMgmt(updatedDatas);
+                }
                 const dataView = await fetchAllDataView("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName);
                 setBudgetView(dataView);
             }
@@ -273,30 +280,24 @@ function LaborCostMgmt() {
         const updatedDataLength = filterData ? filterData.length : 0;
 
         if (originDataLength > updatedDataLength) {
-            console.log(filterData, "filterData 이게이상한것같음");
             updateList(filterData);
 
             const toDelete = [];
             for (let i = updatedDataLength; i < originDataLength; i++) {
                 toDelete.push(originData[i].pecId);
-                console.log("어디가문제냐1");
             }
             deleteList(toDelete);
         } else if (originDataLength === updatedDataLength) {
             updateList(filterData);
-            console.log("어디가문제냐2");
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
             const addUpdate = [];
             for (let i = 0; i < originDataLength; i++) {
                 addUpdate.push(filterData[i]);
-                console.log("어디가문제냐3");
             }
-            console.log("어디가문제냐4");
             updateList(addUpdate);
 
             for (let i = originDataLength; i < updatedDataLength; i++) {
-                console.log("어디가문제냐5");
                 const add = { poiId: poiIdToSend || projectInfo.poiId };
                 const addType = { pecTypeCode: "MM" };
                 const addMode = { pecSlsExcCode: "PEXC" };
@@ -316,10 +317,8 @@ function LaborCostMgmt() {
 
     const addList = async (addNewData) => {
         console.log("❗addList:", addNewData);
-        // http://192.168.0.113:8080/api/baseInfrm/product/prstmCost/addList.do
         const url = `/api/baseInfrm/product/prstmCost/addList.do`;
         const resultData = await axiosPost(url, addNewData);
-        console.log(resultData, "잘 추가되었으면 좋겠습니다 🌠🤩🤩🤩🤩");
         refresh();
     };
     const updateList = async (toUpdate) => {
@@ -329,19 +328,15 @@ function LaborCostMgmt() {
             useAt: "Y",
             deleteAt: "N",
         }));
-        // http://192.168.0.113:8080/api/baseInfrm/product/prstmCost/editList.do
         const url = `/api/baseInfrm/product/prstmCost/editList.do`;
         const resultData = await axiosUpdate(url, updatedFilterData);
-        console.log(resultData, "잘 수정이 되었으면 좋것습니다 🧟‍♀️🧟‍♀️🧟‍♂️🧟‍♂️🧟🧟🧌🧌");
         refresh();
     };
 
     const deleteList = async (removeItem) => {
         console.log("❗deleteList:", removeItem);
-        // http://192.168.0.113:8080/api/baseInfrm/product/prstmCost/removeAll.do
         const url = `/api/baseInfrm/product/prstmCost/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        console.log(resultData, "잘 삭제가 되어야할텐데말입니다 🙏🙏🙏🙏🙏🙏");
         refresh();
     };
 

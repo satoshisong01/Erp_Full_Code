@@ -125,8 +125,8 @@ const RootRoutes = () => {
         //기업이름 저장
         setCompanyList(
             resultData.map((item) => ({
-                esntlId: item.cltNm,
-                companyId: item.cltId,
+                cltNm: item.cltNm,
+                cltId: item.cltId,
             }))
         );
     };

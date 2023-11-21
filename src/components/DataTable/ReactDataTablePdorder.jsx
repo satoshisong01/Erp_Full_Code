@@ -7,6 +7,8 @@ import ModalPagePgNm from "components/modal/ModalPagePgNm";
 import ModalPagePdiNm from "components/modal/ModalPagePdiNm";
 import ModalPageCompany from "components/modal/ModalPageCompany";
 import { v4 as uuidv4 } from 'uuid';
+import DayPicker from "components/input/DayPicker";
+import MonthPicker from "components/input/MonthPicker";
 
 const ReactDataTablePdorder = (props) => {
     const {
@@ -342,33 +344,50 @@ const ReactDataTablePdorder = (props) => {
         const index = row.index;
         const updatedTableData = [...tableData];
         updatedTableData[row.index][accessor] = value;
-        // 수정된 데이터로 tableData 업데이트
-        if (accessor === "byUnitPrice" || accessor === "byStandardMargin" || accessor === "byConsumerOutputRate" || accessor === "byQunty") {
-            if (row.original.byUnitPrice && row.original.byStandardMargin && row.original.byConsumerOutputRate && row.original.byQunty) {
-                // 1.원가(견적가) : 수량 * 원단가
-                const estimatedCost = row.original.byQunty * row.original.byUnitPrice;
-                // 2.단가 : 원가(견적가) / (1 - 사전원가기준이익율)
-                const unitPrice = division(estimatedCost, 1 - row.original.byStandardMargin / 100);
-                // 3.금액 : 수량 * 단가ㅔ
-                const planAmount = row.original.byQunty * unitPrice;
-                // 4.소비자단가 : 단가 / 소비자산출율
-                const consumerPrice = division(unitPrice, row.original.byConsumerOutputRate);
-                // 5.소비자금액 : 수량 * 소비자단가
-                const consumerAmount = row.original.byQunty * consumerPrice;
-                // 6.이익금 : 금액 - 원가(견적가)
-                const plannedProfits = planAmount - estimatedCost;
-                // 7.이익률 : 이익금 / 금액
-                const plannedProfitMargin = division(plannedProfits, planAmount);
 
-                updatedTableData[index]["estimatedCost"] = Math.round(estimatedCost);
-                updatedTableData[index]["unitPrice"] = Math.round(unitPrice);
-                updatedTableData[index]["planAmount"] = Math.round(planAmount);
-                updatedTableData[index]["consumerPrice"] = Math.round(consumerPrice * 100);
-                updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount * 100);
-                updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits);
-                updatedTableData[index]["plannedProfitMargin"] = Math.round(plannedProfitMargin * 100);
+        // 수정된 데이터로 tableData 업데이트
+        if (current === "구매 수주관리" || current === "구매 예산관리" || current === "구매 실행관리") { //샐행
+            console.log("accessor:", accessor);
+            if(row.original.byUnitPrice && row.original.byQunty) {
+                const price = row.original.byUnitPrice * row.original.byQunty
+                updatedTableData[index]["price"] = Math.round(price);
             }
         }
+
+        if (current === "구매(재료비)") { //영업
+            if (accessor === "byUnitPrice" || accessor === "byStandardMargin" || accessor === "byConsumerOutputRate" || accessor === "byQunty") {
+                if (row.original.byUnitPrice && row.original.byStandardMargin && row.original.byConsumerOutputRate && row.original.byQunty) {
+                    // 1.원가(견적가) : 수량 * 원단가
+                    const estimatedCost = row.original.byQunty * row.original.byUnitPrice;
+                    // 2.단가 : 원가(견적가) / (1 - 사전원가기준이익율)
+                    const unitPrice = division(estimatedCost, 1 - row.original.byStandardMargin / 100);
+                    // 3.금액 : 수량 * 단가ㅔ
+                    const planAmount = row.original.byQunty * unitPrice;
+                    // 4.소비자단가 : 단가 / 소비자산출율
+                    const consumerPrice = division(unitPrice, row.original.byConsumerOutputRate);
+                    // 5.소비자금액 : 수량 * 소비자단가
+                    const consumerAmount = row.original.byQunty * consumerPrice;
+                    // 6.이익금 : 금액 - 원가(견적가)
+                    const plannedProfits = planAmount - estimatedCost;
+                    // 7.이익률 : 이익금 / 금액
+                    const plannedProfitMargin = division(plannedProfits, planAmount);
+    
+                    updatedTableData[index]["estimatedCost"] = Math.round(estimatedCost);
+                    updatedTableData[index]["unitPrice"] = Math.round(unitPrice);
+                    updatedTableData[index]["planAmount"] = Math.round(planAmount);
+                    updatedTableData[index]["consumerPrice"] = Math.round(consumerPrice * 100);
+                    updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount * 100);
+                    updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits);
+                    updatedTableData[index]["plannedProfitMargin"] = Math.round(plannedProfitMargin * 100);
+                }
+            }
+        }
+        setTableData(updatedTableData);
+    };
+
+    const handleDateClick = (date, colName, index) => {
+        const updatedTableData = [...tableData];
+        updatedTableData[index][colName] = date;
         setTableData(updatedTableData);
     };
 
@@ -588,8 +607,21 @@ const ReactDataTablePdorder = (props) => {
                                                             </option>
                                                         ))}
                                                     </select>
-                                                ) : 
-                                                cell.column.type === "buttonPdiNm" ? (
+                                                ) : cell.column.type === "daypicker" ? (
+                                                    <DayPicker
+                                                        name={cell.column.id}
+                                                        value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id] : ""}
+                                                        onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
+                                                    />
+                                                ) : cell.column.type === "monthpicker" ? (
+                                                    <div className="box3-1 boxDate">
+                                                        <MonthPicker
+                                                            name={cell.column.id}
+                                                            value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id].substring(0, 7) : ""}
+                                                            onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
+                                                        />
+                                                    </div>
+                                                ) : cell.column.type === "buttonPdiNm" ? (
                                                     <div>
                                                         <input
                                                             className="buttonSelect"

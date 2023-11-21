@@ -55,6 +55,7 @@ const ReactDataTable = (props) => {
         setProjectPgNm,
         setProjectInfo,
         isSaveFormTable,
+        unitPriceList,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -499,10 +500,12 @@ const ReactDataTable = (props) => {
                 const price = row.original.pecUnitPrice * row.original.pecMm;
                 updatedTableData[index]["price"] = price;
             }
-        } else if (innerPageName === "인건비 예산관리") {
-            if (row.original.pecPosition && row.original.pecMm) {
-                const price = row.original.pecMm;
+        } else if (innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
+            if (unitPriceList && row.original.pecPosition && row.original.pecMm) {
+                const unit = unitPriceList.find((unit) => row.original.pecPosition === unit.guppName && unit.gupBaseDate[0] === new Date().getFullYear());
+                const price = unit ? row.original.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
                 updatedTableData[index]["price"] = price;
+                updatedTableData[index]["positionPrice"] = unit.gupPrice;
             }
         }
 
@@ -791,7 +794,11 @@ const ReactDataTable = (props) => {
                                                         }
                                                         onChange={(e) => handleChange(e, row, cell.column.id)}>
                                                         {cell.column.options.map((option, index) => (
-                                                            <option key={cell.column.id + index} value={option.value}>
+                                                            <option
+                                                                key={cell.column.id + index}
+                                                                value={option.value}
+                                                                selected={index === 0} //첫 번째 옵션 선택
+                                                            >
                                                                 {option.label}
                                                             </option>
                                                         ))}
