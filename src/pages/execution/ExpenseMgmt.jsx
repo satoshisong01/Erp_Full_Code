@@ -13,14 +13,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import ReactDataTableView from "components/DataTable/ReactDataTableView";
 import RefreshButton from "components/button/RefreshButton";
+import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
 /** 실행관리-경비관리 */
 function ExpenseMgmt() {
     const { currentPageName, innerPageName, setInnerPageName, setCurrentPageName, setPrevInnerPageName, isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
 
     // const { showDetailTable } = useContext(PageContext);
     useEffect(() => {
+        setInnerPageName("경비 조회관리");
+        setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
+
         return () => {
-            setProjectInfo({});
+            // 컴포넌트 종료
+            setProjectInfo({}); // 초기화
         };
     }, []);
 
@@ -71,11 +76,28 @@ function ExpenseMgmt() {
     const [returnKeyWord, setReturnKeyWord] = useState("");
 
     const processResultData = (resultData) => {
+        console.log(resultData, "처음받는값인데");
         const transformedData = resultData.reduce((accumulator, item) => {
-            const { pjbgTypeCode, modeCode, pjbgPrice, pjbgBeginDt, pjbgEndDt, pjbgManpower, pjbgDt, pgNm, pjbgDesc } = item;
+            const {
+                pjbgTypeCode,
+                modeCode,
+                pjbgPrice,
+                pjbgBeginDt,
+                pjbgEndDt,
+                pjbgManpower,
+                pjbgDt,
+                pgNm,
+                pjbgDesc,
+                pjbgTypeCode01,
+                pjbgTypeCode02,
+                pjbgTypeCode03,
+                pjbgTypeCode04,
+                pjbgTypeCode05,
+                pjbgId,
+            } = item;
 
             if (/^EXPNS\d{2}$/.test(pjbgTypeCode) && ["EXDR", "EXCP", "EXCU"].includes(modeCode)) {
-                const key = `${modeCode}_${pjbgBeginDt}_${pjbgEndDt}`;
+                const key = `${modeCode}_${pjbgBeginDt}_${pjbgEndDt}_${pgNm}_${pjbgManpower}_${pjbgDesc}`;
                 if (!accumulator[key]) {
                     accumulator[key] = {
                         pjbgTypeCodes: [],
@@ -87,17 +109,26 @@ function ExpenseMgmt() {
                         pjbgDt,
                         pgNm,
                         pjbgDesc,
+                        pjbgTypeCode01,
+                        pjbgTypeCode02,
+                        pjbgTypeCode03,
+                        pjbgTypeCode04,
+                        pjbgTypeCode05,
+                        pjbgId: [],
                     };
                 }
 
                 accumulator[key].pjbgTypeCodes.push(pjbgTypeCode);
                 accumulator[key].pjbgPrices.push(pjbgPrice);
+                accumulator[key].pjbgId.push(pjbgId);
 
                 return accumulator;
             }
 
             return accumulator;
         }, {});
+
+        console.log(transformedData, "transformedData");
 
         const mergedData = Object.values(transformedData).map((mergedItem, index) => {
             const newObj = {};
@@ -109,9 +140,15 @@ function ExpenseMgmt() {
             newObj["pjbgBeginDt"] = mergedItem.pjbgBeginDt;
             newObj["pjbgEndDt"] = mergedItem.pjbgEndDt;
             newObj["pjbgManpower"] = mergedItem.pjbgManpower;
-            newObj["pjbgDt"] = mergedItem.pjbgDt;
+            newObj["pjbgDt"] = mergedItem.pjbgBeginDt;
             newObj["pgNm"] = mergedItem.pgNm;
             newObj["pjbgDesc"] = mergedItem.pjbgDesc;
+            newObj["pjbgTypeCode01"] = mergedItem.pjbgPrice01;
+            newObj["pjbgTypeCode02"] = mergedItem.pjbgPrice02;
+            newObj["pjbgTypeCode03"] = mergedItem.pjbgPrice03;
+            newObj["pjbgTypeCode04"] = mergedItem.pjbgPrice04;
+            newObj["pjbgTypeCode05"] = mergedItem.pjbgPrice05;
+            newObj["pjbgId"] = mergedItem.pjbgId;
 
             return newObj;
         });
@@ -119,10 +156,10 @@ function ExpenseMgmt() {
         return mapPecModeCodeToText(mergedData);
     };
 
-    const [currentTask, setCurrentTask] = useState("경비 조회관리");
     const [inquiryMgmt, setInquiryMgmt] = useState([]); // 경비 조회관리
 
     const [pgBudgetMgmt, setPgBudgetMgmt] = useState([]); // 경비 수주관리
+    const [pgBudgetMgmtView, setPgBudgetMgmtView] = useState([]); // 경비 수주관리
 
     const [budgetMgmt, setBudgetMgmt] = useState([]); // 경비 예산관리
     const [budgetMgmtView, setBudgetMgmtView] = useState([]); // 경비 예산관리
@@ -193,7 +230,8 @@ function ExpenseMgmt() {
     };
 
     const changeTabs = (task) => {
-        if (task !== innerPageName) { //다른 페이지의 버튼 변경 막기
+        if (task !== innerPageName) {
+            //다른 페이지의 버튼 변경 막기
             setIsSaveFormTable(true);
         }
         setInnerPageName((prev) => {
@@ -205,32 +243,36 @@ function ExpenseMgmt() {
 
     const fetchData = async () => {
         try {
-            if (currentTask === "경비 조회관리") {
-                const data = await fetchAllData("/baseInfrm/product/pjbudget", currentTask); // 경비 조회관리
+            if (innerPageName === "경비 조회관리") {
+                const data = await fetchAllData("/api/baseInfrm/product/pjbudget/totalListAll.do", innerPageName); // 경비 조회관리
                 // console.log(data, "불러온 조회관리 값은?");
                 const updatedData = processResultData(data);
                 console.log(updatedData, "updatedData 🔥🔥🔥🔥🔥");
                 setInquiryMgmt(updatedData);
                 //changePrmnPlanData(data);
-            } else if (currentTask === "경비 수주관리") {
-                const dataView = await fetchAllDataView("/baseInfrm/product/pjbudget", currentTask); // 경비 수주관리
-                setSaveNum(dataView);
-                const data = await fetchAllData("/baseInfrm/product/pjbudget", currentTask);
+            } else if (innerPageName === "경비 수주관리") {
+                const dataView = await fetchAllDataView("/api/baseInfrm/product/pjbudget/totalListAll.do", innerPageName); // 경비 수주관리
+                const filteredData = dataView.filter((data) => {
+                    return ["EXPNS01", "EXPNS02", "EXPNS03", "EXPNS04", "EXPNS05", "EXPNS06"].includes(data.pjbgTypeCode);
+                });
+                console.log(filteredData, "filteredData");
+                setPgBudgetMgmtView(filteredData);
+                const data = await fetchAllData("/api/baseInfrm/product/pjbudget/totalListAll.do", innerPageName);
                 const updatedData = processResultData(data);
                 console.log(updatedData, "바뀐값도 한번다시보자");
                 setPgBudgetMgmt(updatedData);
-            } else if (currentTask === "경비 예산관리") {
-                const dataView = await fetchAllDataView("/baseInfrm/product/pjbudget", currentTask); // 경비 예산관리
+            } else if (innerPageName === "경비 예산관리") {
+                const dataView = await fetchAllDataView("/api/baseInfrm/product/pjbudget/totalListAll.do", innerPageName); // 경비 예산관리
                 const viewUpdate = processResultData(dataView);
                 setBudgetMgmtView(viewUpdate);
-                const data = await fetchAllData("/baseInfrm/product/pjbudget", currentTask);
+                const data = await fetchAllData("/api/baseInfrm/product/pjbudget/totalListAll.do", innerPageName);
                 const updatedData = processResultData(data);
                 setBudgetMgmt(updatedData);
-            } else if (currentTask === "경비 실행관리") {
-                const dataView = await fetchAllDataView("/baseInfrm/product/pjbudget", currentTask); // 경비 실행관리
+            } else if (innerPageName === "경비 실행관리") {
+                const dataView = await fetchAllDataView("/api/baseInfrm/product/pjbudget/totalListAll.do", innerPageName); // 경비 실행관리
                 const viewUpdate = processResultData(dataView);
                 setRunMgmtView(viewUpdate);
-                const data = await fetchAllData("/baseInfrm/product/pjbudget", currentTask);
+                const data = await fetchAllData("/api/baseInfrm/product/pjbudget/totalListAll.do", innerPageName);
                 const updatedData = processResultData(data);
                 setRunMgmt(updatedData);
             }
@@ -240,30 +282,30 @@ function ExpenseMgmt() {
     };
     useEffect(() => {
         fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
-    }, [poiIdToSend, projectInfo.poiId, currentTask]);
+    }, [poiIdToSend, projectInfo.poiId, innerPageName]);
 
-    const fetchAllDataView = async (tableUrl, currentTask) => {
-        const url = `/api${tableUrl}/totalListAll.do`;
-        console.log(tableUrl, currentTask, "🌠🌠🌠🌠🌠");
+    const fetchAllDataView = async (url, innerPageName) => {
+        console.log(url, innerPageName, "🌠🌠🌠🌠");
         let requestData = {
             poiId: projectInfo.poiId,
             useAt: "Y",
             modeCode: "SLSP",
         };
-        if (currentTask === "경비 수주관리") {
+        if (innerPageName === "경비 수주관리") {
             requestData = {
                 poiId: projectInfo.poiId,
                 modeCode: "SLSP",
+                useAt: "Y",
             };
             console.log("타는곳 1번");
-        } else if (currentTask === "경비 예산관리") {
+        } else if (innerPageName === "경비 예산관리") {
             requestData = {
                 poiId: projectInfo.poiId,
                 modeCode: "EXDR",
                 useAt: "Y",
             };
             console.log("타는곳 2번");
-        } else if (currentTask === "경비 실행관리") {
+        } else if (innerPageName === "경비 실행관리") {
             requestData = {
                 poiId: projectInfo.poiId,
                 modeCode: "EXCP",
@@ -278,8 +320,7 @@ function ExpenseMgmt() {
         return resultData;
     };
 
-    const fetchAllData = async (tableUrl, currentTask) => {
-        const url = `/api${tableUrl}/totalListAll.do`;
+    const fetchAllData = async (url, currentTask) => {
         let requestData = { poiId: poiIdToSend || projectInfo.poiId };
         if (currentTask === "경비 조회관리") {
             //requestData 값 담기
@@ -299,6 +340,7 @@ function ExpenseMgmt() {
 
         const resultData = await axiosFetch(url, requestData);
         if (resultData) {
+            console.log(resultData, "원래 나오는값");
             return resultData;
         } else {
             return Array(5).fill({}); // 빈 배열 보내주기
@@ -368,23 +410,28 @@ function ExpenseMgmt() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalForm title={currentTask + " 등록"} />
+                            <ApprovalForm title={innerPageName + " 등록"} />
                             <div className={`buttonBody  ${isClicked2 ? "" : "clicked"}`}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick2}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked2 ? "" : "clicked"}`} icon={faArrowUp} />
                                 </button>
                             </div>
                             <div className={`hideDivRun2 ${isClicked2 ? "" : "clicked"}`}>
-                                <ReactDataTableView columns={columns.expenseMgmt.contract} customDatas={saveTotalPrice} defaultPageSize={5} justColumn={true} />
+                                <ReactDataTableView
+                                    columns={columns.expenseMgmt.contract}
+                                    customDatas={pgBudgetMgmtView}
+                                    defaultPageSize={5}
+                                    justColumn={true}
+                                />
                             </div>
                             <div className="table-buttons">
                                 <RefreshButton onClick={refresh} />
                             </div>
-                            <ReactDataTable
+                            <ReactDataTableURL
                                 columns={columns.expenseMgmt.budget}
                                 tableRef={orderPlanMgmtTable2}
-                                viewPageName="경비 수주관리"
                                 customDatas={pgBudgetMgmt}
+                                viewPageName="경비 수주관리"
                                 customDatasRefresh={refresh}
                                 hideCheckBox={true}
                             />
@@ -392,7 +439,7 @@ function ExpenseMgmt() {
                     </div>
                     <div className="third">
                         <ul>
-                            <ApprovalForm title={currentTask + " 등록"} />
+                            <ApprovalForm title={innerPageName + " 등록"} />
                             <div className={`buttonBody  ${isClicked3 ? "" : "clicked"}`}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick3}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked3 ? "" : "clicked"}`} icon={faArrowUp} />
@@ -416,7 +463,7 @@ function ExpenseMgmt() {
                     </div>
                     <div className="fourth">
                         <ul>
-                            <ApprovalForm title={currentTask + " 등록"} />
+                            <ApprovalForm title={innerPageName + " 등록"} />
                             <div className={`buttonBody  ${isClicked4 ? "" : "clicked"}`}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick4}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked4 ? "" : "clicked"}`} icon={faArrowUp} />
