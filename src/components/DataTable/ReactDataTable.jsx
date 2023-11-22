@@ -291,9 +291,11 @@ const ReactDataTable = (props) => {
                 useAt: "Y",
                 deleteAt: "N",
                 poiId: projectInfo.poiId,
-                poiVersion: projectInfo.poiVersion,
+                poiDesc: addData.poiDesc || projectInfo.poiVersion,
                 poId: projectInfo.poId,
             };
+
+            console.log("dataToSend:", dataToSend);
             const resultData = await axiosPost(url, dataToSend);
             if (!resultData) {
                 alert("add error: table");
