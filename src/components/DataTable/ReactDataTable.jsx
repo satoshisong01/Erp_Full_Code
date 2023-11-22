@@ -166,7 +166,7 @@ const ReactDataTable = (props) => {
                 compareData(originTableData, tableData);
             }
         }
-        if(current !== innerPageName) {
+        if (current !== innerPageName) {
             setTableData([]); //초기화
         }
     }, [innerPageName, isSaveFormTable]);
@@ -459,7 +459,6 @@ const ReactDataTable = (props) => {
             }
         }
     }, [isOpenModalPgNm, savePgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
-
 
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {
@@ -776,12 +775,13 @@ const ReactDataTable = (props) => {
                                                         value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id] : ""}
                                                         onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                     />
-                                                )
-                                                : cell.column.type === "monthpicker" ? (
+                                                ) : cell.column.type === "monthpicker" ? (
                                                     <div className="box3-1 boxDate">
                                                         <MonthPicker
                                                             name={cell.column.id}
-                                                            value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id].substring(0, 7) : ""}
+                                                            value={
+                                                                tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id].substring(0, 7) : ""
+                                                            }
                                                             onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                         />
                                                     </div>
