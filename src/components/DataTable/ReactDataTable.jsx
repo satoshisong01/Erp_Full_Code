@@ -217,8 +217,13 @@ const ReactDataTable = (props) => {
     /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
         if (!suffixUrl) return;
-        const url = `/api${suffixUrl}/totalListAll.do`;
+        //const url = `/api${suffixUrl}/totalListAll.do`;
+        let url = `/api${suffixUrl}/totalListAll.do`;
+        if (suffixUrl === "/baseInfrm/product/personelXp" || suffixUrl === "/baseInfrm/product/costBase") {
+            url = `/api${suffixUrl}/listAll.do`;
+        }
         const resultData = await axiosFetch(url, { useAt: "Y" });
+        console.log(resultData, "resultData");
         if (resultData) {
             setTableData([...resultData]);
         } else if (!resultData) {

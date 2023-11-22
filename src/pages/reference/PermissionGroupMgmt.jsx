@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
+import { PageContext } from "components/PageProvider";
+import { axiosFetch } from "api/axiosFetch";
+import AddButton from "components/button/AddButton";
+import ModButton from "components/button/ModButton";
+import DelButton from "components/button/DelButton";
+import RefreshButton from "components/button/RefreshButton";
+import ReactDataTable from "components/DataTable/ReactDataTable";
 
 /** 기준정보관리-원가기준관리-권한그룹정보관리 */
 function PermissionGroupMgmt() {
+    const { setNameOfButton } = useContext(PageContext);
+    const permissionTable = useRef(null);
+    const [orgIdArray, setOrgIdArray] = useState([]);
+
     const [returnKeyWord, setReturnKeyWord] = useState("");
 
     const columns = [
@@ -51,11 +62,11 @@ function PermissionGroupMgmt() {
             col: "orgId",
             cellWidth: "30%",
             enable: false,
+            type: "select",
+            option: orgIdArray,
             modify: true,
             add: true,
-            selectOption: true,
-            listItem: "orgId",
-            addListURL: "/baseInfrm/member/orgNzt",
+            require: true,
         },
     ];
 
@@ -89,20 +100,50 @@ function PermissionGroupMgmt() {
         },
     ];
 
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        const url = `/api/baseInfrm/member/orgNzt/totalListAll.do`;
+        const requestData = { useAt: "Y" };
+        const resultData = await axiosFetch(url, requestData);
+        if (resultData) {
+            const ArrayList = resultData.map((item, index) => ({
+                value: index + 1,
+                label: item.orgId, // 원하는 속성 이름을 여기에 추가
+            }));
+            setOrgIdArray(ArrayList);
+        }
+    };
+
+    const [length, setLength] = useState(0);
+    const setLengthSelectRow = (length) => {
+        setLength(length);
+    };
+
     const handleReturn = (value) => {
         setReturnKeyWord(value);
     };
 
-    const addBtn = [""];
     return (
         <>
             <Location pathList={locationPath.PermissionGroupMgmt} />
-            <SearchList conditionList={conditionList} onSearch={handleReturn} />
-            <DataTable
-                returnKeyWord={returnKeyWord}
+            {/*<SearchList conditionList={conditionList} onSearch={handleReturn} />*/}
+            <SearchList conditionList={conditionList} />
+            <div className="table-buttons">
+                <AddButton label={"추가"} onClick={() => setNameOfButton("add")} />
+                <ModButton label={"수정"} length={length} onClick={() => setNameOfButton("modify")} />
+                <DelButton label={"삭제"} length={length} onClick={() => setNameOfButton("delete")} />
+                <RefreshButton onClick={() => setNameOfButton("refresh")} />
+            </div>
+            <ReactDataTable
+                //returnKeyWord={returnKeyWord}
                 columns={columns}
                 suffixUrl="/baseInfrm/member/authorGroup"
-                addBtn={addBtn}
+                tableRef={permissionTable}
+                setLengthSelectRow={setLengthSelectRow}
+                viewPageName="권한그룹정보관리"
             />
         </>
     );

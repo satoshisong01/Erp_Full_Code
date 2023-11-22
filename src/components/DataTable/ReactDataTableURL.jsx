@@ -444,11 +444,12 @@ const ReactDataTableURL = (props) => {
             const { pjbgId } = upItem; // id 배열
             const colNames = Object.keys(upItem).filter((key) => key.startsWith("pjbgPrice")); // 경비종류 배열
             console.log(pjbgId, colNames);
-            if (pjbgId.length > 0 && colNames.length > 0 && pjbgId.length === colNames.length) {
+            if (pjbgId && colNames && pjbgId.length > 0 && colNames.length > 0 && pjbgId.length === colNames.length) {
                 colNames.forEach((name, index) => {
                     const dataSet = {
                         modeCode: upItem.modeCode,
                         pgNm: upItem.pgNm,
+                        pgId: upItem.pgId,
                         pjbgBeginDt: upItem.pjbgBeginDt,
                         pjbgDesc: upItem.pjbgDesc,
                         pjbgDt: upItem.pjbgDt,
@@ -505,7 +506,7 @@ const ReactDataTableURL = (props) => {
                     ...filterData[i],
                     poiId: projectInfo.poiId,
                     pjbgDt: filterData[i].pjbgBeginDt,
-                    modeCode: "EXDR",
+                    modeCode: current === "경비 예산관리" ? "EXCP" : current === "경비 실행관리" ? "EXCU" : "EXDR",
                     pjbgTypeCode1: filterData[i].pjbgPrice01,
                     pjbgTypeCode2: filterData[i].pjbgPrice02,
                     pjbgTypeCode3: filterData[i].pjbgPrice03,

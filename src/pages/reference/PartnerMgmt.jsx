@@ -53,7 +53,7 @@ function PartnerMgmt() {
         },
         {
             header: "기업회원ID",
-            col: "cltNm",
+            col: "esntlId",
             cellWidth: "30%",
             modify: true,
             add: true,

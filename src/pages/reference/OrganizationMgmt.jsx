@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
+import { PageContext } from "components/PageProvider";
+import AddButton from "components/button/AddButton";
+import ModButton from "components/button/ModButton";
+import DelButton from "components/button/DelButton";
+import RefreshButton from "components/button/RefreshButton";
+import ReactDataTable from "components/DataTable/ReactDataTable";
 
 /** 기준정보관리-원가기준관리-조직부서정보관리 */
 function OrganizationMgmt() {
+    const { setNameOfButton } = useContext(PageContext);
+    const organizationTable = useRef(null);
+
     const [returnKeyWord, setReturnKeyWord] = useState("");
 
     const columns = [
@@ -79,11 +88,18 @@ function OrganizationMgmt() {
     return (
         <>
             <Location pathList={locationPath.OrganizationMgmt} />
-            <SearchList conditionList={conditionList} onSearch={handleReturn} />
-            <DataTable
-                returnKeyWord={returnKeyWord}
+            <SearchList conditionList={conditionList} />
+            <div className="table-buttons">
+                <AddButton label={"추가"} onClick={() => setNameOfButton("add")} />
+                <ModButton label={"수정"} onClick={() => setNameOfButton("modify")} />
+                <DelButton label={"삭제"} onClick={() => setNameOfButton("delete")} />
+                <RefreshButton onClick={() => setNameOfButton("refresh")} />
+            </div>
+            <ReactDataTable
                 columns={columns}
                 suffixUrl="/baseInfrm/member/orgNzt"
+                tableRef={organizationTable}
+                viewPageName="조직부서정보관리"
                 addBtn={addBtn}
             />
         </>
