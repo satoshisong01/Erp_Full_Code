@@ -703,11 +703,11 @@ const ReactDataTable = (props) => {
                         </tr>
                     ))}
                 </thead>
-                {/* {tableData.length <= 0 && (
-                    <div style={{ display: "flex", width: "1000px", margin: "auto", alignItems: "center", justifyContent: "center" }}>
-                        <div style={{}}>no data</div>
+                {tableData.length <= 0 && (
+                    <div style={{ display: "flex", width: "1200px", margin: "auto", alignItems: "center", justifyContent: "center" }}>
+                        <div style={{ fontSize: 15 }}>no data</div>
                     </div>
-                )} */}
+                )}
                 <tbody {...getTableBodyProps()}>
                     {page.map((row, rowIndex) => {
                         prepareRow(row);
@@ -797,7 +797,7 @@ const ReactDataTable = (props) => {
                                                             <option
                                                                 key={cell.column.id + index}
                                                                 value={option.value}
-                                                                selected={index === 0} //첫 번째 옵션 선택
+                                                                // selected={index === 0} //첫 번째 옵션 선택
                                                             >
                                                                 {option.label}
                                                             </option>
