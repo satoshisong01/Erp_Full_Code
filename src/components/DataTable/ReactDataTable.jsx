@@ -72,7 +72,6 @@ const ReactDataTable = (props) => {
         const updatedTableData = [...tableData];
         updatedTableData[index][colName] = date;
         setTableData(updatedTableData);
-        setCalendarVisible(false);
     };
 
     const [isEditing, setIsEditing] = useState(false);
