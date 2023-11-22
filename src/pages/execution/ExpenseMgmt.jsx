@@ -15,7 +15,7 @@ import ReactDataTableView from "components/DataTable/ReactDataTableView";
 import RefreshButton from "components/button/RefreshButton";
 /** 실행관리-경비관리 */
 function ExpenseMgmt() {
-    const { innerPageName, setInnerPageName, setCurrentPageName, setPrevInnerPageName, isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
+    const { currentPageName, innerPageName, setInnerPageName, setCurrentPageName, setPrevInnerPageName, isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
 
     // const { showDetailTable } = useContext(PageContext);
     useEffect(() => {
@@ -23,6 +23,14 @@ function ExpenseMgmt() {
             setProjectInfo({});
         };
     }, []);
+
+    useEffect(() => {
+        if(currentPageName === "경비관리") {
+            const activeTab = document.querySelector('.mini_board_3 .tab li a.on');
+            const activeTabText = activeTab.textContent;
+            setInnerPageName(activeTabText); //마지막으로 활성화 된 탭
+        }
+    }, [currentPageName, innerPageName, projectInfo]);
 
     const orderPlanMgmtTable1 = useRef(null);
     const orderPlanMgmtTable2 = useRef(null);
