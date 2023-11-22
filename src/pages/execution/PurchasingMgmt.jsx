@@ -18,7 +18,7 @@ import { columns } from "constants/columns";
 
 /** 실행관리-구매관리 */
 function PurchasingMgmt() {
-    const { innerPageName, setInnerPageName, setCurrentPageName, setPrevInnerPageName, isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
+    const { currentPageName, innerPageName, setInnerPageName, setCurrentPageName, setPrevInnerPageName, isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
 
     useEffect(() => {
         setInnerPageName("구매 조회관리");
@@ -71,6 +71,23 @@ function PurchasingMgmt() {
     const [budgetMgmt, setBudgetMgmt] = useState([]); // 구매 예산관리
     const [runMgmt, setRunMgmt] = useState([]); // 구매 실행관리
 
+    useEffect(() => {
+        if (projectInfo.poiId && projectInfo.poId) { //구매종류를 선택 했을 때
+            fetchData();
+        }
+        if (projectInfo.poId === undefined || projectInfo.poId === "") { //테이블 초기화
+            setInquiryMgmt([]);
+            setPgBudgetMgmt([]);
+            setBudgetMgmt([]);
+            setRunMgmt([]);
+        }
+        if(currentPageName === "구매관리") {
+            const activeTab = document.querySelector('.mini_board_4 .tab li a.on');
+            const activeTabText = activeTab.textContent;
+            setInnerPageName(activeTabText); //마지막으로 활성화 된 탭
+        }
+    }, [currentPageName, innerPageName, projectInfo]);
+
     const changeTabs = (task) => {
         if (task !== innerPageName) { //다른 페이지의 버튼 변경 막기
             setIsSaveFormTable(true);
@@ -86,24 +103,19 @@ function PurchasingMgmt() {
         try {
             if (innerPageName === "구매 조회관리") {
                 const data = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", { poiId: poiIdToSend, poId: projectInfo.poId });
-                data ? setInquiryMgmt(data) : setInquiryMgmt([]);
-                console.log("💜", innerPageName," resultData:", data);
+                data ? setInquiryMgmt(changeData(data)) : setInquiryMgmt([]);
 
             } else if (innerPageName === "구매 수주관리") {
                 const data = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", { poiId: projectInfo.poiId, modeCode: "EXDR", poId: projectInfo.poId });
-                data ? setPgBudgetMgmt(data) : setPgBudgetMgmt([]);
-                console.log("💜", innerPageName," resultData:", data);
+                data ? setPgBudgetMgmt(changeData(data)) : setPgBudgetMgmt([]);
 
             } else if (innerPageName === "구매 예산관리") {
                 const data = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", { poiId: projectInfo.poiId, modeCode: "EXCP", poId: projectInfo.poId });
-                data ? setBudgetMgmt(data) : setBudgetMgmt([]);
-                console.log("💜", innerPageName," resultData:", data);
+                data ? setBudgetMgmt(changeData(data)) : setBudgetMgmt([]);
 
             } else if (innerPageName === "구매 실행관리") {
-                // const data = await fetchAllData({ poiId: projectInfo.poiId, modeCode: "EXCU", poId: projectInfo.poId });
                 const data = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", { poiId: projectInfo.poiId, modeCode: "EXCU", poId: projectInfo.poId });
-                data ? setRunMgmt(data) : setRunMgmt([]);
-                console.log("💜", innerPageName," resultData:", data);
+                data ? setRunMgmt(changeData(data)) : setRunMgmt([]);
 
             }
         } catch (error) {
@@ -111,18 +123,14 @@ function PurchasingMgmt() {
         }
     };
 
-    useEffect(() => {
-        if(projectInfo.isPoIdSelected) { //구매종류를 선택 했을 때
-            fetchData();
-            setProjectInfo(prev => ({ ...prev, isPoIdSelected: false, }))
-        }
-    }, [innerPageName, projectInfo]);
-
-
     const handleReturn = (value) => {
         setReturnKeyWord(value);
-        console.log(value, "제대로 들어오냐");
     };
+
+    const changeData = (data) => {
+        const updateData = data.map((data) => ({...data, price: data.byUnitPrice * data.byQunty }));
+        return updateData;
+    }
 
     return (
         <>

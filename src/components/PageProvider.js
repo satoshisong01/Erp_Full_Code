@@ -28,9 +28,8 @@ export function PageProvider({ children }) {
     const [isOpenModalPgNm, setIsOpenModalPgNm] = useState(false);
     const [returnKeyWord, setReturnKeyWord] = useState(""); //pmNm검색어 저장
 
-    const [saveCompany, setSaveCompany] = useState({ cltNm: "", esntlId: "", esntlNm: "" }); // 선택한 id 저장
     const [companyList, setCompanyList] = useState([]); // 회사명 선택
-    const [companyInfo, setCompanyInfo] = useState({ esntlId: "", companyId: "" }); // 선택한 id 저장
+    const [companyInfo, setCompanyInfo] = useState({ cltNm: "", cltId: "" }); // 선택한 id 저장
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
 
     const [addPdiNm, setAddPdiNm] = useState("");
@@ -111,9 +110,6 @@ export function PageProvider({ children }) {
         setCompanyInfo,
         isOpenModalCompany,
         setIsOpenModalCompany,
-        saveCompany,
-        setSaveCompany,
-
         saveSaleManCost,
         setSaveSaleManCost,
     };

@@ -1,633 +1,723 @@
-import React, { useState, useRef, useEffect } from "react";
-//import  ReactDOM from "react-dom/client";
-import "../../../css/componentCss/PersonnelPopup.css";
-import $ from "jquery";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import "datatables.net-dt/css/jquery.dataTables.css";
 import "datatables.net-dt/js/dataTables.dataTables";
+import { axiosFetch } from "api/axiosFetch";
+import BasicDataTable from "components/DataTable/BasicDataTable";
+import FormDataTable from "components/DataTable/FormDataTable";
 
-import ExcutionCostUtilBtn from "./ExcutionCostUtilBtn";
-//import PopupTesting from "./PopupTesting";
-//import PopupWindow from "./PopupTesting";
-
+/* 실행 원가 계산서 */
 const ExcutionCostsDoc = () => {
-    const dataTableRef3 = useRef(null); //dataTable 테이블 명시
-    const dataTableRef = useRef(null); //dataTable 테이블 명시
-    const dataTableRef2 = useRef(null); //dataTable 테이블 명시
-    const [data, setData] = useState([
-        { id: 1, name: "John", age: 25 },
-        { id: 2, name: "Jane", age: 30 },
-        { id: 3, name: "Bob", age: 35 },
-    ]);
+    const coreTable = useRef(null); // 손익계산서 테이블
+    const purchasingTable = useRef(null); // 구매재료비 테이블
+    const chargeTable = useRef(null); // 경비테이블
+    const outsourcingTable = useRef(null); // 외주 테이블
+    const laborTable = useRef(null); // 인건비 테이블
+
+    /* ⭐ 데이터 없을 시 초기화 필요 */
+    const [coreTableData, setCoreTableData] = useState([{ data: [""], className: [""] }]); //손익계산서 데이터
+    const [purchasingTableData, setPurchasingTableData] = useState([{ data: ["", "", ""], className: [] }]); //구매재료비
+    const [chargeTableData, setChargeTableData] = useState([{ data: [""], className: [""] }]); //경비
+    const [outTableData, setOutTableData] = useState([{ data: ["", "", ""], className: [""] }]); //개발외주비
+    const [laborTableData, setLaborTableData] = useState([{ data: [""], className: [""] }]); //인건비
+    const [ProjectInfoToServer, setProjectInfoToServer] = useState({});
+
+    /* 스타일 */
+    const purStyle = { marginBottom: 20, maxHeight: 250 };
+    const chargeStyle = { maxHeight: 860 };
 
     useEffect(() => {
-        if ($.fn.DataTable.isDataTable(dataTableRef.current)) {
-            $(dataTableRef.current).DataTable().destroy();
+        // URL에서 "data" 파라미터 읽기
+        const dataParameter = getQueryParameterByName("data");
+        const data = JSON.parse(dataParameter);
+        console.log("실행원가서 시작~~ ", data);
+        if (data.projectInfo.poiId) {
+            getInitData(data.projectInfo.poiId); //서버에서 데이터 호출
         }
-        if ($.fn.DataTable.isDataTable(dataTableRef2.current)) {
-            $(dataTableRef2.current).DataTable().destroy();
-        }
-        if ($.fn.DataTable.isDataTable(dataTableRef3.current)) {
-            $(dataTableRef3.current).DataTable().destroy();
-        }
-        $(dataTableRef.current).DataTable({
-            paging: true,
-            searching: true,
-            ordering: true,
-        });
-        $(dataTableRef2.current).DataTable({
-            paging: true,
-            searching: true,
-            ordering: true,
-        });
-        $(dataTableRef3.current).DataTable({
-            paging: true,
-            searching: true,
-            ordering: true,
-        });
-    });
+    }, []);
 
-    const [isClicked, setIsClicked] = useState(false);
-    const [isClicked2, setIsClicked2] = useState(false);
-    const [isClicked3, setIsClicked3] = useState(false);
-    const [isClicked4, setIsClicked4] = useState(false);
-    const [isClicked5, setIsClicked5] = useState(false);
+    // URL에서 쿼리 문자열 파라미터를 읽는 함수
+    function getQueryParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+        const results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return "";
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
 
-    const [selectedData, setSelectedData] = useState([]); //체크된 데이터
-    const [check, setCheck] = useState(false); //체크 확인
-    const [searchedData, setSearchedData] = useState([]);
-
-    const initialTableRows = [
-        {
-            id: 1,
-            품목그룹명: "PANEL",
-            연월: "2023/05",
-            M_M계: "333",
-            인건비계: "1515", // 임시로 데이터를 넣어주세요
-            임원: "3", // 임시로 데이터를 넣어주세요
-            특급기술사: "1", // 임시로 데이터를 넣어주세요
-            고급기술사: "1", // 임시로 데이터를 넣어주세요
-            중급기술사: "2", // 임시로 데이터를 넣어주세요
-            초급기술사: "1", // 임시로 데이터를 넣어주세요
-            중급기능사: "2", // 임시로 데이터를 넣어주세요
-            고급기능사: "1", // 임시로 데이터를 넣어주세요
-            부장: "99", // 임시로 데이터를 넣어주세요
-            차장: "20", // 임시로 데이터를 넣어주세요
-            과장: "15", // 임시로 데이터를 넣어주세요
-            대리: "12", // 임시로 데이터를 넣어주세요
-            주임: "10", // 임시로 데이터를 넣어주세요
-            사원: "22", // 임시로 데이터를 넣어주세요
-        },
-        {
-            id: 2,
-            품목그룹명: "개별외주비",
-            연월: "2023/05",
-            M_M계: "444", // 임시로 데이터를 넣어주세요
-            인건비계: "8989", // 임시로 데이터를 넣어주세요
-            임원: "3", // 임시로 데이터를 넣어주세요
-            특급기술사: "1", // 임시로 데이터를 넣어주세요
-            고급기술사: "1", // 임시로 데이터를 넣어주세요
-            중급기술사: "2", // 임시로 데이터를 넣어주세요
-            초급기술사: "1", // 임시로 데이터를 넣어주세요
-            중급기능사: "2", // 임시로 데이터를 넣어주세요
-            고급기능사: "1", // 임시로 데이터를 넣어주세요
-            부장: "99", // 임시로 데이터를 넣어주세요
-            차장: "20", // 임시로 데이터를 넣어주세요
-            과장: "15", // 임시로 데이터를 넣어주세요
-            대리: "12", // 임시로 데이터를 넣어주세요
-            주임: "10", // 임시로 데이터를 넣어주세요
-            사원: "22", // 임시로 데이터를 넣어주세요
-            // 나머지 데이터들도 추가하세요...
-        },
+    const infoColumns = [
+        [
+            { label: "프로젝트 이름", key: "poiNm", type: "data", colSpan: "3", value: ProjectInfoToServer.poiNm },
+            { label: "프로젝트 아이디", key: "poiId", type: "data", value: ProjectInfoToServer.poiId },
+            { label: "프로젝트 버전", key: "poiDesc", type: "data", value: ProjectInfoToServer.poiDesc },
+        ],
+        [
+            { label: "수주부서", key: "poiGroupId", type: "data", value: ProjectInfoToServer.poiGroupId },
+            { label: "매출부서", key: "poiSalesGroupId", type: "data", value: ProjectInfoToServer.poiSalesGroupId },
+            { label: "영업대표", key: "poiSalmanagerId", type: "data", value: ProjectInfoToServer.poiSalmanagerId },
+            { label: "담당자(PM)", key: "poiManagerId", type: "data", value: ProjectInfoToServer.poiManagerId },
+        ],
+        [
+            { label: "수주 시작일", key: "poiBeginDt", type: "data", value: ProjectInfoToServer.poiBeginDt },
+            { label: "수주 마감일", key: "poiEndDt", type: "data", value: ProjectInfoToServer.poiEndDt },
+            { label: "사전원가 기준 이익률", key: "standardMargin", type: "data", value: ProjectInfoToServer.standardMargin + "%" },
+            { label: "상태", key: "poiStatus", type: "data", value: ProjectInfoToServer.poiStatus },
+        ],
     ];
 
-    const [tableRows, setTableRows] = useState(initialTableRows);
+    const coreColumns = [
+        { header: "구분", col: "item", className: "flex-col-2" },
+        { header: "전체", col: "total", className: "flex-col-2" },
+        { header: "자체용역", col: "inHouse", className: "flex-col-2" },
+        { header: "%", col: "inHousePercent", className: "flex-col-1" },
+        { header: "외주", col: "outSourcing", className: "flex-col-2" },
+        { header: "%", col: "outSourcingPercent", className: "flex-col-1" },
+        { header: "H/W 및 S/W", col: "purchasing", className: "flex-col-2" },
+        { header: "%", col: "purchasingPercent", className: "flex-col-1" },
+        { header: "판관비", col: "overhead", className: "flex-col-2" },
+        { header: "NEGO", col: "nego", className: "flex-col-2" },
+        { header: "자사솔루션", col: "proprietarySolution", className: "flex-col-2" },
+        { header: "도입솔루션", col: "implementedSolution", className: "flex-col-2" },
+    ];
 
-    //체크된 아이템의 uniqId 숫자만 저장
-    const changeInt = selectedData.map((item) => item.uniqId);
+    const purchasingColumns = [
+        { header: "품목", col: "item", className: "flex-col-2" },
+        { header: "일반/도입", col: "type", className: "flex-col-2" },
+        { header: "금액", col: "amount", className: "flex-col-2" },
+    ];
+    const outsourcingColumns = [
+        { header: "회사", col: "company", className: "flex-col-2" },
+        { header: "턴키/MM", col: "mm", className: "flex-col-2" },
+        { header: "금액", col: "amount", className: "flex-col-2" },
+    ];
+    const laborColumns = [
+        { header: "M/M", col: "mm", className: "flex-col-2" },
+        { header: "금액", col: "amount", className: "flex-col-2" },
+    ];
+    const chargeColumns = [
+        { header: "구분", col: "item", className: "flex-col-2" },
+        { header: "산출근거", col: "remarks", className: "flex-col-4" },
+        { header: "금액", col: "amount", className: "flex-col-2" },
+    ];
 
-    //const keys = data.length > 0 ? Object.keys(data[0]) : [];
-
-    // 전체 선택/해제 핸들러
-    const handleClick = (e) => {
-        const isChecked = e.target.checked;
-
-        if (isChecked) {
-            setCheck(true);
-            setSelectedData(searchedData); // 모든 데이터를 선택된 데이터로 설정
-        } else {
-            setCheck(false);
-            setSelectedData([]); // 선택된 데이터 초기화
+    const changTypeStr = (code) => {
+        if (code === "EXPNS01") {
+            return "교통비";
+        } else if (code === "EXPNS02") {
+            return "숙박비";
+        } else if (code === "EXPNS03") {
+            return "파견비";
+        } else if (code === "EXPNS04") {
+            return "식비";
+        } else if (code === "EXPNS05") {
+            return "자재/소모품";
+        } else if (code === "EXPNS06") {
+            return "영업비";
         }
     };
 
-    // 개별 아이템 체크 핸들러
-    const handleItemCheck = (item, e) => {
-        const isChecked = e.target.checked;
+    const getInitData = async (poiId) => {
+        const url = "/api/baseInfrm/product/prstmCost/exe/listAll.do";
+        const requestData = { poiId };
+        const resultData = await axiosFetch(url, requestData);
+        console.log("💜실행원가서: ", resultData);
+        const {
+            projectInfoToServer, //수주정보
+            salesBudgetIn, //수주액>자체용역
+            laborTotalMM, //인건비 총 mm
+            salesBudgetHS, //수주액>구매
 
-        setSelectedData((prevSelectedData) => {
-            if (isChecked) {
-                // 이미 선택된 데이터인지 확인 후 중복 추가 방지
-                if (
-                    !prevSelectedData.find(
-                        (selectedItem) => selectedItem.uniqId === item.uniqId
-                    )
-                ) {
-                    const sortedData = [...prevSelectedData, item].sort(
-                        (a, b) => {
-                            // uniqId 속성을 기준으로 데이터 정렬
-                            if (a.uniqId < b.uniqId) {
-                                return -1;
-                            }
-                            if (a.uniqId > b.uniqId) {
-                                return 1;
-                            }
-                            return 0;
-                        }
-                    );
-                    return sortedData;
-                }
-            } else {
-                return prevSelectedData.filter(
-                    (selectedItem) => selectedItem.uniqId !== item.uniqId
-                );
-            }
-            return prevSelectedData; // 체크가 풀리지 않았거나 중복 데이터인 경우 이전 상태 그대로 반환
+            laborTotalPrice, //인건비 총 합
+            insuranceTotalPrice, //인건비성복후비
+            budgetList, //경비목록
+            budgetTotalPrice, //경비 총 합
+            outLaborList, //개발외주비 목록
+            outLaborTotalMM, //개발외주비  총 mm
+            outLaborTotalPrice, //개발외주비 총 합
+            negoTotalPrice, //네고 합
+            legalTotalPrice, //판관비 합
+            //구매데이터..
+            buyingList, //구매리스트
+            buyingTotalPrice //구매총합
+        } = resultData || {};
+
+        /* 프로젝트 정보 */
+        setProjectInfoToServer(projectInfoToServer);
+
+        /* 경비 테이블 데이터 */
+        if (budgetList) {
+            const updatedChargeData = budgetList.map((item) => {
+                return {
+                    data: [changTypeStr(item.budgetTypeCode), item.budgetDesc, item.budgetPrice],
+                    className: ["", "", ""],
+                };
+            });
+
+            const charTotalRow = {
+                data: ["합계", "", budgetTotalPrice],
+                className: ["point line-t", "line-t", "line-t"],
+            };
+
+            const newChargeTableData = [
+                // ...chargeTableData,
+                {
+                    data: ["인건비성복후비", "", insuranceTotalPrice],
+                    className: ["", "", ""],
+                },
+                ...updatedChargeData, // 업데이트된 데이터 추가
+                charTotalRow, // 합계 데이터 추가
+            ];
+
+            setChargeTableData(newChargeTableData);
+        }
+        /* 구매재료비 테이블 데이터 */
+        const updatedPurchasingData = buyingList.map(item => {
+            return {
+                data: [item.pgNm, item.type, item.totalPrice],
+                className: ['', '', '']
+            };
         });
-    };
-
-    // "추가" 버튼을 클릭했을 때 실행될 함수
-    const handleAddRow = () => {
-        // 새로운 행을 만들고, 현재의 tableRows 상태에 추가합니다.
-        const newRow = {
-            id: tableRows.length + 1,
-            품목그룹명: "", // 여기에 새로운 열의 초기 값들을 지정하세요...
-            연월: "", // 예시로 빈 문자열로 초기화 했습니다.
-            M_M계: "", // 다른 속성들도 추가하세요...
-            인건비계: "", // 임시로 데이터를 넣어주세요
-            임원: "", // 임시로 데이터를 넣어주세요
-            특급기술사: "", // 임시로 데이터를 넣어주세요
-            고급기술사: "", // 임시로 데이터를 넣어주세요
-            중급기술사: "", // 임시로 데이터를 넣어주세요
-            초급기술사: "", // 임시로 데이터를 넣어주세요
-            중급기능사: "", // 임시로 데이터를 넣어주세요
-            고급기능사: "", // 임시로 데이터를 넣어주세요
-            부장: "", // 임시로 데이터를 넣어주세요
-            차장: "", // 임시로 데이터를 넣어주세요
-            과장: "", // 임시로 데이터를 넣어주세요
-            대리: "", // 임시로 데이터를 넣어주세요
-            주임: "", // 임시로 데이터를 넣어주세요
-            사원: "", // 임시로 데이터를 넣어주세요
+        const purTotalRow = {
+            data: ['합계', '', buyingTotalPrice],
+            className: ['point line-t', 'line-t', 'line-t']
         };
-        setTableRows([...tableRows, newRow]);
+        setPurchasingTableData([...updatedPurchasingData, purTotalRow]);
+
+        /* 외주비 테이블 데이터 */
+        if (outLaborList) {
+            const updatedOutData = outLaborList.map((item) => {
+                return {
+                    data: [item.esntlId, item.pjbgDesc, item.pjbgPrice],
+                    className: ["", "", ""],
+                };
+            });
+            const outTotalRow = {
+                data: ["합계", outLaborTotalMM, outLaborTotalPrice],
+                className: ["point line-t", "line-t", "line-t"],
+            };
+            setOutTableData([...updatedOutData, outTotalRow]);
+        }
+
+        /* 인건비 테이블 데이터 */
+        setLaborTableData([
+            {
+                data: [laborTotalMM, laborTotalPrice],
+                className: ["", ""],
+            },
+        ]);
+
+        /* 원가지표 */
+        let idInPer = 0; // 간접원가>자체용역 %
+        let idOutPer = 0; // 간접원가>외주 %
+        let idHSPer = 0; // 간접원가>H/W및S/W %
+
+        let genInPer = 0; // 일반관리비>자체용역 %
+        let genOutPer = 0; // 일반관리비>외주 %
+        let genHSPer = 0; // 일반관리비>H/W및S/W %
+
+        let selInPer = 0; // 판매비>자체용역 %
+        let corpInPer = 0; // 사내본사비>자체용역 %
+        let nonInPer = 0; // 영업외수지>자체용역 %
+
+        const costIndicator = [
+            //사전원가지표: 원가(CB_PER), 원가명(CB_NAME), 분류코드(CB_TYPE_CODE)
+            { CB_TYPE_CODE: "간접원가", CB_PER: 20.0, CB_NAME: "자체용역" },
+            { CB_TYPE_CODE: "간접원가", CB_PER: 20.0, CB_NAME: "외주" },
+            { CB_TYPE_CODE: "간접원가", CB_PER: 20.0, CB_NAME: "H/W및S/W" },
+            { CB_TYPE_CODE: "판매비", CB_PER: 5.0, CB_NAME: "자체용역" },
+            { CB_TYPE_CODE: "판매비", CB_PER: 5.0, CB_NAME: "외주" },
+            { CB_TYPE_CODE: "판매비", CB_PER: 5.0, CB_NAME: "H/W및S/W" },
+            { CB_TYPE_CODE: "사내본사비", CB_PER: 8.0, CB_NAME: "자체용역" },
+            { CB_TYPE_CODE: "사내본사비", CB_PER: 8.0, CB_NAME: "외주" },
+            { CB_TYPE_CODE: "사내본사비", CB_PER: 8.0, CB_NAME: "H/W및S/W" },
+            { CB_TYPE_CODE: "일반관리비", CB_PER: 8.0, CB_NAME: "자체용역" },
+            { CB_TYPE_CODE: "일반관리비", CB_PER: 8.0, CB_NAME: "외주" },
+            { CB_TYPE_CODE: "일반관리비", CB_PER: 8.0, CB_NAME: "H/W및S/W" },
+            { CB_TYPE_CODE: "영업외수지", CB_PER: 3.0, CB_NAME: "자체용역" },
+            { CB_TYPE_CODE: "영업외수지", CB_PER: 3.0, CB_NAME: "외주" },
+            { CB_TYPE_CODE: "영업외수지", CB_PER: 3.0, CB_NAME: "H/W및S/W" },
+        ];
+
+        costIndicator.map((item) => {
+            if (item.CB_TYPE_CODE === "간접원가") {
+                if (item.CB_NAME === "자체용역") {
+                    idInPer = item.CB_PER;
+                } else if (item.CB_NAME === "외주") {
+                    idOutPer = item.CB_PER;
+                } else if (item.CB_NAME === "H/W및S/W") {
+                    idHSPer = item.CB_PER;
+                }
+            }
+            if (item.CB_TYPE_CODE === "일반관리비") {
+                if (item.CB_NAME === "자체용역") {
+                    genInPer = item.CB_PER;
+                } else if (item.CB_NAME === "외주") {
+                    genOutPer = item.CB_PER;
+                } else if (item.CB_NAME === "H/W및S/W") {
+                    genHSPer = item.CB_PER;
+                }
+            }
+            if (item.CB_NAME === "자체용역") {
+                if (item.CB_TYPE_CODE === "판매비") {
+                    selInPer = item.CB_PER;
+                } else if (item.CB_TYPE_CODE === "사내본사비") {
+                    corpInPer = item.CB_PER;
+                } else if (item.CB_TYPE_CODE === "영업외수지") {
+                    nonInPer = item.CB_PER;
+                }
+            }
+        });
+
+        // const salesBudgetIn = 110260622; // 수주액>자체용역⭐
+        const salesBudgetOut = 0; // 수주액>외주⭐
+        // const purchaseTotalPrice = 0; //구매 총 합 //현재없음⭐
+        const excOutPurchase = 0; // 재료비>외주 //현재없음⭐
+
+        /* 손익계산서 변수들 */
+        const salesOrderTotal = salesBudgetIn + salesBudgetOut + 0 + legalTotalPrice - negoTotalPrice; // 수주액 row 합
+        const purchaseTotal = 0; // 재료비 row 합 // 인건비 사전원가서에서는 필요없는 항목
+        const laborTotal = laborTotalPrice + outLaborTotalPrice; // 인건비 row 합
+        const chargeTotal = budgetTotalPrice; // 경비 row 합
+        const exeInCost = laborTotalPrice + budgetTotalPrice; // 직접원가>자체용역: 인건비총금액+경비총금액
+        const exeOutCost = outLaborTotalPrice; // 직접원가>외주: 재료비외주+인건비외주+경비외주
+        const exePurCost = 0; // 직접원가>H/W및S/W //구매없음
+        const exeCostTotal = purchaseTotal + laborTotal + chargeTotal; // 직접원가 전체 row 합
+        const exeMarginalIn = salesBudgetIn - exeInCost; // 실한계이익>자체용역
+        const exeMarginalOut = salesBudgetOut - exeOutCost; // 실한계이익>외주
+        const exeMarginalHS = 0 - exePurCost; // 실한계이익>H/W및S/W
+        const exeMarginalTotal = salesOrderTotal - exeCostTotal; // 실한계이익>전체
+        const materialCostIn = 0; // 사내재료비>자체용역
+        const materialCostOut = 0; // 사내재료비>외주
+        const materialCostHS = 0; // 사내재료비>H/W및S/W
+        const materialCostTotal = 0; // 사내재료비>전체
+        const marginalIn = exeMarginalIn - materialCostIn; // 한계이익>자체용역
+        const marginalOut = exeMarginalOut - materialCostOut; // 한계이익>외주
+        const marginalHS = exeMarginalHS - materialCostHS; // 한계이익>H/W및S/W
+        const marginalTotal = exeMarginalTotal - materialCostTotal; // 한계이익>전체
+        const indirectIn = (laborTotalPrice * idInPer) / 100; // 간접원가>자체용역
+        const indirectOut = (outLaborTotalPrice * idOutPer) / 100; // 간접원가>외주
+        const indirectHS = (0 * idHSPer) / 100; // 간접원가>H/W및S/W
+        const indirectCost = indirectIn + indirectOut + indirectHS; // 간접원가>전체
+        const grossProfitIn = marginalIn - indirectIn; // 매출이익>자체용역
+        const grossProfitOut = marginalOut - indirectOut; // 매출이익>외주
+        const grossProfitHS = marginalHS - indirectHS; // 매출이익>H/W및S/W
+        const grossProfitTotal = marginalTotal - indirectCost; // 매출이익>전체
+        const sellingIn = (laborTotalPrice * selInPer) / 100; // 판매비>자체용역
+        const sellingTotal = sellingIn; // 판매비>전체
+        const corpIn = (laborTotalPrice * corpInPer) / 100; // 사내본사비>자체용역
+        const corpHQTotal = corpIn; // 사내본사비>전체
+        const genAdminIn = (laborTotalPrice * genInPer) / 100; // 일반관리비>자체용역
+        const genOut = (outLaborTotalPrice * genOutPer) / 100; // 일반관리비>외주
+        const genHS = (0 * genHSPer) / 100; // 일반관리비>H/W및S/W
+        const genAdminTotal = genAdminIn + genOut + genHS; // 일반관리비>전체
+        const operProfitIn = grossProfitIn - (sellingIn + corpIn + genAdminIn); // 영업이익>자체용역
+        const operProfitOut = grossProfitOut - genOut; // 영업이익>외주
+        const operProfitHS = grossProfitHS - genHS; // 영업이익>H/W및S/W
+        const operProfitTotal = grossProfitTotal - (sellingTotal + corpHQTotal + genAdminTotal); // 영업이익>전체
+        const nonIn = (laborTotalPrice * nonInPer) / 100; //영업외수지>자체용역
+        const nonOperIncTotal = nonIn; //영업외수지>전체
+        const ordIncIn = operProfitIn - nonIn; // 경상이익>자체용역
+        const ordIncOut = operProfitOut; // 경상이익>외주
+        const ordIncHS = operProfitHS; // 경상이익>H/W및S/W
+        const ordIncTotal = operProfitTotal - nonOperIncTotal; // 경상이익>전체
+        const mmUnitPriceIn = (salesBudgetIn - budgetTotalPrice) / laborTotalMM; // MM단가>자체용역 ⭐laborTotalMM를 나누는게 아니고 원래 위에 써진거?
+        const mmUnitPriceTotal = mmUnitPriceIn; // MM단가>전체
+
+        const division = (value1, value2) => {
+            if (value1 === 0 || value2 === 0) {
+                return 0 + "%";
+            }
+            return ((value1 / value2) * 100).toFixed(1) + "%";
+        };
+
+        /* 손익계산서 테이블 데이터 */
+        setCoreTableData([
+            {
+                data: [
+                    "수주액",
+                    salesOrderTotal.toLocaleString(),
+                    salesBudgetIn.toLocaleString(),
+                    "",
+                    salesBudgetOut.toLocaleString(),
+                    "",
+                    salesBudgetHS.toLocaleString(),
+                    "",
+                    legalTotalPrice.toLocaleString(),
+                    negoTotalPrice.toLocaleString(),
+                    "",
+                    "",
+                ],
+                className: ["point", "b-highlight", "", "b-gray", "", "b-gray", "", "b-gray", "", "", "b-gray", "b-gray"],
+            },
+            {
+                data: [
+                    "재료비",
+                    purchaseTotal.toLocaleString(),
+                    "",
+                    "",
+                    excOutPurchase.toLocaleString(),
+                    "",
+                    buyingTotalPrice.toLocaleString(),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: ["point", "b-highlight", "b-gray", "b-gray", "", "b-gray", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: [
+                    "인건비",
+                    laborTotal.toLocaleString(),
+                    laborTotalPrice.toLocaleString(),
+                    "",
+                    outLaborTotalPrice.toLocaleString(),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: ["point", "b-highlight", "", "b-gray", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: ["경비", chargeTotal.toLocaleString(), budgetTotalPrice.toLocaleString(), "", "", "", "", "", "", "", "", ""],
+                className: ["point", "b-highlight", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: [
+                    "직접원가",
+                    exeCostTotal.toLocaleString(),
+                    exeInCost.toLocaleString(),
+                    "",
+                    exeOutCost.toLocaleString(),
+                    "",
+                    exePurCost.toLocaleString(),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: [
+                    "col-header",
+                    "col-header",
+                    "col-header",
+                    "col-header",
+                    "col-header",
+                    "col-header",
+                    "col-header",
+                    "col-header",
+                    "col-header",
+                    "col-header",
+                    "col-header",
+                    "col-header",
+                ],
+            },
+            {
+                data: [
+                    "실한계이익",
+                    exeMarginalTotal.toLocaleString(),
+                    exeMarginalIn.toLocaleString(),
+                    "",
+                    exeMarginalOut.toLocaleString(),
+                    "",
+                    exeMarginalHS.toLocaleString(),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: ["point", " ", " ", "b-gray", "", "b-gray", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: [
+                    "(실한계이익률)",
+                    division(exeMarginalTotal, salesOrderTotal),
+                    division(exeMarginalIn, salesBudgetIn),
+                    "",
+                    division(exeMarginalOut, salesBudgetOut),
+                    "",
+                    division(exeMarginalHS, salesBudgetHS),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: ["point", "", "", "b-gray", "", "b-gray", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: ["사내재료비", materialCostTotal.toLocaleString(), "", "", "", "", "", "", "", "", "", ""],
+                className: [
+                    "b-lightblue text-primary point",
+                    "b-highlight",
+                    "b-highlight",
+                    "b-gray",
+                    "b-highlight",
+                    "b-gray",
+                    "b-highlight",
+                    "b-gray",
+                    "b-gray",
+                    "b-gray",
+                    "b-gray",
+                    "b-gray",
+                ],
+            },
+            {
+                data: [
+                    "한계이익",
+                    marginalTotal.toLocaleString(),
+                    marginalIn.toLocaleString(),
+                    "",
+                    marginalOut.toLocaleString(),
+                    "",
+                    marginalHS.toLocaleString(),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: ["point", "", "", "b-gray", "", "b-gray", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: [
+                    "(한계이익률)",
+                    division(marginalTotal, salesOrderTotal),
+                    division(marginalIn, salesBudgetIn),
+                    "",
+                    division(marginalOut, salesBudgetOut),
+                    "",
+                    division(marginalHS, salesBudgetHS),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: ["point", "", "", "b-gray", "", "b-gray", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: [
+                    "간접원가",
+                    indirectCost.toLocaleString(),
+                    indirectIn.toLocaleString(),
+                    idInPer + "%",
+                    indirectOut.toLocaleString(),
+                    idOutPer + "%",
+                    indirectHS.toLocaleString(),
+                    idHSPer + "%",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: [
+                    "b-lightblue point",
+                    "b-highlight",
+                    "b-highlight",
+                    "b-highlight",
+                    "b-highlight",
+                    "b-highlight",
+                    "b-highlight",
+                    "b-highlight",
+                    "b-gray",
+                    "b-gray",
+                    "b-gray",
+                    "b-gray",
+                ],
+            },
+            {
+                data: [
+                    "매출이익",
+                    grossProfitTotal.toLocaleString(),
+                    grossProfitIn.toLocaleString(),
+                    "",
+                    grossProfitOut.toLocaleString(),
+                    "",
+                    grossProfitHS.toLocaleString(),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: ["point", "", "", "b-gray", "", "b-gray", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: [
+                    "(매출이익률)",
+                    division(grossProfitTotal, salesOrderTotal),
+                    division(grossProfitIn, salesBudgetIn),
+                    "",
+                    division(grossProfitOut, salesBudgetOut),
+                    "",
+                    division(grossProfitHS, salesBudgetHS),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: ["point", "", "", "b-gray", "", "b-gray", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: ["판매비", sellingTotal.toLocaleString(), sellingIn.toLocaleString(), selInPer + "%", "", "", "", "", "", "", "", ""],
+                className: ["b-lightblue text-danger point", "", "", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: ["사내본사비", corpHQTotal.toLocaleString(), corpIn.toLocaleString(), corpInPer + "%", "", "", "", "", "", "", "", ""],
+                className: ["b-lightblue text-danger point", "", "", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: [
+                    "일반관리비",
+                    genAdminTotal.toLocaleString(),
+                    genAdminIn.toLocaleString(),
+                    genInPer + "%",
+                    genOut.toLocaleString(),
+                    genOutPer + "%",
+                    genHS.toLocaleString(),
+                    genHSPer + "%",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: ["b-lightblue text-danger point", "", "", "", "", "", "", "", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: [
+                    "영업이익",
+                    operProfitTotal.toLocaleString(),
+                    operProfitIn.toLocaleString(),
+                    "",
+                    operProfitOut.toLocaleString(),
+                    "",
+                    operProfitHS.toLocaleString(),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: ["point", "", "", "b-gray", "", "b-gray", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: [
+                    "(영업이익률)",
+                    division(operProfitTotal, salesOrderTotal),
+                    division(operProfitIn, salesBudgetIn),
+                    "",
+                    division(operProfitOut, salesBudgetOut),
+                    "",
+                    division(operProfitHS, salesBudgetHS),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: ["point", "", "", "b-gray", "", "b-gray", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: ["영업외수지", nonOperIncTotal.toLocaleString(), nonIn.toLocaleString(), nonInPer + "%", "", "", "", "", "", "", "", ""],
+                className: [
+                    "b-lightblue text-primary point",
+                    "b-gray",
+                    "b-gray",
+                    "b-gray",
+                    "b-gray",
+                    "b-gray",
+                    "b-gray",
+                    "b-gray",
+                    "b-gray",
+                    "b-gray",
+                    "b-gray",
+                    "b-gray",
+                ],
+            },
+            {
+                data: [
+                    "경상이익",
+                    ordIncTotal.toLocaleString(),
+                    ordIncIn.toLocaleString(),
+                    "",
+                    ordIncOut.toLocaleString(),
+                    "",
+                    ordIncHS.toLocaleString(),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: ["point ", "", "", "b-gray", "", "b-gray", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: [
+                    "(경상이익률)",
+                    division(ordIncTotal, salesOrderTotal),
+                    division(ordIncIn, salesBudgetIn),
+                    "",
+                    division(ordIncOut, salesBudgetOut),
+                    "",
+                    division(ordIncHS, salesBudgetHS),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                ],
+                className: ["point ", "", "", "b-gray", "", "b-gray", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+            {
+                data: ["M/M단가", mmUnitPriceTotal.toLocaleString(), mmUnitPriceIn.toLocaleString(), "", "", "", "", "", "", "", "", ""],
+                className: ["b-lightblue point", "", "", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray", "b-gray"],
+            },
+        ]);
     };
-    //const handleClick = () => {
-    //    setIsClicked((prevState) => !prevState);
-    //};
-    //const handleClick2 = () => {
-    //    setIsClicked2((prevState) => !prevState);
-    //};
-    //const handleClick3 = () => {
-    //    setIsClicked3((prevState) => !prevState);
-    //};
-    //const handleClick4 = () => {
-    //    setIsClicked4((prevState) => !prevState);
-    //};
-    //const handleClick5 = () => {
-    //    setIsClicked5((prevState) => !prevState);
-    //};
 
     return (
-        <div className="popUpHomeBody">
-            <div className="TableBucket">
-                <table className="tableMain">
-                    <div className="tbodyDiv">
-                        <h3 className="contentTitle">1.손익계산서</h3>
-                    </div>
-                    <tbody className="tableBody">
-                        <tr className="tableTr">
-                            <td className="table4-3">구분</td>
-                            <td className="table4-3">전체</td>
-                            <td className="table4-3">자체용역</td>
-                            <td className="tableRedPercent">%</td>
-                            <td className="table4-3">외주</td>
-                            <td className="tableRedPercent">%</td>
-                            <td className="table4-3">H/W 및 S/W</td>
-                            <td className="tableRedPercent">%</td>
-                            <td className="table4-3">판관비</td>
-                            <td className="table4-3">NEGO</td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3">수주액</td>
-                            <td className="table4-3White">560,000,000</td>
-                            <td className="table4-3White">0</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White"></td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">560,000,000</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White"></td>
-                            <td className="table4-3White"></td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3">재료비</td>
-                            <td className="table4-3White">365,654,110</td>
-                            <td className="table4-3White"></td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White"></td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">365,654,110</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White"></td>
-                            <td className="table4-3White"></td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3">인건비</td>
-                            <td className="table4-3White">2,390,000</td>
-                            <td className="table4-3White">2,390,000</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">0</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White"></td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White"></td>
-                            <td className="table4-3White"></td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3">경 비</td>
-                            <td className="table4-3White">2,390,000</td>
-                            <td className="table4-3White">2,390,000</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White"></td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White"></td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White"></td>
-                            <td className="table4-3White"></td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3">직접원가</td>
-                            <td className="table4-3">370,769,510</td>
-                            <td className="table4-3">5,115,400</td>
-                            <td className="tableRedPercent"></td>
-                            <td className="table4-3">0</td>
-                            <td className="tableRedPercent"></td>
-                            <td className="table4-3">365,654,110</td>
-                            <td className="tableRedPercent"></td>
-                            <td className="table4-3">0</td>
-                            <td className="table4-3">0</td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3White">실한계이익</td>
-                            <td className="table4-3White">189,230,490</td>
-                            <td className="table4-3White">-5,115,400</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">0</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">194,345,890</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">0</td>
-                            <td className="table4-3White">0</td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3White">(실한계이익율)</td>
-                            <td className="table4-3White">33.8%</td>
-                            <td className="table4-3White">-%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">-%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">34.7%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">-%</td>
-                            <td className="table4-3White">-%</td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3">사내재료비</td>
-                            <td className="table4-3">0</td>
-                            <td className="table4-3"></td>
-                            <td className="tableRedPercent"></td>
-                            <td className="table4-3"></td>
-                            <td className="tableRedPercent"></td>
-                            <td className="table4-3"></td>
-                            <td className="tableRedPercent"></td>
-                            <td className="table4-3">0</td>
-                            <td className="table4-3"></td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3White">한계이익</td>
-                            <td className="table4-3White">189,230,490</td>
-                            <td className="table4-3White">-5,115,400</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">0</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">194,345,890</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">0</td>
-                            <td className="table4-3White">0</td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3White">(한계이익율)</td>
-                            <td className="table4-3White">33.8%</td>
-                            <td className="table4-3White">-%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">-%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">34.7%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">-%</td>
-                            <td className="table4-3White">-%</td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3">간접원가</td>
-                            <td className="table4-3">73,608,822</td>
-                            <td className="table4-3">478,000</td>
-                            <td className="tableRedPercent">20%</td>
-                            <td className="table4-3">0</td>
-                            <td className="tableRedPercent">20%</td>
-                            <td className="table4-3">73,130,822</td>
-                            <td className="tableRedPercent">20%</td>
-                            <td className="table4-3"></td>
-                            <td className="table4-3"></td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3White">매출이익</td>
-                            <td className="table4-3White">115,621,668</td>
-                            <td className="table4-3White">-5,593,400</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">0</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">121,215,068</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">0</td>
-                            <td className="table4-3White">0</td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3White">(매출이익율)</td>
-                            <td className="table4-3White">20.6%</td>
-                            <td className="table4-3White">-%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">-%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">21.6%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">-%</td>
-                            <td className="table4-3White">-%</td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3">판 매 비</td>
-                            <td className="table4-3">119,500</td>
-                            <td className="table4-3">119,500</td>
-                            <td className="tableRedPercent">5%</td>
-                            <td className="table4-3"></td>
-                            <td className="tableRedPercent">5%</td>
-                            <td className="table4-3"></td>
-                            <td className="tableRedPercent">5%</td>
-                            <td className="table4-3"></td>
-                            <td className="table4-3"></td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3">사내본사비</td>
-                            <td className="table4-3">191,200</td>
-                            <td className="table4-3">191,200</td>
-                            <td className="tableRedPercent">8%</td>
-                            <td className="table4-3"></td>
-                            <td className="tableRedPercent">8%</td>
-                            <td className="table4-3"></td>
-                            <td className="tableRedPercent">8%</td>
-                            <td className="table4-3"></td>
-                            <td className="table4-3"></td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3">일반관리비</td>
-                            <td className="table4-3">29,443,529</td>
-                            <td className="table4-3">191,200</td>
-                            <td className="tableRedPercent">8%</td>
-                            <td className="table4-3">0</td>
-                            <td className="tableRedPercent">8%</td>
-                            <td className="table4-3">29,252,329</td>
-                            <td className="tableRedPercent">8%</td>
-                            <td className="table4-3"></td>
-                            <td className="table4-3"></td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3White">영업이익</td>
-                            <td className="table4-3White">85,867,439</td>
-                            <td className="table4-3White">-6,095,300</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">0</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">91,962,739</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">0</td>
-                            <td className="table4-3White">0</td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3White">(영업이익율)</td>
-                            <td className="table4-3White">15.3%</td>
-                            <td className="table4-3White">-%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">-%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">16.4%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">-%</td>
-                            <td className="table4-3White">-%</td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3">영업외수지</td>
-                            <td className="table4-3">71,700</td>
-                            <td className="table4-3">71,700</td>
-                            <td className="tableRedPercent">3%</td>
-                            <td className="table4-3"></td>
-                            <td className="tableRedPercent"></td>
-                            <td className="table4-3"></td>
-                            <td className="tableRedPercent"></td>
-                            <td className="table4-3"></td>
-                            <td className="table4-3"></td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3White">경상이익</td>
-                            <td className="table4-3White">85,795,738</td>
-                            <td className="table4-3White">-6,167,700</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">0</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">91,962,739</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">0</td>
-                            <td className="table4-3White">0</td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3White">(경상이익율)</td>
-                            <td className="table4-3White">15.3%</td>
-                            <td className="table4-3White">-%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">-%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">16.4%</td>
-                            <td className="tableRedPercentW"></td>
-                            <td className="table4-3White">-%</td>
-                            <td className="table4-3White">-%</td>
-                        </tr>
-                        <tr className="tableTr">
-                            <td className="table4-3">M/M단가</td>
-                            <td className="table4-3">-803,953</td>
-                            <td className="table4-3">-803,953</td>
-                            <td className="tableRedPercent"></td>
-                            <td className="table4-3"></td>
-                            <td className="tableRedPercent"></td>
-                            <td className="table4-3"></td>
-                            <td className="tableRedPercent"></td>
-                            <td className="table4-3"></td>
-                            <td className="table4-3"></td>
-                        </tr>
-                    </tbody>
-                </table>
+        <div className="precost-container">
+            <div className="flex-column mg-t-20 mg-b-20">
+                <FormDataTable formTableColumns={infoColumns} useStatus={false} />
 
-                <table className="tableMain">
-                    <div className="tbodyDiv">
-                        <h3 className="contentTitle">2.직접원가 내역</h3>
-                    </div>
-                    <tbody className="tableBody">
-                        <div className="detailCost">
-                            <div className="halfContent">
-                                <div className="contentForm">
-                                    <h6>[재료비]</h6>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3">품목</td>
-                                        <td className="table4-3">일반/도입</td>
-                                        <td className="table4-3">금액</td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White">PANEL</td>
-                                        <td className="table4-3White">일반</td>
-                                        <td className="table4-3White">
-                                            365,654,110
-                                        </td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White"></td>
-                                        <td className="table4-3White">일반</td>
-                                        <td className="table4-3White"></td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White"></td>
-                                        <td className="table4-3White">일반</td>
-                                        <td className="table4-3White"></td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White"></td>
-                                        <td className="table4-3White">일반</td>
-                                        <td className="table4-3White"></td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White"></td>
-                                        <td className="table4-3White">일반</td>
-                                        <td className="table4-3White"></td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White">합계</td>
-                                        <td className="table4-3White"></td>
-                                        <td className="table4-3WhiteBlue">
-                                            365,654,110
-                                        </td>
-                                    </tr>
-                                </div>
-                                <div style={{ width: "100%" }}>
-                                    <h6>[개발외주비]</h6>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3">회사</td>
-                                        <td className="table4-3">턴키/MM</td>
-                                        <td className="table4-3">금액</td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White">A회사</td>
-                                        <td className="table4-3White">MM</td>
-                                        <td className="table4-3White">0</td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White">　</td>
-                                        <td className="table4-3White">　</td>
-                                        <td className="table4-3White">　</td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White">　</td>
-                                        <td className="table4-3White">　</td>
-                                        <td className="table4-3White">　</td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White">합계</td>
-                                        <td className="table4-3White"></td>
-                                        <td className="table4-3WhiteBlue">0</td>
-                                    </tr>
-                                </div>
-                                <div style={{ width: "100%" }}>
-                                    <h6>[인건비]</h6>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3">MM</td>
-                                        <td className="table4-3">금액</td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3WhiteBlue">
-                                            3.4
-                                        </td>
-                                        <td className="table4-3WhiteBlue">
-                                            2,390,000
-                                        </td>
-                                    </tr>
-                                </div>
-                            </div>
-                            <div style={{ width: "48%" }}>
-                                <div style={{ width: "100%" }}>
-                                    <h6>[경비]</h6>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3F">계정명</td>
-                                        <td className="table4-3F">산출근거</td>
-                                        <td className="table4-3F">금액</td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3WhiteF">
-                                            인건비성복후비
-                                        </td>
-                                        <td className="table4-3WhiteF2">
-                                            자동계산(사용경비가 아님)
-                                        </td>
+                <div className="precost-title">1.손익계산서</div>
+                <BasicDataTable columns={coreColumns} data={coreTableData} datatableRef={coreTable} />
 
-                                        <td className="table4-3WhiteF">
-                                            1,434,000
-                                        </td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White"></td>
-                                        <td className="table4-3White">일반</td>
-                                        <td className="table4-3White"></td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White"></td>
-                                        <td className="table4-3White">일반</td>
-                                        <td className="table4-3White"></td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White"></td>
-                                        <td className="table4-3White">일반</td>
-                                        <td className="table4-3White"></td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White"></td>
-                                        <td className="table4-3White">일반</td>
-                                        <td className="table4-3White"></td>
-                                    </tr>
-                                    <tr className="tableTrDetail">
-                                        <td className="table4-3White">합계</td>
-                                        <td className="table4-3White"></td>
-                                        <td className="table4-3WhiteBlue">
-                                            365,654,110
-                                        </td>
-                                    </tr>
-                                </div>
-                            </div>
-                        </div>
-                    </tbody>
-                </table>
+                <div className="empty" />
+
+                <div className="precost-title">2.직접원가 내역</div>
+                <div className="wrap">
+                    <div style={{ flex: 4 }}>
+                        <BasicDataTable
+                            columns={purchasingColumns}
+                            data={purchasingTableData}
+                            datatableRef={purchasingTable}
+                            tableSize={purStyle}
+                            subtitle="재료비"
+                        />
+                        <BasicDataTable
+                            columns={outsourcingColumns}
+                            data={outTableData}
+                            datatableRef={outsourcingTable}
+                            tableSize={purStyle}
+                            subtitle="개발외주비"
+                        />
+                        <BasicDataTable columns={laborColumns} data={laborTableData} datatableRef={laborTable} subtitle="인건비" />
+                    </div>
+                    <div style={{ flex: 0.5 }} />
+                    <div style={{ flex: 5.5 }}>
+                        <BasicDataTable columns={chargeColumns} data={chargeTableData} datatableRef={chargeTable} tableSize={chargeStyle} subtitle="경비" />
+                    </div>
+                </div>
             </div>
         </div>
     );

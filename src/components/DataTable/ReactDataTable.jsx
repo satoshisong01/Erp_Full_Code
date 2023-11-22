@@ -14,6 +14,8 @@ import ModalPagePgNm from "components/modal/ModalPagePgNm";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { v4 as uuidv4 } from "uuid";
+import DayPicker from "components/input/DayPicker";
+import MonthPicker from "components/input/MonthPicker";
 const ReactDataTable = (props) => {
     const {
         columns,
@@ -53,6 +55,7 @@ const ReactDataTable = (props) => {
         setProjectPgNm,
         setProjectInfo,
         isSaveFormTable,
+        unitPriceList,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -65,107 +68,12 @@ const ReactDataTable = (props) => {
     const [selectRow, setSelectRow] = useState({}); //마지막으로 선택한 row
     const [rowIndex, setRowIndex] = useState(0);
 
-    //------------------------------------------------ 달력 날짜 선택
-
-    //useEffect(() => {
-    //    if (!isOpenModalPgNm) {
-    //        // isOpenModalPgNm이 false로 변경된 경우에 실행할 코드를 여기에 작성
-    //        if (savePgNm) {
-    //            const updatedTableData = [...tableData];
-    //            if (dataBuket !== prevDataBuket) {
-    //                if (dataBuket && updatedTableData[rowIndex]) {
-    //                    console.log(rowIndex, "rowIndex");
-    //                    updatedTableData[rowIndex].pgNm = savePgNm.pgNm;
-    //                    updatedTableData[rowIndex].pgId = savePgNm.pgId;
-
-    //                    console.log(updatedTableData, "updatedTableData");
-    //                    setTableData(updatedTableData);
-    //                }
-
-    //                setPrevDataBuket(dataBuket);
-    //                setProjectPgNm("");
-    //            }
-    //        }
-    //    }
-    //}, [isOpenModalPgNm, savePgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
-
-    //const [formattedDate, setFormattedDate] = useState("");
-    //const [formattedDate2, setFormattedDate2] = useState("");
-    const [isCalendarVisible, setCalendarVisible] = useState(false);
-    const [isCalendarVisible2, setCalendarVisible2] = useState(false);
-
-    const inputRefDay = useRef(null);
-    const inputRefDay2 = useRef(null);
-
-    const handleInputClick = () => {
-        setCalendarVisible((prev) => !prev);
-    };
-
-    const handleInputClick2 = () => {
-        setCalendarVisible2((prev) => !prev);
-    };
-
-    useEffect(() => {
-        console.log("isCalendarVisible을 위한 useEffect");
-        document.addEventListener("click", handleOutsideClick);
-        return () => {
-            document.removeEventListener("click", handleOutsideClick);
-        };
-    }, [isCalendarVisible]);
-
-    const handleDateClick = (date, rowIndex) => {
-        console.log(date, rowIndex, "시ㅡ발");
-        const formatted = handleDateChange(date);
+    const handleDateClick = (date, colName, index) => {
         const updatedTableData = [...tableData];
-        updatedTableData[rowIndex].pecStartdate = formatted;
+        updatedTableData[index][colName] = date;
         setTableData(updatedTableData);
         setCalendarVisible(false);
     };
-
-    const handleDateClick2 = (date, rowIndex) => {
-        console.log(date, rowIndex);
-        const formatted = handleDateChange2(date);
-        const updatedTableData = [...tableData];
-        updatedTableData[rowIndex].pecEnddate = formatted;
-        setTableData(updatedTableData);
-        setCalendarVisible2(false);
-    };
-
-    const handleOutsideClick = (event) => {
-        if (
-            inputRefDay.current &&
-            !inputRefDay.current.contains(event.target) &&
-            !event.target.classList.contains("react-calendar") &&
-            !event.target.closest(".boxCalendar")
-        ) {
-            setCalendarVisible(false);
-        }
-    };
-
-    const handleOutsideClick2 = (event) => {
-        if (
-            inputRefDay2.current &&
-            !inputRefDay2.current.contains(event.target) &&
-            !event.target.classList.contains("react-calendar") &&
-            !event.target.closest(".boxCalendar")
-        ) {
-            setCalendarVisible2(false);
-        }
-    };
-
-    useEffect(() => {
-        document.addEventListener("click", handleOutsideClick);
-        return () => {
-            document.removeEventListener("click", handleOutsideClick);
-        };
-    }, []);
-
-    useEffect(() => {
-        document.addEventListener("click", handleOutsideClick2);
-        return () => {
-            document.removeEventListener("click", handleOutsideClick2);
-        };
-    }, []);
 
     const [isEditing, setIsEditing] = useState(false);
 
@@ -186,16 +94,6 @@ const ReactDataTable = (props) => {
         const formatted = `${year}-${month}-${day}`;
         //setSaveDay(formatted);
         console.log(formatted);
-        return formatted;
-    };
-    const handleDateChange2 = (date) => {
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const day = date.getDate().toString().padStart(2, "0");
-        const formatted = `${year}-${month}-${day}`;
-        //setSaveDay2(formatted);
-        console.log(formatted);
-
         return formatted;
     };
 
@@ -268,6 +166,9 @@ const ReactDataTable = (props) => {
             } else {
                 compareData(originTableData, tableData);
             }
+        }
+        if (current !== innerPageName) {
+            setTableData([]); //초기화
         }
     }, [innerPageName, isSaveFormTable]);
 
@@ -558,7 +459,6 @@ const ReactDataTable = (props) => {
         }
     }, [isOpenModalPgNm, savePgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
 
-
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {
         const newRow = {};
@@ -600,10 +500,12 @@ const ReactDataTable = (props) => {
                 const price = row.original.pecUnitPrice * row.original.pecMm;
                 updatedTableData[index]["price"] = price;
             }
-        } else if (innerPageName === "인건비 예산관리") {
-            if (row.original.pecPosition && row.original.pecMm) {
-                const price = row.original.pecMm;
+        } else if (innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
+            if (unitPriceList && row.original.pecPosition && row.original.pecMm) {
+                const unit = unitPriceList.find((unit) => row.original.pecPosition === unit.guppName && unit.gupBaseDate[0] === new Date().getFullYear());
+                const price = unit ? row.original.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
                 updatedTableData[index]["price"] = price;
+                updatedTableData[index]["positionPrice"] = unit.gupPrice;
             }
         }
 
@@ -834,14 +736,14 @@ const ReactDataTable = (props) => {
                                                                 ? tableData[row.index][cell.column.id] || cell.value
                                                                 : cell.value
                                                         }
-                                                        name={cell.column.col}
+                                                        name={cell.column.id}
                                                         onChange={(e) => handleChange(e, row, cell.column.id)}
                                                     />
                                                 ) : cell.column.type === "datepicker" ? (
                                                     <div className="box3-1 boxDate">
                                                         <DatePicker
                                                             key={cell.column.id + row.index}
-                                                            name={cell.column.col}
+                                                            name={cell.column.id}
                                                             className="form-control flex-item"
                                                             type="text"
                                                             value={
@@ -867,104 +769,25 @@ const ReactDataTable = (props) => {
                                                         />
                                                     </div>
                                                 ) : cell.column.type === "daypicker" ? (
+                                                    <DayPicker
+                                                        name={cell.column.id}
+                                                        value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id] : ""}
+                                                        onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
+                                                    />
+                                                ) : cell.column.type === "monthpicker" ? (
                                                     <div className="box3-1 boxDate">
-                                                        <input
-                                                            className="form-control flex-item"
-                                                            type="text"
+                                                        <MonthPicker
                                                             name={cell.column.id}
-                                                            value={tableData[row.index].pecStartdate ? tableData[row.index].pecStartdate : ""}
-                                                            onClick={() => handleInputClick()}
-                                                            readOnly
-                                                            ref={inputRefDay}
-                                                        />
-                                                        {isCalendarVisible && (
-                                                            <div className="boxCalendar">
-                                                                <Calendar onClickDay={(data) => handleDateClick(data, rowIndex)} />
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ) : cell.column.type === "daypicker2" ? (
-                                                    <div className="box3-1 boxDate">
-                                                        <input
-                                                            className="form-control flex-item"
-                                                            type="text"
-                                                            name={cell.column.id}
-                                                            id={`dayPicker2${rowIndex}`}
-                                                            value={tableData[row.index].pecEnddate ? tableData[row.index].pecEnddate : ""}
-                                                            onClick={() => {
-                                                                handleInputClick2();
-                                                            }}
-                                                            readOnly
-                                                            ref={inputRefDay2}
-                                                        />
-                                                        {isCalendarVisible2 && (
-                                                            <div className="boxCalendar">
-                                                                <Calendar onClickDay={(data) => handleDateClick2(data, rowIndex)} />
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ) : cell.column.type === "costDateStart" ? (
-                                                    <div className="box3-1 boxDate">
-                                                        <DatePicker
-                                                            key={cell.column.id + row.index}
-                                                            name={cell.column.col}
-                                                            className="form-control flex-item"
-                                                            type="text"
-                                                            value={tableData[row.index].pjbgBeginDt ? tableData[row.index].pjbgBeginDt.substring(0, 7) : ""}
-                                                            ref={inputRef}
-                                                            dateFormat="yyyy-MM"
-                                                            showMonthYearPicker
-                                                            locale={ko} // 한국어로 설정
-                                                            onClick={() => toggleCalendarVisible(row.index)}
-                                                            onChange={(date) => {
-                                                                //handleDateClick(date, row.index);
-                                                                //const formatted = handleDateChange(selectedDate);
-                                                                //setFormattedDate(formatted); // 이 부분은 formattedDate 대신 pmpMonth를 업데이트하는 코드로 변경해야 함
-                                                                const formatted = handleDateChange(date);
-                                                                const updatedTableData = [...tableData];
-                                                                updatedTableData[row.index].pjbgBeginDt
-                                                                    ? (updatedTableData[row.index].pjbgBeginDt = formatted)
-                                                                    : (updatedTableData[row.index].pjbgBeginDt = formatted);
-                                                                //updatedTableData[row.index].pmpMonth2 = formatted;
-                                                                //    ? updatedTableData[row.index].pmpMonth
-                                                                //    : formatted;
-                                                                setTableData(updatedTableData);
-                                                            }}
-                                                        />
-                                                    </div>
-                                                ) : cell.column.type === "costDateEnd" ? (
-                                                    <div className="box3-1 boxDate">
-                                                        <DatePicker
-                                                            key={cell.column.id + row.index}
-                                                            name={cell.column.col}
-                                                            className="form-control flex-item"
-                                                            type="text"
-                                                            value={tableData[row.index].pjbgEndDt ? tableData[row.index].pjbgEndDt.substring(0, 7) : ""}
-                                                            ref={inputRef}
-                                                            dateFormat="yyyy-MM"
-                                                            showMonthYearPicker
-                                                            locale={ko} // 한국어로 설정
-                                                            onClick={() => toggleCalendarVisible(row.index)}
-                                                            onChange={(date) => {
-                                                                //handleDateClick(date, row.index);
-                                                                //const formatted = handleDateChange(selectedDate);
-                                                                //setFormattedDate(formatted); // 이 부분은 formattedDate 대신 pmpMonth를 업데이트하는 코드로 변경해야 함
-                                                                const formatted = handleDateChange(date);
-                                                                const updatedTableData = [...tableData];
-                                                                updatedTableData[row.index].pjbgEndDt
-                                                                    ? (updatedTableData[row.index].pjbgEndDt = formatted)
-                                                                    : (updatedTableData[row.index].pjbgEndDt = formatted);
-                                                                //updatedTableData[row.index].pmpMonth2 = formatted;
-                                                                //    ? updatedTableData[row.index].pmpMonth
-                                                                //    : formatted;
-                                                                setTableData(updatedTableData);
-                                                            }}
+                                                            value={
+                                                                tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id].substring(0, 7) : ""
+                                                            }
+                                                            onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                         />
                                                     </div>
                                                 ) : cell.column.type === "select" ? (
                                                     <select
                                                         key={cell.column.id + row.index}
-                                                        name={cell.column.col}
+                                                        name={cell.column.id}
                                                         defaultValue={
                                                             tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
                                                                 ? tableData[row.index][cell.column.id]
@@ -972,7 +795,11 @@ const ReactDataTable = (props) => {
                                                         }
                                                         onChange={(e) => handleChange(e, row, cell.column.id)}>
                                                         {cell.column.options.map((option, index) => (
-                                                            <option key={cell.column.id + index} value={option.value}>
+                                                            <option
+                                                                key={cell.column.id + index}
+                                                                value={option.value}
+                                                                selected={index === 0} //첫 번째 옵션 선택
+                                                            >
                                                                 {option.label}
                                                             </option>
                                                         ))}
@@ -982,7 +809,7 @@ const ReactDataTable = (props) => {
                                                         <input
                                                             className="buttonSelect"
                                                             id={cell.column.id}
-                                                            name={cell.column.col}
+                                                            name={cell.column.id}
                                                             key={cell.column.id + row.index}
                                                             onClick={() => setValueData(rowIndex)}
                                                             type="text"

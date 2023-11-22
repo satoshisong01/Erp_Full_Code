@@ -112,7 +112,7 @@ export default function SearchList({ conditionList, onSearch }) {
 
         if (keyArr.length === 1) {
             const fieldName = keyArr[0];
-            const field = fieldList.find((item) => item.colName === fieldName);
+            const field = fieldList.find((item) => item.col === fieldName);
             if (field) {
                 searchLevel = field.searchLevel;
             }
@@ -149,15 +149,15 @@ export default function SearchList({ conditionList, onSearch }) {
     /* 검색 화면구현 */
     const renderField = (param) => {
         if (param.type === "input") {
-            return <input type="text" name={param.colName} value={searchData[param.colName] || ""} onChange={onChange} className="form-control flex-item" />;
+            return <input type="text" name={param.col} value={searchData[param.col] || ""} onChange={onChange} className="form-control flex-item" />;
         } else if (param.type === "select") {
             return (
                 <select
-                    name={param.colName}
-                    value={searchData[param.colName] || ""}
+                    name={param.col}
+                    value={searchData[param.col] || ""}
                     onChange={onChange}
                     className="form-control flex-item"
-                    key={searchData[param.colName]}>
+                    key={searchData[param.col]}>
                     <option value=""> 선택없음 </option>
                     {param.option.map((op) => (
                         <option key={op.value} value={op.value}>
@@ -254,7 +254,7 @@ export default function SearchList({ conditionList, onSearch }) {
 
             <div className="flex-container">
                 {fieldList.map((param, idx) => (
-                    <div key={param.colName + idx} className="flex-group mg-l-15">
+                    <div key={param.col + idx} className="flex-group mg-l-15">
                         <div className="flex-label">
                             <label>{param.title}</label>
                         </div>
