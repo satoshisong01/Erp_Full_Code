@@ -56,7 +56,6 @@ const ReactDataTableURL = (props) => {
             setTableData([]);
             setOriginTableData([]);
         }
-        console.log("customDatas:", customDatas);
     }, [customDatas]);
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
@@ -77,7 +76,7 @@ const ReactDataTableURL = (props) => {
             setIsEditing(editing !== undefined ? editing : isSaveFormTable); //테이블 상태 //inner tab일 때 테이블 조작
         }
         if (current === innerPageName && !isSaveFormTable) {
-            if (current === "경비") {
+            if (current === "경비" || current === "개발외주비" || current === "영업관리비") {
                 compareData(originTableData, tableData);
             }
             if (current === "경비 수주관리" || current === "경비 예산관리" || current === "경비 실행관리") {
@@ -106,6 +105,7 @@ const ReactDataTableURL = (props) => {
     useEffect(() => {
         //newRowData 변동 시 새로운 행 추가
         if (newRowData && Object.keys(newRowData).length !== 0) {
+            console.log("❗❗❗❗❗ newRowData");
             onAddRow(newRowData);
             GeneralExpensesOnAddRow(newRowData);
             companyOnAddRow(newRowData);
@@ -292,10 +292,6 @@ const ReactDataTableURL = (props) => {
     const [prevDataBuket, setPrevDataBuket] = useState({});
 
     useEffect(() => {
-        console.log("tableData:", tableData);
-    }, [tableData]);
-
-    useEffect(() => {
         setSavePgNm(projectPgNm);
         setDataBuket(projectPgNm.pgNm, projectPgNm.pgId);
     }, [projectPgNm]);
@@ -376,6 +372,7 @@ const ReactDataTableURL = (props) => {
         // const deletedPjbgId = tableData[rowId].pjbgId;
         // setDeleteNumList((prevIds) => [...prevIds, deletedPjbgId]);
         const updateTableData = tableData.filter((_, index) => index !== rowId);
+        console.log("💜💜💜onDeleteRow:", updateTableData);
         setTableData([...updateTableData]);
     };
 
@@ -389,7 +386,7 @@ const ReactDataTableURL = (props) => {
     const addItem = async (addData) => {
         const url = `/api/baseInfrm/product/pjbudget/addList.do`;
         const resultData = await axiosPost(url, addData);
-        console.log(resultData, "더해진거맞음?");
+        console.log(resultData, "💜addItem");
         if (resultData) {
             customDatasRefresh && customDatasRefresh();
         }
@@ -398,7 +395,7 @@ const ReactDataTableURL = (props) => {
     const addItemArray = async (addData) => {
         const url = `/api/baseInfrm/product/pjbudget/addArrayList.do`;
         const resultData = await axiosPost(url, addData);
-        console.log(resultData, "더해진 배열 맞음?");
+        console.log(resultData, "💜addItemArray");
         if (resultData) {
             customDatasRefresh && customDatasRefresh();
         }
@@ -406,7 +403,7 @@ const ReactDataTableURL = (props) => {
 
     const updateItem = async (toUpdate) => {
         const url = `/api/baseInfrm/product/pjbudget/editList.do`;
-        console.log(toUpdate, "변경되는 값?");
+        console.log(toUpdate, "💜updateItem");
         const resultData = await axiosUpdate(url, toUpdate);
         console.log(resultData, "변경된거 맞음?");
 
@@ -443,8 +440,7 @@ const ReactDataTableURL = (props) => {
         updatedData.forEach((upItem) => {
             const { pjbgId } = upItem; // id 배열
             const colNames = Object.keys(upItem).filter((key) => key.startsWith("pjbgPrice")); // 경비종류 배열
-            console.log(pjbgId, colNames);
-            if (pjbgId.length > 0 && colNames.length > 0 && pjbgId.length === colNames.length) {
+            if (pjbgId && colNames && pjbgId.length > 0 && colNames.length > 0 && pjbgId.length === colNames.length) {
                 colNames.forEach((name, index) => {
                     const dataSet = {
                         modeCode: upItem.modeCode,
@@ -487,10 +483,10 @@ const ReactDataTableURL = (props) => {
                 delList.push(...originData[i].pjbgId);
                 delListTest.push(originData[i]);
             }
-            console.log(delList, "삭제리스트 제대로 뽑나");
             deleteItem(delList); //삭제
         } else if (originDataLength === updatedDataLength) {
             updateItemArray(filterData); //수정
+            
         } else if (originDataLength < updatedDataLength) {
             const updateList = [];
 
@@ -505,7 +501,7 @@ const ReactDataTableURL = (props) => {
                     ...filterData[i],
                     poiId: projectInfo.poiId,
                     pjbgDt: filterData[i].pjbgBeginDt,
-                    modeCode: "EXDR",
+                    modeCode: current === "경비 예산관리" ? "EXCP" : current === "경비 실행관리" ? "EXCU" : "EXDR",
                     pjbgTypeCode1: filterData[i].pjbgPrice01,
                     pjbgTypeCode2: filterData[i].pjbgPrice02,
                     pjbgTypeCode3: filterData[i].pjbgPrice03,
@@ -514,7 +510,6 @@ const ReactDataTableURL = (props) => {
                 };
                 addList.push(newItem);
             }
-            console.log(addList, "addList 멀까2");
             addItemArray(addList); //추가
         }
     };
@@ -782,14 +777,14 @@ const ReactDataTableURL = (props) => {
             </div>
             {isOpenModalCompany && <ModalPageCompany rowIndex={rowIndex} closeLocal={() => setIsOpenModalCompany(false)} />}
             {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
-            <div style={{ display: "flex" }}>
+            {/* <div style={{ display: "flex" }}>
                 <span style={{ display: "flex", justifyContent: "center", width: "100px", backgroundColor: "#f2f2f2", border: "solid gray 1px" }}>
                     {current} 합계
                 </span>
                 <span style={{ display: "flex", justifyContent: "center", width: "100px", border: "solid gray 1px" }}>
                     {`${totalPrice.toLocaleString("ko-KR")} 원`}
                 </span>
-            </div>
+            </div> */}
         </>
     );
 };

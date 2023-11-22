@@ -56,6 +56,7 @@ const ReactDataTable = (props) => {
         setProjectInfo,
         isSaveFormTable,
         unitPriceList,
+        setNewRowData,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -210,6 +211,7 @@ const ReactDataTable = (props) => {
     useEffect(() => {
         //newRowData 변동 시 새로운 행 추가
         if (newRowData && Object.keys(newRowData).length !== 0) {
+            // console.log("newRowData:", newRowData);
             addClick(newRowData);
         }
     }, [newRowData]);
@@ -285,17 +287,28 @@ const ReactDataTable = (props) => {
         if (!suffixUrl && !singleUrl) return;
         if (addData && typeof addData === "object" && !Array.isArray(addData)) {
             const url = `/api${suffixUrl}/add.do`;
-            const dataToSend = {
-                ...addData,
-                lockAt: "Y",
-                useAt: "Y",
-                deleteAt: "N",
-                poiId: projectInfo.poiId,
-                poiDesc: addData.poiDesc || projectInfo.poiVersion,
-                poId: projectInfo.poId,
-            };
+            let dataToSend = {};
+            if(current === "수주등록관리") {
+                dataToSend = {
+                    ...addData,
+                    lockAt: "Y",
+                    useAt: "Y",
+                    deleteAt: "N"
+                };
+            } else {
+                dataToSend = {
+                    ...addData,
+                    lockAt: "Y",
+                    useAt: "Y",
+                    deleteAt: "N",
+                    poiId: projectInfo.poiId,
+                    poiDesc: projectInfo.poiVersion,
+                    poId: projectInfo.poId,
+                };
+            }
 
-            console.log("dataToSend:", dataToSend);
+            setNewRowData({}); //초기화
+
             const resultData = await axiosPost(url, dataToSend);
             if (!resultData) {
                 alert("add error: table");
