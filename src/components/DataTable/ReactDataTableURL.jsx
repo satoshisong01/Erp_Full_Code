@@ -288,6 +288,9 @@ const ReactDataTableURL = (props) => {
         });
     };
 
+    const [dataBuket, setDataBuket] = useState({});
+    const [prevDataBuket, setPrevDataBuket] = useState({});
+
     useEffect(() => {
         console.log("tableData:", tableData);
     }, [tableData]);
