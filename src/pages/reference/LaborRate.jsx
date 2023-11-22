@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useContext, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
+import { PageContext } from "components/PageProvider";
+import AddButton from "components/button/AddButton";
+import ModButton from "components/button/ModButton";
+import DelButton from "components/button/DelButton";
+import RefreshButton from "components/button/RefreshButton";
+import ReactDataTable from "components/DataTable/ReactDataTable";
 
 /** 기준정보관리-원가기준관리-인건비단가 */
 function LaborRate() {
+    const { setNameOfButton } = useContext(PageContext);
+    const LaborRateTable = useRef(null);
+
     const columns = [
         {
             header: "인건비단가ID",
@@ -65,15 +74,26 @@ function LaborRate() {
         },
     ];
 
-    const addBtn = [""];
+    const [length, setLength] = useState(0);
+    const setLengthSelectRow = (length) => {
+        setLength(length);
+    };
 
     return (
         <>
             <Location pathList={locationPath.LaborRate} />
-            <DataTable
+            <div className="table-buttons">
+                <AddButton label={"추가"} onClick={() => setNameOfButton("add")} />
+                <ModButton label={"수정"} length={length} onClick={() => setNameOfButton("modify")} />
+                <DelButton label={"삭제"} length={length} onClick={() => setNameOfButton("delete")} />
+                <RefreshButton onClick={() => setNameOfButton("refresh")} />
+            </div>
+            <ReactDataTable
+                setLengthSelectRow={setLengthSelectRow}
                 columns={columns}
                 suffixUrl="/baseInfrm/product/personelXp"
-                addBtn={addBtn}
+                tableRef={LaborRateTable}
+                viewPageName="인건비단가"
             />
         </>
     );

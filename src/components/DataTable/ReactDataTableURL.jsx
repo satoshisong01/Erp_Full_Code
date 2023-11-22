@@ -445,6 +445,7 @@ const ReactDataTableURL = (props) => {
                     const dataSet = {
                         modeCode: upItem.modeCode,
                         pgNm: upItem.pgNm,
+                        pgId: upItem.pgId,
                         pjbgBeginDt: upItem.pjbgBeginDt,
                         pjbgDesc: upItem.pjbgDesc,
                         pjbgDt: upItem.pjbgDt,

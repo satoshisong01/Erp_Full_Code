@@ -137,6 +137,7 @@ body {
     top: 150px;
     width: 100%;
     background: #fff;
+    z-index: 9999;
 }
 .all_menu.WEB::after {
     content: "";
