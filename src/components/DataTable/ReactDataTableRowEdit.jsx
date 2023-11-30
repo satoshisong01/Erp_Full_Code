@@ -190,6 +190,11 @@ const ReactDataTableRowEdit = ({ columns }) => {
                         </tr>
                     ))}
                 </thead>
+                {tableData.length <= 0 && (
+                    <div style={{ display: "flex", width: "1200px", margin: "auto", alignItems: "center", justifyContent: "center" }}>
+                        <div style={{ fontSize: 15 }}>no data</div>
+                    </div>
+                )}
                 <tbody {...getTableBodyProps()}>
                     {page.map((row, index) => {
                         prepareRow(row);

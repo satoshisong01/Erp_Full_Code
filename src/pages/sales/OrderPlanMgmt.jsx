@@ -13,7 +13,7 @@ import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 
 /** 영업관리-수주계획관리 */
 function OrderPlanMgmt() {
-    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName } = useContext(PageContext);
+    const { isSaveFormTable, setIsSaveFormTable, currentPageName, projectInfo, setProjectInfo, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName } = useContext(PageContext);
     const orderPlanMgmtTable1 = useRef(null);
     const orderPlanMgmtTable2 = useRef(null);
     const orderPlanMgmtTable3 = useRef(null);
@@ -35,8 +35,15 @@ function OrderPlanMgmt() {
     }, []);
     
     useEffect(() => {
+        if(projectInfo.poiId) {
             fetchAllData();
-    }, [innerPageName, projectInfo]);
+        }
+        if(currentPageName === "수주계획관리") {
+            const activeTab = document.querySelector('.mini_board_1 .tab li a.on');
+            const activeTabText = activeTab.textContent;
+            setInnerPageName(activeTabText); //마지막으로 활성화 된 탭
+        }
+    }, [currentPageName, innerPageName, projectInfo]);
 
     const changeTabs = (task) => {
         if (task !== innerPageName) { //다른 페이지의 버튼 변경 막기
@@ -62,6 +69,7 @@ function OrderPlanMgmt() {
 
     const fetchAllData = async () => {
         try {
+            // console.log("❗❗❗❗fetchAllData");
             let requestData = { poiId: projectInfo.poiId, useAt: "Y" };
             if (innerPageName === "인건비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
@@ -126,6 +134,8 @@ function OrderPlanMgmt() {
                         };
                     });
                     setPdOrdrDatas(updatedData);
+                } else {
+                    setPdOrdrDatas([])
                 }
             } else if (innerPageName === "개발외주비") {
                 requestData = { poiId: projectInfo.poiId, modeCode: "SLSP", pjbgTypeCode: "EXPNS10", useAt: "Y" };

@@ -50,6 +50,7 @@ const ReactDataTablePdorder = (props) => {
         setIsOpenModalPdiNm,
         isOpenModalPdiNm,
         isOpenModalCompany,
+        setIsSaveFormTable,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -144,8 +145,12 @@ const ReactDataTablePdorder = (props) => {
 
     useEffect(() => {
         //newRowData 변동 시 새로운 행 추가
-        if (newRowData && Object.keys(newRowData).length !== 0) {
-            addList(newRowData);
+        if(current !== "" && current === innerPageName) {
+            
+            if (newRowData && Object.keys(newRowData).length !== 0) {
+                console.log("여기???newRowData",current,"innerPageName",innerPageName);
+                addList(newRowData);
+            }
         }
     }, [newRowData]);
 
@@ -422,6 +427,8 @@ const ReactDataTablePdorder = (props) => {
                 data.modeCode = "EXCU";
             });
         }
+
+        console.log("singleUrl:", singleUrl, "여기들어오나봐!!!!!!!!!!!");
         const url = `/api${singleUrl}/addList.do`;
         const resultData = await axiosPost(url, addNewData);
         if (resultData && resultData.length > 0) {
@@ -476,12 +483,15 @@ const ReactDataTablePdorder = (props) => {
 
     //구매용(영업완료/실행미완료)
     const compareData = (originData, updatedData) => {
-        console.log("저장하자!!!!! 💜originData:", originData, "updatedData:",updatedData);
+        if(!projectInfo.poId || projectInfo.poId === "" || projectInfo.poId === undefined) {
+            alert('구매 종류를 선택해 주세요.');
+            // setIsSaveFormTable(true);
+            return;
+        }
         const filterData = updatedData.filter((data) => data.pdiNm); //구매테이블 필수값 체크
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = updatedData ? updatedData.length : 0;
         if (originDataLength > updatedDataLength) {
-            console.log("1");
             updateList(filterData);
 
             const originAValues = originData.map((item) => item.byId); //삭제할 id 추출
@@ -489,10 +499,8 @@ const ReactDataTablePdorder = (props) => {
 
             deleteList(extraOriginData);
         } else if (originDataLength === updatedDataLength) {
-            console.log("2");
             updateList(filterData);
         } else if (originDataLength < updatedDataLength) {
-            console.log("3");
             const toAdds = [];
             const addUpdate = [];
             for (let i = 0; i < originDataLength; i++) {
@@ -560,7 +568,11 @@ const ReactDataTablePdorder = (props) => {
                         </tr>
                     ))}
                 </thead>
-
+                {tableData.length <= 0 && (
+                    <div style={{ display: "flex", width: "1200px", margin: "auto", alignItems: "center", justifyContent: "center" }}>
+                        <div style={{ fontSize: 15 }}>no data</div>
+                    </div>
+                )}
                 <tbody {...getTableBodyProps()}>
                     {page.map((row, rowIndex) => {
                         prepareRow(row);

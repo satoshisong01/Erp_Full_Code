@@ -151,6 +151,14 @@ function PurchasingMgmt() {
                     <li onClick={() => changeTabs("구매 실행관리")}>
                         <a href="#구매 실행관리">구매 실행관리</a>
                     </li>
+
+
+
+
+
+
+
+
                 </ul>
 
                 <div className="list">
@@ -188,14 +196,14 @@ function PurchasingMgmt() {
                     <div className="second">
                         <ul>
                             <ApprovalForm title={innerPageName + " 등록"} />
-                            <div className={`buttonBody  ${isClicked2 ? "" : "clicked"}`}>
+                            {/* <div className={`buttonBody  ${isClicked2 ? "" : "clicked"}`}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick2}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked2 ? "" : "clicked"}`} icon={faArrowUp} />
                                 </button>
-                            </div>
-                            <div className={`hideDivRun2 ${isClicked2 ? "" : "clicked"}`}>
+                            </div> */}
+                            {/* <div className={`hideDivRun2 ${isClicked2 ? "" : "clicked"}`}>
                                 <ReactDataTableView columns={columns.purchasingMgmt.project} customDatas={projectItem} defaultPageSize={5} justColumn={true} />
-                            </div>
+                            </div> */}
                             <div className="table-buttons">
                                 <RefreshButton onClick={refresh} />
                             </div>
@@ -213,14 +221,14 @@ function PurchasingMgmt() {
                     <div className="third">
                         <ul>
                             <ApprovalForm title={innerPageName + " 등록"} />
-                            <div className={`buttonBody  ${isClicked3 ? "" : "clicked"}`}>
+                            {/* <div className={`buttonBody  ${isClicked3 ? "" : "clicked"}`}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick3}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked3 ? "" : "clicked"}`} icon={faArrowUp} />
                                 </button>
-                            </div>
-                            <div className={`hideDivRun3 ${isClicked3 ? "" : "clicked"}`}>
+                            </div> */}
+                            {/* <div className={`hideDivRun3 ${isClicked3 ? "" : "clicked"}`}>
                                 <ReactDataTableView columns={columns.purchasingMgmt.project} defaultPageSize={5} justColumn={true} />
-                            </div>
+                            </div> */}
                             <div className="table-buttons">
                                 <RefreshButton onClick={refresh} />
                             </div>
@@ -239,7 +247,7 @@ function PurchasingMgmt() {
                     <div className="fourth">
                         <ul>
                             <ApprovalForm title={innerPageName + " 등록"} />
-                            <div className={`buttonBody  ${isClicked4 ? "" : "clicked"}`}>
+                            {/* <div className={`buttonBody  ${isClicked4 ? "" : "clicked"}`}>
                                 <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick4}>
                                     <FontAwesomeIcon className={`arrowBtn ${isClicked4 ? "" : "clicked"}`} icon={faArrowUp} />
                                 </button>
@@ -249,7 +257,7 @@ function PurchasingMgmt() {
                             </div>
                             <div className="table-buttons">
                                 <RefreshButton onClick={refresh} />
-                            </div>
+                            </div> */}
                             <ReactDataTablePdorder
                                 singleUrl="/baseInfrm/product/buyIngInfo"
                                 columns={columns.purchasingMgmt.run}

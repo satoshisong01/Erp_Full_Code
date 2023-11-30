@@ -451,7 +451,7 @@ function ExpenseMgmt() {
                             <div className="table-buttons">
                                 <RefreshButton onClick={refresh} />
                             </div>
-                            <ReactDataTable
+                            <ReactDataTableURL
                                 columns={columns.expenseMgmt.budget}
                                 tableRef={orderPlanMgmtTable3}
                                 viewPageName="경비 예산관리"
@@ -475,7 +475,7 @@ function ExpenseMgmt() {
                             <div className="table-buttons">
                                 <RefreshButton onClick={refresh} />
                             </div>
-                            <ReactDataTable
+                            <ReactDataTableURL
                                 columns={columns.expenseMgmt.budget}
                                 tableRef={orderPlanMgmtTable4}
                                 viewPageName="경비 실행관리"

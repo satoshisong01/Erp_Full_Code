@@ -93,7 +93,6 @@ function LaborCostMgmt() {
         if(currentPageName === "인건비관리") {
             const activeTab = document.querySelector('.mini_board_5 .tab li a.on');
             const activeTabText = activeTab.textContent;
-            console.log("여기 인건비인데요:",activeTabText);
             setInnerPageName(activeTabText); //마지막으로 활성화 된 탭
         }
     }, [currentPageName, innerPageName, projectInfo]);
@@ -143,7 +142,7 @@ function LaborCostMgmt() {
             } else if (innerPageName === "인건비 수주관리") {
                 const datas = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 수주관리
                 const updatedDatas = datas.map((data) => {
-                    const price = data.pecMm * data.pecUnitPrice * 1000;
+                    const price = data.pecMm * data.pecUnitPrice;
                     return { ...data, price: price };
                 });
                 setPgBudgetMgmt(updatedDatas);
