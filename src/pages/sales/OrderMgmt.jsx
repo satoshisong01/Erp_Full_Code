@@ -22,7 +22,7 @@ function OrderMgmt() {
         { header: "프로젝트 코드", col: "poiCode", cellWidth: "15%", type: "input", enable: false, modify: false, add: true, require: true },
         // { header: "프로젝트 타이틀", col: "poiTitle", cellWidth: "25%", type: "input", enable: true, modify: true, add: true, require: false },
         // { header: "거래처ID", col: "cltId", cellWidth: "15%", type: "input", enable: false, modify: true, add: false, require: true },
-        { header: "거래처명", col: "cltNm", cellWidth: "15%", type: "input", enable: false, modify: true, add: false, require: true },
+        { header: "거래처명", col: "cltNm", cellWidth: "15%", type: "input", enable: true, modify: true, add: false, require: false },
         { header: "수주부서", col: "poiGroupId", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
         { header: "매출부서", col: "poiSalesGroupId", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
         { header: "영업대표", col: "poiSalmanagerId", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },

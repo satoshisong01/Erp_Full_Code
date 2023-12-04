@@ -6,24 +6,13 @@ import ModalPagePgNm from "components/modal/ModalPagePgNm";
 
 import ModalPagePdiNm from "components/modal/ModalPagePdiNm";
 import ModalPageCompany from "components/modal/ModalPageCompany";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import DayPicker from "components/input/DayPicker";
 import MonthPicker from "components/input/MonthPicker";
 
 const ReactDataTablePdorder = (props) => {
-    const {
-        columns,
-        suffixUrl,
-        customDatas,
-        defaultPageSize,
-        tableRef,
-        viewPageName,
-        customDatasRefresh,
-        singleUrl,
-        sendSelected,
-        hideCheckBox,
-        editing
-    } = props;
+    const { columns, suffixUrl, customDatas, defaultPageSize, tableRef, viewPageName, customDatasRefresh, singleUrl, sendSelected, hideCheckBox, editing } =
+        props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -102,7 +91,7 @@ const ReactDataTablePdorder = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        if(current === innerPageName) {
+        if (current === innerPageName) {
             setIsEditing(editing !== undefined ? editing : isSaveFormTable); //테이블 상태 //inner tab일 때 테이블 조작
         }
         // console.log("💜current:", current, "innerPageName:", innerPageName);
@@ -220,34 +209,37 @@ const ReactDataTablePdorder = (props) => {
         useRowSelect,
         (hooks) => {
             hooks.visibleColumns.push((columns) => [
-                ...(hideCheckBox !== undefined && hideCheckBox ? []
-                    : [{
-                        id: "selection",
-                        Header: ({ getToggleAllPageRowsSelectedProps }) => (
-                            <div>
-                                <input
-                                    id={uuidv4()}
-                                    type="checkbox"
-                                    {...getToggleAllPageRowsSelectedProps()}
-                                    className="table-checkbox"
-                                    indeterminate="false"
-                                />
-                            </div>
-                        ),
-                        Cell: ({ row }) => (
-                            <div>
-                                <input
-                                    id={uuidv4()}
-                                    type="checkbox"
-                                    {...row.getToggleRowSelectedProps()}
-                                    className="table-checkbox"
-                                    indeterminate="false"
-                                    onClick={(e) => e.stopPropagation()}
-                                />
-                            </div>
-                        ),
-                        width: 35,
-                    },]),
+                ...(hideCheckBox !== undefined && hideCheckBox
+                    ? []
+                    : [
+                          {
+                              id: "selection",
+                              Header: ({ getToggleAllPageRowsSelectedProps }) => (
+                                  <div>
+                                      <input
+                                          id={uuidv4()}
+                                          type="checkbox"
+                                          {...getToggleAllPageRowsSelectedProps()}
+                                          className="table-checkbox"
+                                          indeterminate="false"
+                                      />
+                                  </div>
+                              ),
+                              Cell: ({ row }) => (
+                                  <div>
+                                      <input
+                                          id={uuidv4()}
+                                          type="checkbox"
+                                          {...row.getToggleRowSelectedProps()}
+                                          className="table-checkbox"
+                                          indeterminate="false"
+                                          onClick={(e) => e.stopPropagation()}
+                                      />
+                                  </div>
+                              ),
+                              width: 35,
+                          },
+                      ]),
                 ...columns,
             ]);
         }
@@ -346,15 +338,17 @@ const ReactDataTablePdorder = (props) => {
         updatedTableData[row.index][accessor] = value;
 
         // 수정된 데이터로 tableData 업데이트
-        if (current === "구매 수주관리" || current === "구매 예산관리" || current === "구매 실행관리") { //샐행
+        if (current === "구매 수주관리" || current === "구매 예산관리" || current === "구매 실행관리") {
+            //샐행
             console.log("accessor:", accessor);
-            if(row.original.byUnitPrice && row.original.byQunty) {
-                const price = row.original.byUnitPrice * row.original.byQunty
+            if (row.original.byUnitPrice && row.original.byQunty) {
+                const price = row.original.byUnitPrice * row.original.byQunty;
                 updatedTableData[index]["price"] = Math.round(price);
             }
         }
 
-        if (current === "구매(재료비)") { //영업
+        if (current === "구매(재료비)") {
+            //영업
             if (accessor === "byUnitPrice" || accessor === "byStandardMargin" || accessor === "byConsumerOutputRate" || accessor === "byQunty") {
                 if (row.original.byUnitPrice && row.original.byStandardMargin && row.original.byConsumerOutputRate && row.original.byQunty) {
                     // 1.원가(견적가) : 수량 * 원단가
@@ -371,7 +365,7 @@ const ReactDataTablePdorder = (props) => {
                     const plannedProfits = planAmount - estimatedCost;
                     // 7.이익률 : 이익금 / 금액
                     const plannedProfitMargin = division(plannedProfits, planAmount);
-    
+
                     updatedTableData[index]["estimatedCost"] = Math.round(estimatedCost);
                     updatedTableData[index]["unitPrice"] = Math.round(unitPrice);
                     updatedTableData[index]["planAmount"] = Math.round(planAmount);
@@ -400,23 +394,28 @@ const ReactDataTablePdorder = (props) => {
 
     //-------------------------------배열 추가, 수정, 삭제
     const addList = async (addNewData) => {
+        if (!Array.isArray(addNewData)) {
+            console.error("addNewData is not an array:", addNewData);
+            return;
+        }
         if (!singleUrl) return;
-        if (current==="구매(재료비)") { //영업
+        if (current === "구매(재료비)") {
+            //영업
             addNewData.forEach((data) => {
                 data.poId = projectInfo.poId;
                 data.modeCode = "SLSP";
             });
-        } else if (current==="구매 수주관리") {
+        } else if (current === "구매 수주관리") {
             addNewData.forEach((data) => {
                 data.poId = projectInfo.poId;
                 data.modeCode = "EXDR";
             });
-        } else if (current==="구매 예산관리") {
+        } else if (current === "구매 예산관리") {
             addNewData.forEach((data) => {
                 data.poId = projectInfo.poId;
                 data.modeCode = "EXCP";
             });
-        } else if (current==="구매 실행관리") {
+        } else if (current === "구매 실행관리") {
             addNewData.forEach((data) => {
                 data.poId = projectInfo.poId;
                 data.modeCode = "EXCU";
@@ -432,22 +431,24 @@ const ReactDataTablePdorder = (props) => {
     };
     const updateList = async (toUpdate) => {
         if (!singleUrl) return;
-        if (current==="구매(재료비)") { //영업
+        if (current === "구매(재료비)") {
+            //영업
             toUpdate.forEach((data) => {
                 data.poId = projectInfo.poId;
                 data.modeCode = "SLSP";
             });
-        } else if (current==="구매 수주관리") { //실행
+        } else if (current === "구매 수주관리") {
+            //실행
             toUpdate.forEach((data) => {
                 data.poId = projectInfo.poId;
                 data.modeCode = "EXDR";
             });
-        } else if (current==="구매 예산관리") {
+        } else if (current === "구매 예산관리") {
             toUpdate.forEach((data) => {
                 data.poId = projectInfo.poId;
                 data.modeCode = "EXCP";
             });
-        } else if (current==="구매 실행관리") {
+        } else if (current === "구매 실행관리") {
             toUpdate.forEach((data) => {
                 data.poId = projectInfo.poId;
                 data.modeCode = "EXCU";
@@ -476,13 +477,26 @@ const ReactDataTablePdorder = (props) => {
 
     //구매용(영업완료/실행미완료)
     const compareData = (originData, updatedData) => {
-        console.log("저장하자!!!!! 💜originData:", originData, "updatedData:",updatedData);
+        console.log("저장하자!!!!! 💜originData:", originData, "updatedData:", updatedData);
         const filterData = updatedData.filter((data) => data.pdiNm); //구매테이블 필수값 체크
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = updatedData ? updatedData.length : 0;
         if (originDataLength > updatedDataLength) {
+            //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
+            const updateDataInOrigin = (originData, updatedData) => {
+                // 복제하여 새로운 배열 생성
+                const updatedArray = [...originData];
+                // updatedData의 길이만큼 반복하여 originData 갱신
+                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
+                    const updatedItem = updatedData[i];
+                    updatedArray[i] = { ...updatedItem, byId: updatedArray[i].byId };
+                }
+                return updatedArray;
+            };
+
+            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
             console.log("1");
-            updateList(filterData);
+            updateList(firstRowUpdate);
 
             const originAValues = originData.map((item) => item.byId); //삭제할 id 추출
             const extraOriginData = originAValues.slice(updatedDataLength);
@@ -545,7 +559,7 @@ const ReactDataTablePdorder = (props) => {
                                         className={columnIndex === 0 ? "first-column" : ""}
                                         style={{ width: column.width }}>
                                         {column.render("Header")}
-                                        <span style={{color: 'red', margin: 0}}>{column.require === true ? ("*") : ""}</span>
+                                        <span style={{ color: "red", margin: 0 }}>{column.require === true ? "*" : ""}</span>
                                         <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
                                     </th>
                                 );
@@ -617,7 +631,9 @@ const ReactDataTablePdorder = (props) => {
                                                     <div className="box3-1 boxDate">
                                                         <MonthPicker
                                                             name={cell.column.id}
-                                                            value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id].substring(0, 7) : ""}
+                                                            value={
+                                                                tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id].substring(0, 7) : ""
+                                                            }
                                                             onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                         />
                                                     </div>

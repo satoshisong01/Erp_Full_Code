@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { axiosFetch } from "api/axiosFetch";
 import { useTable, usePagination, useSortBy } from "react-table";
 import { PageContext } from "components/PageProvider";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const ReactDataTableView = (props) => {
     const { columns, suffixUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendPoiId } = props;
@@ -142,7 +142,7 @@ const ReactDataTableView = (props) => {
                         return (
                             <tr
                                 {...row.getRowProps()}
-                                onClick={() => sendPoiId && onRowClick(rowIndex)} // onClick 핸들러 변경
+                                onDoubleClick={() => sendPoiId && onRowClick(rowIndex)} // onClick 핸들러 변경
                                 style={{
                                     color: isRowSelected ? "#0465BE" : "inherit",
                                     fontSize: isRowSelected ? "14px" : "inherit",
@@ -156,7 +156,7 @@ const ReactDataTableView = (props) => {
 
                                     return (
                                         <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"}>
-                                            {cell.column.Header === "연월" ? cell.value.substring(0, 7) : cell.render("Cell") || ""}
+                                            {cell.column.Header === "연월" && cell.value ? cell.value.substring(0, 7) : cell.render("Cell") || ""}
                                         </td>
                                     );
                                 })}

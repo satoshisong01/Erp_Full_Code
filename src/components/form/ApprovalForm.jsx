@@ -2,12 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import ModalSearch from "components/modal/ModalSearch";
 import { PageContext } from "components/PageProvider";
 import PdOrderListModal from "components/modal/PdOrderListModal";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
-function ApprovalForm({ title, children }) {
-    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, setIsCancelTable, innerPageName, setIsModalTable, setModalPageName } = useContext(PageContext);
+function ApprovalForm({ title, projectNone, children }) {
+    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, setIsCancelTable, innerPageName, setIsModalTable, setModalPageName } =
+        useContext(PageContext);
     const [userInfo, serUserInfo] = useState({ id: "", name: "" });
-    const [isOpenModal, setIsOpenModal] = useState(false)
+    const [isOpenModal, setIsOpenModal] = useState(false);
 
     useEffect(() => {
         const sessionUser = sessionStorage.getItem("loginUser");
@@ -24,14 +25,15 @@ function ApprovalForm({ title, children }) {
     };
     const currentTime = new Date().toLocaleString("ko-KR", options);
 
-    const onClick = () => { //구매클릭
-        if(projectInfo.poiId) {
-            setProjectInfo((preValue) => ({...preValue, poId: ""}))
+    const onClick = () => {
+        //구매클릭
+        if (projectInfo.poiId) {
+            setProjectInfo((preValue) => ({ ...preValue, poId: "" }));
             setIsOpenModal(true);
-        } else if(!projectInfo.poiId){
-            alert('프로젝트를 선택해 주세요.')
+        } else if (!projectInfo.poiId) {
+            alert("프로젝트를 선택해 주세요.");
         }
-    }
+    };
 
     return (
         <>
@@ -55,28 +57,30 @@ function ApprovalForm({ title, children }) {
                 </div>
             </div>
 
-            <div className="approval-form">
-                <div className="gap">
-                    <table className="table-styled header-width">
-                        <tbody>
-                            <tr>
-                                <th >프로젝트 이름</th>
-                                <td colSpan={3}>
-                                    <ModalSearch />
-                                </td>
-                                <th>프로젝트 아이디</th>
-                                <td>{projectInfo.poiId}</td>
-                                <th>프로젝트 버전</th>
-                                <td>{projectInfo.poiVersion}</td>
-                            </tr>
-                            <tr>
-                                <th>작성일</th>
-                                <td colSpan={3}>{currentTime}</td>
-                                <th>작성자</th>
-                                <td colSpan={3}>{userInfo.id}</td>
-                            </tr>
-                            {
-                                innerPageName.includes("구매") ? (
+            {projectNone ? (
+                <div></div>
+            ) : (
+                <div className="approval-form">
+                    <div className="gap">
+                        <table className="table-styled header-width">
+                            <tbody>
+                                <tr>
+                                    <th>프로젝트 이름</th>
+                                    <td colSpan={3}>
+                                        <ModalSearch />
+                                    </td>
+                                    <th>프로젝트 아이디</th>
+                                    <td>{projectInfo.poiId}</td>
+                                    <th>프로젝트 버전</th>
+                                    <td>{projectInfo.poiVersion}</td>
+                                </tr>
+                                <tr>
+                                    <th>작성일</th>
+                                    <td colSpan={3}>{currentTime}</td>
+                                    <th>작성자</th>
+                                    <td colSpan={3}>{userInfo.id}</td>
+                                </tr>
+                                {innerPageName.includes("구매") ? (
                                     <tr>
                                         <th>구매 종류</th>
                                         <td colSpan={3}>
@@ -93,24 +97,24 @@ function ApprovalForm({ title, children }) {
                                                     onClose={() => {
                                                         setIsOpenModal(false);
                                                         setIsModalTable(false);
-                                                        setModalPageName("")
+                                                        setModalPageName("");
                                                     }}
                                                 />
                                             )}
                                         </td>
                                         <th>거래처</th>
-                                        <td >{}</td>
+                                        <td>{}</td>
                                         <th>발주일</th>
-                                        <td >{}</td>
+                                        <td>{}</td>
                                     </tr>
-                                ) : null
-                            }
-                        </tbody>
-                    </table>
+                                ) : null}
+                            </tbody>
+                        </table>
 
-                    <div className="mg-t-20">{children}</div>
+                        <div className="mg-t-20">{children}</div>
+                    </div>
                 </div>
-            </div>
+            )}
         </>
     );
 }

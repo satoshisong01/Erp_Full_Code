@@ -152,12 +152,7 @@ export default function SearchList({ conditionList, onSearch }) {
             return <input type="text" name={param.col} value={searchData[param.col] || ""} onChange={onChange} className="form-control flex-item" />;
         } else if (param.type === "select") {
             return (
-                <select
-                    name={param.col}
-                    value={searchData[param.col] || ""}
-                    onChange={onChange}
-                    className="form-control flex-item"
-                    key={searchData[param.col]}>
+                <select name={param.col} value={searchData[param.col] || ""} onChange={onChange} className="form-control flex-item" key={searchData[param.col]}>
                     <option value=""> 선택없음 </option>
                     {param.option.map((op) => (
                         <option key={op.value} value={op.value}>
@@ -220,7 +215,7 @@ export default function SearchList({ conditionList, onSearch }) {
         <>
             <div className="flex-between">
                 <div className="radio-group">
-                    <input
+                    {/*<input
                         type="radio"
                         value="Y"
                         checked={radioOption === "Y"}
@@ -237,7 +232,7 @@ export default function SearchList({ conditionList, onSearch }) {
                             radioClick("N");
                         }}
                     />
-                    <label>삭제 항목</label>
+                    <label>삭제 항목</label>*/}
                 </div>
 
                 <div>
@@ -254,7 +249,7 @@ export default function SearchList({ conditionList, onSearch }) {
 
             <div className="flex-container">
                 {fieldList.map((param, idx) => (
-                    <div key={param.col + idx} className="flex-group mg-l-15">
+                    <div key={idx} className="flex-group mg-l-15">
                         <div className="flex-label">
                             <label>{param.title}</label>
                         </div>

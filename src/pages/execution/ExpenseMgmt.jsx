@@ -16,7 +16,18 @@ import RefreshButton from "components/button/RefreshButton";
 import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
 /** 실행관리-경비관리 */
 function ExpenseMgmt() {
-    const { currentPageName, innerPageName, setInnerPageName, setCurrentPageName, setPrevInnerPageName, isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
+    const {
+        currentPageName,
+        innerPageName,
+        setInnerPageName,
+        setCurrentPageName,
+        setPrevInnerPageName,
+        isSaveFormTable,
+        setIsSaveFormTable,
+        projectInfo,
+        setProjectInfo,
+        projectItem,
+    } = useContext(PageContext);
 
     // const { showDetailTable } = useContext(PageContext);
     useEffect(() => {
@@ -30,8 +41,8 @@ function ExpenseMgmt() {
     }, []);
 
     useEffect(() => {
-        if(currentPageName === "경비관리") {
-            const activeTab = document.querySelector('.mini_board_3 .tab li a.on');
+        if (currentPageName === "경비관리") {
+            const activeTab = document.querySelector(".mini_board_3 .tab li a.on");
             const activeTabText = activeTab.textContent;
             setInnerPageName(activeTabText); //마지막으로 활성화 된 탭
         }
@@ -173,6 +184,8 @@ function ExpenseMgmt() {
     //const [viewColumn, setViewColumn] = useState([]);
     const [saveTotalPrice, setSaveTotalPrice] = useState([]);
 
+    console.log(pgBudgetMgmtView, "pgBudgetMgmtView");
+
     // pjbgTypeCode를 기반으로 그룹화된 데이터 객체 생성
     // view에 계산된 Total값 출력구문
     useEffect(() => {
@@ -241,6 +254,22 @@ function ExpenseMgmt() {
         });
     };
 
+    function calculateTotalPrices(arr) {
+        const result = {};
+
+        arr.forEach((obj) => {
+            const { pjbgTypeCode, pjbgPrice } = obj;
+
+            if (!result[pjbgTypeCode]) {
+                result[pjbgTypeCode] = pjbgPrice;
+            } else {
+                result[pjbgTypeCode] += pjbgPrice;
+            }
+        });
+        console.log(result, "나와라잇");
+        return result;
+    }
+
     const fetchData = async () => {
         try {
             if (innerPageName === "경비 조회관리") {
@@ -252,11 +281,14 @@ function ExpenseMgmt() {
                 //changePrmnPlanData(data);
             } else if (innerPageName === "경비 수주관리") {
                 const dataView = await fetchAllDataView("/api/baseInfrm/product/pjbudget/totalListAll.do", innerPageName); // 경비 수주관리
+                console.log(dataView, "이게안나올리가없는데");
                 const filteredData = dataView.filter((data) => {
                     return ["EXPNS01", "EXPNS02", "EXPNS03", "EXPNS04", "EXPNS05", "EXPNS06"].includes(data.pjbgTypeCode);
                 });
                 console.log(filteredData, "filteredData");
-                setPgBudgetMgmtView(filteredData);
+                //calculateTotalPrices(dataView);
+                setPgBudgetMgmtView([calculateTotalPrices(dataView)]);
+                //setPgBudgetMgmtView(filteredData);
                 const data = await fetchAllData("/api/baseInfrm/product/pjbudget/totalListAll.do", innerPageName);
                 const updatedData = processResultData(data);
                 console.log(updatedData, "바뀐값도 한번다시보자");
@@ -316,7 +348,7 @@ function ExpenseMgmt() {
 
         const resultData = await axiosFetch(url, requestData);
 
-        console.log(resultData, "나온값을함보까");
+        console.log(resultData, "나온값을함보까", requestData);
         return resultData;
     };
 
@@ -389,7 +421,6 @@ function ExpenseMgmt() {
                                     columns={columns.expenseMgmt.projectView}
                                     customDatas={projectItem}
                                     defaultPageSize={5}
-                                    justColumn={true}
                                 />
                             </div>
                             <div className="table-buttons">
@@ -451,7 +482,7 @@ function ExpenseMgmt() {
                             <div className="table-buttons">
                                 <RefreshButton onClick={refresh} />
                             </div>
-                            <ReactDataTable
+                            <ReactDataTableURL
                                 columns={columns.expenseMgmt.budget}
                                 tableRef={orderPlanMgmtTable3}
                                 viewPageName="경비 예산관리"
@@ -475,7 +506,7 @@ function ExpenseMgmt() {
                             <div className="table-buttons">
                                 <RefreshButton onClick={refresh} />
                             </div>
-                            <ReactDataTable
+                            <ReactDataTableURL
                                 columns={columns.expenseMgmt.budget}
                                 tableRef={orderPlanMgmtTable4}
                                 viewPageName="경비 실행관리"

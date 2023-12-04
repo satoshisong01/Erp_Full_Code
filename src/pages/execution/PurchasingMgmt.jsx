@@ -18,7 +18,18 @@ import { columns } from "constants/columns";
 
 /** 실행관리-구매관리 */
 function PurchasingMgmt() {
-    const { currentPageName, innerPageName, setInnerPageName, setCurrentPageName, setPrevInnerPageName, isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo, projectItem } = useContext(PageContext);
+    const {
+        currentPageName,
+        innerPageName,
+        setInnerPageName,
+        setCurrentPageName,
+        setPrevInnerPageName,
+        isSaveFormTable,
+        setIsSaveFormTable,
+        projectInfo,
+        setProjectInfo,
+        projectItem,
+    } = useContext(PageContext);
 
     useEffect(() => {
         setInnerPageName("구매 조회관리");
@@ -72,24 +83,27 @@ function PurchasingMgmt() {
     const [runMgmt, setRunMgmt] = useState([]); // 구매 실행관리
 
     useEffect(() => {
-        if (projectInfo.poiId && projectInfo.poId) { //구매종류를 선택 했을 때
+        if (projectInfo.poiId && projectInfo.poId) {
+            //구매종류를 선택 했을 때
             fetchData();
         }
-        if (projectInfo.poId === undefined || projectInfo.poId === "") { //테이블 초기화
+        if (projectInfo.poId === undefined || projectInfo.poId === "") {
+            //테이블 초기화
             setInquiryMgmt([]);
             setPgBudgetMgmt([]);
             setBudgetMgmt([]);
             setRunMgmt([]);
         }
-        if(currentPageName === "구매관리") {
-            const activeTab = document.querySelector('.mini_board_4 .tab li a.on');
+        if (currentPageName === "구매관리") {
+            const activeTab = document.querySelector(".mini_board_4 .tab li a.on");
             const activeTabText = activeTab.textContent;
             setInnerPageName(activeTabText); //마지막으로 활성화 된 탭
         }
     }, [currentPageName, innerPageName, projectInfo]);
 
     const changeTabs = (task) => {
-        if (task !== innerPageName) { //다른 페이지의 버튼 변경 막기
+        if (task !== innerPageName) {
+            //다른 페이지의 버튼 변경 막기
             setIsSaveFormTable(true);
         }
         setInnerPageName((prev) => {
@@ -99,24 +113,34 @@ function PurchasingMgmt() {
         });
     };
 
+    console.log(poiIdToSend, "poiIdToSend");
+
     const fetchData = async () => {
         try {
             if (innerPageName === "구매 조회관리") {
                 const data = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", { poiId: poiIdToSend, poId: projectInfo.poId });
                 data ? setInquiryMgmt(changeData(data)) : setInquiryMgmt([]);
-
             } else if (innerPageName === "구매 수주관리") {
-                const data = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", { poiId: projectInfo.poiId, modeCode: "EXDR", poId: projectInfo.poId });
+                const data = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", {
+                    poiId: projectInfo.poiId,
+                    modeCode: "EXDR",
+                    poId: projectInfo.poId,
+                });
                 data ? setPgBudgetMgmt(changeData(data)) : setPgBudgetMgmt([]);
-
             } else if (innerPageName === "구매 예산관리") {
-                const data = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", { poiId: projectInfo.poiId, modeCode: "EXCP", poId: projectInfo.poId });
+                const data = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", {
+                    poiId: projectInfo.poiId,
+                    modeCode: "EXCP",
+                    poId: projectInfo.poId,
+                });
                 data ? setBudgetMgmt(changeData(data)) : setBudgetMgmt([]);
-
             } else if (innerPageName === "구매 실행관리") {
-                const data = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", { poiId: projectInfo.poiId, modeCode: "EXCU", poId: projectInfo.poId });
+                const data = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", {
+                    poiId: projectInfo.poiId,
+                    modeCode: "EXCU",
+                    poId: projectInfo.poId,
+                });
                 data ? setRunMgmt(changeData(data)) : setRunMgmt([]);
-
             }
         } catch (error) {
             console.error("데이터를 가져오는 중에 오류 발생:", error);
@@ -128,9 +152,9 @@ function PurchasingMgmt() {
     };
 
     const changeData = (data) => {
-        const updateData = data.map((data) => ({...data, price: data.byUnitPrice * data.byQunty }));
+        const updateData = data.map((data) => ({ ...data, price: data.byUnitPrice * data.byQunty }));
         return updateData;
-    }
+    };
 
     return (
         <>

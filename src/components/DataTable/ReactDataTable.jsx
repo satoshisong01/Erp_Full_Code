@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { axiosDelete, axiosFetch, axiosPost, axiosScan, axiosUpdate } from "api/axiosFetch";
-import { useTable, usePagination, useSortBy, useRowSelect } from "react-table";
+import { useTable, usePagination, useSortBy, useRowSelect, useFilters } from "react-table";
 import { PageContext } from "components/PageProvider";
 import DataPutModal from "./DataPutModal";
 import DataPostModal2 from "./DataPostModal2";
@@ -30,6 +30,7 @@ const ReactDataTable = (props) => {
         sendSelected,
         hideCheckBox,
         editing,
+        perSent,
     } = props;
     const {
         nameOfButton,
@@ -173,21 +174,23 @@ const ReactDataTable = (props) => {
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
-        if (nameOfButton === "refresh") {
-            refreshClick();
-        } else if (nameOfButton === "csv") {
-        } else if (nameOfButton === "copy") {
-        } else if (nameOfButton === "print") {
-        } else if (nameOfButton === "delete") {
-            deleteClick();
-        } else if (nameOfButton === "add") {
-            addClick();
-        } else if (nameOfButton === "modify") {
-            modifyClick();
-        } else if (nameOfButton === "search") {
-            searchClick();
+        if (current === viewPageName) {
+            if (nameOfButton === "refresh") {
+                refreshClick();
+            } else if (nameOfButton === "csv") {
+            } else if (nameOfButton === "copy") {
+            } else if (nameOfButton === "print") {
+            } else if (nameOfButton === "delete") {
+                deleteClick();
+            } else if (nameOfButton === "add") {
+                addClick();
+            } else if (nameOfButton === "modify") {
+                modifyClick();
+            } else if (nameOfButton === "search") {
+                searchClick();
+            }
+            setNameOfButton(""); //초기화
         }
-        setNameOfButton(""); //초기화
     }, [nameOfButton]);
 
     const columnsConfig = useMemo(
@@ -209,21 +212,19 @@ const ReactDataTable = (props) => {
 
     useEffect(() => {
         //newRowData 변동 시 새로운 행 추가
-        if (newRowData && Object.keys(newRowData).length !== 0) {
-            addClick(newRowData);
+        if (current === "수주등록관리") {
+            if (newRowData && Object.keys(newRowData).length !== 0) {
+                addClick(newRowData);
+            }
+            console.log(newRowData, "이거왜 계속댐");
         }
     }, [newRowData]);
 
     /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
         if (!suffixUrl) return;
-        //const url = `/api${suffixUrl}/totalListAll.do`;
-        let url = `/api${suffixUrl}/totalListAll.do`;
-        if (suffixUrl === "/baseInfrm/product/personelXp" || suffixUrl === "/baseInfrm/product/costBase") {
-            url = `/api${suffixUrl}/listAll.do`;
-        }
+        const url = `/api${suffixUrl}/totalListAll.do`;
         const resultData = await axiosFetch(url, { useAt: "Y" });
-        console.log(resultData, "resultData");
         if (resultData) {
             setTableData([...resultData]);
         } else if (!resultData) {
@@ -233,6 +234,7 @@ const ReactDataTable = (props) => {
 
     /* 데이터 수정 */
     const modifyClick = async (updatedData) => {
+        console.log(updatedData, "updatedData");
         if (!updatedData) {
             setOpenModalMod(true);
         } else {
@@ -240,6 +242,7 @@ const ReactDataTable = (props) => {
             const url = `/api${suffixUrl}/edit.do`;
             const requestData = { ...updatedData, lockAt: "Y", useAt: "Y" };
             const resultData = await axiosUpdate(url, requestData);
+            console.log(resultData, "resultData");
             if (resultData) {
                 alert("값을 변경했습니다💚💚");
                 if (customDatas) {
@@ -367,6 +370,7 @@ const ReactDataTable = (props) => {
             data: tableData,
             initialState: { pageIndex: 0, pageSize: defaultPageSize || 10 }, // 초기값
         },
+        useFilters,
         useSortBy,
         usePagination,
         useRowSelect,
@@ -427,43 +431,62 @@ const ReactDataTable = (props) => {
         }
     }, [selectedFlatRows]);
 
-    const [dataBuket, setDataBuket] = useState({});
+    //const [dataBuket, setDataBuket] = useState({});
     const [prevDataBuket, setPrevDataBuket] = useState({});
 
     /* table button 활성화 on off */
 
-    useEffect(() => {
-        setSavePgNm(projectPgNm);
-        setDataBuket(projectPgNm.pgNm, projectPgNm.pgId);
-    }, [projectPgNm]);
+    //useEffect(() => {
+    //    //setSavePgNm(projectPgNm);
+    //    //setDataBuket(projectPgNm.pgNm, projectPgNm.pgId);
+    //}, [projectPgNm]);
 
-    const [savePgNm, setSavePgNm] = useState([projectPgNm]);
+    //const [savePgNm, setSavePgNm] = useState([projectPgNm]);
     //품목그룹 선택
     const setValueData = (rowIndex) => {
-        //setRowIndex()
-        setIsOpenModalPgNm(true);
         setRowIndex(rowIndex);
+        setIsOpenModalPgNm(true);
     };
 
     useEffect(() => {
-        if (!isOpenModalPgNm) {
-            // isOpenModalPgNm이 false로 변경된 경우에 실행할 코드를 여기에 작성
-            if (savePgNm) {
-                const updatedTableData = [...tableData];
-                if (dataBuket !== prevDataBuket) {
-                    if (dataBuket && updatedTableData[rowIndex]) {
-                        console.log(rowIndex, "rowIndex");
-                        updatedTableData[rowIndex].pgNm = savePgNm.pgNm;
-                        updatedTableData[rowIndex].pgId = savePgNm.pgId;
-                        setTableData(updatedTableData);
-                    }
-
-                    setPrevDataBuket(dataBuket);
-                    setProjectPgNm("");
-                }
-            }
+        if (Object.keys(projectPgNm).length > 0) {
+            console.log("🔥🔥projectPgNm: ", projectPgNm);
+            setValueDataPgInfo(rowIndex, projectPgNm);
         }
-    }, [isOpenModalPgNm, savePgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
+    }, [projectPgNm]);
+
+    const setValueDataPgInfo = (rowIndex, pgInfo) => {
+        const updatedTableData = [...tableData];
+        //updatedTableData[rowIndex].pgNm = pgInfo.pgNm;
+        //updatedTableData[rowIndex].pgId = pgInfo.pgId;
+
+        updatedTableData[rowIndex] = {
+            ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+            ...pgInfo,
+        };
+
+        setTableData(updatedTableData);
+        setProjectPgNm({});
+    };
+    //useEffect(() => {
+    //    if (!isOpenModalPgNm) {
+    //        // isOpenModalPgNm이 false로 변경된 경우에 실행할 코드를 여기에 작성
+    //        if (savePgNm) {
+    //            const updatedTableData = [...tableData];
+    //            if (dataBuket !== prevDataBuket) {
+    //                if (dataBuket && updatedTableData[rowIndex]) {
+    //                    console.log(rowIndex, "rowIndex");
+    //                    updatedTableData[rowIndex].pgNm = savePgNm.pgNm;
+    //                    updatedTableData[rowIndex].pgId = savePgNm.pgId;
+    //                    setTableData(updatedTableData);
+    //                }
+
+    //                setPrevDataBuket(dataBuket);
+    //                setProjectPgNm("");
+    //            }
+    //        }
+    //    }
+    //}, [isOpenModalPgNm, savePgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
 
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {
@@ -507,11 +530,12 @@ const ReactDataTable = (props) => {
                 updatedTableData[index]["price"] = price;
             }
         } else if (innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
-            if (unitPriceList && row.original.pecPosition && row.original.pecMm) {
-                const unit = unitPriceList.find((unit) => row.original.pecPosition === unit.guppName && unit.gupBaseDate[0] === new Date().getFullYear());
-                const price = unit ? row.original.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
-                updatedTableData[index]["price"] = price;
-                updatedTableData[index]["positionPrice"] = unit.gupPrice;
+            if (unitPriceList && unitPriceList.length > 0 && row.original.pecPosition && row.original.pecMm) {
+                //기준년도 추가시에 gupDesc값을 기준년도 값으로 바꿔줘야함
+                const unit = unitPriceList.find((unit) => row.original.pecPosition === unit.guppName && unit.gupDesc === new Date().getFullYear());
+                const price = unit && unit.gupPrice !== undefined && unit.gupPrice !== null ? row.original.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
+                updatedTableData[index]["price"] = price || 0;
+                updatedTableData[index]["positionPrice"] = (unit && unit.gupPrice) || 0;
             }
         }
 
@@ -619,10 +643,26 @@ const ReactDataTable = (props) => {
         const filterData = updatedData.filter((data) => data.pmpMonth); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
+        console.log(originData, "originData");
+        console.log(updatedData, "updatedData");
 
         if (originDataLength > updatedDataLength) {
-            upDateChange(filterData);
-            updateList(filterData);
+            //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
+            const updateDataInOrigin = (originData, updatedData) => {
+                // 복제하여 새로운 배열 생성
+                const updatedArray = [...originData];
+                // updatedData의 길이만큼 반복하여 originData 갱신
+                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
+                    const updatedItem = updatedData[i];
+                    updatedArray[i] = { ...updatedItem, pmpMonth: updatedArray[i].pmpMonth, pmpMonth2: updatedArray[i].pmpMonth2 };
+                }
+                return updatedArray;
+            };
+
+            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
+            console.log(firstRowUpdate, "firstRowUpdate🔥🔥");
+            upDateChange(firstRowUpdate);
+            updateList(firstRowUpdate);
 
             const originAValues = originData.map((item) => item.pmpId);
             const extraOriginData = originAValues.slice(updatedDataLength);
@@ -696,6 +736,7 @@ const ReactDataTable = (props) => {
                                         {column.render("Header")}
                                         <span style={{ color: "red", margin: 0 }}>{column.require === true ? "*" : ""}</span>
                                         <span style={{ overflow: "auto" }}>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
+                                        {/*<div>{column.canFilter ? column.render("Filter") : null}</div>*/}
                                     </th>
                                 );
                             })}
@@ -810,6 +851,12 @@ const ReactDataTable = (props) => {
                                                             </option>
                                                         ))}
                                                     </select>
+                                                ) : perSent === "%" ? (
+                                                    cell.value ? (
+                                                        perSent + cell.render("Cell")
+                                                    ) : (
+                                                        cell.render("Cell")
+                                                    )
                                                 ) : cell.column.type === "button" ? (
                                                     <div>
                                                         <input
