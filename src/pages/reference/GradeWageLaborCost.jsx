@@ -1,16 +1,24 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
 import DataTableRow from "components/DataTable/DataTableRow";
-import { axiosFetch } from "api/axiosFetch";
+import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 import ApprovalForm from "components/form/ApprovalForm";
 import ReactDataTable from "components/DataTable/ReactDataTable";
+import { PageContext } from "components/PageProvider";
 
 /** 기준정보관리-원가기준관리-급별단가(인건비) */
 function GradeWageLaborCost() {
     const [tableData, setTableData] = useState([]);
     const gradeWageExpenseTable = useRef(null);
+
+    const { innerPageName, setInnerPageName } = useContext(PageContext);
+    useEffect(() => {
+        fetchData();
+        fetchAllData();
+        setInnerPageName("급별단가(인건비)");
+    }, []);
 
     const columns = [
         { header: "단가ID", col: "gupId", cellWidth: "50%", type: "input", notView: true },
@@ -30,10 +38,6 @@ function GradeWageLaborCost() {
         { header: "주임", col: "gupPrice13", cellWidth: "50%", type: "input" },
         { header: "사원", col: "gupPrice14", cellWidth: "50%", type: "input" },
     ];
-
-    useEffect(() => {
-        fetchAllData();
-    }, []);
 
     const fetchAllData = async () => {
         const url = `/api/baseInfrm/product/gradeunitPrice/type/p/listAll.do`;
@@ -64,6 +68,112 @@ function GradeWageLaborCost() {
         console.log(tableData, "tableData");
     }, [tableData]);
 
+    const [gradeCost, setGradeCost] = useState([]); //급별단가(인건비)
+
+    console.log(gradeCost, "gradeCost");
+    const fetchData = async () => {
+        try {
+            if (innerPageName === "급별단가(인건비)") {
+                const datas = await fetchAllData("/api/baseInfrm/product/gradeunitPrice/totalListAll.do", innerPageName); // 인건비 조회관리
+                setGradeCost(datas);
+            }
+        } catch (error) {
+            console.error("데이터를 가져오는 중에 오류 발생:", error);
+        }
+    };
+
+    const compareData = (originData, updatedData) => {
+        const filterData = updatedData.filter((data) => data.gupDesc); //gupDesc 없는 데이터 제외
+        const originDataLength = originData ? originData.length : 0;
+        const updatedDataLength = filterData ? filterData.length : 0;
+
+        if (originDataLength > updatedDataLength) {
+            const updateDataInOrigin = (originData, updatedData) => {
+                // 복제하여 새로운 배열 생성
+                const updatedArray = [...originData];
+                // updatedData의 길이만큼 반복하여 originData 갱신
+                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
+                    const updatedItem = updatedData[i];
+                    updatedArray[i] = { ...updatedItem, gupId: updatedArray[i].gupId };
+                }
+                return updatedArray;
+            };
+
+            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
+            updateItemArray(firstRowUpdate);
+
+            const toDelete = [];
+            for (let i = updatedDataLength; i < originDataLength; i++) {
+                toDelete.push(originData[i].gupId);
+            }
+            deleteItem(toDelete);
+        } else if (originDataLength === updatedDataLength) {
+            updateItemArray(filterData);
+        } else if (originDataLength < updatedDataLength) {
+            const toAdds = [];
+            const addUpdate = [];
+            for (let i = 0; i < originDataLength; i++) {
+                addUpdate.push(filterData[i]);
+            }
+            updateItemArray(addUpdate);
+
+            for (let i = originDataLength; i < updatedDataLength; i++) {
+                const toAdd = { ...filterData[i] };
+                toAdd.useAt = "Y";
+                toAdd.deleteAt = "N";
+                toAdd.gupType = "P";
+
+                for (let j = 1; j <= 14; j++) {
+                    if (toAdd[`gupPrice${j}`] === null) {
+                        toAdd[`gupPrice${j}`] = 0;
+                    }
+                }
+
+                toAdds.push(toAdd);
+            }
+            addItemArray(toAdds);
+        }
+    };
+
+    const addItemArray = async (addData) => {
+        console.log(addData, "추가들어오려는값");
+        const url = `/api/baseInfrm/product/gradeunitPrice/addList.do`;
+        const resultData = await axiosPost(url, addData);
+        console.log(resultData, "더해진 배열 맞음?");
+        if (resultData) {
+            refresh();
+        }
+    };
+
+    const updateItemArray = async (toUpdate) => {
+        console.log(toUpdate);
+        const dataArray = generateUpdateObjects(toUpdate);
+        console.log(dataArray, "dataArray🔥🔥🔥");
+        const url = `/api/baseInfrm/product/gradeunitPrice/editList.do`;
+        console.log(toUpdate, "변경되는 값?");
+        const resultData = await axiosUpdate(url, dataArray);
+        console.log(resultData, "변경된거 맞음?");
+
+        if (resultData) {
+            refresh();
+        }
+    };
+
+    const deleteItem = async (removeItem) => {
+        console.log(removeItem);
+        const url = `/api/baseInfrm/product/gradeunitPrice/removeAll.do`;
+        const resultData = await axiosDelete(url, removeItem);
+        console.log(resultData, "지워진거맞음?");
+
+        if (resultData) {
+            refresh();
+        }
+    };
+
+    const refresh = () => {
+        fetchData();
+    };
+
     //급별단가 데이터 배열 재구성함수
     const reorganizeData = (data) => {
         // reduce 함수를 사용하여 데이터 배열을 순회하면서 재구성된 결과를 구축합니다.
@@ -87,11 +197,35 @@ function GradeWageLaborCost() {
             } else {
                 // 그룹이 이미 존재하면 데이터를 기존 그룹에 추가합니다.
                 acc[foundIndex][`gupPrice${roleMapping[guppName]}`] = Number(gupPrice);
-                acc[foundIndex].gupId.push(gupId);
+                //항상 배열로 쓰이고 낮은순서로 저장됨
+                acc[foundIndex].gupId = [...acc[foundIndex].gupId, ...(Array.isArray(gupId) ? gupId : [gupId])].sort((a, b) => a - b);
             }
-
             return acc;
         }, []);
+    };
+
+    const generateUpdateObjects = (updatedData) => {
+        let updates = [];
+
+        updatedData.forEach((upItem) => {
+            const { gupId } = upItem; // id 배열
+            const colNames = Object.keys(upItem).filter((key) => key.startsWith("gupPrice")); // 경비종류 배열
+            console.log(gupId, colNames);
+            if (gupId && colNames && gupId.length > 0 && colNames.length > 0 && gupId.length === colNames.length) {
+                colNames.forEach((name, index) => {
+                    const dataSet = {
+                        gupDesc: upItem.gupDesc,
+                        gupId: gupId[index],
+                        gupPrice: upItem[name],
+                        gupType: upItem.gupType,
+                    };
+
+                    updates.push(dataSet);
+                });
+            }
+        });
+        console.log(updates, "변경되고난후 값 배열안 객체여야함");
+        return updates;
     };
 
     return (
@@ -101,6 +235,7 @@ function GradeWageLaborCost() {
             <ReactDataTable
                 columns={columns}
                 customDatas={tableData}
+                sendToParentGrade={compareData}
                 //suffixUrl="/api/baseInfrm/product/gradeunitPrice/type/p"
                 tableRef={gradeWageExpenseTable}
                 //setLengthSelectRow={setLengthSelectRow}
@@ -111,86 +246,3 @@ function GradeWageLaborCost() {
 }
 
 export default GradeWageLaborCost;
-
-//{
-//    header: "단가ID",
-//    col: "gupId",
-//    cellWidth: "30%",
-//    enable: false,
-//    modify: true,
-//    add: true,
-//    require: true,
-//    notView: true,
-//},
-//{
-//    header: "급별단가타입",
-//    col: "gupType",
-//    cellWidth: "30%",
-//    enable: false,
-//    itemType: ["타입을 선택해 주세요[P:인건비,G:경비]", "P", "G"],
-//    modify: true,
-//    add: true,
-//    require: true,
-//    notView: true,
-//},
-//{ header: "기준명", col: "gupDesc", cellWidth: "30%", modify: true },
-//{ header: "임원", col: "gupPrice", cellWidth: "30%", modify: true },
-//{
-//    header: "특급기술사",
-//    col: "gupPrice",
-//    cellWidth: "30%",
-//    modify: true,
-//},
-//{
-//    header: "고급기술사",
-//    col: "gupPrice",
-//    cellWidth: "30%",
-//    modify: true,
-//},
-//{
-//    header: "중급기술사",
-//    col: "gupPrice",
-//    cellWidth: "30%",
-//    modify: true,
-//},
-//{
-//    header: "초급기술사",
-//    col: "gupPrice",
-//    cellWidth: "30%",
-//    modify: true,
-//},
-//{
-//    header: "고급기능사",
-//    col: "gupPrice",
-//    cellWidth: "30%",
-//    modify: true,
-//},
-//{
-//    header: "중급기능사",
-//    col: "gupPrice",
-//    cellWidth: "30%",
-//    modify: true,
-//},
-//{
-//    header: "초급기능사",
-//    col: "gupPrice",
-//    cellWidth: "30%",
-//    modify: true,
-//},
-//{
-//    header: "부장",
-//    col: "gupPrice",
-//    cellWidth: "30%",
-//    modify: true,
-//},
-//{
-//    header: "차장",
-//    col: "gupPrice",
-//    cellWidth: "30%",
-//    modify: true,
-//},
-//{ header: "과장", col: "gupPrice", cellWidth: "30%", modify: true },
-//{ header: "대리", col: "gupPrice", cellWidth: "30%", modify: true },
-//{ header: "주임", col: "gupPrice", cellWidth: "30%", modify: true },
-//{ header: "사원", col: "gupPrice", cellWidth: "30%", modify: true },
-//{ header: "직급ID", col: "guppId", cellWidth: "30%", modify: true },

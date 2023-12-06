@@ -87,7 +87,8 @@ function GradeWageExpense() {
             } else {
                 // 그룹이 이미 존재하면 데이터를 기존 그룹에 추가합니다.
                 acc[foundIndex][`gupPrice${roleMapping[guppName]}`] = Number(gupPrice);
-                acc[foundIndex].gupId.push(gupId);
+                //항상 배열로 쓰이고 낮은순서로 저장됨
+                acc[foundIndex].gupId = [...acc[foundIndex].gupId, ...(Array.isArray(gupId) ? gupId : [gupId])].sort((a, b) => a - b);
             }
 
             return acc;

@@ -113,8 +113,6 @@ function PurchasingMgmt() {
         });
     };
 
-    console.log(poiIdToSend, "poiIdToSend");
-
     const fetchData = async () => {
         try {
             if (innerPageName === "구매 조회관리") {

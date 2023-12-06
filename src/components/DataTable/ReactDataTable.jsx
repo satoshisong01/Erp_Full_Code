@@ -30,7 +30,9 @@ const ReactDataTable = (props) => {
         sendSelected,
         hideCheckBox,
         editing,
+        sendToParentCostIndex,
         perSent,
+        sendToParentGrade,
     } = props;
     const {
         nameOfButton,
@@ -163,6 +165,10 @@ const ReactDataTable = (props) => {
             //inner tab에서 저장을 눌렀을 때
             if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
                 sendToParentTables(originTableData, tableData);
+            } else if (innerPageName === "사전원가지표" && !isSaveFormTable) {
+                sendToParentCostIndex(originTableData, tableData);
+            } else if ((innerPageName === "급별단가(인건비)" && !isSaveFormTable) || (innerPageName === "급별단가(경비)" && !isSaveFormTable)) {
+                sendToParentGrade(originTableData, tableData);
             } else {
                 compareData(originTableData, tableData);
             }
@@ -587,6 +593,7 @@ const ReactDataTable = (props) => {
         }
     };
     const updateList = async (toUpdate) => {
+        console.log("❗updateList:", toUpdate);
         const url = `/api/baseInfrm/product/prmnPlan/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData) {
@@ -851,12 +858,6 @@ const ReactDataTable = (props) => {
                                                             </option>
                                                         ))}
                                                     </select>
-                                                ) : perSent === "%" ? (
-                                                    cell.value ? (
-                                                        perSent + cell.render("Cell")
-                                                    ) : (
-                                                        cell.render("Cell")
-                                                    )
                                                 ) : cell.column.type === "button" ? (
                                                     <div>
                                                         <input
@@ -877,6 +878,11 @@ const ReactDataTable = (props) => {
                                                 )
                                             ) : cell.column.Header === "연월" && cell.value ? (
                                                 cell.value.substring(0, 7)
+                                            ) : cell.column.id.includes("cbPer") ? (
+                                                <div>
+                                                    {cell.render("Cell")}
+                                                    {perSent}
+                                                </div>
                                             ) : (
                                                 cell.render("Cell") || ""
                                             )}
