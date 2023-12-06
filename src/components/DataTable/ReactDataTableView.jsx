@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const ReactDataTableView = (props) => {
     const { columns, suffixUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendPoiId } = props;
-    const { prevCurrentPageName, innerPageName, prevInnerPageName, setCurrentTable, currentPageName, projectInfo } = useContext(PageContext);
+    const { prevCurrentPageName, innerPageName, prevInnerPageName, setCurrentTable, currentPageName, projectInfo, setProjectInfo } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
     const pageSizeOptions = [5, 10, 15, 20, 30, 50, 100];
@@ -61,9 +61,9 @@ const ReactDataTableView = (props) => {
 
     const onRowClick = (rowIndex) => {
         const dataIndex = pageIndex * pageSize + rowIndex;
-
         const clickedPoiId = tableData[dataIndex]?.poiId;
-        sendPoiId(clickedPoiId);
+        setProjectInfo((prev) => ({ ...prev, poiId: clickedPoiId }));
+        sendPoiId && sendPoiId(clickedPoiId);
         setSelectedRowIndex(rowIndex);
     };
 
@@ -134,7 +134,11 @@ const ReactDataTableView = (props) => {
                         </tr>
                     ))}
                 </thead>
-
+                {tableData.length <= 0 && (
+                    <div style={{ display: "flex", width: "1200px", margin: "auto", alignItems: "center", justifyContent: "center" }}>
+                        <div style={{ fontSize: 15 }}>no data</div>
+                    </div>
+                )}
                 <tbody {...getTableBodyProps()}>
                     {page.map((row, rowIndex) => {
                         prepareRow(row);

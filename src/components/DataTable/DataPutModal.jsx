@@ -88,6 +88,20 @@ export default function DataPutModal({ onClose, initialData, columns, updateData
                                                                 </option>
                                                             ))}
                                                         </select>
+                                                    ) : column.type === "buttonCompany" ? (
+                                                        <div>
+                                                            <input
+                                                                className="buttonSelect"
+                                                                id={column.col + index}
+                                                                name={column.col}
+                                                                // onClick={() => setIsOpenModalCompany(index)}
+                                                                type="text"
+                                                                placeholder={`거래처명을 선택해 주세요.`}
+                                                                value={data[column.col] || ""}
+                                                                // onChange={(e) => handleChange(e, column)}
+                                                                readOnly
+                                                            />
+                                                        </div>
                                                     ) : column.lockAt ? (
                                                         <select name={column.col} className="postInput" onChange={inputChange}>
                                                             <option value="Y">Y</option>

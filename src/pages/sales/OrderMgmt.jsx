@@ -17,7 +17,7 @@ function OrderMgmt() {
     const orderMgmtTable = useRef(null);
 
     const columns = [
-        { header: "수주 아이디", col: "poiId", cellWidth: "20%", type: "input", enable: true, modify: true, add: true, require: true, notView: true },
+        { header: "수주 아이디", col: "poiId", cellWidth: "20%", type: "input", enable: true, modify: false, add: false, require: true, notView: true },
         { header: "프로젝트 이름", col: "poiNm", cellWidth: "20%", type: "input", enable: true, modify: true, add: true, require: true },
         { header: "프로젝트 코드", col: "poiCode", cellWidth: "15%", type: "input", enable: false, modify: false, add: true, require: true },
         // { header: "프로젝트 타이틀", col: "poiTitle", cellWidth: "25%", type: "input", enable: true, modify: true, add: true, require: false },
@@ -35,7 +35,6 @@ function OrderMgmt() {
         { header: "납기시작일", col: "poiDueBeginDt", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
         { header: "납기종료일", col: "poiDueEndDt", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
         { header: "버전", col: "poiDesc", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
-        // { header: "첨부파일", col: "poFileId", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
     ];
 
     const conditionList = [
@@ -76,6 +75,12 @@ function OrderMgmt() {
                 type: "input",
                 require: true,
             },
+            // {
+            //     label: "거래처",
+            //     key: "cltId", //CLT_ID
+            //     type: "buttonCompany",
+            //     require: true,
+            // },
         ],
         [
             {
@@ -101,22 +106,22 @@ function OrderMgmt() {
             { label: "PM", key: "poiManagerId", type: "input", require: true },
         ],
         [
-            { label: "수주 시작일", key: "poiBeginDt", type: "datepicker", require: true },
-            { label: "수주 마감일", key: "poiEndDt", type: "datepicker2", require: true },
+            { label: "수주 시작일", key: "poiBeginDt", type: "daypicker", require: true },
+            { label: "수주 마감일", key: "poiEndDt", type: "daypicker", require: true },
             {
                 label: "사전원가 기준 이익률",
                 key: "standardMargin",
                 type: "input",
                 require: true,
             },
-            { label: "상태", key: "poiStatus" },
+            { label: "상태", key: "poiStatus", require: false },
         ],
     ];
 
     return (
         <>
             <Location pathList={locationPath.OrderMgmt} />
-            <SearchList conditionList={conditionList} />
+            {/* <SearchList conditionList={conditionList} /> */}
             <div className="table-buttons">
                 <PopupButton targetUrl={URL.LaborPreCostDoc} data={{ label: "사전원가서", projectInfo }} />
                 <ModButton label={"수정"} onClick={() => setNameOfButton("modify")} />

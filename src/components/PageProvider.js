@@ -49,6 +49,8 @@ export function PageProvider({ children }) {
     const [saveSaleManCost, setSaveSaleManCost] = useState([]);
     const [isCancelTable, setIsCancelTable] = useState(false); // 테이블 초기값으로 돌리기
 
+    const [refesh, setRefesh] = useState(false); //임시로 리프레시 flag 생성
+
     const contextValue = {
         isOpenModalPgNm,
         setIsOpenModalPgNm,
@@ -112,6 +114,7 @@ export function PageProvider({ children }) {
         setIsOpenModalCompany,
         saveSaleManCost,
         setSaveSaleManCost,
+        refesh, setRefesh,
     };
 
     return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>;

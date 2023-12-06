@@ -1,10 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PageContext } from "components/PageProvider";
 
 export default function ModalPage({onClose}) {
-    const { projectItem, setProjectInfo } = useContext(PageContext);
+    const { projectItem, setProjectInfo, setRefesh } = useContext(PageContext);
+
+    useEffect(() => { //임시로 새로고침
+        setRefesh(true);
+    }, [])
     function handleItemClick(poiId, poiNm, poiCode, poiVersion, poId) {
         setProjectInfo({ poiId, poiNm, poiCode, poiVersion, poId });
         onClose();
