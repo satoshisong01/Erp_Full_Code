@@ -13,7 +13,17 @@ import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 
 /** 영업관리-수주계획관리 */
 function OrderPlanMgmt() {
-    const { isSaveFormTable, setIsSaveFormTable, currentPageName, projectInfo, setProjectInfo, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName } = useContext(PageContext);
+    const {
+        isSaveFormTable,
+        setIsSaveFormTable,
+        currentPageName,
+        projectInfo,
+        setProjectInfo,
+        innerPageName,
+        setPrevInnerPageName,
+        setInnerPageName,
+        setCurrentPageName,
+    } = useContext(PageContext);
     const orderPlanMgmtTable1 = useRef(null);
     const orderPlanMgmtTable2 = useRef(null);
     const orderPlanMgmtTable3 = useRef(null);
@@ -28,25 +38,27 @@ function OrderPlanMgmt() {
     useEffect(() => {
         setInnerPageName("인건비");
         setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
-        
-        return () => { // 컴포넌트 종료
+
+        return () => {
+            // 컴포넌트 종료
             setProjectInfo({}); // 초기화
         };
     }, []);
-    
+
     useEffect(() => {
-        if(projectInfo.poiId) {
+        if (projectInfo.poiId) {
             fetchAllData();
         }
-        if(currentPageName === "수주계획관리") {
-            const activeTab = document.querySelector('.mini_board_1 .tab li a.on');
+        if (currentPageName === "수주계획관리") {
+            const activeTab = document.querySelector(".mini_board_1 .tab li a.on");
             const activeTabText = activeTab.textContent;
             setInnerPageName(activeTabText); //마지막으로 활성화 된 탭
         }
     }, [currentPageName, innerPageName, projectInfo]);
 
     const changeTabs = (task) => {
-        if (task !== innerPageName) { //다른 페이지의 버튼 변경 막기
+        if (task !== innerPageName) {
+            //다른 페이지의 버튼 변경 막기
             setIsSaveFormTable(true);
         }
         setInnerPageName((prev) => {
@@ -65,7 +77,7 @@ function OrderPlanMgmt() {
 
     const refresh = () => {
         fetchAllData();
-    }
+    };
 
     const fetchAllData = async () => {
         try {
@@ -74,14 +86,14 @@ function OrderPlanMgmt() {
             if (innerPageName === "인건비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
                 setPrmnPlanDatas(ChangePrmnPlanData(resultData, projectInfo));
-
             } else if (innerPageName === "경비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
+                console.log(resultData, "resultData 이건나오잖아");
                 const filteredData = resultData.filter((data) => {
                     return ["EXPNS01", "EXPNS02", "EXPNS03", "EXPNS04", "EXPNS05", "EXPNS06"].includes(data.pjbgTypeCode);
                 });
+                console.log(filteredData, "filteredData");
                 setPjbudgetDatas(filteredData);
-
             } else if (innerPageName === "구매(재료비)") {
                 if (projectInfo.poiId && projectInfo.poId) {
                     requestData = { searchCondition: "", searchKeyword: "", poiId: projectInfo.poiId, modeCode: "SLSP", poId: projectInfo.poId };
@@ -135,13 +147,12 @@ function OrderPlanMgmt() {
                     });
                     setPdOrdrDatas(updatedData);
                 } else {
-                    setPdOrdrDatas([])
+                    setPdOrdrDatas([]);
                 }
             } else if (innerPageName === "개발외주비") {
                 requestData = { poiId: projectInfo.poiId, modeCode: "SLSP", pjbgTypeCode: "EXPNS10", useAt: "Y" };
                 const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
                 setOutsourcingDatas(resultData);
-
             } else if (innerPageName === "영업관리비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
                 const filteredData = resultData.filter((data) => {
@@ -179,7 +190,7 @@ function OrderPlanMgmt() {
                 </ul>
 
                 <div className="list">
-                    <div className="first" >
+                    <div className="first">
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <div className="table-buttons">
@@ -187,7 +198,7 @@ function OrderPlanMgmt() {
                                 </div>
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.labor}
-                                    flag={innerPageName === "인건비" && isSaveFormTable} 
+                                    flag={innerPageName === "인건비" && isSaveFormTable}
                                     tableRef={orderPlanMgmtTable1}
                                     customDatas={prmnPlanDatas}
                                     viewPageName="인건비"
@@ -216,7 +227,7 @@ function OrderPlanMgmt() {
                         </ul>
                     </div>
 
-                    <div className="third" >
+                    <div className="third">
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <div className="table-buttons">
@@ -235,7 +246,7 @@ function OrderPlanMgmt() {
                         </ul>
                     </div>
 
-                    <div className="fourth" >
+                    <div className="fourth">
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <div className="table-buttons">
@@ -254,7 +265,7 @@ function OrderPlanMgmt() {
                         </ul>
                     </div>
 
-                    <div className="fifth" >
+                    <div className="fifth">
                         <ul>
                             <ApprovalForm title={innerPageName + " 계획 등록"}>
                                 <div className="table-buttons">

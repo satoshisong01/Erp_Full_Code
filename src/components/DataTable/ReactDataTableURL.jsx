@@ -79,7 +79,11 @@ const ReactDataTableURL = (props) => {
             if (current === "경비" || current === "개발외주비" || current === "영업관리비") {
                 compareData(originTableData, tableData);
             }
-            if (current === "경비 수주관리" || current === "경비 예산관리" || current === "경비 실행관리") {
+            if (
+                (current === "경비 수주관리" && !isSaveFormTable) ||
+                (current === "경비 예산관리" && !isSaveFormTable) ||
+                (current === "경비 실행관리" && !isSaveFormTable)
+            ) {
                 compareDataRun(originTableData, tableData);
             }
         }
@@ -128,20 +132,38 @@ const ReactDataTableURL = (props) => {
     };
 
     useEffect(() => {
-        if (current === innerPageName && Object.keys(companyInfo).length > 0) {
-            const updatedTableData = [...tableData];
-            if (!updatedTableData[rowIndex]) {
-                updatedTableData[rowIndex] = {}; // 해당 인덱스가 없으면 빈 객체 생성
-            }
-            if (updatedTableData[rowIndex].esntlId !== companyInfo.cltNm) {
-                //중복할당 방지 코드
-                updatedTableData[rowIndex].esntlId = companyInfo.cltNm;
-                updatedTableData[rowIndex].cltId = companyInfo.cltId;
-                setTableData(updatedTableData);
-            }
-            setCompanyInfo({}); // 초기화
+        if (Object.keys(projectPgNm).length > 0) {
+            console.log("🔥🔥projectPgNm: ", projectPgNm);
+            setValueDataPgInfo(rowIndex, projectPgNm);
         }
-    }, [companyInfo, rowIndex, tableData]);
+    }, [projectPgNm]);
+
+    const setValueDataPgInfo = (rowIndex, pgInfo) => {
+        const updatedTableData = [...tableData];
+        updatedTableData[rowIndex] = {
+            ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+            ...pgInfo,
+        };
+        setTableData(updatedTableData);
+        setProjectPgNm({});
+    };
+
+    useEffect(() => {
+        if (Object.keys(companyInfo).length > 0) {
+            console.log("companyInfo: ", companyInfo);
+            setValueDataCmInfo(rowIndex, companyInfo);
+        }
+    }, [companyInfo]);
+
+    const setValueDataCmInfo = (rowIndex, cmInfo) => {
+        const updatedTableData = [...tableData];
+        updatedTableData[rowIndex] = {
+            ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+            ...cmInfo,
+        };
+        setTableData(updatedTableData);
+        setCompanyInfo({});
+    };
 
     const handleChange = (e, rowIndex, accessor) => {
         const { value } = e.target;
@@ -287,36 +309,6 @@ const ReactDataTableURL = (props) => {
             return newData;
         });
     };
-
-    const [dataBuket, setDataBuket] = useState({});
-    const [prevDataBuket, setPrevDataBuket] = useState({});
-
-    useEffect(() => {
-        setSavePgNm(projectPgNm);
-        setDataBuket(projectPgNm.pgNm, projectPgNm.pgId);
-    }, [projectPgNm]);
-
-    const [savePgNm, setSavePgNm] = useState([projectPgNm]);
-
-    useEffect(() => {
-        if (!isOpenModalPgNm) {
-            // isOpenModalPgNm이 false로 변경된 경우에 실행할 코드를 여기에 작성
-            if (savePgNm) {
-                const updatedTableData = [...tableData];
-                if (dataBuket !== prevDataBuket) {
-                    if (dataBuket && updatedTableData[rowIndex]) {
-                        console.log(rowIndex, "rowIndex");
-                        updatedTableData[rowIndex].pgNm = savePgNm.pgNm;
-                        updatedTableData[rowIndex].pgId = savePgNm.pgId;
-                        setTableData(updatedTableData);
-                    }
-
-                    setPrevDataBuket(dataBuket);
-                    setProjectPgNm("");
-                }
-            }
-        }
-    }, [isOpenModalPgNm, savePgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
 
     const companyOnAddRow = () => {
         const newRow = {};
@@ -476,7 +468,20 @@ const ReactDataTableURL = (props) => {
         const updatedDataLength = filterData ? filterData.length : 0;
 
         if (originDataLength > updatedDataLength) {
-            updateItemArray(filterData); //수정
+            //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
+            const updateDataInOrigin = (originData, updatedData) => {
+                // 복제하여 새로운 배열 생성
+                const updatedArray = [...originData];
+                // updatedData의 길이만큼 반복하여 originData 갱신
+                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
+                    const updatedItem = updatedData[i];
+                    updatedArray[i] = { ...updatedItem, pjbgId: updatedArray[i].pjbgId };
+                }
+                return updatedArray;
+            };
+
+            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
+            updateItemArray(firstRowUpdate); //수정
 
             const delList = [];
             const delListTest = [];
@@ -487,7 +492,6 @@ const ReactDataTableURL = (props) => {
             deleteItem(delList); //삭제
         } else if (originDataLength === updatedDataLength) {
             updateItemArray(filterData); //수정
-            
         } else if (originDataLength < updatedDataLength) {
             const updateList = [];
 
@@ -515,13 +519,45 @@ const ReactDataTableURL = (props) => {
         }
     };
 
+    const getExpenseName = (expenseCode) => {
+        const expenseMap = {
+            EXPNS01: "교통비",
+            EXPNS02: "숙박비",
+            EXPNS03: "일비/파견비",
+            EXPNS04: "식비",
+            EXPNS05: "자재/소모품외",
+            EXPNS06: "영업비",
+            EXPNS07: "기업이윤",
+            EXPNS08: "일반관리비",
+            EXPNS09: "네고",
+            EXPNS10: "개발외주비",
+        };
+
+        return expenseMap[expenseCode] || "";
+    };
+
     const compareData = (originData, updatedData) => {
         const filterData = updatedData.filter((data) => data.pjbgTypeCode); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
-        console.log("여기탐?");
+        console.log("여기탐?", updatedData);
+        console.log("updatedDataLength?", updatedDataLength);
+
         if (originDataLength > updatedDataLength) {
-            updateItem(filterData); //수정
+            //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
+            const updateDataInOrigin = (originData, updatedData) => {
+                // 복제하여 새로운 배열 생성
+                const updatedArray = [...originData];
+                // updatedData의 길이만큼 반복하여 originData 갱신
+                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
+                    const updatedItem = updatedData[i];
+                    updatedArray[i] = { ...updatedItem, pjbgId: updatedArray[i].pjbgId };
+                }
+                return updatedArray;
+            };
+
+            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
+            updateItem(firstRowUpdate); //수정
 
             const delList = [];
             const delListTest = [];
@@ -778,14 +814,14 @@ const ReactDataTableURL = (props) => {
             </div>
             {isOpenModalCompany && <ModalPageCompany rowIndex={rowIndex} closeLocal={() => setIsOpenModalCompany(false)} />}
             {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
-            {/* <div style={{ display: "flex" }}>
+            {/*<div style={{ display: "flex" }}>
                 <span style={{ display: "flex", justifyContent: "center", width: "100px", backgroundColor: "#f2f2f2", border: "solid gray 1px" }}>
                     {current} 합계
                 </span>
                 <span style={{ display: "flex", justifyContent: "center", width: "100px", border: "solid gray 1px" }}>
                     {`${totalPrice.toLocaleString("ko-KR")} 원`}
                 </span>
-            </div> */}
+            </div>*/}
         </>
     );
 };

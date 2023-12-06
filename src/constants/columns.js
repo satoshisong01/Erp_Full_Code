@@ -126,54 +126,54 @@ export const columns = {
         condition: [
             //조건
             {
-                header: "프로젝트명",
+                title: "프로젝트명",
                 col: "clCode", //컬럼명
                 type: "input",
                 value: "",
                 searchLevel: "1",
             },
             {
-                header: "수주상태",
+                title: "수주상태",
                 col: "name",
                 type: "select",
                 option: [{ value: "사업진행중" }, { value: "사업완료" }, { value: "작성완료" }],
                 searchLevel: "3",
             },
             {
-                header: "담당자",
+                title: "담당자",
                 col: "clCode", //컬럼명
                 type: "input",
                 value: "",
                 searchLevel: "1",
             },
             {
-                header: "영업대표",
+                title: "영업대표",
                 col: "clCode", //컬럼명
                 type: "input",
                 value: "",
                 searchLevel: "1",
             },
             {
-                header: "프로젝트기간",
+                title: "프로젝트기간",
                 col: "selectedDate",
                 type: "datepicker",
                 searchLevel: "0",
             },
             {
-                header: "납기기간",
+                title: "납기기간",
                 col: "selectedDate",
                 type: "datepicker",
                 searchLevel: "0",
             },
             {
-                header: "거래처",
+                title: "거래처",
                 col: "clCodeNm", //컬럼명
                 type: "input",
                 value: "",
                 searchLevel: "2",
             },
             {
-                header: "비고",
+                title: "비고",
                 col: "clCodeNm", //컬럼명
                 type: "input",
                 value: "",
@@ -181,11 +181,13 @@ export const columns = {
             },
         ],
     },
-    laborCostMgmt: { //인건비관리
-        condition: [ //조건
-            { header: "프로젝트명", col: "clCode", type: "input", value: "", searchLevel: "1" },
-            { header: "품목그룹명", col: "clCode", type: "input", value: "", searchLevel: "1" },
-            { header: "연월", col: "clCodeNm", type: "input", value: "", searchLevel: "2" },
+    laborCostMgmt: {
+        //인건비관리
+        condition: [
+            //조건
+            { title: "프로젝트명", col: "clCode", type: "input", value: "", searchLevel: "1" },
+            { title: "품목그룹명", col: "clCode2", type: "input", value: "", searchLevel: "1" },
+            { title: "연월", col: "clCodeNm", type: "input", value: "", searchLevel: "2" },
         ],
         project: [
             //프로젝트 목록
@@ -513,11 +515,12 @@ export const columns = {
             },
         ],
     },
-    expenseMgmt: { //경비관리
+    expenseMgmt: {
+        //경비관리
         condition: [
-            { header: "프로젝트명", col: "clCode", type: "input", value: "", searchLevel: "1" },
-            { header: "기간검색", col: "selectedDate", type: "datepicker", value: "", searchLevel: "1" },
-            { header: "출장인", col: "clCodeNm", type: "input", value: "", searchLevel: "2" },
+            { title: "프로젝트명", col: "clCode", type: "input", value: "", searchLevel: "1" },
+            { title: "기간검색", col: "selectedDate", type: "datepicker", value: "", searchLevel: "1" },
+            { title: "출장인", col: "clCodeNm", type: "input", value: "", searchLevel: "2" },
         ],
         projectView: [
             {
@@ -716,7 +719,8 @@ export const columns = {
             },
         ],
     },
-    purchasingMgmt: { //구매관리
+    purchasingMgmt: {
+        //구매관리
         project: [
             {
                 header: "프로젝트명",
@@ -759,9 +763,10 @@ export const columns = {
                 cellWidth: "20%",
             },
         ],
-        inquiry: [ //구매 조회
+        inquiry: [
+            //구매 조회
             { header: "품목그룹명", col: "pgNm", cellWidth: "15%" },
-            { header: "품명", col: "pdiNm", cellWidth: "30%"},
+            { header: "품명", col: "pdiNm", cellWidth: "30%" },
             { header: "규격", col: "pdiStnd", cellWidth: "35%", type: "input" },
             {
                 header: "수량",
@@ -829,14 +834,15 @@ export const columns = {
                 cellWidth: "15%",
             },
         ],
-        budget: [ //구매 예산
+        budget: [
+            //구매 예산
             {
                 header: "품목그룹명",
                 col: "pgNm",
                 cellWidth: "15%",
                 type: "button",
             },
-            { header: "품명", col: "pdiNm", cellWidth: "15%", type: "buttonPdiNm"},
+            { header: "품명", col: "pdiNm", cellWidth: "15%", type: "buttonPdiNm" },
             { header: "규격", col: "pdiStnd", cellWidth: "20%" },
             {
                 header: "수량",
@@ -868,13 +874,14 @@ export const columns = {
                 type: "input",
             },
         ],
-        run: [ //구매 실행
+        run: [
+            //구매 실행
             {
                 header: "품목그룹명",
                 col: "pgNm",
                 cellWidth: "15%",
             },
-            { header: "품명", col: "pdiNm", cellWidth: "15%", type: "buttonPdiNm"},
+            { header: "품명", col: "pdiNm", cellWidth: "15%", type: "buttonPdiNm" },
             { header: "규격", col: "pdiStnd", cellWidth: "30%", type: "input" },
             {
                 header: "수량",
@@ -919,7 +926,8 @@ export const columns = {
                 cellWidth: "10%",
             },
         ],
-        condition: [ //검색조건
+        condition: [
+            //검색조건
             {
                 title: "프로젝트명",
                 colName: "clCode",
@@ -976,5 +984,5 @@ export const columns = {
                 searchLevel: "3",
             },
         ],
-    }
+    },
 };

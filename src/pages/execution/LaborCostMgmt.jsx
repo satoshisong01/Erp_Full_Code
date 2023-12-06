@@ -31,7 +31,6 @@ function LaborCostMgmt() {
         currentPageName,
     } = useContext(PageContext);
 
-
     useEffect(() => {
         setInnerPageName("인건비 조회관리");
         setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
@@ -52,6 +51,11 @@ function LaborCostMgmt() {
     const [isClicked4, setIsClicked4] = useState(false);
 
     const [poiIdToSend, setPoiIdToSend] = useState();
+
+    useEffect(() => {
+        console.log(poiIdToSend, "poiIdToSend");
+        fetchData();
+    }, [poiIdToSend]);
 
     const sendPoiId = (poiId) => {
         setPoiIdToSend(poiId);
@@ -82,16 +86,16 @@ function LaborCostMgmt() {
     const [budgetView, setBudgetView] = useState([]); //(실행) 예산띄우기
     const [runMgmt, setRunMgmt] = useState([]); // 인건비 실행관리
 
-
     useEffect(() => {
-        if (projectInfo.poiId === undefined || projectInfo.poId === "") { //테이블 초기화
+        if (projectInfo.poiId === undefined || projectInfo.poId === "") {
+            //테이블 초기화
             setInquiryMgmt([]);
             setPgBudgetMgmt([]);
             setBudgetMgmt([]);
             setRunMgmt([]);
         }
-        if(currentPageName === "인건비관리") {
-            const activeTab = document.querySelector('.mini_board_5 .tab li a.on');
+        if (currentPageName === "인건비관리") {
+            const activeTab = document.querySelector(".mini_board_5 .tab li a.on");
             const activeTabText = activeTab.textContent;
             setInnerPageName(activeTabText); //마지막으로 활성화 된 탭
         }
@@ -152,9 +156,13 @@ function LaborCostMgmt() {
                 const datas = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 예산관리
                 if (unitPriceList && datas) {
                     const updatedDatas = datas.map((data) => {
-                        const unit = unitPriceList.find((unit) => data.pecPosition === unit.guppName && unit.gupBaseDate[0] === new Date().getFullYear());
-                        const price = unit ? data.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
-                        return { ...data, price: price, positionPrice: unit.gupPrice };
+                        const unit = unitPriceList.find((unit) => data.pecPosition === unit.guppName && unit.gupDesc === new Date().getFullYear());
+                        if (unit) {
+                            const price = unit ? data.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
+                            return { ...data, price: price, positionPrice: unit.gupPrice };
+                        } else {
+                            return { ...data, price: 0, positionPrice: 0 };
+                        }
                     });
                     setBudgetMgmt(updatedDatas);
                 }
@@ -164,9 +172,13 @@ function LaborCostMgmt() {
                 const datas = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 실행관리
                 if (unitPriceList && datas) {
                     const updatedDatas = datas.map((data) => {
-                        const unit = unitPriceList.find((unit) => data.pecPosition === unit.guppName && unit.gupBaseDate[0] === new Date().getFullYear());
-                        const price = unit ? data.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
-                        return { ...data, price: price, positionPrice: unit.gupPrice };
+                        const unit = unitPriceList.find((unit) => data.pecPosition === unit.guppName && unit.gupDesc === new Date().getFullYear());
+                        if (unit) {
+                            const price = unit ? data.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
+                            return { ...data, price: price, positionPrice: unit.gupPrice };
+                        } else {
+                            return { ...data, price: 0, positionPrice: 0 };
+                        }
                     });
                     setRunMgmt(updatedDatas);
                 }
@@ -193,7 +205,7 @@ function LaborCostMgmt() {
     const fetchAllData = async (url, currentTask) => {
         let requestData = { poiId: poiIdToSend || projectInfo.poiId, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
         if (currentTask === "인건비 조회관리") {
-            requestData = { poiId: poiIdToSend, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
+            requestData = { poiId: poiIdToSend || projectInfo.poiId, useAt: "Y", pecTypeCode: "MM", pecSlsExcCode: "PEXC" };
         } else if (currentTask === "인건비 수주관리") {
             requestData = {
                 poiId: projectInfo.poiId,
@@ -221,6 +233,7 @@ function LaborCostMgmt() {
         }
 
         const resultData = await axiosFetch(url, requestData);
+        console.log(resultData, "resultData나오나");
         if (resultData) {
             console.log("get data success:)");
             return resultData;
@@ -279,7 +292,19 @@ function LaborCostMgmt() {
         const updatedDataLength = filterData ? filterData.length : 0;
 
         if (originDataLength > updatedDataLength) {
-            updateList(filterData);
+            const updateDataInOrigin = (originData, updatedData) => {
+                // 복제하여 새로운 배열 생성
+                const updatedArray = [...originData];
+                // updatedData의 길이만큼 반복하여 originData 갱신
+                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
+                    const updatedItem = updatedData[i];
+                    updatedArray[i] = { ...updatedItem, pecId: updatedArray[i].pecId };
+                }
+                return updatedArray;
+            };
+
+            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
+            updateList(firstRowUpdate);
 
             const toDelete = [];
             for (let i = updatedDataLength; i < originDataLength; i++) {
@@ -338,6 +363,8 @@ function LaborCostMgmt() {
         const resultData = await axiosDelete(url, removeItem);
         refresh();
     };
+
+    console.log(runMgmt, "runMgmt");
 
     return (
         <>
