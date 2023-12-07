@@ -15,7 +15,7 @@ import ReactDataTableView from "components/DataTable/ReactDataTableView";
 import RefreshButton from "components/button/RefreshButton";
 import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
 /** 실행관리-경비관리 */
-function ExpenseMgmt() {
+function ExpenseMgmtExe() {
     const {
         currentPageName,
         innerPageName,
@@ -532,4 +532,4 @@ function ExpenseMgmt() {
     );
 }
 
-export default ExpenseMgmt;
+export default ExpenseMgmtExe;

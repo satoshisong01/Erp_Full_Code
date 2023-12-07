@@ -1,8 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import store from "store/configureStore";
-import { selectLnb } from "components/tabs/TabsActions";
-import PaymentReceiveds from "./ElectroPayment/PaymentReceived/PaymentReceiveds";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import DataTable from "components/DataTable/DataTable";

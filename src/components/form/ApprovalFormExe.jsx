@@ -4,7 +4,7 @@ import { PageContext } from "components/PageProvider";
 import PdOrderListModal from "components/modal/PdOrderListModal";
 import { v4 as uuidv4 } from "uuid";
 
-/** 영업-계획관리 폼 */
+/** 실행-계획/실행 폼 */
 function ApprovalForm({ title, children }) {
     const { isSaveFormTable, setIsSaveFormTable, projectInfo, setIsCancelTable } = useContext(PageContext);
     const [userInfo, serUserInfo] = useState({ id: "", name: "" });
@@ -48,15 +48,8 @@ function ApprovalForm({ title, children }) {
                                  <th>기준연도</th>
                                 <td colSpan={3}>{projectInfo.poiMonth}</td>
                             </tr>
-                            <tr>
-                                <th>사전원가 버전</th>
-                                <td colSpan={3}>{}</td>
-                                <th>최종 수정일</th>
-                                <td colSpan={3}>{}</td>
-                            </tr>
                         </tbody>
                     </table>
-                    {/* <div className="mg-t-20">{children}</div> */}
                 </div>
             </div>
         </>

@@ -4,66 +4,72 @@ import { selectSnb } from 'components/tabs/TabsActions';
 import NavLinkTabs from "components/tabs/NavLinkTabs";
 import store from "store/configureStore";
 
+/* 기준정보관리 네비게이션 */
 function EgovLeftNavReference(props) {
-    const {lnbLabel, snbLabel} = props;
+    const { lnbId, snbId } = props;
     const [activeSub, setActiveSub] = useState("");
     const [activeLabel, setActiveLabel] = useState("");
 
     /* header 또는 tabs에서 선택된 라벨을 저장  */
     useEffect(() => {
-        const propsLabel = lnbLabel || snbLabel;
-        let parentLabel = "";
+        const propsId = lnbId || snbId;
+        let parentId = "";
 
         for (const item of menuItems) {
-            if (item.label === propsLabel) {
-                parentLabel = item.label;
+            if (item.id === propsId) {
+                parentId = item.id;
                 break;
             }
 
             for (const subMenu of item.subMenus) {
-                if (subMenu.label === propsLabel) {
-                    parentLabel = item.label;
+                if (subMenu.id === propsId) {
+                    parentId = item.id;
                     break;
                 }
             }
         }
-        setActiveSub(lnbLabel || snbLabel);
-        if (activeLabel !== parentLabel) setActiveLabel(parentLabel);
-    }, [lnbLabel, snbLabel]);
+        setActiveSub(lnbId || snbId);
+        if (activeLabel !== parentId) setActiveLabel(parentId);
+    }, [lnbId, snbId]);
 
-    const clickHandle = (label, sub) => {
-        setActiveSub(sub);
-        setActiveLabel(label);
-        store.dispatch(selectSnb(sub));
+    const clickHandle = (menuItem, subMenu) => {
+        if(subMenu === null || subMenu === undefined) { //하위 없을때
+            const label = menuItem.subMenus && menuItem.subMenus.length > 0 ? menuItem.subMenus[0].label : menuItem.label;
+            const id = menuItem.subMenus && menuItem.subMenus.length > 0 ? menuItem.subMenus[0].id : menuItem.id;
+            setActiveLabel(id);
+            setActiveSub(id);
+            store.dispatch(selectSnb(label, menuItem.id));
+        } else if(subMenu !== null || subMenu !== undefined) {
+            setActiveSub(subMenu.id);
+            store.dispatch(selectSnb(subMenu.label, subMenu.id));
+        }
     };
 
     const menuItems = [
         {
             label: "품목관리",
-            subMenus: [{ label: "품목그룹관리" }, { label: "품목상세관리" }],
+            id: "ItemGroupMgmt", 
+            subMenus: [
+                { label: "품목그룹", id: "ItemGroupMgmt" },
+                { label: "품목상세", id: "ItemDetailMgmt" }
+            ],
         },
         {
             label: "거래처관리",
-            subMenus: [{ label: "고객사" }, { label: "협력사" }],
-        },
-        //{ label: '사업장관리',   subMenus: [] },
-        {
-            label: "사용자관리",
+            id: "CustomerMgmt", 
             subMenus: [
-                { label: "업무회원관리" },
-                { label: "일반회원관리" },
-                { label: "기업회원관리" },
-                { label: "권한그룹정보관리" },
-                { label: "조직부서정보관리" },
+                { label: "고객사", id: "CustomerMgmt" },
+                { label: "협력사", id: "PartnerMgmt" }
             ],
         },
         {
             label: "원가기준관리",
+            id: "LaborRate",
             subMenus: [
-                { label: "인건비단가" },
-                { label: "급별단가(인건비)" },
-                { label: "급별단가(경비)" },
-                { label: "사전원가지표" },
+                { label: "인건비단가", id: "LaborRate" },
+                { label: "급별단가(인건비)", id: "GradeWageLaborCost" },
+                { label: "급별단가(경비)", id: "GradeWageExpense" },
+                { label: "사전원가지표", id: "CostIndex" },
             ],
         },
     ];
@@ -78,19 +84,9 @@ function EgovLeftNavReference(props) {
                             <li key={menuItem.label}>
                                 <NavLinkTabs
                                     to="#"
-                                    onClick={(e) =>
-                                        clickHandle(
-                                            menuItem.label,
-                                            menuItem.subMenus.length > 0
-                                                ? menuItem.subMenus[0].label
-                                                : menuItem.label
-                                        )
-                                    }
-                                    activeName={
-                                        activeLabel === menuItem.label
-                                            ? menuItem.label
-                                            : null
-                                    }>
+                                    onClick={(e) => clickHandle(menuItem) }
+                                    activeName={activeLabel === menuItem.id ? menuItem.label : null}
+                                >
                                     {menuItem.label}
                                 </NavLinkTabs>
 
@@ -100,13 +96,9 @@ function EgovLeftNavReference(props) {
                                             <li key={subMenu.label}>
                                                 <NavLinkTabs
                                                     to="#"
-                                                    onClick={(e) =>
-                                                        clickHandle(
-                                                            menuItem.label,
-                                                            subMenu.label
-                                                        )
-                                                    }
-                                                    activeName={activeSub}>
+                                                    onClick={(e) => clickHandle( menuItem, subMenu ) }
+                                                    activeName={activeSub === subMenu.id ? subMenu.label : null}
+                                                >
                                                     {subMenu.label}
                                                 </NavLinkTabs>
                                             </li>

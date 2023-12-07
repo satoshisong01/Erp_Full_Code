@@ -1,9 +1,9 @@
-// import { ACTIVE_TAB, SELECT_TAB, SELECT_HEADER } from "./TabsActions";
-import { SELECT_GNB, SELECT_LNB, SELECT_SNB } from "./TabsActions";
-import { Children } from "./Children";
+import { SELECT_LNB, SELECT_SNB } from "./TabsActions";
 
 export function tabsReducer(
     state = {
+        lnbId: "",
+        snbId: "",
         gnbLabel: "",
         lnbLabel: "",
         snbLabel: "",
@@ -11,26 +11,22 @@ export function tabsReducer(
     action
 ) {
     switch (action.type) {
-        case SELECT_GNB:
-            return {
-                ...state,
-                gnbLabel: action.gnbLabel,
-            };
-
         case SELECT_LNB:
             return {
                 ...state,
+                lnbId: action.lnbId,
                 lnbLabel: action.lnbLabel,
-                snbLabel: ""
-                // gnbLabel: Children.find((item) => item.label === action.lnbLabel).pLabel
+                snbId: "",
+                snbLabel: "",
             };
 
         case SELECT_SNB:
             return {
                 ...state,
+                snbId: action.snbId,
                 snbLabel: action.snbLabel,
-                lnbLabel: ""
-                // gnbLabel: Children.find((item) => item.label === action.snbLabel).pLabel
+                lnbId: "",
+                lnbLabel: "",
             };
         default:
             // 기본값 세팅

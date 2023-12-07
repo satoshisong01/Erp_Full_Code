@@ -57,10 +57,10 @@ export default function initPage() {
         });
 
         // 닫기
-        document.querySelector('.user_info_m .close').addEventListener('click', () => {
-            document.querySelector('.all_menu.Mobile').classList.add('closed');
-            document.querySelector('.btnAllMenuM').title = '전체메뉴 닫힘';
-        });
+        // document.querySelector('.user_info_m .close').addEventListener('click', () => {
+        //     document.querySelector('.all_menu.Mobile').classList.add('closed');
+        //     document.querySelector('.btnAllMenuM').title = '전체메뉴 닫힘';
+        // });
 
         // PC 메뉴 항목 클릭시 메뉴 닫기
         document.querySelector('.all_menu.WEB').addEventListener('click', (e) => {

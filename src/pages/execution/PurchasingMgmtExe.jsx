@@ -17,7 +17,7 @@ import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 import { columns } from "constants/columns";
 
 /** 실행관리-구매관리 */
-function PurchasingMgmt() {
+function PurchasingMgmtExe() {
     const {
         currentPageName,
         innerPageName,
@@ -297,4 +297,4 @@ function PurchasingMgmt() {
     );
 }
 
-export default PurchasingMgmt;
+export default PurchasingMgmtExe;

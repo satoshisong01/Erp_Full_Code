@@ -2,32 +2,24 @@ export const SELECT_GNB = 'SELECT_GNB';
 export const SELECT_LNB = 'SELECT_LNB';
 export const SELECT_SNB = 'SELECT_SNB';
 
-/* global(header) navi bar */
-export function selectGnb(label) {
-	return dispatch => {
-		return dispatch({
-			type: SELECT_GNB,
-			gnbLabel: label
-		})
-	} 
-}
-
 /* local(site map) navi bar */
-export function selectLnb(label) {
+export function selectLnb(label, id) {
 	return dispatch => {
 		return dispatch({
 			type: SELECT_LNB,
-			lnbLabel: label
+			lnbLabel: label,
+            lnbId: id
 		})
 	} 
 }
 
 /* side(left) navi bar */
-export function selectSnb(label) {
+export function selectSnb(label, id) {
 	return dispatch => {
 		return dispatch({
 			type: SELECT_SNB,
-			snbLabel: label
+			snbLabel: label,
+            snbId: id
 		})
 	} 
 }

@@ -1,96 +1,28 @@
 import { PageContext } from "components/PageProvider";
 import Status from "components/button/Status";
+import DayPicker from "components/input/DayPicker";
 import React, { useContext, useEffect, useRef, useState } from "react";
-
-import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
 export default function FormDataTable({ formTableColumns, onAddRow, title, useStatus }) {
-    const { setNewRowData } = useContext(PageContext);
+    const { setNewRowData, setIsOpenModalCompany } = useContext(PageContext);
     
-    const [formattedDate, setFormattedDate] = useState("");
-    const [formattedDate2, setFormattedDate2] = useState("");
-    const [isCalendarVisible, setCalendarVisible] = useState(false);
-    const [isCalendarVisible2, setCalendarVisible2] = useState(false);
     const [initialFormData, setInitialFormData] = useState({})
     const [formData, setFormData] = useState(initialFormData);
     const [errors, setErrors] = useState({});
     const [isUse, setIsUse] = useState(useStatus);
 
-    const inputRef = useRef(null);
-    const inputRef2 = useRef(null);
 
-    const handleInputClick = () => {
-        setCalendarVisible(true);
-    };
-
-    const handleInputClick2 = () => {
-        setCalendarVisible2(true);
-    };
-
-    const handleDateChange = (date) => {
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const day = date.getDate().toString().padStart(2, "0");
-        const formatted = `${year}-${month}-${day}`;
-
-        return formatted;
-    };
-
-    const handleDateClick = (date) => {
-        //날짜 선택 후 저장하기
-        const tmp = handleDateChange(date);
-        setFormattedDate(tmp);
-        setCalendarVisible(false);
-
+    const handleDateClick = (date, colName) => {
         setFormData((prevData) => ({
             ...prevData,
-            poiBeginDt: tmp,
+            [colName]: date,
         }));
         setErrors((prevErrors) => ({
             //에러 초기화
             ...prevErrors,
-            poiBeginDt: "",
+            [colName]: "",
         }));
-    };
-
-    const handleDateClick2 = (date) => {
-        //날짜 선택 후 저장하기
-        const tmp = handleDateChange(date);
-        setFormattedDate2(tmp);
-        setCalendarVisible2(false);
-
-        setFormData((prevData) => ({
-            ...prevData,
-            poiEndDt: tmp,
-        }));
-        setErrors((prevErrors) => ({
-            //에러 초기화
-            ...prevErrors,
-            poiEndDt: "",
-        }));
-    };
-
-    const handleOutsideClick = (event) => {
-        if (
-            inputRef.current &&
-            !inputRef.current.contains(event.target) &&
-            !event.target.classList.contains("react-calendar") &&
-            !event.target.closest(".boxCalendar")
-        ) {
-            setCalendarVisible(false);
-        }
-    };
-
-    const handleOutsideClick2 = (event) => {
-        if (
-            inputRef2.current &&
-            !inputRef2.current.contains(event.target) &&
-            !event.target.classList.contains("react-calendar") &&
-            !event.target.closest(".boxCalendar")
-        ) {
-            setCalendarVisible2(false);
-        }
     };
 
     useEffect(() => {
@@ -105,14 +37,6 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
             });
         });
         setFormData({...initialFormData});
-
-        document.addEventListener("click", handleOutsideClick);
-        document.addEventListener("click", handleOutsideClick2);
-
-        return () => {
-            document.removeEventListener("click", handleOutsideClick);
-            document.removeEventListener("click", handleOutsideClick2);
-        };
     }, []);
 
 
@@ -155,7 +79,7 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
         e.preventDefault();
         if (validateForm()) {
             if(title) {
-                const updatedFormData = { ...formData, poiStatus: "작성완료" }; // state 속성 변경
+                const updatedFormData = { ...formData, poiStatus: "작성완료", cltId: 77720230828004  }; // state 속성 변경
                 setNewRowData(updatedFormData);
             } else {
                 setNewRowData(...formData);
@@ -223,42 +147,29 @@ export default function FormDataTable({ formTableColumns, onAddRow, title, useSt
                                                         </select>
                                                         {errors[key] && <div className="text-error-color">{errors[key]}</div>}
                                                     </td>
-                                                ) : type === "datepicker" ? (
-                                                    <td className="box3-1 boxDate">
-                                                        <input
-                                                            className="form-control flex-item"
-                                                            type="text"
-                                                            id="searchKeyword"
-                                                            value={formattedDate}
-                                                            onClick={handleInputClick}
-                                                            readOnly
-                                                            ref={inputRef}
+                                                ) : type === "daypicker" ? (
+                                                    <td colSpan={colSpan || "1"}>
+                                                        <DayPicker
+                                                            name={key}
+                                                            value={formData[key] || ""}
+                                                            onClick={(date) => handleDateClick(date, key)}
                                                         />
-                                                        {isCalendarVisible && (
-                                                            <div className="boxCalendar">
-                                                                <Calendar onClickDay={handleDateClick} />
-                                                            </div>
-                                                        )}
                                                     </td>
-                                                ) : type === "datepicker2" ? (
-                                                    <td className="box3-1 boxDate">
+                                                ) : type === "buttonCompany" ? (
+                                                    <div>
                                                         <input
-                                                            className="form-control flex-item"
+                                                            className="buttonSelect"
+                                                            id={key + rowIndex}
+                                                            name={key}
+                                                            onClick={() => setIsOpenModalCompany(true)}
                                                             type="text"
-                                                            id="searchKeyword"
-                                                            value={formattedDate2}
-                                                            onClick={handleInputClick2}
+                                                            placeholder={`거래처명을 선택해 주세요.`}
+                                                            value={formData[key] || ""}
+                                                            // onChange={(e) => handleChange(e, column)}
                                                             readOnly
-                                                            ref={inputRef2}
                                                         />
-                                                        {isCalendarVisible2 && (
-                                                            <div className="boxCalendar">
-                                                                <Calendar onClickDay={handleDateClick2} />
-                                                            </div>
-                                                        )}
-                                                    </td>
-                                                ) : //</div>
-                                                label === "상태" ? (
+                                                    </div>
+                                                ) : label === "상태" ? (
                                                     <td colSpan={colSpan || "1"}>
                                                         <span>
                                                             <Status status={formData[key]="작성중"} />

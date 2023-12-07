@@ -3,40 +3,41 @@ import React, { useState, useEffect, useContext } from "react";
 import { connect } from "react-redux";
 import { Children } from "./Children.js";
 import store from "store/configureStore";
-import { selectSnb, selectLnb, selectGnb } from "components/tabs/TabsActions";
+import { selectSnb, selectLnb } from "components/tabs/TabsActions";
 import { PageContext } from "components/PageProvider.js";
 
 /* nav, header 클릭 시  label props로 전달 & 해당하는 화면(컴포넌트) children 으로 보여줌 */
 const AntTabs = (props) => {
-    const { lnbLabel, snbLabel } = props;
-    const  { setCurrentPageName, setPrevCurrentPageName, innerLabel, setInnerPageName } = useContext(PageContext);
+    const { snbId, lnbId } = props;
+    const  { setCurrentPageName, setPrevCurrentPageName, setInnerPageName, setGnbLabel } = useContext(PageContext);
     const [activeKey, setActiveKey] = useState(""); // 프로젝트 등록 키 0번(활성화)
     const [items, setItems] = useState([]);
 
     /* navi 클릭시 탭 생성 */
     useEffect(() => {
-        const tab = Children.find(
-            (item) => item.label === lnbLabel || item.label === snbLabel
-        );
+        const tab = Children.find((item) => item.id === snbId || lnbId);
         if (!tab) return;
         addTab(tab);
 
+        const label = tab.label
+        // console.log("현재페이지: ", label);
         setCurrentPageName((pre) => {
             setInnerPageName("");
             setPrevCurrentPageName(pre);
-            return lnbLabel || snbLabel
+            return label
         })
-    }, [lnbLabel, snbLabel]);
+    }, [snbId, lnbId]);
 
     const onChange = (key) => {
         const selectedTab = items.find((item) => item.key === key);
+        // console.log("❗❗탭 selectedTab: ", selectedTab);
         if (selectedTab) {
-            store.dispatch(selectSnb(selectedTab.label));
+            store.dispatch(selectSnb(selectedTab.label, selectedTab.key));
         }
     };
 
     const addTab = (addTab) => {
-        const existingTab = items.find((item) => item.label === addTab.label);
+        const existingTab = items.find((item) => item.key === addTab.id);
         if (existingTab) {
             //선택한 라벨(이름)이 있으면 해당하는 라벨(이름)의 컴포넌트로
             setActiveKey(existingTab.key);
@@ -47,12 +48,12 @@ const AntTabs = (props) => {
                 {
                     label: addTab.label,
                     children: addTab.component,
-                    key: addTab.activeKey,
+                    key: addTab.id,
                 },
             ]);
-            setActiveKey(addTab.activeKey);
+            setActiveKey(addTab.id);
         }
-        store.dispatch(selectGnb(addTab.pLabel)); //left nav를 띄우기 위함
+        setGnbLabel(addTab.pLabel); //left nav를 바꾸기 위함
     };
 
     const removeTab = (targetKey) => {
@@ -66,15 +67,15 @@ const AntTabs = (props) => {
                         : targetIndex
                 ];
             setActiveKey(key);
-            store.dispatch(selectSnb(label));
+            store.dispatch(selectSnb(label, key));
         }
         setItems(newPanes);
 
         if (items.length === 1) {
             //모든 탭 종료시 디폴트
             setItems([]);
-            store.dispatch(selectSnb(""));
-            store.dispatch(selectLnb(""));
+            store.dispatch(selectSnb("", ""));
+            store.dispatch(selectLnb("", ""));
         }
     };
 

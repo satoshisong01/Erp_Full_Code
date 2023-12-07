@@ -49,9 +49,9 @@ import Quotation from "pages/sales/Quotation";
 
 //실행관리
 import ExecutionCost from "pages/execution/ExecutionCost";
-import LaborCostMgmt from "pages/execution/LaborCostMgmt";
-import PurchasingMgmt from "pages/execution/PurchasingMgmt";
-import ExpenseMgmt from "pages/execution/ExpenseMgmt";
+import LaborCostMgmt from "pages/execution/LaborCostMgmtExe";
+import PurchasingMgmt from "pages/execution/PurchasingMgmtExe";
+import ExpenseMgmt from "pages/execution/ExpenseMgmtExe";
 import Approval from "pages/execution/Approval";
 
 //시스템관리
@@ -90,7 +90,7 @@ const usePrevLocation = (location) => {
 };
 
 const RootRoutes = () => {
-    const { setUnitPriceList, projectItem, setProjectItem, returnKeyWord, setPgNmList, setCompanyList, addPgNm, setPdiNmList, addPdiNm } = useContext(PageContext);
+    const { setUnitPriceList, projectItem, setRefesh, setProjectItem, returnKeyWord, setPgNmList, setCompanyList, addPgNm, setPdiNmList, addPdiNm, refesh } = useContext(PageContext);
     useEffect(() => {
         basicFetchData();
         pgNmItem();
@@ -98,6 +98,17 @@ const RootRoutes = () => {
         companyItem();
         unitPriceItem();
     }, []);
+
+    useEffect(() => {
+        if(refesh) {
+            basicFetchData();
+            pgNmItem();
+            pdiNmItem();
+            companyItem();
+            unitPriceItem();
+            setRefesh(false);
+        }
+    }, [refesh]);
 
     const basicFetchData = async () => {
         const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;

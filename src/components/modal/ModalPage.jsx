@@ -9,8 +9,8 @@ export default function ModalPage({onClose}) {
     useEffect(() => { //임시로 새로고침
         setRefesh(true);
     }, [])
-    function handleItemClick(poiId, poiNm, poiCode, poiVersion, poId) {
-        setProjectInfo({ poiId, poiNm, poiCode, poiVersion, poId });
+    function handleItemClick(poiId, poiNm, poiCode, poiVersion, poId, poiMonth) {
+        setProjectInfo({ poiId, poiNm, poiCode, poiVersion, poId, poiMonth });
         onClose();
     }
 
@@ -31,7 +31,7 @@ export default function ModalPage({onClose}) {
                             <div className="modalBody">
                                 <div className="modalContent">
                                     {projectItem.map((item, index) => (
-                                        <div className="listItems" key={index} onClick={() => handleItemClick(item.poiId, item.poiNm, item.poiCode, item.poiVersion, item.poId)}>
+                                        <div className="listItems" key={index} onClick={() => handleItemClick(item.poiId, item.poiNm, item.poiCode, item.poiVersion, item.poId, item.poiMonth)}>
                                             <p className="listItem" style={{width: '70%'}}>{item.poiNm}</p>
                                             <p className="listItem" style={{width: '30%'}}>{item.poiVersion}</p>
                                         </div>

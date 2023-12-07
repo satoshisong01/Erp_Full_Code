@@ -4,41 +4,51 @@ import { selectSnb } from 'components/tabs/TabsActions';
 import NavLinkTabs from 'components/tabs/NavLinkTabs';
 import store from 'store/configureStore';
 
+/* 영업관리 네비게이션 */
 function EgovLeftNavSales(props) {
-    const {lnbLabel, snbLabel} = props;
-    const [activeSub, setActiveSub] = useState('');
-    const [activeLabel, setActiveLabel] = useState('');
+    const { lnbId, snbId } = props;
+    const [activeSub, setActiveSub] = useState("");
+    const [activeLabel, setActiveLabel] = useState("");
 
     /* header 또는 tabs에서 선택된 라벨을 저장  */
     useEffect(() => {
-        const propsLabel = lnbLabel || snbLabel;
-        let parentLabel = '';
+        const propsId = lnbId || snbId;
+        let parentId = "";
 
         for (const item of menuItems) {
-            if (item.label === propsLabel) {
-                parentLabel = item.label;
+            if (item.id === propsId) {
+                parentId = item.id;
                 break;
             }
-        
+
             for (const subMenu of item.subMenus) {
-                if (subMenu.label === propsLabel) {
-                    parentLabel = item.label;
+                if (subMenu.id === propsId) {
+                    parentId = item.id;
                     break;
                 }
             }
         }
-        setActiveSub(lnbLabel || snbLabel);
-        if(activeLabel !== parentLabel) setActiveLabel(parentLabel);
-    }, [lnbLabel, snbLabel]);
+        setActiveSub(lnbId || snbId);
+        if (activeLabel !== parentId) setActiveLabel(parentId);
+    }, [lnbId, snbId]);
 
-    const clickHandle = (label, sub) => {
-        setActiveSub(sub)
-        setActiveLabel(label)
-        store.dispatch(selectSnb(sub));
+    const clickHandle = (menuItem, subMenu) => {
+        if(subMenu === null || subMenu === undefined) { //하위 없을때
+            const label = menuItem.subMenus && menuItem.subMenus.length > 0 ? menuItem.subMenus[0].label : menuItem.label;
+            const id = menuItem.subMenus && menuItem.subMenus.length > 0 ? menuItem.subMenus[0].id : menuItem.id;
+            setActiveLabel(id);
+            setActiveSub(id);
+            store.dispatch(selectSnb(label, menuItem.id));
+        } else if(subMenu !== null || subMenu !== undefined) {
+            setActiveSub(subMenu.id);
+            store.dispatch(selectSnb(subMenu.label, subMenu.id));
+        }
     };
 
     const menuItems = [
-        { label: '수주(사업)관리', subMenus: [{ label: '수주등록관리' }, { label: '수주계획관리' }] }, { label: '영업비용', subMenus: [] },
+        { label: '프로젝트관리', id: "OrderMgmt", subMenus: [] },
+        { label: '계획관리', id: "OrderPlanMgmt", subMenus: [] },
+        { label: '영업비용', id: "SalesExpenses", subMenus: [] },
     ];
 
     return (
@@ -51,8 +61,8 @@ function EgovLeftNavSales(props) {
                             <li key={menuItem.label}>
                                 <NavLinkTabs
                                     to="#"
-                                    onClick={(e) => clickHandle(menuItem.label, menuItem.subMenus.length > 0 ? menuItem.subMenus[0].label : menuItem.label)}
-                                    activeName={activeLabel === menuItem.label ? menuItem.label : null}
+                                    onClick={(e) => clickHandle(menuItem)}
+                                    activeName={activeLabel === menuItem.id ? menuItem.label : null}
                                 >
                                     {menuItem.label}
                                 </NavLinkTabs>
@@ -63,8 +73,8 @@ function EgovLeftNavSales(props) {
                                             <li key={subMenu.label}>
                                                 <NavLinkTabs
                                                     to="#"
-                                                    onClick={(e) => clickHandle(menuItem.label, subMenu.label)}
-                                                    activeName={activeSub}
+                                                    onClick={(e) => clickHandle( menuItem, subMenu ) }
+                                                    activeName={activeSub === subMenu.id ? subMenu.label : null}
                                                 >
                                                     {subMenu.label}
                                                 </NavLinkTabs>

@@ -4,45 +4,71 @@ import { selectSnb } from "components/tabs/TabsActions";
 import NavLinkTabs from "components/tabs/NavLinkTabs";
 import store from "store/configureStore";
 
+/* 실행관리 네비게이션 */
 function EgovLeftNavExecution(props) {
-    const { lnbLabel, snbLabel } = props;
+    const { lnbId, snbId } = props;
     const [activeSub, setActiveSub] = useState("");
     const [activeLabel, setActiveLabel] = useState("");
 
     /* header 또는 tabs에서 선택된 라벨을 저장  */
     useEffect(() => {
-        const propsLabel = lnbLabel || snbLabel;
-        let parentLabel = "";
+        const propsId = lnbId || snbId;
+        let parentId = "";
 
         for (const item of menuItems) {
-            if (item.label === propsLabel) {
-                parentLabel = item.label;
+            if (item.id === propsId) {
+                parentId = item.id;
                 break;
             }
 
             for (const subMenu of item.subMenus) {
-                if (subMenu.label === propsLabel) {
-                    parentLabel = item.label;
+                if (subMenu.id === propsId) {
+                    parentId = item.id;
                     break;
                 }
             }
         }
-        setActiveSub(lnbLabel || snbLabel);
-        if (activeLabel !== parentLabel) setActiveLabel(parentLabel);
-    }, [lnbLabel, snbLabel]);
+        setActiveSub(lnbId || snbId);
+        if (activeLabel !== parentId) setActiveLabel(parentId);
+    }, [lnbId, snbId]);
 
-    const clickHandle = (label, sub) => {
-        setActiveSub(sub);
-        setActiveLabel(label);
-        store.dispatch(selectSnb(sub));
+    const clickHandle = (menuItem, subMenu) => {
+        if(subMenu === null || subMenu === undefined) { //하위 없을때
+            const label = menuItem.subMenus && menuItem.subMenus.length > 0 ? menuItem.subMenus[0].label : menuItem.label;
+            const id = menuItem.subMenus && menuItem.subMenus.length > 0 ? menuItem.subMenus[0].id : menuItem.id;
+            setActiveLabel(id);
+            setActiveSub(id);
+            store.dispatch(selectSnb(label, menuItem.id));
+        } else if(subMenu !== null || subMenu !== undefined) {
+            setActiveSub(subMenu.id);
+            store.dispatch(selectSnb(subMenu.label, subMenu.id));
+        }
     };
 
     const menuItems = [
-        { label: "실행원가관리", subMenus: [] },
-        { label: "인건비관리", subMenus: [] },
-        { label: "경비관리", subMenus: [] },
-        { label: "구매관리", subMenus: [] },
-        //, { label: '전자결재', subMenus: [] }
+        {
+            label: "원가조회",
+            id: "ExecutionCost",
+            subMenus: []
+        },
+        {
+            label: "계획관리",
+            id: "LaborCostMgmtPlan",
+            subMenus: [
+                { label: "인건비", id: "LaborCostMgmtPlan" },
+                { label: "구매(재료비)", id: "PurchasingMgmtPlan" },
+                { label: "경비", id: "ExpenseMgmtPlan" },
+            ]
+        },
+        {
+            label: "실행관리",
+            id: "LaborCostMgmtExe",
+            subMenus: [
+                { label: "인건비", id: "LaborCostMgmtExe" },
+                { label: "구매(재료비)", id: "PurchasingMgmtExe" },
+                { label: "경비", id: "ExpenseMgmtExe" },
+            ]
+        },
     ];
 
     return (
@@ -55,8 +81,9 @@ function EgovLeftNavExecution(props) {
                             <li key={menuItem.label}>
                                 <NavLinkTabs
                                     to="#"
-                                    onClick={(e) => clickHandle(menuItem.label, menuItem.subMenus.length > 0 ? menuItem.subMenus[0].label : menuItem.label)}
-                                    activeName={activeLabel === menuItem.label ? menuItem.label : null}>
+                                    onClick={(e) => clickHandle(menuItem) }
+                                    activeName={activeLabel === menuItem.id ? menuItem.label : null}
+                                >
                                     {menuItem.label}
                                 </NavLinkTabs>
 
@@ -64,8 +91,12 @@ function EgovLeftNavExecution(props) {
                                     <ul className="menu7">
                                         {menuItem.subMenus.map((subMenu) => (
                                             <li key={subMenu.label}>
-                                                <NavLinkTabs to="#" onClick={(e) => clickHandle(menuItem.label, subMenu.label)} activeName={activeSub}>
-                                                    {subMenu.label}
+                                                <NavLinkTabs
+                                                    to="#"
+                                                    onClick={(e) => clickHandle( menuItem, subMenu ) }
+                                                    activeName={activeSub === subMenu.id ? subMenu.label : null}
+                                                >
+                                                   {subMenu.label}
                                                 </NavLinkTabs>
                                             </li>
                                         ))}

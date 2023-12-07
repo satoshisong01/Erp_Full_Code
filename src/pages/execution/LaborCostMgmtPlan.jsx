@@ -14,8 +14,8 @@ import ReactDataTableView from "components/DataTable/ReactDataTableView";
 import { ChangePrmnPlanData } from "components/DataTable/function/ChangePrmnPlanData";
 import RefreshButton from "components/button/RefreshButton";
 
-/** 실행관리-인건비관리 */
-function LaborCostMgmt() {
+/** 실행관리-인건비-계획 */
+function LaborCostMgmtPlan() {
     const {
         innerPageName,
         setCurrentPageName,
@@ -502,4 +502,4 @@ function LaborCostMgmt() {
     );
 }
 
-export default LaborCostMgmt;
+export default LaborCostMgmtPlan;
