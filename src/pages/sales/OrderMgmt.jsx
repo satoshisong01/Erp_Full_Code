@@ -19,18 +19,43 @@ function OrderMgmt() {
     const [isOpenAdd, setIsOpenAdd] = useState(false);
 
     const addColumns = [
-        { header: "프로젝트이름", col: "poiNm", placeholder: "ㅇㅇ", require: true},
-        { header: "고객사", col: "cltNm"},
-        { header: "수주부서", col: "poiGroupId"},
-        { header: "매출부서", col: "poiSalesGroupId"},
-        { header: "영업대표", col: "poiSalmanagerId"},
-        { header: "PM", col: "poiManagerId"},
-        { header: "통화", col: "poiCurrcy"},
-        { header: "계약일", col: "poiBeginDt"},
-        { header: "납기시작일", col: "poiDueBeginDt"},
-        { header: "납기종료일", col: "poiDueEndDt"},
-        { header: "기준이익률", col: "standardMargin"},
-        { header: "상태", col: "poiStatus"}
+        { items: [{ header: "프로젝트이름", col: "poiNm", require: true, type: "input" }] },
+        {
+            items: [
+                { header: "수주부서", col: "poiGroupId", placeholder: "부서를 선택하세요.", require: true, type: "input" },
+                { header: "매출부서", col: "poiSalesGroupId", placeholder: "부서를 선택하세요.", require: true, type: "input"  }
+            ]
+        },
+        {
+            items: [
+                { header: "영업대표", col: "poiSalmanagerId", placeholder: "영업대표를 선택하세요.", require: true, type: "input"  },
+                { header: "담당자", col: "poiManagerId", placeholder: "담당자를 선택하세요.", require: true, type: "input"  }
+            ]
+        },
+        {
+            items: [
+                { header: "계약일", col: "poiBeginDt", type: "daypicker" },
+                { header: "기준이익률", col: "standardMargin", type: "input" }
+            ]
+        },
+        {
+            items: [
+                { header: "납기시작일", col: "poiDueBeginDt", type: "daypicker" },
+                { header: "납기종료일", col: "poiDueEndDt", type: "daypicker" ,}
+            ]
+        },
+        {
+            items: [
+                { header: "통화", col: "poiCurrcy", type: "input" },
+                { header: "상태", col: "poiStatus", require: true, type: "input"  }
+            ]
+        },
+        {
+            items: [
+                { header: "기준연도", col: "poiMonth", require: true, type: "input"  },
+                { header: "고객사", col: "cltNm", placeholder: "고객사를 선택하세요.", require: true, type: "buttonCompany"  }
+            ]
+        },
     ]
 
     const columns = [
@@ -108,7 +133,14 @@ function OrderMgmt() {
             </div>
             <ReactDataTable columns={columns} suffixUrl="/baseInfrm/product/pjOrdrInfo" tableRef={orderMgmtTable} viewPageName="수주등록관리" />
             {
-                isOpenAdd && <AddModal width="300" height="500" columns={addColumns} onClose={() => setIsOpenAdd(false)} sendData={addToServer}/>
+                isOpenAdd &&
+                    <AddModal
+                        width={500}
+                        height={400}
+                        list={addColumns}
+                        onClose={() => setIsOpenAdd(false)} sendData={addToServer}
+                        title="프로젝트 추가"
+                    />
             }
         </>
     );
