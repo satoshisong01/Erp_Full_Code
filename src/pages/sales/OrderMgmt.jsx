@@ -29,7 +29,7 @@ function OrderMgmt() {
     const [poiNm, setPoiNm] = useState([]);
     const [sendList, setSendList] = useState({});
 
-    const addColumns = [
+    const addModColumns = [
         { items: [{ header: "프로젝트이름", col: "poiNm", require: true, type: "input" }] },
         { items: [{ header: "코드(임시)", col: "poiCode", require: true, type: "input" }] },
         {
@@ -62,14 +62,14 @@ function OrderMgmt() {
         },
         {
             items: [
-                { header: "계약일", col: "poiBeginDt", type: "daypicker" },
-                { header: "기준이익률", col: "standardMargin", type: "input" },
+                { header: "계약일", col: "poiBeginDt", type: "monthPicker" },
+                { header: "이익률", col: "standardMargin", type: "number" },
             ],
         },
         {
             items: [
-                { header: "납기시작일", col: "poiDueBeginDt", type: "daypicker" },
-                { header: "납기종료일", col: "poiDueEndDt", type: "daypicker" },
+                { header: "납기시작일", col: "poiDueBeginDt", type: "dayPicker" },
+                { header: "납기종료일", col: "poiDueEndDt", type: "dayPicker" },
             ],
         },
         {
@@ -95,6 +95,7 @@ function OrderMgmt() {
                 { header: "고객사", col: "cltNm", placeholder: "고객사를 선택하세요.", require: true, type: "buttonCompany" },
             ],
         },
+        { items: [{ header: "비고", col: "poiDesc", type: "desc" }] },
     ];
 
     const columns = [

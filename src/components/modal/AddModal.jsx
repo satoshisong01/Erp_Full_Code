@@ -1,25 +1,58 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../components/modal/ModalCss.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import DayPicker from "components/input/DayPicker";
 import ModalPageCompany from "./ModalPageCompany";
+import MonthPicker from "components/input/MonthPicker";
+import YearPicker from "components/input/YearPicker";
+import BasicInput from "components/input/BasicInput";
+import BasicTextarea from "components/input/BasicTextarea";
+import Percentage from "components/input/Percentage";
+import BasicSelect from "components/input/BasicSelect";
+import Number from "components/input/Number";
 
 /* 추가 모달 */
 export default function AddModal(props) {
     const { width, height, list, onClose, sendData, title, sendList } = props;
+    const { width, height, list, onClose, sendData, title } = props;
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
     const [data, setData] = useState({});
+    const bodyRef = useRef(null);
 
     useEffect(() => {
-        setData(sendList);
-    }, [sendList]);
+        // me-modal-body의 높이를 동적 계산
+        if (bodyRef.current) {
+            const headerHeight = document.querySelector(".me-modal-header")?.clientHeight || 0;
+            const footerHeight = document.querySelector(".me-modal-footer")?.clientHeight || 0;
+            const calculatedHeight = height - headerHeight - footerHeight;
+            bodyRef.current.style.height = `${calculatedHeight}px`;
+        }
+    }, [height]);
 
-    const inputChange = (e) => {
-        const { name, value } = e.target;
+    const inputChange = (e, type) => {
+        const { value, name } = e.target;
+        if (type === "number") {
+            let parsedValue = parseFloat(value.replace(/,/g, "")); // 컴마 제거하고 문자열을 숫자로 변환
+            if (isNaN(parsedValue)) {
+                console.log("입력된 값이 숫자가 아닙니다.");
+            }
+            setData((prevData) => ({
+                ...prevData,
+                [name]: parsedValue,
+            }));
+        } else {
+            setData((prevData) => ({
+                ...prevData,
+                [name]: value,
+            }));
+        }
+    };
+
+    const dateClick = (date, col) => {
         setData((prevData) => ({
             ...prevData,
-            [name]: value,
+            [col]: date,
         }));
     };
 
@@ -34,7 +67,16 @@ export default function AddModal(props) {
         }));
     };
 
-    // 데이터 추가 버튼을 눌렀을 때 실행되는 함수
+    const returnInfo = (item) => {
+        //선택한 정보
+        console.log(item, "item");
+        setIsOpenModalCompany(false);
+        setData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
     const onAdd = async (e) => {
         e.preventDefault();
 
@@ -45,10 +87,6 @@ export default function AddModal(props) {
         sendData(data); //데이터 부모로 전송
         onClose();
     };
-
-    useEffect(() => {
-        console.log(data, "data");
-    }, [data]);
 
     const dateClick = (date, col) => {
         setData((prevData) => ({
@@ -61,189 +99,29 @@ export default function AddModal(props) {
         <article className="me-modal">
             <div className="me-modal-container" style={{ width, height }}>
                 <div className="me-modal-inner">
-                    <div className="me-modal-header mg-t-20">
+                    <div className="me-modal-header">
                         <h4 className="header-title">{title}</h4>
                         <div className="header-close" onClick={onClose}>
                             <FontAwesomeIcon icon={faXmark} className="button" size="lg" />
                         </div>
                     </div>
 
-                    <div className="line mg-t-10 mg-b-20" />
-
-                    <form className="me-modal-body">
+                    <form className="me-modal-body" ref={bodyRef} style={{ overflowY: "auto" }}>
                         {list &&
-                            list.map((column, index) => {
-                                if (column.items.length === 1) {
-                                    return (
-                                        <div className="body-row" key={index}>
-                                            <div className="row-group">
-                                                <div className="left">
-                                                    {column.items[0].require && <span className="red">*</span>}
-                                                    <span>{column.items[0].header}</span>
-                                                </div>
-                                                <div className="right">
-                                                    {column.items[0].type === "input" ? (
-                                                        <input
-                                                            id={index}
-                                                            name={column.items[0].col}
-                                                            className="input"
-                                                            onChange={inputChange}
-                                                            value={data && data[column.items[0].col] ? data[column.items[0].col] : ""}
-                                                            placeholder={column.items[0].placeholder}
-                                                        />
-                                                    ) : column.items[0].type === "daypicker" ? (
-                                                        <DayPicker
-                                                            id={index}
-                                                            name={column.items[0].col}
-                                                            onClick={(e) => dateClick(e, column.items[0].col)}
-                                                            value={data && data[column.items[0].col] ? data[column.items[0].col] : ""}
-                                                            placeholder={column.items[0].placeholder}
-                                                        />
-                                                    ) : column.items[0].type === "buttonCompany" ? (
-                                                        <input
-                                                            key={index}
-                                                            className="buttonSelect"
-                                                            name={column.items[0].col}
-                                                            onClick={() => setIsOpenModalCompany(true)}
-                                                            type="text"
-                                                            value={data && data[column.items[0].col] ? data[column.items[0].col] : ""}
-                                                            placeholder={column.items[0].placeholder}
-                                                            readOnly
-                                                        />
-                                                    ) : null}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                } else if (column.items.length === 2) {
-                                    return (
-                                        <div className="body-row" key={index}>
-                                            <div className="row-group">
-                                                <div className="left">
-                                                    {column.items[0].require && <span className="red">*</span>}
-                                                    <span>{column.items[0].header}</span>
-                                                </div>
-                                                <div className="right">
-                                                    {column.items[0].type === "input" ? (
-                                                        <input
-                                                            id={index}
-                                                            name={column.items[0].col}
-                                                            className="input"
-                                                            onChange={inputChange}
-                                                            value={data && data[column.items[0].col] ? data[column.items[0].col] : ""}
-                                                            placeholder={column.items[0].placeholder}
-                                                        />
-                                                    ) : column.items[0].type === "itemSelect" ? (
-                                                        <select
-                                                            className="postInput"
-                                                            name={column.items[0].col}
-                                                            value={data && data[column.items[0].col] ? data[column.items[0].col] : ""}
-                                                            onChange={inputChange}>
-                                                            <option value={""}>{column.items[0].itemType[0]}</option>
-                                                            {column.items[0].itemType.map(
-                                                                (item, index) =>
-                                                                    index > 0 && (
-                                                                        <option key={index} value={column.items[0].itemTypeSymbol[index]}>
-                                                                            {item}
-                                                                        </option>
-                                                                    )
-                                                            )}
-                                                        </select>
-                                                    ) : column.items[0].type === "daypicker" ? (
-                                                        <DayPicker
-                                                            id={index}
-                                                            name={column.items[0].col}
-                                                            onClick={(e) => dateClick(e, column.items[0].col)}
-                                                            value={data && data[column.items[0].col] ? data[column.items[0].col] : ""}
-                                                            placeholder={column.items[0].placeholder}
-                                                        />
-                                                    ) : column.items[0].type === "buttonCompany" ? (
-                                                        <input
-                                                            key={index}
-                                                            className="buttonSelect"
-                                                            name={column.items[0].col}
-                                                            onClick={() => setIsOpenModalCompany(true)}
-                                                            type="text"
-                                                            value={data && data[column.items[0].col] ? data[column.items[0].col] : ""}
-                                                            placeholder={column.items[0].placeholder}
-                                                            readOnly
-                                                        />
-                                                    ) : null}
-                                                </div>
-                                            </div>
-                                            <div className="row-group">
-                                                <div className="left">
-                                                    {column.items[1].require && <span className="red">*</span>}
-                                                    <span>{column.items[1].header}</span>
-                                                </div>
-                                                <div className="right">
-                                                    {column.items[1].type === "input" ? (
-                                                        <input
-                                                            id={index}
-                                                            name={column.items[1].col}
-                                                            className="input"
-                                                            onChange={inputChange}
-                                                            value={data && data[column.items[1].col] ? data[column.items[1].col] : ""}
-                                                            placeholder={column.items[1].placeholder}
-                                                        />
-                                                    ) : column.items[1].type === "itemSelect" ? (
-                                                        <select
-                                                            className="postInput"
-                                                            name={column.items[1].col}
-                                                            value={data && data[column.items[1].col] ? data[column.items[1].col] : ""}
-                                                            onChange={inputChange}>
-                                                            <option value={""}>{column.items[1].itemType[0]}</option>
-                                                            {column.items[1].itemType.map(
-                                                                (item, index) =>
-                                                                    index > 0 && (
-                                                                        <option key={index} value={column.items[1].itemTypeSymbol[index]}>
-                                                                            {item}
-                                                                        </option>
-                                                                    )
-                                                            )}
-                                                        </select>
-                                                    ) : column.items[1].type === "daypicker" ? (
-                                                        <DayPicker
-                                                            id={index}
-                                                            name={column.items[1].col}
-                                                            onClick={(e) => dateClick(e, column.items[1].col)}
-                                                            value={data && data[column.items[1].col] ? data[column.items[1].col] : ""}
-                                                            placeholder={column.items[1].placeholder}
-                                                        />
-                                                    ) : column.items[1].type === "buttonCompany" ? (
-                                                        <input
-                                                            key={index}
-                                                            className="buttonSelect"
-                                                            name={column.items[1].col}
-                                                            onClick={() => setIsOpenModalCompany(true)}
-                                                            type="text"
-                                                            value={data && data[column.items[1].col] ? data[column.items[1].col] : ""}
-                                                            placeholder={column.items[1].placeholder}
-                                                            readOnly
-                                                        />
-                                                    ) : null}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                }
-                            })}
+                            list.map((column, index) => (
+                                <div className="body-row" key={index}>
+                                    {column.items.map((item, itemIndex) => renderInputField(item, itemIndex))}
+                                </div>
+                            ))}
                     </form>
 
-                    <div className="me-modal-footer mg-t-20">
+                    <div className="me-modal-footer mg-b-20">
                         <div className="table-buttons" style={{ justifyContent: "center" }}>
-                            <button
-                                type="button"
-                                className="table-btn table-btn-default"
-                                data-dismiss="modal"
-                                style={{ width: "100%" }}
-                                onClick={() => {
-                                    onClose();
-                                }}>
+                            <button className="table-btn table-btn-default" data-dismiss="modal" style={{ width: "100%" }} onClick={() => onClose()}>
                                 취소
                             </button>
-                            <button type="button" className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onAdd}>
-                                {sendList ? "수정" : "추가"}
+                            <button className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onAdd}>
+                                추가
                             </button>
                         </div>
                     </div>

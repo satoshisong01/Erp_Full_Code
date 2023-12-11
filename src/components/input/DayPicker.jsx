@@ -35,20 +35,19 @@ export default function DayPicker ({name, value, onClick}) {
     };
 
     return (
-        <div ref={datePickerRef} className="box3-1 boxDate">
+        <div ref={datePickerRef}>
             <input
-                className="form-control flex-item"
+                id={uuidv4()}
                 type="text"
                 name={name}
-                id={uuidv4()}
                 value={value}
                 onClick={() => setIsCalendarVisible(true)}
                 readOnly
+                className="basic-input"
             />
 
             {isCalendarVisible && (
                 <div
-                    className="boxCalendar"
                     id={uuidv4()}
                 >
                     <Calendar

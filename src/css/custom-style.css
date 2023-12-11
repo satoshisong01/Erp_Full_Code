@@ -298,6 +298,7 @@
 .flex-group {
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 25%;
 }
 
@@ -411,6 +412,36 @@
     left: 0;
     top: -520%;
     height: 100%;
+}
+
+.basic-input {
+    width: 100%;
+    padding: 3px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.percent {
+    position: relative;
+}
+
+.percent::before {
+    content: "아이콘";
+    position: absolute;
+    right: 10px; /* 아이콘과 입력 내용 간의 간격 */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.basic-input:hover {
+    border-color: #007bff;
+}
+
+.basic-input:focus {
+    outline: none; 
+    /* border-color: #4CAF50; */
+    /* box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); */
 }
 
 /* 사전원가 계산서 */
