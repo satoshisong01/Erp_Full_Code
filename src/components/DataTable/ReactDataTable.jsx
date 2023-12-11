@@ -16,6 +16,7 @@ import "react-calendar/dist/Calendar.css";
 import { v4 as uuidv4 } from "uuid";
 import DayPicker from "components/input/DayPicker";
 import MonthPicker from "components/input/MonthPicker";
+import DataPostModalReactTable from "./DataPostModalReactTable";
 const ReactDataTable = (props) => {
     const {
         columns,
@@ -33,6 +34,9 @@ const ReactDataTable = (props) => {
         sendToParentCostIndex,
         perSent,
         sendToParentGrade,
+        sendData,
+        saveIdNm,
+        returnData,
     } = props;
     const {
         nameOfButton,
@@ -59,7 +63,6 @@ const ReactDataTable = (props) => {
         setProjectInfo,
         isSaveFormTable,
         unitPriceList,
-        setNewRowData,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -79,6 +82,10 @@ const ReactDataTable = (props) => {
     };
 
     const [isEditing, setIsEditing] = useState(false);
+
+    useEffect(() => {
+        console.log(tableData, "tableData");
+    }, [tableData]);
 
     //------------------------------------------------ 달력부분
     const inputRef = useRef(null); //날짜
@@ -144,6 +151,10 @@ const ReactDataTable = (props) => {
             setOriginTableData([]);
         }
     }, [customDatas]);
+
+    useEffect(() => {
+        setTableData(sendData);
+    }, [sendData]);
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
@@ -229,9 +240,10 @@ const ReactDataTable = (props) => {
 
     /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
-        if (!suffixUrl) return;
+        //if (!suffixUrl) return;
         const url = `/api${suffixUrl}/totalListAll.do`;
         const resultData = await axiosFetch(url, { useAt: "Y" });
+        console.log(resultData, "resultData");
         if (resultData) {
             setTableData([...resultData]);
         } else if (!resultData) {
@@ -290,38 +302,29 @@ const ReactDataTable = (props) => {
     };
 
     /* 새로고침 */
+
     const refreshClick = () => {
         fetchAllData();
     };
 
     /* 데이터 추가 */
     const addClick = async (addData) => {
+        console.log(addData, "나와");
         setOpenModalAdd(false);
         if (!suffixUrl && !singleUrl) return;
         if (addData && typeof addData === "object" && !Array.isArray(addData)) {
             const url = `/api${suffixUrl}/add.do`;
-            let dataToSend = {};
-            if (current === "수주등록관리") {
-                dataToSend = {
-                    ...addData,
-                    lockAt: "Y",
-                    useAt: "Y",
-                    deleteAt: "N",
-                };
-            } else {
-                dataToSend = {
-                    ...addData,
-                    lockAt: "Y",
-                    useAt: "Y",
-                    deleteAt: "N",
-                    poiId: projectInfo.poiId,
-                    poiDesc: projectInfo.poiVersion,
-                    poId: projectInfo.poId,
-                };
-            }
+            const dataToSend = {
+                ...addData,
+                lockAt: "Y",
+                useAt: "Y",
+                deleteAt: "N",
+                poiId: projectInfo.poiId,
+                poiDesc: addData.poiDesc || projectInfo.poiVersion,
+                poId: projectInfo.poId,
+            };
 
-            setNewRowData({}); //초기화
-
+            console.log("dataToSend:", dataToSend);
             const resultData = await axiosPost(url, dataToSend);
             if (!resultData) {
                 alert("add error: table");
@@ -430,8 +433,32 @@ const ReactDataTable = (props) => {
         }
     );
 
+    const prevPoiIdArray = useRef([]);
+    const prevPoiNmArray = useRef([]);
+
+    useEffect(() => {
+        if (saveIdNm) {
+            const poiIdArray = selectedFlatRows.map((item) => item.values.poiId);
+            const poiNmArray = selectedFlatRows.map((item) => item.values.poiNm);
+
+            // 이전 값과 현재 값이 다를 때만 saveIdNm 함수 호출
+            if (!arraysAreEqual(prevPoiIdArray.current, poiIdArray) || !arraysAreEqual(prevPoiNmArray.current, poiNmArray)) {
+                saveIdNm(poiIdArray, poiNmArray);
+            }
+            // 이전 값 갱신
+            prevPoiIdArray.current = poiIdArray;
+            prevPoiNmArray.current = poiNmArray;
+        }
+    }, [selectedFlatRows]);
+
+    // 배열 비교 함수
+    function arraysAreEqual(arr1, arr2) {
+        return arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index]);
+    }
+
     /* current- 현재 보는페이지, table button 활성화 on off */
     useEffect(() => {
+        console.log(current, "current", currentPageName, innerPageName);
         if (isModalTable && current === modalPageName) {
             //모달화면일때
             setModalLengthSelectRow(selectedFlatRows.length);
@@ -442,6 +469,12 @@ const ReactDataTable = (props) => {
                 sendSelected && sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
         } else if (!isModalTable && (current === currentPageName || current === innerPageName)) {
+            if (selectedFlatRows.length > 0) {
+                sendSelected(selectedFlatRows[selectedFlatRows.length - 1].values);
+            } else {
+                console.log("selectedFlatRows 배열이 비어 있습니다.");
+            }
+
             //모달화면이 아닐때
             setLengthSelectRow(selectedFlatRows.length);
             selectedFlatRows.length > 0 && setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
@@ -449,17 +482,6 @@ const ReactDataTable = (props) => {
         }
     }, [selectedFlatRows]);
 
-    //const [dataBuket, setDataBuket] = useState({});
-    const [prevDataBuket, setPrevDataBuket] = useState({});
-
-    /* table button 활성화 on off */
-
-    //useEffect(() => {
-    //    //setSavePgNm(projectPgNm);
-    //    //setDataBuket(projectPgNm.pgNm, projectPgNm.pgId);
-    //}, [projectPgNm]);
-
-    //const [savePgNm, setSavePgNm] = useState([projectPgNm]);
     //품목그룹 선택
     const setValueData = (rowIndex) => {
         setRowIndex(rowIndex);
@@ -475,8 +497,6 @@ const ReactDataTable = (props) => {
 
     const setValueDataPgInfo = (rowIndex, pgInfo) => {
         const updatedTableData = [...tableData];
-        //updatedTableData[rowIndex].pgNm = pgInfo.pgNm;
-        //updatedTableData[rowIndex].pgId = pgInfo.pgId;
 
         updatedTableData[rowIndex] = {
             ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
@@ -486,25 +506,6 @@ const ReactDataTable = (props) => {
         setTableData(updatedTableData);
         setProjectPgNm({});
     };
-    //useEffect(() => {
-    //    if (!isOpenModalPgNm) {
-    //        // isOpenModalPgNm이 false로 변경된 경우에 실행할 코드를 여기에 작성
-    //        if (savePgNm) {
-    //            const updatedTableData = [...tableData];
-    //            if (dataBuket !== prevDataBuket) {
-    //                if (dataBuket && updatedTableData[rowIndex]) {
-    //                    console.log(rowIndex, "rowIndex");
-    //                    updatedTableData[rowIndex].pgNm = savePgNm.pgNm;
-    //                    updatedTableData[rowIndex].pgId = savePgNm.pgId;
-    //                    setTableData(updatedTableData);
-    //                }
-
-    //                setPrevDataBuket(dataBuket);
-    //                setProjectPgNm("");
-    //            }
-    //        }
-    //    }
-    //}, [isOpenModalPgNm, savePgNm, dataBuket, rowIndex, tableData, prevDataBuket]);
 
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {
@@ -623,7 +624,7 @@ const ReactDataTable = (props) => {
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
     //추가 함수
-    const upDateChange = (data) => {
+    const upDateChange = (data, originData) => {
         for (let index = 0; index < data.length; index++) {
             const item = data[index];
 
@@ -652,7 +653,7 @@ const ReactDataTable = (props) => {
             // pmpMonth2가 없다면 값을 pmpMonth에서 가져옴
             if (!item.hasOwnProperty("pmpMonth2")) {
                 item.pmpMonth2 = item.pmpMonth;
-                item.pmpMonth = originTableData[index].pmpMonth;
+                item.pmpMonth = originData[index].pmpMonth;
             }
         }
     };
@@ -680,7 +681,7 @@ const ReactDataTable = (props) => {
 
             const firstRowUpdate = updateDataInOrigin(originData, updatedData);
             console.log(firstRowUpdate, "firstRowUpdate🔥🔥");
-            upDateChange(firstRowUpdate);
+            upDateChange(firstRowUpdate, originData);
             updateList(firstRowUpdate);
 
             const originAValues = originData.map((item) => item.pmpId);
@@ -689,7 +690,7 @@ const ReactDataTable = (props) => {
 
             deleteList(combinedAValues);
         } else if (originDataLength === updatedDataLength) {
-            upDateChange(filterData);
+            upDateChange(filterData, originData);
             updateList(filterData);
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
@@ -719,8 +720,11 @@ const ReactDataTable = (props) => {
         }
     };
 
+    useEffect(() => {
+        fetchAllData();
+        refreshClick();
+    }, [viewPageName]);
     //------------------------------- 초기값과 비교하는 코드
-
     return (
         <>
             <div className="flex-between mg-b-20 mg-t-20">
@@ -735,7 +739,6 @@ const ReactDataTable = (props) => {
                     </select>
                 </div>
             </div>
-
             <table {...getTableProps()} className="table-styled" ref={tableRef}>
                 <thead>
                     {headerGroups.map((headerGroup, headerGroupIndex) => (
@@ -913,7 +916,6 @@ const ReactDataTable = (props) => {
                     })}
                 </tbody>
             </table>
-
             <div className="pagination">
                 <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
                     {" "}
@@ -949,7 +951,7 @@ const ReactDataTable = (props) => {
                 />
             )}
             {openModalAdd && (
-                <DataPostModal2
+                <DataPostModalReactTable
                     columns={columns}
                     postData={addClick}
                     fetchAllData={fetchAllData}

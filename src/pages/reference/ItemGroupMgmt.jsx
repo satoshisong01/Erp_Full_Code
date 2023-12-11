@@ -8,43 +8,12 @@ import ModButton from "components/button/ModButton";
 import DelButton from "components/button/DelButton";
 import RefreshButton from "components/button/RefreshButton";
 import { PageContext } from "components/PageProvider";
+import { columns } from "constants/columns";
 
 /** 기준정보관리-품목관리-품목그룹관리 */
 function ItemGroupMgmt() {
-    const {setNameOfButton} = useContext(PageContext);
+    const { setNameOfButton } = useContext(PageContext);
     const itemGroupMgmtTable = useRef(null);
-
-    const columns = [
-        {
-            header: "품목그룹ID",
-            col: "pgId",
-            cellWidth: "40%",
-            //enable: false,
-            //modify: true,
-            //add: false,
-            notView: true,
-            //require: true,
-        },
-        {
-            header: "품목그룹명",
-            col: "pgNm",
-            cellWidth: "40%",
-            modify: true,
-            add: true,
-            require: true,
-        },
-        {
-            header: "품목그룹코드",
-            col: "pgCode",
-            cellWidth: "30%",
-            modify: true,
-            add: true,
-            require: true,
-        },
-
-        { header: "작성일", col: "createDate", cellWidth: "30%" },
-        { header: "작성자", col: "createIdBy", cellWidth: "30%" },
-    ];
 
     const conditionList = [
         {
@@ -55,24 +24,11 @@ function ItemGroupMgmt() {
             searchLevel: "1",
         },
         {
-            title: "품목구분코드",
-            colName: "pgCode", //컬럼명
-            type: "input",
-            value: "",
-            searchLevel: "2",
-        },
-        {
             title: "작성자",
             colName: "createIdBy", //컬럼명
             type: "input",
             value: "",
             searchLevel: "3",
-        },
-        {
-            title: "작성일",
-            colName: "createDate",
-            type: "datepicker",
-            searchLevel: "1",
         },
     ];
 
@@ -81,13 +37,13 @@ function ItemGroupMgmt() {
             <Location pathList={locationPath.ItemGroupMgmt} />
             <SearchList conditionList={conditionList} />
             <div className="table-buttons">
-                <AddButton label={'추가'} onClick={() => setNameOfButton('add')} />
-                <ModButton label={'수정'} onClick={() => setNameOfButton('modify')} />
-                <DelButton label={'삭제'} onClick={() => setNameOfButton('delete')} />
-                <RefreshButton onClick={() => setNameOfButton('refresh')} />
+                <AddButton label={"추가"} onClick={() => setNameOfButton("add")} />
+                <ModButton label={"수정"} onClick={() => setNameOfButton("modify")} />
+                <DelButton label={"삭제"} onClick={() => setNameOfButton("delete")} />
+                <RefreshButton onClick={() => setNameOfButton("refresh")} />
             </div>
             <ReactDataTable
-                columns={columns}
+                columns={columns.reference.itemGroupMgmt}
                 suffixUrl="/baseInfrm/product/productGroup"
                 tableRef={itemGroupMgmtTable}
                 viewPageName="품목그룹관리"
