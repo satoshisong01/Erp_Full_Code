@@ -39,7 +39,6 @@ const ReactDataTablePdorder = (props) => {
         setIsOpenModalPdiNm,
         isOpenModalPdiNm,
         isOpenModalCompany,
-        setIsSaveFormTable,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -425,8 +424,6 @@ const ReactDataTablePdorder = (props) => {
                 data.modeCode = "EXCU";
             });
         }
-
-        console.log("singleUrl:", singleUrl, "여기들어오나봐!!!!!!!!!!!");
         const url = `/api${singleUrl}/addList.do`;
         const resultData = await axiosPost(url, addNewData);
         if (resultData && resultData.length > 0) {
@@ -513,8 +510,10 @@ const ReactDataTablePdorder = (props) => {
 
             deleteList(extraOriginData);
         } else if (originDataLength === updatedDataLength) {
+            console.log("2");
             updateList(filterData);
         } else if (originDataLength < updatedDataLength) {
+            console.log("3");
             const toAdds = [];
             const addUpdate = [];
             for (let i = 0; i < originDataLength; i++) {
@@ -582,11 +581,7 @@ const ReactDataTablePdorder = (props) => {
                         </tr>
                     ))}
                 </thead>
-                {tableData.length <= 0 && (
-                    <div style={{ display: "flex", width: "1200px", margin: "auto", alignItems: "center", justifyContent: "center" }}>
-                        <div style={{ fontSize: 15 }}>no data</div>
-                    </div>
-                )}
+
                 <tbody {...getTableBodyProps()}>
                     {page.map((row, rowIndex) => {
                         prepareRow(row);

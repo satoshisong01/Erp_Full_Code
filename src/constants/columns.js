@@ -1,4 +1,97 @@
 export const columns = {
+    /** 기준정보관리-품목관리-품목그룹관리 */
+    reference: {
+        itemGroupMgmt: [
+            {
+                header: "품목그룹ID",
+                col: "pgId",
+                cellWidth: "40%",
+                //enable: false,
+                //modify: true,
+                //add: false,
+                notView: true,
+                //require: true,
+            },
+            {
+                header: "품목그룹명",
+                col: "pgNm",
+                cellWidth: "40%",
+                type: "button",
+                modify: true,
+                add: true,
+                require: true,
+            },
+            {
+                header: "품목그룹코드",
+                col: "pgCode",
+                cellWidth: "30%",
+                modify: true,
+                add: true,
+                require: true,
+            },
+
+            { header: "작성일", col: "createDate", cellWidth: "30%" },
+            { header: "작성자", col: "createIdBy", cellWidth: "30%" },
+            { header: "수정일", col: "lastModifyDate", cellWidth: "30%" },
+            { header: "수정자", col: "lastModifiedIdBy", cellWidth: "30%" },
+        ],
+        itemDetailMgmt: [
+            {
+                header: "품목ID",
+                col: "pdiId",
+                cellWidth: "20%",
+                placeholder: "숫자만넣어주세요",
+                enable: false,
+                modify: true,
+                add: false,
+                require: true,
+                notView: true,
+            },
+            {
+                header: "품목그룹명",
+                col: "pgNm",
+                type: "button",
+                cellWidth: "20%",
+                modify: true,
+                add: true,
+                require: true,
+            },
+            {
+                header: "품번",
+                col: "pdiNum",
+                cellWidth: "20%",
+                modify: true,
+                add: true,
+            },
+            {
+                header: "품목명",
+                col: "pdiNm",
+                cellWidth: "20%",
+                modify: true,
+                add: true,
+                require: true,
+            },
+            { header: "단위", col: "pdiWght", cellWidth: "20%", modify: true, add: true },
+            {
+                header: "품목코드",
+                col: "pdiCode",
+                cellWidth: "20%",
+                modify: true,
+                add: true,
+            },
+            { header: "규격", col: "pdiStnd", cellWidth: "20%" },
+            {
+                header: "품목그룹ID",
+                col: "pgId",
+                cellWidth: "20%",
+                enable: false,
+                modify: true,
+                add: true,
+                require: true,
+                notView: true,
+            },
+        ],
+    },
     /* 영업관리 */
     orderPlanMgmt: {
         // 계획관리

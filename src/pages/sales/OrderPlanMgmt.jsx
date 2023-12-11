@@ -4,7 +4,7 @@ import ApprovalForm from "components/form/ApprovalForm";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { PageContext } from "components/PageProvider";
 import { locationPath } from "constants/locationPath";
-import { axiosFetch, axiosPost } from "api/axiosFetch";
+import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
 import { ChangePrmnPlanData } from "components/DataTable/function/ChangePrmnPlanData";
 import RefreshButton from "components/button/RefreshButton";
@@ -79,6 +79,128 @@ function OrderPlanMgmt() {
 
     const refresh = () => {
         fetchAllData();
+    };
+
+    //인건비용임
+    const compareData = (originData, updatedData) => {
+        const filterData = updatedData.filter((data) => data.pmpMonth); //pmpMonth가 없는 데이터 제외
+        const originDataLength = originData ? originData.length : 0;
+        const updatedDataLength = filterData ? filterData.length : 0;
+        console.log(originData, "originData");
+        console.log(updatedData, "updatedData");
+
+        if (originDataLength > updatedDataLength) {
+            //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
+            const updateDataInOrigin = (originData, updatedData) => {
+                // 복제하여 새로운 배열 생성
+                const updatedArray = [...originData];
+                // updatedData의 길이만큼 반복하여 originData 갱신
+                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
+                    const updatedItem = updatedData[i];
+                    updatedArray[i] = { ...updatedItem, pmpMonth: updatedArray[i].pmpMonth, pmpMonth2: updatedArray[i].pmpMonth2 };
+                }
+                return updatedArray;
+            };
+
+            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
+            console.log(firstRowUpdate, "firstRowUpdate🔥🔥");
+            upDateChange(firstRowUpdate);
+            updateList(firstRowUpdate);
+
+            const originAValues = originData.map((item) => item.pmpId);
+            const extraOriginData = originAValues.slice(updatedDataLength);
+            const combinedAValues = extraOriginData.reduce((acc, current) => acc.concat(current), []);
+
+            deleteList(combinedAValues);
+        } else if (originDataLength === updatedDataLength) {
+            upDateChange(filterData);
+            updateList(filterData);
+        } else if (originDataLength < updatedDataLength) {
+            const toAdds = [];
+            const addUpdate = [];
+            for (let i = 0; i < originDataLength; i++) {
+                addUpdate.push(filterData[i]);
+            }
+            updateList(addUpdate);
+
+            for (let i = originDataLength; i < updatedDataLength; i++) {
+                const toAdd = { ...filterData[i] };
+                delete toAdd.total;
+                delete toAdd.poiBeginDt1;
+                toAdd.useAt = "Y";
+                toAdd.deleteAt = "N";
+                toAdd.poiId = projectInfo.poiId;
+
+                for (let j = 1; j <= 13; j++) {
+                    if (toAdd[`pmpmmPositionCode${j}`] === null) {
+                        toAdd[`pmpmmPositionCode${j}`] = 0;
+                    }
+                }
+
+                toAdds.push(toAdd);
+            }
+            addList(toAdds);
+        }
+    };
+
+    const addList = async (addNewData) => {
+        const url = `/api/baseInfrm/product/prmnPlan/addList.do`;
+        const resultData = await axiosPost(url, addNewData);
+        if (resultData) {
+            refresh();
+        }
+    };
+    const updateList = async (toUpdate) => {
+        console.log("❗updateList:", toUpdate);
+        const url = `/api/baseInfrm/product/prmnPlan/editList.do`;
+        const resultData = await axiosUpdate(url, toUpdate);
+        if (resultData) {
+            refresh();
+        }
+    };
+
+    const deleteList = async (removeItem) => {
+        const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
+        const resultData = await axiosDelete(url, removeItem);
+        if (resultData) {
+            refresh();
+        }
+    };
+
+    // 초기 데이터와 수정된 데이터를 비교하는 함수
+    //추가 함수
+    const upDateChange = (data, originData) => {
+        for (let index = 0; index < data.length; index++) {
+            const item = data[index];
+
+            // null 값을 0으로 변경
+            for (let i = 1; i <= 13; i++) {
+                const key = `pmpmmPositionCode${i}`;
+                if (item[key] === null) {
+                    item[key] = 0;
+                }
+            }
+
+            // useAt이 없다면 "Y"로 설정
+            if (!item.hasOwnProperty("useAt")) {
+                item.useAt = "Y";
+            }
+
+            if (!item.hasOwnProperty("poiId")) {
+                item.poiId = projectInfo.poiId;
+            }
+
+            // deleteAt이 없다면 "N"로 설정
+            if (!item.hasOwnProperty("deleteAt")) {
+                item.deleteAt = "N";
+            }
+
+            // pmpMonth2가 없다면 값을 pmpMonth에서 가져옴
+            if (!item.hasOwnProperty("pmpMonth2")) {
+                item.pmpMonth2 = item.pmpMonth;
+                item.pmpMonth = originData[index].pmpMonth;
+            }
+        }
     };
 
     const fetchAllData = async () => {

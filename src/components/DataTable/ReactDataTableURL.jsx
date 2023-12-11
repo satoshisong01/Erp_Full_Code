@@ -150,17 +150,28 @@ const ReactDataTableURL = (props) => {
 
     useEffect(() => {
         if (Object.keys(companyInfo).length > 0) {
-            console.log("companyInfo: ", companyInfo);
+            //console.log("companyInfo: ", companyInfo);
             setValueDataCmInfo(rowIndex, companyInfo);
         }
     }, [companyInfo]);
 
     const setValueDataCmInfo = (rowIndex, cmInfo) => {
-        const updatedTableData = [...tableData];
-        updatedTableData[rowIndex] = {
-            ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
-            ...cmInfo,
-        };
+        let updatedTableData = [];
+        if (current === "개발외주비") {
+            updatedTableData = [...tableData];
+            updatedTableData[rowIndex] = {
+                ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+                esntlId: cmInfo.cltNm,
+                cltId: cmInfo.cltId,
+            };
+        } else {
+            updatedTableData = [...tableData];
+            updatedTableData[rowIndex] = {
+                ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+                ...cmInfo,
+            };
+        }
+
         setTableData(updatedTableData);
         setCompanyInfo({});
     };

@@ -9,114 +9,41 @@ import RefreshButton from "components/button/RefreshButton";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { PageContext } from "components/PageProvider";
 import { axiosFetch } from "api/axiosFetch";
+import { columns } from "constants/columns";
 
 /** 기준정보관리-품목관리-품목상세관리 */
 function ItemDetailMgmt() {
     const { setNameOfButton } = useContext(PageContext);
     const itemDetailMgmtTable = useRef(null);
-    const [pdIdArray, setPdIdArray] = useState([]);
-
-    const columns = [
-        {
-            header: "품목ID",
-            col: "pdiId",
-            cellWidth: "20%",
-            placeholder: "숫자만넣어주세요",
-            enable: false,
-            modify: true,
-            add: false,
-            require: true,
-            notView: true,
-        },
-        {
-            header: "품목그룹명",
-            col: "pgNm",
-            cellWidth: "20%",
-            modify: true,
-            add: true,
-            require: true,
-        },
-        {
-            header: "품목명",
-            col: "pdiNm",
-            cellWidth: "20%",
-            modify: true,
-            add: true,
-            require: true,
-        },
-        {
-            header: "품목번호",
-            col: "pdiNum",
-            cellWidth: "20%",
-            modify: true,
-            add: true,
-        },
-        {
-            header: "품목코드",
-            col: "pdiCode",
-            cellWidth: "20%",
-            modify: true,
-            add: true,
-        },
-        { header: "단위", col: "pdiWght", cellWidth: "20%", modify: true, add: true,},
-        { header: "품목규격", col: "pdiStnd", cellWidth: "20%" },
-        {
-            header: "품목그룹ID",
-            col: "pgId",
-            cellWidth: "20%",
-            enable: false,
-            type: "select",
-            option: pdIdArray,
-            modify: true,
-            add: true,
-            require: true,
-        },
-    ];
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
-        const url = `/api/baseInfrm/product/productGroup/totalListAll.do`;
-        const requestData = { useAt: "Y" };
-        const resultData = await axiosFetch(url, requestData);
-        if (resultData) {
-            const ArrayList = resultData.map((item, index) => ({
-                value: index + 1,
-                label: item.pgId, // 원하는 속성 이름을 여기에 추가
-            }));
-            setPdIdArray(ArrayList);
-        }
-    };
 
     const conditionList = [
+        {
+            title: "품목그룹명",
+            colName: "pgNm",
+            type: "input",
+            value: "",
+            searchLevel: "1",
+        },
         {
             title: "품목명",
             colName: "pdiNm", //컬럼명
             type: "input",
             value: "",
-            searchLevel: "1",
-        },
-        {
-            title: "품목번호",
-            colName: "pdiNum", //컬럼명
-            type: "input",
-            value: "",
             searchLevel: "2",
         },
         {
-            title: "상태",
-            colName: "createIdBy", //컬럼명
-            type: "select",
-            option: [{ value: "사용" }, { value: "임시" }, { value: "거래중지" }, { value: "폐기" }],
+            title: "제조사",
+            colName: "pdiMenufut", //컬럼명
+            type: "input",
+            value: "",
             searchLevel: "3",
         },
         {
-            title: "작성일",
-            colName: "createDate",
-            type: "datepicker",
-            searchLevel: "1",
+            title: "판매사",
+            colName: "pdiSeller", //컬럼명
+            type: "input",
+            value: "",
+            searchLevel: "3",
         },
     ];
 
@@ -136,7 +63,7 @@ function ItemDetailMgmt() {
             </div>
             <ReactDataTable
                 //beforeItem={pdIdArray}
-                columns={columns}
+                columns={columns.reference.itemDetailMgmt}
                 suffixUrl="/baseInfrm/product/productInfo"
                 tableRef={itemDetailMgmtTable}
                 setLengthSelectRow={setLengthSelectRow}
