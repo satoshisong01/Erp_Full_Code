@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-calendar/dist/Calendar.css";
 import "react-datepicker/dist/react-datepicker.css";
 import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
 import { v4 as uuidv4 } from "uuid";
 
-export default function MonthPicker({ name, value, onClick }) {
+export default function YearPicker({ name, value, onClick }) {
     const [isVisible, setIsVisible] = useState(true);
 
     useEffect(() => { //다른 곳 클릭 시 닫음
@@ -29,8 +29,7 @@ export default function MonthPicker({ name, value, onClick }) {
 
     const formatChange = (date) => {
         const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const formatted = `${year}-${month}`;
+        const formatted = `${year}`; //String만 가능
         return formatted;
     };
 
@@ -41,10 +40,10 @@ export default function MonthPicker({ name, value, onClick }) {
             name={name}
             value={value}
             locale={ko}
-            dateFormat="yyyy-MM"
+            dateFormat="yyyy"
             onClick={() => setIsVisible(false)}
             onChange={dateChange}
-            showMonthYearPicker
+            showYearPicker
             calendarVisible={isVisible}
         />
     );

@@ -18,7 +18,7 @@ function OrderMgmt() {
     const orderMgmtTable = useRef(null);
     const [isOpenAdd, setIsOpenAdd] = useState(false);
 
-    const addColumns = [
+    const addModColumns = [
         { items: [{ header: "프로젝트이름", col: "poiNm", require: true, type: "input" }] },
         {
             items: [
@@ -34,28 +34,29 @@ function OrderMgmt() {
         },
         {
             items: [
-                { header: "계약일", col: "poiBeginDt", type: "daypicker" },
-                { header: "기준이익률", col: "standardMargin", type: "input" }
+                { header: "계약일", col: "poiBeginDt", type: "monthPicker" },
+                { header: "이익률", col: "standardMargin", type: "number" }
             ]
         },
         {
             items: [
-                { header: "납기시작일", col: "poiDueBeginDt", type: "daypicker" },
-                { header: "납기종료일", col: "poiDueEndDt", type: "daypicker" ,}
+                { header: "납기시작일", col: "poiDueBeginDt", type: "dayPicker" },
+                { header: "납기종료일", col: "poiDueEndDt", type: "dayPicker" ,}
             ]
         },
         {
             items: [
-                { header: "통화", col: "poiCurrcy", type: "input" },
-                { header: "상태", col: "poiStatus", require: true, type: "input"  }
+                { header: "통화", col: "poiCurrcy", type: "select" },
+                { header: "상태", col: "poiStatus", require: true, type: "select"  }
             ]
         },
         {
             items: [
-                { header: "기준연도", col: "poiMonth", require: true, type: "input"  },
-                { header: "고객사", col: "cltNm", placeholder: "고객사를 선택하세요.", require: true, type: "buttonCompany"  }
+                { header: "기준연도", col: "poiMonth", require: true, type: "yearPicker"  },
+                { header: "고객사", col: "cltNm", placeholder: "고객사를 선택하세요.", require: true, type: "company"  }
             ]
         },
+        { items: [{ header: "비고", col: "poiDesc", type: "desc" }] },
     ]
 
     const columns = [
@@ -136,9 +137,10 @@ function OrderMgmt() {
                 isOpenAdd &&
                     <AddModal
                         width={500}
-                        height={400}
-                        list={addColumns}
-                        onClose={() => setIsOpenAdd(false)} sendData={addToServer}
+                        height={480}
+                        list={addModColumns}
+                        onClose={() => setIsOpenAdd(false)}
+                        sendData={addToServer}
                         title="프로젝트 추가"
                     />
             }
