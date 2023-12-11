@@ -1,7 +1,20 @@
 export const columns = {
     /* 영업관리 */
     orderPlanMgmt: {
-        // 수주계획관리
+        // 계획관리
+        version: [
+            //원가버전조회
+            { header: "프로젝트명", col: "poiNm", cellWidth: "25%" },
+            { header: "원가버전", col: "version", cellWidth: "10%" },
+            { header: "계약일", col: "poiBeginDt", cellWidth: "10%" },
+            { header: "납기시작일", col: "poiDueBeginDt", cellWidth: "10%", type: "input" },
+            { header: "납기종료일", col: "poiDueEndDt", cellWidth: "10%", type: "input" },
+            { header: "인건비", col: "labor", cellWidth: "10%", type: "input" },
+            { header: "구매비", col: "purchase", cellWidth: "10%", type: "input" },
+            { header: "외주비", col: "outsourcing", cellWidth: "10%", type: "input" },
+            { header: "경비", col: "expenses", cellWidth: "10%", type: "input" },
+            { header: "영업관리비", col: "generalExpenses", cellWidth: "10%", type: "input" },
+        ],
         labor: [
             //인건비
             { header: "연월", col: "pmpMonth", cellWidth: "10%", type: "datepicker" },
@@ -116,7 +129,7 @@ export const columns = {
             { header: "통화", col: "poiCurrcy", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
             { header: "기준이익률", col: "standardMargin", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
             { header: "상태", col: "poiStatus", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
-            { header: "시작일", col: "poiBeginDt", cellWidth: "15%", type: "input", enable: true, modify: true, add: true, require: false },
+            { header: "계약일", col: "poiBeginDt", cellWidth: "15%", type: "input", enable: true, modify: true, add: true, require: false },
             { header: "종료일", col: "poiEndDt", cellWidth: "15%", type: "input", enable: true, modify: true, add: true, require: false },
             { header: "납기시작일", col: "poiDueBeginDt", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
             { header: "납기종료일", col: "poiDueEndDt", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
@@ -127,57 +140,26 @@ export const columns = {
             //조건
             {
                 title: "프로젝트명",
-                col: "clCode", //컬럼명
+                col: "poiId", //컬럼명
                 type: "input",
                 value: "",
-                searchLevel: "1",
             },
             {
-                title: "수주상태",
+                title: "계약일",
+                col: "poiBeginDt",
+                type: "datepicker",
+            },
+            {
+                title: "고객사",
+                col: "clCodeNm", //컬럼명
+                type: "input",
+                value: "",
+            },
+            {
+                title: "상태",
                 col: "name",
                 type: "select",
-                option: [{ value: "사업진행중" }, { value: "사업완료" }, { value: "작성완료" }],
-                searchLevel: "3",
-            },
-            {
-                title: "담당자",
-                col: "clCode", //컬럼명
-                type: "input",
-                value: "",
-                searchLevel: "1",
-            },
-            {
-                title: "영업대표",
-                col: "clCode", //컬럼명
-                type: "input",
-                value: "",
-                searchLevel: "1",
-            },
-            {
-                title: "프로젝트기간",
-                col: "selectedDate",
-                type: "datepicker",
-                searchLevel: "0",
-            },
-            {
-                title: "납기기간",
-                col: "selectedDate",
-                type: "datepicker",
-                searchLevel: "0",
-            },
-            {
-                title: "거래처",
-                col: "clCodeNm", //컬럼명
-                type: "input",
-                value: "",
-                searchLevel: "2",
-            },
-            {
-                title: "비고",
-                col: "clCodeNm", //컬럼명
-                type: "input",
-                value: "",
-                searchLevel: "2",
+                option: [{ value: "프로젝트접수" }, { value: "실행예산완료" }, { value: "실행정산중" }, { value: "프로젝트종료" }],
             },
         ],
     },
