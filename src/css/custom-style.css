@@ -292,7 +292,6 @@
 .flex-container {
     display: flex;
     flex-wrap: wrap;
-    margin-bottom: 50px;
 }
 
 .flex-group {
@@ -706,7 +705,6 @@ select {
 
 .approval-form {
     font-size: 12px;
-    margin-bottom: 20px;
 
     .approval-row {
         display: flex;
@@ -799,6 +797,12 @@ th {
 
 td > input {
     width: 100%;
+}
+
+
+.react-calendar {
+    position: absolute;
+    z-index: 9999;
 }
 
 .page-size {
@@ -938,6 +942,78 @@ body > div:nth-child(4) > div {
     max-height: 75px;
     overflow-y: auto;
 }
+
+/* 리액트 테이블 커스텀 CSS */
+.table-custom {
+    /* border-spacing: 0; */
+    /* border: 1px solid black; */
+    background-color: white;
+}
+  
+.table-custom tr:last-child td {
+    /* border-bottom: 0; */
+}
+
+.table-custom th,
+.table-custom td {
+    /* margin: 0; */
+    /* padding: 0.5rem; */
+    /* border-bottom: 1px solid black; */
+    /* border-right: 1px solid black; */
+    /* position: relative; */
+}
+
+.table-custom th:last-child,
+.table-custom td:last-child {
+    /* border-right: 0; */
+}
+
+.table-custom th {
+    background-color: #007bff;
+    color: #001933;
+}
+
+.table-custom thead {
+    user-select: none;
+}
+
+.table-custom .resizer {
+    display: inline-block;
+    background: blue;
+    width: 10px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translateX(50%);
+    z-index: 1;
+    touch-action:none;
+
+    &.isResizing {
+        background: red;
+    }
+}
+
+/* ant tab 탭*/
+.ant-tabs-content {
+    /* border-radius: 0 10px 10px 10px; */
+}
+
+.ant-tabs-tabpane {
+    border-radius: 0 10px 10px 10px;
+    padding: 20px;
+    background-color: white;
+}
+
+#root > div > div.egov-container.T_MAIN > div > div > div.right_col > div > div.ant-tabs-nav {
+    margin: 0 0 2px 0;
+}
+
+.padding-x {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 
 /* 반응형 스타일 */
 @media (max-width: 768px) {

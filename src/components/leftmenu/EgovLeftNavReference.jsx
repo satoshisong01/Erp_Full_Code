@@ -86,6 +86,7 @@ function EgovLeftNavReference(props) {
                                     to="#"
                                     onClick={(e) => clickHandle(menuItem) }
                                     activeName={activeLabel === menuItem.id ? menuItem.label : null}
+                                    styled={`padding-x ${menuItem.subMenus.length > 0 ? '' : 'libg'}`}
                                 >
                                     {menuItem.label}
                                 </NavLinkTabs>
@@ -98,6 +99,7 @@ function EgovLeftNavReference(props) {
                                                     to="#"
                                                     onClick={(e) => clickHandle( menuItem, subMenu ) }
                                                     activeName={activeSub === subMenu.id ? subMenu.label : null}
+                                                    styled="padding-x libg"
                                                 >
                                                     {subMenu.label}
                                                 </NavLinkTabs>

@@ -48,7 +48,7 @@ function EgovLeftNavSales(props) {
     const menuItems = [
         { label: '프로젝트관리', id: "OrderMgmt", subMenus: [] },
         { label: '계획관리', id: "OrderPlanMgmt", subMenus: [] },
-        { label: '영업비용', id: "SalesExpenses", subMenus: [] },
+        { label: '영업비(정산)', id: "SalesExpenses", subMenus: [] },
     ];
 
     return (
@@ -63,6 +63,7 @@ function EgovLeftNavSales(props) {
                                     to="#"
                                     onClick={(e) => clickHandle(menuItem)}
                                     activeName={activeLabel === menuItem.id ? menuItem.label : null}
+                                    styled={`padding-x ${menuItem.subMenus.length > 0 ? '' : 'libg'}`}
                                 >
                                     {menuItem.label}
                                 </NavLinkTabs>
@@ -75,6 +76,7 @@ function EgovLeftNavSales(props) {
                                                     to="#"
                                                     onClick={(e) => clickHandle( menuItem, subMenu ) }
                                                     activeName={activeSub === subMenu.id ? subMenu.label : null}
+                                                    styled="padding-x libg"
                                                 >
                                                     {subMenu.label}
                                                 </NavLinkTabs>
