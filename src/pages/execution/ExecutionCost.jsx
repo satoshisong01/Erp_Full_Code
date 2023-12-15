@@ -23,6 +23,9 @@ function ExecutionCost() {
         console.log(value, "제대로 들어오냐");
     };
 
+    const save = () => {
+        
+    }
 
     return (
         <>
@@ -30,12 +33,11 @@ function ExecutionCost() {
             <SearchList conditionList={columns.executionCost.condition} onSearch={handleReturn} />
             <div className="table-buttons">
                 <PopupButton targetUrl={URL.ExcutionCostsDoc} data={{ label: "실행원가서", projectInfo }} />
-                <ModButton label={"수정"} onClick={() => setNameOfButton("modify")} />
-                <DelButton label={"삭제"} onClick={() => setNameOfButton("delete")} />
+                <PopupButton targetUrl={URL.ExcutionCostsDoc} data={{ label: "정산서", projectInfo }} />
+                <ModButton label={"저장"} onClick={save} />
                 <RefreshButton onClick={() => setNameOfButton("refresh")} />
             </div>
             <ReactDataTable columns={columns.executionCost.project} suffixUrl="/baseInfrm/product/pjOrdrInfo" tableRef={orderMgmtTable} viewPageName="실행원가관리" />
-            {/*<DataTable returnKeyWord={returnKeyWord} columns={columns} suffixUrl="/system/code/clCode" addBtn={addBtn} />*/}
         </>
     );
 }

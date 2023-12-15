@@ -1,3 +1,5 @@
+@import '/src/css/custom-style.scss';
+
 /* 모달 설정 */
 .me-modal {
     position: fixed;
@@ -34,7 +36,7 @@
 
 .me-modal-header {
     /* color: #007bff; */
-    background-color: #007bff;
+    background-color: $blue;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -69,7 +71,10 @@
     flex-direction: column;
     gap: 15px;
     overflow-y: auto;
+    /* justify-content: space-between; */
     justify-content: space-between;
+    padding-top: 10px;
+    padding-bottom: 10px;
     align-self: center;
     /* background-color: rgb(236, 255, 127); */
 
@@ -86,7 +91,7 @@
             .left {
                 width: 85px;
                 text-align: right;
-                .red { color: red; margin-right: 3px; }
+                .red { color: $burgundy; margin-right: 3px; }
             }
 
             .right {

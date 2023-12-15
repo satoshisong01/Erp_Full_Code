@@ -10,9 +10,11 @@ import ModButton from "components/button/ModButton";
 import AddButton from "components/button/AddButton";
 import PopupButton from "components/button/PopupButton";
 import URL from "constants/url";
-import AddModal from "components/modal/AddModal";
 import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 import DeleteModal from "components/modal/DeleteModal";
+import { columns } from "constants/columns";
+import HideCard from "components/HideCard";
+import AddModModal from "components/modal/AddModModal";
 
 /** 영업관리-수주등록관리 */
 function OrderMgmt() {
@@ -23,129 +25,13 @@ function OrderMgmt() {
     const [isOpenDel, setIsOpenDel] = useState(false);
 
     const [sendDataTable, setSendDataTable] = useState([]);
+    const [selectedRows , setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
+
 
     //임시 삭제 할 id,명
     const [poiId, setPoiId] = useState([]);
     const [poiNm, setPoiNm] = useState([]);
-    const [sendList, setSendList] = useState({});
-
-    const addModColumns = [
-        { items: [{ header: "프로젝트이름", col: "poiNm", require: true, type: "input" }] },
-        { items: [{ header: "코드(임시)", col: "poiCode", require: true, type: "input" }] },
-        {
-            items: [
-                {
-                    header: "수주부서",
-                    col: "poiGroupId",
-                    placeholder: "부서를 선택하세요.",
-                    require: true,
-                    type: "itemSelect",
-                    itemType: ["부서를 선택해 주세요", "PS", "PA"],
-                    itemTypeSymbol: ["", "PS", "PA"],
-                },
-                {
-                    header: "매출부서",
-                    col: "poiSalesGroupId",
-                    placeholder: "부서를 선택하세요.",
-                    require: true,
-                    type: "itemSelect",
-                    itemType: ["부서를 선택해 주세요", "PS", "PA"],
-                    itemTypeSymbol: ["", "PS", "PA"],
-                },
-            ],
-        },
-        {
-            items: [
-                { header: "영업대표", col: "poiSalmanagerId", placeholder: "영업대표를 선택하세요.", require: true, type: "input" },
-                { header: "담당자", col: "poiManagerId", placeholder: "담당자를 선택하세요.", require: true, type: "input" },
-            ],
-        },
-        {
-            items: [
-                { header: "계약일", col: "poiBeginDt", type: "monthPicker" },
-                { header: "이익률", col: "standardMargin", type: "number" },
-            ],
-        },
-        {
-            items: [
-                { header: "납기시작일", col: "poiDueBeginDt", type: "dayPicker" },
-                { header: "납기종료일", col: "poiDueEndDt", type: "dayPicker" },
-            ],
-        },
-        {
-            items: [
-                { header: "통화", col: "poiCurrcy", type: "input" },
-                {
-                    header: "상태",
-                    col: "poiStatus",
-                    cellWidth: "10%",
-                    type: "itemSelect",
-                    itemType: ["상태를 선택해 주세요", "인벤토리접수", "원가작성중", "견적완료", "계약완료"],
-                    itemTypeSymbol: ["", "인벤토리접수", "원가작성중", "견적완료", "계약완료"],
-                    enable: true,
-                    modify: true,
-                    add: true,
-                    require: true,
-                },
-            ],
-        },
-        {
-            items: [
-                { header: "기준연도", col: "poiMonth", require: true, type: "input" },
-                { header: "고객사", col: "cltNm", placeholder: "고객사를 선택하세요.", require: true, type: "buttonCompany" },
-            ],
-        },
-        { items: [{ header: "비고", col: "poiDesc", type: "desc" }] },
-    ];
-
-    const columns = [
-        { header: "수주 아이디", col: "poiId", cellWidth: "5%", type: "input", enable: true, modify: false, add: false, require: true, notView: true },
-        { header: "프로젝트이름", col: "poiNm", cellWidth: "25%", type: "input", enable: true, modify: true, add: true, require: true },
-        { header: "고객사", col: "cltNm", cellWidth: "15%", type: "input", enable: true, modify: true, add: false, require: false },
-        { header: "수주부서", col: "poiGroupId", cellWidth: "7%", type: "input", enable: true, modify: true, add: true, require: false },
-        { header: "매출부서", col: "poiSalesGroupId", cellWidth: "7%", type: "input", enable: true, modify: true, add: true, require: false },
-        { header: "영업대표", col: "poiSalmanagerId", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
-        { header: "PM", col: "poiManagerId", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
-        { header: "통화", col: "poiCurrcy", cellWidth: "5%", type: "input", enable: true, modify: true, add: true, require: false },
-        { header: "계약일", col: "poiBeginDt", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
-        { header: "납기시작일", col: "poiDueBeginDt", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
-        { header: "납기종료일", col: "poiDueEndDt", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
-        { header: "기준이익률", col: "standardMargin", cellWidth: "8%", type: "input", enable: true, modify: true, add: true, require: false },
-        { header: "상태", col: "poiStatus", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
-    ];
-
-    const conditionList = [
-        {
-            title: "프로젝트명",
-            colName: "poiNm",
-            type: "input",
-            value: "",
-        },
-        {
-            title: "영업대표",
-            colName: "poiSalmanagerId",
-            type: "input",
-            value: "",
-        },
-        {
-            title: "담당자",
-            colName: "poiManagerId",
-            type: "input",
-            value: "",
-        },
-        {
-            title: "상태",
-            colName: "poiStatus",
-            type: "input",
-            value: "",
-        },
-        {
-            title: "계약일",
-            colName: "poiBeginDt",
-            type: "input",
-            value: "",
-        },
-    ];
+    const [modData, setModData] = useState({});
 
     const saveIdNm = (poiId, poiNm) => {
         console.log(poiId, poiNm);
@@ -153,10 +39,10 @@ function OrderMgmt() {
         setPoiNm(poiNm);
     };
 
-    const returnData = (data) => {
+    const getSelectedRow = (data) => {
         // sendList가 변경되었을 때만 업데이트
-        if (!objectsAreEqual(sendList, data)) {
-            setSendList(data);
+        if (!objectsAreEqual(modData, data)) {
+            setModData(data);
             console.log(data);
         }
     };
@@ -242,36 +128,46 @@ function OrderMgmt() {
         setSendDataTable(resultData);
     };
 
+    const onSearch = (value) => {
+        console.log("서치데이터: ", value);
+    }
+
+    useEffect(() => {
+        console.log("💜selectedRows:", selectedRows);
+    }, [selectedRows])
+
     return (
         <>
             <Location pathList={locationPath.OrderMgmt} />
-            <SearchList conditionList={conditionList} />
-            <div className="table-buttons">
-                <PopupButton targetUrl={URL.LaborPreCostDoc} data={{ label: "사전원가서", projectInfo }} />
-                <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
-                <ModButton label={"수정"} onClick={() => setIsOpenUpDate(true)} />
-                <DelButton label={"삭제"} onClick={deleteToServer} />
-                <RefreshButton onClick={refresh} />
-            </div>
-            <ReactDataTable
-                columns={columns}
-                sendData={sendDataTable}
-                suffixUrl="/baseInfrm/product/pjOrdrInfo"
-                tableRef={orderMgmtTable}
-                viewPageName="프로젝트관리"
-                saveIdNm={saveIdNm}
-                sendSelected={returnData}
-            />
+            <SearchList conditionList={columns.orderMgmt.condition} onSearch={onSearch}/>
+            <HideCard title="프로젝트 목록" color="back-lightblue" className="mg-b-40">
+                <div className="table-buttons mg-b-m-50">
+                    {/* <PopupButton targetUrl={URL.LaborPreCostDoc} data={{ label: "사전원가서", projectInfo }} /> */}
+                    <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
+                    <ModButton label={"수정"} onClick={() => setIsOpenUpDate(true)} />
+                    <DelButton label={"삭제"} onClick={deleteToServer} />
+                    <RefreshButton onClick={refresh} />
+                </div>
+                <ReactDataTable
+                    columns={columns.orderMgmt.project}
+                    customDatas={sendDataTable}
+                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                    tableRef={orderMgmtTable}
+                    viewPageName="프로젝트관리"
+                    saveIdNm={saveIdNm}
+                    sendSelected={(data) => {setSelectedRows(data)}}
+                />
+            </HideCard>
             {isOpenAdd && (
-                <AddModal width={500} height={400} list={addColumns} sendData={addToServer} onClose={() => setIsOpenAdd(false)} title="프로젝트 추가" />
+                <AddModModal width={500} height={400} list={columns.orderMgmt.addMod} sendData={addToServer} onClose={() => setIsOpenAdd(false)} title="프로젝트 추가" />
             )}
             {isOpenUpDate && (
-                <AddModal
+                <AddModModal
                     width={500}
                     height={400}
-                    list={addColumns}
-                    sendList={sendList}
-                    sendData={modifyToServer}
+                    list={columns.orderMgmt.addMod}
+                    initialData={selectedRows}
+                    resultData={modifyToServer}
                     onClose={() => setIsOpenUpDate(false)}
                     title="프로젝트 수정"
                 />

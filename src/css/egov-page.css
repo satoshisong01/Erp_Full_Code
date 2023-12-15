@@ -378,7 +378,7 @@
 .T_MAIN .colbox .left_col {
     width: 17%;
     padding-top: 25px;
-    margin-left: 2%;
+    /* margin-left: 2%; */
 }
 
 /* 오늘의 행사 */

@@ -64,7 +64,7 @@ body {
     color: #fff;
     font-size: 14px;
     line-height: 30px;
-    background: #169bd5;
+    background: #3276b1;
 }
 
 .header .gnb {
@@ -263,7 +263,8 @@ body {
 }
 /* 네비게이션 부모에는 배경 깔리지 않음 */
 .c_wrap .layout .nav ul li a.cur.libg {
-    background-color: #beddff;
+    background-color: #d6dde7;
+    color: #305d8c;
 }
 
 .c_wrap .layout .nav ul li ul li a {

@@ -38,7 +38,7 @@ export default function YearPicker({ name, value, onClick }) {
             id={uuidv4()}
             className="basic-input"
             name={name}
-            value={value}
+            value={value || ""}
             locale={ko}
             dateFormat="yyyy"
             onClick={() => setIsVisible(false)}

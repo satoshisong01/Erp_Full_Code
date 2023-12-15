@@ -93,6 +93,110 @@ export const columns = {
         ],
     },
     /* 영업관리 */
+    orderMgmt: {
+        project: [ //프로젝트관리
+            // { header: "수주 아이디", col: "poiId", cellWidth: "5%" },
+            { header: "프로젝트이름", col: "poiNm", cellWidth: "25%" },
+            { header: "고객사", col: "cltNm", cellWidth: "15%" },
+            { header: "수주부서", col: "poiGroupId", cellWidth: "7%" },
+            { header: "매출부서", col: "poiSalesGroupId", cellWidth: "7%" },
+            { header: "영업대표", col: "poiSalmanagerId", cellWidth: "10%" },
+            { header: "담당자", col: "poiManagerId", cellWidth: "10%" },
+            { header: "통화", col: "poiCurrcy", cellWidth: "5%" },
+            { header: "계약일", col: "poiBeginDt", cellWidth: "10%" },
+            { header: "납기시작일", col: "poiDueBeginDt", cellWidth: "10%" },
+            { header: "납기종료일", col: "poiDueEndDt", cellWidth: "10%" },
+            { header: "기준이익률", col: "standardMargin", cellWidth: "8%" },
+            { header: "상태", col: "poiStatus", cellWidth: "10%" },
+        ],
+        condition: [
+            { title: "프로젝트명", col: "poiNm", type: "input" },
+            { title: "영업대표", col: "poiSalmanagerId", type: "input" },
+            { title: "담당자", col: "poiManagerId", type: "input",  },
+            {
+                title: "상태", col: "poiStatus", type: "select",
+                option: [
+                    {label: "접수중", value: "order"},
+                    {label: "진행중", value: "progress"},
+                    {label: "종료", value: "completed"},
+                ]
+            },
+            { title: "계약일", col: "poiBeginDt", type: "input" },
+        ],
+        addMod: [
+            { items: [{ header: "프로젝트이름", col: "poiNm", require: true, type: "input" }] },
+            { items: [{ header: "코드(임시)", col: "poiCode", require: true, type: "input" }] },
+            {
+                items: [
+                    {
+                        header: "수주부서",
+                        col: "poiGroupId",
+                        placeholder: "부서를 선택하세요.",
+                        require: true,
+                        type: "select",
+                        option: [
+                            {label: "PS", value: "PS"},
+                            {label: "PA", value: "PA"},
+                        ],
+                    },
+                    {
+                        header: "매출부서",
+                        col: "poiSalesGroupId",
+                        placeholder: "부서를 선택하세요.",
+                        require: true,
+                        type: "select",
+                        option: [
+                            {label: "PS", value: "PS"},
+                            {label: "PA", value: "PA"},
+                        ],
+                    },
+                ],
+            },
+            {
+                items: [
+                    { header: "영업대표", col: "poiSalmanagerId", placeholder: "영업대표를 선택하세요.", require: true, type: "input" },
+                    { header: "담당자", col: "poiManagerId", placeholder: "담당자를 선택하세요.", require: true, type: "input" },
+                ],
+            },
+            {
+                items: [
+                    { header: "계약일", col: "poiBeginDt", type: "dayPicker" },
+                    { header: "이익률", col: "standardMargin", type: "number" },
+                ],
+            },
+            {
+                items: [
+                    { header: "납기시작일", col: "poiDueBeginDt", type: "dayPicker" },
+                    { header: "납기종료일", col: "poiDueEndDt", type: "dayPicker" },
+                ],
+            },
+            {
+                items: [
+                    { header: "통화", col: "poiCurrcy", type: "input" },
+                    {
+                        header: "상태",
+                        col: "poiStatus",
+                        cellWidth: "10%",
+                        //type: "itemSelect",
+                        type: "select",
+                        itemType: ["상태를 선택해 주세요", "인벤토리접수", "원가작성중", "견적완료", "계약완료"],
+                        itemTypeSymbol: ["", "인벤토리접수", "원가작성중", "견적완료", "계약완료"],
+                        enable: true,
+                        modify: true,
+                        add: true,
+                        require: true,
+                    },
+                ],
+            },
+            {
+                items: [
+                    { header: "기준연도", col: "poiMonth", require: true, type: "yearPicker" },
+                    { header: "고객사", col: "cltNm", placeholder: "고객사를 선택하세요.", require: true, type: "company" },
+                ],
+            },
+            { items: [{ header: "비고", col: "poiDesc", type: "desc" }] },
+        ]
+    },
     orderPlanMgmt: {
         // 계획관리
         version: [

@@ -99,7 +99,7 @@ const ReactDataTableView = (props) => {
 
     return (
         <>
-            <div className="flex-between mg-b-20 mg-t-20">
+            {/* <div className="flex-between">
                 <div className="page-size">
                     <span className="mg-r-10">페이지 크기 :</span>
                     <select className="select" id={uuidv4()} value={pageSize} onChange={(e) => pageSizeChange(e.target.value)}>
@@ -110,7 +110,7 @@ const ReactDataTableView = (props) => {
                         ))}
                     </select>
                 </div>
-            </div>
+            </div> */}
 
             <table {...getTableProps()} className="table-styled" ref={tableRef}>
                 <thead>
