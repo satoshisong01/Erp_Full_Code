@@ -39,7 +39,8 @@ function OrderMgmt() {
                     col: "poiGroupId",
                     placeholder: "부서를 선택하세요.",
                     require: true,
-                    type: "itemSelect",
+                    //type: "itemSelect",
+                    type: "select",
                     itemType: ["부서를 선택해 주세요", "PS", "PA"],
                     itemTypeSymbol: ["", "PS", "PA"],
                 },
@@ -48,7 +49,8 @@ function OrderMgmt() {
                     col: "poiSalesGroupId",
                     placeholder: "부서를 선택하세요.",
                     require: true,
-                    type: "itemSelect",
+                    //type: "itemSelect",
+                    type: "select",
                     itemType: ["부서를 선택해 주세요", "PS", "PA"],
                     itemTypeSymbol: ["", "PS", "PA"],
                 },
@@ -62,7 +64,7 @@ function OrderMgmt() {
         },
         {
             items: [
-                { header: "계약일", col: "poiBeginDt", type: "monthPicker" },
+                { header: "계약일", col: "poiBeginDt", type: "dayPicker" },
                 { header: "이익률", col: "standardMargin", type: "number" },
             ],
         },
@@ -79,7 +81,8 @@ function OrderMgmt() {
                     header: "상태",
                     col: "poiStatus",
                     cellWidth: "10%",
-                    type: "itemSelect",
+                    //type: "itemSelect",
+                    type: "select",
                     itemType: ["상태를 선택해 주세요", "인벤토리접수", "원가작성중", "견적완료", "계약완료"],
                     itemTypeSymbol: ["", "인벤토리접수", "원가작성중", "견적완료", "계약완료"],
                     enable: true,
@@ -91,8 +94,8 @@ function OrderMgmt() {
         },
         {
             items: [
-                { header: "기준연도", col: "poiMonth", require: true, type: "input" },
-                { header: "고객사", col: "cltNm", placeholder: "고객사를 선택하세요.", require: true, type: "buttonCompany" },
+                { header: "기준연도", col: "poiMonth", require: true, type: "yearPicker" },
+                { header: "고객사", col: "cltNm", placeholder: "고객사를 선택하세요.", require: true, type: "company" },
             ],
         },
         { items: [{ header: "비고", col: "poiDesc", type: "desc" }] },
@@ -111,6 +114,7 @@ function OrderMgmt() {
         { header: "납기시작일", col: "poiDueBeginDt", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
         { header: "납기종료일", col: "poiDueEndDt", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
         { header: "기준이익률", col: "standardMargin", cellWidth: "8%", type: "input", enable: true, modify: true, add: true, require: false },
+        { header: "비고", col: "poiDesc", cellWidth: "10%", type: "desc" },
         { header: "상태", col: "poiStatus", cellWidth: "10%", type: "input", enable: true, modify: true, add: true, require: false },
     ];
 
@@ -263,13 +267,13 @@ function OrderMgmt() {
                 sendSelected={returnData}
             />
             {isOpenAdd && (
-                <AddModal width={500} height={400} list={addColumns} sendData={addToServer} onClose={() => setIsOpenAdd(false)} title="프로젝트 추가" />
+                <AddModal width={500} height={400} list={addModColumns} sendData={addToServer} onClose={() => setIsOpenAdd(false)} title="프로젝트 추가" />
             )}
             {isOpenUpDate && (
                 <AddModal
                     width={500}
                     height={400}
-                    list={addColumns}
+                    list={addModColumns}
                     sendList={sendList}
                     sendData={modifyToServer}
                     onClose={() => setIsOpenUpDate(false)}
