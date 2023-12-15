@@ -16,27 +16,24 @@ import "react-calendar/dist/Calendar.css";
 import { v4 as uuidv4 } from "uuid";
 import DayPicker from "components/input/DayPicker";
 import MonthPicker from "components/input/MonthPicker";
-import DataPostModalReactTable from "./DataPostModalReactTable";
+// import DataPostModalReactTable from "./DataPostModalReactTable";
 const ReactDataTable = (props) => {
     const {
-        columns,
-        suffixUrl,
-        customDatas,
-        defaultPageSize,
-        tableRef,
-        viewPageName,
-        customDatasRefresh,
-        singleUrl,
-        sendToParentTables,
-        sendSelected,
-        hideCheckBox,
-        editing,
-        sendToParentCostIndex,
-        perSent,
-        sendToParentGrade,
-        sendData,
-        saveIdNm,
-        returnData,
+        columns, //컬럼
+        suffixUrl, //url-삭제예정
+        customDatas, //부모에서 주는 데이터 -> inisitalDatas 변수명변경
+        defaultPageSize, //페이지네이션
+        viewPageName, //테이블이름 -> tableName 변수명변경
+        customDatasRefresh, //리프레시-삭제예정
+        singleUrl, //url-삭제예정
+        returnList, //부모로 데이터배열 리턴-> returnList 변수명변경
+        sendSelected, //부모로 row 리턴 -> returnSelect 변수명변경
+        hideCheckBox, //체크박스 상태 플래그
+        editing, //테이블 에디트 상태 플래그
+        sendToParentCostIndex, //부모로 리턴 ---> returnList 사용하세요!
+        perSent, //단위 -> unit 변수명변경
+        sendToParentGrade, //부모로 리턴 ---> returnList 사용하세요!
+        saveIdNm, //이건뭐죠? 부모로 배열 리턴이면 returnList 사용하세요!
     } = props;
     const {
         nameOfButton,
@@ -128,7 +125,6 @@ const ReactDataTable = (props) => {
         document.addEventListener("mousedown", handleDocumentClick);
 
         setCurrent(viewPageName); //현재페이지
-        setCurrentTable(tableRef); //현재테이블
 
         if (suffixUrl) {
             fetchAllData();
@@ -153,8 +149,8 @@ const ReactDataTable = (props) => {
     }, [customDatas]);
 
     useEffect(() => {
-        setTableData(sendData);
-    }, [sendData]);
+        setTableData(customDatas);
+    }, [customDatas]);
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
@@ -176,7 +172,7 @@ const ReactDataTable = (props) => {
         if (current === innerPageName && !isSaveFormTable) {
             //inner tab에서 저장을 눌렀을 때
             if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
-                sendToParentTables(originTableData, tableData);
+                returnList(originTableData, tableData);
             } else if (innerPageName === "사전원가지표" && !isSaveFormTable) {
                 sendToParentCostIndex(originTableData, tableData);
             } else if ((innerPageName === "급별단가(인건비)" && !isSaveFormTable) || (innerPageName === "급별단가(경비)" && !isSaveFormTable)) {
@@ -606,7 +602,7 @@ const ReactDataTable = (props) => {
         <>
             <div className="flex-between mg-b-20 mg-t-20">
                 <div className="page-size">
-                    <span className="mg-r-10">페이지 크기 :</span>
+                    {/* <span className="table-title mg-r-10">데이터 수</span> */}
                     <select className="select" id={uuidv4()} value={pageSize} onChange={(e) => pageSizeChange(e.target.value)}>
                         {pageSizeOptions.map((size, index) => (
                             <option key={size + index} value={size}>
@@ -616,7 +612,7 @@ const ReactDataTable = (props) => {
                     </select>
                 </div>
             </div>
-            <table {...getTableProps()} className="table-styled" ref={tableRef}>
+            <table {...getTableProps()} className="table-custom table-styled">
                 <thead>
                     {headerGroups.map((headerGroup, headerGroupIndex) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
@@ -658,7 +654,8 @@ const ReactDataTable = (props) => {
                     {page.map((row, rowIndex) => {
                         prepareRow(row);
                         return (
-                            <tr {...row.getRowProps()} onDoubleClick={(e) => onCLickRow(row)}>
+                            // <tr {...row.getRowProps()} onDoubleClick={(e) => onCLickRow(row)}>
+                            <tr {...row.getRowProps()} >
                                 {row.cells.map((cell, cellIndex) => {
                                     if (cell.column.notView) {
                                         // notView가 true인 경우, 셀을 출력하지 않음
@@ -827,7 +824,7 @@ const ReactDataTable = (props) => {
                     }}
                 />
             )}
-            {openModalAdd && (
+            {/* {openModalAdd && (
                 <DataPostModalReactTable
                     columns={columns}
                     postData={addClick}
@@ -838,7 +835,7 @@ const ReactDataTable = (props) => {
                         setOpenModalAdd(false);
                     }}
                 />
-            )}
+            )} */}
             <DeleteModal viewData={modalViewDatas} onConfirm={deleteClick} />
             {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
         </>
