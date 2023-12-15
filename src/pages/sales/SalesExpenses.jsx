@@ -1,19 +1,15 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
-import SearchList from "components/SearchList";
-import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
 import { axiosFetch } from "api/axiosFetch";
-import ApprovalForm from "components/form/ApprovalForm";
-import ReactDataTable from "components/DataTable/ReactDataTable";
 import { PageContext } from "components/PageProvider";
 import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
+import ApprovalFormExe from "components/form/ApprovalFormExe";
 
-/** 영업관리-영업비용 */
+/** 영업관리-영업비(정산) */
 function SalesExpenses() {
-    const { isSaveFormTable, setIsSaveFormTable, projectInfo, setProjectInfo } = useContext(PageContext);
+    const { isSaveFormTable, projectInfo } = useContext(PageContext);
 
-    const [returnKeyWord, setReturnKeyWord] = useState("");
     const [salesCost, setSalesCost] = useState([]);
 
     const columns = [
@@ -43,42 +39,6 @@ function SalesExpenses() {
             type: "input",
         },
     ];
-
-    //const conditionList = [
-    //    {
-    //        title: "분류코드",
-    //        colName: "clCode", //컬럼명
-    //        type: "input",
-    //        value: "",
-    //        searchLevel: "1",
-    //    },
-    //    {
-    //        title: "분류코드명",
-    //        colName: "clCodeNm", //컬럼명
-    //        type: "input",
-    //        value: "",
-    //        searchLevel: "2",
-    //    },
-    //    {
-    //        title: "분류코드설명",
-    //        colName: "clCodeDc", //컬럼명
-    //        type: "input",
-    //        value: "",
-    //        searchLevel: "3",
-    //    },
-    //    {
-    //        title: "이름",
-    //        colName: "name",
-    //        type: "select",
-    //        option: [{ value: "다섯글자의옵션1" }, { value: "다섯글자의옵션2" }],
-    //        searchLevel: "3",
-    //    },
-    //];
-
-    //const handleReturn = (value) => {
-    //    setReturnKeyWord(value);
-    //    console.log(value, "제대로 들어오냐");
-    //};
 
     const [currentTask, setCurrentTask] = useState("영업비용");
 
@@ -140,14 +100,11 @@ function SalesExpenses() {
         }
     }
 
-    //setIsSaveFormTable(true);
-
     return (
         <>
             <Location pathList={locationPath.SalesExpenses} />
-            <ApprovalForm title={currentTask + " 실행 등록"}>
-                <ReactDataTableURL columns={columns} flag={isSaveFormTable} customDatas={salesCost} />
-            </ApprovalForm>
+            <ApprovalFormExe />
+            <ReactDataTableURL columns={columns} flag={isSaveFormTable} customDatas={salesCost} />
         </>
     );
 }

@@ -9,7 +9,7 @@ import "./css/egov-layout.css";
 import "./css/egov-component.css";
 import "./css/egov-page.css";
 import "./css/egov-response.css";
-import "./css/custom-style.css";
+import "./css/custom-style.scss";
 import { PageProvider } from "components/PageProvider";
 import Modal from "react-modal";
 

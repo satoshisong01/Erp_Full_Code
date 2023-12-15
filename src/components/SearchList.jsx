@@ -1,262 +1,62 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faArrowRotateRight } from "@fortawesome/free-solid-svg-icons";
-import Calendar from "react-calendar";
+import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import "react-calendar/dist/Calendar.css";
+import MakeItemField from "utils/MakeItemField";
+import BasicButton from "./button/BasicButton";
+import HideCard from "./HideCard";
 
 /* 데이터 테이블 검색 */
 export default function SearchList({ conditionList, onSearch }) {
-    const [fieldList, setFieldList] = useState([]);
     const [searchData, setSearchData] = useState({});
-    const [radioOption, setRadioOption] = useState("Y");
-
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [selectedDate2, setSelectedDate2] = useState(new Date());
-    const [formattedDate, setFormattedDate] = useState("");
-    const [formattedDate2, setFormattedDate2] = useState("");
-    const [isCalendarVisible, setCalendarVisible] = useState(false);
-    const [isCalendarVisible2, setCalendarVisible2] = useState(false);
-
-    const inputRef = useRef(null);
-    const inputRef2 = useRef(null);
-
-    //--------------------------------------------
-
-    const handleInputClick = () => {
-        setCalendarVisible(true);
-    };
-
-    const handleInputClick2 = () => {
-        setCalendarVisible2(true);
-    };
-
-    const handleDateChange = (date) => {
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const day = date.getDate().toString().padStart(2, "0");
-        const formatted = `${year}-${month}-${day}`;
-
-        return formatted;
-    };
-
-    const handleDateClick = (date) => {
-        setSelectedDate(date);
-        setFormattedDate(handleDateChange(date));
-        setCalendarVisible(false);
-    };
-
-    const handleDateClick2 = (date) => {
-        setSelectedDate2(date);
-        setFormattedDate2(handleDateChange(date));
-        setCalendarVisible2(false);
-    };
-
-    const handleOutsideClick = (event) => {
-        if (
-            inputRef.current &&
-            !inputRef.current.contains(event.target) &&
-            !event.target.classList.contains("react-calendar") &&
-            !event.target.closest(".boxCalendar")
-        ) {
-            setCalendarVisible(false);
-        }
-    };
-
-    const handleOutsideClick2 = (event) => {
-        if (
-            inputRef2.current &&
-            !inputRef2.current.contains(event.target) &&
-            !event.target.classList.contains("react-calendar") &&
-            !event.target.closest(".boxCalendar")
-        ) {
-            setCalendarVisible2(false);
-        }
-    };
-
-    useEffect(() => {
-        document.addEventListener("click", handleOutsideClick);
-        return () => {
-            document.removeEventListener("click", handleOutsideClick);
-        };
-    }, []);
-
-    useEffect(() => {
-        document.addEventListener("click", handleOutsideClick2);
-        return () => {
-            document.removeEventListener("click", handleOutsideClick2);
-        };
-    }, []);
-
-    //---------------------------------------------
-
-    useEffect(() => {
-        setFieldList(conditionList);
-    }, [conditionList]);
-
-    /* radio click */
-    const radioClick = (value) => {
-        setRadioOption(value);
-    };
-
-    /* 초기화구현 */
-    const resetClick = () => {
-        setSearchData({});
-        setFormattedDate("");
-        setFormattedDate2("");
-    };
 
     /* 검색 이벤트 */
-    const searchClick = (e) => {
-        const keyArr = Object.keys(searchData); //컬럼명
-        let searchLevel = "1";
-
-        if (keyArr.length === 1) {
-            const fieldName = keyArr[0];
-            const field = fieldList.find((item) => item.col === fieldName);
-            if (field) {
-                searchLevel = field.searchLevel;
+    const searchClick = () => {
+        Object.keys(searchData).forEach((key) => {
+            if (searchData[key] === "") { 
+                delete searchData[key]; //빈값 제외
             }
-        }
-
-        const dataToSend = {
-            searchKeyword: formattedDate ? `${formattedDate} , ${formattedDate2}` : "",
-            ...searchData,
-            //createDate: formattedDate
-            //? `${formattedDate} , ${formattedDate2}`
-            //: "",
-            searchCondition: 1,
-            radioOption: radioOption,
-        };
-        onSearch(dataToSend);
+        });
+        onSearch && onSearch(searchData);
     };
 
     /* 검색 데이터 */
-    const onChange = (e) => {
-        const { name, value } = e.target;
+    const onChange = (value) => {
         setSearchData((prevData) => {
-            const newData = { ...prevData, [name]: value };
-            // 빈 값을 가진 객체 제거
-            Object.keys(newData).forEach((key) => {
-                if (newData[key] === "") {
-                    delete newData[key];
-                }
-            });
-
-            return newData;
+            return { ...prevData, ...value };
         });
     };
 
-    /* 검색 화면구현 */
-    const renderField = (param) => {
-        if (param.type === "input") {
-            return <input type="text" name={param.col} value={searchData[param.col] || ""} onChange={onChange} className="form-control flex-item" />;
-        } else if (param.type === "select") {
-            return (
-                <select name={param.col} value={searchData[param.col] || ""} onChange={onChange} className="form-control flex-item" key={searchData[param.col]}>
-                    <option value=""> 선택없음 </option>
-                    {param.option.map((op) => (
-                        <option key={op.value} value={op.value}>
-                            {op.value}
-                        </option>
-                    ))}
-                </select>
-            );
-        } else if (param.type === "datepicker") {
-            return (
-                <div className="box3-0">
-                    <div className="box3-1 boxDate">
-                        <input
-                            className="form-control flex-item"
-                            type="text"
-                            id="searchKeyword"
-                            value={formattedDate}
-                            onClick={handleInputClick}
-                            readOnly
-                            ref={inputRef}
-                            onChange={() => {
-                                const formatted = handleDateChange(selectedDate);
-                                setFormattedDate2(formatted);
-                            }}
-                        />
-                        {isCalendarVisible && (
-                            <div className="boxCalendar">
-                                <Calendar onClickDay={handleDateClick} />
-                            </div>
-                        )}
-                    </div>
-                    <div className="box3-1 range">~</div>
-                    <div className="box3-1 boxDate">
-                        <input
-                            className="form-control flex-item"
-                            type="text"
-                            id="searchKeyword"
-                            value={formattedDate2}
-                            onClick={handleInputClick2}
-                            readOnly
-                            ref={inputRef2}
-                            onChange={() => {
-                                const formatted = handleDateChange(selectedDate2);
-                                setFormattedDate(formatted);
-                            }}
-                        />
-                        {isCalendarVisible2 && (
-                            <div className="boxCalendar">
-                                <Calendar onClickDay={handleDateClick2} />
-                            </div>
-                        )}
-                    </div>
-                </div>
-            );
-        }
-        return null;
+    const handleClick1 = () => {
+        setIsClicked(!isClicked);
     };
+
+    const [isClicked, setIsClicked] = useState(false);
 
     return (
         <>
-            <div className="flex-between">
-                <div className="radio-group">
-                    {/*<input
-                        type="radio"
-                        value="Y"
-                        checked={radioOption === "Y"}
-                        onChange={() => {
-                            radioClick("Y");
-                        }}
-                    />
-                    <label>미삭제 항목</label>
-                    <input
-                        type="radio"
-                        value="N"
-                        checked={radioOption === "N"}
-                        onChange={() => {
-                            radioClick("N");
-                        }}
-                    />
-                    <label>삭제 항목</label>*/}
+            <HideCard title="검색 조건" color="back-lightgreen" className="mg-b-40">
+                <div className="flex-container">
+                    {
+                        conditionList.map((param, idx) => (
+                            <div key={idx} className="flex-group mg-b-10">
+                                <div className="flex-label">
+                                    <label>{param.title}</label>
+                                </div>
+                                <div className="flex-input">
+                                    <MakeItemField item={param} resultData={onChange}/>
+                                </div>
+                            </div>
+                        ))
+                    }
                 </div>
-
-                <div>
-                    <button className="btn btn-primary clearIcon" onClick={resetClick}>
-                        초기화
-                    </button>
-                    <button className="btn btn-primary searchIcon" onClick={searchClick}>
-                        <FontAwesomeIcon icon={faMagnifyingGlass} />
+                <div style={{ textAlign: "right" }}>
+                    <button className="table-btn search-btn" onClick={searchClick}>
+                        <label>검색</label>
                     </button>
                 </div>
-            </div>
-
-            <div className="line" />
-
-            <div className="flex-container">
-                {fieldList.map((param, idx) => (
-                    <div key={idx} className="flex-group mg-l-15">
-                        <div className="flex-label">
-                            <label>{param.title}</label>
-                        </div>
-                        <div className="flex-input">{renderField(param)}</div>
-                    </div>
-                ))}
-            </div>
+            </HideCard>
         </>
     );
 }

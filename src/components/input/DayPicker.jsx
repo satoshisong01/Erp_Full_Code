@@ -40,7 +40,7 @@ export default function DayPicker ({name, value, onClick}) {
                 id={uuidv4()}
                 type="text"
                 name={name}
-                value={value}
+                value={value || ""}
                 onClick={() => setIsCalendarVisible(true)}
                 readOnly
                 className="basic-input"

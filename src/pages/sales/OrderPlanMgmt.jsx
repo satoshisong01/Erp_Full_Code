@@ -10,6 +10,7 @@ import { ChangePrmnPlanData } from "components/DataTable/function/ChangePrmnPlan
 import RefreshButton from "components/button/RefreshButton";
 import { columns } from "constants/columns";
 import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
+import ApprovalFormSal from "components/form/ApprovalFormSal";
 
 /** 영업관리-수주계획관리 */
 function OrderPlanMgmt() {
@@ -36,12 +37,13 @@ function OrderPlanMgmt() {
     const [generalExpensesDatas, setGeneralExpensesDatas] = useState([]); // 영업관리비
 
     useEffect(() => {
-        setInnerPageName("인건비");
+        setInnerPageName("원가버전조회");
         setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
 
         return () => {
             // 컴포넌트 종료
             setProjectInfo({}); // 초기화
+            //사전원가정보 초기화
         };
     }, []);
 
@@ -203,7 +205,6 @@ function OrderPlanMgmt() {
 
     const fetchAllData = async () => {
         try {
-            // console.log("❗❗❗❗fetchAllData");
             let requestData = { poiId: projectInfo.poiId, useAt: "Y" };
             if (innerPageName === "인건비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
@@ -292,10 +293,11 @@ function OrderPlanMgmt() {
             <Location pathList={locationPath.OrderPlanMgmt} />
             <div className="common_board_style mini_board_1">
                 <ul className="tab">
+                    <li onClick={() => changeTabs("원가버전조회")}>
+                        <a href="#원가버전조회" className="on">원가버전조회</a>
+                    </li>
                     <li onClick={() => changeTabs("인건비")}>
-                        <a href="#인건비" className="on">
-                            인건비
-                        </a>
+                        <a href="#인건비">인건비</a>
                     </li>
                     <li onClick={() => changeTabs("구매(재료비)")}>
                         <a href="#구매(재료비)">구매(재료비)</a>
@@ -314,96 +316,109 @@ function OrderPlanMgmt() {
                 <div className="list">
                     <div className="first">
                         <ul>
-                            <ApprovalForm title={innerPageName + " 계획 등록"}>
-                                <div className="table-buttons">
-                                    <RefreshButton onClick={refresh} />
-                                </div>
-                                <ReactDataTable
-                                    columns={columns.orderPlanMgmt.labor}
-                                    flag={innerPageName === "인건비" && isSaveFormTable}
-                                    tableRef={orderPlanMgmtTable1}
-                                    customDatas={prmnPlanDatas}
-                                    viewPageName="인건비"
-                                    sendToParentTables={compareData}
-                                    customDatasRefresh={refresh}
-                                    hideCheckBox={true}
-                                />
-                            </ApprovalForm>
+                            <div className="table-buttons">
+                                <RefreshButton onClick={refresh} />
+                            </div>
+                            <ReactDataTable
+                                columns={columns.orderPlanMgmt.version}
+                                flag={innerPageName === "원가버전조회" && isSaveFormTable}
+                                tableRef={orderPlanMgmtTable1}
+                                customDatas={prmnPlanDatas}
+                                viewPageName="원가버전조회"
+                                customDatasRefresh={refresh}
+                                hideCheckBox={true}
+                            />
                         </ul>
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalForm title={innerPageName + " 계획 등록"}>
-                                <div className="table-buttons">
-                                    <RefreshButton onClick={refresh} />
-                                </div>
-                                <ReactDataTablePdorder
-                                    singleUrl="/baseInfrm/product/buyIngInfo"
-                                    columns={columns.orderPlanMgmt.purchase}
-                                    tableRef={orderPlanMgmtTable2}
-                                    customDatas={pdOrdrDatas}
-                                    viewPageName="구매(재료비)"
-                                    customDatasRefresh={refresh}
-                                    hideCheckBox={true}
-                                />
-                            </ApprovalForm>
+                            <ApprovalFormSal />
+                            <div className="table-buttons">
+                                <RefreshButton onClick={refresh} />
+                            </div>
+                            <ReactDataTable
+                                columns={columns.orderPlanMgmt.labor}
+                                flag={innerPageName === "인건비" && isSaveFormTable}
+                                tableRef={orderPlanMgmtTable1}
+                                customDatas={prmnPlanDatas}
+                                viewPageName="인건비"
+                                customDatasRefresh={refresh}
+                                hideCheckBox={true}
+                            />
                         </ul>
                     </div>
-
                     <div className="third">
                         <ul>
-                            <ApprovalForm title={innerPageName + " 계획 등록"}>
-                                <div className="table-buttons">
-                                    <RefreshButton onClick={refresh} />
-                                </div>
-                                <ReactDataTableURL
-                                    singleUrl="/baseInfrm/product/pjbudget"
-                                    columns={columns.orderPlanMgmt.outsourcing}
-                                    tableRef={orderPlanMgmtTable3}
-                                    customDatas={outsourcingDatas}
-                                    viewPageName="개발외주비"
-                                    customDatasRefresh={refresh}
-                                    hideCheckBox={true}
-                                />
-                            </ApprovalForm>
+                            <ApprovalFormSal />
+                            <div className="table-buttons">
+                                <RefreshButton onClick={refresh} />
+                            </div>
+                            <ReactDataTablePdorder
+                                singleUrl="/baseInfrm/product/buyIngInfo"
+                                columns={columns.orderPlanMgmt.purchase}
+                                tableRef={orderPlanMgmtTable2}
+                                customDatas={pdOrdrDatas}
+                                viewPageName="구매(재료비)"
+                                customDatasRefresh={refresh}
+                                hideCheckBox={true}
+                            />
                         </ul>
                     </div>
 
                     <div className="fourth">
                         <ul>
-                            <ApprovalForm title={innerPageName + " 계획 등록"}>
-                                <div className="table-buttons">
-                                    <RefreshButton onClick={refresh} />
-                                </div>
-                                <ReactDataTableURL
-                                    singleUrl="/baseInfrm/product/pjbudget"
-                                    columns={columns.orderPlanMgmt.expenses}
-                                    tableRef={orderPlanMgmtTable4}
-                                    customDatas={pjbudgetDatas}
-                                    viewPageName="경비"
-                                    customDatasRefresh={refresh}
-                                    hideCheckBox={true}
-                                />
-                            </ApprovalForm>
+                            <ApprovalFormSal />
+                            <div className="table-buttons">
+                                <RefreshButton onClick={refresh} />
+                            </div>
+                            <ReactDataTableURL
+                                singleUrl="/baseInfrm/product/pjbudget"
+                                columns={columns.orderPlanMgmt.outsourcing}
+                                tableRef={orderPlanMgmtTable3}
+                                customDatas={outsourcingDatas}
+                                viewPageName="개발외주비"
+                                customDatasRefresh={refresh}
+                                hideCheckBox={true}
+                            />
                         </ul>
                     </div>
 
                     <div className="fifth">
                         <ul>
-                            <ApprovalForm title={innerPageName + " 계획 등록"}>
-                                <div className="table-buttons">
-                                    <RefreshButton onClick={refresh} />
-                                </div>
-                                <ReactDataTableURL
-                                    columns={columns.orderPlanMgmt.generalExpenses}
-                                    singleUrl="/baseInfrm/product/pjbudget"
-                                    tableRef={orderPlanMgmtTable5}
-                                    customDatas={generalExpensesDatas}
-                                    viewPageName="영업관리비"
-                                    customDatasRefresh={refresh}
-                                    hideCheckBox={true}
-                                />
-                            </ApprovalForm>
+                            <ApprovalFormSal />
+                            <div className="table-buttons">
+                                <RefreshButton onClick={refresh} />
+                            </div>
+                            <ReactDataTableURL
+                                singleUrl="/baseInfrm/product/pjbudget"
+                                columns={columns.orderPlanMgmt.expenses}
+                                tableRef={orderPlanMgmtTable4}
+                                customDatas={pjbudgetDatas}
+                                viewPageName="경비"
+                                customDatasRefresh={refresh}
+                                hideCheckBox={true}
+                            />
+                        </ul>
+                    </div>
+
+                    <div className="sixth">
+                        <ul>
+                            <ApprovalFormSal />
+                            <div>합계</div>
+
+                            <div>계획 등록/수정</div>
+                            <div className="table-buttons">
+                                <RefreshButton onClick={refresh} />
+                            </div>
+                            <ReactDataTableURL
+                                columns={columns.orderPlanMgmt.generalExpenses}
+                                singleUrl="/baseInfrm/product/pjbudget"
+                                tableRef={orderPlanMgmtTable5}
+                                customDatas={generalExpensesDatas}
+                                viewPageName="영업관리비"
+                                customDatasRefresh={refresh}
+                                hideCheckBox={true}
+                            />
                         </ul>
                     </div>
                 </div>

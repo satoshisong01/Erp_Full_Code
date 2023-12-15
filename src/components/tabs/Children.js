@@ -161,7 +161,7 @@ export const sales = [
         id: "SalesExpenses",
         path: URL.SalesExpenses,
         component: <SalesExpenses />,
-        label: "영업비용",
+        label: "영업비(정산)",
         pLabel: "영업관리",
     },
     // {

@@ -64,7 +64,7 @@ body {
     color: #fff;
     font-size: 14px;
     line-height: 30px;
-    background: #169bd5;
+    background: #3276b1;
 }
 
 .header .gnb {
@@ -192,11 +192,13 @@ body {
 
 .egov-container {
     min-height: calc(100vh - 300px);
+    background-color: #efefef;
 }
 .c_wrap {
     width: 100%;
     margin: 0 auto;
-    padding: 0 50px;
+    padding: 0 0 20px 50px;
+    /* 왼쪽과 아래 패딩 */
 }
 .c_wrap .layout {
     display: table;
@@ -213,6 +215,8 @@ body {
 .c_wrap .layout .nav .inner {
     border: 1px solid #dde2e5;
     border-radius: 10px;
+    background-color: white;
+    min-height: 700px;
 }
 .c_wrap .layout .nav h2 {
     padding: 35px 30px 26px 30px;
@@ -221,17 +225,27 @@ body {
     font-size: 24px;
 }
 .c_wrap .layout .nav ul {
-    padding: 26px 30px 27px 30px;
+    /* padding: 26px 30px 27px 30px; */
 }
+
+/* 네비 간격 */
 .c_wrap .layout .nav ul li + li {
-    margin-top: 27px;
+    margin-top: 7px;
 }
 .c_wrap .layout .nav ul li a {
     display: block;
     position: relative;
     color: #666;
     font-size: 18px;
+    /* 네비 부모 텍스트 여백 */
+    padding-left: 30px;
+    padding-right: 15px;
 }
+.c_wrap .layout .nav ul li {
+    /* padding-top: 10px;
+    padding-bottom: 10px; */
+}
+
 .c_wrap .layout .nav ul li a:hover::after {
     content: "";
     display: block;
@@ -247,11 +261,19 @@ body {
     color: #222;
     font-weight: 700;
 }
+/* 네비게이션 부모에는 배경 깔리지 않음 */
+.c_wrap .layout .nav ul li a.cur.libg {
+    background-color: #d6dde7;
+    color: #305d8c;
+}
+
 .c_wrap .layout .nav ul li ul li a {
+    /* 네비 자식 텍스트 여백 */
+    padding-left: 60px;
     font-size: 15px;
 }
 .c_wrap .layout .nav ul li ul {
-    padding: 10px 0px 0px 30px;
+    /* padding: 10px 0px 0px 30px; */
 }
 /* 위 오 아 왼 */
 
