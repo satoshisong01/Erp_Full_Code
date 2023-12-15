@@ -96,6 +96,10 @@ $disabled: gray;
     background-color: #cde0c4;
     color: #356635;
 }
+.back-lightgreen:active {
+    background-color: #356635 ;
+    color: white;
+}
 .back-darkgray {
     border: 1px solid #45474b;
     background-color: #4c4f53;
@@ -188,25 +192,10 @@ $disabled: gray;
 .table-btn:hover {
     /* transform: scale(1.05); */
 }
-
-.table-btn:active {
-    background-color: $blue;
-    color: white;
-}
-
-.search-btn {
-    border: 1px solid #8ac38b;
-    color: #356635;
-    background-color: white;
-}
-.search-btn:active {
-    background-color: #cde0c4;
-    color: #356635;
-}
 .table-btn-basic {
     color: gray;
     border: 1px solid gray;
-    /* background-color: white; */
+    background-color: white;
 }
 .table-btn-basic:active {
     background-color: gray;
@@ -216,24 +205,23 @@ $disabled: gray;
     border: 1px solid $blue;
     background-color: white;
 }
+.table-btn-default:active {
+    background-color: $blue;
+    color: white;
+}
 .table-btn-primary {
     color: #fff;
     border: 1px solid $blue;
     background-color: $blue;
 }
+.table-btn-primary:active {
+    background-color: white;
+    color: $blue;
+}
 .table-btn-warning {
     color: #fff;
     border: 1px solid $burgundy;
     background-color: $burgundy;
-}
-.table-btn-primary:hover {
-    background-color:  $blue;
-}
-.table-btn-warning:hover {
-    background-color: $burgundy;
-}
-.table-btn-default:hover {
-    border: 1px solid $blue;
 }
 .table-btn-warning:active {
     background-color: white;
@@ -1168,6 +1156,21 @@ body > div:nth-child(4) > div {
     }
 }
 
+/* 라디오 버튼 */
+.radio-container {
+    display: flex;
+    gap: 15px; 
+    align-items: center;
+  }
+  
+  .radio-container input[type="radio"] {
+    margin-right: 3px;
+  }
+  
+  /* 라벨 스타일 (선택사항) */
+  .radio-container label {
+    
+  }
 
 
 /* 반응형 스타일 */

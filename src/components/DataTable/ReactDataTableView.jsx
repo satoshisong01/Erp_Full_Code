@@ -5,7 +5,7 @@ import { PageContext } from "components/PageProvider";
 import { v4 as uuidv4 } from "uuid";
 
 const ReactDataTableView = (props) => {
-    const { columns, suffixUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendPoiId } = props;
+    const { columns, suffixUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendPoiId, returnList } = props;
     const { prevCurrentPageName, innerPageName, prevInnerPageName, setCurrentTable, currentPageName, projectInfo, setProjectInfo } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);

@@ -11,7 +11,7 @@ import ModalSearchList from "components/ModalSearchList";
 
 /* 회사 목록 모달 */
 export default function CompanyModal(props) {
-    const { width, height, onClose, returnInfo,title } = props;
+    const { width, height, onClose, title } = props;
     const [companyList, setCompanyList] = useState([]);
     const [searchCompanyList, setSearchCompanyList] = useState([]);
     const [companyInfo, setCompanyInfo]  = useState([]);
@@ -49,7 +49,7 @@ export default function CompanyModal(props) {
     const conditionList = [
         { title: "회사타입", col: "cltType", type: "radio", option: [
             {label: "협력사", value: "P"},
-            {label: "고객사", value: "G"},
+            {label: "고객사", value: "C"},
         ] },
         { title: "거래처명", col: "cltNm", type: "input" },
         { title: "픔목그룹명", col: "pgNm", type: "input" }
@@ -67,6 +67,7 @@ export default function CompanyModal(props) {
 
     const onSearch = (value) => {
         console.log("검색할거: ", value);
+        //여기까진 잘 옴
     }
 
     const onClick = (e) => {
@@ -89,6 +90,7 @@ export default function CompanyModal(props) {
                         <ReactDataTableView
                             columns={columns}
                             customDatas={companyList}
+                            returnList={(value) => setCompanyInfo(...value)}
                         />
                     </div>
 
