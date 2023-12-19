@@ -44,6 +44,7 @@ export default function DayPicker ({name, value, onClick}) {
                 onClick={() => setIsCalendarVisible(true)}
                 readOnly
                 className="basic-input"
+                style={{backgroundColor: '#ccc'}}
             />
 
             {isCalendarVisible && (

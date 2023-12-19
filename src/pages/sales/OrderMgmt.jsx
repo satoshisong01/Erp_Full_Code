@@ -143,8 +143,7 @@ function OrderMgmt() {
             <Location pathList={locationPath.OrderMgmt} />
             <SearchList conditionList={columns.orderMgmt.condition} onSearch={onSearch} />
             <HideCard title="프로젝트 목록" color="back-lightblue" className="mg-b-40">
-                <div className="table-buttons mg-b-m-50">
-                    {/* <PopupButton targetUrl={URL.LaborPreCostDoc} data={{ label: "사전원가서", projectInfo }} /> */}
+                <div className="table-buttons mg-b-m-30">
                     <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
                     <ModButton label={"수정"} onClick={() => setIsOpenUpDate(true)} />
                     <DelButton label={"삭제"} onClick={deleteToServer} />

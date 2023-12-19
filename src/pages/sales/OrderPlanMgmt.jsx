@@ -11,6 +11,8 @@ import RefreshButton from "components/button/RefreshButton";
 import { columns } from "constants/columns";
 import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 import ApprovalFormSal from "components/form/ApprovalFormSal";
+import SearchList from "components/SearchList";
+import HideCard from "components/HideCard";
 import AddModModal from "components/modal/AddModModal";
 
 /** 영업관리-수주계획관리 */
@@ -19,8 +21,6 @@ function OrderPlanMgmt() {
         isSaveFormTable,
         setIsSaveFormTable,
         currentPageName,
-        projectInfo,
-        setProjectInfo,
         innerPageName,
         setPrevInnerPageName,
         setInnerPageName,
@@ -39,27 +39,29 @@ function OrderPlanMgmt() {
     const [outsourcingDatas, setOutsourcingDatas] = useState([]); // 개발외주비
     const [generalExpensesDatas, setGeneralExpensesDatas] = useState([]); // 영업관리비
 
+    const [conditionInfo, setConditionInfo] = useState({
+        version: "",
+        poiId: "",
+    }); //프로젝트와 버전 정보
+
     useEffect(() => {
         setInnerPageName("원가버전조회");
         setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
 
         return () => {
             // 컴포넌트 종료
-            setProjectInfo({}); // 초기화
+            // setProjectInfo({}); // 초기화
             //사전원가정보 초기화
         };
     }, []);
 
     useEffect(() => {
-        if (projectInfo.poiId) {
-            fetchAllData();
-        }
         if (currentPageName === "수주계획관리") {
             const activeTab = document.querySelector(".mini_board_1 .tab li a.on");
             const activeTabText = activeTab.textContent;
             setInnerPageName(activeTabText); //마지막으로 활성화 된 탭
         }
-    }, [currentPageName, innerPageName, projectInfo]);
+    }, [currentPageName, innerPageName]);
 
     const changeTabs = (task) => {
         if (task !== innerPageName) {
@@ -132,7 +134,7 @@ function OrderPlanMgmt() {
                 delete toAdd.poiBeginDt1;
                 toAdd.useAt = "Y";
                 toAdd.deleteAt = "N";
-                toAdd.poiId = projectInfo.poiId;
+                toAdd.poiId = conditionInfo.poiId;
 
                 for (let j = 1; j <= 14; j++) {
                     if (toAdd[`pmpmmPositionCode${j}`] === null) {
@@ -190,7 +192,7 @@ function OrderPlanMgmt() {
             }
 
             if (!item.hasOwnProperty("poiId")) {
-                item.poiId = projectInfo.poiId;
+                // item.poiId = projectInfo.poiId;
             }
 
             // deleteAt이 없다면 "N"로 설정
@@ -208,7 +210,7 @@ function OrderPlanMgmt() {
 
     const fetchAllData = async () => {
         try {
-            let requestData = { poiId: projectInfo.poiId, useAt: "Y" };
+            let requestData = { poiId: conditionInfo.poiId, useAt: "Y" };
             if (innerPageName === "인건비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
                 const changeData = ChangePrmnPlanData(resultData, projectInfo);
@@ -244,8 +246,8 @@ function OrderPlanMgmt() {
                 console.log(filteredData, "filteredData");
                 setPjbudgetDatas(filteredData);
             } else if (innerPageName === "구매(재료비)") {
-                if (projectInfo.poiId) {
-                    requestData = { searchCondition: "", searchKeyword: "", poiId: projectInfo.poiId, modeCode: "SLSP", poId: projectInfo.poId };
+                if (conditionInfo.poiId) {
+                    requestData = { searchCondition: "", searchKeyword: "", poiId: conditionInfo.poiId, modeCode: "SLSP" };
                     const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
                     const updatedData = resultData.map((row) => {
                         const {
@@ -299,7 +301,7 @@ function OrderPlanMgmt() {
                     setPdOrdrDatas([]);
                 }
             } else if (innerPageName === "개발외주비") {
-                requestData = { poiId: projectInfo.poiId, modeCode: "SLSP", pjbgTypeCode: "EXPNS10", useAt: "Y" };
+                requestData = { poiId: conditionInfo.poiId, modeCode: "SLSP", pjbgTypeCode: "EXPNS10", useAt: "Y" };
                 const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
                 setOutsourcingDatas(resultData);
             } else if (innerPageName === "영업관리비") {
@@ -397,19 +399,22 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalFormSal />
-                            <div className="table-buttons">
-                                <RefreshButton onClick={refresh} />
-                            </div>
-                            <ReactDataTable
-                                columns={columns.orderPlanMgmt.labor}
-                                flag={innerPageName === "인건비" && isSaveFormTable}
-                                tableRef={orderPlanMgmtTable1}
-                                customDatas={prmnPlanDatas}
-                                viewPageName="인건비"
-                                customDatasRefresh={refresh}
-                                hideCheckBox={true}
-                            />
+                            <ApprovalFormSal returnInfo={returnInfo} />
+                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
+                            <HideCard title="계획 등록/수정" color="back-lightblue" className="mg-b-40">
+                                <div className="table-buttons mg-b-m-30">
+                                    <RefreshButton onClick={refresh} />
+                                </div>
+                                <ReactDataTable
+                                    columns={columns.orderPlanMgmt.labor}
+                                    flag={innerPageName === "인건비" && isSaveFormTable}
+                                    tableRef={orderPlanMgmtTable1}
+                                    customDatas={prmnPlanDatas}
+                                    viewPageName="인건비"
+                                    customDatasRefresh={refresh}
+                                    hideCheckBox={true}
+                                />
+                            </HideCard>
                         </ul>
                     </div>
                     <div className="third">

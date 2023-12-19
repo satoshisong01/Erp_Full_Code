@@ -7,13 +7,15 @@ import BasicTextarea from "components/input/BasicTextarea";
 import Percentage from "components/input/Percentage";
 import BasicSelect from "components/input/BasicSelect";
 import Number from "components/input/Number";
-import ModalPageCompany from "components/modal/ModalPageCompany";
 import CompanyModal from "components/modal/CompanyModal";
 import { axiosFetch } from "api/axiosFetch";
+import { v4 as uuidv4 } from "uuid";
+import ProjectModal from "components/modal/ProjectModal";
 
 
 export default function MakeModalField({ list, onChange, initialData }) {
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
+    const [isOpenModalProject, setIsOpenModalProject] = useState(false);
     const [data, setData] = useState({});
 
     useEffect(() => {
@@ -51,17 +53,6 @@ export default function MakeModalField({ list, onChange, initialData }) {
         }));
     };
 
-    const returnInfo = (item) => {
-        //선택한 정보
-        console.log(item, "item");
-        setIsOpenModalCompany(false);
-        setData((prevData) => ({
-            ...prevData,
-            cltNm: item.cltNm,
-            cltId: item.cltId,
-        }));
-    };
-    
     const renderField = (item, index, data) => (
         <div className="row-group" key={index}>
             <div className="left">
@@ -79,6 +70,8 @@ export default function MakeModalField({ list, onChange, initialData }) {
                     <YearPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
                 ) : item.type === "company" ? (
                     <BasicInput item={item} onClick={() => setIsOpenModalCompany(true)} value={data?.[item.col] ?? ""} readOnly />
+                ) : item.type === "project" ? (
+                    <BasicInput item={item} onClick={() => setIsOpenModalProject(true)} value={data?.[item.col] ?? ""} readOnly />
                 ) : item.type === "desc" ? (
                     <BasicTextarea item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
                 ) : item.type === "percent" ? (
@@ -92,6 +85,23 @@ export default function MakeModalField({ list, onChange, initialData }) {
                     />
                 ) : item.type === "select" ? (
                     <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
+                ) : item.type === "radio" ? (
+                    item.option && item.option.length > 0  &&
+                        <div className="radio-container">
+                            {item.option.map((op) => (
+                                <div key={uuidv4()} className="radio-group">
+                                    <input
+                                        id={uuidv4()}
+                                        type="radio"
+                                        name={item.col}
+                                        value={op.value}
+                                        checked={data?.[item.col] === op.value}
+                                        onChange={inputChange}
+                                    />
+                                    <label htmlFor={op.value}>{op.label}</label>
+                                </div>
+                            ))}
+                        </div>
                 ) : null}
             </div>
         </div>
@@ -100,8 +110,8 @@ export default function MakeModalField({ list, onChange, initialData }) {
     return (
         <>
             {list.map((item, itemIndex) => renderField(item, itemIndex, data))}
-            {/* {isOpenModalCompany && <ModalPageCompany returnInfo={returnInfo} closeLocal={() => setIsOpenModalCompany(false)} />} */}
-            {isOpenModalCompany && <CompanyModal width={500} height={550} title="회사 목록" returnInfo={returnInfo} onClose={() => setIsOpenModalCompany(false)} />}
+            {isOpenModalCompany && <CompanyModal width={500} height={550} title="회사 목록" onClose={() => setIsOpenModalCompany(false)} />}
+            {isOpenModalProject && <ProjectModal width={550} height={770} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} />}
         </>
     )
 }

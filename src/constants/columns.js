@@ -207,6 +207,12 @@ export const columns = {
     },
     orderPlanMgmt: {
         // 계획관리
+        condition: [
+            { title: "프로젝트명", col: "poiNm", type: "input", value: "", searchLevel: "1" },
+            { title: "기준연도", col: "clCode2", type: "input", value: "", searchLevel: "1" },
+            { title: "사전원가 버전", col: "clCodeNm", type: "input", value: "", searchLevel: "2" },
+            { title: "최종 수정일", col: "clCodeNm", type: "input", value: "", searchLevel: "2" },
+        ],
         version: [
             //원가버전조회
             { header: "프로젝트명", col: "poiNm", cellWidth: "25%" },

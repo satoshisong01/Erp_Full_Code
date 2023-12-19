@@ -7,15 +7,16 @@ import BasicTextarea from "components/input/BasicTextarea";
 import Percentage from "components/input/Percentage";
 import BasicSelect from "components/input/BasicSelect";
 import Number from "components/input/Number";
-import ModalPageCompany from "components/modal/ModalPageCompany";
 import { v4 as uuidv4 } from "uuid";
-import BasicRadio from "components/input/BasicRadio";
+import CompanyModal from "components/modal/CompanyModal";
+import ProjectModal from "components/modal/ProjectModal";
 
 
 export default function MakeItemField({ item, resultData, initialData }) {
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
+    const [isOpenModalProject, setIsOpenModalProject] = useState(false);
     const [data, setData] = useState({});
-
+    
     useEffect(() => {
         setData(initialData);
     }, [initialData])
@@ -24,23 +25,12 @@ export default function MakeItemField({ item, resultData, initialData }) {
         resultData && resultData(data);
     }, [data])
     
-    const inputChange = (e, type) => {
+    const inputChange = (e) => {
         const { value, name } = e.target;
-        if (type === "number") {
-            let parsedValue = parseFloat(value.replace(/,/g, "")); // 컴마 제거하고 문자열을 숫자로 변환
-            if (isNaN(parsedValue)) {
-                console.log("입력된 값이 숫자가 아닙니다.");
-            }
-            setData((prevData) => ({
-                ...prevData,
-                [name]: parsedValue,
-            }));
-        } else {
-            setData((prevData) => ({
-                ...prevData,
-                [name]: value,
-            }));
-        }
+        setData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
     };
     
     const dateClick = (date, col) => {
@@ -50,21 +40,6 @@ export default function MakeItemField({ item, resultData, initialData }) {
         }));
     };
 
-    const returnInfo = (item) => {
-        //선택한 정보
-        console.log(item, "item");
-        setIsOpenModalCompany(false);
-        setData((prevData) => ({
-            ...prevData,
-            cltNm: item.cltNm,
-            cltId: item.cltId,
-        }));
-    };
-
-    const radioClick = (value) => {
-        console.log("라디오클릭!!!!!!!", value);
-    }
-    
     const renderField = (item) => (
         item.type === "input" ? (
             <BasicInput item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
@@ -76,6 +51,8 @@ export default function MakeItemField({ item, resultData, initialData }) {
             <YearPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
         ) : item.type === "company" ? (
             <BasicInput item={item} onClick={() => setIsOpenModalCompany(true)} value={data?.[item.col] ?? ""} readOnly />
+        ) : item.type === "project" ? (
+            <BasicInput item={item} onClick={() => setIsOpenModalProject(true)} value={data?.[item.col] ?? ""} readOnly />
         ) : item.type === "desc" ? (
             <BasicTextarea item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
         ) : item.type === "percent" ? (
@@ -83,7 +60,7 @@ export default function MakeItemField({ item, resultData, initialData }) {
         ) : item.type === "number" ? (
             <Number
                 item={item}
-                onChange={(e) => inputChange(e, "number")}
+                onChange={(e) => inputChange(e)}
                 value={data?.[item.col] ? data[item.col].toLocaleString() : ""}
                 disabled={item.disabled}
             />
@@ -91,16 +68,16 @@ export default function MakeItemField({ item, resultData, initialData }) {
             <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
         ) : item.type === "radio" ? (
             item.option && item.option.length > 0  &&
-                <div className="flex-between">
+                <div className="radio-container">
                     {item.option.map((op) => (
-                        <div key={uuidv4()} className="radio-option">
+                        <div key={uuidv4()} className="radio-group">
                             <input
-                                id={op.value} //id추가
+                                id={uuidv4()}
                                 type="radio"
+                                name={item.col}
                                 value={op.value}
-                                checked={op.value === item.option[0].value}
-                                onChange={() => radioClick(op.value)}
-                                // className="radio"
+                                checked={data?.[item.col] === op.value}
+                                onChange={inputChange}
                             />
                             <label htmlFor={op.value}>{op.label}</label>
                         </div>
@@ -112,7 +89,8 @@ export default function MakeItemField({ item, resultData, initialData }) {
     return (
         <>
             {renderField(item)}
-            {isOpenModalCompany && <ModalPageCompany returnInfo={returnInfo} closeLocal={() => setIsOpenModalCompany(false)} />}
+            {isOpenModalCompany && <CompanyModal width={500} height={550} title="회사 목록" onClose={() => setIsOpenModalCompany(false)} />}
+            {isOpenModalProject && <ProjectModal width={500} height={550} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} />}
         </>
     )
 }

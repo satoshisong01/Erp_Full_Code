@@ -1,14 +1,10 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass, faArrowRotateRight } from "@fortawesome/free-solid-svg-icons";
-import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import "react-calendar/dist/Calendar.css";
 import MakeItemField from "utils/MakeItemField";
-import BasicButton from "./button/BasicButton";
-import HideCard from "./HideCard";
+import RefreshButton from "./button/RefreshButton";
 
-/* 모달의 테이블 검색 */
-export default function ModalSearchList({ conditionList, onSearch }) {
+/* 모달 안에서의 검색 */
+export default function ModalCondition({ conditionList, onSearch, refresh }) {
     const [searchData, setSearchData] = useState({});
 
     /* 검색 이벤트 */
@@ -22,17 +18,10 @@ export default function ModalSearchList({ conditionList, onSearch }) {
     };
 
     const onChange = (value) => {
-        console.log("💜ModalSearchList의 value: ", value);
-        // setSearchData((prevData) => {
-        //     return { ...prevData, ...value };
-        // });
+        setSearchData((prevData) => {
+            return { ...prevData, ...value };
+        });
     };
-
-    const handleClick1 = () => {
-        setIsClicked(!isClicked);
-    };
-
-    const [isClicked, setIsClicked] = useState(false);
 
     return (
         <>
@@ -42,7 +31,7 @@ export default function ModalSearchList({ conditionList, onSearch }) {
                     <tr key={rowIndex} style={{ border: "1px solid #dddddd" }} >
                         <td style={{ width: "35%", padding: "5px", textAlign: "center", fontWeight: "bold", backgroundColor: "#f2f2f2"}}>
                         {row.title}
-                        </td>
+                    </td>
                         <td style={{ padding: "5px", textAlign: "center" }}>
                             <MakeItemField item={row} resultData={onChange}/>
                         </td>
@@ -50,6 +39,10 @@ export default function ModalSearchList({ conditionList, onSearch }) {
                     ))}
                 </tbody>
             </table>
+            <div className="mg-t-10 mg-b-15" style={{display: 'flex', gap: 10, justifyContent: "space-between"}}>
+                <button type="button" className="table-btn back-lightgreen" onClick={searchClick} style={{width: '100%'}}>검색</button>
+                <RefreshButton onClick={() => refresh()} style={{width: '10%'}} color="back-lightgreen"/>
+            </div>
         </>
     );
 }

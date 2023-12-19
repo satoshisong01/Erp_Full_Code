@@ -6,7 +6,7 @@
 
 /* 단일색상 */
 $default-gray: #ccc;
-$blue: #3276b1;
+$blue: #0465be;
 $black: #333;
 $lightblue: #adc7da;
 $darkblue: #294f77;
@@ -41,12 +41,12 @@ $disabled: gray;
 
 /* 보더 + 배경 */
 .back-white {
-    border: 1px solid #ccc;
+    border: 1px solid $default-gray;
     background-color: #fff;
     color: #222;
 }
 .back-gray {
-    border: 1px solid #a0aeb3;
+    border: 1px solid $lightgray;
     background-color: #cbd2d5;
     color: #4b5153;
 }
@@ -56,13 +56,18 @@ $disabled: gray;
     color: white;
 }
 .back-blue {
-    border: 1px solid #305d8c;
-    background-color: #305d8c;
+    border: 1px solid $blue;
+    background-color: $blue;
     color: white;
 }
 .back-purple {
-    border: 1px solid #a8829f;
-    background-color: #a8829f;
+    border: 1px solid $purple;
+    background-color: $purple;
+    color: white;
+}
+.back-cherry {
+    border: 1px solid $cherry;
+    background-color: $cherry;
     color: white;
 }
 .back-red {
@@ -80,6 +85,11 @@ $disabled: gray;
     background-color: #c79121;
     color: white;
 }
+.back-lightgray {
+    border: 1px solid #ddd;
+    background-color: #f2f2f2;
+    color: #4b5153;
+}
 .back-lightblue {
     border: 1px solid #adc7da;
     background-color: #cbd4e2;
@@ -95,6 +105,10 @@ $disabled: gray;
     border: 1px solid #8ac38b;
     background-color: #cde0c4;
     color: #356635;
+}
+.back-lightgreen:active {
+    background-color: #356635 ;
+    color: white;
 }
 .back-darkgray {
     border: 1px solid #45474b;
@@ -153,6 +167,18 @@ $disabled: gray;
 .mg-b-10 {
     margin-bottom: 10px;
 }
+.mg-b-m-10 {
+    margin-bottom: -10px;
+}
+.mg-b-m-20 {
+    margin-bottom: -20px;
+}
+.mg-b-m-30 {
+    margin-bottom: -30px;
+}
+.mg-b-m-40 {
+    margin-bottom: -40px;
+}
 .mg-b-m-50 {
     margin-bottom: -50px;
 }
@@ -188,25 +214,10 @@ $disabled: gray;
 .table-btn:hover {
     /* transform: scale(1.05); */
 }
-
-.table-btn:active {
-    background-color: $blue;
-    color: white;
-}
-
-.search-btn {
-    border: 1px solid #8ac38b;
-    color: #356635;
-    background-color: white;
-}
-.search-btn:active {
-    background-color: #cde0c4;
-    color: #356635;
-}
 .table-btn-basic {
     color: gray;
     border: 1px solid gray;
-    /* background-color: white; */
+    background-color: white;
 }
 .table-btn-basic:active {
     background-color: gray;
@@ -216,24 +227,23 @@ $disabled: gray;
     border: 1px solid $blue;
     background-color: white;
 }
+.table-btn-default:active {
+    background-color: $blue;
+    color: white;
+}
 .table-btn-primary {
     color: #fff;
     border: 1px solid $blue;
     background-color: $blue;
 }
+.table-btn-primary:active {
+    background-color: white;
+    color: $blue;
+}
 .table-btn-warning {
     color: #fff;
     border: 1px solid $burgundy;
     background-color: $burgundy;
-}
-.table-btn-primary:hover {
-    background-color:  $blue;
-}
-.table-btn-warning:hover {
-    background-color: $burgundy;
-}
-.table-btn-default:hover {
-    border: 1px solid $blue;
 }
 .table-btn-warning:active {
     background-color: white;
@@ -538,6 +548,7 @@ $disabled: gray;
 
 .basic-input {
     width: 100%;
+    height: 100%;
     padding: 3px;
     border: 1px solid $default-gray;
     border-radius: 4px;
@@ -640,14 +651,14 @@ $disabled: gray;
 
 .table-styled input[type="text"] {
     width: 100%;
-    padding: 2px;
+    padding: 3px;
     border: 1px solid #ccc;
     border-radius: 3px;
 }
 
 .table-styled select {
     /* width: 100%; */
-    padding: 2px;
+    padding: 3px;
     border: 1px solid #ccc;
     border-radius: 3px;
 }
@@ -655,7 +666,7 @@ $disabled: gray;
 .table-styled input:focus,
 .table-styled select:focus {
     outline: none;
-    border: 1px solid #3498db;
+    border: 1px solid $blue;
 }
 
 .table-title {
@@ -709,27 +720,29 @@ $disabled: gray;
     cursor: pointer;
 }
 
-.pagination {
+.me-pagination {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 1rem;
-    color: $default-gray;
+    // margin-top: 1rem;
+    color: $gray;
     gap: 10px;
 }
 
-.pagination button {
+.me-pagination button {
     padding: 0.25rem 0.5rem;
     font-size: 14px;
     cursor: pointer;
     transition: color 0.3s, color 0.3s;
+    background-color: white;
+    margin: 0;
 }
 
-.pagination button:disabled {
+.me-pagination button:disabled {
     color: $default-gray;
 }
 
-.pagination button:not(:disabled):hover {
+.me-pagination button:not(:disabled):hover {
     color: $default-gray;
 }
 
@@ -794,6 +807,11 @@ select {
     -webkit-appearance: auto;
 }
 
+
+.react-datepicker__input-container input[type="text"] {
+    background-color: #ccc;
+}
+
 /* 결제선 폼 CSS*/
 .app-buttons {
     display: flex;
@@ -811,7 +829,7 @@ select {
         color: #fff;
     }
     .app-btn-primary {
-        background-color: #007bff;
+        background-color: $blue;
         color: #fff;
     }
     .app-btn-secondary {
@@ -840,7 +858,7 @@ select {
     }
 
     .header-width th {
-        width: 15%;
+        // width: 15%;
     }
 
     /* 박스 영역 */
@@ -929,7 +947,7 @@ td > input {
 }
 
 .page-size {
-    position: relative;
+    // position: relative;
     z-index: 99;
 }
 
@@ -1050,10 +1068,10 @@ body > div.ReactModalPortal > div > div {
 
 /* modal 태그의 z-index*/
 body > div:nth-child(5) > div {
-    z-index: 9999;
+    // z-index: 9999;
 }
 body > div:nth-child(4) > div {
-    z-index: 9999;
+    // z-index: 9999;
 }
 .ReactModal__Content {
     width: 500px;
@@ -1102,7 +1120,7 @@ body > div:nth-child(4) > div {
 
 .table-custom .resizer {
     display: inline-block;
-    background: $blue;
+    background-color: $blue;
     width: 10px;
     height: 100%;
     position: absolute;
@@ -1167,12 +1185,38 @@ body > div:nth-child(4) > div {
     }
     .hide-content {
         /* border-radius: 5px 5px 5px 5px; */
+        // border: 1px solid $default-gray; 
         border: 1px solid $default-gray; 
         padding: 10px; 
         border-top: none;
     }
 }
 
+/* 라디오 버튼 */
+.radio-container {
+    display: flex;
+    gap: 15px; 
+    align-items: center;
+  }
+  
+  .radio-container input[type="radio"] {
+    margin-right: 3px;
+  }
+  
+  /* 라벨 스타일 (선택사항) */
+  .radio-container label {
+    
+  }
+
+.search-btn {
+    border: 1px solid #8ac38b;
+    color: #356635;
+    background-color: white;
+}
+.search-btn:active {
+    background-color: #cde0c4;
+    color: #356635;
+}
 
 
 /* 반응형 스타일 */

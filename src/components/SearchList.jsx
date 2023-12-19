@@ -68,7 +68,7 @@ export default function SearchList({ conditionList, onSearch }) {
                 </div>
                 <div style={{ textAlign: "right" }}>
                     <button className="table-btn search-btn" onClick={searchClick}>
-                        <label>검색</label>
+                        검색
                     </button>
                 </div>
             </HideCard>

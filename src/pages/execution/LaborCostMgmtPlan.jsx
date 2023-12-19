@@ -202,7 +202,7 @@ function LaborCostMgmtPlan() {
                 tableRef={orderPlanMgmtTable3}
                 customDatas={budgetMgmt}
                 viewPageName="인건비"
-                sendToParentTables={compareData}
+                returnList={compareData}
                 hideCheckBox={true}
             />
         </>
