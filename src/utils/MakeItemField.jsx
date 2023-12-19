@@ -7,14 +7,14 @@ import BasicTextarea from "components/input/BasicTextarea";
 import Percentage from "components/input/Percentage";
 import BasicSelect from "components/input/BasicSelect";
 import Number from "components/input/Number";
-import ModalPageCompany from "components/modal/ModalPageCompany";
 import { v4 as uuidv4 } from "uuid";
-import BasicRadio from "components/input/BasicRadio";
 import CompanyModal from "components/modal/CompanyModal";
+import ProjectModal from "components/modal/ProjectModal";
 
 
 export default function MakeItemField({ item, resultData, initialData }) {
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
+    const [isOpenModalProject, setIsOpenModalProject] = useState(false);
     const [data, setData] = useState({});
     
     useEffect(() => {
@@ -51,6 +51,8 @@ export default function MakeItemField({ item, resultData, initialData }) {
             <YearPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
         ) : item.type === "company" ? (
             <BasicInput item={item} onClick={() => setIsOpenModalCompany(true)} value={data?.[item.col] ?? ""} readOnly />
+        ) : item.type === "project" ? (
+            <BasicInput item={item} onClick={() => setIsOpenModalProject(true)} value={data?.[item.col] ?? ""} readOnly />
         ) : item.type === "desc" ? (
             <BasicTextarea item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
         ) : item.type === "percent" ? (
@@ -88,6 +90,7 @@ export default function MakeItemField({ item, resultData, initialData }) {
         <>
             {renderField(item)}
             {isOpenModalCompany && <CompanyModal width={500} height={550} title="회사 목록" onClose={() => setIsOpenModalCompany(false)} />}
+            {isOpenModalProject && <ProjectModal width={500} height={550} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} />}
         </>
     )
 }

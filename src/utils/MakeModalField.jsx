@@ -10,10 +10,12 @@ import Number from "components/input/Number";
 import CompanyModal from "components/modal/CompanyModal";
 import { axiosFetch } from "api/axiosFetch";
 import { v4 as uuidv4 } from "uuid";
+import ProjectModal from "components/modal/ProjectModal";
 
 
 export default function MakeModalField({ list, onChange, initialData }) {
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
+    const [isOpenModalProject, setIsOpenModalProject] = useState(false);
     const [data, setData] = useState({});
 
     useEffect(() => {
@@ -68,6 +70,8 @@ export default function MakeModalField({ list, onChange, initialData }) {
                     <YearPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
                 ) : item.type === "company" ? (
                     <BasicInput item={item} onClick={() => setIsOpenModalCompany(true)} value={data?.[item.col] ?? ""} readOnly />
+                ) : item.type === "project" ? (
+                    <BasicInput item={item} onClick={() => setIsOpenModalProject(true)} value={data?.[item.col] ?? ""} readOnly />
                 ) : item.type === "desc" ? (
                     <BasicTextarea item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
                 ) : item.type === "percent" ? (
@@ -107,6 +111,7 @@ export default function MakeModalField({ list, onChange, initialData }) {
         <>
             {list.map((item, itemIndex) => renderField(item, itemIndex, data))}
             {isOpenModalCompany && <CompanyModal width={500} height={550} title="회사 목록" onClose={() => setIsOpenModalCompany(false)} />}
+            {isOpenModalProject && <ProjectModal width={550} height={770} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} />}
         </>
     )
 }

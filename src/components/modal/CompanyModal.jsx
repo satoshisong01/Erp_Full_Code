@@ -3,26 +3,32 @@ import "../../components/modal/ModalCss.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { axiosFetch } from "api/axiosFetch";
-import ReactDataTableTest2 from "components/DataTable/ReactDataTableTest2";
-import ReactDataTable from "components/DataTable/ReactDataTable copy 2";
-import ReactDataTableView from "components/DataTable/ReactDataTableView";
-import SearchList from "components/SearchList";
-import ModalSearchList from "components/ModalSearchList";
+import ReactDataTable from "components/DataTable/ReactDataTable";
+import ModalSearchList from "components/ModalCondition";
+import { PageContext } from "components/PageProvider";
 
 /* 회사 목록 모달 */
 export default function CompanyModal(props) {
     const { width, height, onClose, title } = props;
+    const { setCompanyInfo, setModalPageName, setIsModalTable } = useContext(PageContext);
+
     const [companyList, setCompanyList] = useState([]);
-    const [searchCompanyList, setSearchCompanyList] = useState([]);
-    const [companyInfo, setCompanyInfo]  = useState([]);
+    const [selectInfo, setSelectInfo]  = useState({});
     const bodyRef = useRef(null);
 
     useEffect(() => {
         getCompanyList();
+        setModalPageName("거래처팝업")
+        setIsModalTable(true);
+
+        return(() =>  { //초기화
+            setIsModalTable(false)
+            setModalPageName("")
+        })
     }, [])
 
-    const getCompanyList = async () => {
-        const resultData = await axiosFetch("/api/baseInfrm/client/client/totalListAll.do", {});
+    const getCompanyList = async (requestData) => {
+        const resultData = await axiosFetch("/api/baseInfrm/client/client/totalListAll.do", requestData || {});
         const changeData = resultData.map(item => {
             const pgNms = Object.keys(item)
                                 .filter(key => key.startsWith("pgNm") && item[key] !== null && item[key] !== "")
@@ -66,12 +72,17 @@ export default function CompanyModal(props) {
     }, [height]);
 
     const onSearch = (value) => {
-        console.log("검색할거: ", value);
-        //여기까진 잘 옴
+        getCompanyList(value);
     }
 
     const onClick = (e) => {
         e.preventDefault();
+        setCompanyInfo({...selectInfo})
+        onClose();
+    }
+
+    const returnSelect = (value) => {
+        setSelectInfo((prev) => (prev.cltId !== value.cltId ? value : prev));
     }
 
     return (
@@ -85,13 +96,16 @@ export default function CompanyModal(props) {
                         </div>
                     </div>
 
-                    <div className="me-modal-body" ref={bodyRef} style={{ overflowY: "auto" }}>
-                        <ModalSearchList conditionList={conditionList} onSearch={onSearch}/>
-                        <ReactDataTableView
-                            columns={columns}
-                            customDatas={companyList}
-                            returnList={(value) => setCompanyInfo(...value)}
-                        />
+                    <div className="me-modal-body" ref={bodyRef}>
+                        <div className="body-area" style={{gap: 0}}>
+                            <ModalSearchList conditionList={conditionList} onSearch={onSearch}/>
+                            <ReactDataTable 
+                                columns={columns}
+                                customDatas={companyList}
+                                returnSelect={returnSelect}
+                                viewPageName="거래처팝업"
+                            />
+                        </div>
                     </div>
 
                     <div className="me-modal-footer mg-b-20">

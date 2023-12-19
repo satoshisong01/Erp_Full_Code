@@ -5,7 +5,7 @@ import { PageContext } from "components/PageProvider";
 import { v4 as uuidv4 } from "uuid";
 
 const ReactDataTableView = (props) => {
-    const { columns, suffixUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendPoiId, returnList } = props;
+    const { columns, suffixUrl, customDatas, defaultPageSize, tableRef, viewPageName, customerList, sendPoiId, returnList, returnSelect } = props;
     const { prevCurrentPageName, innerPageName, prevInnerPageName, setCurrentTable, currentPageName, projectInfo, setProjectInfo } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -135,7 +135,7 @@ const ReactDataTableView = (props) => {
                     ))}
                 </thead>
                 {tableData.length <= 0 && (
-                    <div style={{ display: "flex", width: "1200px", margin: "auto", alignItems: "center", justifyContent: "center" }}>
+                    <div >
                         <div style={{ fontSize: 15 }}>no data</div>
                     </div>
                 )}
@@ -170,7 +170,7 @@ const ReactDataTableView = (props) => {
                 </tbody>
             </table>
 
-            <div className="pagination">
+            <div className="me-pagination">
                 <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
                     {" "}
                     처음{" "}
@@ -179,7 +179,7 @@ const ReactDataTableView = (props) => {
                     {" "}
                     이전{" "}
                 </button>
-                <span>
+                <span >
                     {" "}
                     페이지 {pageIndex + 1} / {pageOptions && pageOptions.length}{" "}
                 </span>

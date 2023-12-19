@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import MakeItemField from "utils/MakeItemField";
+import RefreshButton from "./button/RefreshButton";
 
-/* 모달의 테이블 검색 */
-export default function ModalSearchList({ conditionList, onSearch }) {
+/* 모달 안에서의 검색 */
+export default function ModalCondition({ conditionList, onSearch, refresh }) {
     const [searchData, setSearchData] = useState({});
 
     /* 검색 이벤트 */
@@ -15,7 +16,6 @@ export default function ModalSearchList({ conditionList, onSearch }) {
         });
         onSearch && onSearch(searchData);
     };
-
 
     const onChange = (value) => {
         setSearchData((prevData) => {
@@ -39,7 +39,10 @@ export default function ModalSearchList({ conditionList, onSearch }) {
                     ))}
                 </tbody>
             </table>
-            <button type="button" className="table-btn back-lightgreen mg-b-15" style={{marginTop: '-5px'}} onClick={searchClick}>검색</button>
+            <div className="mg-t-10 mg-b-15" style={{display: 'flex', gap: 10, justifyContent: "space-between"}}>
+                <button type="button" className="table-btn back-lightgreen" onClick={searchClick} style={{width: '100%'}}>검색</button>
+                <RefreshButton onClick={() => refresh()} style={{width: '10%'}} color="back-lightgreen"/>
+            </div>
         </>
     );
 }

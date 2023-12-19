@@ -46,13 +46,15 @@ export default function AddModModal(props) {
                         </div>
                     </div>
 
-                    <form className="me-modal-body" ref={bodyRef} style={{ overflowY: "auto" }}>
-                        {list &&
-                            list.map((column, index) => (
-                                <div className="body-row" key={index}>
-                                    <MakeListField list={column.items} onChange={onChange} initialData={initialData} />
-                                </div>
-                            ))}
+                    <form className="me-modal-body" ref={bodyRef}>
+                        <div className="body-area">
+                            {list &&
+                                list.map((column, index) => (
+                                    <div className="body-row" key={index}>
+                                        <MakeListField list={column.items} onChange={onChange} initialData={initialData} />
+                                    </div>
+                                ))}
+                        </div>
                     </form>
 
                     <div className="me-modal-footer mg-b-20">
