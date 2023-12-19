@@ -240,7 +240,7 @@ const ReactDataTable = (props) => {
 
     /* 서버에서 전체 데이터 호출 */
     const fetchAllData = async () => {
-        //if (!suffixUrl) return;
+        if (!suffixUrl) return;
         const url = `/api${suffixUrl}/totalListAll.do`;
         const resultData = await axiosFetch(url, { useAt: "Y" });
         console.log(resultData, "resultData");
@@ -765,6 +765,8 @@ const ReactDataTable = (props) => {
                                                             readOnly
                                                         />
                                                     </div>
+                                                ) : typeof cell.value === "number" ? (
+                                                    cell.value && cell.value.toLocaleString()
                                                 ) : (
                                                     cell.render("Cell")
                                                 )
@@ -775,6 +777,8 @@ const ReactDataTable = (props) => {
                                                     {cell.render("Cell")}
                                                     {perSent}
                                                 </div>
+                                            ) : typeof cell.value === "number" ? (
+                                                cell.value && cell.value.toLocaleString()
                                             ) : (
                                                 cell.render("Cell") || ""
                                             )}

@@ -22,6 +22,7 @@ export function PageProvider({ children }) {
     const [projectPdiNm, setProjectPdiNm] = useState({ pdiId: "", pdiNm: "", pgNm: "", pdiWght: "", pdiStnd: "", pdiMenufut: "" }); // 선택한 id 저장
 
     const [unitPriceList, setUnitPriceList] = useState([]); // 급별단가 목록
+    const [unitPriceListRenew, setUnitPriceListRenew] = useState([]); // 급별포맷 변경 목록
 
     const [addPgNm, setAddPgNm] = useState("");
     const [currentTable, setCurrentTable] = useState(null); // 유니크한 현재 데이터 테이블
@@ -116,8 +117,12 @@ export function PageProvider({ children }) {
         setIsOpenModalCompany,
         saveSaleManCost,
         setSaveSaleManCost,
-        refesh, setRefesh,
-        gnbLabel, setGnbLabel
+        refesh,
+        setRefesh,
+        gnbLabel,
+        setGnbLabel,
+        unitPriceListRenew,
+        setUnitPriceListRenew,
     };
 
     return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>;

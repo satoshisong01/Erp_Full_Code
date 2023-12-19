@@ -120,14 +120,17 @@ function OrderMgmt() {
         fetchAllData();
     };
 
-    const fetchAllData = async () => {
+    const fetchAllData = async (value) => {
+        console.log(value, "@@@");
         const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
-        const resultData = await axiosFetch(url, { useAt: "Y" });
+        const requestData = value ? { ...value, useAt: "Y" } : { useAt: "Y" };
+        const resultData = await axiosFetch(url, requestData);
         console.log(resultData, "resultData");
         setSendDataTable(resultData);
     };
 
     const onSearch = (value) => {
+        fetchAllData(value);
         console.log("서치데이터: ", value);
     };
 

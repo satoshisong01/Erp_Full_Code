@@ -5,9 +5,11 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import MakeListField from "utils/MakeModalField";
 /* 추가, 수정 모달 */
 export default function AddModModal(props) {
-    const { width, height, list, onClose, resultData , title, initialData } = props;
+    const { width, height, list, onClose, resultData, title, initialData, sendData } = props;
     const [data, setData] = useState({});
     const bodyRef = useRef(null);
+
+    console.log(data, "data");
 
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
@@ -27,13 +29,17 @@ export default function AddModModal(props) {
         const requiredColumns = list && list.filter((column) => column.require);
         const hasEmptyRequiredFields = requiredColumns.some((column) => !data[column.col]);
         //필수값 확인 후
-        resultData(data); //데이터 부모로 전송
+        //resultData(data); //데이터 부모로 전송
+        console.log(data, "입력받은값");
+        sendData(data);
         onClose();
     };
 
-    const onChange = (value) => {
-        setData(value)
-    }
+    const onChange = (newValues) => {
+        setData((prevData) => {
+            return { ...prevData, ...newValues };
+        });
+    };
 
     return (
         <article className="me-modal">
@@ -60,17 +66,15 @@ export default function AddModModal(props) {
                             <button className="table-btn table-btn-default" data-dismiss="modal" style={{ width: "100%" }} onClick={() => onClose()}>
                                 취소
                             </button>
-                            {
-                                title.includes("추가") ? (
-                                    <button className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onClick}>
-                                        추가
-                                    </button>
-                                ) : (
-                                    <button className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onClick}>
-                                        수정
-                                    </button>
-                                )
-                            }
+                            {title.includes("추가") ? (
+                                <button className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onClick}>
+                                    추가
+                                </button>
+                            ) : (
+                                <button className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onClick}>
+                                    수정
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

@@ -11,6 +11,7 @@ import RefreshButton from "components/button/RefreshButton";
 import { columns } from "constants/columns";
 import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 import ApprovalFormSal from "components/form/ApprovalFormSal";
+import AddModModal from "components/modal/AddModModal";
 
 /** 영업관리-수주계획관리 */
 function OrderPlanMgmt() {
@@ -24,6 +25,8 @@ function OrderPlanMgmt() {
         setPrevInnerPageName,
         setInnerPageName,
         setCurrentPageName,
+        unitPriceList,
+        unitPriceListRenew,
     } = useContext(PageContext);
     const orderPlanMgmtTable1 = useRef(null);
     const orderPlanMgmtTable2 = useRef(null);
@@ -131,7 +134,7 @@ function OrderPlanMgmt() {
                 toAdd.deleteAt = "N";
                 toAdd.poiId = projectInfo.poiId;
 
-                for (let j = 1; j <= 13; j++) {
+                for (let j = 1; j <= 14; j++) {
                     if (toAdd[`pmpmmPositionCode${j}`] === null) {
                         toAdd[`pmpmmPositionCode${j}`] = 0;
                     }
@@ -174,7 +177,7 @@ function OrderPlanMgmt() {
             const item = data[index];
 
             // null 값을 0으로 변경
-            for (let i = 1; i <= 13; i++) {
+            for (let i = 1; i <= 14; i++) {
                 const key = `pmpmmPositionCode${i}`;
                 if (item[key] === null) {
                     item[key] = 0;
@@ -208,7 +211,30 @@ function OrderPlanMgmt() {
             let requestData = { poiId: projectInfo.poiId, useAt: "Y" };
             if (innerPageName === "인건비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
-                setPrmnPlanDatas(ChangePrmnPlanData(resultData, projectInfo));
+                const changeData = ChangePrmnPlanData(resultData, projectInfo);
+                //console.log(resultData, "인건비값");
+                //setPrmnPlanDatas(ChangePrmnPlanData(resultData, projectInfo));
+                changeData.forEach((Item) => {
+                    const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
+                    const matchingAItem = unitPriceListRenew.find((aItem) => aItem.gupDesc === yearFromPmpMonth);
+
+                    if (matchingAItem) {
+                        let totalPrice = 0;
+
+                        // Iterate over gupPrice and pmpmmPositionCode arrays
+                        for (let i = 1; i <= 14; i++) {
+                            const gupPriceKey = `gupPrice${i}`;
+                            const pmpmmPositionCodeKey = `pmpmmPositionCode${i}`;
+
+                            // Multiply corresponding values and add to totalPrice
+                            totalPrice += matchingAItem[gupPriceKey] * Item[pmpmmPositionCodeKey];
+                        }
+
+                        // Add totalPrice to bItem
+                        Item.totalPrice = totalPrice;
+                    }
+                    return setPrmnPlanDatas(changeData);
+                });
             } else if (innerPageName === "경비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
                 console.log(resultData, "resultData 이건나오잖아");
@@ -218,7 +244,7 @@ function OrderPlanMgmt() {
                 console.log(filteredData, "filteredData");
                 setPjbudgetDatas(filteredData);
             } else if (innerPageName === "구매(재료비)") {
-                if (projectInfo.poiId && projectInfo.poId) {
+                if (projectInfo.poiId) {
                     requestData = { searchCondition: "", searchKeyword: "", poiId: projectInfo.poiId, modeCode: "SLSP", poId: projectInfo.poId };
                     const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
                     const updatedData = resultData.map((row) => {
@@ -288,13 +314,42 @@ function OrderPlanMgmt() {
         }
     };
 
+    const [isOpenAdd, setIsOpenAdd] = useState(false);
+    const addVersionToServer = async (addData) => {
+        console.log(addData);
+        const url = `/api/baseInfrm/product/versionControl/add.do`;
+        const dataToSend = {
+            ...addData,
+            lockAt: "Y",
+            useAt: "Y",
+            deleteAt: "N",
+            //poiId: projectInfo.poiId,
+        };
+
+        console.log(dataToSend, "나오는값");
+        const resultData = await axiosPost(url, dataToSend);
+        console.log(resultData);
+        if (resultData) {
+            alert("추가되었습니다");
+            refresh();
+        } else {
+            alert("error!");
+        }
+    };
+
     return (
         <>
             <Location pathList={locationPath.OrderPlanMgmt} />
             <div className="common_board_style mini_board_1">
                 <ul className="tab">
-                    <li onClick={() => changeTabs("원가버전조회")}>
-                        <a href="#원가버전조회" className="on">원가버전조회</a>
+                    <li
+                        onClick={() => {
+                            changeTabs("원가버전조회");
+                            setIsOpenAdd(true);
+                        }}>
+                        <a href="#원가버전조회" className="on">
+                            원가버전조회
+                        </a>
                     </li>
                     <li onClick={() => changeTabs("인건비")}>
                         <a href="#인건비">인건비</a>
@@ -328,6 +383,16 @@ function OrderPlanMgmt() {
                                 customDatasRefresh={refresh}
                                 hideCheckBox={true}
                             />
+                            {isOpenAdd && (
+                                <AddModModal
+                                    width={500}
+                                    height={250}
+                                    list={columns.orderPlanMgmt.addMod}
+                                    sendData={addVersionToServer}
+                                    onClose={() => setIsOpenAdd(false)}
+                                    title="버전 추가"
+                                />
+                            )}
                         </ul>
                     </div>
                     <div className="second">

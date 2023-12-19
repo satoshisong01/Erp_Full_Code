@@ -1,30 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import "../../components/modal/ModalCss.css";
+import "../../components/modal/ModalCss.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import DayPicker from "components/input/DayPicker";
-import ModalPageCompany from "./ModalPageCompany";
-import MonthPicker from "components/input/MonthPicker";
-import YearPicker from "components/input/YearPicker";
-import BasicInput from "components/input/BasicInput";
-import BasicTextarea from "components/input/BasicTextarea";
-import Percentage from "components/input/Percentage";
-import BasicSelect from "components/input/BasicSelect";
-import Number from "components/input/Number";
-
-/* 추가 모달 */
-export default function AddModal(props) {
-    const { width, height, list, onClose, sendData, title, sendList } = props;
-    const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
-    //const [isOpenModalMember, setIsOpenModalMember] = useState(false);
+import MakeListField from "utils/MakeModalField";
+/* 추가, 수정 모달 */
+export default function AddModModal(props) {
+    const { width, height, list, onClose, resultData, title, initialData } = props;
     const [data, setData] = useState({});
     const bodyRef = useRef(null);
-
-    useEffect(() => {
-        if (sendList) {
-            setData(sendList);
-        }
-    }, [sendList]);
 
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
@@ -36,99 +19,21 @@ export default function AddModal(props) {
         }
     }, [height]);
 
-    const inputChange = (e, type) => {
-        const { value, name } = e.target;
-        if (type === "number") {
-            let parsedValue = parseFloat(value.replace(/,/g, "")); // 컴마 제거하고 문자열을 숫자로 변환
-            if (isNaN(parsedValue)) {
-                console.log("입력된 값이 숫자가 아닙니다.");
-            }
-            setData((prevData) => ({
-                ...prevData,
-                [name]: parsedValue,
-            }));
-        } else {
-            setData((prevData) => ({
-                ...prevData,
-                [name]: value,
-            }));
-        }
-    };
-
-    const dateClick = (date, col) => {
-        setData((prevData) => ({
-            ...prevData,
-            [col]: date,
-        }));
-    };
-
-    const returnInfo = (item) => {
-        //선택한 정보
-        console.log(item, "item");
-        setIsOpenModalCompany(false);
-        setData((prevData) => ({
-            ...prevData,
-            cltNm: item.cltNm,
-            cltId: item.cltId,
-        }));
-    };
-
     // 데이터 추가 버튼을 눌렀을 때 실행되는 함수
-    const onAdd = async (e) => {
+    const onClick = async (e) => {
         e.preventDefault();
 
         // 필수 필드가 비어있는지 확인
-        const requiredColumns = list && list.filter((column) => column.items.some((item) => item.require));
-        const hasEmptyRequiredFields = requiredColumns.some((column) => column.items.some((item) => !data[item.col]));
-
-        if (hasEmptyRequiredFields) {
-            alert("필수값을 입력하지 않았습니다.");
-            // 여기서 에러 메시지를 표시하거나 다른 조치를 취할 수 있습니다.
-            return;
-        }
-
-        sendData(data); //데이터 부모로 전송
+        const requiredColumns = list && list.filter((column) => column.require);
+        const hasEmptyRequiredFields = requiredColumns.some((column) => !data[column.col]);
+        //필수값 확인 후
+        resultData(data); //데이터 부모로 전송
         onClose();
     };
 
-    useEffect(() => {
-        console.log(data, "data");
-    }, [data]);
-
-    const renderInputField = (item, index) => (
-        <div className="row-group" key={index}>
-            <div className="left">
-                {item.require && <span className="red">*</span>}
-                <span>{item.header}</span>
-            </div>
-            <div className="right">
-                {item.type === "input" ? (
-                    <BasicInput item={item} onChange={inputChange} value={data[item.col] || ""} />
-                ) : item.type === "dayPicker" ? (
-                    <DayPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data[item.col] || ""} placeholder={item.placeholder} />
-                ) : item.type === "monthPicker" ? (
-                    <MonthPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data[item.col] || ""} placeholder={item.placeholder} />
-                ) : item.type === "yearPicker" ? (
-                    <YearPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data[item.col] || ""} placeholder={item.placeholder} />
-                ) : item.type === "company" ? (
-                    <BasicInput item={item} onClick={() => setIsOpenModalCompany(true)} value={data[item.col] || ""} readOnly />
-                ) : item.type === "desc" ? (
-                    <BasicTextarea item={item} onChange={inputChange} value={data[item.col] || ""} />
-                ) : item.type === "percent" ? (
-                    <Percentage item={item} onChange={inputChange} value={data[item.col] || ""} />
-                ) : item.type === "number" ? (
-                    <Number
-                        item={item}
-                        onChange={(e) => inputChange(e, "number")}
-                        value={(data[item.col] && data[item.col].toLocaleString()) || ""}
-                        disabled={item.disabled}
-                    />
-                ) : item.type === "select" ? (
-                    <BasicSelect item={item} onChange={inputChange} value={data[item.col] || ""} />
-                ) : null}
-            </div>
-        </div>
-    );
+    const onChange = (value) => {
+        setData(value);
+    };
 
     return (
         <article className="me-modal">
@@ -145,7 +50,7 @@ export default function AddModal(props) {
                         {list &&
                             list.map((column, index) => (
                                 <div className="body-row" key={index}>
-                                    {column.items.map((item, itemIndex) => renderInputField(item, itemIndex))}
+                                    <MakeListField list={column.items} onChange={onChange} initialData={initialData} />
                                 </div>
                             ))}
                     </form>
@@ -155,15 +60,19 @@ export default function AddModal(props) {
                             <button className="table-btn table-btn-default" data-dismiss="modal" style={{ width: "100%" }} onClick={() => onClose()}>
                                 취소
                             </button>
-                            <button className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onAdd}>
-                                추가
-                            </button>
+                            {title.includes("추가") ? (
+                                <button className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onClick}>
+                                    추가
+                                </button>
+                            ) : (
+                                <button className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onClick}>
+                                    수정
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
-
-            {isOpenModalCompany && <ModalPageCompany returnInfo={returnInfo} closeLocal={() => setIsOpenModalCompany(false)} />}
         </article>
     );
 }

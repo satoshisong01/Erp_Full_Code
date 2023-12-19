@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../components/modal/ModalSearch.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -21,14 +21,20 @@ export default function ModPdOrderModal({ onClose, columns, updateData }) {
         }));
     };
 
-    const returnInfo = (item) => { //선택한 정보
+    useEffect(() => {
+        console.log(isLocalCompanyModal);
+    }, [isLocalCompanyModal]);
+
+    const returnInfo = (item) => {
+        //선택한 정보
+        console.log(item, "item");
         setIsLocalCompanyModal(false);
         setData((prevData) => ({
             ...prevData,
+            cltNm: item.cltNm,
             cltId: item.cltId,
-            cltNm: item.cltNm
         }));
-    }
+    };
 
     const handleSaveChanges = () => {
         // 필수값이 비어있는지 확인
@@ -48,7 +54,7 @@ export default function ModPdOrderModal({ onClose, columns, updateData }) {
             });
         } else {
             // updateData(data);
-            putData(data)
+            putData(data);
         }
     };
 
@@ -60,7 +66,7 @@ export default function ModPdOrderModal({ onClose, columns, updateData }) {
                 deleteAt: "N",
             };
 
-            console.log("dataToSend:",dataToSend);
+            console.log("dataToSend:", dataToSend);
 
             const resultData = await axiosUpdate("/api/baseInfrm/product/pdOrdr/edit.do", dataToSend);
             if (!resultData) {
@@ -70,7 +76,7 @@ export default function ModPdOrderModal({ onClose, columns, updateData }) {
             }
         }
         onClose(); //모달창 닫기
-    }
+    };
 
     return (
         <div className="modal-dialog demo-modal">
@@ -134,7 +140,7 @@ export default function ModPdOrderModal({ onClose, columns, updateData }) {
                                                             value={data[column.col] || ""}
                                                             readOnly
                                                         />
-                                                    ) :  (
+                                                    ) : (
                                                         <input
                                                             placeholder={column.header}
                                                             className="postInput"
@@ -164,10 +170,14 @@ export default function ModPdOrderModal({ onClose, columns, updateData }) {
                             </div>
                         </form>
                         {isLocalCompanyModal && (
-                            <ModalPageCompany returnInfo={returnInfo} closeLocal={() => setIsLocalCompanyModal(false)} />
+                            <ModalPageCompany
+                                returnInfo={returnInfo}
+                                closeLocal={() => {
+                                    setIsLocalCompanyModal(false);
+                                }}
+                            />
                         )}
                     </div>
-
                 </article>
             </div>
         </div>

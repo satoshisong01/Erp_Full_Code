@@ -79,6 +79,9 @@ import BusiCalculateDoc from "pages/sales/Business/BusiCalculateDoc";
 import ExcutionCostsDoc from "pages/execution/excutionCost/ExcutionCostsDoc";
 import LaborPreCostDoc from "pages/sales/Business/LaborPreCostDoc";
 
+//급별단가 함수
+import { ReorganizeData } from "components/DataTable/function/ReorganizeData";
+
 // 에러 페이지와 같은 상단(EgovHeader) 소스가 제외된 페이지에서 ui.js의 햄버거버튼 작동오류가 발생한다.
 // 즉, ui.js가 작동되지 않아서 재 로딩 해야 한다. 그래서, useRef객체를 사용하여 이전 페이지 URL을 구하는 코드 추가(아래)
 const usePrevLocation = (location) => {
@@ -90,25 +93,26 @@ const usePrevLocation = (location) => {
 };
 
 const RootRoutes = () => {
-    const { setUnitPriceList, projectItem, setRefesh, setProjectItem, returnKeyWord, setPgNmList, setCompanyList, addPgNm, setPdiNmList, addPdiNm, refesh } = useContext(PageContext);
+    const {
+        setUnitPriceList,
+        projectItem,
+        setUnitPriceListRenew,
+        setProjectItem,
+        returnKeyWord,
+        setPgNmList,
+        setCompanyList,
+        addPgNm,
+        setPdiNmList,
+        addPdiNm,
+    } = useContext(PageContext);
     useEffect(() => {
         basicFetchData();
         pgNmItem();
         pdiNmItem();
         companyItem();
         unitPriceItem();
+        //unitPriceRenew();
     }, []);
-
-    useEffect(() => {
-        if(refesh) {
-            basicFetchData();
-            pgNmItem();
-            pdiNmItem();
-            companyItem();
-            unitPriceItem();
-            setRefesh(false);
-        }
-    }, [refesh]);
 
     const basicFetchData = async () => {
         const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
@@ -142,10 +146,17 @@ const RootRoutes = () => {
         );
     };
 
-    const unitPriceItem = async () => { //급별단가
-        const resultData = await axiosFetch("/api/baseInfrm/product/gradeunitPrice/totalListAll.do", {searchCondition: "1", searchKeyword: "13"});
+    const unitPriceItem = async () => {
+        //급별단가
+        const resultData = await axiosFetch("/api/baseInfrm/product/gradeunitPrice/totalListAll.do", { searchCondition: "1", searchKeyword: "13" });
         setUnitPriceList([...resultData]);
+        setUnitPriceListRenew(ReorganizeData(resultData));
     };
+    //const unitPriceRenew = async () => {
+    //    const url = `/api/baseInfrm/product/gradeunitPrice/type/p/listAll.do`;
+    //    const requestData = { useAt: "Y" };
+    //    const resultData = await axiosFetch(url, requestData);
+    //};
 
     const pgNmItem = async () => {
         let requestData = "";
