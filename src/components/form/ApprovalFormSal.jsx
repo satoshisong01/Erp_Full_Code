@@ -8,51 +8,46 @@ import { axiosFetch } from "api/axiosFetch";
 import { v4 as uuidv4 } from "uuid";
 
 /** 영업 폼 */
-function ApprovalFormSal({ returnInfo }) {
-    const { projectInfo } = useContext(PageContext);
-    const [userInfo, setUserInfo] = useState({ id: "", name: "" });
-    const [data, setData] = useState({ version: "VER.1" }); //초기값
-    const [versionInfoList, setVersionInfoList] = useState([]);
+function ApprovalFormSal({ viewPageName }) {
+    const { projectInfo, innerPageName, versionInfo, setVersionInfo } = useContext(PageContext);
+    // const [userInfo, setUserInfo] = useState({ id: "", name: "" });
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
 
-    useEffect(() => {
-        const sessionUser = sessionStorage.getItem("loginUser");
-        const sessionUserId = JSON.parse(sessionUser)?.id;
-        setUserInfo({ id: sessionUserId });
-    }, []);
+    // useEffect(() => {
+    //     const sessionUser = sessionStorage.getItem("loginUser");
+    //     const sessionUserId = JSON.parse(sessionUser)?.id;
+    //     setUserInfo({ id: sessionUserId });
+    // }, []);
 
-    useEffect(() => {
-        if (projectInfo.poiId !== data.poiId) {
-            setData({ ...projectInfo });
-            getVersionList();
+    useEffect(() => { 
+        if(viewPageName !== innerPageName) return;
+        if (projectInfo.poiId && !versionInfo.versionId) {
+            getVersionList({ poiId: projectInfo.poiId });
         }
-    }, [projectInfo]);
+    }, [projectInfo, innerPageName]);
+
 
     const getVersionList = async (requestData) => {
-        // console.log("버전찾기 :)");
-        // const resultData = await axiosFetch("/api/baseInfrm/product/pjOrdrInfo/totalListAll.do", requestData || {});
-        // resultData.forEach((data) => {
-        //     if(data.isSelected) {
-        //         setData((prev) => ({
-        //             ...prev,
-        //             ['version']: data.value,
-        //         }));
-        //     }
-        // })
-        setVersionInfoList([
-            { name: "ver1", placeholder: "버전을 선택하세요.", value: "VER.1" },
-            { name: "ver2", placeholder: "버전을 선택하세요.", value: "VER.2" },
-        ]);
+        const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});
+        const emptyArr = resultData && resultData.map(({ versionId, versionNum, versionDesc, costAt }) => ({
+            versionId,
+            versionNum,
+            versionDesc,
+            costAt
+        }));
+        if(emptyArr) {
+            setVersionInfo({
+                versionId: emptyArr.find(info => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
+                option: emptyArr
+            });
+        }
     };
 
-    const onChange = (e) => {
+    const onSelectChange = (e) => {
         const { name, value } = e.target;
-        setData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-
-        returnInfo(data);
+        if (value !== "default") {
+            setVersionInfo((prev) => ({ ...prev, [name]: value }));
+        }
     };
 
     return (
@@ -61,14 +56,14 @@ function ApprovalFormSal({ returnInfo }) {
                 <table className="table-styled header-width">
                     <tbody>
                         <tr>
-                            <th>프로젝트명</th>
+                            <th> <span className="cherry">*</span> 프로젝트명</th>
                             <td colSpan={2}>
                                 <input
                                     id={uuidv4()}
                                     className="basic-input"
                                     name="poiNm"
                                     onClick={() => setIsOpenProjectModal(true)}
-                                    value={data.poiNm}
+                                    value={projectInfo.poiNm}
                                     placeholder="프로젝트를 선택하세요."
                                     readOnly
                                 />
@@ -81,27 +76,30 @@ function ApprovalFormSal({ returnInfo }) {
                                     />
                                 )}
                             </td>
-                            <th>사전원가 버전</th>
+                            <th> <span className="cherry">*</span> 사전원가 버전</th>
                             <td>
                                 <select
                                     id={uuidv4()}
-                                    className="basic-input"
-                                    name="version"
-                                    onChange={onChange}
-                                    value={data.version}
+                                    className="basic-input select"
+                                    name="versionId"
+                                    onChange={onSelectChange}
+                                    value={versionInfo.option?.length > 0 ? versionInfo.versionId : "default"}
                                 >
-                                    {versionInfoList &&
-                                        versionInfoList.map((info, index) => (
-                                            <option key={index} value={info.value}>
-                                                {info.value}
+                                    {versionInfo.option?.length > 0 ? (
+                                        versionInfo.option.map((info, index) => (
+                                            <option key={index} value={info.versionId}>
+                                                {info.versionNum}
                                             </option>
-                                        ))}
+                                        ))
+                                    ) : (
+                                        <option value="default">버전을 생성하세요.</option>
+                                    )}
                                 </select>
                             </td>
                             <th>기준연도</th>
-                            <td>{data.poiMonth}</td>
+                            <td>{projectInfo.poiMonth}</td>
                             <th>최종 수정일</th>
-                            <td>{data.lastModifyDate}</td>
+                            <td>{projectInfo.lastModifyDate}</td>
                         </tr>
                     </tbody>
                 </table>

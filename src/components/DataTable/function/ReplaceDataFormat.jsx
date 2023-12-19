@@ -1,4 +1,4 @@
-export const ChangePrmnPlanData = (data, projectInfo) => {
+export const ChangePrmnPlanData = (data, poiId) => {
     //if (!data || data.length === 0) {
     //    return [
     //        {
@@ -52,7 +52,7 @@ export const ChangePrmnPlanData = (data, projectInfo) => {
             groupedData[key] = {
                 //pgNm: item.pgNm,
                 pmpId: [],
-                poiId: projectInfo.poiId,
+                poiId: poiId,
                 useAt: "Y",
                 deleteAt: "N",
                 calendarVisible: false,
@@ -95,4 +95,64 @@ export const ChangePrmnPlanData = (data, projectInfo) => {
     // groupedData 객체를 배열로 변환
     const transformedData = Object.values(groupedData);
     return transformedData;
+};
+
+/* 영업구매-조회: 계산 */
+export const buyIngInfoCalculation = (list) => { 
+    const updatedData = list.map((row) => {
+        const {
+            byQunty, // 수량
+            consumerPrice, // 소비자단가
+            consumerAmount, // 소비자금액
+            unitPrice, // 단가
+            planAmount, // 금액
+            byUnitPrice, // 원단가
+            estimatedCost, // 원가
+            plannedProfits, // 이익금
+            plannedProfitMargin, // 이익률
+            byStandardMargin, // 구매-기준이익률
+            byConsumerOutputRate, // 구매-소비자가산출률
+        } = {
+            ...row,
+            consumerPrice: row.consumerPrice ? row.consumerPrice : 0,
+            byStandardMargin: row.byStandardMargin ? row.byStandardMargin : 0,
+            byConsumerOutputRate: row.byConsumerOutputRate ? row.byConsumerOutputRate : 0,
+        };
+        // 1.원가(견적가) : 수량 * 원단가
+        const updatedEstimatedCost = estimatedCost ? estimatedCost : byQunty * byUnitPrice;
+        // 2.단가 : 원가(견적가) / (1 - 사전원가기준이익율)
+        const updatedUnitPrice = unitPrice ? unitPrice : division(updatedEstimatedCost, 1 - byStandardMargin / 100);
+        // 3.금액 : 수량 * 단가
+        const updatedPlanAmount = planAmount ? planAmount : byQunty * updatedUnitPrice;
+        // 4.소비자단가 : 단가 / 소비자산출율
+        const updatedConsumerPrice = consumerPrice ? consumerPrice : division(updatedUnitPrice, byConsumerOutputRate);
+        // 5.소비자금액 : 수량 * 소비자단가
+        const updatedConsumerAmount = consumerAmount ? consumerAmount : byQunty * updatedConsumerPrice;
+        // 6.이익금 : 금액 - 원가(견적가)
+        const updatedPlannedProfits = plannedProfits ? plannedProfits : updatedPlanAmount - updatedEstimatedCost;
+        // 7.이익률 : 이익금 / 금액
+        const updatedPlannedProfitMargin = plannedProfitMargin ? plannedProfitMargin : division(updatedPlannedProfits, updatedPlanAmount);
+
+        return {
+            ...row,
+            estimatedCost: Math.round(updatedEstimatedCost),
+            unitPrice: Math.round(updatedUnitPrice),
+            planAmount: Math.round(updatedPlanAmount),
+            consumerPrice: Math.round(updatedConsumerPrice * 100),
+            consumerAmount: Math.round(updatedConsumerAmount * 100),
+            plannedProfits: Math.round(updatedPlannedProfits),
+            plannedProfitMargin: Math.round(updatedPlannedProfitMargin * 100),
+            byStandardMargin: Math.round(byStandardMargin),
+            byConsumerOutputRate: Math.round(byConsumerOutputRate),
+        };
+    });
+
+    return updatedData;
+}
+
+const division = (value1, value2) => {
+    if (!value1 || !value2) {
+        return 0;
+    }
+    return Math.round(value1 / value2);
 };
