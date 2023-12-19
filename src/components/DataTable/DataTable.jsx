@@ -311,19 +311,36 @@ const DataTable = (props) => {
 
     const excelClick = () => {};
 
-    const copyClick = () => {
+    const copyClick = async () => {
         const headers = columns.map((item) => item.header);
         const fields = columns.map((item) => item.col);
 
         console.log(headers, "헤더");
-        console.log(fields, "필ㄷ");
+        console.log(fields, "필드");
 
         const headersString = headers.join("\t\t");
         const dataString = `${headersString}\n${selectedData.map((item) => fields.map((field) => item[field]).join("\t")).join("\n")}`;
 
-        navigator.clipboard.writeText(dataString);
-        alert("테이블이 복사되었습니다!");
+        try {
+            await navigator.clipboard.writeText(dataString);
+            alert("테이블이 복사되었습니다!");
+        } catch (error) {
+            console.error("클립보드 복사 중 에러 발생 writeText:", error);
+            console.log("대체하는 복사기능 동작");
+            // 복사 기능이 실패했을 때 대안으로 텍스트를 선택하여 복사할 수 있는 방법을 제시합니다.
+            const textarea = document.createElement("textarea");
+            textarea.value = dataString;
+            textarea.setAttribute("readonly", "");
+            textarea.style.position = "absolute";
+            textarea.style.left = "-9999px";
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+            alert("테이블이 선택된 텍스트로 복사되었습니다. Ctrl+C 또는 Command+C를 눌러 복사하세요.");
+        }
     };
+
     const printClick = () => {
         console.log("출력!");
     };

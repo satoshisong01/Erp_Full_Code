@@ -5,11 +5,9 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import MakeListField from "utils/MakeModalField";
 /* 추가, 수정 모달 */
 export default function AddModModal(props) {
-    const { width, height, list, onClose, resultData, title, initialData, sendData } = props;
+    const { width, height, list, onClose, resultData, title, initialData } = props;
     const [data, setData] = useState({});
     const bodyRef = useRef(null);
-
-    console.log(data, "data");
 
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
@@ -29,16 +27,12 @@ export default function AddModModal(props) {
         const requiredColumns = list && list.filter((column) => column.require);
         const hasEmptyRequiredFields = requiredColumns.some((column) => !data[column.col]);
         //필수값 확인 후
-        //resultData(data); //데이터 부모로 전송
-        console.log(data, "입력받은값");
-        sendData(data);
+        resultData(data); //데이터 부모로 전송
         onClose();
     };
 
-    const onChange = (newValues) => {
-        setData((prevData) => {
-            return { ...prevData, ...newValues };
-        });
+    const onChange = (value) => {
+        setData(value);
     };
 
     return (
@@ -52,15 +46,13 @@ export default function AddModModal(props) {
                         </div>
                     </div>
 
-                    <form className="me-modal-body" ref={bodyRef}>
-                        <div className="body-area">
-                            {list &&
-                                list.map((column, index) => (
-                                    <div className="body-row" key={index}>
-                                        <MakeListField list={column.items} onChange={onChange} initialData={initialData} />
-                                    </div>
-                                ))}
-                        </div>
+                    <form className="me-modal-body" ref={bodyRef} style={{ overflowY: "auto" }}>
+                        {list &&
+                            list.map((column, index) => (
+                                <div className="body-row" key={index}>
+                                    <MakeListField list={column.items} onChange={onChange} initialData={initialData} />
+                                </div>
+                            ))}
                     </form>
 
                     <div className="me-modal-footer mg-b-20">

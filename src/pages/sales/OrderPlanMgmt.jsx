@@ -24,7 +24,9 @@ function OrderPlanMgmt() {
         projectInfo,
         setProjectInfo,
         versionInfo,
-        setVersionInfo
+        setVersionInfo,
+        unitPriceList,
+        unitPriceListRenew,
     } = useContext(PageContext);
     const [prmnPlanDatas, setPrmnPlanDatas] = useState([]); // 인건비
     const [pjbudgetDatas, setPjbudgetDatas] = useState([]); // 경비
@@ -120,7 +122,7 @@ function OrderPlanMgmt() {
                 toAdd.deleteAt = "N";
                 toAdd.poiId = projectInfo.poiId;
 
-                for (let j = 1; j <= 13; j++) {
+                for (let j = 1; j <= 14; j++) {
                     if (toAdd[`pmpmmPositionCode${j}`] === null) {
                         toAdd[`pmpmmPositionCode${j}`] = 0;
                     }
@@ -163,7 +165,7 @@ function OrderPlanMgmt() {
             const item = data[index];
 
             // null 값을 0으로 변경
-            for (let i = 1; i <= 13; i++) {
+            for (let i = 1; i <= 14; i++) {
                 const key = `pmpmmPositionCode${i}`;
                 if (item[key] === null) {
                     item[key] = 0;
@@ -197,9 +199,30 @@ function OrderPlanMgmt() {
         try {
             if (innerPageName === "인건비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
-                setPrmnPlanDatas(ChangePrmnPlanData(resultData, requestData.poiId));
-                console.log("😈영업-인건비:", requestData, resultData);
+                const changeData = ChangePrmnPlanData(resultData, projectInfo);
+                //console.log(resultData, "인건비값");
+                //setPrmnPlanDatas(ChangePrmnPlanData(resultData, projectInfo));
+                changeData.forEach((Item) => {
+                    const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
+                    const matchingAItem = unitPriceListRenew.find((aItem) => aItem.gupDesc === yearFromPmpMonth);
 
+                    if (matchingAItem) {
+                        let totalPrice = 0;
+
+                        // Iterate over gupPrice and pmpmmPositionCode arrays
+                        for (let i = 1; i <= 14; i++) {
+                            const gupPriceKey = `gupPrice${i}`;
+                            const pmpmmPositionCodeKey = `pmpmmPositionCode${i}`;
+
+                            // Multiply corresponding values and add to totalPrice
+                            totalPrice += matchingAItem[gupPriceKey] * Item[pmpmmPositionCodeKey];
+                        }
+
+                        // Add totalPrice to bItem
+                        Item.totalPrice = totalPrice;
+                    }
+                    return setPrmnPlanDatas(changeData);
+                });
             } else if (innerPageName === "경비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
                 setPjbudgetDatas(resultData);
@@ -226,13 +249,42 @@ function OrderPlanMgmt() {
         }
     };
 
+    const [isOpenAdd, setIsOpenAdd] = useState(false);
+    const addVersionToServer = async (addData) => {
+        console.log(addData);
+        const url = `/api/baseInfrm/product/versionControl/add.do`;
+        const dataToSend = {
+            ...addData,
+            lockAt: "Y",
+            useAt: "Y",
+            deleteAt: "N",
+            //poiId: projectInfo.poiId,
+        };
+
+        console.log(dataToSend, "나오는값");
+        const resultData = await axiosPost(url, dataToSend);
+        console.log(resultData);
+        if (resultData) {
+            alert("추가되었습니다");
+            refresh();
+        } else {
+            alert("error!");
+        }
+    };
+
     return (
         <>
             <Location pathList={locationPath.OrderPlanMgmt} />
             <div className="common_board_style mini_board_1">
                 <ul className="tab">
-                    <li onClick={() => changeTabs("원가버전조회")}>
-                        <a href="#원가버전조회" className="on">원가버전조회</a>
+                    <li
+                        onClick={() => {
+                            changeTabs("원가버전조회");
+                            setIsOpenAdd(true);
+                        }}>
+                        <a href="#원가버전조회" className="on">
+                            원가버전조회
+                        </a>
                     </li>
                     <li onClick={() => changeTabs("인건비")}>
                         <a href="#인건비">인건비</a>
@@ -264,15 +316,23 @@ function OrderPlanMgmt() {
                                 customDatasRefresh={refresh}
                                 hideCheckBox={true}
                             />
+                            {isOpenAdd && (
+                                <AddModModal
+                                    width={500}
+                                    height={250}
+                                    list={columns.orderPlanMgmt.addMod}
+                                    sendData={addVersionToServer}
+                                    onClose={() => setIsOpenAdd(false)}
+                                    title="버전 추가"
+                                />
+                            )}
                         </ul>
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalFormSal viewPageName="인건비"/>
-                            <HideCard title="합계" color="back-lightyellow">
-                                {/* <ReactDataTableView /> */}
-                            </HideCard>
-                            <HideCard title="계획 등록/수정" color="back-lightblue">
+                            <ApprovalFormSal returnInfo={returnInfo} />
+                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
+                            <HideCard title="계획 등록/수정" color="back-lightblue" className="mg-b-40">
                                 <div className="table-buttons mg-b-m-30">
                                     <RefreshButton onClick={refresh} />
                                 </div>

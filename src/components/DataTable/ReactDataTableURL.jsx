@@ -687,7 +687,40 @@ const ReactDataTableURL = (props) => {
                                                         name={cell.column.id}
                                                         onChange={(e) => onChangeInput(e, row)}
                                                     />
-                                                ) : cell.column.type === "button" ? (
+                                                ) : cell.column.type === "desc" ? (
+                                                    <input
+                                                        type="text"
+                                                        value={
+                                                            tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
+                                                                ? tableData[row.index][cell.column.id]
+                                                                : ""
+                                                        }
+                                                        name={cell.column.id}
+                                                        onChange={(e) => onChangeInput(e, row)}
+                                                        style={{
+                                                            backgroundColor: cell.value ? "white" : "lightgray",
+                                                        }}
+                                                        title={
+                                                            tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
+                                                                ? tableData[row.index][cell.column.id]
+                                                                : ""
+                                                        }
+                                                    />
+                                                ) : //<input
+                                                //    type="text"
+                                                //    value={tableData[row.index] && tableData[row.index][cell.column.id] !== undefined ? "[비고]" : null}
+                                                //    name={cell.column.id}
+                                                //    onChange={(e) => onChangeInput(e, row)}
+                                                //    style={{
+                                                //        backgroundColor: cell.value ? "lightgreen" : "gray",
+                                                //    }}
+                                                //    title={
+                                                //        tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
+                                                //            ? tableData[row.index][cell.column.id]
+                                                //            : null
+                                                //    }
+                                                ///>
+                                                cell.column.type === "button" ? (
                                                     <div>
                                                         <input
                                                             className="buttonSelect"

@@ -541,6 +541,11 @@ $disabled: gray;
     height: 100%;
 }
 
+.react-calendar {
+    position: absolute;
+    z-index: 9999;
+}
+
 .basic-input {
     width: 100%;
     height: 100%;
@@ -567,7 +572,7 @@ $disabled: gray;
 }
 
 .basic-input:focus {
-    outline: none; 
+    outline: none;
     /* border-color: #4CAF50; */
     /* box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); */
 }

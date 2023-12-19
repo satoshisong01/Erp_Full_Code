@@ -591,8 +591,8 @@ const ReactDataTable = (props) => {
         refreshClick();
     }, [viewPageName]);
 
-    const visibleColumnCount = headerGroups[0].headers.filter(column => !column.notView).length;
- 
+    const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
+
     return (
         <>
             <div className="flex-between mg-b-10">
@@ -646,7 +646,7 @@ const ReactDataTable = (props) => {
                             prepareRow(row);
                             return (
                                 // <tr {...row.getRowProps()} onDoubleClick={(e) => onCLickRow(row)}>
-                                <tr {...row.getRowProps()} >
+                                <tr {...row.getRowProps()}>
                                     {row.cells.map((cell, cellIndex) => {
                                         if (cell.column.notView) {
                                             // notView가 true인 경우, 셀을 출력하지 않음
@@ -713,7 +713,9 @@ const ReactDataTable = (props) => {
                                                             <MonthPicker
                                                                 name={cell.column.id}
                                                                 value={
-                                                                    tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id].substring(0, 7) : ""
+                                                                    tableData[row.index][cell.column.id]
+                                                                        ? tableData[row.index][cell.column.id].substring(0, 7)
+                                                                        : ""
                                                                 }
                                                                 onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                             />
@@ -753,6 +755,8 @@ const ReactDataTable = (props) => {
                                                                 readOnly
                                                             />
                                                         </div>
+                                                    ) : typeof cell.value === "number" ? (
+                                                        cell.value && cell.value.toLocaleString()
                                                     ) : (
                                                         cell.render("Cell")
                                                     )
@@ -763,6 +767,8 @@ const ReactDataTable = (props) => {
                                                         {cell.render("Cell")}
                                                         {perSent}
                                                     </div>
+                                                ) : typeof cell.value === "number" ? (
+                                                    cell.value && cell.value.toLocaleString()
                                                 ) : (
                                                     cell.render("Cell") || ""
                                                 )}
@@ -771,11 +777,11 @@ const ReactDataTable = (props) => {
                                     })}
                                     {isEditing && (
                                         <td style={{ textAlign: "center" }}>
-                                            <button className="back-cherry" style={{ margin: 0, overflow: "auto" }} onClick={() => onDeleteRow(row)} >
+                                            <button className="back-cherry" style={{ margin: 0, overflow: "auto" }} onClick={() => onDeleteRow(row)}>
                                                 삭제
                                             </button>
                                             {/* <button className="btnR btn-primary redDelete" onClick={() => onDeleteRow(row)}> */}
-                                                {/* 삭제 */}
+                                            {/* 삭제 */}
                                             {/* </button> */}
                                         </td>
                                     )}
@@ -786,7 +792,7 @@ const ReactDataTable = (props) => {
                 ) : (
                     <tbody>
                         <tr>
-                            <td colSpan={visibleColumnCount+1} style={{ textAlign: "center", fontSize: "15px", height: "80px"}} className="back-lightgray">
+                            <td colSpan={visibleColumnCount + 1} style={{ textAlign: "center", fontSize: "15px", height: "80px" }} className="back-lightgray">
                                 조회된 데이터가 없습니다.
                             </td>
                         </tr>

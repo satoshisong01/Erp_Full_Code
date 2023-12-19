@@ -25,8 +25,7 @@ function OrderMgmt() {
     const [isOpenDel, setIsOpenDel] = useState(false);
 
     const [sendDataTable, setSendDataTable] = useState([]);
-    const [selectedRows , setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
-
+    const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
 
     //임시 삭제 할 id,명
     const [poiId, setPoiId] = useState([]);
@@ -121,25 +120,28 @@ function OrderMgmt() {
         fetchAllData();
     };
 
-    const fetchAllData = async () => {
+    const fetchAllData = async (value) => {
+        console.log(value, "@@@");
         const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
-        const resultData = await axiosFetch(url, { useAt: "Y" });
+        const requestData = value ? { ...value, useAt: "Y" } : { useAt: "Y" };
+        const resultData = await axiosFetch(url, requestData);
         console.log(resultData, "resultData");
         setSendDataTable(resultData);
     };
 
     const onSearch = (value) => {
+        fetchAllData(value);
         console.log("서치데이터: ", value);
-    }
+    };
 
     useEffect(() => {
         console.log("💜selectedRows:", selectedRows);
-    }, [selectedRows])
+    }, [selectedRows]);
 
     return (
         <>
             <Location pathList={locationPath.OrderMgmt} />
-            <SearchList conditionList={columns.orderMgmt.condition} onSearch={onSearch}/>
+            <SearchList conditionList={columns.orderMgmt.condition} onSearch={onSearch} />
             <HideCard title="프로젝트 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-b-m-30">
                     <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
@@ -154,11 +156,20 @@ function OrderMgmt() {
                     tableRef={orderMgmtTable}
                     viewPageName="프로젝트관리"
                     saveIdNm={saveIdNm}
-                    sendSelected={(data) => {setSelectedRows(data)}}
+                    sendSelected={(data) => {
+                        setSelectedRows(data);
+                    }}
                 />
             </HideCard>
             {isOpenAdd && (
-                <AddModModal width={500} height={400} list={columns.orderMgmt.addMod} sendData={addToServer} onClose={() => setIsOpenAdd(false)} title="프로젝트 추가" />
+                <AddModModal
+                    width={500}
+                    height={400}
+                    list={columns.orderMgmt.addMod}
+                    sendData={addToServer}
+                    onClose={() => setIsOpenAdd(false)}
+                    title="프로젝트 추가"
+                />
             )}
             {isOpenUpDate && (
                 <AddModModal
