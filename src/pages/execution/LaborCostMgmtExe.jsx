@@ -11,7 +11,7 @@ import { columns } from "constants/columns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import ReactDataTableView from "components/DataTable/ReactDataTableView";
-import { ChangePrmnPlanData } from "components/DataTable/function/ChangePrmnPlanData";
+import { ChangePrmnPlanData } from "components/DataTable/function/ReplaceDataFormat";
 import RefreshButton from "components/button/RefreshButton";
 
 /** 실행관리-인건비-실행 */
