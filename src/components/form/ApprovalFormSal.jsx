@@ -19,26 +19,28 @@ function ApprovalFormSal({ viewPageName }) {
     //     setUserInfo({ id: sessionUserId });
     // }, []);
 
-    useEffect(() => { 
-        if(viewPageName !== innerPageName) return;
+    useEffect(() => {
+        if (viewPageName !== innerPageName) return;
         if (projectInfo.poiId && !versionInfo.versionId) {
+            console.log("나옴??");
             getVersionList({ poiId: projectInfo.poiId });
         }
     }, [projectInfo, innerPageName]);
 
-
     const getVersionList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});
-        const emptyArr = resultData && resultData.map(({ versionId, versionNum, versionDesc, costAt }) => ({
-            versionId,
-            versionNum,
-            versionDesc,
-            costAt
-        }));
-        if(emptyArr) {
+        const emptyArr =
+            resultData &&
+            resultData.map(({ versionId, versionNum, versionDesc, costAt }) => ({
+                versionId,
+                versionNum,
+                versionDesc,
+                costAt,
+            }));
+        if (emptyArr) {
             setVersionInfo({
-                versionId: emptyArr.find(info => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
-                option: emptyArr
+                versionId: emptyArr.find((info) => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
+                option: emptyArr,
             });
         }
     };
@@ -56,7 +58,10 @@ function ApprovalFormSal({ viewPageName }) {
                 <table className="table-styled header-width">
                     <tbody>
                         <tr>
-                            <th> <span className="cherry">*</span> 프로젝트명</th>
+                            <th>
+                                {" "}
+                                <span className="cherry">*</span> 프로젝트명
+                            </th>
                             <td colSpan={2}>
                                 <input
                                     id={uuidv4()}
@@ -68,23 +73,20 @@ function ApprovalFormSal({ viewPageName }) {
                                     readOnly
                                 />
                                 {isOpenProjectModal && (
-                                    <ProjectModal
-                                        width={500}
-                                        height={710}
-                                        onClose={() => setIsOpenProjectModal(false)}
-                                        title="프로젝트 목록"
-                                    />
+                                    <ProjectModal width={500} height={710} onClose={() => setIsOpenProjectModal(false)} title="프로젝트 목록" />
                                 )}
                             </td>
-                            <th> <span className="cherry">*</span> 사전원가 버전</th>
+                            <th>
+                                {" "}
+                                <span className="cherry">*</span> 사전원가 버전
+                            </th>
                             <td>
                                 <select
                                     id={uuidv4()}
                                     className="basic-input select"
                                     name="versionId"
                                     onChange={onSelectChange}
-                                    value={versionInfo.option?.length > 0 ? versionInfo.versionId : "default"}
-                                >
+                                    value={versionInfo.option?.length > 0 ? versionInfo.versionId : "default"}>
                                     {versionInfo.option?.length > 0 ? (
                                         versionInfo.option.map((info, index) => (
                                             <option key={index} value={info.versionId}>
