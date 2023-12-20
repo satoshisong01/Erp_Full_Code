@@ -1,9 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import ModalSearch from "components/modal/ModalSearch";
 import { PageContext } from "components/PageProvider";
-import BasicSelect from "components/input/BasicSelect";
 import ProjectModal from "components/modal/ProjectModal";
-import BasicInput from "components/input/BasicInput";
 import { axiosFetch } from "api/axiosFetch";
 import { v4 as uuidv4 } from "uuid";
 
@@ -52,7 +49,7 @@ function ApprovalFormSal({ viewPageName }) {
 
     return (
         <>
-            <div className="approval-form mg-b-20">
+            <div className="approval-form mg-b-40">
                 <table className="table-styled header-width">
                     <tbody>
                         <tr>

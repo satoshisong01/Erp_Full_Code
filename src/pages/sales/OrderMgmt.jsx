@@ -8,63 +8,35 @@ import RefreshButton from "components/button/RefreshButton";
 import DelButton from "components/button/DelButton";
 import ModButton from "components/button/ModButton";
 import AddButton from "components/button/AddButton";
-import PopupButton from "components/button/PopupButton";
-import URL from "constants/url";
 import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
-import DeleteModal from "components/modal/DeleteModal";
 import { columns } from "constants/columns";
-import HideCard from "components/HideCard";
 import AddModModal from "components/modal/AddModModal";
+import HideCard from "components/HideCard";
+import DeleteModal from "components/modal/DeleteModal";
 
-/** 영업관리-수주등록관리 */
+/** 영업관리-프로젝트관리 */
 function OrderMgmt() {
-    const { projectInfo } = useContext(PageContext);
-    const orderMgmtTable = useRef(null);
+    const { projectInfo, currentPageName } = useContext(PageContext);
     const [isOpenAdd, setIsOpenAdd] = useState(false);
-    const [isOpenUpDate, setIsOpenUpDate] = useState(false);
+    const [isOpenMod, setIsOpenMod] = useState(false);
     const [isOpenDel, setIsOpenDel] = useState(false);
+    const [selectedRows , setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
+    const [tableData, setTableData] = useState([]);
+    const [deleteNames, setDeleteNames] = useState([]); //삭제할 Name 목록
 
-    const [sendDataTable, setSendDataTable] = useState([]);
-    const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
 
-    //임시 삭제 할 id,명
-    const [poiId, setPoiId] = useState([]);
-    const [poiNm, setPoiNm] = useState([]);
-    const [modData, setModData] = useState({});
+    useEffect(() => {
+        selectedRows && setDeleteNames(selectedRows.map(row => row.poiNm));
+    }, [selectedRows])
 
-    const saveIdNm = (poiId, poiNm) => {
-        console.log(poiId, poiNm);
-        setPoiId(poiId);
-        setPoiNm(poiNm);
-    };
-
-    const getSelectedRow = (data) => {
-        // sendList가 변경되었을 때만 업데이트
-        if (!objectsAreEqual(modData, data)) {
-            setModData(data);
-            console.log(data);
+    useEffect(() => {
+        if(currentPageName === "프로젝트관리") {
+            fetchAllData(); //맨처음에 부르기..
         }
-    };
-
-    function objectsAreEqual(obj1, obj2) {
-        const keys1 = Object.keys(obj1);
-        const keys2 = Object.keys(obj2);
-
-        if (keys1.length !== keys2.length) {
-            return false;
-        }
-
-        for (let key of keys1) {
-            if (obj1[key] !== obj2[key]) {
-                return false;
-            }
-        }
-
-        return true;
-    }
+    }, [currentPageName])
 
     const addToServer = async (addData) => {
-        console.log(addData);
+        console.log("💜 addToServer:", addData);
         const url = `/api/baseInfrm/product/pjOrdrInfo/add.do`;
         const dataToSend = {
             ...addData,
@@ -82,7 +54,14 @@ function OrderMgmt() {
             alert("error!");
         }
     };
+
     const modifyToServer = async (updatedData) => {
+        console.log("💜 modifyToServer:", updatedData);
+        if (updatedData.length === 0) {
+            alert("수정할 항목을 선택하세요.");
+            return;
+        }
+
         const url = `/api/baseInfrm/product/pjOrdrInfo/edit.do`;
         const updated = { ...updatedData, lockAt: "Y", useAt: "Y" };
         const resultData = await axiosUpdate(url, updated);
@@ -94,25 +73,21 @@ function OrderMgmt() {
             alert("error!!");
         }
     };
-    const deleteToServer = async () => {
-        // 확인 대화상자 표시
-        const shouldDelete = window.confirm(`🔥${poiNm}🔥 프로젝트를 정말로 삭제하시겠습니까?`);
-        if (shouldDelete) {
-            // 사용자가 "확인"을 클릭하면 삭제 진행
-            const url = `/api/baseInfrm/product/pjOrdrInfo/removeAll.do`;
-            const resultData = await axiosDelete(url, poiId);
-
-            // 필요한 경우 결과 처리
+    
+    const deleteToServer = async (value) => {
+        if(value === "임시삭제") {
+            /* 임시삭제 코드 구현 */
+            
+        } else if(value === "영구삭제") {
+            const poiNms = selectedRows.map(row => row.poiId);
+            const url = `/api/baseInfrm/product/pjOrdrInfo/delete.do`;
+            const resultData = await axiosDelete(url, poiNms);
             if (resultData) {
-                alert(`${poiNm}이(가) 삭제되었습니다.`);
-                // 성공적인 삭제 후 추가 작업 수행
+                alert(`선택한 항목들이 삭제되었습니다.`);
                 refresh();
             } else {
-                alert(`${poiNm} 삭제 중 오류가 발생했습니다.`);
+                alert("삭제 중 에러가 발생했습니다.");
             }
-        } else {
-            // 사용자가 "취소"를 클릭하면 아무 작업도 수행하지 않음
-            alert(`${poiNm} 삭제가 취소되었습니다.`);
         }
     };
 
@@ -120,23 +95,15 @@ function OrderMgmt() {
         fetchAllData();
     };
 
-    const fetchAllData = async (value) => {
-        console.log(value, "@@@");
+    const onSearch = (condition) => {
+        fetchAllData(condition);
+    };
+
+    const fetchAllData = async (condition) => {
         const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
-        const requestData = value ? { ...value, useAt: "Y" } : { useAt: "Y" };
-        const resultData = await axiosFetch(url, requestData);
-        console.log(resultData, "resultData");
-        setSendDataTable(resultData);
+        const resultData = await axiosFetch(url, condition || {});
+        setTableData(resultData);
     };
-
-    const onSearch = (value) => {
-        fetchAllData(value);
-        console.log("서치데이터: ", value);
-    };
-
-    useEffect(() => {
-        console.log("💜selectedRows:", selectedRows);
-    }, [selectedRows]);
 
     return (
         <>
@@ -145,18 +112,15 @@ function OrderMgmt() {
             <HideCard title="프로젝트 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-b-m-30">
                     <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
-                    <ModButton label={"수정"} onClick={() => setIsOpenUpDate(true)} />
-                    <DelButton label={"삭제"} onClick={deleteToServer} />
+                    <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
+                    <DelButton label={"삭제"} onClick={() => setIsOpenDel(true)} />
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTable
                     columns={columns.orderMgmt.project}
-                    customDatas={sendDataTable}
-                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
-                    tableRef={orderMgmtTable}
+                    customDatas={tableData}
                     viewPageName="프로젝트관리"
-                    saveIdNm={saveIdNm}
-                    sendSelected={(data) => {
+                    returnSelectRows={(data) => {
                         setSelectedRows(data);
                     }}
                 />
@@ -166,23 +130,30 @@ function OrderMgmt() {
                     width={500}
                     height={400}
                     list={columns.orderMgmt.addMod}
-                    sendData={addToServer}
+                    resultData={addToServer}
                     onClose={() => setIsOpenAdd(false)}
                     title="프로젝트 추가"
                 />
             )}
-            {isOpenUpDate && (
+            {isOpenMod && (
                 <AddModModal
                     width={500}
                     height={400}
                     list={columns.orderMgmt.addMod}
                     initialData={selectedRows}
                     resultData={modifyToServer}
-                    onClose={() => setIsOpenUpDate(false)}
+                    onClose={() => setIsOpenMod(false)}
                     title="프로젝트 수정"
                 />
             )}
-            {/*<DeleteModal viewName={poiNm} onConfirm={deleteToServer} />*/}
+            {isOpenDel && (
+                <DeleteModal
+                    initialData={deleteNames}
+                    resultData={deleteToServer}
+                    onClose={() => setIsOpenDel(false)}
+                    isOpen={isOpenDel}
+                />
+            )}
         </>
     );
 }

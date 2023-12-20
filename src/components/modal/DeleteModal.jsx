@@ -1,47 +1,57 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 
-export default function DeleteModal({ viewData, onConfirm }) {
+export default function DeleteModal({ initialData, resultData, onClose, isOpen }) {
     const [modalData, setModalData] = useState([]);
-    const [isOpenModal, setIsOpenModal] = useState(false);
-
-    const handleConfirm = () => {
-        onConfirm("확인");
-        setIsOpenModal(false);
-    };
-
-    const handleCancel = () => {
-        onConfirm("취소");
-        setIsOpenModal(false);
-    };
+    const [isChecked, setIsChecked] = useState(false);
 
     useEffect(() => {
-        if (viewData && viewData.length > 0) {
-            setIsOpenModal(true); // 모달 열기
-            setModalData(viewData);
+        if (initialData && initialData.length > 0) {
+            setModalData(initialData);
         }
-    }, [viewData]);
+    }, [initialData]);
 
+    const onConfirm = (value) => {
+        resultData(value);
+        onClose();
+    };
+
+    const toggleCheckbox = () => {
+        setIsChecked((prevChecked) => !prevChecked);
+    };
+    
     return (
-        <Modal appElement={document.getElementById("root")} isOpen={isOpenModal} onRequestClose={handleCancel} style={{ overflow: "visible" }}>
+        <Modal appElement={document.getElementById("root")} isOpen={isOpen} onRequestClose={onClose} style={{ overflow: "visible" }}>
             <div className="flex-column">
                 <div className="">
                     <p style={{ fontSize: "17px", fontWeight: 500 }}>삭제 하시겠습니까? 총 {modalData ? modalData.length : 0}개의 데이터</p>
                     <p className="mg-t-10 scrollable">
-                        [
-                        {modalData.map((item, index, array) =>
-                            Object.keys(item).map((key, innerIndex) =>
-                                innerIndex === 0 ? (array.length > 1 && index < array.length - 1 ? `${key}: ${item[key]}, ` : `${key}: ${item[key]}`) : null
-                            )
-                        )}
-                        ]
+                        {modalData.join(', ')}
                     </p>
                 </div>
+                <div style={{display: "flex", textAlign: "center", alignItems: "center"}}>
+                    <input
+                        type="checkbox"
+                        id="exampleCheckbox"
+                        checked={isChecked}
+                        onChange={toggleCheckbox}
+                        className="checkbox"
+                    />
+                    <label htmlFor="exampleCheckbox" style={{fontSize: "14px"}} className="cherry mg-l-10">
+                        영구삭제
+                    </label>
+                    {isChecked && <p className="cherry mg-l-10"> * 영구삭제가 맞는지 다시 확인해주세요.</p>}
+                </div>
                 <div className="flex-between">
-                    <button type="button" onClick={handleConfirm} className="btn btn-primary btn-block">
-                        확인
-                    </button>
-                    <button type="button" onClick={handleCancel} className="btn btn-secondary btn-block">
+                    {!isChecked ? 
+                        <button type="button" onClick={() => onConfirm("임시삭제")} className="btn btn-primary btn-block">
+                            임시삭제 
+                        </button> :
+                        <button type="button" onClick={() => onConfirm("영구삭제")} className="btn  btn-primary back-cherry btn-block">
+                            영구삭제 
+                        </button>
+                    }
+                    <button type="button" onClick={() => onConfirm("취소")} className="btn btn-secondary btn-block">
                         취소
                     </button>
                 </div>

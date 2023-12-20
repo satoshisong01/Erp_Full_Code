@@ -5,27 +5,33 @@ import { axiosFetch } from "api/axiosFetch";
 import { PageContext } from "components/PageProvider";
 import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
 import ApprovalFormExe from "components/form/ApprovalFormExe";
+import HideCard from "components/HideCard";
 
 /** 영업관리-영업비(정산) */
 function SalesExpenses() {
-    const { isSaveFormTable, projectInfo } = useContext(PageContext);
+    const { isSaveFormTable, projectInfo, setProjectInfo } = useContext(PageContext);
+
+    useState(() => {
+        return(() =>  { //초기화
+            // setProjectInfo({});
+        })
+    }, [])
 
     const [salesCost, setSalesCost] = useState([]);
 
+    const totalColumns = [
+        {
+            header: "영업비",
+            col: "totalPrice",
+            cellWidth: "100%"
+        },
+    ];
+
     const columns = [
         {
-            header: "경비목록",
-            col: "esntlId",
-            cellWidth: "20%",
-            update: false,
-            updating: true,
-            write: true,
-            type: "input",
-        },
-        {
-            header: "비고",
+            header: "영업비 내역",
             col: "poiDesc",
-            cellWidth: "20%",
+            cellWidth: "70%",
             updating: true,
             write: true,
             type: "input",
@@ -33,7 +39,7 @@ function SalesExpenses() {
         {
             header: "금액",
             col: "pjbgPrice",
-            cellWidth: "50%",
+            cellWidth: "30%",
             updating: true,
             write: true,
             type: "input",
@@ -104,7 +110,12 @@ function SalesExpenses() {
         <>
             <Location pathList={locationPath.SalesExpenses} />
             <ApprovalFormExe />
-            <ReactDataTableURL columns={columns} flag={isSaveFormTable} customDatas={salesCost} />
+            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+                <ReactDataTableURL columns={totalColumns} flag={isSaveFormTable} customDatas={salesCost} />
+            </HideCard>
+            <HideCard title="등록/수정" color="back-lightblue">
+                <ReactDataTableURL columns={columns} flag={isSaveFormTable} customDatas={salesCost} />
+            </HideCard>
         </>
     );
 }

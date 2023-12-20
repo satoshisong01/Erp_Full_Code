@@ -1036,19 +1036,14 @@ td > input {
     color: #aaa;
     font-size: 16px;
 }
-.common_board_style .list .second {
-    display: none;
-}
-.common_board_style .list .third {
-    display: none;
-}
-.common_board_style .list .fourth {
-    display: none;
-}
-.common_board_style .list .fifth {
-    display: none;
-}
-.common_board_style .list .sixth {
+.common_board_style .list .second,
+.common_board_style .list .third,
+.common_board_style .list .fourth,
+.common_board_style .list .fifth,
+.common_board_style .list .sixth,
+.common_board_style .list .seventh,
+.common_board_style .list .eighth
+{
     display: none;
 }
 
@@ -1184,8 +1179,6 @@ body > div:nth-child(4) > div {
         font-weight: bold;
     }
     .hide-content {
-        /* border-radius: 5px 5px 5px 5px; */
-        // border: 1px solid $default-gray; 
         border: 1px solid $default-gray; 
         padding: 10px; 
         border-top: none;
