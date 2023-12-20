@@ -213,7 +213,7 @@ function OrderPlanMgmt() {
             let requestData = { poiId: conditionInfo.poiId, useAt: "Y" };
             if (innerPageName === "인건비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
-                const changeData = ChangePrmnPlanData(resultData, projectInfo);
+                const changeData = ChangePrmnPlanData(resultData, conditionInfo);
                 //console.log(resultData, "인건비값");
                 //setPrmnPlanDatas(ChangePrmnPlanData(resultData, projectInfo));
                 changeData.forEach((Item) => {
@@ -399,7 +399,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalFormSal returnInfo={returnInfo} />
+                            <ApprovalFormSal />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue" className="mg-b-40">
                                 <div className="table-buttons mg-b-m-30">
