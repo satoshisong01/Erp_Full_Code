@@ -28,6 +28,7 @@ const ReactDataTable = (props) => {
         singleUrl, //url-삭제예정
         returnList, //부모로 데이터배열 리턴-> returnList 변수명변경
         returnSelect, //부모로 row 리턴 -> returnSelect 변수명변경
+        returnSelectRows, //부모로 선택한 row 배열 리턴
         hideCheckBox, //체크박스 상태 플래그
         editing, //테이블 에디트 상태 플래그
         sendToParentCostIndex, //부모로 리턴 ---> returnList 사용하세요!
@@ -458,7 +459,6 @@ const ReactDataTable = (props) => {
 
     /* current- 현재 보는페이지, table button 활성화 on off */
     useEffect(() => {
-        // console.log(current, "current", currentPageName, innerPageName, "modalPageName: ", modalPageName);
         if (isModalTable && current === modalPageName) {
             //모달화면일때
             setModalLengthSelectRow(selectedFlatRows.length);
@@ -469,6 +469,8 @@ const ReactDataTable = (props) => {
         } else if (!isModalTable && (current === currentPageName || current === innerPageName)) {
             //모달화면이 아닐때
             if (selectedFlatRows.length > 0) {
+                const selects = selectedFlatRows.map((row) =>  row.values )
+                returnSelectRows && returnSelectRows(selects);
                 returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
                 setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
