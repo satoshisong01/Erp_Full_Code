@@ -7,7 +7,7 @@ import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch"
 import ApprovalForm from "components/form/ApprovalForm";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { PageContext } from "components/PageProvider";
-import { ReorganizeData } from "components/DataTable/function/ReorganizeData";
+import { ReorganizeManCost } from "components/DataTable/function/ReorganizeData";
 
 /** 기준정보관리-원가기준관리-급별단가(인건비) */
 function GradeWageLaborCost() {
@@ -23,6 +23,7 @@ function GradeWageLaborCost() {
 
     const columns = [
         { header: "단가ID", col: "gupId", cellWidth: "50%", type: "input", notView: true },
+        { header: "기준연도", col: "year", cellWidth: "50%", type: "input" },
         { header: "기준명", col: "gupDesc", cellWidth: "50%", type: "input" },
         { header: "임원", col: "gupPrice1", cellWidth: "50%", type: "input" },
         { header: "특급기술사", col: "gupPrice2", cellWidth: "50%", type: "input" },
@@ -45,25 +46,8 @@ function GradeWageLaborCost() {
         const requestData = { useAt: "Y" };
         const resultData = await axiosFetch(url, requestData);
         console.log(resultData, "resultData");
-        setTableData(ReorganizeData(resultData));
+        setTableData(ReorganizeManCost(resultData));
     };
-
-    //const roleMapping = {
-    //    임원: 1,
-    //    특급기술사: 2,
-    //    고급기술사: 3,
-    //    중급기술사: 4,
-    //    초급기술사: 5,
-    //    고급기능사: 6,
-    //    중급기능사: 7,
-    //    초급기능사: 8,
-    //    부장: 9,
-    //    차장: 10,
-    //    과장: 11,
-    //    대리: 12,
-    //    주임: 13,
-    //    사원: 14,
-    //};
 
     useEffect(() => {
         console.log(tableData, "tableData");
@@ -175,36 +159,6 @@ function GradeWageLaborCost() {
         fetchData();
     };
 
-    //급별단가 데이터 배열 재구성함수
-    //const reorganizeData = (data) => {
-    //    // reduce 함수를 사용하여 데이터 배열을 순회하면서 재구성된 결과를 구축합니다.
-    //    return data.reduce((acc, item) => {
-    //        // 현재 아이템에서 속성들을 비구조화하여 가져옵니다.
-    //        const { gupDesc, guppName, gupId, gupType, gupPrice } = item;
-
-    //        // gupBaseDate 배열에서 연도를 추출합니다.
-    //        const year = gupDesc;
-
-    //        // 찾은 데이터의 인덱스
-    //        // gupDesc를 기반으로 누적 배열에서 그룹의 인덱스를 찾습니다.
-    //        const foundIndex = acc.findIndex((group) => group && group.gupDesc === gupDesc);
-    //        const roleKey = `gupPrice${roleMapping[guppName]}`;
-
-    //        // 해당하는 그룹이 없을 경우 새로운 그룹 생성
-    //        // 동일한 gupDesc를 가진 그룹이 존재하는지 확인합니다.
-    //        if (foundIndex === -1) {
-    //            // 그룹이 존재하지 않으면 새로운 그룹을 생성하고 누적 배열에 추가합니다.
-    //            acc.push({ gupDesc, gupType, year, [roleKey]: Number(gupPrice), gupId: [gupId] });
-    //        } else {
-    //            // 그룹이 이미 존재하면 데이터를 기존 그룹에 추가합니다.
-    //            acc[foundIndex][`gupPrice${roleMapping[guppName]}`] = Number(gupPrice);
-    //            //항상 배열로 쓰이고 낮은순서로 저장됨
-    //            acc[foundIndex].gupId = [...acc[foundIndex].gupId, ...(Array.isArray(gupId) ? gupId : [gupId])].sort((a, b) => a - b);
-    //        }
-    //        return acc;
-    //    }, []);
-    //};
-
     const generateUpdateObjects = (updatedData) => {
         let updates = [];
 
@@ -231,7 +185,7 @@ function GradeWageLaborCost() {
 
     return (
         <>
-            {/*<ApprovalForm projectNone={true} />*/}
+            <ApprovalForm projectNone={true} />
             <Location pathList={locationPath.GradeWageLaborCost} />
             <ReactDataTable
                 columns={columns}

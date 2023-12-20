@@ -27,6 +27,8 @@ function OrderMgmt() {
     const [sendDataTable, setSendDataTable] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
 
+    console.log(selectedRows, "선택된 row의 데이터를 가져와야함 ⭐⭐⭐⭐");
+
     //임시 삭제 할 id,명
     const [poiId, setPoiId] = useState([]);
     const [poiNm, setPoiNm] = useState([]);
@@ -96,7 +98,7 @@ function OrderMgmt() {
     };
     const deleteToServer = async () => {
         // 확인 대화상자 표시
-        const shouldDelete = window.confirm(`🔥${poiNm}🔥 프로젝트를 정말로 삭제하시겠습니까?`);
+        const shouldDelete = window.confirm(`🔥프로젝트 : [${poiNm}]🔥(❗번호:${poiId}) 프로젝트를 정말로 삭제하시겠습니까?`);
         if (shouldDelete) {
             // 사용자가 "확인"을 클릭하면 삭제 진행
             const url = `/api/baseInfrm/product/pjOrdrInfo/removeAll.do`;
@@ -104,15 +106,15 @@ function OrderMgmt() {
 
             // 필요한 경우 결과 처리
             if (resultData) {
-                alert(`${poiNm}이(가) 삭제되었습니다.`);
+                alert(`프로젝트[${poiNm}]이(가) 삭제되었습니다.`);
                 // 성공적인 삭제 후 추가 작업 수행
                 refresh();
             } else {
-                alert(`${poiNm} 삭제 중 오류가 발생했습니다.`);
+                alert(`프로젝트[${poiNm}] 삭제 중 오류가 발생했습니다.`);
             }
         } else {
             // 사용자가 "취소"를 클릭하면 아무 작업도 수행하지 않음
-            alert(`${poiNm} 삭제가 취소되었습니다.`);
+            alert(`프로젝트[${poiNm}] 삭제가 취소되었습니다.`);
         }
     };
 
@@ -156,7 +158,7 @@ function OrderMgmt() {
                     tableRef={orderMgmtTable}
                     viewPageName="프로젝트관리"
                     saveIdNm={saveIdNm}
-                    sendSelected={(data) => {
+                    returnSelect={(data) => {
                         setSelectedRows(data);
                     }}
                 />

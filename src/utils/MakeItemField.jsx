@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import DayPicker from "components/input/DayPicker";
 import MonthPicker from "components/input/MonthPicker";
 import YearPicker from "components/input/YearPicker";
@@ -10,21 +10,22 @@ import Number from "components/input/Number";
 import { v4 as uuidv4 } from "uuid";
 import CompanyModal from "components/modal/CompanyModal";
 import ProjectModal from "components/modal/ProjectModal";
-
+import { PageContext } from "components/PageProvider";
 
 export default function MakeItemField({ item, resultData, initialData }) {
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
     const [isOpenModalProject, setIsOpenModalProject] = useState(false);
+    //const { companyInfo } = useContext(PageContext);
     const [data, setData] = useState({});
-    
+
     useEffect(() => {
         setData(initialData);
-    }, [initialData])
+    }, [initialData]);
 
     useEffect(() => {
         resultData && resultData(data);
-    }, [data])
-    
+    }, [data]);
+
     const inputChange = (e) => {
         const { value, name } = e.target;
         setData((prevData) => ({
@@ -32,7 +33,7 @@ export default function MakeItemField({ item, resultData, initialData }) {
             [name]: value,
         }));
     };
-    
+
     const dateClick = (date, col) => {
         setData((prevData) => ({
             ...prevData,
@@ -40,7 +41,7 @@ export default function MakeItemField({ item, resultData, initialData }) {
         }));
     };
 
-    const renderField = (item) => (
+    const renderField = (item) =>
         item.type === "input" ? (
             <BasicInput item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
         ) : item.type === "dayPicker" ? (
@@ -58,39 +59,28 @@ export default function MakeItemField({ item, resultData, initialData }) {
         ) : item.type === "percent" ? (
             <Percentage item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
         ) : item.type === "number" ? (
-            <Number
-                item={item}
-                onChange={(e) => inputChange(e)}
-                value={data?.[item.col] ? data[item.col].toLocaleString() : ""}
-                disabled={item.disabled}
-            />
+            <Number item={item} onChange={(e) => inputChange(e)} value={data?.[item.col] ? data[item.col].toLocaleString() : ""} disabled={item.disabled} />
         ) : item.type === "select" ? (
             <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
         ) : item.type === "radio" ? (
-            item.option && item.option.length > 0  &&
+            item.option &&
+            item.option.length > 0 && (
                 <div className="radio-container">
                     {item.option.map((op) => (
                         <div key={uuidv4()} className="radio-group">
-                            <input
-                                id={uuidv4()}
-                                type="radio"
-                                name={item.col}
-                                value={op.value}
-                                checked={data?.[item.col] === op.value}
-                                onChange={inputChange}
-                            />
+                            <input id={uuidv4()} type="radio" name={item.col} value={op.value} checked={data?.[item.col] === op.value} onChange={inputChange} />
                             <label htmlFor={op.value}>{op.label}</label>
                         </div>
                     ))}
                 </div>
-        ) : null
-    )
-    
+            )
+        ) : null;
+
     return (
         <>
             {renderField(item)}
             {isOpenModalCompany && <CompanyModal width={500} height={550} title="회사 목록" onClose={() => setIsOpenModalCompany(false)} />}
             {isOpenModalProject && <ProjectModal width={500} height={550} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} />}
         </>
-    )
+    );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import DayPicker from "components/input/DayPicker";
 import MonthPicker from "components/input/MonthPicker";
 import YearPicker from "components/input/YearPicker";
@@ -11,22 +11,23 @@ import CompanyModal from "components/modal/CompanyModal";
 import { axiosFetch } from "api/axiosFetch";
 import { v4 as uuidv4 } from "uuid";
 import ProjectModal from "components/modal/ProjectModal";
-
+import { PageContext } from "components/PageProvider";
 
 export default function MakeModalField({ list, onChange, initialData }) {
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
     const [isOpenModalProject, setIsOpenModalProject] = useState(false);
     const [data, setData] = useState({});
+    const { companyInfo, projectInfo } = useContext(PageContext);
 
     useEffect(() => {
         setData(initialData);
-    }, [initialData])
+    }, [initialData]);
 
     useEffect(() => {
         onChange && onChange(data);
-    }, [data])
-;
-    
+        console.log(data, "??!@?");
+    }, [data]);
+
     const inputChange = (e, type) => {
         const { value, name } = e.target;
         if (type === "number") {
@@ -45,7 +46,33 @@ export default function MakeModalField({ list, onChange, initialData }) {
             }));
         }
     };
-    
+
+    useEffect(() => {
+        if (companyInfo.cltId) {
+            setData((prevData) => ({ ...prevData, ...companyInfo }));
+        }
+    }, [companyInfo]);
+
+    useEffect(() => {
+        if (projectInfo.poiId) {
+            setData((prevData) => ({ ...prevData, ...projectInfo }));
+        }
+    }, [projectInfo]);
+
+    //const projectClick = () => {
+    //    setData((prevData) => ({
+    //        ...prevData,
+    //        cltNm: projectInfo.poiNm,
+    //    }));
+    //};
+
+    const companyClick = () => {
+        setData((prevData) => ({
+            ...prevData,
+            cltNm: companyInfo.cltNm,
+        }));
+    };
+
     const dateClick = (date, col) => {
         setData((prevData) => ({
             ...prevData,
@@ -69,9 +96,25 @@ export default function MakeModalField({ list, onChange, initialData }) {
                 ) : item.type === "yearPicker" ? (
                     <YearPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
                 ) : item.type === "company" ? (
-                    <BasicInput item={item} onClick={() => setIsOpenModalCompany(true)} value={data?.[item.col] ?? ""} readOnly />
+                    <BasicInput
+                        item={item}
+                        onClick={() => {
+                            companyClick();
+                            setIsOpenModalCompany(true);
+                        }}
+                        value={data?.[item.col] ?? ""}
+                        readOnly
+                    />
                 ) : item.type === "project" ? (
-                    <BasicInput item={item} onClick={() => setIsOpenModalProject(true)} value={data?.[item.col] ?? ""} readOnly />
+                    <BasicInput
+                        item={item}
+                        onClick={() => {
+                            //projectClick();
+                            setIsOpenModalProject(true);
+                        }}
+                        value={data?.[item.col] ?? ""}
+                        readOnly
+                    />
                 ) : item.type === "desc" ? (
                     <BasicTextarea item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
                 ) : item.type === "percent" ? (
@@ -86,7 +129,8 @@ export default function MakeModalField({ list, onChange, initialData }) {
                 ) : item.type === "select" ? (
                     <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
                 ) : item.type === "radio" ? (
-                    item.option && item.option.length > 0  &&
+                    item.option &&
+                    item.option.length > 0 && (
                         <div className="radio-container">
                             {item.option.map((op) => (
                                 <div key={uuidv4()} className="radio-group">
@@ -102,16 +146,17 @@ export default function MakeModalField({ list, onChange, initialData }) {
                                 </div>
                             ))}
                         </div>
+                    )
                 ) : null}
             </div>
         </div>
     );
-    
+
     return (
         <>
             {list.map((item, itemIndex) => renderField(item, itemIndex, data))}
             {isOpenModalCompany && <CompanyModal width={500} height={550} title="회사 목록" onClose={() => setIsOpenModalCompany(false)} />}
             {isOpenModalProject && <ProjectModal width={550} height={770} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} />}
         </>
-    )
+    );
 }
