@@ -42,7 +42,7 @@ export default function MakeItemField({ item, resultData, initialData }) {
 
     useEffect(() => {
         setData(initialData);
-    }, [initialData])
+    }, [initialData]);
 
     useEffect(() => {
         resultData && resultData(data);
@@ -107,7 +107,7 @@ export default function MakeItemField({ item, resultData, initialData }) {
             [name]: value,
         }));
     };
-    
+
     const dateClick = (date, col) => {
         setData((prevData) => ({
             ...prevData,
@@ -115,7 +115,7 @@ export default function MakeItemField({ item, resultData, initialData }) {
         }));
     };
 
-    const renderField = (item) => (
+    const renderField = (item) =>
         item.type === "input" ? (
             <BasicInput item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
         ) : item.type === "dayPicker" ? (
@@ -133,16 +133,12 @@ export default function MakeItemField({ item, resultData, initialData }) {
         ) : item.type === "percent" ? (
             <Percentage item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
         ) : item.type === "number" ? (
-            <Number
-                item={item}
-                onChange={(e) => inputChange(e)}
-                value={data?.[item.col] ? data[item.col].toLocaleString() : ""}
-                disabled={item.disabled}
-            />
+            <Number item={item} onChange={(e) => inputChange(e)} value={data?.[item.col] ? data[item.col].toLocaleString() : ""} disabled={item.disabled} />
         ) : item.type === "select" ? (
             <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
         ) : item.type === "radio" ? (
-            item.option && item.option.length > 0  &&
+            item.option &&
+            item.option.length > 0 && (
                 <div className="radio-container">
                     {item.option.map((op) => (
                         <div key={uuidv4()} className="radio-group">
@@ -184,5 +180,5 @@ export default function MakeItemField({ item, resultData, initialData }) {
             {/* {isOpenModalProductGroup && <ProjectModal width={550} height={770} title="품목그룹 목록" onClose={() => setIsOpenModalProductGroup(false)} />}
             {isOpenModalEmployerInfo && <ProjectModal width={550} height={770} title="업무회원 목록" onClose={() => setIsOpenModalEmployerInfo(false)} />} */}
         </>
-    )
+    );
 }

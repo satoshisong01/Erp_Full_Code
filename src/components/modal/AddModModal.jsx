@@ -1,12 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import "../../components/modal/ModalCss.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import MakeListField from "utils/MakeModalField";
+import { PageContext } from "components/PageProvider";
 /* 추가, 수정 모달 */
 export default function AddModModal(props) {
     const { width, height, list, onClose, resultData, title, initialData } = props;
     const [data, setData] = useState({});
+    const { companyInfo } = useContext(PageContext);
     const bodyRef = useRef(null);
 
     console.log(data, "data");
@@ -31,6 +33,11 @@ export default function AddModModal(props) {
         //필수값 확인 후
         resultData(data); //데이터 부모로 전송
         console.log(data, "입력받은값");
+        if (title === "프로젝트 수정") {
+            resultData(data); //데이터 부모로 전송
+        } else {
+            sendData(data);
+        }
         onClose();
     };
 

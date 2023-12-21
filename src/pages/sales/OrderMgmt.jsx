@@ -20,20 +20,19 @@ function OrderMgmt() {
     const [isOpenAdd, setIsOpenAdd] = useState(false);
     const [isOpenMod, setIsOpenMod] = useState(false);
     const [isOpenDel, setIsOpenDel] = useState(false);
-    const [selectedRows , setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
+    const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
     const [tableData, setTableData] = useState([]);
     const [deleteNames, setDeleteNames] = useState([]); //삭제할 Name 목록
 
+    useEffect(() => {
+        selectedRows && setDeleteNames(selectedRows.map((row) => row.poiNm));
+    }, [selectedRows]);
 
     useEffect(() => {
-        selectedRows && setDeleteNames(selectedRows.map(row => row.poiNm));
-    }, [selectedRows])
-
-    useEffect(() => {
-        if(currentPageName === "프로젝트관리") {
+        if (currentPageName === "프로젝트관리") {
             fetchAllData(); //맨처음에 부르기..
         }
-    }, [currentPageName])
+    }, [currentPageName]);
 
     const addToServer = async (addData) => {
         console.log("💜 addToServer:", addData);
@@ -73,13 +72,12 @@ function OrderMgmt() {
             alert("error!!");
         }
     };
-    
+
     const deleteToServer = async (value) => {
-        if(value === "임시삭제") {
+        if (value === "임시삭제") {
             /* 임시삭제 코드 구현 */
-            
-        } else if(value === "영구삭제") {
-            const poiNms = selectedRows.map(row => row.poiId);
+        } else if (value === "영구삭제") {
+            const poiNms = selectedRows.map((row) => row.poiId);
             const url = `/api/baseInfrm/product/pjOrdrInfo/delete.do`;
             const resultData = await axiosDelete(url, poiNms);
             if (resultData) {
@@ -146,14 +144,7 @@ function OrderMgmt() {
                     title="프로젝트 수정"
                 />
             )}
-            {isOpenDel && (
-                <DeleteModal
-                    initialData={deleteNames}
-                    resultData={deleteToServer}
-                    onClose={() => setIsOpenDel(false)}
-                    isOpen={isOpenDel}
-                />
-            )}
+            {isOpenDel && <DeleteModal initialData={deleteNames} resultData={deleteToServer} onClose={() => setIsOpenDel(false)} isOpen={isOpenDel} />}
         </>
     );
 }

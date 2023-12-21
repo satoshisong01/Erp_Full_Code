@@ -12,6 +12,11 @@ import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 import ApprovalFormSal from "components/form/ApprovalFormSal";
 import HideCard from "components/HideCard";
 import ReactDataTableView from "components/DataTable/ReactDataTableView";
+import AddButton from "components/button/AddButton";
+import ModButton from "components/button/ModButton";
+import DelButton from "components/button/DelButton";
+import AddModModal from "components/modal/AddModModal";
+import SaveButton from "components/button/SaveButton";
 
 /** 영업관리-계획관리 */
 function OrderPlanMgmt() {
@@ -27,12 +32,15 @@ function OrderPlanMgmt() {
         setVersionInfo,
         unitPriceList,
         unitPriceListRenew,
+        setNameOfButton,
     } = useContext(PageContext);
     const [prmnPlanDatas, setPrmnPlanDatas] = useState([]); // 인건비
     const [pjbudgetDatas, setPjbudgetDatas] = useState([]); // 경비
     const [pdOrdrDatas, setPdOrdrDatas] = useState([]); // 구매(재료비)
     const [outsourcingDatas, setOutsourcingDatas] = useState([]); // 개발외주비
     const [generalExpensesDatas, setGeneralExpensesDatas] = useState([]); // 영업관리비
+
+    const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
 
     useEffect(() => {
         setInnerPageName("원가버전조회");
@@ -55,14 +63,19 @@ function OrderPlanMgmt() {
 
     useEffect(() => {
         if (projectInfo.poiId && versionInfo.versionId) {
-            fetchAllData(projectInfo.poiId, versionInfo.versionId)
+            fetchAllData(projectInfo.poiId, versionInfo.versionId);
         }
     }, [projectInfo, versionInfo, innerPageName]);
 
     const refresh = () => {
         if (projectInfo.poiId && versionInfo.versionId) {
-            fetchAllData(projectInfo.poiId, versionInfo.versionId)
+            fetchAllData(projectInfo.poiId, versionInfo.versionId);
         }
+    };
+
+    const returnList = (originTableData, tableData) => {
+        console.log(originTableData, tableData);
+        compareData(originTableData, tableData);
     };
 
     const changeTabs = (task) => {
@@ -73,13 +86,19 @@ function OrderPlanMgmt() {
         });
     };
 
+    console.log(projectInfo, "projectInfo");
+
+    useEffect(() => {
+        console.log(projectInfo);
+    }, [projectInfo]);
+
     //인건비용임
     const compareData = (originData, updatedData) => {
+        console.log(originData, "originData");
+        console.log(updatedData, "updatedData");
         const filterData = updatedData.filter((data) => data.pmpMonth); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
-        console.log(originData, "originData");
-        console.log(updatedData, "updatedData");
 
         if (originDataLength > updatedDataLength) {
             //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
@@ -121,6 +140,7 @@ function OrderPlanMgmt() {
                 toAdd.useAt = "Y";
                 toAdd.deleteAt = "N";
                 toAdd.poiId = projectInfo.poiId;
+                toAdd.versionId = versionInfo.versionId;
 
                 for (let j = 1; j <= 14; j++) {
                     if (toAdd[`pmpmmPositionCode${j}`] === null) {
@@ -135,12 +155,14 @@ function OrderPlanMgmt() {
     };
 
     const addList = async (addNewData) => {
+        console.log(addNewData, "추가되는새기덜");
         const url = `/api/baseInfrm/product/prmnPlan/addList.do`;
         const resultData = await axiosPost(url, addNewData);
         if (resultData) {
             refresh();
         }
     };
+    //http://192.168.0.113:8080/api/baseInfrm/product/prmnPlan/editArrayList.do
     const updateList = async (toUpdate) => {
         console.log("❗updateList:", toUpdate);
         const url = `/api/baseInfrm/product/prmnPlan/editList.do`;
@@ -195,12 +217,15 @@ function OrderPlanMgmt() {
     };
 
     const fetchAllData = async (poiId, versionId) => {
-        const requestData = {poiId, versionId};
+        const requestData = { poiId, versionId };
         try {
-            if (innerPageName === "인건비") {
+            if (innerPageName === "원가버전조회") {
+                const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData);
+                console.log(resultData, "원가버전조회 데이터");
+            } else if (innerPageName === "인건비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
-                const changeData = ChangePrmnPlanData(resultData, projectInfo);
-                //console.log(resultData, "인건비값");
+                const changeData = ChangePrmnPlanData(resultData);
+                console.log(resultData, "인건비값");
                 //setPrmnPlanDatas(ChangePrmnPlanData(resultData, projectInfo));
                 changeData.forEach((Item) => {
                     const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
@@ -227,18 +252,15 @@ function OrderPlanMgmt() {
                 const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
                 setPjbudgetDatas(resultData);
                 console.log("😈영업-경비:", resultData);
-
             } else if (innerPageName === "구매(재료비)") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
                 const calData = buyIngInfoCalculation(resultData);
                 console.log("calData", calData);
                 console.log("😈영업-구매비:", requestData, resultData);
-
             } else if (innerPageName === "개발외주비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/devOutCost/totalListAll.do", requestData);
                 setOutsourcingDatas(resultData);
                 console.log("😈영업-개발외주비:", requestData, resultData);
-
             } else if (innerPageName === "영업관리비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/slsmnExpns/totalListAll.do", requestData);
                 setGeneralExpensesDatas(resultData);
@@ -250,6 +272,10 @@ function OrderPlanMgmt() {
     };
 
     const [isOpenAdd, setIsOpenAdd] = useState(false);
+    //const [isOpenSave, setIsOpenSave] = useState(false);
+
+    const [isOpenUpDate, setIsOpenUpDate] = useState(false);
+
     const addVersionToServer = async (addData) => {
         console.log(addData);
         const url = `/api/baseInfrm/product/versionControl/add.do`;
@@ -272,6 +298,28 @@ function OrderPlanMgmt() {
         }
     };
 
+    //const deleteToServer = async () => {
+    //    // 확인 대화상자 표시
+    //    const shouldDelete = window.confirm(`🔥프로젝트 : [${poiNm}]🔥(❗번호:${poiId}) 프로젝트를 정말로 삭제하시겠습니까?`);
+    //    if (shouldDelete) {
+    //        // 사용자가 "확인"을 클릭하면 삭제 진행
+    //        const url = `/api/baseInfrm/product/pjOrdrInfo/removeAll.do`;
+    //        const resultData = await axiosDelete(url, poiId);
+
+    //        // 필요한 경우 결과 처리
+    //        if (resultData) {
+    //            alert(`프로젝트[${poiNm}]이(가) 삭제되었습니다.`);
+    //            // 성공적인 삭제 후 추가 작업 수행
+    //            refresh();
+    //        } else {
+    //            alert(`프로젝트[${poiNm}] 삭제 중 오류가 발생했습니다.`);
+    //        }
+    //    } else {
+    //        // 사용자가 "취소"를 클릭하면 아무 작업도 수행하지 않음
+    //        alert(`프로젝트[${poiNm}] 삭제가 취소되었습니다.`);
+    //    }
+    //};
+
     return (
         <>
             <Location pathList={locationPath.OrderPlanMgmt} />
@@ -280,7 +328,6 @@ function OrderPlanMgmt() {
                     <li
                         onClick={() => {
                             changeTabs("원가버전조회");
-                            setIsOpenAdd(true);
                         }}>
                         <a href="#원가버전조회" className="on">
                             원가버전조회
@@ -312,40 +359,41 @@ function OrderPlanMgmt() {
                 <div className="list">
                     <div className="first">
                         <ul>
-                            <div className="table-buttons">
-                                <RefreshButton onClick={refresh}/>
-                            </div>
-                            <ReactDataTable
-                                columns={columns.orderPlanMgmt.version}
-                                customDatas={prmnPlanDatas}
-                                viewPageName="원가버전조회"
-                                customDatasRefresh={refresh}
-                                hideCheckBox={true}
-                            />
-                            {/* {isOpenAdd && (
-                                <AddModModal
-                                    width={500}
-                                    height={250}
-                                    list={columns.orderPlanMgmt.addMod}
-                                    sendData={addVersionToServer}
-                                    onClose={() => setIsOpenAdd(false)}
-                                    title="버전 추가"
+                            <HideCard title="원가 버전 목록" color="back-lightblue" className="mg-b-40">
+                                <div className="table-buttons">
+                                    <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
+                                    <ModButton label={"수정"} onClick={() => setIsOpenUpDate(true)} />
+                                    {/*<DelButton label={"삭제"} onClick={deleteToServer} />*/}
+                                    <RefreshButton onClick={refresh} />
+                                </div>
+                                <ReactDataTable
+                                    columns={columns.orderPlanMgmt.version}
+                                    customDatas={prmnPlanDatas}
+                                    viewPageName="원가버전조회"
+                                    customDatasRefresh={refresh}
+                                    hideCheckBox={true}
+                                    returnSelect={(data) => {
+                                        setSelectedRows(data);
+                                    }}
                                 />
-                            )} */}
+                            </HideCard>
                         </ul>
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalFormSal viewPageName="인건비"/>
-                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                            </HideCard>
+                            <ApprovalFormSal viewPageName="인건비" />
+                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-b-m-30">
+                                    <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                                    {/*<ModButton label={"수정"} onClick={() => setIsOpenUpDate(true)} />*/}
+                                    {/*<DelButton label={"삭제"} onClick={deleteToServer} />*/}
                                     <RefreshButton onClick={refresh} />
                                 </div>
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.labor}
                                     customDatas={prmnPlanDatas}
+                                    returnList={returnList}
                                     viewPageName="인건비"
                                     customDatasRefresh={refresh}
                                     hideCheckBox={true}
@@ -355,7 +403,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="third">
                         <ul>
-                            <ApprovalFormSal viewPageName="구매(재료비)"/>
+                            <ApprovalFormSal viewPageName="구매(재료비)" />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                                 {/* <ReactDataTableView /> */}
                             </HideCard>
@@ -376,7 +424,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="fourth">
                         <ul>
-                            <ApprovalFormSal viewPageName="개발외주비"/>
+                            <ApprovalFormSal viewPageName="개발외주비" />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                                 {/* <ReactDataTableView /> */}
                             </HideCard>
@@ -397,7 +445,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="fifth">
                         <ul>
-                            <ApprovalFormSal viewPageName="경비"/>
+                            <ApprovalFormSal viewPageName="경비" />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                                 {/* <ReactDataTableView /> */}
                             </HideCard>
@@ -418,7 +466,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="sixth">
                         <ul>
-                            <ApprovalFormSal viewPageName="영업관리비"/>
+                            <ApprovalFormSal viewPageName="영업관리비" />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                                 {/* <ReactDataTableView /> */}
                             </HideCard>
@@ -439,7 +487,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="seventh">
                         <ul>
-                            <ApprovalFormSal viewPageName="견적용 인건비"/>
+                            <ApprovalFormSal viewPageName="견적용 인건비" />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                                 {/* <ReactDataTableView /> */}
                             </HideCard>
@@ -459,7 +507,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="eighth">
                         <ul>
-                            <ApprovalFormSal viewPageName="견적용 구매비"/>
+                            <ApprovalFormSal viewPageName="견적용 구매비" />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                                 {/* <ReactDataTableView /> */}
                             </HideCard>
@@ -480,6 +528,16 @@ function OrderPlanMgmt() {
                     </div>
                 </div>
             </div>
+            {isOpenAdd && (
+                <AddModModal
+                    width={500}
+                    height={250}
+                    list={columns.orderPlanMgmt.addMod}
+                    sendData={addVersionToServer}
+                    onClose={() => setIsOpenAdd(false)}
+                    title="버전 추가"
+                />
+            )}
         </>
     );
 }

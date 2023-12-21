@@ -96,7 +96,7 @@ export const columns = {
     orderMgmt: {
         project: [
             //프로젝트관리
-            // { header: "수주 아이디", col: "poiId", cellWidth: "5%" },
+            { header: "수주 아이디", col: "poiId", cellWidth: "5%", notView: true },
             { header: "프로젝트이름", col: "poiNm", cellWidth: "25%" },
             { header: "고객사", col: "cltNm", cellWidth: "15%" },
             { header: "수주부서", col: "poiGroupId", cellWidth: "7%" },
@@ -104,6 +104,7 @@ export const columns = {
             { header: "영업대표", col: "poiSalmanagerId", cellWidth: "10%" },
             { header: "담당자", col: "poiManagerId", cellWidth: "10%" },
             { header: "통화", col: "poiCurrcy", cellWidth: "5%" },
+            { header: "기준연도", col: "poiMonth", cellWidth: "5%" },
             { header: "계약일", col: "poiBeginDt", cellWidth: "10%" },
             { header: "납기시작일", col: "poiDueBeginDt", cellWidth: "10%" },
             { header: "납기종료일", col: "poiDueEndDt", cellWidth: "10%" },
@@ -210,7 +211,7 @@ export const columns = {
         // 계획관리
         condition: [
             { title: "프로젝트명", col: "poiNm", type: "input", value: "", searchLevel: "1" },
-            { title: "기준연도", col: "clCode2", type: "input", value: "", searchLevel: "1" },
+            { title: "기준연도", col: "poiMonth", type: "input", value: "", searchLevel: "1" },
             { title: "사전원가 버전", col: "clCodeNm", type: "input", value: "", searchLevel: "2" },
             { title: "최종 수정일", col: "clCodeNm", type: "input", value: "", searchLevel: "2" },
         ],
@@ -323,7 +324,7 @@ export const columns = {
             { header: "소비자가 산출률", col: "byConsumerOutputRate", cellWidth: "15%", type: "input" },
         ],
         addMod: [
-            { items: [{ header: "프로젝트이름", col: "poiId", require: true, type: "input" }] },
+            { items: [{ header: "프로젝트이름", col: "poiNm", require: true, type: "project" }] },
             { items: [{ header: "버전", col: "versionNum", require: true, type: "input" }] },
             { items: [{ header: "비고", col: "versionDesc", type: "desc" }] },
         ],

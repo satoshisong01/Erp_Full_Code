@@ -169,9 +169,11 @@ const ReactDataTable = (props) => {
         if (current === innerPageName) {
             setIsEditing(editing !== undefined ? editing : isSaveFormTable); //테이블 상태 //inner tab일 때 테이블 조작
         }
-        if (current === innerPageName && !isSaveFormTable) {
+        if (current === innerPageName) {
             //inner tab에서 저장을 눌렀을 때
-            if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
+            if (innerPageName === "인건비") {
+                //returnList(originTableData, tableData);
+            } else if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
                 returnList(originTableData, tableData);
             } else if (innerPageName === "사전원가지표" && !isSaveFormTable) {
                 sendToParentCostIndex(originTableData, tableData);
@@ -202,6 +204,8 @@ const ReactDataTable = (props) => {
                 modifyClick();
             } else if (nameOfButton === "search") {
                 searchClick();
+            } else if (nameOfButton === "save") {
+                returnList(originTableData, tableData);
             }
             setNameOfButton(""); //초기화
         }
@@ -275,6 +279,7 @@ const ReactDataTable = (props) => {
     /* 데이터 삭제 */
     const deleteClick = async (btnLabel) => {
         if (!suffixUrl && !singleUrl) return;
+        console.log(btnLabel);
         const deleteRows = selectedFlatRows && selectedFlatRows.map((row) => row.values);
         if (!btnLabel) {
             // 최초, 파라미터가 없을 때
