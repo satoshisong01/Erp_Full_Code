@@ -115,61 +115,61 @@ export default function MakeItemField({ item, resultData, initialData }) {
         }));
     };
 
-    const renderField = (item) =>
-        item.type === "input" ? (
-            <BasicInput item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
-        ) : item.type === "dayPicker" ? (
-            <DayPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
-        ) : item.type === "monthPicker" ? (
-            <MonthPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
-        ) : item.type === "yearPicker" ? (
-            <YearPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
-        ) : item.type === "company" ? (
-            <BasicInput item={item} onClick={() => setIsOpenModalCompany(true)} value={data?.[item.col] ?? ""} readOnly />
-        ) : item.type === "project" ? (
-            <BasicInput item={item} onClick={() => setIsOpenModalProject(true)} value={data?.[item.col] ?? ""} readOnly />
-        ) : item.type === "desc" ? (
-            <BasicTextarea item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
-        ) : item.type === "percent" ? (
-            <Percentage item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
-        ) : item.type === "number" ? (
-            <Number item={item} onChange={(e) => inputChange(e)} value={data?.[item.col] ? data[item.col].toLocaleString() : ""} disabled={item.disabled} />
-        ) : item.type === "select" ? (
-            <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
-        ) : item.type === "radio" ? (
-            item.option &&
-            item.option.length > 0 && (
-                <div className="radio-container">
-                    {item.option.map((op) => (
-                        <div key={uuidv4()} className="radio-group">
-                            <input
-                                type="radio"
-                                name={item.col}
-                                value={op.value}
-                                checked={data?.[item.col] === op.value}
-                                onChange={inputChange}
-                            />
-                            <label htmlFor={op.value}>{op.label}</label>
-                        </div>
-                    ))}
-                </div>
-        ) : item.type === "productInfo" ? (
-            <input
-                type="text"
-                className="basic-input"
-                name={data?.[item.col] || ""}
-                onClick={() => setIsOpenModalProductInfo(true)}
-                value={data?.[item.col] ? data[item.col] : ""}
-                placeholder="품명을 선택하세요."
-                readOnly
-                // disabled={disabled || false}
-            />
-        ) : item.type === "productGroup" ? (
-            <BasicInput item={item} onClick={() => setIsOpenModalProductGroup(true)} value={data?.[item.col] ?? ""} readOnly />
-        ) : item.type === "employerInfo" ? (
-            <BasicInput item={item} onClick={() => setIsOpenModalEmployerInfo(true)} value={data?.[item.col] ?? ""} readOnly />
-        )  : null
-    )
+    const renderField = (item) => (
+            item.type === "input" ? (
+                <BasicInput item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
+            ) : item.type === "dayPicker" ? (
+                <DayPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
+            ) : item.type === "monthPicker" ? (
+                <MonthPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
+            ) : item.type === "yearPicker" ? (
+                <YearPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
+            ) : item.type === "company" ? (
+                <BasicInput item={item} onClick={() => setIsOpenModalCompany(true)} value={data?.[item.col] ?? ""} readOnly />
+            ) : item.type === "project" ? (
+                <BasicInput item={item} onClick={() => setIsOpenModalProject(true)} value={data?.[item.col] ?? ""} readOnly />
+            ) : item.type === "desc" ? (
+                <BasicTextarea item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
+            ) : item.type === "percent" ? (
+                <Percentage item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
+            ) : item.type === "number" ? (
+                <Number item={item} onChange={(e) => inputChange(e)} value={data?.[item.col] ? data[item.col].toLocaleString() : ""} disabled={item.disabled} />
+            ) : item.type === "select" ? (
+                <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
+            ) : item.type === "radio" ? (
+                item.option && item.option.length > 0 && (
+                    <div className="radio-container">
+                        {item.option.map((op) => (
+                            <div key={uuidv4()} className="radio-group">
+                                <input
+                                    type="radio"
+                                    name={item.col}
+                                    value={op.value}
+                                    checked={data?.[item.col] === op.value}
+                                    onChange={inputChange}
+                                />
+                                <label htmlFor={op.value}>{op.label}</label>
+                            </div>
+                        ))}
+                    </div>
+                )
+            ) : item.type === "productInfo" ? (
+                <input
+                    type="text"
+                    className="basic-input"
+                    name={data?.[item.col] || ""}
+                    onClick={() => setIsOpenModalProductInfo(true)}
+                    value={data?.[item.col] ? data[item.col] : ""}
+                    placeholder="품명을 선택하세요."
+                    readOnly
+                    // disabled={disabled || false}
+                />
+            ) : item.type === "productGroup" ? (
+                <BasicInput item={item} onClick={() => setIsOpenModalProductGroup(true)} value={data?.[item.col] ?? ""} readOnly />
+            ) : item.type === "employerInfo" ? (
+                <BasicInput item={item} onClick={() => setIsOpenModalEmployerInfo(true)} value={data?.[item.col] ?? ""} readOnly />
+            ) : null
+    );
     
     return (
         <>

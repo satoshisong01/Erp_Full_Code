@@ -32,12 +32,6 @@ export default function AddModModal(props) {
         const hasEmptyRequiredFields = requiredColumns.some((column) => !data[column.col]);
         //필수값 확인 후
         resultData(data); //데이터 부모로 전송
-        console.log(data, "입력받은값");
-        if (title === "프로젝트 수정") {
-            resultData(data); //데이터 부모로 전송
-        } else {
-            sendData(data);
-        }
         onClose();
     };
 
