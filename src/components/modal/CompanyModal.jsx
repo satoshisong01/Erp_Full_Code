@@ -98,7 +98,7 @@ export default function CompanyModal(props) {
 
                     <div className="me-modal-body" ref={bodyRef}>
                         <div className="body-area" style={{gap: 0}}>
-                            <ModalSearchList conditionList={conditionList} onSearch={onSearch}/>
+                            <ModalSearchList conditionList={conditionList} onSearch={onSearch} refresh={() => getCompanyList()}/>
                             <ReactDataTable 
                                 columns={columns}
                                 customDatas={companyList}

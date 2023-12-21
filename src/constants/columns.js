@@ -128,6 +128,7 @@ export const columns = {
             { title: "계약일", col: "poiBeginDt", type: "input" },
         ],
         addMod: [
+            { items: [{ header: "품목명", col: "pdiNm", require: true, type: "productInfo" }] },
             { items: [{ header: "프로젝트이름", col: "poiNm", require: true, type: "input" }] },
             { items: [{ header: "코드(임시)", col: "poiCode", require: true, type: "input" }] },
             {
@@ -303,7 +304,7 @@ export const columns = {
         ],
         purchase: [
             // 구매비
-            { header: "품명", col: "pdiNm", cellWidth: "20%", type: "buttonPdiNm" },
+            { header: "품명", col: "pdiNm", cellWidth: "20%", type: "productInfo" },
             { header: "품목그룹명", col: "pgNm", cellWidth: "20%" },
             { header: "규격", col: "pdiStnd", cellWidth: "20%" },
             { header: "수량", col: "byQunty", cellWidth: "10%", type: "input" },
@@ -313,7 +314,7 @@ export const columns = {
             { header: "단가", col: "unitPrice", cellWidth: "10%" },
             { header: "금액", col: "planAmount", cellWidth: "10%" },
             { header: "제조사", col: "pdiMenufut", cellWidth: "12%" },
-            { header: "비고", col: "pdiDesc", cellWidth: "10%", type: "desc" },
+            { header: "비고", col: "pdiDesc", cellWidth: "10%", type: "input" },
             { header: "원단가", col: "byUnitPrice", cellWidth: "12%", type: "input" },
             { header: "원가(견적가)", col: "estimatedCost", cellWidth: "10%" },
             { header: "이익금", col: "plannedProfits", cellWidth: "12%" },

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import DayPicker from "components/input/DayPicker";
 import MonthPicker from "components/input/MonthPicker";
 import YearPicker from "components/input/YearPicker";
@@ -11,39 +11,82 @@ import CompanyModal from "components/modal/CompanyModal";
 import { axiosFetch } from "api/axiosFetch";
 import { v4 as uuidv4 } from "uuid";
 import ProjectModal from "components/modal/ProjectModal";
+import ProductInfoModal from "components/modal/ProductInfoModal";
+import { PageContext } from "components/PageProvider";
 
 
 export default function MakeModalField({ list, onChange, initialData }) {
-    const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
-    const [isOpenModalProject, setIsOpenModalProject] = useState(false);
+    const { projectInfo, setProjectInfo, companyInfo, pdiNmList, setCompanyInfo, projectPdiNm, setProjectPdiNm, projectPgNm, setProjectPgNm, emUserInfo, setEmUserInfo } = useContext(PageContext);
+    const [isOpenModalCompany, setIsOpenModalCompany] = useState(false); //거래처목록
+    const [isOpenModalProject, setIsOpenModalProject] = useState(false); //프로젝트목록
+    const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
+    const [isOpenModalProductGroup, setIsOpenModalProductGroup] = useState(false); //품목그룹목록
+    const [isOpenModalEmployerInfo, setIsOpenModalEmployerInfo] = useState(false); //업무회원목록
     const [data, setData] = useState({});
 
     useEffect(() => {
-        setData(initialData);
+        return(() => { //초기화
+            setData({}); 
+            setProjectInfo({}); 
+            setCompanyInfo({}); 
+            setProjectPdiNm({}); 
+            setProjectPgNm({}); 
+            setEmUserInfo({}); 
+        })
+    }, [])
+
+    useEffect(() => {
+        setData(initialData); //수정할 데이터
     }, [initialData])
 
     useEffect(() => {
         onChange && onChange(data);
     }, [data])
-;
+
+    useEffect(() => { //거래처
+        setData((prevData) => {
+            return { ...prevData, ...companyInfo };
+        });
+    }, [companyInfo])
+
+    useEffect(() => { //프로젝트
+        setData((prevData) => {
+            return { ...prevData, ...projectInfo };
+        });
+    }, [projectInfo])
+
+    useEffect(() => { //품목
+        setData((prevData) => {
+            return { ...prevData, ...projectPdiNm };
+        });
+        // console.log("품목정보 변경: ", projectPdiNm);
+    }, [projectPdiNm])
+
+    useEffect(() => { //품목리스트
+        setData((prevData) => {
+            return { ...prevData, ...pdiNmList };
+        });
+        // console.log("품목정보리스트 변경: ", pdiNmList);
+    }, [pdiNmList])
+
+    useEffect(() => { //품목그룹
+        setData((prevData) => {
+            return { ...prevData, ...projectPgNm };
+        });
+    }, [projectPgNm])
+
+    useEffect(() => { //업무회원
+        setData((prevData) => {
+            return { ...prevData, ...emUserInfo };
+        });
+    }, [emUserInfo])
     
     const inputChange = (e, type) => {
         const { value, name } = e.target;
-        if (type === "number") {
-            let parsedValue = parseFloat(value.replace(/,/g, "")); // 컴마 제거하고 문자열을 숫자로 변환
-            if (isNaN(parsedValue)) {
-                console.log("입력된 값이 숫자가 아닙니다.");
-            }
-            setData((prevData) => ({
-                ...prevData,
-                [name]: parsedValue,
-            }));
-        } else {
-            setData((prevData) => ({
-                ...prevData,
-                [name]: value,
-            }));
-        }
+        setData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
     };
     
     const dateClick = (date, col) => {
@@ -102,7 +145,23 @@ export default function MakeModalField({ list, onChange, initialData }) {
                                 </div>
                             ))}
                         </div>
-                ) : null}
+                ) : item.type === "productInfo" ? (
+                    <input
+                        id={uuidv4()}
+                        type="text"
+                        className="basic-input"
+                        name={data?.[item.col] || ""}
+                        onClick={() => setIsOpenModalProductInfo(true)}
+                        value={data?.[item.col] ? data[item.col] : ""}
+                        placeholder="품명을 선택하세요."
+                        readOnly
+                        // disabled={disabled || false}
+                    />
+                ) : item.type === "productGroup" ? (
+                    <BasicInput item={item} onClick={() => setIsOpenModalProductGroup(true)} value={data?.[item.col] ?? ""} readOnly />
+                ) : item.type === "employerInfo" ? (
+                    <BasicInput item={item} onClick={() => setIsOpenModalEmployerInfo(true)} value={data?.[item.col] ?? ""} readOnly />
+                )  : null}
             </div>
         </div>
     );
@@ -112,6 +171,9 @@ export default function MakeModalField({ list, onChange, initialData }) {
             {list.map((item, itemIndex) => renderField(item, itemIndex, data))}
             {isOpenModalCompany && <CompanyModal width={500} height={550} title="회사 목록" onClose={() => setIsOpenModalCompany(false)} />}
             {isOpenModalProject && <ProjectModal width={550} height={770} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} />}
+            {isOpenModalProductInfo && <ProductInfoModal width={600} height={770} title="품목정보 목록" onClose={() => setIsOpenModalProductInfo(false)} />}
+            {/* {isOpenModalProductGroup && <ProjectModal width={550} height={770} title="품목그룹 목록" onClose={() => setIsOpenModalProductGroup(false)} />}
+            {isOpenModalEmployerInfo && <ProjectModal width={550} height={770} title="업무회원 목록" onClose={() => setIsOpenModalEmployerInfo(false)} />} */}
         </>
     )
 }

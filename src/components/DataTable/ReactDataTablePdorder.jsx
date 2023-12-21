@@ -9,6 +9,8 @@ import ModalPageCompany from "components/modal/ModalPageCompany";
 import { v4 as uuidv4 } from "uuid";
 import DayPicker from "components/input/DayPicker";
 import MonthPicker from "components/input/MonthPicker";
+import MakeItemField from "utils/MakeItemField";
+import ProductInfoModal from "components/modal/ProductInfoModal";
 
 const ReactDataTablePdorder = (props) => {
     const { columns, suffixUrl, customDatas, defaultPageSize, tableRef, viewPageName, customDatasRefresh, singleUrl, returnSelect, returnSelectRows, hideCheckBox, editing } =
@@ -36,8 +38,6 @@ const ReactDataTablePdorder = (props) => {
         isSaveFormTable,
         projectPdiNm,
         setIsOpenModalCompany,
-        setIsOpenModalPdiNm,
-        isOpenModalPdiNm,
         isOpenModalCompany,
     } = useContext(PageContext);
 
@@ -47,12 +47,17 @@ const ReactDataTablePdorder = (props) => {
     const [isEditing, setIsEditing] = useState(false);
     const [current, setCurrent] = useState(""); //==viewPageName
     const [rowIndex, setRowIndex] = useState(0);
+    const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
 
     //취소시에 오리지널 테이블로 돌아감
     useEffect(() => {
         if (isCancelTable === true) setTableData(originTableData);
         setIsCancelTable(false);
     }, [isCancelTable]);
+
+    // useEffect(() => {
+    //     console.log("💜tableData:", tableData);
+    // }, [tableData]);
 
     //------------------------------------------------
 
@@ -311,7 +316,6 @@ const ReactDataTablePdorder = (props) => {
 
     const goSetting = (rowIndex) => {
         setCountIndex(rowIndex);
-        setIsOpenModalPdiNm(true);
     };
 
     const setValueDataPdiNm = (rowIndex, selectedPdiNm) => {
@@ -642,17 +646,17 @@ const ReactDataTablePdorder = (props) => {
                                                                 onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                             />
                                                         </div>
-                                                    ) : cell.column.type === "buttonPdiNm" ? (
+                                                    ) : cell.column.type === "productInfo" ? (
                                                         <div>
                                                             <input
-                                                                className="buttonSelect"
                                                                 id={cell.column.id}
                                                                 name={cell.column.id}
-                                                                onClick={() => goSetting(rowIndex)}
                                                                 type="text"
-                                                                placeholder={`품명을 선택해 주세요.`}
+                                                                className="basic-input"
+                                                                onClick={() => {goSetting(rowIndex); setIsOpenModalProductInfo(true)}}
+                                                                placeholder="품명을 선택하세요."
                                                                 value={tableData[rowIndex][cell.column.id] || ""}
-                                                                onChange={(e) => handleChange(e, row, cell.column.id)}
+                                                                // onChange={(e) => handleChange(e, row, cell.column.id)}
                                                                 readOnly
                                                             />
                                                         </div>
@@ -725,8 +729,8 @@ const ReactDataTablePdorder = (props) => {
             </div>
 
             {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
-            {isOpenModalPdiNm && <ModalPagePdiNm rowIndex={rowIndex} onClose={() => setIsOpenModalPdiNm(false)} />}
             {isOpenModalCompany && <ModalPageCompany rowIndex={rowIndex} onClose={() => setIsOpenModalCompany(false)} />}
+            <ProductInfoModal width={600} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
         </>
     );
 };

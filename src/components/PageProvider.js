@@ -22,6 +22,8 @@ export function PageProvider({ children }) {
     const [pdiNmList, setPdiNmList] = useState([]); // 품목ID,품명,(품목그룹명),단위,규격,제조사
     const [projectPdiNm, setProjectPdiNm] = useState({ pdiId: "", pdiNm: "", pgNm: "", pdiWght: "", pdiStnd: "", pdiMenufut: "" }); // 선택한 id 저장
 
+    const [emUserInfo, setEmUserInfo] = useState({esntlId: "", emplyrNm: "", ofcpsNm: "", groupId: ""}); // 업무회원 정보 - 고유아이디, 사용자명, 직급, 그룹
+
     const [unitPriceList, setUnitPriceList] = useState([]); // 급별단가 목록
     const [unitPriceListRenew, setUnitPriceListRenew] = useState([]); // 급별포맷 변경 목록
 
@@ -125,6 +127,7 @@ export function PageProvider({ children }) {
         versionInfo, setVersionInfo,
         unitPriceListRenew,
         setUnitPriceListRenew,
+        emUserInfo, setEmUserInfo,
     };
 
     return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>;
