@@ -25,6 +25,7 @@ function OrderMgmt() {
     const [deleteNames, setDeleteNames] = useState([]); //삭제할 Name 목록
 
     useEffect(() => {
+        console.log(selectedRows);
         selectedRows && setDeleteNames(selectedRows.map((row) => row.poiNm));
     }, [selectedRows]);
 
@@ -78,7 +79,7 @@ function OrderMgmt() {
             /* 임시삭제 코드 구현 */
         } else if (value === "영구삭제") {
             const poiNms = selectedRows.map((row) => row.poiId);
-            const url = `/api/baseInfrm/product/pjOrdrInfo/delete.do`;
+            const url = `/api/baseInfrm/product/pjOrdrInfo/removeAll.do`;
             const resultData = await axiosDelete(url, poiNms);
             if (resultData) {
                 alert(`선택한 항목들이 삭제되었습니다.`);
@@ -128,7 +129,7 @@ function OrderMgmt() {
                     width={500}
                     height={400}
                     list={columns.orderMgmt.addMod}
-                    resultData={addToServer}
+                    sendData={addToServer}
                     onClose={() => setIsOpenAdd(false)}
                     title="프로젝트 추가"
                 />

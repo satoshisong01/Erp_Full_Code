@@ -11,8 +11,20 @@ import DayPicker from "components/input/DayPicker";
 import MonthPicker from "components/input/MonthPicker";
 
 const ReactDataTablePdorder = (props) => {
-    const { columns, suffixUrl, customDatas, defaultPageSize, tableRef, viewPageName, customDatasRefresh, singleUrl, returnSelect, returnSelectRows, hideCheckBox, editing } =
-        props;
+    const {
+        columns,
+        suffixUrl,
+        customDatas,
+        defaultPageSize,
+        tableRef,
+        viewPageName,
+        customDatasRefresh,
+        singleUrl,
+        returnSelect,
+        returnSelectRows,
+        hideCheckBox,
+        editing,
+    } = props;
     const {
         nameOfButton,
         setNameOfButton,
@@ -32,6 +44,7 @@ const ReactDataTablePdorder = (props) => {
         setIsCancelTable,
         projectInfo,
         isOpenModalPgNm,
+        returnList,
         setIsOpenModalPgNm,
         isSaveFormTable,
         projectPdiNm,
@@ -94,7 +107,7 @@ const ReactDataTablePdorder = (props) => {
         if (current === innerPageName) {
             setIsEditing(editing !== undefined ? editing : isSaveFormTable); //테이블 상태 //inner tab일 때 테이블 조작
         }
-        if (current === innerPageName && !isSaveFormTable) {
+        if (current === innerPageName && nameOfButton === "save") {
             compareData(originTableData, tableData);
         }
     }, [innerPageName, isSaveFormTable]);
@@ -102,6 +115,7 @@ const ReactDataTablePdorder = (props) => {
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
         if (current === currentPageName || current === innerPageName) {
+            console.log(currentPageName, innerPageName, "머나우누");
             if (nameOfButton === "refresh") {
                 refreshClick();
             } else if (nameOfButton === "csv") {
@@ -109,6 +123,8 @@ const ReactDataTablePdorder = (props) => {
             } else if (nameOfButton === "print") {
             } else if (nameOfButton === "search") {
                 searchClick();
+            } else if (nameOfButton === "save") {
+                compareData(originTableData, tableData);
             }
             setNameOfButton(""); //초기화
         }
@@ -258,7 +274,7 @@ const ReactDataTablePdorder = (props) => {
         } else if (!isModalTable && (current === currentPageName || current === innerPageName)) {
             //모달화면이 아닐때
             if (selectedFlatRows.length > 0) {
-                const selects = selectedFlatRows.map((row) =>  row.values )
+                const selects = selectedFlatRows.map((row) => row.values);
                 returnSelectRows && returnSelectRows(selects);
                 returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
@@ -379,6 +395,8 @@ const ReactDataTablePdorder = (props) => {
                 }
             }
         }
+        console.log(updatedTableData, "추가된거맞냐고(구매)");
+
         setTableData(updatedTableData);
     };
 
@@ -479,11 +497,6 @@ const ReactDataTablePdorder = (props) => {
 
     //구매용(영업완료/실행미완료)
     const compareData = (originData, updatedData) => {
-        if (!projectInfo.poId || projectInfo.poId === "" || projectInfo.poId === undefined) {
-            alert("구매 종류를 선택해 주세요.");
-            // setIsSaveFormTable(true);
-            return;
-        }
         const filterData = updatedData.filter((data) => data.pdiNm); //구매테이블 필수값 체크
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = updatedData ? updatedData.length : 0;
@@ -637,7 +650,9 @@ const ReactDataTablePdorder = (props) => {
                                                             <MonthPicker
                                                                 name={cell.column.id}
                                                                 value={
-                                                                    tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id].substring(0, 7) : ""
+                                                                    tableData[row.index][cell.column.id]
+                                                                        ? tableData[row.index][cell.column.id].substring(0, 7)
+                                                                        : ""
                                                                 }
                                                                 onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                             />

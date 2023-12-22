@@ -10,7 +10,19 @@ import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
 import ModalPagePgNm from "components/modal/ModalPagePgNm";
 
 const ReactDataTableURL = (props) => {
-    const { columns, customDatas, defaultPageSize, tableRef, viewPageName, customDatasRefresh, singleUrl, editing, hideCheckBox, returnSelect, returnSelectRows } = props;
+    const {
+        columns,
+        customDatas,
+        defaultPageSize,
+        tableRef,
+        viewPageName,
+        customDatasRefresh,
+        singleUrl,
+        editing,
+        hideCheckBox,
+        returnSelect,
+        returnSelectRows,
+    } = props;
     const {
         prevCurrentPageName,
         innerPageName,
@@ -29,6 +41,8 @@ const ReactDataTableURL = (props) => {
         projectPgNm,
         setProjectPgNm,
         setIsOpenModalPgNm,
+        nameOfButton,
+        versionInfo,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -75,19 +89,19 @@ const ReactDataTableURL = (props) => {
         if (current === innerPageName) {
             setIsEditing(editing !== undefined ? editing : isSaveFormTable); //테이블 상태 //inner tab일 때 테이블 조작
         }
-        if (current === innerPageName && !isSaveFormTable) {
+        if (current === innerPageName && nameOfButton === "save") {
             if (current === "경비" || current === "개발외주비" || current === "영업관리비") {
                 compareData(originTableData, tableData);
             }
-            if (
-                (current === "경비 수주관리" && !isSaveFormTable) ||
-                (current === "경비 예산관리" && !isSaveFormTable) ||
-                (current === "경비 실행관리" && !isSaveFormTable)
-            ) {
-                compareDataRun(originTableData, tableData);
-            }
+            //if (
+            //    (current === "경비 수주관리" && !isSaveFormTable) ||
+            //    (current === "경비 예산관리" && !isSaveFormTable) ||
+            //    (current === "경비 실행관리" && !isSaveFormTable)
+            //) {
+            //    compareDataRun(originTableData, tableData);
+            //}
         }
-    }, [innerPageName, isSaveFormTable]);
+    }, [innerPageName, isSaveFormTable, nameOfButton]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
 
@@ -111,8 +125,8 @@ const ReactDataTableURL = (props) => {
         if (newRowData && Object.keys(newRowData).length !== 0) {
             console.log("❗❗❗❗❗ newRowData");
             onAddRow(newRowData);
-            GeneralExpensesOnAddRow(newRowData);
-            companyOnAddRow(newRowData);
+            //GeneralExpensesOnAddRow(newRowData);
+            //companyOnAddRow(newRowData);
         }
     }, [newRowData]);
 
@@ -273,7 +287,7 @@ const ReactDataTableURL = (props) => {
         if (current === currentPageName || current === innerPageName) {
             // 현재 보는 페이지라면
             if (selectedFlatRows.length > 0) {
-                const selects = selectedFlatRows.map((row) =>  row.values )
+                const selects = selectedFlatRows.map((row) => row.values);
                 returnSelectRows && returnSelectRows(selects);
                 setLengthSelectRow(selectedFlatRows.length);
                 //setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values); // 선택한 rows의 마지막 배열
@@ -304,8 +318,11 @@ const ReactDataTableURL = (props) => {
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
                 newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
-            } else if (column.accessor === "modeCode") {
-                newRow[column.accessor] = "SLSP"; // modeCode 항상 "SLSP"로 설정
+            } else if (column.accessor === "versionId") {
+                newRow[column.accessor] = versionInfo.versionId; // pjbgTypeCode 항상 "EXPNS10"로 설정
+            } else if (column.accessor === "esntlId") {
+                //임시 업무회원 삭제해야함
+                newRow[column.accessor] = "EMPLY_00000000000001"; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "pjbgTypeCode") {
                 newRow[column.accessor] = "EXPNS01"; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "useAt") {
@@ -323,53 +340,49 @@ const ReactDataTableURL = (props) => {
         });
     };
 
-    const companyOnAddRow = () => {
-        const newRow = {};
-        columnsConfig.forEach((column) => {
-            if (column.accessor === "poiId") {
-                newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
-            } else if (column.accessor === "modeCode") {
-                newRow[column.accessor] = "SLSP"; // modeCode 항상 "SLSP"로 설정
-            } else if (column.accessor === "pjbgTypeCode") {
-                newRow[column.accessor] = "EXPNS10"; // pjbgTypeCode 항상 "EXPNS10"로 설정
-            } else if (column.accessor === "useAt") {
-                newRow[column.accessor] = "Y"; // useAt 항상 "Y"로 설정
-            } else if (column.accessor === "deleteAt") {
-                newRow[column.accessor] = "N"; // deleteAt 항상 "N"로 설정
-            } else {
-                newRow[column.accessor] = null; // 다른 열은 초기화
-            }
-        });
+    //const companyOnAddRow = () => {
+    //    const newRow = {};
+    //    columnsConfig.forEach((column) => {
+    //        if (column.accessor === "poiId") {
+    //            newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
+    //        } else if (column.accessor === "pjbgTypeCode") {
+    //            newRow[column.accessor] = "EXPNS10"; // pjbgTypeCode 항상 "EXPNS10"로 설정
+    //        } else if (column.accessor === "useAt") {
+    //            newRow[column.accessor] = "Y"; // useAt 항상 "Y"로 설정
+    //        } else if (column.accessor === "deleteAt") {
+    //            newRow[column.accessor] = "N"; // deleteAt 항상 "N"로 설정
+    //        } else {
+    //            newRow[column.accessor] = null; // 다른 열은 초기화
+    //        }
+    //    });
 
-        setTableData((prevData) => {
-            const newData = [...prevData, { ...newRow }];
-            return newData;
-        });
-    };
+    //    setTableData((prevData) => {
+    //        const newData = [...prevData, { ...newRow }];
+    //        return newData;
+    //    });
+    //};
 
-    const GeneralExpensesOnAddRow = () => {
-        const newRow = {};
-        columnsConfig.forEach((column) => {
-            if (column.accessor === "poiId") {
-                newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
-            } else if (column.accessor === "modeCode") {
-                newRow[column.accessor] = "SLSP"; // modeCode 항상 "SLSP"로 설정
-            } else if (column.accessor === "pjbgTypeCode") {
-                newRow[column.accessor] = "EXPNS07"; // pjbgTypeCode 항상 "EXPNS10"로 설정
-            } else if (column.accessor === "useAt") {
-                newRow[column.accessor] = "Y"; // useAt 항상 "Y"로 설정
-            } else if (column.accessor === "deleteAt") {
-                newRow[column.accessor] = "N"; // deleteAt 항상 "N"로 설정
-            } else {
-                newRow[column.accessor] = null; // 다른 열은 초기화
-            }
-        });
+    //const GeneralExpensesOnAddRow = () => {
+    //    const newRow = {};
+    //    columnsConfig.forEach((column) => {
+    //        if (column.accessor === "poiId") {
+    //            newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
+    //        } else if (column.accessor === "pjbgTypeCode") {
+    //            newRow[column.accessor] = "EXPNS07"; // pjbgTypeCode 항상 "EXPNS10"로 설정
+    //        } else if (column.accessor === "useAt") {
+    //            newRow[column.accessor] = "Y"; // useAt 항상 "Y"로 설정
+    //        } else if (column.accessor === "deleteAt") {
+    //            newRow[column.accessor] = "N"; // deleteAt 항상 "N"로 설정
+    //        } else {
+    //            newRow[column.accessor] = null; // 다른 열은 초기화
+    //        }
+    //    });
 
-        setTableData((prevData) => {
-            const newData = [...prevData, { ...newRow }];
-            return newData;
-        });
-    };
+    //    setTableData((prevData) => {
+    //        const newData = [...prevData, { ...newRow }];
+    //        return newData;
+    //    });
+    //};
 
     // const [deleteNumList, setDeleteNumList] = useState([]);
     const onDeleteRow = (row) => {
@@ -448,7 +461,7 @@ const ReactDataTableURL = (props) => {
             if (pjbgId && colNames && pjbgId.length > 0 && colNames.length > 0 && pjbgId.length === colNames.length) {
                 colNames.forEach((name, index) => {
                     const dataSet = {
-                        modeCode: upItem.modeCode,
+                        versionId: versionInfo.versionId,
                         pgNm: upItem.pgNm,
                         pgId: upItem.pgId,
                         pjbgBeginDt: upItem.pjbgBeginDt,
@@ -519,7 +532,7 @@ const ReactDataTableURL = (props) => {
                     ...filterData[i],
                     poiId: projectInfo.poiId,
                     pjbgDt: filterData[i].pjbgBeginDt,
-                    modeCode: current === "경비 예산관리" ? "EXCP" : current === "경비 실행관리" ? "EXCU" : "EXDR",
+                    versionId: versionInfo.versionId,
                     pjbgTypeCode1: filterData[i].pjbgPrice01,
                     pjbgTypeCode2: filterData[i].pjbgPrice02,
                     pjbgTypeCode3: filterData[i].pjbgPrice03,
@@ -549,7 +562,12 @@ const ReactDataTableURL = (props) => {
         return expenseMap[expenseCode] || "";
     };
 
+    useEffect(() => {
+        console.log(tableData);
+    }, [tableData]);
+
     const compareData = (originData, updatedData) => {
+        console.log("222222222222222");
         const filterData = updatedData.filter((data) => data.pjbgTypeCode); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -647,10 +665,7 @@ const ReactDataTableURL = (props) => {
                             })}
                             {isEditing && (
                                 <th style={{ width: "70px", textAlign: "center" }}>
-                                    <button
-                                        className="btn-primary"
-                                        onClick={current === "개발외주비" ? companyOnAddRow : current === "영업관리비" ? GeneralExpensesOnAddRow : onAddRow}
-                                        style={{ margin: 0 }}>
+                                    <button className="btn-primary" onClick={onAddRow} style={{ margin: 0 }}>
                                         추가
                                     </button>
                                 </th>

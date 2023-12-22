@@ -20,12 +20,14 @@ export default function MakeModalField({ list, onChange, initialData }) {
     const { companyInfo, projectInfo } = useContext(PageContext);
 
     useEffect(() => {
-        setData(initialData);
+        console.log(initialData, "initialDatainitialData");
+        if (initialData) {
+            setData(initialData[0]);
+        }
     }, [initialData]);
 
     useEffect(() => {
         onChange && onChange(data);
-        console.log(data, "??!@?");
     }, [data]);
 
     const inputChange = (e, type) => {

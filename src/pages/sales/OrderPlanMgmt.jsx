@@ -17,6 +17,7 @@ import ModButton from "components/button/ModButton";
 import DelButton from "components/button/DelButton";
 import AddModModal from "components/modal/AddModModal";
 import SaveButton from "components/button/SaveButton";
+import ReactDataTableDevCost from "components/DataTable/ReactDataTableDevCost";
 
 /** 영업관리-계획관리 */
 function OrderPlanMgmt() {
@@ -30,10 +31,10 @@ function OrderPlanMgmt() {
         setProjectInfo,
         versionInfo,
         setVersionInfo,
-        unitPriceList,
         unitPriceListRenew,
         setNameOfButton,
     } = useContext(PageContext);
+    const [searchDates, setSearchDates] = useState([]); // 인건비
     const [prmnPlanDatas, setPrmnPlanDatas] = useState([]); // 인건비
     const [pjbudgetDatas, setPjbudgetDatas] = useState([]); // 경비
     const [pdOrdrDatas, setPdOrdrDatas] = useState([]); // 구매(재료비)
@@ -41,6 +42,10 @@ function OrderPlanMgmt() {
     const [generalExpensesDatas, setGeneralExpensesDatas] = useState([]); // 영업관리비
 
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
+
+    useEffect(() => {
+        console.log(prmnPlanDatas, "prmnPlanDatas");
+    }, [prmnPlanDatas]);
 
     useEffect(() => {
         setInnerPageName("원가버전조회");
@@ -85,8 +90,6 @@ function OrderPlanMgmt() {
             return task;
         });
     };
-
-    console.log(projectInfo, "projectInfo");
 
     useEffect(() => {
         console.log(projectInfo);
@@ -162,11 +165,18 @@ function OrderPlanMgmt() {
             refresh();
         }
     };
-    //http://192.168.0.113:8080/api/baseInfrm/product/prmnPlan/editArrayList.do
     const updateList = async (toUpdate) => {
         console.log("❗updateList:", toUpdate);
-        const url = `/api/baseInfrm/product/prmnPlan/editList.do`;
-        const resultData = await axiosUpdate(url, toUpdate);
+
+        const updatedData = toUpdate.map((obj) => {
+            const { pmpId, ...rest } = obj;
+            return rest;
+        });
+
+        console.log("❗❗❗updateList:", updatedData);
+
+        const url = `/api/baseInfrm/product/prmnPlan/editArrayList.do`;
+        const resultData = await axiosUpdate(url, updatedData);
         if (resultData) {
             refresh();
         }
@@ -218,18 +228,23 @@ function OrderPlanMgmt() {
 
     const fetchAllData = async (poiId, versionId) => {
         const requestData = { poiId, versionId };
+        const requestSearch = {
+            searchCondition: "",
+            searchKeyword: "",
+        };
         try {
             if (innerPageName === "원가버전조회") {
-                const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData);
+                const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestSearch);
                 console.log(resultData, "원가버전조회 데이터");
+                setSearchDates(resultData);
             } else if (innerPageName === "인건비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
-                const changeData = ChangePrmnPlanData(resultData);
-                console.log(resultData, "인건비값");
+                const changeData = ChangePrmnPlanData(resultData, projectInfo.poiId);
+                //console.log(resultData, requestData, "인건비값");
                 //setPrmnPlanDatas(ChangePrmnPlanData(resultData, projectInfo));
                 changeData.forEach((Item) => {
                     const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
-                    const matchingAItem = unitPriceListRenew.find((aItem) => aItem.gupDesc === yearFromPmpMonth);
+                    const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
 
                     if (matchingAItem) {
                         let totalPrice = 0;
@@ -246,6 +261,7 @@ function OrderPlanMgmt() {
                         // Add totalPrice to bItem
                         Item.totalPrice = totalPrice;
                     }
+                    console.log(changeData, "changeData이거왜 안나오지 💥💥💥");
                     return setPrmnPlanDatas(changeData);
                 });
             } else if (innerPageName === "경비") {
@@ -256,7 +272,7 @@ function OrderPlanMgmt() {
                 const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
                 const calData = buyIngInfoCalculation(resultData);
                 console.log("calData", calData);
-                console.log("😈영업-구매비:", requestData, resultData);
+                console.log("😈영업-구매비:💥💥💥💥", requestData, resultData);
             } else if (innerPageName === "개발외주비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/devOutCost/totalListAll.do", requestData);
                 setOutsourcingDatas(resultData);
@@ -368,7 +384,7 @@ function OrderPlanMgmt() {
                                 </div>
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.version}
-                                    customDatas={prmnPlanDatas}
+                                    customDatas={searchDates}
                                     viewPageName="원가버전조회"
                                     customDatasRefresh={refresh}
                                     hideCheckBox={true}
@@ -409,12 +425,14 @@ function OrderPlanMgmt() {
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-b-m-30">
+                                    <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <RefreshButton onClick={refresh} />
                                 </div>
                                 <ReactDataTablePdorder
                                     singleUrl="/baseInfrm/product/buyIngInfo"
                                     columns={columns.orderPlanMgmt.purchase}
                                     customDatas={pdOrdrDatas}
+                                    //returnList={returnList}
                                     viewPageName="구매(재료비)"
                                     customDatasRefresh={refresh}
                                     hideCheckBox={true}
@@ -430,10 +448,12 @@ function OrderPlanMgmt() {
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-b-m-30">
+                                    <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+
                                     <RefreshButton onClick={refresh} />
                                 </div>
-                                <ReactDataTableURL
-                                    singleUrl="/baseInfrm/product/pjbudget"
+                                <ReactDataTableDevCost
+                                    singleUrl="/baseInfrm/product/devOutCost"
                                     columns={columns.orderPlanMgmt.outsourcing}
                                     customDatas={outsourcingDatas}
                                     viewPageName="개발외주비"
@@ -451,6 +471,8 @@ function OrderPlanMgmt() {
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-b-m-30">
+                                    <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+
                                     <RefreshButton onClick={refresh} />
                                 </div>
                                 <ReactDataTableURL

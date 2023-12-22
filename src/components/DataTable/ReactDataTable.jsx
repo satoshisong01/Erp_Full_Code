@@ -85,6 +85,10 @@ const ReactDataTable = (props) => {
     const inputRef = useRef(null); //날짜
     const calendarRef = useRef(null);
 
+    useEffect(() => {
+        console.log(tableData, "리액트테이블 데이터");
+    }, [tableData]);
+
     //취소시에 오리지널 테이블로 돌아감
     useEffect(() => {
         if (isCancelTable === true) setTableData(originTableData);
@@ -172,7 +176,9 @@ const ReactDataTable = (props) => {
         if (current === innerPageName) {
             //inner tab에서 저장을 눌렀을 때
             if (innerPageName === "인건비") {
-                //returnList(originTableData, tableData);
+                if ((typeof returnList === "function", nameOfButton === "save")) {
+                    returnList(originTableData, tableData);
+                }
             } else if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
                 returnList(originTableData, tableData);
             } else if (innerPageName === "사전원가지표" && !isSaveFormTable) {
@@ -186,7 +192,7 @@ const ReactDataTable = (props) => {
         if (current !== innerPageName) {
             setTableData([]); //초기화
         }
-    }, [innerPageName, isSaveFormTable]);
+    }, [innerPageName, isSaveFormTable, nameOfButton]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
@@ -204,9 +210,10 @@ const ReactDataTable = (props) => {
                 modifyClick();
             } else if (nameOfButton === "search") {
                 searchClick();
-            } else if (nameOfButton === "save") {
-                returnList(originTableData, tableData);
             }
+            //else if (nameOfButton === "save") {
+            //    returnList(originTableData, tableData);
+            //}
             setNameOfButton(""); //초기화
         }
     }, [nameOfButton]);
@@ -469,7 +476,7 @@ const ReactDataTable = (props) => {
         } else if (!isModalTable && (current === currentPageName || current === innerPageName)) {
             //모달화면이 아닐때
             if (selectedFlatRows.length > 0) {
-                const selects = selectedFlatRows.map((row) =>  row.values )
+                const selects = selectedFlatRows.map((row) => row.values);
                 returnSelectRows && returnSelectRows(selects);
                 returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
                 setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);

@@ -1,31 +1,4 @@
 export const ChangePrmnPlanData = (data, poiId) => {
-    //if (!data || data.length === 0) {
-    //    return [
-    //        {
-    //            pmpId: [],
-    //            poiId: projectInfo.poiId,
-    //            useAt: "Y",
-    //            deleteAt: "N",
-    //            calendarVisible: false,
-    //            pmpmmPositionCode1: 0,
-    //            pmpmmPositionCode2: 0,
-    //            pmpmmPositionCode3: 0,
-    //            pmpmmPositionCode4: 0,
-    //            pmpmmPositionCode5: 0,
-    //            pmpmmPositionCode6: 0,
-    //            pmpmmPositionCode7: 0,
-    //            pmpmmPositionCode8: 0,
-    //            pmpmmPositionCode9: 0,
-    //            pmpmmPositionCode10: 0,
-    //            pmpmmPositionCode11: 0,
-    //            pmpmmPositionCode12: 0,
-    //            pmpmmPositionCode13: 0,
-    //            pmpMonth2: "", // Adjust the default value as needed
-    //            pmpMonth: "", // Adjust the default value as needed
-    //            total: 0,
-    //        },
-    //    ];
-    //}
     const groupedData = {}; //인건비 바꿔서 넣어줄 빈 객체
     // 포지션에 대한 고정된 번호를 매핑하는 객체 생성
     const positionMapping = {
@@ -36,23 +9,23 @@ export const ChangePrmnPlanData = (data, poiId) => {
         초급기술사: 5,
         고급기능사: 6,
         중급기능사: 7,
-        부장: 8,
-        차장: 9,
-        과장: 10,
-        대리: 11,
-        주임: 12,
-        사원: 13,
+        초급기능사: 8,
+        부장: 9,
+        차장: 10,
+        과장: 11,
+        대리: 12,
+        주임: 13,
+        사원: 14,
     };
 
     //날짜포맷
     data.forEach((item) => {
-        //console.log(item, "아이템@@#@#@#");
         const key = `${item.pmpMonth}`;
         if (!groupedData[key]) {
             groupedData[key] = {
                 //pgNm: item.pgNm,
                 pmpId: [],
-                poiId: poiId,
+                poiId: item.poiId,
                 useAt: "Y",
                 deleteAt: "N",
                 calendarVisible: false,
@@ -69,9 +42,11 @@ export const ChangePrmnPlanData = (data, poiId) => {
                 pmpmmPositionCode11: 0,
                 pmpmmPositionCode12: 0,
                 pmpmmPositionCode13: 0,
+                pmpmmPositionCode14: 0,
                 pmpMonth2: `${item.pmpMonth}`,
                 pmpMonth: `${item.pmpMonth}`,
                 total: 0,
+                versionId: item.versionId,
             };
         }
 
@@ -98,7 +73,7 @@ export const ChangePrmnPlanData = (data, poiId) => {
 };
 
 /* 영업구매-조회: 계산 */
-export const buyIngInfoCalculation = (list) => { 
+export const buyIngInfoCalculation = (list) => {
     const updatedData = list.map((row) => {
         const {
             byQunty, // 수량
@@ -148,7 +123,7 @@ export const buyIngInfoCalculation = (list) => {
     });
 
     return updatedData;
-}
+};
 
 const division = (value1, value2) => {
     if (!value1 || !value2) {
