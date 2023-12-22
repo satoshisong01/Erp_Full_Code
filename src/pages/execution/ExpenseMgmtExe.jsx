@@ -1,20 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
-import SearchList from "components/SearchList";
-import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
-import ReactDataTable from "components/DataTable/ReactDataTable";
 import { PageContext } from "components/PageProvider";
 import { axiosFetch } from "api/axiosFetch";
-import ApprovalForm from "components/form/ApprovalForm";
 import { columns } from "constants/columns";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
-import ReactDataTableView from "components/DataTable/ReactDataTableView";
-import RefreshButton from "components/button/RefreshButton";
 import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
-/** 실행관리-경비관리 */
+import ApprovalFormExe from "components/form/ApprovalFormExe";
+import HideCard from "components/HideCard";
+/** 실행관리-경비관리-실행 */
 function ExpenseMgmtExe() {
     const {
         currentPageName,
@@ -40,13 +33,6 @@ function ExpenseMgmtExe() {
         };
     }, []);
 
-    useEffect(() => {
-        if (currentPageName === "경비관리") {
-            const activeTab = document.querySelector(".mini_board_3 .tab li a.on");
-            const activeTabText = activeTab.textContent;
-            setInnerPageName(activeTabText); //마지막으로 활성화 된 탭
-        }
-    }, [currentPageName, innerPageName, projectInfo]);
 
     const orderPlanMgmtTable1 = useRef(null);
     const orderPlanMgmtTable2 = useRef(null);
@@ -242,18 +228,6 @@ function ExpenseMgmtExe() {
         return data;
     };
 
-    const changeTabs = (task) => {
-        if (task !== innerPageName) {
-            //다른 페이지의 버튼 변경 막기
-            setIsSaveFormTable(true);
-        }
-        setInnerPageName((prev) => {
-            setCurrentPageName("");
-            setPrevInnerPageName(prev);
-            return task;
-        });
-    };
-
     function calculateTotalPrices(arr) {
         const result = {};
 
@@ -379,155 +353,24 @@ function ExpenseMgmtExe() {
         }
     };
 
-    const handleReturn = (value) => {
-        setReturnKeyWord(value);
-        console.log(value, "제대로 들어오냐");
-    };
-
     return (
         <>
             <Location pathList={locationPath.ExpenseMgmt} />
-            {/* <SearchList conditionList={conditionList} onSearch={handleReturn} /> */}
-            <div className="common_board_style mini_board_3">
-                <ul className="tab">
-                    <li onClick={() => changeTabs("경비 조회관리")}>
-                        <a href="#경비 조회관리" className="on">
-                            경비 조회관리
-                        </a>
-                    </li>
-                    <li onClick={() => changeTabs("경비 수주관리")}>
-                        <a href="#경비 수주관리">경비 수주관리</a>
-                    </li>
-                    <li onClick={() => changeTabs("경비 예산관리")}>
-                        <a href="#경비 예산관리">경비 예산관리</a>
-                    </li>
-                    <li onClick={() => changeTabs("경비 실행관리")}>
-                        <a href="#경비 실행관리">경비 실행관리</a>
-                    </li>
-                </ul>
-
-                <div className="list">
-                    <div className="first">
-                        <ul>
-                            <SearchList conditionList={columns.expenseMgmt.condition} onSearch={handleReturn} />
-                            <div className={`buttonBody ${isClicked ? "" : "clicked"}`}>
-                                <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick1}>
-                                    <FontAwesomeIcon className={`arrowBtn ${isClicked ? "" : "clicked"}`} icon={faArrowUp} />
-                                </button>
-                            </div>
-                            <div className={`hideDivRun ${isClicked ? "" : "clicked"}`}>
-                                <ReactDataTableView
-                                    sendPoiId={sendPoiId}
-                                    columns={columns.expenseMgmt.projectView}
-                                    customDatas={projectItem}
-                                    defaultPageSize={5}
-                                />
-                            </div>
-                            <div className="table-buttons">
-                                <RefreshButton onClick={refresh} />
-                            </div>
-                            <ReactDataTable
-                                viewPageName="경비 조회관리"
-                                columns={columns.expenseMgmt.inquiry}
-                                testTask={true}
-                                tableRef={orderPlanMgmtTable1}
-                                customDatas={inquiryMgmt}
-                                customDatasRefresh={refresh}
-                                hideCheckBox={true}
-                                editing={false}
-                            />
-                            {/*</ApprovalForm>*/}
-                        </ul>
-                    </div>
-                    <div className="second">
-                        <ul>
-                            <ApprovalForm title={innerPageName + " 등록"} />
-                            <div className={`buttonBody  ${isClicked2 ? "" : "clicked"}`}>
-                                <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick2}>
-                                    <FontAwesomeIcon className={`arrowBtn ${isClicked2 ? "" : "clicked"}`} icon={faArrowUp} />
-                                </button>
-                            </div>
-                            <div className={`hideDivRun2 ${isClicked2 ? "" : "clicked"}`}>
-                                <ReactDataTableView
-                                    columns={columns.expenseMgmt.contract}
-                                    customDatas={pgBudgetMgmtView}
-                                    defaultPageSize={5}
-                                    justColumn={true}
-                                />
-                            </div>
-                            <div className="table-buttons">
-                                <RefreshButton onClick={refresh} />
-                            </div>
-                            <ReactDataTableURL
-                                columns={columns.expenseMgmt.budget}
-                                tableRef={orderPlanMgmtTable2}
-                                customDatas={pgBudgetMgmt}
-                                viewPageName="경비 수주관리"
-                                customDatasRefresh={refresh}
-                                hideCheckBox={true}
-                            />
-                        </ul>
-                    </div>
-                    <div className="third">
-                        <ul>
-                            <ApprovalForm title={innerPageName + " 등록"} />
-                            <div className={`buttonBody  ${isClicked3 ? "" : "clicked"}`}>
-                                <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick3}>
-                                    <FontAwesomeIcon className={`arrowBtn ${isClicked3 ? "" : "clicked"}`} icon={faArrowUp} />
-                                </button>
-                            </div>
-                            <div className={`hideDivRun3 ${isClicked3 ? "" : "clicked"}`}>
-                                <ReactDataTableView columns={columns.expenseMgmt.budget} customDatas={budgetMgmtView} defaultPageSize={5} justColumn={true} />
-                            </div>
-                            <div className="table-buttons">
-                                <RefreshButton onClick={refresh} />
-                            </div>
-                            <ReactDataTableURL
-                                columns={columns.expenseMgmt.budget}
-                                tableRef={orderPlanMgmtTable3}
-                                viewPageName="경비 예산관리"
-                                customDatas={budgetMgmt}
-                                customDatasRefresh={refresh}
-                                hideCheckBox={true}
-                            />
-                        </ul>
-                    </div>
-                    <div className="fourth">
-                        <ul>
-                            <ApprovalForm title={innerPageName + " 등록"} />
-                            <div className={`buttonBody  ${isClicked4 ? "" : "clicked"}`}>
-                                <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick4}>
-                                    <FontAwesomeIcon className={`arrowBtn ${isClicked4 ? "" : "clicked"}`} icon={faArrowUp} />
-                                </button>
-                            </div>
-                            <div className={`hideDivRun4 ${isClicked4 ? "" : "clicked"}`}>
-                                <ReactDataTableView columns={columns.expenseMgmt.budget} customDatas={runMgmtView} defaultPageSize={5} justColumn={true} />
-                            </div>
-                            <div className="table-buttons">
-                                <RefreshButton onClick={refresh} />
-                            </div>
-                            <ReactDataTableURL
-                                columns={columns.expenseMgmt.budget}
-                                tableRef={orderPlanMgmtTable4}
-                                viewPageName="경비 실행관리"
-                                customDatas={runMgmt}
-                                customDatasRefresh={refresh}
-                                hideCheckBox={true}
-                            />
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            {/*<ReactDataTable
-                columns={columns}
-                suffixUrl="/baseInfrm/product/pjbudget"
-                defaultPageSize={5}
-            />
-            <ReactDataTable
-                columns={detailColumns}
-                detailUrl="/baseInfrm/product/pjbudget"
-                defaultPageSize={10}
-            />*/}
+            <ApprovalFormExe viewPageName="실행경비" />
+            <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
+            </HideCard>
+            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+            </HideCard>
+            <HideCard title="계획 등록/수정" color="back-lightblue">
+                <ReactDataTableURL
+                    columns={columns.expenseMgmt.budget}
+                    tableRef={orderPlanMgmtTable4}
+                    viewPageName="실행경비"
+                    customDatas={runMgmt}
+                    customDatasRefresh={refresh}
+                    hideCheckBox={true}
+                />
+            </HideCard>
         </>
     );
 }

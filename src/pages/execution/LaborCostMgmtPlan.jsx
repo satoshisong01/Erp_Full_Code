@@ -9,6 +9,8 @@ import { columns } from "constants/columns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import RefreshButton from "components/button/RefreshButton";
+import ApprovalFormExe from "components/form/ApprovalFormExe";
+import HideCard from "components/HideCard";
 
 /** 실행관리-인건비-계획 */
 function LaborCostMgmtPlan() {
@@ -186,25 +188,24 @@ function LaborCostMgmtPlan() {
     return (
         <>
             <Location pathList={locationPath.LaborCostMgmt} />
-
-            <div className={`buttonBody ${isClicked3 ? "" : "clicked"}`}>
-                <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick3}>
-                    <FontAwesomeIcon className={`arrowBtn ${isClicked3 ? "" : "clicked"}`} icon={faArrowUp} />
-                </button>
-            </div>
-
-            <div className="table-buttons">
-                <RefreshButton onClick={refresh} />
-            </div>
-
-            <ReactDataTable
-                columns={columns.laborCostMgmt.budget}
-                tableRef={orderPlanMgmtTable3}
-                customDatas={budgetMgmt}
-                viewPageName="인건비"
-                returnList={compareData}
-                hideCheckBox={true}
-            />
+            <ApprovalFormExe viewPageName="실행인건비계획" />
+            <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
+            </HideCard>
+            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+            </HideCard>
+            <HideCard title="계획 등록/수정" color="back-lightblue">
+                <div className="table-buttons mg-b-m-30">
+                    <RefreshButton onClick={refresh} />
+                </div>
+                <ReactDataTable
+                    columns={columns.laborCostMgmt.budget}
+                    tableRef={orderPlanMgmtTable3}
+                    customDatas={budgetMgmt}
+                    viewPageName="실행인건비계획"
+                    returnList={compareData}
+                    hideCheckBox={true}
+                />
+            </HideCard>
         </>
     );
 }
