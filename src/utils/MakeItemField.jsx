@@ -12,10 +12,12 @@ import CompanyModal from "components/modal/CompanyModal";
 import ProjectModal from "components/modal/ProjectModal";
 import { PageContext } from "components/PageProvider";
 import ProductInfoModal from "components/modal/ProductInfoModal";
+import ProductGroupModal from "components/modal/ProductGroupModal";
+import EmployerInfoModal from "components/modal/EmployerInfoModal";
 
 
 export default function MakeItemField({ item, resultData, initialData }) {
-    const { projectInfo, setProjectInfo, companyInfo, pdiNmList, setCompanyInfo, projectPdiNm, setProjectPdiNm, projectPgNm, setProjectPgNm, emUserInfo, setEmUserInfo } = useContext(PageContext);
+    const { projectInfo, companyInfo, projectPdiNm, projectPgNm, emUserInfo } = useContext(PageContext);
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false); //거래처목록
     const [isOpenModalProject, setIsOpenModalProject] = useState(false); //프로젝트목록
     const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
@@ -24,19 +26,8 @@ export default function MakeItemField({ item, resultData, initialData }) {
     const [data, setData] = useState({});
     
     useEffect(() => {
-        setProjectInfo({}); 
-        setCompanyInfo({}); 
-        setProjectPdiNm({}); 
-        setProjectPgNm({}); 
-        setEmUserInfo({}); 
-
         return(() => { //초기화
             setData({}); 
-            setProjectInfo({}); 
-            setCompanyInfo({}); 
-            setProjectPdiNm({}); 
-            setProjectPgNm({}); 
-            setEmUserInfo({}); 
         })
     }, [])
 
@@ -125,9 +116,25 @@ export default function MakeItemField({ item, resultData, initialData }) {
             ) : item.type === "yearPicker" ? (
                 <YearPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
             ) : item.type === "company" ? (
-                <BasicInput item={item} onClick={() => setIsOpenModalCompany(true)} value={data?.[item.col] ?? ""} readOnly />
+                // <BasicInput item={item} onClick={() => setIsOpenModalCompany(true)} value={data?.[item.col] ?? ""} readOnly />
+                <input
+                    id={uuidv4()}
+                    className="basic-input"
+                    name={item.col || ""}
+                    onClick={() => setIsOpenModalCompany(true)}
+                    value={data?.[item.col] ?? ""}
+                    readOnly
+                />
             ) : item.type === "project" ? (
-                <BasicInput item={item} onClick={() => setIsOpenModalProject(true)} value={data?.[item.col] ?? ""} readOnly />
+                // <BasicInput item={item} onClick={() => setIsOpenModalProject(true)} value={data?.[item.col] ?? ""} readOnly />
+                <input
+                    id={uuidv4()}
+                    className="basic-input"
+                    name={item.col || ""}
+                    onClick={() => setIsOpenModalProject(true)}
+                    value={data?.[item.col] ?? ""}
+                    readOnly
+                />
             ) : item.type === "desc" ? (
                 <BasicTextarea item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
             ) : item.type === "percent" ? (
@@ -174,11 +181,11 @@ export default function MakeItemField({ item, resultData, initialData }) {
     return (
         <>
             {renderField(item)}
-            {isOpenModalCompany && <CompanyModal width={500} height={550} title="회사 목록" onClose={() => setIsOpenModalCompany(false)} />}
-            {isOpenModalProject && <ProjectModal width={500} height={550} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} />}
+            {isOpenModalProject && <ProjectModal width={550} height={770} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} />}
+            <CompanyModal width={500} height={550} title="거래처 목록" isOpen={isOpenModalCompany} onClose={() => setIsOpenModalCompany(false)} />
             <ProductInfoModal width={600} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
-            {/* {isOpenModalProductGroup && <ProjectModal width={550} height={770} title="품목그룹 목록" onClose={() => setIsOpenModalProductGroup(false)} />}
-            {isOpenModalEmployerInfo && <ProjectModal width={550} height={770} title="업무회원 목록" onClose={() => setIsOpenModalEmployerInfo(false)} />} */}
+            <ProductGroupModal width={600} height={720} title="품목그룹 목록" isOpen={isOpenModalProductGroup} onClose={() => setIsOpenModalProductGroup(false)} />
+            <EmployerInfoModal width={600} height={770} title="업무회원 목록" isOpen={isOpenModalEmployerInfo} onClose={() => setIsOpenModalEmployerInfo(false)} />
         </>
     );
 }

@@ -13,20 +13,17 @@ import { v4 as uuidv4 } from "uuid";
 import ProjectModal from "components/modal/ProjectModal";
 import ProductInfoModal from "components/modal/ProductInfoModal";
 import { PageContext } from "components/PageProvider";
+import ProductGroupModal from "components/modal/ProductGroupModal";
+import EmployerInfoModal from "components/modal/EmployerInfoModal";
 
 export default function MakeModalField({ list, onChange, initialData }) {
     const {
         projectInfo,
-        setProjectInfo,
         companyInfo,
         pdiNmList,
-        setCompanyInfo,
         projectPdiNm,
-        setProjectPdiNm,
         projectPgNm,
-        setProjectPgNm,
         emUserInfo,
-        setEmUserInfo,
     } = useContext(PageContext);
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false); //거래처목록
     const [isOpenModalProject, setIsOpenModalProject] = useState(false); //프로젝트목록
@@ -39,11 +36,6 @@ export default function MakeModalField({ list, onChange, initialData }) {
         return () => {
             //초기화
             setData({});
-            setProjectInfo({});
-            setCompanyInfo({});
-            setProjectPdiNm({});
-            setProjectPgNm({});
-            setEmUserInfo({});
         };
     }, []);
 
@@ -234,11 +226,11 @@ export default function MakeModalField({ list, onChange, initialData }) {
     return (
         <>
             {list.map((item, itemIndex) => renderField(item, itemIndex, data))}
-            {isOpenModalCompany && <CompanyModal width={500} height={550} title="회사 목록" onClose={() => setIsOpenModalCompany(false)} />}
             {isOpenModalProject && <ProjectModal width={550} height={770} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} />}
-            {isOpenModalProductInfo && <ProductInfoModal width={600} height={770} title="품목정보 목록" onClose={() => setIsOpenModalProductInfo(false)} />}
-            {/* {isOpenModalProductGroup && <ProjectModal width={550} height={770} title="품목그룹 목록" onClose={() => setIsOpenModalProductGroup(false)} />}
-            {isOpenModalEmployerInfo && <ProjectModal width={550} height={770} title="업무회원 목록" onClose={() => setIsOpenModalEmployerInfo(false)} />} */}
+            <CompanyModal width={500} height={550} title="거래처 목록" isOpen={isOpenModalCompany} onClose={() => setIsOpenModalCompany(false)} />
+            <ProductInfoModal width={600} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
+            <ProductGroupModal width={600} height={720} title="품목그룹 목록" isOpen={isOpenModalProductGroup} onClose={() => setIsOpenModalProductGroup(false)} />
+            <EmployerInfoModal width={600} height={770} title="업무회원 목록" isOpen={isOpenModalEmployerInfo} onClose={() => setIsOpenModalEmployerInfo(false)} />
         </>
     );
 }

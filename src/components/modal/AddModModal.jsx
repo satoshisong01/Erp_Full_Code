@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import "../../components/modal/ModalCss.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import MakeListField from "utils/MakeModalField";
+import MakeModalField from "utils/MakeModalField";
 import { PageContext } from "components/PageProvider";
 /* 추가, 수정 모달 */
 export default function AddModModal(props) {
@@ -36,11 +36,13 @@ export default function AddModModal(props) {
             resultData(data); //데이터 부모로 전송
         }
         console.log(data, "입력받은값");
-        if (title === "프로젝트 수정") {
-            resultData(data); //데이터 부모로 전송
-        } else {
-            sendData(data);
-        }
+        // if (title === "프로젝트 수정") {
+        //     resultData(data); //데이터 부모로 전송
+        // } else {
+        //     sendData && sendData(data);
+        // }
+        // onClose();
+        resultData(data); //데이터 부모로 전송
         onClose();
     };
 
@@ -66,7 +68,7 @@ export default function AddModModal(props) {
                             {list &&
                                 list.map((column, index) => (
                                     <div className="body-row" key={index}>
-                                        <MakeListField list={column.items} onChange={onChange} initialData={initialData} />
+                                        <MakeModalField list={column.items} onChange={onChange} initialData={initialData} />
                                     </div>
                                 ))}
                         </div>

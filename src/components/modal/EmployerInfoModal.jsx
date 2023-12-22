@@ -79,7 +79,7 @@ export default function EmployerInfoModal(props) {
 
     return (
         <Modal
-            // appElement={document.getElementById("root")}
+            appElement={document.getElementById("root")}
             isOpen={isOpen}
             onRequestClose={onClose}
             contentLabel={title}

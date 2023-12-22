@@ -54,7 +54,7 @@ export default function CompanyModal(props) {
         { header: "거래처아이디", col: "cltId", cellWidth: "35%", notView: true },
         { header: "거래처명", col: "cltNm", cellWidth: "35%" },
         { header: "품목그룹명", col: "pgNms", cellWidth: "35%" },
-        { header: "업태", col: "cltBusstype", cellWidth: "35%" },
+        { header: "업체유형", col: "cltBusstype", cellWidth: "35%" },
     ]
 
     const conditionList = [
@@ -92,11 +92,11 @@ export default function CompanyModal(props) {
 
     return (
         <Modal
-            // appElement={document.getElementById("root")}
+            appElement={document.getElementById("root")}
             isOpen={isOpen}
             onRequestClose={onClose}
             contentLabel={title}
-            style={{ content: { width, height, },}}
+            // style={{ content: { width, height, },}}
         >
             <div className="me-modal">
                 <div className="me-modal-container" style={{ width, height }}>
