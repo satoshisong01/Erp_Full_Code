@@ -5,50 +5,57 @@ import { axiosFetch } from "api/axiosFetch";
 import { v4 as uuidv4 } from "uuid";
 
 /** 영업 폼 */
-function ApprovalFormSal({ viewPageName }) {
+function ApprovalFormSal({ viewPageName, returnData }) {
     const { projectInfo, innerPageName, versionInfo, setVersionInfo } = useContext(PageContext);
-    // const [userInfo, setUserInfo] = useState({ id: "", name: "" });
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
-
-    // useEffect(() => {
-    //     const sessionUser = sessionStorage.getItem("loginUser");
-    //     const sessionUserId = JSON.parse(sessionUser)?.id;
-    //     setUserInfo({ id: sessionUserId });
-    // }, []);
+    const [data, setData] = useState({})
 
     useEffect(() => {
         if (viewPageName !== innerPageName) return;
-        if (projectInfo.poiId && !versionInfo.versionId) {
-            console.log("나옴??");
-            getVersionList({ poiId: projectInfo.poiId });
+        if (projectInfo.poiId !== "" && projectInfo.poiId !== data.poiId) { //프로젝트정보 바뀌었을 때
+            setData({...projectInfo});
         }
-    }, [projectInfo, innerPageName, versionInfo]);
+    }, [projectInfo, innerPageName]);
+
+    useEffect(() => {
+        if(data.poiId && !data.versionId) { //선택된 버전정보가 없다면
+            getVersionList({ poiId: data.poiId });
+        }
+    }, [data]);
 
     const getVersionList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});
-        const emptyArr =
-            resultData &&
-            resultData.map(({ versionId, versionNum, versionDesc, costAt }) => ({
+        const emptyArr = resultData && resultData.map(({ versionId, versionNum, versionDesc, costAt }) => ({
                 versionId,
                 versionNum,
                 versionDesc,
                 costAt,
             }));
         if (emptyArr) {
-            setVersionInfo({
-                versionId: emptyArr.find((info) => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
+            setData((prev) => ({
+                ...prev,
+                versionId: emptyArr.find((info) => info.costAt === "Y")?.versionId || versionInfo?.versionId || emptyArr[0]?.versionId,
                 option: emptyArr,
+            }));
+            setVersionInfo({
+                versionId: emptyArr.find((info) => info.costAt === "Y")?.versionId || versionInfo?.versionId || emptyArr[0]?.versionId,
             });
         }
     };
 
     const onSelectChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, value, "@@@@@@");
         if (value !== "default") {
-            setVersionInfo((prev) => ({ ...prev, [name]: value }));
+            setData((prev) => ({ ...prev, [name]: value }));
+        }
+        if(name === "versionId") {
+            setVersionInfo({versionId: value});
         }
     };
+
+    const onClick = () => {
+        returnData({...data});
+    }
 
     return (
         <>
@@ -57,7 +64,6 @@ function ApprovalFormSal({ viewPageName }) {
                     <tbody>
                         <tr>
                             <th>
-                                {" "}
                                 <span className="cherry">*</span> 프로젝트명
                             </th>
                             <td colSpan={2}>
@@ -66,7 +72,7 @@ function ApprovalFormSal({ viewPageName }) {
                                     className="basic-input"
                                     name="poiNm"
                                     onClick={() => setIsOpenProjectModal(true)}
-                                    value={projectInfo.poiNm}
+                                    value={data.poiNm}
                                     placeholder="프로젝트를 선택하세요."
                                     readOnly
                                 />
@@ -75,7 +81,6 @@ function ApprovalFormSal({ viewPageName }) {
                                 )}
                             </td>
                             <th>
-                                {" "}
                                 <span className="cherry">*</span> 사전원가 버전
                             </th>
                             <td>
@@ -84,25 +89,31 @@ function ApprovalFormSal({ viewPageName }) {
                                     className="basic-input select"
                                     name="versionId"
                                     onChange={onSelectChange}
-                                    value={versionInfo.option?.length > 0 ? versionInfo.versionId : "default"}>
-                                    {versionInfo.option?.length > 0 ? (
-                                        versionInfo.option.map((info, index) => (
-                                            <option key={index} value={info.versionId}>
-                                                {info.versionNum}
-                                            </option>
-                                        ))
-                                    ) : (
-                                        <option value="default">버전을 생성하세요.</option>
+                                    value={data.option?.length > 0 ? data.versionId : "default"}
+                                >
+                                    {data.option?.map((info, index) => (
+                                        <option key={index} value={info.versionId}>
+                                            {info.versionNum}
+                                        </option>
+                                    ))}
+                                    {!data.option && (
+                                        <option value="default">
+                                            버전을 생성하세요.
+                                        </option>
                                     )}
                                 </select>
                             </td>
                             <th>기준연도</th>
-                            <td>{projectInfo.poiMonth}</td>
+                            <td>{data.poiMonth}</td>
                             <th>최종 수정일</th>
-                            <td>{projectInfo.lastModifyDate}</td>
+                            <td>{data.lastModifyDate}</td>
+                            <td width={80}>
+                                <button type="button" className="btn" onClick={onClick}>조회</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
+                
             </div>
         </>
     );

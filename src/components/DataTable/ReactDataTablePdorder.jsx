@@ -48,7 +48,6 @@ const ReactDataTablePdorder = (props) => {
         isOpenModalPgNm,
         returnList,
         setIsOpenModalPgNm,
-        isSaveFormTable,
         projectPdiNm,
         setIsOpenModalCompany,
         isOpenModalCompany,
@@ -109,18 +108,17 @@ const ReactDataTablePdorder = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        if (current === innerPageName) {
-            setIsEditing(editing !== undefined ? editing : isSaveFormTable); //테이블 상태 //inner tab일 때 테이블 조작
+        if (isCurrentPage()) {
+            setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
         if (current === innerPageName && nameOfButton === "save") {
             compareData(originTableData, tableData);
         }
-    }, [innerPageName, isSaveFormTable]);
+    }, [innerPageName, editing]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
-        if (current === currentPageName || current === innerPageName) {
-            console.log(currentPageName, innerPageName, "머나우누");
+        if (isCurrentPage()) {
             if (nameOfButton === "refresh") {
                 refreshClick();
             } else if (nameOfButton === "csv") {
@@ -153,7 +151,7 @@ const ReactDataTablePdorder = (props) => {
 
     useEffect(() => {
         //newRowData 변동 시 새로운 행 추가
-        if (current !== "" && current === innerPageName) {
+        if (isCurrentPage()) {
             if (newRowData && Object.keys(newRowData).length !== 0) {
                 addList(newRowData);
             }
@@ -325,7 +323,7 @@ const ReactDataTablePdorder = (props) => {
     const [countIndex, setCountIndex] = useState(0);
 
     useEffect(() => {
-        if (projectPdiNm) {
+        if (isCurrentPage() && projectPdiNm) {
             setValueDataPdiNm(countIndex, projectPdiNm);
         }
     }, [projectPdiNm]);
@@ -546,6 +544,15 @@ const ReactDataTablePdorder = (props) => {
         }
     };
 
+    const isCurrentPage = () => {
+        // if(current === "") {
+        //     console.log("Current is undefined");
+        // } else if(current !== currentPageName && current !== innerPageName && current !== modalPageName) {
+        //     console.log("Current page does not match all pages");
+        // }
+        return current !== "" && (current === currentPageName || current === innerPageName || current === modalPageName);
+    }
+
     //------------------------------- 초기값과 비교하는 코드
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
@@ -643,13 +650,13 @@ const ReactDataTablePdorder = (props) => {
                                                                 </option>
                                                             ))}
                                                         </select>
-                                                    ) : cell.column.type === "daypicker" ? (
+                                                    ) : cell.column.type === "dayPicker" ? (
                                                         <DayPicker
                                                             name={cell.column.id}
                                                             value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id] : ""}
                                                             onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                         />
-                                                    ) : cell.column.type === "monthpicker" ? (
+                                                    ) : cell.column.type === "monthPicker" ? (
                                                         <div className="box3-1 boxDate">
                                                             <MonthPicker
                                                                 name={cell.column.id}
@@ -675,7 +682,7 @@ const ReactDataTablePdorder = (props) => {
                                                                 readOnly
                                                             />
                                                         </div>
-                                                    ) : cell.column.type === "buttonCompany" ? (
+                                                    ) : cell.column.type === "company" ? (
                                                         <div>
                                                             <input
                                                                 className="buttonSelect"

@@ -96,10 +96,10 @@ export default function ProjectModal(props) {
 
                     <div className="me-modal-footer mg-b-20">
                         <div className="table-buttons" style={{ justifyContent: "center" }}>
-                            <button className="table-btn table-btn-default" data-dismiss="modal" style={{ width: "100%" }} onClick={() => onClose()}>
+                            <button type="button" className="table-btn table-btn-default" data-dismiss="modal" style={{ width: "100%" }} onClick={() => onClose()}>
                                 취소
                             </button>
-                            <button className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onClick}>
+                            <button type="button" className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onClick}>
                                 확인
                             </button>
                         </div>

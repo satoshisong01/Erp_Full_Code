@@ -1,5 +1,9 @@
 @import '/src/css/custom-style.scss';
 
+.ReactModal__Overlay--after-open {
+    z-index: 9999;
+}
+
 /* 모달 설정 */
 .me-modal {
     position: fixed;

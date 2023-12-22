@@ -8,6 +8,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
 import ModalPagePgNm from "components/modal/ModalPagePgNm";
+import CompanyModal from "components/modal/CompanyModal";
+import ProductInfoModal from "components/modal/ProductInfoModal";
+import ProductGroupModal from "components/modal/ProductGroupModal";
 
 const ReactDataTableURL = (props) => {
     const {
@@ -22,6 +25,7 @@ const ReactDataTableURL = (props) => {
         hideCheckBox,
         returnSelect,
         returnSelectRows,
+        modalPageName,
     } = props;
     const {
         prevCurrentPageName,
@@ -32,15 +36,10 @@ const ReactDataTableURL = (props) => {
         newRowData,
         currentPageName,
         projectInfo,
-        isSaveFormTable,
         companyInfo,
-        setIsOpenModalCompany,
-        isOpenModalCompany,
         setCompanyInfo,
-        isOpenModalPgNm,
         projectPgNm,
         setProjectPgNm,
-        setIsOpenModalPgNm,
         nameOfButton,
         versionInfo,
     } = useContext(PageContext);
@@ -53,6 +52,9 @@ const ReactDataTableURL = (props) => {
     const [current, setCurrent] = useState(viewPageName); //==viewPageName
     //const [selectRow, setSelectRow] = useState({}); //마지막으로 선택한 row
     const [rowIndex, setRowIndex] = useState(0);
+    const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
+    const [isOpenModalCompany, setIsOpenModalCompany] = useState(false); //거래처정보목록
+    const [isOpenModalProductGroup, setIsOpenModalProductGroup] = useState(false); //품목그룹
 
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
@@ -87,7 +89,7 @@ const ReactDataTableURL = (props) => {
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
         if (current === innerPageName) {
-            setIsEditing(editing !== undefined ? editing : isSaveFormTable); //테이블 상태 //inner tab일 때 테이블 조작
+            setIsEditing(editing !== undefined ? editing : isEditing);  //테이블 상태 //inner tab일 때 테이블 조작
         }
         if (current === innerPageName && nameOfButton === "save") {
             if (current === "경비" || current === "개발외주비" || current === "영업관리비") {
@@ -101,7 +103,7 @@ const ReactDataTableURL = (props) => {
             //    compareDataRun(originTableData, tableData);
             //}
         }
-    }, [innerPageName, isSaveFormTable, nameOfButton]);
+    }, [innerPageName, editing]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
 
@@ -136,7 +138,7 @@ const ReactDataTableURL = (props) => {
     };
 
     const setValueData = (rowIndex) => {
-        setIsOpenModalPgNm(true);
+        setIsOpenModalProductGroup(true);
         setRowIndex(rowIndex);
     };
 
@@ -146,7 +148,7 @@ const ReactDataTableURL = (props) => {
     };
 
     useEffect(() => {
-        if (Object.keys(projectPgNm).length > 0) {
+        if (isCurrentPage() && Object.keys(projectPgNm).length > 0) {
             console.log("🔥🔥projectPgNm: ", projectPgNm);
             setValueDataPgInfo(rowIndex, projectPgNm);
         }
@@ -163,7 +165,7 @@ const ReactDataTableURL = (props) => {
     };
 
     useEffect(() => {
-        if (Object.keys(companyInfo).length > 0) {
+        if (isCurrentPage() && Object.keys(companyInfo).length > 0) {
             //console.log("companyInfo: ", companyInfo);
             setValueDataCmInfo(rowIndex, companyInfo);
         }
@@ -284,7 +286,7 @@ const ReactDataTableURL = (props) => {
 
     /* table button 활성화 on off */
     useEffect(() => {
-        if (current === currentPageName || current === innerPageName) {
+        if (isCurrentPage()) {
             // 현재 보는 페이지라면
             if (selectedFlatRows.length > 0) {
                 const selects = selectedFlatRows.map((row) => row.values);
@@ -340,55 +342,8 @@ const ReactDataTableURL = (props) => {
         });
     };
 
-    //const companyOnAddRow = () => {
-    //    const newRow = {};
-    //    columnsConfig.forEach((column) => {
-    //        if (column.accessor === "poiId") {
-    //            newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
-    //        } else if (column.accessor === "pjbgTypeCode") {
-    //            newRow[column.accessor] = "EXPNS10"; // pjbgTypeCode 항상 "EXPNS10"로 설정
-    //        } else if (column.accessor === "useAt") {
-    //            newRow[column.accessor] = "Y"; // useAt 항상 "Y"로 설정
-    //        } else if (column.accessor === "deleteAt") {
-    //            newRow[column.accessor] = "N"; // deleteAt 항상 "N"로 설정
-    //        } else {
-    //            newRow[column.accessor] = null; // 다른 열은 초기화
-    //        }
-    //    });
-
-    //    setTableData((prevData) => {
-    //        const newData = [...prevData, { ...newRow }];
-    //        return newData;
-    //    });
-    //};
-
-    //const GeneralExpensesOnAddRow = () => {
-    //    const newRow = {};
-    //    columnsConfig.forEach((column) => {
-    //        if (column.accessor === "poiId") {
-    //            newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
-    //        } else if (column.accessor === "pjbgTypeCode") {
-    //            newRow[column.accessor] = "EXPNS07"; // pjbgTypeCode 항상 "EXPNS10"로 설정
-    //        } else if (column.accessor === "useAt") {
-    //            newRow[column.accessor] = "Y"; // useAt 항상 "Y"로 설정
-    //        } else if (column.accessor === "deleteAt") {
-    //            newRow[column.accessor] = "N"; // deleteAt 항상 "N"로 설정
-    //        } else {
-    //            newRow[column.accessor] = null; // 다른 열은 초기화
-    //        }
-    //    });
-
-    //    setTableData((prevData) => {
-    //        const newData = [...prevData, { ...newRow }];
-    //        return newData;
-    //    });
-    //};
-
-    // const [deleteNumList, setDeleteNumList] = useState([]);
     const onDeleteRow = (row) => {
         const rowId = row.index;
-        // const deletedPjbgId = tableData[rowId].pjbgId;
-        // setDeleteNumList((prevIds) => [...prevIds, deletedPjbgId]);
         const updateTableData = tableData.filter((_, index) => index !== rowId);
         console.log("💜💜💜onDeleteRow:", updateTableData);
         setTableData([...updateTableData]);
@@ -484,83 +439,6 @@ const ReactDataTableURL = (props) => {
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
 
-    const compareDataRun = (originData, updatedData) => {
-        //pjbgTypeCode
-        console.log(originData);
-        console.log(updatedData);
-
-        const filterData = updatedData.filter((data) => data.pgNm); //pgNm 없는 데이터 제외
-        const originDataLength = originData ? originData.length : 0;
-        const updatedDataLength = filterData ? filterData.length : 0;
-
-        if (originDataLength > updatedDataLength) {
-            //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
-            const updateDataInOrigin = (originData, updatedData) => {
-                // 복제하여 새로운 배열 생성
-                const updatedArray = [...originData];
-                // updatedData의 길이만큼 반복하여 originData 갱신
-                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
-                    const updatedItem = updatedData[i];
-                    updatedArray[i] = { ...updatedItem, pjbgId: updatedArray[i].pjbgId };
-                }
-                return updatedArray;
-            };
-
-            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
-            updateItemArray(firstRowUpdate); //수정
-
-            const delList = [];
-            const delListTest = [];
-            for (let i = updatedDataLength; i < originDataLength; i++) {
-                delList.push(...originData[i].pjbgId);
-                delListTest.push(originData[i]);
-            }
-            deleteItem(delList); //삭제
-        } else if (originDataLength === updatedDataLength) {
-            updateItemArray(filterData); //수정
-        } else if (originDataLength < updatedDataLength) {
-            const updateList = [];
-
-            for (let i = 0; i < originDataLength; i++) {
-                updateList.push(filterData[i]);
-            }
-            updateItemArray(filterData); //수정
-
-            const addList = [];
-            for (let i = originDataLength; i < updatedDataLength; i++) {
-                const newItem = {
-                    ...filterData[i],
-                    poiId: projectInfo.poiId,
-                    pjbgDt: filterData[i].pjbgBeginDt,
-                    versionId: versionInfo.versionId,
-                    pjbgTypeCode1: filterData[i].pjbgPrice01,
-                    pjbgTypeCode2: filterData[i].pjbgPrice02,
-                    pjbgTypeCode3: filterData[i].pjbgPrice03,
-                    pjbgTypeCode4: filterData[i].pjbgPrice04,
-                    pjbgTypeCode5: filterData[i].pjbgPrice05,
-                };
-                addList.push(newItem);
-            }
-            addItemArray(addList); //추가
-        }
-    };
-
-    const getExpenseName = (expenseCode) => {
-        const expenseMap = {
-            EXPNS01: "교통비",
-            EXPNS02: "숙박비",
-            EXPNS03: "일비/파견비",
-            EXPNS04: "식비",
-            EXPNS05: "자재/소모품외",
-            EXPNS06: "영업비",
-            EXPNS07: "기업이윤",
-            EXPNS08: "일반관리비",
-            EXPNS09: "네고",
-            EXPNS10: "개발외주비",
-        };
-
-        return expenseMap[expenseCode] || "";
-    };
 
     useEffect(() => {
         console.log(tableData);
@@ -615,7 +493,6 @@ const ReactDataTableURL = (props) => {
         }
     };
 
-    //-------총합 나타내기--------
     const [totalPrice, setTotalPrice] = useState(0);
     const calTotalPrice = () => {
         let total = 0;
@@ -624,6 +501,15 @@ const ReactDataTableURL = (props) => {
             setTotalPrice(total);
         });
     };
+
+    const isCurrentPage = () => {
+        // if(current === "") {
+        //     console.log("Current is undefined");
+        // } else if(current !== currentPageName && current !== innerPageName && current !== modalPageName) {
+        //     console.log("Current page does not match all pages");
+        // }
+        return current !== "" && (current === currentPageName || current === innerPageName || current === modalPageName);
+    }
     //------------------------------- 초기값과 비교하는 코드
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
@@ -734,7 +620,7 @@ const ReactDataTableURL = (props) => {
                                                     //            : null
                                                     //    }
                                                     ///>
-                                                    cell.column.type === "button" ? (
+                                                    cell.column.type === "productGroup" ? (
                                                         <div>
                                                             <input
                                                                 className="buttonSelect"
@@ -764,7 +650,7 @@ const ReactDataTableURL = (props) => {
                                                                 </option>
                                                             ))}
                                                         </select>
-                                                    ) : cell.column.type === "buttonCompany" ? (
+                                                    ) : cell.column.type === "company" ? (
                                                         <div>
                                                             <input
                                                                 className="buttonSelect"
@@ -879,8 +765,9 @@ const ReactDataTableURL = (props) => {
                     마지막{" "}
                 </button>
             </div>
-            {isOpenModalCompany && <ModalPageCompany rowIndex={rowIndex} closeLocal={() => setIsOpenModalCompany(false)} />}
-            {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
+            <CompanyModal width={600} height={720} title="거래처 목록" isOpen={isOpenModalCompany} onClose={() => setIsOpenModalCompany(false)} />
+            <ProductInfoModal width={600} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
+            <ProductGroupModal width={600} height={720} title="품목그룹 목록" isOpen={isOpenModalProductGroup} onClose={() => setIsOpenModalProductGroup(false)} />
             {/*<div style={{ display: "flex" }}>
                 <span style={{ display: "flex", justifyContent: "center", width: "100px", backgroundColor: "#f2f2f2", border: "solid gray 1px" }}>
                     {current} 합계

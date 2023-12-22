@@ -8,6 +8,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
 import ModalPagePgNm from "components/modal/ModalPagePgNm";
+import CompanyModal from "components/modal/CompanyModal";
+import ProductInfoModal from "components/modal/ProductInfoModal";
+import ProductGroupModal from "components/modal/ProductGroupModal";
+import EmployerInfoModal from "components/modal/EmployerInfoModal";
 
 const ReactDataTableDevCost = (props) => {
     const {
@@ -32,17 +36,17 @@ const ReactDataTableDevCost = (props) => {
         newRowData,
         currentPageName,
         projectInfo,
-        isSaveFormTable,
         companyInfo,
-        setIsOpenModalCompany,
-        isOpenModalCompany,
+        // setIsOpenModalCompany,
+        // isOpenModalCompany,
         setCompanyInfo,
-        isOpenModalPgNm,
+        // isOpenModalPgNm,
         projectPgNm,
         setProjectPgNm,
-        setIsOpenModalPgNm,
+        // setIsOpenModalPgNm,
         nameOfButton,
         versionInfo,
+        modalPageName,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -53,6 +57,10 @@ const ReactDataTableDevCost = (props) => {
     const [current, setCurrent] = useState(viewPageName); //==viewPageName
     //const [selectRow, setSelectRow] = useState({}); //마지막으로 선택한 row
     const [rowIndex, setRowIndex] = useState(0);
+    const [isOpenModalCompany, setIsOpenModalCompany] = useState(false); //거래처정보목록
+    const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
+    const [isOpenModalProductGroup, setIsOpenModalProductGroup] = useState(false); //품목그룹목록
+    const [isOpenModalEmployerInfo, setIsOpenModalEmployerInfo] = useState(false); //업무회원목록
 
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
@@ -61,6 +69,23 @@ const ReactDataTableDevCost = (props) => {
             setCurrentTable(tableRef);
         }
     }, []);
+
+    const setValueCompany = (rowIndex) => {
+        //setRowIndex()
+        if(isCurrentPage()) {
+            setIsOpenModalCompany(true);
+            setRowIndex(rowIndex);
+        }
+    };
+
+    const isCurrentPage = () => {
+        // if(current === "") {
+        //     console.log("Current is undefined");
+        // } else if(current !== currentPageName && current !== innerPageName && current !== modalPageName) {
+        //     console.log("Current page does not match all pages");
+        // }
+        return current !== "" && (current === currentPageName || current === innerPageName || current === modalPageName);
+    }
 
     useEffect(() => {
         if (customDatas && customDatas.length > 0) {
@@ -87,12 +112,12 @@ const ReactDataTableDevCost = (props) => {
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
         if (current === innerPageName) {
-            setIsEditing(editing !== undefined ? editing : isSaveFormTable); //테이블 상태 //inner tab일 때 테이블 조작
+            setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
         if (current === "개발외주비" && nameOfButton === "save") {
             compareData(originTableData, tableData);
         }
-    }, [innerPageName, isSaveFormTable, nameOfButton]);
+    }, [innerPageName, editing]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
 
@@ -127,7 +152,7 @@ const ReactDataTableDevCost = (props) => {
     };
 
     const setValueData = (rowIndex) => {
-        setIsOpenModalPgNm(true);
+        setIsOpenModalProductGroup(true);
         setRowIndex(rowIndex);
     };
 
@@ -553,7 +578,7 @@ const ReactDataTableDevCost = (props) => {
                                                             name={cell.column.id}
                                                             onChange={(e) => onChangeInput(e, row)}
                                                         />
-                                                    ) : cell.column.type === "buttonCompany" ? (
+                                                    ) : cell.column.type === "company" ? (
                                                         <div>
                                                             <input
                                                                 className="buttonSelect"
@@ -622,8 +647,10 @@ const ReactDataTableDevCost = (props) => {
                     마지막{" "}
                 </button>
             </div>
-            {isOpenModalCompany && <ModalPageCompany rowIndex={rowIndex} closeLocal={() => setIsOpenModalCompany(false)} />}
-            {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
+            <CompanyModal width={600} height={720} title="거래처 목록" isOpen={isOpenModalCompany} onClose={() => setIsOpenModalCompany(false)} />
+            <ProductInfoModal width={600} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
+            <ProductGroupModal width={600} height={720} title="품목그룹 목록" isOpen={isOpenModalProductGroup} onClose={() => setIsOpenModalProductGroup(false)} />
+            <EmployerInfoModal width={600} height={770} title="업무회원 목록" isOpen={isOpenModalEmployerInfo} onClose={() => setIsOpenModalEmployerInfo(false)} />
             {/*<div style={{ display: "flex" }}>
                 <span style={{ display: "flex", justifyContent: "center", width: "100px", backgroundColor: "#f2f2f2", border: "solid gray 1px" }}>
                     {current} 합계

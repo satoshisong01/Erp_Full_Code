@@ -171,7 +171,7 @@ const ReactDataTable = (props) => {
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
         if (current === innerPageName) {
-            setIsEditing(editing !== undefined ? editing : isSaveFormTable); //테이블 상태 //inner tab일 때 테이블 조작
+            setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
         if (current === innerPageName) {
             //inner tab에서 저장을 눌렀을 때
@@ -181,9 +181,9 @@ const ReactDataTable = (props) => {
                 }
             } else if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
                 returnList(originTableData, tableData);
-            } else if (innerPageName === "사전원가지표" && !isSaveFormTable) {
+            } else if (innerPageName === "사전원가지표" && !editing) {
                 sendToParentCostIndex(originTableData, tableData);
-            } else if ((innerPageName === "급별단가(인건비)" && !isSaveFormTable) || (innerPageName === "급별단가(경비)" && !isSaveFormTable)) {
+            } else if ((innerPageName === "급별단가(인건비)" && !editing) || (innerPageName === "급별단가(경비)" && !editing)) {
                 sendToParentGrade(originTableData, tableData);
             } else {
                 //compareData(originTableData, tableData);
@@ -192,7 +192,7 @@ const ReactDataTable = (props) => {
         if (current !== innerPageName) {
             setTableData([]); //초기화
         }
-    }, [innerPageName, isSaveFormTable, nameOfButton]);
+    }, [innerPageName, editing]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
@@ -494,7 +494,7 @@ const ReactDataTable = (props) => {
     };
 
     useEffect(() => {
-        if (Object.keys(projectPgNm).length > 0) {
+        if (isCurrentPage() && Object.keys(projectPgNm).length > 0) {
             console.log("🔥🔥projectPgNm: ", projectPgNm);
             setValueDataPgInfo(rowIndex, projectPgNm);
         }
@@ -607,6 +607,15 @@ const ReactDataTable = (props) => {
         refreshClick();
     }, [viewPageName]);
 
+    const isCurrentPage = () => {
+        // if(current === "") {
+        //     console.log("Current is undefined");
+        // } else if(current !== currentPageName && current !== innerPageName && current !== modalPageName) {
+        //     console.log("Current page does not match all pages");
+        // }
+        return current !== "" && (current === currentPageName || current === innerPageName || current === modalPageName);
+    }
+
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
     return (
@@ -689,7 +698,7 @@ const ReactDataTable = (props) => {
                                                             name={cell.column.id}
                                                             onChange={(e) => handleChange(e, row, cell.column.id)}
                                                         />
-                                                    ) : cell.column.type === "datepicker" ? (
+                                                    ) : cell.column.type === "datePicker" ? (
                                                         <div className="box3-1 boxDate">
                                                             <DatePicker
                                                                 key={cell.column.id + row.index}
@@ -718,13 +727,13 @@ const ReactDataTable = (props) => {
                                                                 }}
                                                             />
                                                         </div>
-                                                    ) : cell.column.type === "daypicker" ? (
+                                                    ) : cell.column.type === "dayPicker" ? (
                                                         <DayPicker
                                                             name={cell.column.id}
                                                             value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id] : ""}
                                                             onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                         />
-                                                    ) : cell.column.type === "monthpicker" ? (
+                                                    ) : cell.column.type === "monthPicker" ? (
                                                         <div className="box3-1 boxDate">
                                                             <MonthPicker
                                                                 name={cell.column.id}
@@ -756,7 +765,7 @@ const ReactDataTable = (props) => {
                                                                 </option>
                                                             ))}
                                                         </select>
-                                                    ) : cell.column.type === "button" ? (
+                                                    ) : cell.column.type === "productGroup" ? (
                                                         <div>
                                                             <input
                                                                 className="buttonSelect"
