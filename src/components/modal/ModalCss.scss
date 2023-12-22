@@ -4,11 +4,11 @@
 .me-modal {
     position: fixed;
     inset: 0;
-    z-index: 999;
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(40, 40, 40, 0.4); 
+    // background-color: rgba(40, 40, 40, 0.4); 
     margin: 0;
 }
 

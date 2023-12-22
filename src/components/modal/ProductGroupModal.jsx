@@ -10,10 +10,10 @@ import { PageContext } from "components/PageProvider";
 
 Modal.setAppElement("#root"); // Set the root element for accessibility
 
-/* 품목상세정보 목록 모달 */
-export default function ProductInfoModal(props) {
+/* 품목그룹정보 목록 모달 */
+export default function ProductGroupModal(props) {
     const { width, height, isOpen, title, onClose } = props;
-    const { setModalPageName, setIsModalTable, setPdiNmList, pdiNmList, projectPdiNm, setProjectPdiNm } = useContext(PageContext);
+    const { setModalPageName, setIsModalTable, setProjectPgNm, setPgNmList } = useContext(PageContext);
 
     const [productInfoList, setProductInfoList] = useState([]);
     const bodyRef = useRef(null);
@@ -21,10 +21,10 @@ export default function ProductInfoModal(props) {
     useEffect(() => {
         if (isOpen) {
             getProductInfoList();
-            setModalPageName("품목정보팝업")
+            setModalPageName("품목그룹팝업")
             setIsModalTable(true);
-            setPdiNmList([]); //초기화
-            setProjectPdiNm({}); //초기화
+            setPgNmList([]); //초기화
+            setProjectPgNm({}); //초기화
         }
         return () => {
             setIsModalTable(false)
@@ -33,25 +33,17 @@ export default function ProductInfoModal(props) {
     }, [isOpen]);
 
     const getProductInfoList = async (requestData) => {
-        const resultData = await axiosFetch("/api/baseInfrm/product/productInfo/totalListAll.do", requestData || {});
+        const resultData = await axiosFetch("/api/baseInfrm/product/productGroup/totalListAll.do", requestData || {});
         setProductInfoList(resultData);
     }
 
     const columns = [
-        { header: "품명", col: "pdiNm", cellWidth: "40%", type: "buttonPdiNm"},
+        { header: "품목그룹아이디", col: "pgId", notVirw: true },
         { header: "품목그룹명", col: "pgNm", cellWidth: "20%" },
-        { header: "규격", col: "pdiStnd", notView: true},
-        { header: "단위", col: "pdiUnit", notView: true },
-        { header: "제조사", col: "pdiMenufut", cellWidth: "20%" },
-        { header: "판매사", col: "pdiSeller", cellWidth: "20%" },
-        { header: "원가", col: "pupUnitPrice", notView: true },
     ]
 
     const conditionList = [
-        { title: "품명", col: "pdiNm", type: "input" },
         { title: "픔목그룹명", col: "pgNm", type: "input" },
-        { title: "제조사", col: "pdiMenufut", type: "input" },
-        { title: "판매사", col: "pdiSeller", type: "input" },
     ]
 
     useEffect(() => {
@@ -70,10 +62,10 @@ export default function ProductInfoModal(props) {
 
     const onClick = () => {
         if (selectedRows && selectedRows.length === 1) { //객체로 저장
-            setProjectPdiNm(selectedRows[0]);
+            setProjectPgNm(selectedRows[0]);
 
         } else if (selectedRows && selectedRows.length > 1) {
-            setPdiNmList([...selectedRows]);
+            setPgNmList([...selectedRows]);
         }
         onClose();
     }
@@ -110,7 +102,7 @@ export default function ProductInfoModal(props) {
                                     columns={columns}
                                     customDatas={productInfoList}
                                     returnSelectRows={(rows) => returnSelectRows(rows)}
-                                    viewPageName="품목정보팝업"
+                                    viewPageName="품목그룹팝업"
                                 />
                             </div>
                         </div>

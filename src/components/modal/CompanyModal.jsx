@@ -1,15 +1,18 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
+import Modal from "react-modal";
 import "../../components/modal/ModalCss.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { axiosFetch } from "api/axiosFetch";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import ModalSearchList from "components/ModalCondition";
 import { PageContext } from "components/PageProvider";
 
-/* 회사 목록 모달 */
+Modal.setAppElement("#root"); // Set the root element for accessibility
+
+/* 회사목록 목록 모달 */
 export default function CompanyModal(props) {
-    const { width, height, onClose, title } = props;
+    const { width, height, isOpen, title, onClose } = props;
     const { setCompanyInfo, setModalPageName, setIsModalTable } = useContext(PageContext);
 
     const [companyList, setCompanyList] = useState([]);
@@ -17,15 +20,17 @@ export default function CompanyModal(props) {
     const bodyRef = useRef(null);
 
     useEffect(() => {
-        getCompanyList();
-        setModalPageName("거래처팝업")
-        setIsModalTable(true);
-
-        return(() =>  { //초기화
+        if (isOpen) {
+            getCompanyList();
+            setModalPageName("거래처팝업")
+            setIsModalTable(true);
+            setCompanyInfo({}); //초기화
+        }
+        return () => {
             setIsModalTable(false)
             setModalPageName("")
-        })
-    }, [])
+        };
+    }, [isOpen]);
 
     const getCompanyList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/client/client/totalListAll.do", requestData || {});
@@ -44,7 +49,7 @@ export default function CompanyModal(props) {
 
         setCompanyList(changeData)
     }
-    
+
     const columns = [
         { header: "거래처아이디", col: "cltId", cellWidth: "35%", notView: true },
         { header: "거래처명", col: "cltNm", cellWidth: "35%" },
@@ -86,40 +91,48 @@ export default function CompanyModal(props) {
     }
 
     return (
-        <article className="me-modal">
-            <div className="me-modal-container" style={{ width, height }}>
-                <div className="me-modal-inner">
-                    <div className="me-modal-header">
-                        <h4 className="header-title">{title}</h4>
-                        <div className="header-close" onClick={onClose}>
-                            <FontAwesomeIcon icon={faXmark} className="button" size="lg" />
+        <Modal
+            // appElement={document.getElementById("root")}
+            isOpen={isOpen}
+            onRequestClose={onClose}
+            contentLabel={title}
+            style={{ content: { width, height, },}}
+        >
+            <div className="me-modal">
+                <div className="me-modal-container" style={{ width, height }}>
+                    <div className="me-modal-inner">
+                        <div className="me-modal-header">
+                            <h4 className="header-title">{title}</h4>
+                            <div className="header-close" onClick={onClose}>
+                                <FontAwesomeIcon icon={faTimes} className="button" size="lg" />
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="me-modal-body" ref={bodyRef}>
-                        <div className="body-area" style={{gap: 0}}>
-                            <ModalSearchList conditionList={conditionList} onSearch={onSearch} refresh={() => getCompanyList()}/>
-                            <ReactDataTable 
-                                columns={columns}
-                                customDatas={companyList}
-                                returnSelect={returnSelect}
-                                viewPageName="거래처팝업"
-                            />
+                        <div className="me-modal-body" ref={bodyRef}>
+                            <div className="body-area" style={{ gap: 0 }}>
+                                <ModalSearchList conditionList={conditionList} onSearch={onSearch} refresh={() => getCompanyList()} />
+                                <ReactDataTable 
+                                    columns={columns}
+                                    customDatas={companyList}
+                                    returnSelect={returnSelect}
+                                    viewPageName="거래처팝업"
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="me-modal-footer mg-b-20">
-                        <div className="table-buttons" style={{ justifyContent: "center" }}>
-                            <button className="table-btn table-btn-default" data-dismiss="modal" style={{ width: "100%" }} onClick={() => onClose()}>
-                                취소
-                            </button>
-                            <button className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onClick}>
-                                확인
-                            </button>
+                        <div className="me-modal-footer mg-t-10 mg-b-20">
+                            <div className="table-buttons" style={{ justifyContent: "center" }}>
+                                <button className="table-btn table-btn-default" style={{ width: "100%" }} onClick={onClose}>
+                                    취소
+                                </button>
+                                <button className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onClick}>
+                                    확인
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </article>
+        </Modal>
     );
 }

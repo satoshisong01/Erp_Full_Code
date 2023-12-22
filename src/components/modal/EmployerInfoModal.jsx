@@ -10,21 +10,20 @@ import { PageContext } from "components/PageProvider";
 
 Modal.setAppElement("#root"); // Set the root element for accessibility
 
-/* 품목상세정보 목록 모달 */
-export default function ProductInfoModal(props) {
+/* 업무회원 목록 모달 */
+export default function EmployerInfoModal(props) {
     const { width, height, isOpen, title, onClose } = props;
-    const { setModalPageName, setIsModalTable, setPdiNmList, pdiNmList, projectPdiNm, setProjectPdiNm } = useContext(PageContext);
+    const { setModalPageName, setIsModalTable, setEmUserInfo } = useContext(PageContext);
 
-    const [productInfoList, setProductInfoList] = useState([]);
+    const [employerInfoList, setEmployerInfoList] = useState([]);
     const bodyRef = useRef(null);
 
     useEffect(() => {
         if (isOpen) {
-            getProductInfoList();
-            setModalPageName("품목정보팝업")
+            getEmployerList();
+            setModalPageName("회원목록팝업")
             setIsModalTable(true);
-            setPdiNmList([]); //초기화
-            setProjectPdiNm({}); //초기화
+            setEmUserInfo({}); //초기화
         }
         return () => {
             setIsModalTable(false)
@@ -32,26 +31,22 @@ export default function ProductInfoModal(props) {
         };
     }, [isOpen]);
 
-    const getProductInfoList = async (requestData) => {
-        const resultData = await axiosFetch("/api/baseInfrm/product/productInfo/totalListAll.do", requestData || {});
-        setProductInfoList(resultData);
+    const getEmployerList = async (requestData) => {
+        const resultData = await axiosFetch("/api/baseInfrm/member/employMember/totalListAll.do", requestData || {});
+        setEmployerInfoList(resultData);
     }
 
     const columns = [
-        { header: "품명", col: "pdiNm", cellWidth: "40%", type: "buttonPdiNm"},
-        { header: "품목그룹명", col: "pgNm", cellWidth: "20%" },
-        { header: "규격", col: "pdiStnd", notView: true},
-        { header: "단위", col: "pdiUnit", notView: true },
-        { header: "제조사", col: "pdiMenufut", cellWidth: "20%" },
-        { header: "판매사", col: "pdiSeller", cellWidth: "20%" },
-        { header: "원가", col: "pupUnitPrice", notView: true },
+        { header: "고유아이디", col: "uniqId", notVirw: true },
+        { header: "사용자명", col: "empId", cellWidth: "50%" },
+        { header: "직급", col: "posNm", cellWidth: "25%" },
+        { header: "그룹", col: "authorGroup", cellWidth: "25%" },
     ]
 
     const conditionList = [
-        { title: "품명", col: "pdiNm", type: "input" },
-        { title: "픔목그룹명", col: "pgNm", type: "input" },
-        { title: "제조사", col: "pdiMenufut", type: "input" },
-        { title: "판매사", col: "pdiSeller", type: "input" },
+        { title: "사용자명", col: "empId", type: "input" },
+        { title: "직급", col: "posNm", type: "input" },
+        { title: "그룹", col: "authorGroup", type: "input" },
     ]
 
     useEffect(() => {
@@ -65,15 +60,12 @@ export default function ProductInfoModal(props) {
     }, [height]);
 
     const onSearch = (value) => {
-        getProductInfoList(value);
+        getEmployerList(value);
     }
 
     const onClick = () => {
         if (selectedRows && selectedRows.length === 1) { //객체로 저장
-            setProjectPdiNm(selectedRows[0]);
-
-        } else if (selectedRows && selectedRows.length > 1) {
-            setPdiNmList([...selectedRows]);
+            setEmUserInfo(selectedRows[0]);
         }
         onClose();
     }
@@ -81,7 +73,7 @@ export default function ProductInfoModal(props) {
     let selectedRows = [];
 
     const returnSelectRows = (rows) => {
-        const newArr = rows.filter((row) => !selectedRows.some((pre) => pre.pdiId === row.pdiId));
+        const newArr = rows.filter((row) => !selectedRows.some((pre) => pre.uniqId === row.uniqId));
         selectedRows.push(...newArr);
     };
 
@@ -105,12 +97,12 @@ export default function ProductInfoModal(props) {
 
                         <div className="me-modal-body" ref={bodyRef}>
                             <div className="body-area" style={{ gap: 0 }}>
-                                <ModalSearchList conditionList={conditionList} onSearch={onSearch} refresh={() => getProductInfoList()} />
+                                <ModalSearchList conditionList={conditionList} onSearch={onSearch} refresh={() => getEmployerList()} />
                                 <ReactDataTable
                                     columns={columns}
-                                    customDatas={productInfoList}
+                                    customDatas={employerInfoList}
                                     returnSelectRows={(rows) => returnSelectRows(rows)}
-                                    viewPageName="품목정보팝업"
+                                    viewPageName="회원목록팝업"
                                 />
                             </div>
                         </div>
