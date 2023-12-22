@@ -9,7 +9,8 @@ import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import RefreshButton from "components/button/RefreshButton";
 import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
 import ApprovalFormExe from "components/form/ApprovalFormExe";
-/** 실행관리-경비관리 */
+import HideCard from "components/HideCard";
+/** 실행관리-경비-계획 */
 function ExpenseMgmtPlan() {
     const {
         currentPageName,
@@ -31,13 +32,6 @@ function ExpenseMgmtPlan() {
         };
     }, []);
 
-    useEffect(() => {
-        if (currentPageName === "경비관리") {
-            const activeTab = document.querySelector(".mini_board_3 .tab li a.on");
-            const activeTabText = activeTab.textContent;
-            setInnerPageName(activeTabText); //마지막으로 활성화 된 탭
-        }
-    }, [currentPageName, innerPageName, projectInfo]);
 
     const orderPlanMgmtTable3 = useRef(null);
 
@@ -224,23 +218,24 @@ function ExpenseMgmtPlan() {
         <>
             <Location pathList={locationPath.ExpenseMgmt} />
             {/* <SearchList conditionList={conditionList} onSearch={handleReturn} /> */}
-            <ApprovalFormExe title={innerPageName + " 등록"} />
-            <div className={`buttonBody  ${isClicked3 ? "" : "clicked"}`}>
-                <button className="arrowBtnStyle" style={{ zIndex: "999" }} onClick={handleClick3}>
-                    <FontAwesomeIcon className={`arrowBtn ${isClicked3 ? "" : "clicked"}`} icon={faArrowUp} />
-                </button>
-            </div>
-            <div className="table-buttons">
-                <RefreshButton onClick={refresh} />
-            </div>
-            <ReactDataTableURL
-                columns={columns.expenseMgmt.budget}
-                tableRef={orderPlanMgmtTable3}
-                viewPageName="경비 예산관리"
-                customDatas={budgetMgmt}
-                customDatasRefresh={refresh}
-                hideCheckBox={true}
-            />
+            <ApprovalFormExe viewPageName="실행경비계획" />
+            <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
+            </HideCard>
+            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+            </HideCard>
+            <HideCard title="계획 등록/수정" color="back-lightblue">
+                <div className="table-buttons mg-b-m-30">
+                    <RefreshButton onClick={refresh} />
+                </div>
+                <ReactDataTableURL
+                    columns={columns.expenseMgmt.budget}
+                    tableRef={orderPlanMgmtTable3}
+                    viewPageName="실행경비계획"
+                    customDatas={budgetMgmt}
+                    customDatasRefresh={refresh}
+                    hideCheckBox={true}
+                />
+            </HideCard>
         </>
     );
 }

@@ -7,6 +7,7 @@ import RefreshButton from "components/button/RefreshButton";
 import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 import { columns } from "constants/columns";
 import ApprovalFormExe from "components/form/ApprovalFormExe";
+import HideCard from "components/HideCard";
 
 /** 실행관리-구매-계획 */
 function PurchasingMgmtPlan() {
@@ -47,11 +48,6 @@ function PurchasingMgmtPlan() {
             //테이블 초기화
             setBudgetMgmt([]);
         }
-        if (currentPageName === "구매관리") {
-            const activeTab = document.querySelector(".mini_board_4 .tab li a.on");
-            const activeTabText = activeTab.textContent;
-            setInnerPageName(activeTabText); //마지막으로 활성화 된 탭
-        }
     }, [currentPageName, innerPageName, projectInfo]);
 
     const fetchData = async () => {
@@ -75,20 +71,25 @@ function PurchasingMgmtPlan() {
     return (
         <>
             <Location pathList={locationPath.PurchasingMgmt} />
-            <ApprovalFormExe title={innerPageName + " 등록"} />
-            <div className="table-buttons">
-                <RefreshButton onClick={refresh} />
-            </div>
-            <ReactDataTablePdorder
-                singleUrl="/baseInfrm/product/buyIngInfo"
-                columns={columns.purchasingMgmt.budget}
-                tableRef={orderPlanMgmtTable3}
-                customDatas={budgetMgmt}
-                viewPageName="구매 예산관리"
-                customDatasRefresh={refresh}
-                hideCheckBox={true}
-            />
-
+            <ApprovalFormExe viewPageName="실행구매" />
+            <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
+            </HideCard>
+            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+            </HideCard>
+            <HideCard title="계획 등록/수정" color="back-lightblue">
+                <div className="table-buttons mg-b-m-30">
+                    <RefreshButton onClick={refresh} />
+                </div>
+                <ReactDataTablePdorder
+                    singleUrl="/baseInfrm/product/buyIngInfo"
+                    columns={columns.purchasingMgmt.budget}
+                    tableRef={orderPlanMgmtTable3}
+                    customDatas={budgetMgmt}
+                    viewPageName="실행구매"
+                    customDatasRefresh={refresh}
+                    hideCheckBox={true}
+                />
+            </HideCard>
         </>
     );
 }
