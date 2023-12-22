@@ -50,7 +50,7 @@ function OrderPlanMgmt() {
     useEffect(() => {
         setInnerPageName("원가버전조회");
         setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
-
+        fetchAllData();
         return () => {
             // 컴포넌트 종료 시
             setProjectInfo({}); // 초기화
@@ -67,6 +67,9 @@ function OrderPlanMgmt() {
     }, [currentPageName, innerPageName]);
 
     useEffect(() => {
+        if (innerPageName === "원가버전조회") {
+            fetchAllData();
+        }
         if (projectInfo.poiId && versionInfo.versionId) {
             fetchAllData(projectInfo.poiId, versionInfo.versionId);
         }
@@ -80,6 +83,7 @@ function OrderPlanMgmt() {
 
     const returnList = (originTableData, tableData) => {
         console.log(originTableData, tableData);
+        console.log("projectInfo:", projectInfo, projectInfo.poiId);
         compareData(originTableData, tableData);
     };
 
@@ -93,6 +97,7 @@ function OrderPlanMgmt() {
 
     useEffect(() => {
         console.log(projectInfo);
+        console.log(projectInfo.poiId);
     }, [projectInfo]);
 
     //인건비용임
@@ -193,6 +198,10 @@ function OrderPlanMgmt() {
     // 초기 데이터와 수정된 데이터를 비교하는 함수
     //추가 함수
     const upDateChange = (data, originData) => {
+        if (data && originData) {
+            console.log("안탐");
+            return;
+        }
         for (let index = 0; index < data.length; index++) {
             const item = data[index];
 
@@ -221,7 +230,7 @@ function OrderPlanMgmt() {
             // pmpMonth2가 없다면 값을 pmpMonth에서 가져옴
             if (!item.hasOwnProperty("pmpMonth2")) {
                 item.pmpMonth2 = item.pmpMonth;
-                item.pmpMonth = originData[index].pmpMonth;
+                item.pmpMonth = originData && originData[index].pmpMonth;
             }
         }
     };
@@ -238,9 +247,10 @@ function OrderPlanMgmt() {
                 console.log(resultData, "원가버전조회 데이터");
                 setSearchDates(resultData);
             } else if (innerPageName === "인건비") {
+                console.log("인건비값!!!", requestData);
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
                 const changeData = ChangePrmnPlanData(resultData, projectInfo.poiId);
-                //console.log(resultData, requestData, "인건비값");
+                console.log("인건비 조회 완:", changeData);
                 //setPrmnPlanDatas(ChangePrmnPlanData(resultData, projectInfo));
                 changeData.forEach((Item) => {
                     const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
@@ -262,8 +272,8 @@ function OrderPlanMgmt() {
                         Item.totalPrice = totalPrice;
                     }
                     console.log(changeData, "changeData이거왜 안나오지 💥💥💥");
-                    return setPrmnPlanDatas(changeData);
                 });
+                setPrmnPlanDatas(changeData);
             } else if (innerPageName === "경비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
                 setPjbudgetDatas(resultData);
@@ -380,7 +390,7 @@ function OrderPlanMgmt() {
                                     <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
                                     <ModButton label={"수정"} onClick={() => setIsOpenUpDate(true)} />
                                     {/*<DelButton label={"삭제"} onClick={deleteToServer} />*/}
-                                    <RefreshButton onClick={refresh} />
+                                    <RefreshButton onClick={() => fetchAllData()} />
                                 </div>
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.version}

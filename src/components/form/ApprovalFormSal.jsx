@@ -22,7 +22,7 @@ function ApprovalFormSal({ viewPageName }) {
             console.log("나옴??");
             getVersionList({ poiId: projectInfo.poiId });
         }
-    }, [projectInfo, innerPageName]);
+    }, [projectInfo, innerPageName, versionInfo]);
 
     const getVersionList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});
@@ -44,6 +44,7 @@ function ApprovalFormSal({ viewPageName }) {
 
     const onSelectChange = (e) => {
         const { name, value } = e.target;
+        console.log(name, value, "@@@@@@");
         if (value !== "default") {
             setVersionInfo((prev) => ({ ...prev, [name]: value }));
         }
