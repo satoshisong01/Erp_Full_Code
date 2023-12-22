@@ -1,10 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
-import DataTable from "components/DataTable/DataTable";
-import DataTableRow from "components/DataTable/DataTableRow";
 import { locationPath } from "constants/locationPath";
 import { axiosFetch } from "api/axiosFetch";
-import ApprovalForm from "components/form/ApprovalForm";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { ReorganizeData } from "components/DataTable/function/ReorganizeData";
 
@@ -50,7 +47,6 @@ function GradeWageExpense() {
 
     return (
         <>
-            <ApprovalForm projectNone={true} />
             <Location pathList={locationPath.GradeWageExpense} />
             <ReactDataTable
                 columns={columns}

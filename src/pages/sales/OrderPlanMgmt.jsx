@@ -555,7 +555,7 @@ function OrderPlanMgmt() {
                     width={500}
                     height={250}
                     list={columns.orderPlanMgmt.addMod}
-                    sendData={addVersionToServer}
+                    resultData={addVersionToServer}
                     onClose={() => setIsOpenAdd(false)}
                     title="버전 추가"
                 />

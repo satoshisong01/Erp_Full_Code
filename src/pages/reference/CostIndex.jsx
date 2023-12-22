@@ -1,15 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
-import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
 import { PageContext } from "components/PageProvider";
 import ReactDataTable from "components/DataTable/ReactDataTable";
-import AddButton from "components/button/AddButton";
-import ModButton from "components/button/ModButton";
-import DelButton from "components/button/DelButton";
-import RefreshButton from "components/button/RefreshButton";
 import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
-import ApprovalForm from "components/form/ApprovalForm";
 
 /** 기준정보관리-원가기준관리-사전원가지표 */
 function CostIndex() {
@@ -216,7 +210,6 @@ function CostIndex() {
 
     return (
         <>
-            <ApprovalForm projectNone={true} />
             <Location pathList={locationPath.CostIndex} />
             <ReactDataTable
                 columns={columns}

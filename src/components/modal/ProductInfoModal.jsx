@@ -10,21 +10,21 @@ import { PageContext } from "components/PageProvider";
 
 Modal.setAppElement("#root"); // Set the root element for accessibility
 
-/* 회사목록 목록 모달 */
-export default function CompanyModal(props) {
+/* 품목상세정보 목록 모달 */
+export default function ProductInfoModal(props) {
     const { width, height, isOpen, title, onClose } = props;
-    const { setCompanyInfo, setModalPageName, setIsModalTable } = useContext(PageContext);
+    const { setModalPageName, setIsModalTable, setPdiNmList, pdiNmList, projectPdiNm, setProjectPdiNm } = useContext(PageContext);
 
-    const [companyList, setCompanyList] = useState([]);
-    const [selectInfo, setSelectInfo]  = useState({});
+    const [productInfoList, setProductInfoList] = useState([]);
     const bodyRef = useRef(null);
 
     useEffect(() => {
         if (isOpen) {
-            getCompanyList();
-            setModalPageName("거래처팝업")
+            getProductInfoList();
+            setModalPageName("품목정보팝업")
             setIsModalTable(true);
-            setCompanyInfo({}); //초기화
+            setPdiNmList([]); //초기화
+            setProjectPdiNm({}); //초기화
         }
         return () => {
             setIsModalTable(false)
@@ -32,38 +32,26 @@ export default function CompanyModal(props) {
         };
     }, [isOpen]);
 
-    const getCompanyList = async (requestData) => {
-        const resultData = await axiosFetch("/api/baseInfrm/client/client/totalListAll.do", requestData || {});
-        const changeData = resultData.map(item => {
-            const pgNms = Object.keys(item)
-                                .filter(key => key.startsWith("pgNm") && item[key] !== null && item[key] !== "")
-                                .map(key => item[key]);
-        
-            return {
-                cltId: item.cltId,
-                cltNm: item.cltNm,
-                pgNms: pgNms.join(", "), // 배열을 문자열로 변환
-                cltBusstype: item.cltBusstype,
-            };
-        });
-
-        setCompanyList(changeData)
+    const getProductInfoList = async (requestData) => {
+        const resultData = await axiosFetch("/api/baseInfrm/product/productInfo/totalListAll.do", requestData || {});
+        setProductInfoList(resultData);
     }
 
     const columns = [
-        { header: "거래처아이디", col: "cltId", cellWidth: "35%", notView: true },
-        { header: "거래처명", col: "cltNm", cellWidth: "35%" },
-        { header: "품목그룹명", col: "pgNms", cellWidth: "35%" },
-        { header: "업태", col: "cltBusstype", cellWidth: "35%" },
+        { header: "품명", col: "pdiNm", cellWidth: "40%", type: "buttonPdiNm"},
+        { header: "품목그룹명", col: "pgNm", cellWidth: "20%" },
+        { header: "규격", col: "pdiStnd", notView: true},
+        { header: "단위", col: "pdiUnit", notView: true },
+        { header: "제조사", col: "pdiMenufut", cellWidth: "20%" },
+        { header: "판매사", col: "pdiSeller", cellWidth: "20%" },
+        { header: "원가", col: "pupUnitPrice", notView: true },
     ]
 
     const conditionList = [
-        { title: "회사타입", col: "cltType", type: "radio", option: [
-            {label: "협력사", value: "P"},
-            {label: "고객사", value: "C"},
-        ] },
-        { title: "거래처명", col: "cltNm", type: "input" },
-        { title: "픔목그룹명", col: "pgNm", type: "input" }
+        { title: "품명", col: "pdiNm", type: "input" },
+        { title: "픔목그룹명", col: "pgNm", type: "input" },
+        { title: "제조사", col: "pdiMenufut", type: "input" },
+        { title: "판매사", col: "pdiSeller", type: "input" },
     ]
 
     useEffect(() => {
@@ -77,18 +65,25 @@ export default function CompanyModal(props) {
     }, [height]);
 
     const onSearch = (value) => {
-        getCompanyList(value);
+        getProductInfoList(value);
     }
 
-    const onClick = (e) => {
-        e.preventDefault();
-        setCompanyInfo({...selectInfo})
+    const onClick = () => {
+        if (selectedRows && selectedRows.length === 1) { //객체로 저장
+            setProjectPdiNm(selectedRows[0]);
+
+        } else if (selectedRows && selectedRows.length > 1) {
+            setPdiNmList([...selectedRows]);
+        }
         onClose();
     }
 
-    const returnSelect = (value) => {
-        setSelectInfo((prev) => (prev.cltId !== value.cltId ? value : prev));
-    }
+    let selectedRows = [];
+
+    const returnSelectRows = (rows) => {
+        const newArr = rows.filter((row) => !selectedRows.some((pre) => pre.pdiId === row.pdiId));
+        selectedRows.push(...newArr);
+    };
 
     return (
         <Modal
@@ -110,12 +105,12 @@ export default function CompanyModal(props) {
 
                         <div className="me-modal-body" ref={bodyRef}>
                             <div className="body-area" style={{ gap: 0 }}>
-                                <ModalSearchList conditionList={conditionList} onSearch={onSearch} refresh={() => getCompanyList()} />
-                                <ReactDataTable 
+                                <ModalSearchList conditionList={conditionList} onSearch={onSearch} refresh={() => getProductInfoList()} />
+                                <ReactDataTable
                                     columns={columns}
-                                    customDatas={companyList}
-                                    returnSelect={returnSelect}
-                                    viewPageName="거래처팝업"
+                                    customDatas={productInfoList}
+                                    returnSelectRows={(rows) => returnSelectRows(rows)}
+                                    viewPageName="품목정보팝업"
                                 />
                             </div>
                         </div>
