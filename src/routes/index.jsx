@@ -13,9 +13,6 @@ import ReferenceTabPage from "pages/tabs/ReferenceTabPage";
 import SalesTabPage from "pages/tabs/SalesTabPage";
 import SystemTabPage from "pages/tabs/SystemTabPage";
 
-//전자결재 폼 팝업
-import ApprovalForm from "components/form/ApprovalForm";
-
 //COMMON
 import EgovHeader from "components/EgovHeader";
 import EgovFooter from "components/EgovFooter";

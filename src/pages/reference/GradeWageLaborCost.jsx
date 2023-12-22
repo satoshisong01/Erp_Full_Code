@@ -1,10 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
-import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
-import DataTableRow from "components/DataTable/DataTableRow";
 import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
-import ApprovalForm from "components/form/ApprovalForm";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { PageContext } from "components/PageProvider";
 import { ReorganizeManCost } from "components/DataTable/function/ReorganizeData";
@@ -185,7 +182,6 @@ function GradeWageLaborCost() {
 
     return (
         <>
-            <ApprovalForm projectNone={true} />
             <Location pathList={locationPath.GradeWageLaborCost} />
             <ReactDataTable
                 columns={columns}

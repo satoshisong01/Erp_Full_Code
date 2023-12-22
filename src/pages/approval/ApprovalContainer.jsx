@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import ApprovalForm from "components/form/ApprovalForm"; //기본 폼
-import BusiCalculateDoc from "pages/sales/Business/BusiCalculateDoc";
 import BusinessPopup from "pages/sales/Business/BusinessPopup";
 
 /* 전자결재, 사전 원가 계획 */
@@ -30,7 +28,7 @@ function ApprovalContainer() {
     console.log(title, "받아온 타이틀이 무엇이냐");
     return (
         <div className="">
-            <ApprovalForm title={title}>{content}</ApprovalForm>
+            {/* <ApprovalForm title={title}>{content}</ApprovalForm> */}
         </div>
     );
 }
