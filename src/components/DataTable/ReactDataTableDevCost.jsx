@@ -187,12 +187,13 @@ const ReactDataTableDevCost = (props) => {
     }, [companyInfo]);
 
     const setValueDataCmInfo = (rowIndex, cmInfo) => {
+        console.log(cmInfo, "cmInfocmInfo");
         let updatedTableData = [];
         if (current === "개발외주비") {
             updatedTableData = [...tableData];
             updatedTableData[rowIndex] = {
                 ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
-                esntlId: cmInfo.cltNm,
+                cltNm: cmInfo.cltNm,
                 cltId: cmInfo.cltId,
             };
         } else {
@@ -361,6 +362,7 @@ const ReactDataTableDevCost = (props) => {
     //-------------------------------배열 추가, 수정, 삭제
 
     const addItem = async (addData) => {
+        console.log(addData, "개발외주비");
         const url = `/api/baseInfrm/product/devOutCost/addList.do`;
         const resultData = await axiosPost(url, addData);
         console.log(resultData, "💜addItem");
@@ -431,6 +433,8 @@ const ReactDataTableDevCost = (props) => {
                         poiId: projectInfo.poiId,
                         devOutId: devOutId[index],
                         pjbgPrice: upItem[name],
+                        cltNm: companyInfo.cltNm,
+                        cltId: companyInfo.cltId,
                     };
 
                     updates.push(dataSet);
@@ -444,8 +448,8 @@ const ReactDataTableDevCost = (props) => {
     // 초기 데이터와 수정된 데이터를 비교하는 함수
 
     const compareData = (originData, updatedData) => {
-        console.log("222222222222222");
-        const filterData = updatedData.filter((data) => data.pjbgTypeCode); //pmpMonth가 없는 데이터 제외
+        console.log("개발외주비 compare");
+        const filterData = updatedData.filter((data) => data.poiId); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
         console.log("여기탐?", updatedData);
