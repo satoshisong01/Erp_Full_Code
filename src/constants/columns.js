@@ -317,7 +317,7 @@ export const columns = {
         ],
         outsourcing: [
             // 개발외주비
-            { header: "회사목록", col: "cltId", cellWidth: "50%", type: "company", require: true },
+            { header: "회사목록", col: "cltNm", cellWidth: "50%", type: "company", require: true },
             { header: "턴키/MM", col: "devOutMm", cellWidth: "25%", type: "input" },
             { header: "금액", col: "devOutPrice", cellWidth: "25%", type: "input", require: true },
             { header: "첨부파일", col: "file", cellWidth: "10%", type: "file" },
@@ -345,6 +345,7 @@ export const columns = {
         ],
         purchase: [
             // 구매비
+            { header: "프로젝트아이디", col: "poiId", notView: true },
             { header: "품명", col: "pdiNm", cellWidth: "20%", type: "productInfo" },
             { header: "품목그룹명", col: "pgNm", cellWidth: "20%" },
             { header: "규격", col: "pdiStnd", cellWidth: "20%" },
