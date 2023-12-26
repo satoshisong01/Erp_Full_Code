@@ -26,12 +26,6 @@ export default function MakeItemField({ item, resultData, initialData }) {
     const [data, setData] = useState({});
     
     useEffect(() => {
-        return(() => { //초기화
-            setData({}); 
-        })
-    }, [])
-
-    useEffect(() => {
         setData(initialData);
     }, [initialData]);
 

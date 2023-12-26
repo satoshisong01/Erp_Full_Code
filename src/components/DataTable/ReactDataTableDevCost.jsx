@@ -37,6 +37,7 @@ const ReactDataTableDevCost = (props) => {
         currentPageName,
         projectInfo,
         companyInfo,
+        setModalLengthSelectRow,
         // setIsOpenModalCompany,
         // isOpenModalCompany,
         setCompanyInfo,
@@ -44,6 +45,7 @@ const ReactDataTableDevCost = (props) => {
         projectPgNm,
         setProjectPgNm,
         // setIsOpenModalPgNm,
+        isModalTable,
         nameOfButton,
         versionInfo,
         modalPageName,
@@ -111,7 +113,7 @@ const ReactDataTableDevCost = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        if (current === innerPageName) {
+        if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
         if (current === "개발외주비" && nameOfButton === "save") {
@@ -280,16 +282,22 @@ const ReactDataTableDevCost = (props) => {
 
     /* table button 활성화 on off */
     useEffect(() => {
-        if (current === currentPageName || current === innerPageName) {
-            // 현재 보는 페이지라면
+        if (isModalTable && current === modalPageName) {
+            //모달화면일때
+            setModalLengthSelectRow(selectedFlatRows.length);
+            if (selectedFlatRows.length > 0) {
+                const selects = selectedFlatRows.map((row) =>  row.values )
+                returnSelectRows && returnSelectRows(selects);
+                returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
+            }
+        } else if (!isModalTable && (current === currentPageName || current === innerPageName)) {
+            //모달화면이 아닐때
             if (selectedFlatRows.length > 0) {
                 const selects = selectedFlatRows.map((row) => row.values);
                 returnSelectRows && returnSelectRows(selects);
-                setLengthSelectRow(selectedFlatRows.length);
-                //setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values); // 선택한 rows의 마지막 배열
-            } else if (selectedFlatRows.length === 0) {
-                setLengthSelectRow(selectedFlatRows.length);
+                returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
+            setLengthSelectRow(selectedFlatRows.length);
         }
     }, [selectedFlatRows]);
 

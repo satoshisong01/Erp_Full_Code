@@ -44,7 +44,6 @@ const ReactDataTable = (props) => {
         prevCurrentPageName,
         innerPageName,
         prevInnerPageName,
-        setCurrentTable,
         setLengthSelectRow,
         setModalLengthSelectRow,
         isModalTable,
@@ -59,7 +58,6 @@ const ReactDataTable = (props) => {
         projectPgNm,
         setProjectPgNm,
         setProjectInfo,
-        isSaveFormTable,
         unitPriceList,
     } = useContext(PageContext);
 
@@ -170,10 +168,8 @@ const ReactDataTable = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        if (current === innerPageName) {
+        if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
-        }
-        if (current === innerPageName) {
             //inner tab에서 저장을 눌렀을 때
             if (innerPageName === "인건비") {
                 if ((typeof returnList === "function", nameOfButton === "save")) {
@@ -250,7 +246,7 @@ const ReactDataTable = (props) => {
         if (!suffixUrl) return;
         const url = `/api${suffixUrl}/totalListAll.do`;
         const resultData = await axiosFetch(url, { useAt: "Y" });
-        console.log(resultData, "resultData", "current:", current);
+        // console.log(resultData, "resultData", "current:", current);
         if (resultData) {
             setTableData([...resultData]);
         } else if (!resultData) {

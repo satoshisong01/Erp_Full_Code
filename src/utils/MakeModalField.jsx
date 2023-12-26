@@ -33,13 +33,6 @@ export default function MakeModalField({ list, onChange, initialData }) {
     const [data, setData] = useState({});
 
     useEffect(() => {
-        return () => {
-            //초기화
-            setData({});
-        };
-    }, []);
-
-    useEffect(() => {
         console.log(initialData, "initialDatainitialData");
         if (initialData) {
             setData(initialData[0]);

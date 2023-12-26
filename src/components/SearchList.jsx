@@ -53,7 +53,7 @@ export default function SearchList({ conditionList, onSearch }) {
 
     return (
         <>
-            <HideCard title="검색 조건" color="back-lightgreen" className="mg-b-40">
+            <HideCard title="검색 조건" color="back-lightgreen" className="mg-b-40" style={{position: 'relative', zIndex: '9999'}}>
                 <div className="flex-container">
                     {conditionList.map((param, idx) => (
                         <div key={idx} className="flex-group mg-b-10">

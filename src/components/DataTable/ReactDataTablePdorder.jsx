@@ -272,6 +272,8 @@ const ReactDataTablePdorder = (props) => {
             //모달화면일때
             setModalLengthSelectRow(selectedFlatRows.length);
             if (selectedFlatRows.length > 0) {
+                const selects = selectedFlatRows.map((row) =>  row.values )
+                returnSelectRows && returnSelectRows(selects);
                 returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
         } else if (!isModalTable && (current === currentPageName || current === innerPageName)) {

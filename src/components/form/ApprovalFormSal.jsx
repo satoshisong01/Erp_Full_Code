@@ -107,8 +107,8 @@ function ApprovalFormSal({ viewPageName, returnData }) {
                             <td>{data.poiMonth}</td>
                             <th>최종 수정일</th>
                             <td>{data.lastModifyDate}</td>
-                            <td width={80}>
-                                <button type="button" className="btn" onClick={onClick}>조회</button>
+                            <td width={80} style={{textAlign: 'center'}}>
+                                <button type="button" className="table-btn table-btn-default" onClick={onClick}>조회</button>
                             </td>
                         </tr>
                     </tbody>

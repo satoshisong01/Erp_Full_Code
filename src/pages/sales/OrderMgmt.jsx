@@ -127,7 +127,7 @@ function OrderMgmt() {
             {isOpenAdd && (
                 <AddModModal
                     width={500}
-                    height={400}
+                    height={420}
                     list={columns.orderMgmt.addMod}
                     sendData={addToServer}
                     onClose={() => setIsOpenAdd(false)}
@@ -137,7 +137,7 @@ function OrderMgmt() {
             {isOpenMod && (
                 <AddModModal
                     width={500}
-                    height={400}
+                    height={420}
                     list={columns.orderMgmt.addMod}
                     initialData={selectedRows}
                     resultData={modifyToServer}

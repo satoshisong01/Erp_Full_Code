@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 
 /* 저장 버튼 */
 export default function SaveButton({ label, onClick }) {
-    const [disabled, setDisabled] = useState(true);
+    const [disabled, setDisabled] = useState(false);
 
     const buttonClassName = `table-btn table-btn-default${disabled ? ' disabled' : ''}`;
     return (

@@ -72,7 +72,7 @@ export default function CompanyModal(props) {
             const headerHeight = document.querySelector(".me-modal-header")?.clientHeight || 0;
             const footerHeight = document.querySelector(".me-modal-footer")?.clientHeight || 0;
             const calculatedHeight = height - headerHeight - footerHeight;
-            bodyRef.current.style.height = `${calculatedHeight}px`;
+            bodyRef.current.style.height = `${calculatedHeight+10}px`;
         }
     }, [height]);
 
