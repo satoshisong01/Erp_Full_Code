@@ -250,12 +250,12 @@ function OrderPlanMgmt() {
             if (innerPageName === "원가버전조회") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestSearch);
                 setSearchDates(resultData);
-                console.log("😈영업-원가버전조회:", resultData);
+                console.log("😈영업-원가버전조회:", requestData, "resultData:", resultData);
 
             } else if (innerPageName === "인건비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
                 const changeData = ChangePrmnPlanData(resultData, projectInfo.poiId);
-                console.log("😈영업-인건비:", resultData);
+                console.log("😈영업-인건비:", requestData, "resultData:", resultData);
 
                 //setPrmnPlanDatas(ChangePrmnPlanData(resultData, projectInfo));
                 changeData.forEach((Item) => {
@@ -284,22 +284,23 @@ function OrderPlanMgmt() {
             } else if (innerPageName === "경비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
                 setPjbudgetDatas(resultData);
-                console.log("😈영업-경비:", resultData);
+                console.log("😈영업-경비:", requestData, "resultData:", resultData);
 
             } else if (innerPageName === "구매(재료비)") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
                 const calData = buyIngInfoCalculation(resultData);
-                console.log("calData", calData);
+                setPdOrdrDatas(calData);
+                console.log("😈영업-구매비:", requestData, "resultData:", resultData);
 
-                console.log("😈영업-구매비:", requestData, resultData);
             } else if (innerPageName === "개발외주비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/devOutCost/totalListAll.do", requestData);
                 setOutsourcingDatas(resultData);
-                console.log("😈영업-개발외주비:", requestData, resultData);
+                console.log("😈영업-개발외주비:", requestData, "resultData:", resultData);
+
             } else if (innerPageName === "영업관리비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/slsmnExpns/totalListAll.do", requestData);
                 setGeneralExpensesDatas(resultData);
-                console.log("😈영업-영업관리비:", requestData, resultData);
+                console.log("😈영업-영업관리비:", requestData, "resultData:", resultData);
             }
         } catch (error) {
             console.error("데이터를 가져오는 중에 오류 발생:", error);
@@ -493,12 +494,9 @@ function OrderPlanMgmt() {
                                 </div>
                                 <ReactDataTablePdorder
                                     editing={true}
-                                    singleUrl="/baseInfrm/product/buyIngInfo"
                                     columns={columns.orderPlanMgmt.purchase}
                                     customDatas={pdOrdrDatas}
-                                    //returnList={returnList}
                                     viewPageName="구매(재료비)"
-                                    customDatasRefresh={refresh}
                                     // hideCheckBox={true}
                                 />
                             </HideCard>
