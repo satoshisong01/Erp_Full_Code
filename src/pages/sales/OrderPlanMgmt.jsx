@@ -20,6 +20,7 @@ import SaveButton from "components/button/SaveButton";
 import ReactDataTableDevCost from "components/DataTable/ReactDataTableDevCost";
 import DeleteModal from "components/modal/DeleteModal";
 import SearchList from "components/SearchList";
+import ReactDataTableSaleCost from "components/DataTable/ReactDataTableSaleCost";
 
 /** 영업관리-계획관리 */
 function OrderPlanMgmt() {
@@ -83,7 +84,7 @@ function OrderPlanMgmt() {
 
     const refresh = () => {
         if (projectInfo.poiId && versionInfo.versionId) {
-            const requestData = {poiId: projectInfo.poiId, versionId: projectInfo.versionId}
+            const requestData = { poiId: projectInfo.poiId, versionId: projectInfo.versionId };
             fetchAllData(requestData);
         }
     };
@@ -102,9 +103,9 @@ function OrderPlanMgmt() {
         });
     };
 
-    const calculation = (list) => { //합계 구하기
-        
-    }
+    const calculation = (list) => {
+        //합계 구하기
+    };
 
     //인건비용임
     const compareData = (originData, updatedData) => {
@@ -169,7 +170,7 @@ function OrderPlanMgmt() {
     };
 
     const addList = async (addNewData) => {
-        console.log(addNewData, "추가되는새기덜");
+        console.log(addNewData, "추가");
         const url = `/api/baseInfrm/product/prmnPlan/addList.do`;
         const resultData = await axiosPost(url, addNewData);
         if (resultData) {
@@ -251,7 +252,6 @@ function OrderPlanMgmt() {
                 const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestSearch);
                 setSearchDates(resultData);
                 console.log("😈영업-원가버전조회:", resultData);
-
             } else if (innerPageName === "인건비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
                 const changeData = ChangePrmnPlanData(resultData, projectInfo.poiId);
@@ -280,12 +280,10 @@ function OrderPlanMgmt() {
                     console.log(changeData, "changeData이거왜 안나오지 💥💥💥");
                 });
                 setPrmnPlanDatas(changeData);
-
             } else if (innerPageName === "경비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
                 setPjbudgetDatas(resultData);
                 console.log("😈영업-경비:", resultData);
-
             } else if (innerPageName === "구매(재료비)") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
                 const calData = buyIngInfoCalculation(resultData);
@@ -334,7 +332,7 @@ function OrderPlanMgmt() {
 
     useEffect(() => {
         console.log(selectedRows);
-        if(innerPageName === "원가버전조회") {
+        if (innerPageName === "원가버전조회") {
             selectedRows && setDeleteNames(selectedRows.map((row) => row.versionNum));
         }
     }, [selectedRows]);
@@ -379,12 +377,12 @@ function OrderPlanMgmt() {
     };
 
     const dataAlert = (datas) => {
-        if(datas && datas.length > 0) {
+        if (datas && datas.length > 0) {
             alert("총 " + datas.length + "의 데이터 조회 완료");
         } else {
             alert("조회된 데이터가 없습니다.");
         }
-    }
+    };
 
     return (
         <>
@@ -447,7 +445,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalFormSal viewPageName="인건비" returnData={fetchAllData}/>
+                            <ApprovalFormSal viewPageName="인건비" returnData={fetchAllData} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.laborCal}
@@ -477,7 +475,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="third">
                         <ul>
-                            <ApprovalFormSal viewPageName="구매(재료비)" returnData={fetchAllData}/>
+                            <ApprovalFormSal viewPageName="구매(재료비)" returnData={fetchAllData} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.purchaseCal}
@@ -506,7 +504,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="fourth">
                         <ul>
-                            <ApprovalFormSal viewPageName="개발외주비" returnData={fetchAllData}/>
+                            <ApprovalFormSal viewPageName="개발외주비" returnData={fetchAllData} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.outCal}
@@ -535,7 +533,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="fifth">
                         <ul>
-                            <ApprovalFormSal viewPageName="경비" returnData={fetchAllData}/>
+                            <ApprovalFormSal viewPageName="경비" returnData={fetchAllData} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.expensesCal}
@@ -563,7 +561,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="sixth">
                         <ul>
-                            <ApprovalFormSal viewPageName="영업관리비" returnData={fetchAllData}/>
+                            <ApprovalFormSal viewPageName="영업관리비" returnData={fetchAllData} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.generalCal}
@@ -574,9 +572,10 @@ function OrderPlanMgmt() {
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-b-m-30">
+                                    <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <RefreshButton onClick={refresh} />
                                 </div>
-                                <ReactDataTableURL
+                                <ReactDataTableSaleCost
                                     editing={true}
                                     columns={columns.orderPlanMgmt.generalExpenses}
                                     singleUrl="/baseInfrm/product/pjbudget"
@@ -590,7 +589,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="seventh">
                         <ul>
-                            <ApprovalFormSal viewPageName="견적용 인건비" returnData={fetchAllData}/>
+                            <ApprovalFormSal viewPageName="견적용 인건비" returnData={fetchAllData} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                                 {/* <ReactDataTableView /> */}
                             </HideCard>
@@ -611,7 +610,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="eighth">
                         <ul>
-                            <ApprovalFormSal viewPageName="견적용 구매비" returnData={fetchAllData}/>
+                            <ApprovalFormSal viewPageName="견적용 구매비" returnData={fetchAllData} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                                 {/* <ReactDataTableView /> */}
                             </HideCard>
