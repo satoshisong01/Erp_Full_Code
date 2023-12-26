@@ -120,6 +120,7 @@ export const columns = {
                 col: "poiStatus",
                 type: "select",
                 option: [
+                    { label: "전체보기", value: "" },
                     { label: "인벤토리접수", value: "인벤토리접수" },
                     { label: "원가작성중", value: "원가작성중" },
                     { label: "견적완료", value: "견적완료" },

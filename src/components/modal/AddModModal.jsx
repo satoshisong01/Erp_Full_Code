@@ -8,7 +8,19 @@ import { PageContext } from "components/PageProvider";
 export default function AddModModal(props) {
     const { width, height, list, onClose, resultData, title, initialData, sendData } = props;
     const [data, setData] = useState({});
-    const { companyInfo } = useContext(PageContext);
+    const {
+        projectInfo,
+        companyInfo,
+        pdiNmList,
+        projectPdiNm,
+        projectPgNm,
+        emUserInfo,
+        setCompanyInfo,
+        setPdiNmList,
+        setProjectPdiNm,
+        setProjectPgNm,
+        setEmUserInfo,
+    } = useContext(PageContext);
     const bodyRef = useRef(null);
 
     console.log(data, "data");
@@ -26,22 +38,15 @@ export default function AddModModal(props) {
     // 데이터 추가 버튼을 눌렀을 때 실행되는 함수
     const onClick = async (e) => {
         e.preventDefault();
-
         // 필수 필드가 비어있는지 확인
-        const requiredColumns = list && list.filter((column) => column.require);
-        const hasEmptyRequiredFields = requiredColumns.some((column) => !data[column.col]);
-        //필수값 확인 후
-        if (title === "버전 추가") {
-        } else {
-            resultData(data); //데이터 부모로 전송
-        }
-        console.log(data, "입력받은값");
-        // if (title === "프로젝트 수정") {
-        //     resultData(data); //데이터 부모로 전송
+        // const requiredColumns = list && list.filter((column) => column.require);
+        // const hasEmptyRequiredFields = requiredColumns.some((column) => !data[column.col]);
+
+        // if (title === "버전 추가") {
         // } else {
-        //     sendData && sendData(data);
+        //     resultData(data); //데이터 부모로 전송
         // }
-        // onClose();
+        console.log("💜data:", data);
         resultData(data); //데이터 부모로 전송
         onClose();
     };

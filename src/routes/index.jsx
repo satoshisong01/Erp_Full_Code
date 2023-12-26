@@ -103,11 +103,11 @@ const RootRoutes = () => {
         addPdiNm,
     } = useContext(PageContext);
     useEffect(() => {
-        basicFetchData();
-        pgNmItem();
-        pdiNmItem();
-        companyItem();
-        unitPriceItem();
+        // basicFetchData();
+        // pgNmItem();
+        // pdiNmItem();
+        // companyItem();
+        // unitPriceItem();
         //unitPriceRenew();
     }, []);
 

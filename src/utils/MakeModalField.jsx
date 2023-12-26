@@ -24,6 +24,11 @@ export default function MakeModalField({ list, onChange, initialData }) {
         projectPdiNm,
         projectPgNm,
         emUserInfo,
+        setCompanyInfo,
+        setPdiNmList,
+        setProjectPdiNm,
+        setProjectPgNm,
+        setEmUserInfo,
     } = useContext(PageContext);
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false); //거래처목록
     const [isOpenModalProject, setIsOpenModalProject] = useState(false); //프로젝트목록
@@ -33,7 +38,6 @@ export default function MakeModalField({ list, onChange, initialData }) {
     const [data, setData] = useState({});
 
     useEffect(() => {
-        console.log(initialData, "initialDatainitialData");
         if (initialData) {
             setData(initialData[0]);
         }
@@ -45,13 +49,16 @@ export default function MakeModalField({ list, onChange, initialData }) {
 
     useEffect(() => {
         //거래처
+        if(companyInfo.cltId === "" || !companyInfo) return;
         setData((prevData) => {
             return { ...prevData, ...companyInfo };
         });
+        setCompanyInfo({}); //초기화
     }, [companyInfo]);
 
     useEffect(() => {
         //프로젝트
+        if(projectInfo.poiId === "" || !projectInfo) return;
         setData((prevData) => {
             return { ...prevData, ...projectInfo };
         });
@@ -59,32 +66,40 @@ export default function MakeModalField({ list, onChange, initialData }) {
 
     useEffect(() => {
         //품목
+        if(projectPdiNm.pdiId === "" || !projectPdiNm) return;
         setData((prevData) => {
             return { ...prevData, ...projectPdiNm };
         });
+        setProjectPdiNm({}); //초기화
         // console.log("품목정보 변경: ", projectPdiNm);
     }, [projectPdiNm]);
 
     useEffect(() => {
         //품목리스트
+        if( !pdiNmList || pdiNmList.length <= 0) return;
         setData((prevData) => {
             return { ...prevData, ...pdiNmList };
         });
+        setPdiNmList([]); //초기화
         // console.log("품목정보리스트 변경: ", pdiNmList);
     }, [pdiNmList]);
 
     useEffect(() => {
         //품목그룹
+        if(!projectPgNm || projectPgNm.pgId === "") return;
         setData((prevData) => {
             return { ...prevData, ...projectPgNm };
         });
+        setProjectPgNm({}); //초기화
     }, [projectPgNm]);
 
     useEffect(() => {
         //업무회원
+        if(!emUserInfo || emUserInfo.esntlId === "") return;
         setData((prevData) => {
             return { ...prevData, ...emUserInfo };
         });
+        setEmUserInfo({}); //초기화
     }, [emUserInfo]);
 
     const inputChange = (e, type) => {
@@ -94,18 +109,6 @@ export default function MakeModalField({ list, onChange, initialData }) {
             [name]: value,
         }));
     };
-
-    useEffect(() => {
-        if (companyInfo.cltId) {
-            setData((prevData) => ({ ...prevData, ...companyInfo }));
-        }
-    }, [companyInfo]);
-
-    useEffect(() => {
-        if (projectInfo.poiId) {
-            setData((prevData) => ({ ...prevData, ...projectInfo }));
-        }
-    }, [projectInfo]);
 
     //const projectClick = () => {
     //    setData((prevData) => ({

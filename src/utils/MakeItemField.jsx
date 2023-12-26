@@ -17,7 +17,19 @@ import EmployerInfoModal from "components/modal/EmployerInfoModal";
 
 
 export default function MakeItemField({ item, resultData, initialData }) {
-    const { projectInfo, companyInfo, projectPdiNm, projectPgNm, emUserInfo } = useContext(PageContext);
+    const {
+        projectInfo,
+        companyInfo,
+        pdiNmList,
+        projectPdiNm,
+        projectPgNm,
+        emUserInfo,
+        setCompanyInfo,
+        setPdiNmList,
+        setProjectPdiNm,
+        setProjectPgNm,
+        setEmUserInfo,
+    } = useContext(PageContext);
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false); //거래처목록
     const [isOpenModalProject, setIsOpenModalProject] = useState(false); //프로젝트목록
     const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
@@ -33,13 +45,14 @@ export default function MakeItemField({ item, resultData, initialData }) {
         resultData && resultData(data);
     }, [data])
 
-    useEffect(() => { //거래처
-        if(Object.values(companyInfo).length > 0) {
-            setData((prevData) => {
-                return { ...prevData, ...companyInfo };
-            });
-        }
-    }, [companyInfo])
+    useEffect(() => {
+        //거래처
+        if(companyInfo.cltId === "" || !companyInfo) return;
+        setData((prevData) => {
+            return { ...prevData, ...companyInfo };
+        });
+        setCompanyInfo({}); //초기화
+    }, [companyInfo]);
 
     useEffect(() => { //프로젝트
         if(Object.values(projectInfo).length > 0) {
@@ -49,41 +62,43 @@ export default function MakeItemField({ item, resultData, initialData }) {
         }
     }, [projectInfo])
 
-    useEffect(() => { //품목
-        if(Object.values(projectPdiNm).length > 0) {
-            setData((prevData) => {
-                return { ...prevData, ...projectPdiNm };
-            });
-        }
+    useEffect(() => {
+        //품목
+        if(projectPdiNm.pdiId === "" || !projectPdiNm) return;
+        setData((prevData) => {
+            return { ...prevData, ...projectPdiNm };
+        });
+        setProjectPdiNm({}); //초기화
         // console.log("품목정보 변경: ", projectPdiNm);
-    }, [projectPdiNm])
+    }, [projectPdiNm]);
 
-    // useEffect(() => { //품목리스트
-    //     if(Object.values(pdiNmList).length > 0) {
-    //         setData((prevData) => {
-    //             return { ...prevData, ...pdiNmList };
-    //         });
-    //     }
-    //     // console.log("품목정보리스트 변경: ", pdiNmList);
-    // }, [pdiNmList])
+    useEffect(() => {
+        //품목리스트
+        if( !pdiNmList || pdiNmList.length <= 0) return;
+        setData((prevData) => {
+            return { ...prevData, ...pdiNmList };
+        });
+        setPdiNmList([]); //초기화
+        // console.log("품목정보리스트 변경: ", pdiNmList);
+    }, [pdiNmList]);
 
-    useEffect(() => { //품목그룹
-        if(Object.values(projectPgNm).length > 0) {
-            setData((prevData) => {
-                return { ...prevData, ...projectPgNm };
-            });
-        }
-        // setProjectPgNm({}); 
-    }, [projectPgNm])
+    useEffect(() => {
+        //품목그룹
+        if(!projectPgNm || projectPgNm.pgId === "") return;
+        setData((prevData) => {
+            return { ...prevData, ...projectPgNm };
+        });
+        setProjectPgNm({}); //초기화
+    }, [projectPgNm]);
 
-    useEffect(() => { //업무회원
-        if(Object.values(emUserInfo).length > 0) {
-            setData((prevData) => {
-                return { ...prevData, ...emUserInfo };
-            });
-        }
-        // setEmUserInfo({}); 
-    }, [emUserInfo])
+    useEffect(() => {
+        //업무회원
+        if(!emUserInfo || emUserInfo.esntlId === "") return;
+        setData((prevData) => {
+            return { ...prevData, ...emUserInfo };
+        });
+        setEmUserInfo({}); //초기화
+    }, [emUserInfo]);
     
     const inputChange = (e) => {
         const { value, name } = e.target;

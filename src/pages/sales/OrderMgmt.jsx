@@ -100,6 +100,7 @@ function OrderMgmt() {
 
     const fetchAllData = async (condition) => {
         const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
+        console.log("condition:", condition);
         const resultData = await axiosFetch(url, condition || {});
         setTableData(resultData);
     };
@@ -129,7 +130,7 @@ function OrderMgmt() {
                     width={500}
                     height={420}
                     list={columns.orderMgmt.addMod}
-                    sendData={addToServer}
+                    resultData={addToServer}
                     onClose={() => setIsOpenAdd(false)}
                     title="프로젝트 추가"
                 />
