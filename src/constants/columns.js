@@ -348,6 +348,7 @@ export const columns = {
         ],
         purchase: [
             // 구매비
+            { header: "프로젝트아이디", col: "poiId", notView: true },
             { header: "품명", col: "pdiNm", cellWidth: "20%", type: "productInfo" },
             { header: "품목그룹명", col: "pgNm", cellWidth: "20%" },
             { header: "규격", col: "pdiStnd", cellWidth: "20%" },

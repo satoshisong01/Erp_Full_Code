@@ -8,12 +8,12 @@ import { v4 as uuidv4 } from "uuid";
 function ApprovalFormSal({ viewPageName, returnData }) {
     const { projectInfo, innerPageName, versionInfo, setVersionInfo } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
-    const [data, setData] = useState({})
+    const [data, setData] = useState({poiId: "", poiNm: "", versionId: "", option: []})
 
     useEffect(() => {
         if (viewPageName !== innerPageName) return;
         if (projectInfo.poiId !== "" && projectInfo.poiId !== data.poiId) { //프로젝트정보 바뀌었을 때
-            setData({...projectInfo});
+            setData({poiId: projectInfo.poiId, poiNm: projectInfo.poiNm});
         }
     }, [projectInfo, innerPageName]);
 
@@ -21,17 +21,17 @@ function ApprovalFormSal({ viewPageName, returnData }) {
         if(data.poiId && !data.versionId) { //선택된 버전정보가 없다면
             getVersionList({ poiId: data.poiId });
         }
-    }, [data]);
+    }, [data.poiId]);
 
     const getVersionList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});
         const emptyArr = resultData && resultData.map(({ versionId, versionNum, versionDesc, costAt }) => ({
-                versionId,
-                versionNum,
-                versionDesc,
-                costAt,
-            }));
-        if (emptyArr) {
+            versionId,
+            versionNum,
+            versionDesc,
+            costAt,
+        }));
+        if (emptyArr?.length > 0) {
             setData((prev) => ({
                 ...prev,
                 versionId: emptyArr.find((info) => info.costAt === "Y")?.versionId || versionInfo?.versionId || emptyArr[0]?.versionId,
