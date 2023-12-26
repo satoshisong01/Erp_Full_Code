@@ -26,7 +26,7 @@ function LaborCostMgmtPlan() {
     } = useContext(PageContext);
 
     useEffect(() => {
-        setInnerPageName("인건비 조회관리");
+        setInnerPageName("인건비 관리");
         setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
 
         return () => {
@@ -189,10 +189,8 @@ function LaborCostMgmtPlan() {
         <>
             <Location pathList={locationPath.LaborCostMgmt} />
             <ApprovalFormExe viewPageName="실행인건비계획" />
-            <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
-            </HideCard>
-            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-            </HideCard>
+            <HideCard title="계획 조회" color="back-gray" className="mg-b-40"></HideCard>
+            <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
             <HideCard title="계획 등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
                     <RefreshButton onClick={refresh} />

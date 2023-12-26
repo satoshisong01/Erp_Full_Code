@@ -177,7 +177,10 @@ export const columns = {
             },
             {
                 items: [
-                    { header: "통화", col: "poiCurrcy", type: "select",
+                    {
+                        header: "통화",
+                        col: "poiCurrcy",
+                        type: "select",
                         option: [
                             { label: "원(KRW)", value: "원(KRW)" },
                             { label: "동(VND)", value: "동(VND)" },
@@ -263,14 +266,14 @@ export const columns = {
         ],
         laborCal: [
             //인건비합계
-            { header: "합계", col: "total", cellWidth: "20%", },
-            { header: "임원", col: "pmpmmPositionCode1", cellWidth: "20%",  },
-            { header: "부장", col: "pmpmmPositionCode9", cellWidth: "20%", },
-            { header: "차장", col: "pmpmmPositionCode10", cellWidth: "20%",},
-            { header: "과장", col: "pmpmmPositionCode11", cellWidth: "20%",},
-            { header: "대리", col: "pmpmmPositionCode12", cellWidth: "20%",},
-            { header: "주임", col: "pmpmmPositionCode13", cellWidth: "20%",},
-            { header: "사원", col: "pmpmmPositionCode14", cellWidth: "20%",},
+            { header: "합계", col: "total", cellWidth: "20%" },
+            { header: "임원", col: "pmpmmPositionCode1", cellWidth: "20%" },
+            { header: "부장", col: "pmpmmPositionCode9", cellWidth: "20%" },
+            { header: "차장", col: "pmpmmPositionCode10", cellWidth: "20%" },
+            { header: "과장", col: "pmpmmPositionCode11", cellWidth: "20%" },
+            { header: "대리", col: "pmpmmPositionCode12", cellWidth: "20%" },
+            { header: "주임", col: "pmpmmPositionCode13", cellWidth: "20%" },
+            { header: "사원", col: "pmpmmPositionCode14", cellWidth: "20%" },
         ],
         expenses: [
             // 경비
@@ -312,9 +315,7 @@ export const columns = {
             { header: "삭제여부", col: "useAt", notView: true },
             { header: "버전", col: "versionId", notView: true },
         ],
-        expensesCal: [
-            { header: "총 경비", col: "pjbgPriceTotal", cellWidth: "100%" },
-        ],
+        expensesCal: [{ header: "총 경비", col: "pjbgPriceTotal", cellWidth: "100%" }],
         outsourcing: [
             // 개발외주비
             { header: "회사목록", col: "cltNm", cellWidth: "50%", type: "company", require: true },
@@ -322,8 +323,8 @@ export const columns = {
             { header: "금액", col: "devOutPrice", cellWidth: "25%", type: "input", require: true },
             { header: "첨부파일", col: "file", cellWidth: "10%", type: "file" },
             { header: "아이디", col: "devOutId", notView: true },
-            { header: "버전", col: "versionId",  notView: true },
-            { header: "프로젝트ID", col: "poiId",  notView: true },
+            { header: "버전", col: "versionId", notView: true },
+            { header: "프로젝트ID", col: "poiId", notView: true },
             { header: "사용여부", col: "deleteAt", notView: true },
             { header: "삭제여부", col: "useAt", notView: true },
         ],
@@ -337,11 +338,13 @@ export const columns = {
             { header: "기업이윤", col: "slsmnEnterpriseProfit", cellWidth: "50%", type: "input" },
             { header: "일반관리비", col: "slsmnAdmnsCost", cellWidth: "50%", type: "input" },
             { header: "네고", col: "slsmnNego", cellWidth: "50%", type: "input" },
+            { header: "버전", col: "versionId", notView: true },
+            { header: "프로젝트ID", col: "poiId", notView: true },
         ],
         generalCal: [
             // 영업관리비합계
-            { header: "판관비", col: "total", cellWidth: "50%",},
-            { header: "네고", col: "negoTotal", cellWidth: "50%",},
+            { header: "판관비", col: "total", cellWidth: "50%" },
+            { header: "네고", col: "negoTotal", cellWidth: "50%" },
         ],
         purchase: [
             // 구매비
@@ -366,12 +369,12 @@ export const columns = {
         ],
         purchaseCal: [
             //구매합계
-            { header: "소비자금액", col: "consumerPriceTotal", cellWidth: "20%", },
-            { header: "금액", col: "planAmountTotal", cellWidth: "20%", },
-            { header: "네고율", col: "nego", cellWidth: "20%", },
-            { header: "원가", col: "estimatedCostTotal", cellWidth: "20%", },
-            { header: "이익금", col: "plannedProfitsTotal", cellWidth: "20%", },
-            { header: "이익율", col: "plannedProfitMarginTotal", cellWidth: "20%", },
+            { header: "소비자금액", col: "consumerPriceTotal", cellWidth: "20%" },
+            { header: "금액", col: "planAmountTotal", cellWidth: "20%" },
+            { header: "네고율", col: "nego", cellWidth: "20%" },
+            { header: "원가", col: "estimatedCostTotal", cellWidth: "20%" },
+            { header: "이익금", col: "plannedProfitsTotal", cellWidth: "20%" },
+            { header: "이익율", col: "plannedProfitMarginTotal", cellWidth: "20%" },
         ],
         addMod: [
             { items: [{ header: "프로젝트명", col: "poiNm", require: true, type: "project" }] },
@@ -443,26 +446,32 @@ export const columns = {
             //조건
             {
                 title: "프로젝트명",
-                col: "poiId", //컬럼명
+                col: "poiNm", //컬럼명
                 type: "input",
                 value: "",
             },
             {
                 title: "계약일",
                 col: "poiBeginDt",
-                type: "datePicker",
+                type: "input",
             },
             {
                 title: "고객사",
-                col: "clCodeNm", //컬럼명
+                col: "cltNm", //컬럼명
                 type: "input",
                 value: "",
             },
             {
                 title: "상태",
-                col: "name",
+                col: "poiStatus",
                 type: "select",
-                option: [{ value: "프로젝트접수" }, { value: "실행예산완료" }, { value: "실행정산중" }, { value: "프로젝트종료" }],
+                option: [
+                    { label: "전체보기", value: "" },
+                    { label: "인벤토리접수", value: "인벤토리접수" },
+                    { label: "원가작성중", value: "원가작성중" },
+                    { label: "견적완료", value: "견적완료" },
+                    { label: "작성완료", value: "작성완료" },
+                ],
             },
         ],
     },

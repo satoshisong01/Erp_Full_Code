@@ -21,33 +21,41 @@ export default function EmployerInfoModal(props) {
     useEffect(() => {
         if (isOpen) {
             getEmployerList();
-            setModalPageName("회원목록팝업")
+            setModalPageName("회원목록팝업");
             setIsModalTable(true);
             setEmUserInfo({}); //초기화
         }
         return () => {
-            setIsModalTable(false)
-            setModalPageName("")
+            setIsModalTable(false);
+            setModalPageName("");
         };
     }, [isOpen]);
 
     const getEmployerList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/member/employMember/totalListAll.do", requestData || {});
-        setEmployerInfoList(resultData);
-    }
+        console.log(resultData, "결과값");
+        const modifiedResultData = resultData.map((item) => {
+            return {
+                ...item,
+                poiManagerId: item.empId, // empId를 poiManagerId로 변경
+                empId: undefined, // empId 제거 (선택적으로 제거)
+            };
+        });
+        setEmployerInfoList(modifiedResultData);
+    };
 
     const columns = [
-        { header: "고유아이디", col: "uniqId", notVirw: true },
-        { header: "사용자명", col: "empId", cellWidth: "50%" },
+        { header: "고유아이디", col: "uniqId", notView: true },
+        { header: "사용자명", col: "poiManagerId", cellWidth: "50%" },
         { header: "직급", col: "posNm", cellWidth: "25%" },
         { header: "그룹", col: "authorGroup", cellWidth: "25%" },
-    ]
+    ];
 
     const conditionList = [
         { title: "사용자명", col: "empId", type: "input" },
         { title: "직급", col: "posNm", type: "input" },
         { title: "그룹", col: "authorGroup", type: "input" },
-    ]
+    ];
 
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
@@ -61,14 +69,15 @@ export default function EmployerInfoModal(props) {
 
     const onSearch = (value) => {
         getEmployerList(value);
-    }
+    };
 
     const onClick = () => {
-        if (selectedRows && selectedRows.length === 1) { //객체로 저장
+        if (selectedRows && selectedRows.length === 1) {
+            //객체로 저장
             setEmUserInfo(selectedRows[0]);
         }
         onClose();
-    }
+    };
 
     let selectedRows = [];
 
@@ -83,8 +92,7 @@ export default function EmployerInfoModal(props) {
             isOpen={isOpen}
             onRequestClose={onClose}
             contentLabel={title}
-            style={{ content: { width, height, },}}
-        >
+            style={{ content: { width, height } }}>
             <div className="me-modal">
                 <div className="me-modal-container" style={{ width, height }}>
                     <div className="me-modal-inner">
