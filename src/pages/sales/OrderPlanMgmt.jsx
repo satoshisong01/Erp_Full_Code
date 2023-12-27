@@ -252,16 +252,18 @@ function OrderPlanMgmt() {
                 const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestSearch);
                 setSearchDates(resultData);
                 console.log("😈영업-원가버전조회:", requestData, "resultData:", resultData);
-
             } else if (innerPageName === "인건비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
                 const changeData = ChangePrmnPlanData(resultData, projectInfo.poiId);
                 console.log("😈영업-인건비:", requestData, "resultData:", resultData);
 
+                console.log(unitPriceListRenew, "unitPriceListRenew");
                 //setPrmnPlanDatas(ChangePrmnPlanData(resultData, projectInfo));
                 changeData.forEach((Item) => {
                     const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
                     const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
+
+                    console.log(matchingAItem, "변견된값?");
 
                     if (matchingAItem) {
                         let totalPrice = 0;
@@ -270,13 +272,16 @@ function OrderPlanMgmt() {
                         for (let i = 1; i <= 14; i++) {
                             const gupPriceKey = `gupPrice${i}`;
                             const pmpmmPositionCodeKey = `pmpmmPositionCode${i}`;
-
                             // Multiply corresponding values and add to totalPrice
-                            totalPrice += matchingAItem[gupPriceKey] * Item[pmpmmPositionCodeKey];
+                            if (matchingAItem[gupPriceKey]) {
+                                totalPrice += matchingAItem[gupPriceKey] * Item[pmpmmPositionCodeKey];
+                            }
+                            console.log(totalPrice);
                         }
-
+                        console.log(totalPrice);
                         // Add totalPrice to bItem
                         Item.totalPrice = totalPrice;
+                        console.log(totalPrice);
                     }
                     console.log(changeData, "changeData이거왜 안나오지 💥💥💥");
                 });
@@ -285,18 +290,15 @@ function OrderPlanMgmt() {
                 const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
                 setPjbudgetDatas(resultData);
                 console.log("😈영업-경비:", resultData);
-
             } else if (innerPageName === "구매(재료비)") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
                 const calData = buyIngInfoCalculation(resultData);
                 setPdOrdrDatas(calData);
                 console.log("😈영업-구매비:", requestData, "resultData:", resultData);
-
             } else if (innerPageName === "개발외주비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/devOutCost/totalListAll.do", requestData);
                 setOutsourcingDatas(resultData);
                 console.log("😈영업-개발외주비:", requestData, "resultData:", resultData);
-
             } else if (innerPageName === "영업관리비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/slsmnExpns/totalListAll.do", requestData);
                 setGeneralExpensesDatas(resultData);

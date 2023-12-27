@@ -99,6 +99,7 @@ export const columns = {
             { header: "수주 아이디", col: "poiId", cellWidth: "5%", notView: true },
             { header: "프로젝트이름", col: "poiNm", cellWidth: "25%" },
             { header: "고객사", col: "cltNm", cellWidth: "15%" },
+            { header: "고객사ID", col: "cltId", cellWidth: "15%", notView: true },
             { header: "수주부서", col: "poiGroupId", cellWidth: "7%" },
             { header: "매출부서", col: "poiSalesGroupId", cellWidth: "7%" },
             { header: "영업대표", col: "poiSalmanagerId", cellWidth: "10%" },
@@ -856,6 +857,7 @@ export const columns = {
             },
         ],
         inquiry: [
+            { header: "수주 아이디", col: "poiId", cellWidth: "5%", notView: true },
             {
                 header: "구분코드",
                 col: "modeCode",
@@ -959,16 +961,12 @@ export const columns = {
             },
         ],
         budget: [
-            // {
-            //     header: "품목그룹명",
-            //     col: "pgNm",
-            //     cellWidth: "20%",
-            //     type: "productGroup",
-            // },
+            { header: "수주 아이디", col: "poiId", cellWidth: "5%", notView: true },
+            { header: "영업타입", col: "modeCode", notView: true },
             { header: "연월", col: "pjbgDt", cellWidth: "10%" },
             {
                 header: "출장인",
-                col: "pjbgManpower",
+                col: "esntlId",
                 cellWidth: "10%",
                 type: "input",
             },
@@ -1012,6 +1010,12 @@ export const columns = {
                 header: "자재/소모품외",
                 col: "pjbgPrice05",
                 cellWidth: "20%",
+                type: "input",
+            },
+            {
+                header: "기타",
+                col: "pjbgPrice20",
+                cellWidth: "10%",
                 type: "input",
             },
             {

@@ -27,6 +27,7 @@ const ReactDataTableURL = (props) => {
         returnSelect,
         returnSelectRows,
         modalPageName,
+        returnList,
     } = props;
     const {
         prevCurrentPageName,
@@ -78,6 +79,10 @@ const ReactDataTableURL = (props) => {
         }
     }, [customDatas]);
 
+    useEffect(() => {
+        console.log(tableData);
+    }, [tableData]);
+
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
         if (currentPageName !== prevCurrentPageName || innerPageName !== prevInnerPageName) {
@@ -96,17 +101,13 @@ const ReactDataTableURL = (props) => {
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
-        if (isCurrentPage() && nameOfButton === "save") {
+        if (current === "경비" && nameOfButton === "save") {
             compareData(originTableData, tableData);
-            //if (
-            //    (current === "경비 수주관리" && !isSaveFormTable) ||
-            //    (current === "경비 예산관리" && !isSaveFormTable) ||
-            //    (current === "경비 실행관리" && !isSaveFormTable)
-            //) {
-            //    compareDataRun(originTableData, tableData);
-            //}
+        } else if (current === "경비계획" && nameOfButton === "save") {
+            returnList(originTableData, tableData);
+            setNameOfButton("");
         }
-    }, [innerPageName, editing, currentPageName, nameOfButton]);
+    }, [innerPageName, editing, nameOfButton]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
 
@@ -163,33 +164,6 @@ const ReactDataTableURL = (props) => {
         };
         setTableData(updatedTableData);
         setProjectPgNm({});
-    };
-
-    useEffect(() => {
-        if (isCurrentPage() && Object.keys(companyInfo).length > 0) {
-            setValueDataCmInfo(rowIndex, companyInfo);
-        }
-    }, [companyInfo]);
-
-    const setValueDataCmInfo = (rowIndex, cmInfo) => {
-        let updatedTableData = [];
-        if (current === "개발외주비") {
-            updatedTableData = [...tableData];
-            updatedTableData[rowIndex] = {
-                ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
-                cltNm: cmInfo.cltNm,
-                cltId: cmInfo.cltId,
-            };
-        } else {
-            updatedTableData = [...tableData];
-            updatedTableData[rowIndex] = {
-                ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
-                ...cmInfo,
-            };
-        }
-
-        setTableData(updatedTableData);
-        setCompanyInfo({});
     };
 
     const handleChange = (e, rowIndex, accessor) => {
@@ -334,10 +308,14 @@ const ReactDataTableURL = (props) => {
                 newRow[column.accessor] = "EXPNS01"; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "useAt") {
                 newRow[column.accessor] = "Y"; // useAt 항상 "Y"로 설정
+            } else if (column.accessor === "modeCode") {
+                newRow[column.accessor] = "BUDGET"; // useAt 항상 "Y"로 설정
             } else if (column.accessor === "deleteAt") {
                 newRow[column.accessor] = "N"; // deleteAt 항상 "N"로 설정
             } else {
                 newRow[column.accessor] = null; // 다른 열은 초기화
+            }
+            if (viewPageName === "경비실행") {
             }
         });
 
@@ -443,6 +421,7 @@ const ReactDataTableURL = (props) => {
     };
 
     const compareData = (originData, updatedData) => {
+        console.log("타나");
         const filterData = updatedData.filter((data) => data.pjbgTypeCode); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
