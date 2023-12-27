@@ -11,7 +11,7 @@ export default function BasicTextarea ({item, onChange, value}) {
             onChange={(e) => onChange(e, item.col)}
             value={value || ""}
             placeholder={item.placeholder}
-            style={{height: 60}}
+            style={{ height: 60, resize: "none", caretColor: 'initial' }}
         />
     )
 } 

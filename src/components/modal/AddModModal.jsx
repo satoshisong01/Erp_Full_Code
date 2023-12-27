@@ -34,7 +34,7 @@ export default function AddModModal(props) {
         setEmUserInfo,
     } = useContext(PageContext);
     // const [data, setData] = useState({});
-    const [data, setData] = useState(initialData[0]);
+    const [data, setData] = useState(initialData?.[0] || {});
     const bodyRef = useRef(null);
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false); //거래처목록
     const [isOpenModalProject, setIsOpenModalProject] = useState(false); //프로젝트목록
