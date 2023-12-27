@@ -36,7 +36,7 @@ function ApprovalFormExe({ viewPageName, returnData }) {
                                     className="basic-input"
                                     name="poiNm"
                                     onClick={() => setIsOpenProjectModal(true)}
-                                    value={data.poiNm}
+                                    value={data.poiNm || ""}
                                     placeholder="프로젝트를 선택하세요."
                                     readOnly
                                 />

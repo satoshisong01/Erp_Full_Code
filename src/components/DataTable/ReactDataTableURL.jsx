@@ -11,7 +11,9 @@ import ModalPagePgNm from "components/modal/ModalPagePgNm";
 import CompanyModal from "components/modal/CompanyModal";
 import ProductInfoModal from "components/modal/ProductInfoModal";
 import ProductGroupModal from "components/modal/ProductGroupModal";
+import DayPicker from "components/input/DayPicker";
 
+/* 경비 테이블 */
 const ReactDataTableURL = (props) => {
     const {
         columns,
@@ -20,7 +22,6 @@ const ReactDataTableURL = (props) => {
         tableRef,
         viewPageName,
         customDatasRefresh,
-        singleUrl,
         editing,
         hideCheckBox,
         returnSelect,
@@ -90,13 +91,12 @@ const ReactDataTableURL = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
+        //  console.log("💜경비 current:", current, "currentPageName:",currentPageName, "editing",editing);
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing);  //테이블 상태 //inner tab일 때 테이블 조작
         }
-        if (current === innerPageName && nameOfButton === "save") {
-            if (current === "경비" || current === "개발외주비" || current === "영업관리비") {
-                compareData(originTableData, tableData);
-            }
+        if (isCurrentPage() && nameOfButton === "save") {
+            compareData(originTableData, tableData);
             //if (
             //    (current === "경비 수주관리" && !isSaveFormTable) ||
             //    (current === "경비 예산관리" && !isSaveFormTable) ||
@@ -105,7 +105,7 @@ const ReactDataTableURL = (props) => {
             //    compareDataRun(originTableData, tableData);
             //}
         }
-    }, [innerPageName, editing]);
+    }, [innerPageName, editing, currentPageName, nameOfButton]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
 
@@ -127,7 +127,6 @@ const ReactDataTableURL = (props) => {
     useEffect(() => {
         //newRowData 변동 시 새로운 행 추가
         if (newRowData && Object.keys(newRowData).length !== 0) {
-            console.log("❗❗❗❗❗ newRowData");
             onAddRow(newRowData);
             //GeneralExpensesOnAddRow(newRowData);
             //companyOnAddRow(newRowData);
@@ -151,7 +150,6 @@ const ReactDataTableURL = (props) => {
 
     useEffect(() => {
         if (isCurrentPage() && Object.keys(projectPgNm).length > 0) {
-            console.log("🔥🔥projectPgNm: ", projectPgNm);
             setValueDataPgInfo(rowIndex, projectPgNm);
         }
     }, [projectPgNm]);
@@ -168,7 +166,6 @@ const ReactDataTableURL = (props) => {
 
     useEffect(() => {
         if (isCurrentPage() && Object.keys(companyInfo).length > 0) {
-            //console.log("companyInfo: ", companyInfo);
             setValueDataCmInfo(rowIndex, companyInfo);
         }
     }, [companyInfo]);
@@ -274,7 +271,6 @@ const ReactDataTableURL = (props) => {
         const day = date.getDate().toString().padStart(2, "0");
         const formatted = `${year}-${month}-${day}`;
         //setSaveDay(formatted);
-        console.log(formatted);
         return formatted;
     };
 
@@ -353,7 +349,6 @@ const ReactDataTableURL = (props) => {
     const onDeleteRow = (row) => {
         const rowId = row.index;
         const updateTableData = tableData.filter((_, index) => index !== rowId);
-        console.log("💜💜💜onDeleteRow:", updateTableData);
         setTableData([...updateTableData]);
     };
 
@@ -367,7 +362,6 @@ const ReactDataTableURL = (props) => {
     const addItem = async (addData) => {
         const url = `/api/baseInfrm/product/pjbudget/addList.do`;
         const resultData = await axiosPost(url, addData);
-        console.log(resultData, "💜addItem");
         if (resultData) {
             customDatasRefresh && customDatasRefresh();
         }
@@ -376,7 +370,6 @@ const ReactDataTableURL = (props) => {
     const addItemArray = async (addData) => {
         const url = `/api/baseInfrm/product/pjbudget/addArrayList.do`;
         const resultData = await axiosPost(url, addData);
-        console.log(resultData, "💜addItemArray");
         if (resultData) {
             customDatasRefresh && customDatasRefresh();
         }
@@ -384,9 +377,7 @@ const ReactDataTableURL = (props) => {
 
     const updateItem = async (toUpdate) => {
         const url = `/api/baseInfrm/product/pjbudget/editList.do`;
-        console.log(toUpdate, "💜updateItem");
         const resultData = await axiosUpdate(url, toUpdate);
-        console.log(resultData, "변경된거 맞음?");
 
         if (resultData) {
             customDatasRefresh && customDatasRefresh();
@@ -396,9 +387,7 @@ const ReactDataTableURL = (props) => {
     const updateItemArray = async (toUpdate) => {
         const dataArray = generateUpdateObjects(toUpdate);
         const url = `/api/baseInfrm/product/pjbudget/editList.do`;
-        console.log(toUpdate, "변경되는 값?");
         const resultData = await axiosUpdate(url, dataArray);
-        console.log(resultData, "변경된거 맞음?");
 
         if (resultData) {
             customDatasRefresh && customDatasRefresh();
@@ -408,7 +397,6 @@ const ReactDataTableURL = (props) => {
     const deleteItem = async (removeItem) => {
         const url = `/api/baseInfrm/product/pjbudget/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        console.log(resultData, "지워진거맞음?");
 
         if (resultData) {
             customDatasRefresh && customDatasRefresh();
@@ -445,20 +433,18 @@ const ReactDataTableURL = (props) => {
         return updates;
     };
 
-    // 초기 데이터와 수정된 데이터를 비교하는 함수
-
-
-    useEffect(() => {
-        console.log(tableData);
-    }, [tableData]);
+    const handleDateClick = (date, colName, index) => {
+        const updatedTableData = [...tableData];
+        updatedTableData[index][colName] = date;
+        const month = date.substring(0, 7);
+        updatedTableData[index]['pjbgDt'] = month; //연월 
+        setTableData(updatedTableData);
+    };
 
     const compareData = (originData, updatedData) => {
-        console.log("222222222222222");
         const filterData = updatedData.filter((data) => data.pjbgTypeCode); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
-        console.log("여기탐?", updatedData);
-        console.log("updatedDataLength?", updatedDataLength);
 
         if (originDataLength > updatedDataLength) {
             //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
@@ -485,6 +471,7 @@ const ReactDataTableURL = (props) => {
             deleteItem(delList); //삭제
         } else if (originDataLength === updatedDataLength) {
             updateItem(filterData); //수정
+
         } else if (originDataLength < updatedDataLength) {
             const updateList = [];
 
@@ -511,11 +498,6 @@ const ReactDataTableURL = (props) => {
     };
 
     const isCurrentPage = () => {
-        // if(current === "") {
-        //     console.log("Current is undefined");
-        // } else if(current !== currentPageName && current !== innerPageName && current !== modalPageName) {
-        //     console.log("Current page does not match all pages");
-        // }
         return current !== "" && (current === currentPageName || current === innerPageName || current === modalPageName);
     }
     //------------------------------- 초기값과 비교하는 코드
@@ -672,52 +654,34 @@ const ReactDataTableURL = (props) => {
                                                                 readOnly
                                                             />
                                                         </div>
-                                                    ) : cell.column.type === "costDateStart" ? (
-                                                        <div className="box3-1 boxDate">
-                                                            <DatePicker
-                                                                key={cell.column.id + row.index}
-                                                                name={cell.column.col}
-                                                                className="form-control flex-item"
-                                                                type="text"
-                                                                value={tableData[row.index].pjbgBeginDt ? tableData[row.index].pjbgBeginDt.substring(0, 7) : ""}
-                                                                ref={inputRef}
-                                                                dateFormat="yyyy-MM"
-                                                                showMonthYearPicker
-                                                                locale={ko} // 한국어로 설정
-                                                                onClick={() => toggleCalendarVisible(row.index)}
-                                                                onChange={(date) => {
-                                                                    const formatted = handleDateChange(date);
-                                                                    const updatedTableData = [...tableData];
-                                                                    updatedTableData[row.index].pjbgBeginDt
-                                                                        ? (updatedTableData[row.index].pjbgBeginDt = formatted)
-                                                                        : (updatedTableData[row.index].pjbgBeginDt = formatted);
-                                                                    setTableData(updatedTableData);
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    ) : cell.column.type === "costDateEnd" ? (
-                                                        <div className="box3-1 boxDate">
-                                                            <DatePicker
-                                                                key={cell.column.id + row.index}
-                                                                name={cell.column.col}
-                                                                className="form-control flex-item"
-                                                                type="text"
-                                                                value={tableData[row.index].pjbgEndDt ? tableData[row.index].pjbgEndDt.substring(0, 7) : ""}
-                                                                ref={inputRef}
-                                                                dateFormat="yyyy-MM"
-                                                                showMonthYearPicker
-                                                                locale={ko} // 한국어로 설정
-                                                                onClick={() => toggleCalendarVisible(row.index)}
-                                                                onChange={(date) => {
-                                                                    const formatted = handleDateChange(date);
-                                                                    const updatedTableData = [...tableData];
-                                                                    updatedTableData[row.index].pjbgEndDt
-                                                                        ? (updatedTableData[row.index].pjbgEndDt = formatted)
-                                                                        : (updatedTableData[row.index].pjbgEndDt = formatted);
-                                                                    setTableData(updatedTableData);
-                                                                }}
-                                                            />
-                                                        </div>
+                                                    ) : cell.column.type === "dayPicker" ? (
+                                                        <DayPicker
+                                                            name={cell.column.id}
+                                                            value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id] : ""}
+                                                            onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
+                                                        />
+                                                        // <div className="box3-1 boxDate">
+                                                        //     <DatePicker
+                                                        //         key={cell.column.id + row.index}
+                                                        //         name={cell.column.col}
+                                                        //         className="form-control flex-item"
+                                                        //         type="text"
+                                                        //         value={tableData[row.index].pjbgBeginDt ? tableData[row.index].pjbgBeginDt.substring(0, 7) : ""}
+                                                        //         ref={inputRef}
+                                                        //         dateFormat="yyyy-MM"
+                                                        //         showMonthYearPicker
+                                                        //         locale={ko} // 한국어로 설정
+                                                        //         onClick={() => toggleCalendarVisible(row.index)}
+                                                        //         onChange={(date) => {
+                                                        //             const formatted = handleDateChange(date);
+                                                        //             const updatedTableData = [...tableData];
+                                                        //             updatedTableData[row.index].pjbgBeginDt
+                                                        //                 ? (updatedTableData[row.index].pjbgBeginDt = formatted)
+                                                        //                 : (updatedTableData[row.index].pjbgBeginDt = formatted);
+                                                        //             setTableData(updatedTableData);
+                                                        //         }}
+                                                        //     />
+                                                        // </div>
                                                     ) : (
                                                         cell.render("Cell")
                                                     )

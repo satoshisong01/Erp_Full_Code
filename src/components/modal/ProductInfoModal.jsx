@@ -38,6 +38,7 @@ export default function ProductInfoModal(props) {
     }
 
     const columns = [
+        { header: "품목아이디", col: "pdiId", notView: true},
         { header: "품명", col: "pdiNm", cellWidth: "40%", type: "buttonPdiNm"},
         { header: "품목그룹명", col: "pgNm", cellWidth: "20%" },
         { header: "규격", col: "pdiStnd", notView: true},

@@ -227,14 +227,14 @@ export const execution = [
         id: "ExpenseMgmtPlan", //계획경비
         path: URL.ExpenseMgmtPlan,
         component: <ExpenseMgmtPlan />,
-        label: "경비관리",
+        label: "경비",
         pLabel: "실행관리",
     },
     {
         id: "ExpenseMgmtExe", //실행경비
         path: URL.ExpenseMgmtExe,
         component: <ExpenseMgmtExe />,
-        label: "경비관리",
+        label: "경비",
         pLabel: "실행관리",
     },
     //{

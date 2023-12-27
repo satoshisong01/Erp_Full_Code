@@ -8,59 +8,27 @@ import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 import { columns } from "constants/columns";
 import ApprovalFormExe from "components/form/ApprovalFormExe";
 import HideCard from "components/HideCard";
+import SaveButton from "components/button/SaveButton";
 
 /** 실행관리-구매-계획 */
 function PurchasingMgmtPlan() {
-    const {
-        currentPageName,
-        innerPageName,
-        setInnerPageName,
-        setCurrentPageName,
-        setPrevInnerPageName,
-        setIsSaveFormTable,
-        projectInfo,
-        setProjectInfo,
-    } = useContext(PageContext);
+    const { projectInfo, setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton } = useContext(PageContext);
 
     useEffect(() => {
-        setInnerPageName("구매 조회관리");
-        setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
-
+        const current = "구매계획";
+        if(current === "구매계획" && currentPageName !== "구매계획") {
+            setCurrentPageName("구매계획")
+        }
         return () => {
             setProjectInfo({});
         };
-    }, []);
+    }, [currentPageName]);
 
-    const orderPlanMgmtTable3 = useRef(null);
+    const [budgetMgmt, setBudgetMgmt] = useState([]);
 
-    const refresh = () => {
-        fetchData();
-    };
-
-    const [budgetMgmt, setBudgetMgmt] = useState([]); // 구매 예산관리
-
-    useEffect(() => {
-        if (projectInfo.poiId && projectInfo.poId) {
-            //구매종류를 선택 했을 때
-            fetchData();
-        }
-        if (projectInfo.poId === undefined || projectInfo.poId === "") {
-            //테이블 초기화
-            setBudgetMgmt([]);
-        }
-    }, [currentPageName, innerPageName, projectInfo]);
-
-    const fetchData = async () => {
-        try {
-            const data = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", {
-                poiId: projectInfo.poiId,
-                modeCode: "EXCP",
-                poId: projectInfo.poId,
-            });
-            data ? setBudgetMgmt(changeData(data)) : setBudgetMgmt([]);
-        } catch (error) {
-            console.error("데이터를 가져오는 중에 오류 발생:", error);
-        }
+    const fetchAllData = async (condition) => {
+        const data = await axiosFetch("/api/baseInfrm/product/buyIngInfoExe/totalListAll.do", condition);
+        data ? setBudgetMgmt(changeData(data)) : setBudgetMgmt([]);
     };
 
     const changeData = (data) => {
@@ -68,26 +36,33 @@ function PurchasingMgmtPlan() {
         return updateData;
     };
 
+    const refresh = () => {
+        if(projectInfo.poiId) {
+            fetchAllData({poiId: projectInfo.poiId, modeCode: "BUDGET"})
+        }
+    }
+
     return (
         <>
             <Location pathList={locationPath.PurchasingMgmt} />
-            <ApprovalFormExe viewPageName="실행구매" />
+            {/* <ApprovalFormExe viewPageName="구매(재료비)" returnData={(condition) => fetchAllData({...condition, modeCode: "BUDGET"})}/> */}
+            <ApprovalFormExe viewPageName="구매계획" returnData={(condition) => fetchAllData({...condition, modeCode: "BUDGET"})}/>
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
             </HideCard>
             <HideCard title="계획 등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
+                    <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTablePdorder
-                    singleUrl="/baseInfrm/product/buyIngInfo"
+                    suffixUrl="/baseInfrm/product/buyIngInfoExe"
+                    editing={true}
                     columns={columns.purchasingMgmt.budget}
-                    tableRef={orderPlanMgmtTable3}
                     customDatas={budgetMgmt}
-                    viewPageName="실행구매"
+                    viewPageName="구매계획"
                     customDatasRefresh={refresh}
-                    hideCheckBox={true}
                 />
             </HideCard>
         </>

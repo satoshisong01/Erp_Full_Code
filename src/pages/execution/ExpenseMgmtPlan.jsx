@@ -4,48 +4,31 @@ import { locationPath } from "constants/locationPath";
 import { PageContext } from "components/PageProvider";
 import { axiosFetch } from "api/axiosFetch";
 import { columns } from "constants/columns";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import RefreshButton from "components/button/RefreshButton";
 import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
 import ApprovalFormExe from "components/form/ApprovalFormExe";
 import HideCard from "components/HideCard";
+import SaveButton from "components/button/SaveButton";
 /** 실행관리-경비-계획 */
 function ExpenseMgmtPlan() {
-    const {
-        currentPageName,
-        innerPageName,
-        setInnerPageName,
-        setCurrentPageName,
-        projectInfo,
-        setProjectInfo,
-    } = useContext(PageContext);
+    const { projectInfo, setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton } = useContext(PageContext);
 
-    // const { showDetailTable } = useContext(PageContext);
     useEffect(() => {
-        setInnerPageName("경비 조회관리");
-        setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
-
+        const current = "경비계획";
+        if(current === "경비계획" && currentPageName !== "경비계획") {
+            setCurrentPageName("경비계획")
+        }
         return () => {
-            // 컴포넌트 종료
-            setProjectInfo({}); // 초기화
+            setProjectInfo({});
         };
-    }, []);
-
-
-    const orderPlanMgmtTable3 = useRef(null);
-
-    const [isClicked3, setIsClicked3] = useState(false);
+    }, [currentPageName]);
 
     const [poiIdToSend, setPoiIdToSend] = useState();
 
-    const handleClick3 = () => {
-        setIsClicked3(!isClicked3);
-    };
-
-
     const refresh = () => {
-        fetchData();
+        if(projectInfo.poiId) {
+            fetchAllData({poiId: projectInfo.poiId, modeCode: "BUDGET"});
+        }
     };
 
     const processResultData = (resultData) => {
@@ -128,7 +111,6 @@ function ExpenseMgmtPlan() {
     };
 
     const [budgetMgmt, setBudgetMgmt] = useState([]); // 경비 예산관리
-
     const allowedPjbgTypeCodes = ["EXPNS01", "EXPNS02", "EXPNS03", "EXPNS04", "EXPNS05", "EXPNS06"];
     const [saveNum, setSaveNum] = useState([]);
 
@@ -187,53 +169,34 @@ function ExpenseMgmtPlan() {
         return data;
     };
 
-    const fetchData = async () => {
-        try {
-           if (innerPageName === "경비 예산관리") {
-                const data = await fetchAllData("/api/baseInfrm/product/pjbudget/totalListAll.do", innerPageName);
-                const updatedData = processResultData(data);
-                setBudgetMgmt(updatedData);
-            }
-        } catch (error) {
-            console.error("데이터를 가져오는 중에 오류 발생:", error);
-        }
-    };
-    useEffect(() => {
-        fetchData(); // fetchData 함수를 호출하여 데이터를 가져옵니다.
-    }, [poiIdToSend, projectInfo.poiId, innerPageName]);
-
-    const fetchAllData = async (url, currentTask) => {
-        const requestData = { poiId: projectInfo.poiId, modeCode: "EXCP" };
-
-        const resultData = await axiosFetch(url, requestData);
-        if (resultData) {
-            console.log(resultData, "원래 나오는값");
-            return resultData;
-        } else {
-            return Array(5).fill({}); // 빈 배열 보내주기
-        }
+    const fetchAllData = async (condition) => {
+        console.log("경비계획 조회 컨디션:", condition);
+        const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", condition);
+        const updatedData = processResultData(resultData);
+        setBudgetMgmt(updatedData);
+        console.log("경비계획 조회 updatedData:", updatedData);
     };
 
     return (
         <>
             <Location pathList={locationPath.ExpenseMgmt} />
-            {/* <SearchList conditionList={conditionList} onSearch={handleReturn} /> */}
-            <ApprovalFormExe viewPageName="실행경비계획" />
+            <ApprovalFormExe viewPageName="경비계획" returnData={(condition) => fetchAllData({...condition, modeCode: "BUDGET"})} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
             </HideCard>
             <HideCard title="계획 등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
+                    <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTableURL
+                    suffixUrl="/baseInfrm/product/pjbudgetExe"
+                    editing={true}
                     columns={columns.expenseMgmt.budget}
-                    tableRef={orderPlanMgmtTable3}
-                    viewPageName="실행경비계획"
                     customDatas={budgetMgmt}
+                    viewPageName="경비계획"
                     customDatasRefresh={refresh}
-                    hideCheckBox={true}
                 />
             </HideCard>
         </>
