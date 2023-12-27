@@ -475,6 +475,20 @@ export const columns = {
                 ],
             },
         ],
+        addMod: [
+            { items: [{
+                header: "상태",
+                col: "poiStatus",
+                type: "select",
+                option: [ { label: "전체보기", value: "" },
+                    { label: "프로젝트접수", value: "프로젝트접수" },
+                    { label: "실행예산완료", value: "실행예산완료" },
+                    { label: "실행정산중", value: "실행정산중" },
+                    { label: "프로젝트종료", value: "프로젝트종료" },
+                ],
+                   
+            }]},
+        ],
     },
     laborCostMgmt: {
         //인건비관리
@@ -1186,7 +1200,7 @@ export const columns = {
             },
             {
                 header: "구매예상일",
-                col: "temp1",
+                col: "byExpectedDt",
                 cellWidth: "10%",
                 type: "dayPicker",
             },

@@ -12,22 +12,28 @@ import SaveButton from "components/button/SaveButton";
 
 /** 실행관리-구매-계획 */
 function PurchasingMgmtPlan() {
-    const { projectInfo, setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton } = useContext(PageContext);
+    const { setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton } = useContext(PageContext);
+    const [condition, setCondition] = useState({});
+    const [budgetMgmt, setBudgetMgmt] = useState([]);
 
     useEffect(() => {
-        const current = "구매계획";
-        if(current === "구매계획" && currentPageName !== "구매계획") {
-            setCurrentPageName("구매계획")
-        }
         return () => {
             setProjectInfo({});
         };
+    }, []);
+
+    const current = "구매계획";
+
+    useEffect(() => {
+        if(current === "구매계획" && currentPageName !== current) {
+            setCurrentPageName(current)
+        }
     }, [currentPageName]);
 
-    const [budgetMgmt, setBudgetMgmt] = useState([]);
 
     const fetchAllData = async (condition) => {
         const data = await axiosFetch("/api/baseInfrm/product/buyIngInfoExe/totalListAll.do", condition);
+        console.log("🎄1.구매:",condition, "data:", data);
         data ? setBudgetMgmt(changeData(data)) : setBudgetMgmt([]);
     };
 
@@ -37,16 +43,26 @@ function PurchasingMgmtPlan() {
     };
 
     const refresh = () => {
-        if(projectInfo.poiId) {
-            fetchAllData({poiId: projectInfo.poiId, modeCode: "BUDGET"})
+        if(condition.poiId) {
+            fetchAllData(condition);
         }
+    }
+
+    const conditionInfo = (value) => {
+        setCondition((prev) => {
+            if (prev.poiId !== value.poiId) {
+                const newCondition = { poiId: value.poiId, modeCode: "BUDGET" };
+                fetchAllData(newCondition);
+                return newCondition;
+            }
+            return prev; 
+        });
     }
 
     return (
         <>
             <Location pathList={locationPath.PurchasingMgmt} />
-            {/* <ApprovalFormExe viewPageName="구매(재료비)" returnData={(condition) => fetchAllData({...condition, modeCode: "BUDGET"})}/> */}
-            <ApprovalFormExe viewPageName="구매계획" returnData={(condition) => fetchAllData({...condition, modeCode: "BUDGET"})}/>
+            <ApprovalFormExe viewPageName={current} returnData={conditionInfo}/>
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
@@ -61,8 +77,9 @@ function PurchasingMgmtPlan() {
                     editing={true}
                     columns={columns.purchasingMgmt.budget}
                     customDatas={budgetMgmt}
-                    viewPageName="구매계획"
+                    viewPageName={current}
                     customDatasRefresh={refresh}
+                    condition={condition}
                 />
             </HideCard>
         </>

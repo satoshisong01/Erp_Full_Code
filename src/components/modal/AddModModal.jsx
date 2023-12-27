@@ -21,7 +21,8 @@ import Number from "components/input/Number";
 export default function AddModModal(props) {
     const { width, height, list, onClose, resultData, title, initialData } = props;
     const {
-        projectInfo,
+        // projectInfo,
+        // setProjectInfo,
         companyInfo,
         pdiNmList,
         projectPdiNm,
@@ -44,6 +45,17 @@ export default function AddModModal(props) {
     const [colName, setColName] = useState("");
 
     useEffect(() => {
+        return () => {
+            setCompanyInfo({});
+            setPdiNmList([]);
+            setProjectPdiNm({});
+            setProjectPgNm({});
+            setEmUserInfo({});
+            // setProjectInfo({});
+        };
+    }, []);
+
+    useEffect(() => {
         // me-modal-body의 높이를 동적 계산
         if (bodyRef.current) {
             const headerHeight = document.querySelector(".me-modal-header")?.clientHeight || 0;
@@ -61,13 +73,13 @@ export default function AddModModal(props) {
         });
     }, [companyInfo]);
 
-    useEffect(() => {
-        //프로젝트
-        if(projectInfo.poiId === "" || !projectInfo) return;
-        setData(prevData => {
-            return { ...prevData, ...projectInfo};
-        });
-    }, [projectInfo]);
+    // useEffect(() => {
+    //     //프로젝트
+    //     if(projectInfo.poiId === "" || !projectInfo) return;
+    //     setData(prevData => {
+    //         return { ...prevData, ...projectInfo};
+    //     });
+    // }, [projectInfo]);
 
     useEffect(() => {
         //품목
@@ -207,6 +219,13 @@ export default function AddModModal(props) {
         </div>
     );
 
+    const setProjectInfo = (value) => {
+        if(value.poiId === "" || !value) return;
+        setData(prevData => {
+            return { ...prevData, ...value};
+        });
+    }
+
     return (
         <article className="me-modal">
             <div className="me-modal-container" style={{ width, height }}>
@@ -246,7 +265,7 @@ export default function AddModModal(props) {
                         </div>
                     </div>
 
-                    {isOpenModalProject && <ProjectModal width={550} height={770} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} />}
+                    {isOpenModalProject && <ProjectModal width={550} height={770} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} returnInfo={setProjectInfo}/>}
                     <CompanyModal width={500} height={550} title="거래처 목록" isOpen={isOpenModalCompany} onClose={() => setIsOpenModalCompany(false)} />
                     <ProductInfoModal width={600} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
                     <ProductGroupModal width={600} height={720} title="품목그룹 목록" isOpen={isOpenModalProductGroup} onClose={() => setIsOpenModalProductGroup(false)} />

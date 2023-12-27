@@ -340,6 +340,7 @@ body {
 .footer {
     position: relative;
     height: 180px;
+    z-index: -1;
 }
 .footer::before {
     content: "";

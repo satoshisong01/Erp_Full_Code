@@ -1,24 +1,26 @@
 import React, { useContext, useEffect, useState } from "react";
-import { PageContext } from "components/PageProvider";
 import ProjectModal from "components/modal/ProjectModal";
 import { v4 as uuidv4 } from "uuid";
+import { PageContext } from "components/PageProvider";
 
-/** 영업 폼 */
+/** 실행 폼 */
 function ApprovalFormExe({ viewPageName, returnData }) {
-    const { projectInfo, innerPageName } = useContext(PageContext);
+    // const {currentPageName } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
-    useEffect(() => {
-        if (viewPageName !== innerPageName) return;
-        if (projectInfo.poiId !== "" && projectInfo.poiId !== data.poiId) {
-            //프로젝트정보 바뀌었을 때
-            setData({ poiId: projectInfo.poiId, poiNm: projectInfo.poiNm });
-        }
-    }, [projectInfo, innerPageName]);
+    // useEffect(() => {
+    //     console.log("data:", data);
+    // }, [data])
+
+    const onChange = (value) => {
+        // console.log("ㅋㅋ", viewPageName , "2", currentPageName);
+        // if(viewPageName === currentPageName) {
+            setData({...value});
+        // }
+    }
 
     const onClick = () => {
-        console.log("실행 데이터", data);
         returnData({ ...data });
     };
 
@@ -42,7 +44,7 @@ function ApprovalFormExe({ viewPageName, returnData }) {
                                     readOnly
                                 />
                                 {isOpenProjectModal && (
-                                    <ProjectModal width={500} height={710} onClose={() => setIsOpenProjectModal(false)} title="프로젝트 목록" />
+                                    <ProjectModal width={500} height={710} onClose={() => setIsOpenProjectModal(false)} title="프로젝트 목록" returnInfo={onChange}/>
                                 )}
                             </td>
                             <th>기준연도</th>

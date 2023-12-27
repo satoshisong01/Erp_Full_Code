@@ -6,44 +6,34 @@ import { v4 as uuidv4 } from "uuid";
 
 /** 영업 폼 */
 function ApprovalFormSal({ viewPageName, returnData }) {
-    const { projectInfo, innerPageName, versionInfo, setVersionInfo } = useContext(PageContext);
+    // const { projectInfo, setProjectInfo, innerPageName, versionInfo, setVersionInfo } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
-    useEffect(() => {
-        if (viewPageName !== innerPageName) return;
-        if (projectInfo.poiId !== "" && projectInfo.poiId !== data.poiId) {
-            //프로젝트정보 바뀌었을 때
-            setData({ poiId: projectInfo.poiId, poiNm: projectInfo.poiNm });
-        }
-    }, [projectInfo, innerPageName]);
+    // useEffect(() => {
+    //     if (viewPageName !== innerPageName) return;
+    //     if (projectInfo.poiId !== "" && projectInfo.poiId !== undefined && projectInfo.poiId !== data.poiId) {
+    //         //프로젝트정보 바뀌었을 때
+    //         setData({ poiId: projectInfo.poiId, poiNm: projectInfo.poiNm });
+    //     }
+    // }, [projectInfo, innerPageName]);
 
     useEffect(() => {
         if (data.poiId && !data.versionId) {
             //선택된 버전정보가 없다면
             getVersionList({ poiId: data.poiId });
-        }
+        } 
     }, [data.poiId]);
 
     const getVersionList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});
-        const emptyArr =
-            resultData &&
-            resultData.map(({ versionId, versionNum, versionDesc, costAt }) => ({
-                versionId,
-                versionNum,
-                versionDesc,
-                costAt,
-            }));
+        const emptyArr = resultData && resultData.map(({ versionId, versionNum, versionDesc, costAt }) => ({ versionId, versionNum, versionDesc, costAt }));
         if (emptyArr?.length > 0) {
             setData((prev) => ({
                 ...prev,
-                versionId: emptyArr.find((info) => info.costAt === "Y")?.versionId || versionInfo?.versionId || emptyArr[0]?.versionId,
+                versionId: emptyArr.find((info) => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
                 option: emptyArr,
             }));
-            setVersionInfo({
-                versionId: emptyArr.find((info) => info.costAt === "Y")?.versionId || versionInfo?.versionId || emptyArr[0]?.versionId,
-            });
         }
     };
 
@@ -52,10 +42,11 @@ function ApprovalFormSal({ viewPageName, returnData }) {
         if (value !== "default") {
             setData((prev) => ({ ...prev, [name]: value }));
         }
-        if (name === "versionId") {
-            setVersionInfo({ versionId: value });
-        }
     };
+
+    const onChange = (value) => {
+        setData({...value});
+    }
 
     const onClick = () => {
         console.log(data, "데이터 돌아가나");
@@ -82,7 +73,7 @@ function ApprovalFormSal({ viewPageName, returnData }) {
                                     readOnly
                                 />
                                 {isOpenProjectModal && (
-                                    <ProjectModal width={500} height={710} onClose={() => setIsOpenProjectModal(false)} title="프로젝트 목록" />
+                                     <ProjectModal width={500} height={710} onClose={() => setIsOpenProjectModal(false)} title="프로젝트 목록" returnInfo={onChange}/>
                                 )}
                             </td>
                             <th>

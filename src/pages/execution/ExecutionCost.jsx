@@ -12,11 +12,16 @@ import { PageContext } from "components/PageProvider";
 import URL from "constants/url";
 import { columns } from "constants/columns";
 import HideCard from "components/HideCard";
+import SaveButton from "components/button/SaveButton";
+import AddModModal from "components/modal/AddModModal";
+import { axiosUpdate } from "api/axiosFetch";
 
 /** 실행관리-실행원가관리 */
 function ExecutionCost() {
     const { setNameOfButton, projectInfo } = useContext(PageContext);
+    const [isOpenMod, setIsOpenMod] = useState(false);
     const [returnKeyWord, setReturnKeyWord] = useState("");
+    const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
     const orderMgmtTable = useRef(null);
 
     const handleReturn = (value) => {
@@ -24,9 +29,22 @@ function ExecutionCost() {
         console.log(value, "제대로 들어오냐");
     };
 
-    const save = () => {
-        
-    }
+    const modifyToServer = async (updatedData) => {
+        console.log("💜 modifyToServer:", updatedData);
+        if (updatedData.length === 0) {
+            alert("수정할 항목을 선택하세요.");
+            return;
+        }
+        const url = `/api/baseInfrm/product/pjOrdrInfo/edit.do`;
+        const updated = { ...updatedData, lockAt: "Y", useAt: "Y" };
+        const resultData = await axiosUpdate(url, updated);
+        if (resultData) {
+            alert("수정되었습니다");
+            setNameOfButton("refresh")
+        } else {
+            alert("error!!");
+        }
+    };
 
     return (
         <>
@@ -34,13 +52,25 @@ function ExecutionCost() {
             <SearchList conditionList={columns.executionCost.condition} onSearch={handleReturn} />
             <HideCard title="계획 등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
-                    <PopupButton targetUrl={URL.ExcutionCostsDoc} data={{ label: "실행원가서", projectInfo }} />
-                    <PopupButton targetUrl={URL.ExcutionCostsDoc} data={{ label: "정산서", projectInfo }} />
-                    <ModButton label={"저장"} onClick={save} />
+                    <PopupButton targetUrl={URL.ExecutionCostsDoc} data={{ label: "실행원가서", projectInfo }} />
+                    <PopupButton targetUrl={URL.PostCostsDoc} data={{ label: "정산서", projectInfo }} />
+                    {/* <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} /> */}
+                    <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
                     <RefreshButton onClick={() => setNameOfButton("refresh")} />
                 </div>
-                <ReactDataTable columns={columns.executionCost.project} suffixUrl="/baseInfrm/product/pjOrdrInfo" tableRef={orderMgmtTable} viewPageName="실행원가관리" />
+                <ReactDataTable columns={columns.executionCost.project} suffixUrl="/baseInfrm/product/pjOrdrInfo" tableRef={orderMgmtTable} viewPageName="원가조회" />
             </HideCard>
+            {isOpenMod && (
+                <AddModModal
+                    width={500}
+                    height={150}
+                    list={columns.executionCost.addMod}
+                    initialData={selectedRows}
+                    resultData={modifyToServer}
+                    onClose={() => setIsOpenMod(false)}
+                    title="프로젝트 수정"
+                />
+            )}
         </>
     );
 }
