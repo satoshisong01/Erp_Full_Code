@@ -109,7 +109,7 @@ export const columns = {
             { header: "계약일", col: "poiBeginDt", cellWidth: "10%" },
             { header: "납기시작일", col: "poiDueBeginDt", cellWidth: "10%" },
             { header: "납기종료일", col: "poiDueEndDt", cellWidth: "10%" },
-            { header: "기준이익률", col: "standardMargin", cellWidth: "8%" },
+            { header: "이익률", col: "standardMargin", cellWidth: "8%" },
             { header: "상태", col: "poiStatus", cellWidth: "10%" },
         ],
         condition: [
@@ -160,8 +160,8 @@ export const columns = {
             },
             {
                 items: [
-                    { header: "영업대표", col: "poiSalmanagerId", placeholder: "영업대표를 선택하세요.", require: true, type: "input" },
-                    { header: "담당자", col: "poiManagerId", placeholder: "담당자를 선택하세요.", require: true, type: "input" },
+                    { header: "영업대표", col: "poiSalmanagerId", placeholder: "영업대표를 선택하세요.", require: true, type: "employerInfo" },
+                    { header: "담당자", col: "poiManagerId", placeholder: "담당자를 선택하세요.", require: true, type: "employerInfo" },
                 ],
             },
             {

@@ -9,6 +9,7 @@ import DayPicker from "components/input/DayPicker";
 import MonthPicker from "components/input/MonthPicker";
 import ProductInfoModal from "components/modal/ProductInfoModal";
 
+/* 구매 테이블 */
 const ReactDataTablePdorder = (props) => {
     const {
         columns,
@@ -43,6 +44,7 @@ const ReactDataTablePdorder = (props) => {
         projectPdiNm,
         setIsOpenModalCompany,
         isOpenModalCompany,
+        versionInfo,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -87,28 +89,11 @@ const ReactDataTablePdorder = (props) => {
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
-        if (current === innerPageName && nameOfButton === "save") {
+        if (isCurrentPage() && nameOfButton === "save") {
             compareData(originTableData, tableData);
         }
-    }, [innerPageName, currentPageName, editing]);
-
-    /* table의 button 클릭 시 해당하는 함수 실행 */
-    useEffect(() => {
-        if (isCurrentPage()) {
-            if (nameOfButton === "refresh") {
-                // refreshClick();
-            } else if (nameOfButton === "csv") {
-            } else if (nameOfButton === "copy") {
-            } else if (nameOfButton === "print") {
-            } else if (nameOfButton === "search") {
-                // searchClick();
-            } else if (nameOfButton === "save") {
-                compareData(originTableData, tableData);
-            }
-            setNameOfButton(""); //초기화
-        }
-    }, [nameOfButton]);
-
+    }, [innerPageName, currentPageName, editing, nameOfButton]);
+    
     const columnsConfig = useMemo(
         () =>
             columns.map((column) => ({
@@ -294,17 +279,16 @@ const ReactDataTablePdorder = (props) => {
         const updatedTableData = [...tableData];
         updatedTableData[row.index][accessor] = value;
 
-        // 수정된 데이터로 tableData 업데이트
-        if (current === "구매 수주관리" || current === "구매 예산관리" || current === "구매 실행관리") {
-            //샐행
+        //실행
+        if (currentPageName === "구매(재료비)") {
             if (row.original.byUnitPrice && row.original.byQunty) {
                 const price = row.original.byUnitPrice * row.original.byQunty;
                 updatedTableData[index]["price"] = Math.round(price);
             }
         }
 
-        if (current === "구매(재료비)") {
-            //영업
+        //영업
+        if (innerPageName === "구매(재료비)") {
             if (accessor === "byUnitPrice" || accessor === "byStandardMargin" || accessor === "byConsumerOutputRate" || accessor === "byQunty") {
                 if (row.original.byUnitPrice && row.original.byStandardMargin && row.original.byConsumerOutputRate && row.original.byQunty) {
                     // 1.원가(견적가) : 수량 * 원단가
@@ -348,63 +332,63 @@ const ReactDataTablePdorder = (props) => {
         return Math.round(value1 / value2);
     };
 
-    //-------------------------------배열 추가, 수정, 삭제
     const addList = async (addNewData) => {
-        if (!Array.isArray(addNewData)) {
-            console.error("addNewData is not an array:", addNewData);
-            return;
-        }
-        if(current === "구매계획") {
+        if(!isCurrentPage() && !suffixUrl && !Array.isArray(addNewData)) return;
+        if(currentPageName === "구매계획") { //실행
             addNewData.forEach((data) => {
                 data.poiId = projectInfo.poiId;
                 data.modeCode = "BUDGET";
             });
-        } else if(current === "구매실행") {
+        } else if(currentPageName === "구매실행") { //실행
             addNewData.forEach((data) => {
                 data.poiId = projectInfo.poiId;
                 data.modeCode = "EXECUTE";
+            });
+        } else if(innerPageName === "구매(재료비)") { //영업
+            addNewData.forEach((data) => {
+                data.poiId = projectInfo.poiId;
+                data.versionId = versionInfo.versionId;
             });
         }
         const url = `/api${suffixUrl}/addList.do`;
         const resultData = await axiosPost(url, addNewData);
-        if (resultData && resultData.length > 0) {
-            customDatasRefresh();
-        } else {
-            console.log("추가실패");
-        }
+        customDatasRefresh();
+        setOriginTableData([]);
     };
+
     const updateList = async (toUpdate) => {
-        if(current === "구매계획") {
+        if(!isCurrentPage() && !suffixUrl && !Array.isArray(toUpdate)) return;
+        if(currentPageName === "구매계획") {
             toUpdate.forEach((data) => {
                 data.poiId = projectInfo.poiId;
                 data.modeCode = "BUDGET";
             });
-        } else if(current === "구매실행") {
+        } else if(currentPageName === "구매실행") {
             toUpdate.forEach((data) => {
                 data.poiId = projectInfo.poiId;
                 data.modeCode = "EXECUTE";
             });
+        } else if(innerPageName === "구매(재료비)") { //영업
+            toUpdate.forEach((data) => {
+                data.poiId = projectInfo.poiId;
+                data.versionId = versionInfo.versionId;
+            });
         }
         const url = `/api${suffixUrl}/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
-        if (resultData && resultData.length > 0) {
-            customDatasRefresh();
-        } else {
-            console.log("수정실패");
-        }
+        customDatasRefresh();
+        setOriginTableData([]);
     };
 
     const deleteList = async (removeItem) => {
+        if(!isCurrentPage() && !suffixUrl && !Array.isArray(removeItem)) return;
         const url = `/api${suffixUrl}/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        if (resultData) {
-            customDatasRefresh();
-        }
+        customDatasRefresh();
+        setOriginTableData([]);
     };
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
-
-    //구매용(영업완료/실행미완료)
     const compareData = (originData, updatedData) => {
         const filterData = updatedData.filter((data) => data.pdiId); //필수값 체크
         const originDataLength = originData ? originData.length : 0;
