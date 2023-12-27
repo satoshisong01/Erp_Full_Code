@@ -959,13 +959,13 @@ export const columns = {
             },
         ],
         budget: [
-            {
-                header: "품목그룹명",
-                col: "pgNm",
-                cellWidth: "20%",
-                type: "productGroup",
-            },
-            { header: "연월", col: "pjbgDt", cellWidth: "10%", type: "monthpicker" },
+            // {
+            //     header: "품목그룹명",
+            //     col: "pgNm",
+            //     cellWidth: "20%",
+            //     type: "productGroup",
+            // },
+            { header: "연월", col: "pjbgDt", cellWidth: "10%" },
             {
                 header: "출장인",
                 col: "pjbgManpower",

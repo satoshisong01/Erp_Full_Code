@@ -38,8 +38,8 @@ export default function ProductGroupModal(props) {
     }
 
     const columns = [
-        { header: "품목그룹아이디", col: "pgId", notVirw: true },
-        { header: "품목그룹명", col: "pgNm", cellWidth: "20%" },
+        { header: "품목그룹아이디", col: "pgId", notView: true },
+        { header: "품목그룹명", col: "pgNm", cellWidth: "100%" },
     ]
 
     const conditionList = [

@@ -8,22 +8,7 @@ import { PageContext } from "components/PageProvider";
 export default function AddModModal(props) {
     const { width, height, list, onClose, resultData, title, initialData, sendData } = props;
     const [data, setData] = useState({});
-    const {
-        projectInfo,
-        companyInfo,
-        pdiNmList,
-        projectPdiNm,
-        projectPgNm,
-        emUserInfo,
-        setCompanyInfo,
-        setPdiNmList,
-        setProjectPdiNm,
-        setProjectPgNm,
-        setEmUserInfo,
-    } = useContext(PageContext);
     const bodyRef = useRef(null);
-
-    console.log(data, "data");
 
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
@@ -46,7 +31,6 @@ export default function AddModModal(props) {
         // } else {
         //     resultData(data); //데이터 부모로 전송
         // }
-        console.log("💜data:", data);
         resultData(data); //데이터 부모로 전송
         onClose();
     };
