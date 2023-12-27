@@ -12,8 +12,8 @@ Modal.setAppElement("#root"); // Set the root element for accessibility
 
 /* 업무회원 목록 모달 */
 export default function EmployerInfoModal(props) {
-    const { width, height, isOpen, title, onClose } = props;
-    const { setModalPageName, setIsModalTable, setEmUserInfo } = useContext(PageContext);
+    const { width, height, isOpen, title, onClose, colName } = props;
+    const { setModalPageName, setIsModalTable, setEmUserInfo, emUserInfo } = useContext(PageContext);
 
     const [employerInfoList, setEmployerInfoList] = useState([]);
     const bodyRef = useRef(null);
@@ -31,14 +31,16 @@ export default function EmployerInfoModal(props) {
         };
     }, [isOpen]);
 
+
     const getEmployerList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/member/employMember/totalListAll.do", requestData || {});
         console.log(resultData, "결과값");
         const modifiedResultData = resultData.map((item) => {
             return {
                 ...item,
-                poiManagerId: item.empId, // empId를 poiManagerId로 변경
-                empId: undefined, // empId 제거 (선택적으로 제거)
+                uniqId: item.uniqId,
+                [colName]: item.empNm,
+                posNm: item.posNm,
             };
         });
         setEmployerInfoList(modifiedResultData);
@@ -46,15 +48,13 @@ export default function EmployerInfoModal(props) {
 
     const columns = [
         { header: "고유아이디", col: "uniqId", notView: true },
-        { header: "사용자명", col: "poiManagerId", cellWidth: "50%" },
-        { header: "직급", col: "posNm", cellWidth: "25%" },
-        { header: "그룹", col: "authorGroup", cellWidth: "25%" },
+        { header: "사용자명", col: colName || "empNm", cellWidth: "50%" },
+        { header: "직급", col: "posNm", cellWidth: "50%" },
     ];
 
     const conditionList = [
-        { title: "사용자명", col: "empId", type: "input" },
+        { title: "사용자명", col: colName || "empNm", type: "input" },
         { title: "직급", col: "posNm", type: "input" },
-        { title: "그룹", col: "authorGroup", type: "input" },
     ];
 
     useEffect(() => {

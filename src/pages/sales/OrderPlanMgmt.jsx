@@ -497,7 +497,8 @@ function OrderPlanMgmt() {
                                     columns={columns.orderPlanMgmt.purchase}
                                     customDatas={pdOrdrDatas}
                                     viewPageName="구매(재료비)"
-                                    // hideCheckBox={true}
+                                    suffixUrl="/baseInfrm/product/buyIngInfo"
+                                    customDatasRefresh={refresh}
                                 />
                             </HideCard>
                         </ul>

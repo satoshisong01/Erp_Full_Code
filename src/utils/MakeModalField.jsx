@@ -35,13 +35,16 @@ export default function MakeModalField({ list, onChange, initialData }) {
     const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
     const [isOpenModalProductGroup, setIsOpenModalProductGroup] = useState(false); //품목그룹목록
     const [isOpenModalEmployerInfo, setIsOpenModalEmployerInfo] = useState(false); //업무회원목록
-    const [data, setData] = useState({});
+    const [colName, setColName] = useState("");
+    const [data, setData] = useState(initialData?.[0] || {});
+    // const [data, setData] = useState(initialData[0] || {});
+    // const [data, setData] = useState({});
 
-    useEffect(() => {
-        if (initialData) {
-            setData(initialData[0]);
-        }
-    }, [initialData]);
+    // useEffect(() => {
+    //     if (initialData && Object.keys(data).length === 0) {
+    //         setData(initialData[0]);
+    //     }
+    // }, [initialData]);
 
     useEffect(() => {
         onChange && onChange(data);
@@ -50,86 +53,54 @@ export default function MakeModalField({ list, onChange, initialData }) {
     useEffect(() => {
         //거래처
         if(companyInfo.cltId === "" || !companyInfo) return;
-        setData((prevData) => {
-            return { ...prevData, ...companyInfo };
-        });
-        setCompanyInfo({}); //초기화
+        setData({...companyInfo });
     }, [companyInfo]);
 
     useEffect(() => {
         //프로젝트
         if(projectInfo.poiId === "" || !projectInfo) return;
-        setData((prevData) => {
-            return { ...prevData, ...projectInfo };
-        });
+        setData({...projectInfo});
     }, [projectInfo]);
 
     useEffect(() => {
         //품목
         if(projectPdiNm.pdiId === "" || !projectPdiNm) return;
-        setData((prevData) => {
-            return { ...prevData, ...projectPdiNm };
-        });
-        setProjectPdiNm({}); //초기화
-        // console.log("품목정보 변경: ", projectPdiNm);
+        setData({...projectPdiNm});
     }, [projectPdiNm]);
 
     useEffect(() => {
         //품목리스트
         if( !pdiNmList || pdiNmList.length <= 0) return;
-        setData((prevData) => {
-            return { ...prevData, ...pdiNmList };
-        });
-        setPdiNmList([]); //초기화
+        setData({...pdiNmList });
+        // setPdiNmList([]); //초기화
         // console.log("품목정보리스트 변경: ", pdiNmList);
     }, [pdiNmList]);
 
     useEffect(() => {
-        //품목그룹
-        if(!projectPgNm || projectPgNm.pgId === "") return;
-        setData((prevData) => {
-            return { ...prevData, ...projectPgNm };
-        });
-        setProjectPgNm({}); //초기화
+        // 품목그룹
+        if (!projectPgNm || projectPgNm.pgId === "" || Object.keys(projectPgNm).length === 0) return;
+        setData({ ...projectPgNm });
     }, [projectPgNm]);
 
     useEffect(() => {
         //업무회원
-        if(!emUserInfo || emUserInfo.esntlId === "") return;
-        setData((prevData) => {
-            return { ...prevData, ...emUserInfo };
-        });
-        setEmUserInfo({}); //초기화
+        if(!emUserInfo || emUserInfo.uniqId === "") return;
+        setData({...emUserInfo });
     }, [emUserInfo]);
 
     const inputChange = (e, type) => {
         const { value, name } = e.target;
-        setData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    //const projectClick = () => {
-    //    setData((prevData) => ({
-    //        ...prevData,
-    //        cltNm: projectInfo.poiNm,
-    //    }));
-    //};
-
-    const companyClick = () => {
-        setData((prevData) => ({
-            ...prevData,
-            cltNm: companyInfo.cltNm,
-        }));
+        setData({[name]: value});
     };
 
     const dateClick = (date, col) => {
-        setData((prevData) => ({
-            ...prevData,
-            [col]: date,
-        }));
+        setData({[col]: date});
     };
+
+    const changeEmployerInfo = (colName) => {
+        setIsOpenModalEmployerInfo(true);
+        setColName(colName);
+    }
 
     const renderField = (item, index, data) => (
         <div className="row-group" key={index}>
@@ -150,7 +121,6 @@ export default function MakeModalField({ list, onChange, initialData }) {
                     <BasicInput
                         item={item}
                         onClick={() => {
-                            companyClick();
                             setIsOpenModalCompany(true);
                         }}
                         value={data?.[item.col] ?? ""}
@@ -160,7 +130,6 @@ export default function MakeModalField({ list, onChange, initialData }) {
                     <BasicInput
                         item={item}
                         onClick={() => {
-                            //projectClick();
                             setIsOpenModalProject(true);
                         }}
                         value={data?.[item.col] ?? ""}
@@ -208,12 +177,12 @@ export default function MakeModalField({ list, onChange, initialData }) {
                         value={data?.[item.col] ? data[item.col] : ""}
                         placeholder="품명을 선택하세요."
                         readOnly
-                        // disabled={disabled || false}
                     />
                 ) : item.type === "productGroup" ? (
                     <BasicInput item={item} onClick={() => setIsOpenModalProductGroup(true)} value={data?.[item.col] ?? ""} readOnly />
                 ) : item.type === "employerInfo" ? (
-                    <BasicInput item={item} onClick={() => setIsOpenModalEmployerInfo(true)} value={data?.[item.col] ?? ""} readOnly />
+                    // <BasicInput item={item} onClick={() => setIsOpenModalEmployerInfo(true)} value={data?.[item.col] ?? ""} readOnly />
+                    <BasicInput item={item} onClick={() => changeEmployerInfo(item.col)} value={data?.[item.col] ?? ""} readOnly />
                 ) : null}
             </div>
         </div>
@@ -226,7 +195,7 @@ export default function MakeModalField({ list, onChange, initialData }) {
             <CompanyModal width={500} height={550} title="거래처 목록" isOpen={isOpenModalCompany} onClose={() => setIsOpenModalCompany(false)} />
             <ProductInfoModal width={600} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
             <ProductGroupModal width={600} height={720} title="품목그룹 목록" isOpen={isOpenModalProductGroup} onClose={() => setIsOpenModalProductGroup(false)} />
-            <EmployerInfoModal width={600} height={770} title="업무회원 목록" isOpen={isOpenModalEmployerInfo} onClose={() => setIsOpenModalEmployerInfo(false)} />
+            <EmployerInfoModal width={600} height={770} title="업무회원 목록" isOpen={isOpenModalEmployerInfo} onClose={() => setIsOpenModalEmployerInfo(false)} colName={colName}/>
         </>
     );
 }
