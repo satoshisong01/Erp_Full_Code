@@ -43,6 +43,7 @@ const ReactDataTableURL = (props) => {
         nameOfButton,
         versionInfo,
         isModalTable,
+        setNameOfButton,
         setModalLengthSelectRow,
     } = useContext(PageContext);
 
@@ -91,12 +92,13 @@ const ReactDataTableURL = (props) => {
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
         if (isCurrentPage()) {
-            setIsEditing(editing !== undefined ? editing : isEditing);  //테이블 상태 //inner tab일 때 테이블 조작
+            setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
         if (current === innerPageName && nameOfButton === "save") {
-            if (current === "경비" || current === "개발외주비" || current === "영업관리비") {
-                compareData(originTableData, tableData);
-            }
+            console.log("경비타야함");
+            console.log(current, innerPageName, nameOfButton);
+            compareData(originTableData, tableData);
+            setNameOfButton("");
             //if (
             //    (current === "경비 수주관리" && !isSaveFormTable) ||
             //    (current === "경비 예산관리" && !isSaveFormTable) ||
@@ -105,7 +107,7 @@ const ReactDataTableURL = (props) => {
             //    compareDataRun(originTableData, tableData);
             //}
         }
-    }, [innerPageName, editing]);
+    }, [innerPageName, editing, nameOfButton]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
 
@@ -179,7 +181,7 @@ const ReactDataTableURL = (props) => {
             updatedTableData = [...tableData];
             updatedTableData[rowIndex] = {
                 ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
-                esntlId: cmInfo.cltNm,
+                cltNm: cmInfo.cltNm,
                 cltId: cmInfo.cltId,
             };
         } else {
@@ -292,7 +294,7 @@ const ReactDataTableURL = (props) => {
             //모달화면일때
             setModalLengthSelectRow(selectedFlatRows.length);
             if (selectedFlatRows.length > 0) {
-                const selects = selectedFlatRows.map((row) =>  row.values )
+                const selects = selectedFlatRows.map((row) => row.values);
                 returnSelectRows && returnSelectRows(selects);
                 returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
@@ -447,7 +449,6 @@ const ReactDataTableURL = (props) => {
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
 
-
     useEffect(() => {
         console.log(tableData);
     }, [tableData]);
@@ -517,7 +518,7 @@ const ReactDataTableURL = (props) => {
         //     console.log("Current page does not match all pages");
         // }
         return current !== "" && (current === currentPageName || current === innerPageName || current === modalPageName);
-    }
+    };
     //------------------------------- 초기값과 비교하는 코드
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
@@ -775,7 +776,13 @@ const ReactDataTableURL = (props) => {
             </div>
             <CompanyModal width={600} height={720} title="거래처 목록" isOpen={isOpenModalCompany} onClose={() => setIsOpenModalCompany(false)} />
             <ProductInfoModal width={600} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
-            <ProductGroupModal width={600} height={720} title="품목그룹 목록" isOpen={isOpenModalProductGroup} onClose={() => setIsOpenModalProductGroup(false)} />
+            <ProductGroupModal
+                width={600}
+                height={720}
+                title="품목그룹 목록"
+                isOpen={isOpenModalProductGroup}
+                onClose={() => setIsOpenModalProductGroup(false)}
+            />
             {/*<div style={{ display: "flex" }}>
                 <span style={{ display: "flex", justifyContent: "center", width: "100px", backgroundColor: "#f2f2f2", border: "solid gray 1px" }}>
                     {current} 합계

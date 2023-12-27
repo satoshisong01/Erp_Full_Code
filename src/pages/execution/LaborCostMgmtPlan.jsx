@@ -11,6 +11,9 @@ import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import RefreshButton from "components/button/RefreshButton";
 import ApprovalFormExe from "components/form/ApprovalFormExe";
 import HideCard from "components/HideCard";
+import SaveButton from "components/button/SaveButton";
+import ReactDataTableView from "components/DataTable/ReactDataTableView";
+import { ChangePrmnPlanData } from "components/DataTable/function/ReplaceDataFormat";
 
 /** 실행관리-인건비-계획 */
 function LaborCostMgmtPlan() {
@@ -23,10 +26,12 @@ function LaborCostMgmtPlan() {
         // viewSetPoiId,
         unitPriceList,
         currentPageName,
+        unitPriceListRenew,
+        setNameOfButton,
     } = useContext(PageContext);
 
     useEffect(() => {
-        setInnerPageName("인건비 관리");
+        setInnerPageName("실행인건비계획");
         setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
 
         return () => {
@@ -48,7 +53,8 @@ function LaborCostMgmtPlan() {
         setIsClicked3(!isClicked3);
     };
 
-    const [budgetMgmt, setBudgetMgmt] = useState([]); // 인건비 예산관리
+    const [budgetMgmt, setBudgetMgmt] = useState([]); // 실행인건비계획
+    const [budgetMgmtView, setBudgetMgmtView] = useState([]); // 실행인건비계획
 
     useEffect(() => {
         if (projectInfo.poiId === undefined || projectInfo.poId === "") {
@@ -63,7 +69,9 @@ function LaborCostMgmtPlan() {
 
     const fetchData = async () => {
         try {
-            if (innerPageName === "인건비 예산관리") {
+            if (innerPageName === "실행인건비계획") {
+                console.log("unitPriceList", unitPriceList);
+                console.log("unitPriceListRenew", unitPriceListRenew);
                 const datas = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 예산관리
                 if (unitPriceList && datas) {
                     const updatedDatas = datas.map((data) => {
@@ -88,16 +96,23 @@ function LaborCostMgmtPlan() {
         fetchData();
     }, [innerPageName, projectInfo]);
 
-    const fetchAllData = async (url, currentTask) => {
-        const requestData = {
+    const fetchAllData = async () => {
+        const requestSearch = {
             poiId: projectInfo.poiId,
-            pecSlsExcCode: "PEXC",
-            pecTypeCode: "MM",
+            poiNm: projectInfo.poiNm,
             useAt: "Y",
-            pecModeCode: "PDVSN02",
+            typeCode: "MM",
+            modeCode: "BUDGET",
         };
 
-        const resultData = await axiosFetch(url, requestData);
+        const choiceData = {
+            poiId: projectInfo.poiId,
+            versionId: 91,
+        };
+
+        const resultData = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", requestSearch);
+        const viewResult = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", choiceData);
+        setBudgetMgmtView(ChangePrmnPlanData(viewResult));
         if (resultData) {
             console.log("get data success:)");
             return resultData;
@@ -108,7 +123,7 @@ function LaborCostMgmtPlan() {
     };
 
     const compareData = (originData, updatedData) => {
-        const filterData = updatedData.filter((data) => data.pgNm); //pgNm 없는 데이터 제외
+        const filterData = updatedData.filter((data) => data.poiId); //pgNm 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
 
@@ -144,17 +159,9 @@ function LaborCostMgmtPlan() {
 
             for (let i = originDataLength; i < updatedDataLength; i++) {
                 const add = { poiId: poiIdToSend || projectInfo.poiId };
-                const addType = { pecTypeCode: "MM" };
-                const addMode = { pecSlsExcCode: "PEXC" };
-                let addExCode = { pecModeCode: "PDVSN01" };
-                if (innerPageName === "인건비 수주관리") {
-                    addExCode = { pecModeCode: "PDVSN01" };
-                } else if (innerPageName === "인건비 예산관리") {
-                    addExCode = { pecModeCode: "PDVSN02" };
-                } else if (innerPageName === "인건비 실행관리") {
-                    addExCode = { pecModeCode: "PDVSN03" };
-                }
-                toAdds.push({ ...filterData[i], ...add, ...addType, ...addMode, ...addExCode });
+                const typeCode = { typeCode: "MM" };
+                const modeCode = { modeCode: "BUDGET" };
+                toAdds.push({ ...filterData[i], ...add, ...typeCode, ...modeCode });
             }
             addList(toAdds);
         }
@@ -188,20 +195,24 @@ function LaborCostMgmtPlan() {
     return (
         <>
             <Location pathList={locationPath.LaborCostMgmt} />
-            <ApprovalFormExe viewPageName="실행인건비계획" />
-            <HideCard title="계획 조회" color="back-gray" className="mg-b-40"></HideCard>
+            <ApprovalFormExe viewPageName="실행인건비계획" returnData={fetchAllData} />
+            <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
+                <ReactDataTable columns={columns.orderPlanMgmt.labor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
+            </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
             <HideCard title="계획 등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
+                    <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTable
+                    editing={true}
                     columns={columns.laborCostMgmt.budget}
                     tableRef={orderPlanMgmtTable3}
                     customDatas={budgetMgmt}
                     viewPageName="실행인건비계획"
                     returnList={compareData}
-                    hideCheckBox={true}
+                    //hideCheckBox={true}
                 />
             </HideCard>
         </>

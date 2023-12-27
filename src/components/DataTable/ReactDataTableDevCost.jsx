@@ -48,6 +48,7 @@ const ReactDataTableDevCost = (props) => {
         isModalTable,
         nameOfButton,
         versionInfo,
+        setNameOfButton,
         modalPageName,
     } = useContext(PageContext);
 
@@ -74,7 +75,7 @@ const ReactDataTableDevCost = (props) => {
 
     const setValueCompany = (rowIndex) => {
         //setRowIndex()
-        if(isCurrentPage()) {
+        if (isCurrentPage()) {
             setIsOpenModalCompany(true);
             setRowIndex(rowIndex);
         }
@@ -87,7 +88,7 @@ const ReactDataTableDevCost = (props) => {
         //     console.log("Current page does not match all pages");
         // }
         return current !== "" && (current === currentPageName || current === innerPageName || current === modalPageName);
-    }
+    };
 
     useEffect(() => {
         if (customDatas && customDatas.length > 0) {
@@ -116,10 +117,11 @@ const ReactDataTableDevCost = (props) => {
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
-        if (current === "개발외주비" && nameOfButton === "save") {
+        if (current === innerPageName && nameOfButton === "save") {
             compareData(originTableData, tableData);
+            setNameOfButton("");
         }
-    }, [innerPageName, editing]);
+    }, [innerPageName, editing, nameOfButton]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
 
@@ -287,7 +289,7 @@ const ReactDataTableDevCost = (props) => {
             //모달화면일때
             setModalLengthSelectRow(selectedFlatRows.length);
             if (selectedFlatRows.length > 0) {
-                const selects = selectedFlatRows.map((row) =>  row.values )
+                const selects = selectedFlatRows.map((row) => row.values);
                 returnSelectRows && returnSelectRows(selects);
                 returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
@@ -452,7 +454,7 @@ const ReactDataTableDevCost = (props) => {
         const filterData = updatedData.filter((data) => data.poiId); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
-        console.log("여기탐?", updatedData);
+        console.log("여기탐 개발외주 수정?", updatedData);
         console.log("updatedDataLength?", updatedDataLength);
 
         if (originDataLength > updatedDataLength) {
@@ -657,8 +659,20 @@ const ReactDataTableDevCost = (props) => {
             </div>
             <CompanyModal width={600} height={720} title="거래처 목록" isOpen={isOpenModalCompany} onClose={() => setIsOpenModalCompany(false)} />
             <ProductInfoModal width={600} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
-            <ProductGroupModal width={600} height={720} title="품목그룹 목록" isOpen={isOpenModalProductGroup} onClose={() => setIsOpenModalProductGroup(false)} />
-            <EmployerInfoModal width={600} height={770} title="업무회원 목록" isOpen={isOpenModalEmployerInfo} onClose={() => setIsOpenModalEmployerInfo(false)} />
+            <ProductGroupModal
+                width={600}
+                height={720}
+                title="품목그룹 목록"
+                isOpen={isOpenModalProductGroup}
+                onClose={() => setIsOpenModalProductGroup(false)}
+            />
+            <EmployerInfoModal
+                width={600}
+                height={770}
+                title="업무회원 목록"
+                isOpen={isOpenModalEmployerInfo}
+                onClose={() => setIsOpenModalEmployerInfo(false)}
+            />
             {/*<div style={{ display: "flex" }}>
                 <span style={{ display: "flex", justifyContent: "center", width: "100px", backgroundColor: "#f2f2f2", border: "solid gray 1px" }}>
                     {current} 합계

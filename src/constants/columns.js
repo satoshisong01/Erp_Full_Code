@@ -480,7 +480,7 @@ export const columns = {
         condition: [
             //조건
             { title: "프로젝트명", col: "clCode", type: "input", value: "", searchLevel: "1" },
-            { title: "품목그룹명", col: "clCode2", type: "input", value: "", searchLevel: "1" },
+            { title: "품목그룹명", col: "pgNm", type: "input", value: "", searchLevel: "1" },
             { title: "연월", col: "clCodeNm", type: "input", value: "", searchLevel: "2" },
         ],
         project: [
@@ -689,6 +689,17 @@ export const columns = {
         ],
         budget: [
             //인건비 예산
+            { header: "프로젝트ID", col: "poiId", notView: true },
+            {
+                header: "구분코드",
+                col: "modeCode",
+                notView: true,
+            },
+            {
+                header: "타입코드",
+                col: "typeCode",
+                notView: true,
+            },
             {
                 header: "품목그룹명",
                 col: "pgNm",
@@ -696,7 +707,8 @@ export const columns = {
                 type: "productGroup",
                 require: true,
             },
-            { header: "담당자", col: "pecManpower", cellWidth: "25%", type: "input" },
+            { header: "담당자", col: "esntlId", cellWidth: "25%", type: "input" },
+            { header: "부서", col: "groupNm", cellWidth: "25%", type: "input" },
             {
                 header: "직급",
                 col: "pecPosition",

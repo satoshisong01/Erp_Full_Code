@@ -16,6 +16,7 @@ import "react-calendar/dist/Calendar.css";
 import { v4 as uuidv4 } from "uuid";
 import DayPicker from "components/input/DayPicker";
 import MonthPicker from "components/input/MonthPicker";
+import ProductGroupModal from "components/modal/ProductGroupModal";
 // import DataPostModalReactTable from "./DataPostModalReactTable";
 const ReactDataTable = (props) => {
     const {
@@ -70,6 +71,8 @@ const ReactDataTable = (props) => {
     const [current, setCurrent] = useState(viewPageName); //==viewPageName
     const [selectRow, setSelectRow] = useState({}); //마지막으로 선택한 row
     const [rowIndex, setRowIndex] = useState(0);
+
+    const [isOpenModalProductGroup, setIsOpenModalProductGroup] = useState(false); //품목그룹목록
 
     const handleDateClick = (date, colName, index) => {
         const updatedTableData = [...tableData];
@@ -171,8 +174,8 @@ const ReactDataTable = (props) => {
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
             //inner tab에서 저장을 눌렀을 때
-            if (innerPageName === "인건비") {
-                if ((typeof returnList === "function", nameOfButton === "save")) {
+            if (current === innerPageName && nameOfButton === "save") {
+                if (typeof returnList === "function") {
                     returnList(originTableData, tableData);
                 }
             } else if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
@@ -188,7 +191,7 @@ const ReactDataTable = (props) => {
         if (current !== innerPageName) {
             setTableData([]); //초기화
         }
-    }, [innerPageName, editing]);
+    }, [innerPageName, editing, nameOfButton]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
@@ -324,6 +327,8 @@ const ReactDataTable = (props) => {
                 useAt: "Y",
                 deleteAt: "N",
                 poiId: projectInfo.poiId,
+                typeCode: "MM",
+                modeCode: "BUDGET",
                 poiDesc: addData.poiDesc || projectInfo.poiVersion,
                 poId: projectInfo.poId,
             };
@@ -466,7 +471,7 @@ const ReactDataTable = (props) => {
             //모달화면일때
             setModalLengthSelectRow(selectedFlatRows.length);
             if (selectedFlatRows.length > 0) {
-                const selects = selectedFlatRows.map((row) =>  row.values )
+                const selects = selectedFlatRows.map((row) => row.values);
                 returnSelectRows && returnSelectRows(selects);
                 setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
                 returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
@@ -486,7 +491,7 @@ const ReactDataTable = (props) => {
     //품목그룹 선택
     const setValueData = (rowIndex) => {
         setRowIndex(rowIndex);
-        setIsOpenModalPgNm(true);
+        setIsOpenModalProductGroup(true);
     };
 
     useEffect(() => {
@@ -514,6 +519,12 @@ const ReactDataTable = (props) => {
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
                 newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 SLSP로 설정
+            } else if (column.accessor === "typeCode") {
+                newRow[column.accessor] = "MM"; // poiId를 항상 SLSP로 설정
+            } else if (column.accessor === "modeCode") {
+                newRow[column.accessor] = "BUDGET"; // poiId를 항상 SLSP로 설정
+            } else if (column.accessor === "esntlId") {
+                newRow[column.accessor] = "EMPLY_00000000000001"; // poiId를 항상 SLSP로 설정
             } else {
                 newRow[column.accessor] = null; // 다른 열은 초기화
             }
@@ -610,7 +621,7 @@ const ReactDataTable = (props) => {
         //     console.log("Current page does not match all pages");
         // }
         return current !== "" && (current === currentPageName || current === innerPageName || current === modalPageName);
-    }
+    };
 
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
@@ -729,6 +740,21 @@ const ReactDataTable = (props) => {
                                                             value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id] : ""}
                                                             onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                         />
+                                                    ) : cell.column.type === "productGroup" ? (
+                                                        <div>
+                                                            <input
+                                                                className="buttonSelect"
+                                                                id={cell.column.id}
+                                                                name={cell.column.col}
+                                                                key={cell.column.id + row.index}
+                                                                onClick={() => setValueData(rowIndex)}
+                                                                type="text"
+                                                                placeholder={`품목그룹명을 선택해 주세요.`}
+                                                                value={tableData[rowIndex].pgNm || ""}
+                                                                onChange={(e) => handleChange(e, row, cell.column.id)}
+                                                                readOnly
+                                                            />
+                                                        </div>
                                                     ) : cell.column.type === "monthPicker" ? (
                                                         <div className="box3-1 boxDate">
                                                             <MonthPicker
@@ -761,21 +787,6 @@ const ReactDataTable = (props) => {
                                                                 </option>
                                                             ))}
                                                         </select>
-                                                    ) : cell.column.type === "productGroup" ? (
-                                                        <div>
-                                                            <input
-                                                                className="buttonSelect"
-                                                                id={cell.column.id}
-                                                                name={cell.column.id}
-                                                                key={cell.column.id + row.index}
-                                                                onClick={() => setValueData(rowIndex)}
-                                                                type="text"
-                                                                placeholder={`품목그룹명을 선택해 주세요.`}
-                                                                value={tableData[rowIndex].pgNm || ""}
-                                                                onChange={(e) => handleChange(e, row, cell.column.id)}
-                                                                readOnly
-                                                            />
-                                                        </div>
                                                     ) : typeof cell.value === "number" ? (
                                                         cell.value && cell.value.toLocaleString()
                                                     ) : (
@@ -867,6 +878,13 @@ const ReactDataTable = (props) => {
                 />
             )} */}
             <DeleteModal viewData={modalViewDatas} onConfirm={deleteClick} />
+            <ProductGroupModal
+                width={600}
+                height={720}
+                title="품목그룹 목록"
+                isOpen={isOpenModalProductGroup}
+                onClose={() => setIsOpenModalProductGroup(false)}
+            />
             {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
         </>
     );
