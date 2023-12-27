@@ -5,21 +5,22 @@ import { v4 as uuidv4 } from "uuid";
 
 /** 영업 폼 */
 function ApprovalFormExe({ viewPageName, returnData }) {
-    const { projectInfo, currentPageName  } = useContext(PageContext);
+    const { projectInfo, innerPageName } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
-    const [data, setData] = useState({poiId: "", poiNm: "", versionId: "", option: []})
-
+    const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
     useEffect(() => {
-        if (viewPageName !== currentPageName) return;
-        if (projectInfo.poiId !== "" && projectInfo.poiId !== data.poiId) { //프로젝트정보 바뀌었을 때
-            setData({poiId: projectInfo.poiId, poiNm: projectInfo.poiNm});
+        if (viewPageName !== innerPageName) return;
+        if (projectInfo.poiId !== "" && projectInfo.poiId !== data.poiId) {
+            //프로젝트정보 바뀌었을 때
+            setData({ poiId: projectInfo.poiId, poiNm: projectInfo.poiNm });
         }
-    }, [projectInfo, currentPageName]);
+    }, [projectInfo, innerPageName]);
 
     const onClick = () => {
-        returnData({...data});
-    }
+        console.log("실행 데이터", data);
+        returnData({ ...data });
+    };
 
     return (
         <>
@@ -48,13 +49,14 @@ function ApprovalFormExe({ viewPageName, returnData }) {
                             <td>{data.poiMonth}</td>
                             <th>최종 수정일</th>
                             <td>{data.lastModifyDate}</td>
-                            <td width={80} style={{textAlign: 'center'}}>
-                                <button type="button" className="table-btn table-btn-default" onClick={onClick}>조회</button>
+                            <td width={80} style={{ textAlign: "center" }}>
+                                <button type="button" className="table-btn table-btn-default" onClick={onClick}>
+                                    조회
+                                </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                
             </div>
         </>
     );
