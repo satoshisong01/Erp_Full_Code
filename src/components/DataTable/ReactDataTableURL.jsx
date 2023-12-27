@@ -12,6 +12,8 @@ import CompanyModal from "components/modal/CompanyModal";
 import ProductInfoModal from "components/modal/ProductInfoModal";
 import ProductGroupModal from "components/modal/ProductGroupModal";
 import DayPicker from "components/input/DayPicker";
+import EmployerInfoModal from "components/modal/EmployerInfoModal";
+import BasicInput from "components/input/BasicInput";
 
 /* 경비 테이블 */
 const ReactDataTableURL = (props) => {
@@ -47,6 +49,8 @@ const ReactDataTableURL = (props) => {
         isModalTable,
         setNameOfButton,
         setModalLengthSelectRow,
+        emUserInfo,
+        setEmUserInfo,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -60,6 +64,8 @@ const ReactDataTableURL = (props) => {
     const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false); //거래처정보목록
     const [isOpenModalProductGroup, setIsOpenModalProductGroup] = useState(false); //품목그룹
+    const [isOpenModalEmployerInfo, setIsOpenModalEmployerInfo] = useState(false); //업무회원목록
+    const [colName, setColName] = useState("");
 
     /* 최초 실행, 데이터 초기화  */
     useEffect(() => {
@@ -80,7 +86,7 @@ const ReactDataTableURL = (props) => {
     }, [customDatas]);
 
     useEffect(() => {
-        console.log(tableData);
+        console.log(tableData, "tableData");
     }, [tableData]);
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
@@ -106,8 +112,27 @@ const ReactDataTableURL = (props) => {
         } else if (current === "경비계획" && nameOfButton === "save") {
             returnList(originTableData, tableData);
             setNameOfButton("");
+        } else if (current === "경비실행" && nameOfButton === "save") {
+            returnList(originTableData, tableData);
+            setNameOfButton("");
         }
     }, [innerPageName, editing, nameOfButton]);
+
+    useEffect(() => {
+        //업무회원
+        if (!emUserInfo || emUserInfo.uniqId === "") return;
+        const updatedTableData = [...tableData];
+        updatedTableData[rowIndex] = {
+            ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+            ...emUserInfo,
+            esntlId: emUserInfo.uniqId,
+        };
+        setTableData(updatedTableData);
+
+        //setTableData((prevData) => {
+        //    return [{ ...prevData, ...emUserInfo }];
+        //});
+    }, [emUserInfo]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
 
@@ -303,7 +328,7 @@ const ReactDataTableURL = (props) => {
                 newRow[column.accessor] = versionInfo.versionId; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "esntlId") {
                 //임시 업무회원 삭제해야함
-                newRow[column.accessor] = "EMPLY_00000000000001"; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                newRow[column.accessor] = emUserInfo.uniqId; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "pjbgTypeCode") {
                 newRow[column.accessor] = "EXPNS01"; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "useAt") {
@@ -316,6 +341,9 @@ const ReactDataTableURL = (props) => {
                 newRow[column.accessor] = null; // 다른 열은 초기화
             }
             if (viewPageName === "경비실행") {
+                if (column.accessor === "modeCode") {
+                    newRow[column.accessor] = "EXECUTE"; // useAt 항상 "Y"로 설정
+                }
             }
         });
 
@@ -363,15 +391,15 @@ const ReactDataTableURL = (props) => {
         }
     };
 
-    const updateItemArray = async (toUpdate) => {
-        const dataArray = generateUpdateObjects(toUpdate);
-        const url = `/api/baseInfrm/product/pjbudget/editList.do`;
-        const resultData = await axiosUpdate(url, dataArray);
+    //const updateItemArray = async (toUpdate) => {
+    //    const dataArray = generateUpdateObjects(toUpdate);
+    //    const url = `/api/baseInfrm/product/pjbudget/editList.do`;
+    //    const resultData = await axiosUpdate(url, dataArray);
 
-        if (resultData) {
-            customDatasRefresh && customDatasRefresh();
-        }
-    };
+    //    if (resultData) {
+    //        customDatasRefresh && customDatasRefresh();
+    //    }
+    //};
 
     const deleteItem = async (removeItem) => {
         const url = `/api/baseInfrm/product/pjbudget/removeAll.do`;
@@ -382,35 +410,35 @@ const ReactDataTableURL = (props) => {
         }
     };
 
-    const generateUpdateObjects = (updatedData) => {
-        let updates = [];
+    //const generateUpdateObjects = (updatedData) => {
+    //    let updates = [];
 
-        updatedData.forEach((upItem) => {
-            const { pjbgId } = upItem; // id 배열
-            const colNames = Object.keys(upItem).filter((key) => key.startsWith("pjbgPrice")); // 경비종류 배열
-            if (pjbgId && colNames && pjbgId.length > 0 && colNames.length > 0 && pjbgId.length === colNames.length) {
-                colNames.forEach((name, index) => {
-                    const dataSet = {
-                        versionId: versionInfo.versionId,
-                        pgNm: upItem.pgNm,
-                        pgId: upItem.pgId,
-                        pjbgBeginDt: upItem.pjbgBeginDt,
-                        pjbgDesc: upItem.pjbgDesc,
-                        pjbgDt: upItem.pjbgDt,
-                        pjbgManpower: upItem.pjbgManpower,
-                        pjbgEndDt: upItem.pjbgEndDt,
-                        poiId: projectInfo.poiId,
-                        pjbgId: pjbgId[index],
-                        pjbgPrice: upItem[name],
-                    };
+    //    updatedData.forEach((upItem) => {
+    //        const { pjbgId } = upItem; // id 배열
+    //        const colNames = Object.keys(upItem).filter((key) => key.startsWith("pjbgPrice")); // 경비종류 배열
+    //        if (pjbgId && colNames && pjbgId.length > 0 && colNames.length > 0 && pjbgId.length === colNames.length) {
+    //            colNames.forEach((name, index) => {
+    //                const dataSet = {
+    //                    versionId: versionInfo.versionId,
+    //                    pgNm: upItem.pgNm,
+    //                    pgId: upItem.pgId,
+    //                    pjbgBeginDt: upItem.pjbgBeginDt,
+    //                    pjbgDesc: upItem.pjbgDesc,
+    //                    pjbgDt: upItem.pjbgDt,
+    //                    pjbgManpower: upItem.pjbgManpower,
+    //                    pjbgEndDt: upItem.pjbgEndDt,
+    //                    poiId: projectInfo.poiId,
+    //                    pjbgId: pjbgId[index],
+    //                    pjbgPrice: upItem[name],
+    //                };
 
-                    updates.push(dataSet);
-                });
-            }
-        });
+    //                updates.push(dataSet);
+    //            });
+    //        }
+    //    });
 
-        return updates;
-    };
+    //    return updates;
+    //};
 
     const handleDateClick = (date, colName, index) => {
         const updatedTableData = [...tableData];
@@ -474,6 +502,12 @@ const ReactDataTableURL = (props) => {
             total += item.pjbgPrice;
             setTotalPrice(total);
         });
+    };
+
+    const changeEmployerInfo = (colName, rowIndex) => {
+        setRowIndex(rowIndex);
+        setColName(colName);
+        setIsOpenModalEmployerInfo(true);
     };
 
     const isCurrentPage = () => {
@@ -633,6 +667,13 @@ const ReactDataTableURL = (props) => {
                                                                 readOnly
                                                             />
                                                         </div>
+                                                    ) : cell.column.type === "employerInfo" ? (
+                                                        <BasicInput
+                                                            item={cell.column}
+                                                            onClick={() => changeEmployerInfo(cell.column.id, rowIndex)}
+                                                            value={tableData[row.index][cell.column.id] ?? ""}
+                                                            readOnly
+                                                        />
                                                     ) : cell.column.type === "dayPicker" ? (
                                                         <DayPicker
                                                             name={cell.column.id}
@@ -724,6 +765,14 @@ const ReactDataTableURL = (props) => {
                 title="품목그룹 목록"
                 isOpen={isOpenModalProductGroup}
                 onClose={() => setIsOpenModalProductGroup(false)}
+            />
+            <EmployerInfoModal
+                width={600}
+                height={770}
+                title="업무회원 목록"
+                isOpen={isOpenModalEmployerInfo}
+                onClose={() => setIsOpenModalEmployerInfo(false)}
+                colName={colName}
             />
             {/*<div style={{ display: "flex" }}>
                 <span style={{ display: "flex", justifyContent: "center", width: "100px", backgroundColor: "#f2f2f2", border: "solid gray 1px" }}>
