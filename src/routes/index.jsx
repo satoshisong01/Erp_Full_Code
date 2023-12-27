@@ -73,11 +73,12 @@ import CostStatement from "pages/approval/CostStatement";
 //견적서 페이지
 import EstimatePopupContainer from "pages/approval/EstimatePopupContainer";
 import BusiCalculateDoc from "pages/sales/Business/BusiCalculateDoc";
-import ExcutionCostsDoc from "pages/execution/excutionCost/ExcutionCostsDoc";
-import LaborPreCostDoc from "pages/sales/Business/LaborPreCostDoc";
+import ExcutionCostsDoc from "pages/execution/excutionCost/ExecutionCostsDoc";
+import LaborPreCostDoc from "pages/sales/Business/PreCostDoc";
 
 //급별단가 함수
 import { ReorganizeManCost, ReorganizeData } from "components/DataTable/function/ReorganizeData";
+import ExecutionCostsDoc from "pages/execution/excutionCost/ExecutionCostsDoc";
 
 // 에러 페이지와 같은 상단(EgovHeader) 소스가 제외된 페이지에서 ui.js의 햄버거버튼 작동오류가 발생한다.
 // 즉, ui.js가 작동되지 않아서 재 로딩 해야 한다. 그래서, useRef객체를 사용하여 이전 페이지 URL을 구하는 코드 추가(아래)
@@ -262,14 +263,11 @@ const RootRoutes = () => {
                 {/* 에러페지시 호출시 이전 prevUrl객체를 전송하는 코드 추가(아래) */}
                 <Route path={URL.ERROR} element={<EgovError prevUrl={prevLocation} />} />
                 <Route path="*" element={<SecondRoutes />} />
-                {/* <Route path={URL.ApprovalContainer} element={<ApprovalContainer />} />
-                <Route path={URL.CostStatement} element={<CostStatement />} /> */}
                 <Route path={URL.EstimatePopupContainer} element={<EstimatePopupContainer />} />
                 {/* 새창(팝업) : 사전원가계산서 */}
-                {/* <Route path={URL.BusiCalculateDoc} element={<BusiCalculateDoc />} /> */}
-                <Route path={URL.LaborPreCostDoc} element={<LaborPreCostDoc />} />
+                <Route path={URL.PreCostDoc} element={<LaborPreCostDoc />} />
                 {/* 새창(팝업) : 실행원가계산서 */}
-                <Route path={URL.ExcutionCostsDoc} element={<ExcutionCostsDoc />} />
+                <Route path={URL.ExecutionCostsDoc} element={<ExecutionCostsDoc />} />
             </Routes>
         );
     }

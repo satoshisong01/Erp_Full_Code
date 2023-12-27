@@ -21,6 +21,8 @@ import ReactDataTableDevCost from "components/DataTable/ReactDataTableDevCost";
 import DeleteModal from "components/modal/DeleteModal";
 import SearchList from "components/SearchList";
 import ReactDataTableSaleCost from "components/DataTable/ReactDataTableSaleCost";
+import PopupButton from "components/button/PopupButton";
+import URL from "constants/url";
 
 /** 영업관리-계획관리 */
 function OrderPlanMgmt() {
@@ -431,6 +433,7 @@ function OrderPlanMgmt() {
                             <SearchList conditionList={columns.orderPlanMgmt.versionCondition} onSearch={onSearch} />
                             <HideCard title="원가 버전 목록" color="back-lightblue" className="mg-b-40">
                                 <div className="table-buttons mg-b-m-30">
+                                    <PopupButton targetUrl={URL.PreCostDoc} data={{ label: "사전원가서", projectInfo, versionInfo }} />
                                     <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
                                     <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
                                     <DelButton label={"삭제"} onClick={() => setIsOpenDel(true)} />

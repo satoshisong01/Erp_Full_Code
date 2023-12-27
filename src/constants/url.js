@@ -11,12 +11,14 @@ const URL = {
     LOGIN: "/login", //로그인
     ERROR: "/error",
 
-    ApprovalContainer: "/approvalContainer", //전자결재 페이지
-    EstimatePopupContainer: "/estimatePopupContainer",
-    CostStatement: "/costStatement", //전자결재 페이지
-    LaborPreCostDoc: "/laborPreCostDoc", //인건비사전원가서 팝업
-    BusiCalculateDoc: "/buyingPreCostDoc", //구매사전원가서 팝업
-    ExcutionCostsDoc: "/excutionCostsDoc", //실행원가서(사후정산서) 팝업
+    // ApprovalContainer: "/approvalContainer", //전자결재 페이지
+    // EstimatePopupContainer: "/estimatePopupContainer",
+    // CostStatement: "/costStatement", //전자결재 페이지
+    // LaborPreCostDoc: "/laborPreCostDoc", //인건비사전원가서 팝업
+    // BusiCalculateDoc: "/buyingPreCostDoc", //구매사전원가서 팝업
+    PreCostDoc: "/preCostDoc", //사전원가서 팝업
+    ExecutionCostsDoc: "/executionCostsDoc", //실행원가서 팝업 
+    PostCostsDoc: "/postCostsDoc", //사후정산서 팝업
 
     //REFERENCE 기준정보관리
     Reference: "/reference", //기준정보관리

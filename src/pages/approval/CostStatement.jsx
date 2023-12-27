@@ -1,7 +1,7 @@
 import CostStatementForm from "components/form/CostStatementForm";
-import ExcutionCostsDoc from "pages/execution/excutionCost/ExcutionCostsDoc";
+import ExcutionCostsDoc from "pages/execution/excutionCost/ExecutionCostsDoc";
 import BusiCalculateDoc from "pages/sales/Business/BusiCalculateDoc";
-import LaborPreCostDoc from "pages/sales/Business/LaborPreCostDoc";
+import LaborPreCostDoc from "pages/sales/Business/PreCostDoc";
 import React, { useEffect, useState } from "react";
 
 /* 사전 원가 계산서, 실행 원가 계산서 */

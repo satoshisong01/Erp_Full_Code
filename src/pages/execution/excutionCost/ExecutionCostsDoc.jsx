@@ -5,8 +5,8 @@ import { axiosFetch } from "api/axiosFetch";
 import BasicDataTable from "components/DataTable/BasicDataTable";
 import FormDataTable from "components/DataTable/FormDataTable";
 
-/* 인건비 사전 원가 계산서 */
-const LaborPreCostDoc = () => {
+/* 실행 원가 계산서 */
+const ExecutionCostsDoc = () => {
     const coreTable = useRef(null); // 손익계산서 테이블
     const purchasingTable = useRef(null); // 구매재료비 테이블
     const chargeTable = useRef(null); // 경비테이블
@@ -29,10 +29,10 @@ const LaborPreCostDoc = () => {
         // URL에서 "data" 파라미터 읽기
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
+        console.log("실행원가서 시작~~ ", data);
         if (data.projectInfo.poiId) {
             getInitData(data.projectInfo.poiId); //서버에서 데이터 호출
         }
-        console.log("사전원가 들어옴");
     }, []);
 
     // URL에서 쿼리 문자열 파라미터를 읽는 함수
@@ -118,12 +118,10 @@ const LaborPreCostDoc = () => {
     };
 
     const getInitData = async (poiId) => {
-        // const url = "http://localhost:8080/api/baseInfrm/product/prstmCost/mm/listAll.do";
-        const url = "/api/baseInfrm/product/prstmCost/mm/listAll.do";
-        // const requestData = { poiId };
-        console.log("💜 사전원가서 poiId:",poiId,"url:",url);
-        const resultData = await axiosFetch(url, { poiId });
-        console.log("💜 사전원가서 resultData:",resultData);
+        const url = "/api/baseInfrm/product/prstmCost/exe/listAll.do";
+        const requestData = { poiId };
+        const resultData = await axiosFetch(url, requestData);
+        console.log("💜실행원가서: ", resultData);
         const {
             projectInfoToServer, //수주정보
             salesBudgetIn, //수주액>자체용역
@@ -725,4 +723,4 @@ const LaborPreCostDoc = () => {
     );
 };
 
-export default LaborPreCostDoc;
+export default ExecutionCostsDoc;
