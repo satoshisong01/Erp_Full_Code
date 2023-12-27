@@ -7,84 +7,83 @@ import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 import { columns } from "constants/columns";
 import ApprovalFormExe from "components/form/ApprovalFormExe";
 import HideCard from "components/HideCard";
+import SaveButton from "components/button/SaveButton";
+import RefreshButton from "components/button/RefreshButton";
 
 /** 실행관리-구매관리 */
 function PurchasingMgmtExe() {
-    const {
-        currentPageName,
-        innerPageName,
-        setInnerPageName,
-        setCurrentPageName,
-        projectInfo,
-        setProjectInfo,
-    } = useContext(PageContext);
+    const { currentPageName, setCurrentPageName, projectInfo, setProjectInfo, setNameOfButton } = useContext(PageContext);
+    const [condition, setCondition] = useState({});
+    const [runMgmt, setRunMgmt] = useState([]); // 구매 실행관리
 
     useEffect(() => {
-        setInnerPageName("구매 조회관리");
-        setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
-
         return () => {
             setProjectInfo({});
         };
     }, []);
 
-    const orderPlanMgmtTable4 = useRef(null);
-
-    const refresh = () => {
-        fetchData();
-    };
-
-    const [runMgmt, setRunMgmt] = useState([]); // 구매 실행관리
+    const current = "구매실행";
 
     useEffect(() => {
-        if (projectInfo.poiId && projectInfo.poId) {
-            //구매종류를 선택 했을 때
-            fetchData();
+        if(current === "구매실행" && currentPageName !== current) {
+            setCurrentPageName(current)
         }
-        if (projectInfo.poId === undefined || projectInfo.poId === "") {
-            //테이블 초기화
-            setRunMgmt([]);
-        }
-    }, [currentPageName, innerPageName, projectInfo]);
+    }, [currentPageName]);
+    
 
-    const fetchData = async () => {
-        try {
-            if (innerPageName === "구매 실행관리") {
-                const data = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", {
-                    poiId: projectInfo.poiId,
-                    modeCode: "EXCU",
-                    poId: projectInfo.poId,
-                });
-                data ? setRunMgmt(changeData(data)) : setRunMgmt([]);
-            }
-        } catch (error) {
-            console.error("데이터를 가져오는 중에 오류 발생:", error);
-        }
+    // useEffect(() => {
+    //         setRunMgmt([]); //테이블 초기화
+    // }, [projectInfo]);
+
+    const fetchAllData = async (condition) => {
+        const data = await axiosFetch("/api/baseInfrm/product/buyIngInfoExe/totalListAll.do", condition);
+        console.log("구매data:", data, "condition:", condition);
+        data ? setRunMgmt(changeData(data)) : setRunMgmt([]);
     };
-
 
     const changeData = (data) => {
         const updateData = data.map((data) => ({ ...data, price: data.byUnitPrice * data.byQunty }));
         return updateData;
     };
 
+    const refresh = () => {
+        if(condition.poiId) {
+            fetchAllData(condition);
+        }
+    }
+
+    const conditionInfo = (value) => {
+        setCondition((prev) => {
+            if (prev.poiId !== value.poiId) {
+                const newCondition = { poiId: value.poiId, modeCode: "EXECUTE" };
+                fetchAllData(newCondition);
+                return newCondition;
+            }
+            return prev; 
+        });
+    }
+
     return (
         <>
             <Location pathList={locationPath.PurchasingMgmt} />
-            <ApprovalFormExe viewPageName="실행구매" />
+            <ApprovalFormExe viewPageName={current} returnData={conditionInfo}/>
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
             </HideCard>
             <HideCard title="계획 등록/수정" color="back-lightblue">
+                <div className="table-buttons mg-b-m-30">
+                    <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                    <RefreshButton onClick={refresh} />
+                </div>
                 <ReactDataTablePdorder
-                    singleUrl="/baseInfrm/product/buyIngInfo"
+                    suffixUrl="/baseInfrm/product/buyIngInfoExe"
+                    editing={true}
                     columns={columns.purchasingMgmt.run}
-                    tableRef={orderPlanMgmtTable4}
                     customDatas={runMgmt}
-                    viewPageName="실행구매"
+                    viewPageName={current}
                     customDatasRefresh={refresh}
-                    hideCheckBox={true}
+                    condition={condition}
                 />
             </HideCard>
         </>
