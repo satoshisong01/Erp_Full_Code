@@ -9,21 +9,11 @@ import ReactDataTable from "components/DataTable/ReactDataTable";
 
 /* 프로젝트 목록 모달 */
 export default function ProjectModal(props) {
-    const { width, height, onClose, title } = props;
+    const { width, height, onClose, title, returnInfo } = props;
     const { setProjectInfo, setModalPageName, setIsModalTable} = useContext(PageContext);
     const [projectList, setProjectList] = useState([]);
     const [selectInfo, setSelectInfo]  = useState({});
     const bodyRef = useRef(null);
-
-    useEffect(() => {
-        // me-modal-body의 높이를 동적 계산
-        if (bodyRef.current) {
-            const headerHeight = document.querySelector(".me-modal-header")?.clientHeight || 0;
-            const footerHeight = document.querySelector(".me-modal-footer")?.clientHeight || 0;
-            const calculatedHeight = height - headerHeight - footerHeight;
-            bodyRef.current.style.height = `${calculatedHeight}px`;
-        }
-    }, [height]);
 
     useEffect(() => {
         getProjectList();
@@ -35,6 +25,16 @@ export default function ProjectModal(props) {
             setModalPageName("")
         })
     }, [])
+    
+    useEffect(() => {
+        // me-modal-body의 높이를 동적 계산
+        if (bodyRef.current) {
+            const headerHeight = document.querySelector(".me-modal-header")?.clientHeight || 0;
+            const footerHeight = document.querySelector(".me-modal-footer")?.clientHeight || 0;
+            const calculatedHeight = height - headerHeight - footerHeight;
+            bodyRef.current.style.height = `${calculatedHeight}px`;
+        }
+    }, [height]);
 
     const getProjectList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/pjOrdrInfo/totalListAll.do", requestData || {});
@@ -63,7 +63,9 @@ export default function ProjectModal(props) {
 
     const onClick = (e) => {
         e.preventDefault();
-        setProjectInfo({...selectInfo})
+        returnInfo({...selectInfo})
+        // setProjectInfo({...selectInfo})
+        setProjectInfo({}) //초기화
         onClose();
     }
     

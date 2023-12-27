@@ -18,7 +18,7 @@ import EmployerInfoModal from "components/modal/EmployerInfoModal";
 
 export default function MakeItemField({ item, resultData, initialData }) {
     const {
-        projectInfo,
+        // projectInfo,
         companyInfo,
         pdiNmList,
         projectPdiNm,
@@ -55,13 +55,20 @@ export default function MakeItemField({ item, resultData, initialData }) {
         // setCompanyInfo({}); //초기화
     }, [companyInfo]);
 
-    useEffect(() => { //프로젝트
-        if(Object.values(projectInfo).length > 0) {
-            setData((prevData) => {
-                return { ...prevData, ...projectInfo };
-            });
-        }
-    }, [projectInfo])
+    // useEffect(() => { //프로젝트
+    //     if(Object.values(projectInfo).length > 0) {
+    //         setData((prevData) => {
+    //             return { ...prevData, ...projectInfo };
+    //         });
+    //     }
+    // }, [projectInfo])
+
+    const setProjectInfo = (value) => {
+        if(value.poiId === "" || !value) return;
+        setData(prevData => {
+            return { ...prevData, ...value};
+        });
+    }
 
     useEffect(() => {
         //품목
@@ -196,7 +203,7 @@ export default function MakeItemField({ item, resultData, initialData }) {
     return (
         <>
             {renderField(item)}
-            {isOpenModalProject && <ProjectModal width={550} height={770} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} />}
+            {isOpenModalProject && <ProjectModal width={550} height={770} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} returnInfo={setProjectInfo} />}
             <CompanyModal width={500} height={550} title="거래처 목록" isOpen={isOpenModalCompany} onClose={() => setIsOpenModalCompany(false)} />
             <ProductInfoModal width={600} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
             <ProductGroupModal width={600} height={720} title="품목그룹 목록" isOpen={isOpenModalProductGroup} onClose={() => setIsOpenModalProductGroup(false)} />

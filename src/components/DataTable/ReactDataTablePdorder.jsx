@@ -23,6 +23,7 @@ const ReactDataTablePdorder = (props) => {
         hideCheckBox,
         editing,
         suffixUrl,
+        condition, //poiId와 같은 조회에 필요한 조건
     } = props;
     const {
         nameOfButton,
@@ -38,7 +39,7 @@ const ReactDataTablePdorder = (props) => {
         modalPageName,
         isCancelTable,
         setIsCancelTable,
-        projectInfo,
+        // projectInfo,
         isOpenModalPgNm,
         setIsOpenModalPgNm,
         projectPdiNm,
@@ -85,12 +86,14 @@ const ReactDataTablePdorder = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        // console.log("current:", current, "innerPageName:", innerPageName, "currentPageName:",currentPageName, "editing",editing);
+        console.log("current:", current, "innerPageName:", innerPageName, "currentPageName:",currentPageName, "editing",editing);
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
         if (isCurrentPage() && nameOfButton === "save") {
+            console.log("??");
             compareData(originTableData, tableData);
+            setNameOfButton(""); //초기화
         }
     }, [innerPageName, currentPageName, editing, nameOfButton]);
     
@@ -210,7 +213,7 @@ const ReactDataTablePdorder = (props) => {
         const newRow = {};
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
-                newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 SLSP로 설정
+                newRow[column.accessor] = condition.poiId; // poiId를 항상 SLSP로 설정
             } else {
                 newRow[column.accessor] = null; // 다른 열은 초기화
             }
@@ -334,48 +337,59 @@ const ReactDataTablePdorder = (props) => {
 
     const addList = async (addNewData) => {
         if(!isCurrentPage() && !suffixUrl && !Array.isArray(addNewData)) return;
+        if(!condition || condition.poiId === undefined) {
+            console.log('❗프로젝트 정보 없음', currentPageName);
+            return;
+        }
         if(currentPageName === "구매계획") { //실행
             addNewData.forEach((data) => {
-                data.poiId = projectInfo.poiId;
+                data.poiId = condition.poiId;
                 data.modeCode = "BUDGET";
             });
         } else if(currentPageName === "구매실행") { //실행
             addNewData.forEach((data) => {
-                data.poiId = projectInfo.poiId;
+                data.poiId = condition.poiId;
                 data.modeCode = "EXECUTE";
             });
         } else if(innerPageName === "구매(재료비)") { //영업
             addNewData.forEach((data) => {
-                data.poiId = projectInfo.poiId;
+                data.poiId = condition.poiId;
                 data.versionId = versionInfo.versionId;
             });
         }
+
         const url = `/api${suffixUrl}/addList.do`;
         const resultData = await axiosPost(url, addNewData);
+        console.log("✨1.", resultData, "addNewData:", addNewData, "url:", url);
         customDatasRefresh();
         setOriginTableData([]);
     };
 
     const updateList = async (toUpdate) => {
         if(!isCurrentPage() && !suffixUrl && !Array.isArray(toUpdate)) return;
+        if(!condition || condition.poiId === undefined) {
+            console.log('❗프로젝트 정보 없음');
+            return;
+        }
         if(currentPageName === "구매계획") {
             toUpdate.forEach((data) => {
-                data.poiId = projectInfo.poiId;
+                data.poiId = condition.poiId;
                 data.modeCode = "BUDGET";
             });
         } else if(currentPageName === "구매실행") {
             toUpdate.forEach((data) => {
-                data.poiId = projectInfo.poiId;
+                data.poiId = condition.poiId;
                 data.modeCode = "EXECUTE";
             });
         } else if(innerPageName === "구매(재료비)") { //영업
             toUpdate.forEach((data) => {
-                data.poiId = projectInfo.poiId;
+                data.poiId = condition.poiId;
                 data.versionId = versionInfo.versionId;
             });
         }
         const url = `/api${suffixUrl}/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
+        console.log("✨2.",resultData, "toUpdate:", toUpdate);
         customDatasRefresh();
         setOriginTableData([]);
     };
@@ -384,29 +398,32 @@ const ReactDataTablePdorder = (props) => {
         if(!isCurrentPage() && !suffixUrl && !Array.isArray(removeItem)) return;
         const url = `/api${suffixUrl}/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
+        console.log("✨3.",resultData, "removeItem:", removeItem);
         customDatasRefresh();
         setOriginTableData([]);
     };
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
     const compareData = (originData, updatedData) => {
+        console.log("컴페어!!!!!!!");
         const filterData = updatedData.filter((data) => data.pdiId); //필수값 체크
         const originDataLength = originData ? originData.length : 0;
-        const updatedDataLength = updatedData ? updatedData.length : 0;
+        const updatedDataLength = filterData ? filterData.length : 0;
+
         if (originDataLength > updatedDataLength) {
             //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
-            const updateDataInOrigin = (originData, updatedData) => {
+            const updateDataInOrigin = (originData, filterData) => {
                 // 복제하여 새로운 배열 생성
                 const updatedArray = [...originData];
                 // updatedData의 길이만큼 반복하여 originData 갱신
-                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
-                    const updatedItem = updatedData[i];
+                for (let i = 0; i < Math.min(filterData.length, originData.length); i++) {
+                    const updatedItem = filterData[i];
                     updatedArray[i] = { ...updatedItem, byId: updatedArray[i].byId };
                 }
                 return updatedArray;
             };
 
-            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
+            const firstRowUpdate = updateDataInOrigin(originData, filterData);
             updateList(firstRowUpdate);
 
             const originAValues = originData.map((item) => item.byId); //삭제할 id 추출
