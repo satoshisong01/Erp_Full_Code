@@ -14,21 +14,19 @@ import ReactDataTable from "components/DataTable/ReactDataTable";
 function ExpenseMgmtPlan() {
     const { projectInfo, setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton, setInnerPageName } = useContext(PageContext);
     const [pjbudgetDatasView, setPjbudgetDatasView] = useState([]); // 경비
+    const [condition, setCondition] = useState({});
+
+    const current = "경비계획";
 
     useEffect(() => {
-        setInnerPageName("경비계획");
-        setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
-
-        return () => {
-            setProjectInfo({});
-        };
+        if (current === "경비계획" && currentPageName !== current) {
+            setCurrentPageName(current);
+        }
     }, [currentPageName]);
 
-    const [poiIdToSend, setPoiIdToSend] = useState();
-
     const refresh = () => {
-        if (projectInfo.poiId) {
-            fetchAllData({ poiId: projectInfo.poiId, modeCode: "BUDGET" });
+        if (condition.poiId) {
+            fetchAllData(condition);
         }
     };
 
@@ -303,6 +301,17 @@ function ExpenseMgmtPlan() {
         }
     };
 
+    const conditionInfo = (value) => {
+        setCondition((prev) => {
+            if (prev.poiId !== value.poiId) {
+                const newCondition = { poiId: value.poiId, modeCode: "BUDGET" };
+                fetchAllData(newCondition);
+                return newCondition;
+            }
+            return prev;
+        });
+    };
+
     const updatePjbgType = (viewData) => {
         const pjbgTypeMap = {
             EXPNS01: "교통비",
@@ -350,7 +359,7 @@ function ExpenseMgmtPlan() {
     return (
         <>
             <Location pathList={locationPath.ExpenseMgmt} />
-            <ApprovalFormExe viewPageName="경비계획" returnData={(condition) => fetchAllData({ ...condition, modeCode: "BUDGET" })} />
+            <ApprovalFormExe viewPageName={current} returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
                 <ReactDataTable columns={columns.orderPlanMgmt.expenses} customDatas={pjbudgetDatasView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
@@ -365,8 +374,9 @@ function ExpenseMgmtPlan() {
                     returnList={returnList}
                     columns={columns.expenseMgmt.budget}
                     customDatas={budgetMgmt}
-                    viewPageName="경비계획"
+                    viewPageName={current}
                     customDatasRefresh={refresh}
+                    condition={condition}
                 />
             </HideCard>
         </>

@@ -17,6 +17,8 @@ import { v4 as uuidv4 } from "uuid";
 import DayPicker from "components/input/DayPicker";
 import MonthPicker from "components/input/MonthPicker";
 import ProductGroupModal from "components/modal/ProductGroupModal";
+import EmployerInfoModal from "components/modal/EmployerInfoModal";
+import BasicInput from "components/input/BasicInput";
 // import DataPostModalReactTable from "./DataPostModalReactTable";
 const ReactDataTable = (props) => {
     const {
@@ -36,6 +38,7 @@ const ReactDataTable = (props) => {
         perSent, //단위 -> unit 변수명변경
         sendToParentGrade, //부모로 리턴 ---> returnList 사용하세요!
         saveIdNm, //이건뭐죠? 부모로 배열 리턴이면 returnList 사용하세요!
+        condition, //poiId와 같은 조회에 필요한 조건
     } = props;
     const {
         nameOfButton,
@@ -53,13 +56,14 @@ const ReactDataTable = (props) => {
         modalPageName,
         isCancelTable,
         setIsCancelTable,
-        projectInfo,
+        //projectInfo,
         isOpenModalPgNm,
         setIsOpenModalPgNm,
         projectPgNm,
         setProjectPgNm,
         setProjectInfo,
         unitPriceList,
+        emUserInfo,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -73,6 +77,8 @@ const ReactDataTable = (props) => {
     const [rowIndex, setRowIndex] = useState(0);
 
     const [isOpenModalProductGroup, setIsOpenModalProductGroup] = useState(false); //품목그룹목록
+    const [isOpenModalEmployerInfo, setIsOpenModalEmployerInfo] = useState(false); //업무회원목록
+    const [colName, setColName] = useState("");
 
     const handleDateClick = (date, colName, index) => {
         const updatedTableData = [...tableData];
@@ -174,10 +180,8 @@ const ReactDataTable = (props) => {
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
             //inner tab에서 저장을 눌렀을 때
-            if (current === innerPageName && nameOfButton === "save") {
-                if (typeof returnList === "function") {
-                    returnList(originTableData, tableData);
-                }
+            if (current === "인건비" && nameOfButton === "save") {
+                returnList(originTableData, tableData);
             } else if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
                 returnList(originTableData, tableData);
             } else if (innerPageName === "사전원가지표" && !editing) {
@@ -191,7 +195,7 @@ const ReactDataTable = (props) => {
         if (current !== innerPageName) {
             setTableData([]); //초기화
         }
-    }, [innerPageName, editing, nameOfButton]);
+    }, [innerPageName, current, editing, nameOfButton]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
@@ -216,6 +220,24 @@ const ReactDataTable = (props) => {
             setNameOfButton(""); //초기화
         }
     }, [nameOfButton]);
+
+    useEffect(() => {
+        if (isCurrentPage()) {
+            //업무회원
+            if (!emUserInfo || emUserInfo.uniqId === "") return;
+            const updatedTableData = [...tableData];
+            updatedTableData[rowIndex] = {
+                ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+                ...emUserInfo,
+                esntlId: emUserInfo.uniqId,
+            };
+            setTableData(updatedTableData);
+
+            //setTableData((prevData) => {
+            //    return [{ ...prevData, ...emUserInfo }];
+            //});
+        }
+    }, [emUserInfo]);
 
     const columnsConfig = useMemo(
         //컬럼 초기 상태
@@ -326,11 +348,11 @@ const ReactDataTable = (props) => {
                 lockAt: "Y",
                 useAt: "Y",
                 deleteAt: "N",
-                poiId: projectInfo.poiId,
+                poiId: condition.poiId,
                 typeCode: "MM",
                 modeCode: "BUDGET",
-                poiDesc: addData.poiDesc || projectInfo.poiVersion,
-                poId: projectInfo.poId,
+                poiDesc: addData.poiDesc || condition.poiVersion,
+                poId: condition.poId,
             };
 
             console.log("dataToSend:", dataToSend);
@@ -518,7 +540,7 @@ const ReactDataTable = (props) => {
         const newRow = {};
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
-                newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 SLSP로 설정
+                newRow[column.accessor] = condition.poiId; // poiId를 항상 SLSP로 설정
             } else if (column.accessor === "typeCode") {
                 newRow[column.accessor] = "MM"; // poiId를 항상 SLSP로 설정
             } else if (column.accessor === "modeCode") {
@@ -613,6 +635,12 @@ const ReactDataTable = (props) => {
         fetchAllData();
         refreshClick();
     }, [viewPageName]);
+
+    const changeEmployerInfo = (colName, rowIndex) => {
+        setRowIndex(rowIndex);
+        setColName(colName);
+        setIsOpenModalEmployerInfo(true);
+    };
 
     const isCurrentPage = () => {
         // if(current === "") {
@@ -734,6 +762,13 @@ const ReactDataTable = (props) => {
                                                                 }}
                                                             />
                                                         </div>
+                                                    ) : cell.column.type === "employerInfo" ? (
+                                                        <BasicInput
+                                                            item={cell.column}
+                                                            onClick={() => changeEmployerInfo(cell.column.id, rowIndex)}
+                                                            value={tableData[row.index][cell.column.id] ?? ""}
+                                                            readOnly
+                                                        />
                                                     ) : cell.column.type === "dayPicker" ? (
                                                         <DayPicker
                                                             name={cell.column.id}
@@ -884,6 +919,14 @@ const ReactDataTable = (props) => {
                 title="품목그룹 목록"
                 isOpen={isOpenModalProductGroup}
                 onClose={() => setIsOpenModalProductGroup(false)}
+            />
+            <EmployerInfoModal
+                width={600}
+                height={770}
+                title="업무회원 목록"
+                isOpen={isOpenModalEmployerInfo}
+                onClose={() => setIsOpenModalEmployerInfo(false)}
+                colName={colName}
             />
             {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
         </>

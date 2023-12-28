@@ -30,6 +30,7 @@ const ReactDataTableURL = (props) => {
         returnSelectRows,
         modalPageName,
         returnList,
+        condition, //poiId와 같은 조회에 필요한 조건
     } = props;
     const {
         prevCurrentPageName,
@@ -39,7 +40,7 @@ const ReactDataTableURL = (props) => {
         setLengthSelectRow,
         newRowData,
         currentPageName,
-        projectInfo,
+        //projectInfo,
         companyInfo,
         setCompanyInfo,
         projectPgNm,
@@ -116,22 +117,24 @@ const ReactDataTableURL = (props) => {
             returnList(originTableData, tableData);
             setNameOfButton("");
         }
-    }, [innerPageName, editing, nameOfButton]);
+    }, [innerPageName, currentPageName, editing, nameOfButton]);
 
     useEffect(() => {
-        //업무회원
-        if (!emUserInfo || emUserInfo.uniqId === "") return;
-        const updatedTableData = [...tableData];
-        updatedTableData[rowIndex] = {
-            ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
-            ...emUserInfo,
-            esntlId: emUserInfo.uniqId,
-        };
-        setTableData(updatedTableData);
+        if (isCurrentPage()) {
+            //업무회원
+            if (!emUserInfo || emUserInfo.uniqId === "") return;
+            const updatedTableData = [...tableData];
+            updatedTableData[rowIndex] = {
+                ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+                ...emUserInfo,
+                esntlId: emUserInfo.uniqId,
+            };
+            setTableData(updatedTableData);
 
-        //setTableData((prevData) => {
-        //    return [{ ...prevData, ...emUserInfo }];
-        //});
+            //setTableData((prevData) => {
+            //    return [{ ...prevData, ...emUserInfo }];
+            //});
+        }
     }, [emUserInfo]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
@@ -323,7 +326,7 @@ const ReactDataTableURL = (props) => {
         const newRow = {};
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
-                newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
+                newRow[column.accessor] = condition.poiId; // poiId를 항상 선택한놈으로 설정
             } else if (column.accessor === "versionId") {
                 newRow[column.accessor] = versionInfo.versionId; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "esntlId") {
