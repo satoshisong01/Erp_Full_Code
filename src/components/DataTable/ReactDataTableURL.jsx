@@ -30,7 +30,7 @@ const ReactDataTableURL = (props) => {
         returnSelectRows,
         modalPageName,
         returnList,
-        condition, //poiId와 같은 조회에 필요한 조건
+        condition,
     } = props;
     const {
         prevCurrentPageName,
@@ -40,7 +40,7 @@ const ReactDataTableURL = (props) => {
         setLengthSelectRow,
         newRowData,
         currentPageName,
-        //projectInfo,
+        projectInfo,
         companyInfo,
         setCompanyInfo,
         projectPgNm,
@@ -86,9 +86,9 @@ const ReactDataTableURL = (props) => {
         }
     }, [customDatas]);
 
-    useEffect(() => {
-        console.log(tableData, "tableData");
-    }, [tableData]);
+    // useEffect(() => {
+    //     console.log(tableData, "tableData");
+    // }, [tableData]);
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
@@ -326,7 +326,7 @@ const ReactDataTableURL = (props) => {
         const newRow = {};
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
-                newRow[column.accessor] = condition.poiId; // poiId를 항상 선택한놈으로 설정
+                newRow[column.accessor] = condition.poiId || ""; // poiId를 항상 선택한놈으로 설정
             } else if (column.accessor === "versionId") {
                 newRow[column.accessor] = versionInfo.versionId; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "esntlId") {
@@ -452,7 +452,7 @@ const ReactDataTableURL = (props) => {
     };
 
     const compareData = (originData, updatedData) => {
-        console.log("타나");
+        console.log("타나 cur", current, "in", innerPageName);
         const filterData = updatedData.filter((data) => data.pjbgTypeCode); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;

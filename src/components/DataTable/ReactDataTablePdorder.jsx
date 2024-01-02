@@ -45,7 +45,6 @@ const ReactDataTablePdorder = (props) => {
         projectPdiNm,
         setIsOpenModalCompany,
         isOpenModalCompany,
-        versionInfo,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -91,7 +90,6 @@ const ReactDataTablePdorder = (props) => {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
         if (isCurrentPage() && nameOfButton === "save") {
-            console.log("??");
             compareData(originTableData, tableData);
             setNameOfButton(""); //초기화
         }
@@ -213,7 +211,7 @@ const ReactDataTablePdorder = (props) => {
         const newRow = {};
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
-                newRow[column.accessor] = condition.poiId; // poiId를 항상 SLSP로 설정
+                newRow[column.accessor] = condition.poiId || ""; // poiId를 항상 SLSP로 설정
             } else {
                 newRow[column.accessor] = null; // 다른 열은 초기화
             }
@@ -336,6 +334,7 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const addList = async (addNewData) => {
+        console.log("🎄🎄add ", addNewData, "con:", condition);
         if(!isCurrentPage() && !suffixUrl && !Array.isArray(addNewData)) return;
         if(!condition || condition.poiId === undefined) {
             console.log('❗프로젝트 정보 없음', currentPageName);
@@ -343,18 +342,18 @@ const ReactDataTablePdorder = (props) => {
         }
         if(currentPageName === "구매계획") { //실행
             addNewData.forEach((data) => {
-                data.poiId = condition.poiId;
+                data.poiId = condition.poiId || "";
                 data.modeCode = "BUDGET";
             });
         } else if(currentPageName === "구매실행") { //실행
             addNewData.forEach((data) => {
-                data.poiId = condition.poiId;
+                data.poiId = condition.poiId || "";
                 data.modeCode = "EXECUTE";
             });
         } else if(innerPageName === "구매(재료비)") { //영업
             addNewData.forEach((data) => {
-                data.poiId = condition.poiId;
-                data.versionId = versionInfo.versionId;
+                data.poiId = condition.poiId || "";
+                data.versionId = condition.versionId;
             });
         }
 
@@ -366,6 +365,8 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const updateList = async (toUpdate) => {
+        console.log("mod ", toUpdate, "con:", condition);
+
         if(!isCurrentPage() && !suffixUrl && !Array.isArray(toUpdate)) return;
         if(!condition || condition.poiId === undefined) {
             console.log('❗프로젝트 정보 없음');
@@ -373,18 +374,18 @@ const ReactDataTablePdorder = (props) => {
         }
         if(currentPageName === "구매계획") {
             toUpdate.forEach((data) => {
-                data.poiId = condition.poiId;
+                data.poiId = condition.poiId || "";
                 data.modeCode = "BUDGET";
             });
         } else if(currentPageName === "구매실행") {
             toUpdate.forEach((data) => {
-                data.poiId = condition.poiId;
+                data.poiId = condition.poiId || "";
                 data.modeCode = "EXECUTE";
             });
         } else if(innerPageName === "구매(재료비)") { //영업
             toUpdate.forEach((data) => {
-                data.poiId = condition.poiId;
-                data.versionId = versionInfo.versionId;
+                data.poiId = condition.poiId || "";
+                data.versionId = condition.versionId;
             });
         }
         const url = `/api${suffixUrl}/editList.do`;
@@ -395,6 +396,8 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const deleteList = async (removeItem) => {
+        console.log("del ", removeItem, "con:", condition);
+
         if(!isCurrentPage() && !suffixUrl && !Array.isArray(removeItem)) return;
         const url = `/api${suffixUrl}/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
@@ -405,8 +408,11 @@ const ReactDataTablePdorder = (props) => {
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
     const compareData = (originData, updatedData) => {
-        console.log("컴페어!!!!!!!");
+        console.log("🎄컴페어", originData, "mod:", updatedData);
         const filterData = updatedData.filter((data) => data.pdiId); //필수값 체크
+
+        console.log("🎄filterData:", filterData);
+
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
 

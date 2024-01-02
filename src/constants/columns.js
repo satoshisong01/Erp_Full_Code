@@ -95,7 +95,7 @@ export const columns = {
     /* 영업관리 */
     orderMgmt: {
         project: [
-            //프로젝트관리
+            //프로젝트
             { header: "수주 아이디", col: "poiId", cellWidth: "5%", notView: true },
             { header: "프로젝트이름", col: "poiNm", cellWidth: "25%" },
             { header: "고객사", col: "cltNm", cellWidth: "15%" },
@@ -232,7 +232,9 @@ export const columns = {
         ],
         version: [
             //원가버전조회
-            { header: "버전아이디", col: "versionId", notView: true },
+            { header: "프로젝트ID", col: "poiId", notView: true },
+            { header: "버전ID", col: "versionId", notView: true },
+            { header: "버전비고", col: "versionDesc", notView: true },
             { header: "프로젝트명", col: "poiNm", cellWidth: "25%" },
             { header: "원가버전", col: "versionNum", cellWidth: "10%" },
             { header: "계약일", col: "poiBeginDt", cellWidth: "10%" },
@@ -248,6 +250,11 @@ export const columns = {
             //원가버전조회
             { title: "프로젝트명", col: "poiNm", type: "input" },
             { title: "계약일", col: "poiBeginDt", type: "dayPicker" },
+        ],
+        versionAddMod: [
+            { items: [{ header: "프로젝트명", col: "poiNm", require: true, type: "project" }] },
+            { items: [{ header: "버전", col: "versionNum", require: true, type: "input" }] },
+            { items: [{ header: "비고", col: "versionDesc", type: "desc" }] },
         ],
         labor: [
             //인건비
@@ -272,13 +279,13 @@ export const columns = {
         laborCal: [
             //인건비합계
             { header: "합계", col: "total", cellWidth: "20%" },
-            { header: "임원", col: "pmpmmPositionCode1", cellWidth: "20%" },
-            { header: "부장", col: "pmpmmPositionCode9", cellWidth: "20%" },
-            { header: "차장", col: "pmpmmPositionCode10", cellWidth: "20%" },
-            { header: "과장", col: "pmpmmPositionCode11", cellWidth: "20%" },
-            { header: "대리", col: "pmpmmPositionCode12", cellWidth: "20%" },
-            { header: "주임", col: "pmpmmPositionCode13", cellWidth: "20%" },
-            { header: "사원", col: "pmpmmPositionCode14", cellWidth: "20%" },
+            { header: "임원", col: "pmpmmPositionCode1Total", cellWidth: "20%" },
+            { header: "부장", col: "pmpmmPositionCode9Total", cellWidth: "20%" },
+            { header: "차장", col: "pmpmmPositionCode10Total", cellWidth: "20%" },
+            { header: "과장", col: "pmpmmPositionCode11Total", cellWidth: "20%" },
+            { header: "대리", col: "pmpmmPositionCode12Total", cellWidth: "20%" },
+            { header: "주임", col: "pmpmmPositionCode13Total", cellWidth: "20%" },
+            { header: "사원", col: "pmpmmPositionCode14Total", cellWidth: "20%" },
         ],
         expenses: [
             // 경비
@@ -374,17 +381,12 @@ export const columns = {
         ],
         purchaseCal: [
             //구매합계
-            { header: "소비자금액", col: "consumerPriceTotal", cellWidth: "20%" },
+            { header: "소비자금액", col: "consumerAmountTotal", cellWidth: "20%" },
             { header: "금액", col: "planAmountTotal", cellWidth: "20%" },
             { header: "네고율", col: "nego", cellWidth: "20%" },
             { header: "원가", col: "estimatedCostTotal", cellWidth: "20%" },
             { header: "이익금", col: "plannedProfitsTotal", cellWidth: "20%" },
             { header: "이익율", col: "plannedProfitMarginTotal", cellWidth: "20%" },
-        ],
-        addMod: [
-            { items: [{ header: "프로젝트명", col: "poiNm", require: true, type: "project" }] },
-            { items: [{ header: "버전", col: "versionNum", require: true, type: "input" }] },
-            { items: [{ header: "비고", col: "versionDesc", type: "desc" }] },
         ],
         estimateLabor: [
             //견적용 인건비
@@ -425,7 +427,7 @@ export const columns = {
 
     /* 실행관리 */
     executionCost: {
-        //실행원가관리
+        //원가조회
         project: [
             //프로젝트 목록
             { header: "프로젝트ID", col: "poiId", cellWidth: "0%", type: "input", enable: false, modify: true, add: true, require: true, notView: true },
@@ -472,10 +474,10 @@ export const columns = {
                 type: "select",
                 option: [
                     { label: "전체보기", value: "" },
-                    { label: "인벤토리접수", value: "인벤토리접수" },
-                    { label: "원가작성중", value: "원가작성중" },
-                    { label: "견적완료", value: "견적완료" },
-                    { label: "작성완료", value: "작성완료" },
+                    { label: "프로젝트접수", value: "프로젝트접수" },
+                    { label: "실행예산완료", value: "실행예산완료" },
+                    { label: "실행정산중", value: "실행정산중" },
+                    { label: "프로젝트종료", value: "프로젝트종료" },
                 ],
             },
         ],

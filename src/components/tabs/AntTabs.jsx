@@ -26,7 +26,7 @@ const AntTabs = (props) => {
             setPrevCurrentPageName(pre);
             return label
         })
-        setProjectInfo({}); //초기화
+        // setProjectInfo({}); //초기화
 
     }, [snbId, lnbId]);
 

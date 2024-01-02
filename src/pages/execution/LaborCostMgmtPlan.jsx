@@ -30,15 +30,24 @@ function LaborCostMgmtPlan() {
         setNameOfButton,
     } = useContext(PageContext);
 
-    const [condition, setCondition] = useState({});
+    useEffect(() => {
+        return () => {
+            setProjectInfo({});
+        };
+    }, []);
 
-    const current = "인건비";
+    const current = "인건비계획";
 
-    //useEffect(() => {
-    //    if (current === "실행인건비계획" && currentPageName !== current) {
-    //        setCurrentPageName(current);
-    //    }
-    //}, [currentPageName]);
+    useEffect(() => {
+        if(currentPageName === "인건비") {
+            if(currentPageName !== current) {
+                setCurrentPageName(current);
+            }
+        }
+        setInnerPageName("");
+    }, [currentPageName]);
+
+    const orderPlanMgmtTable3 = useRef(null);
 
     const [isClicked3, setIsClicked3] = useState(false);
 

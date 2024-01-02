@@ -12,7 +12,7 @@ import SaveButton from "components/button/SaveButton";
 
 /** 실행관리-구매-계획 */
 function PurchasingMgmtPlan() {
-    const { setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton } = useContext(PageContext);
+    const { setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton, setInnerPageName } = useContext(PageContext);
     const [condition, setCondition] = useState({});
     const [budgetMgmt, setBudgetMgmt] = useState([]);
 
@@ -25,9 +25,12 @@ function PurchasingMgmtPlan() {
     const current = "구매계획";
 
     useEffect(() => {
-        if(current === "구매계획" && currentPageName !== current) {
-            setCurrentPageName(current)
+        if(currentPageName === "구매(재료비)") {
+            if(currentPageName !== current) {
+                setCurrentPageName(current);
+            }
         }
+        setInnerPageName("");
     }, [currentPageName]);
 
 
@@ -62,7 +65,7 @@ function PurchasingMgmtPlan() {
     return (
         <>
             <Location pathList={locationPath.PurchasingMgmt} />
-            <ApprovalFormExe viewPageName={current} returnData={conditionInfo}/>
+            {/* <ApprovalFormExe viewPageName={current} returnData={conditionInfo}/> */}
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">

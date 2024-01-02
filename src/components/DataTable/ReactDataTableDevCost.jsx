@@ -26,6 +26,7 @@ const ReactDataTableDevCost = (props) => {
         hideCheckBox,
         returnSelect,
         returnSelectRows,
+        condition,
     } = props;
     const {
         prevCurrentPageName,
@@ -35,7 +36,7 @@ const ReactDataTableDevCost = (props) => {
         setLengthSelectRow,
         newRowData,
         currentPageName,
-        projectInfo,
+        // projectInfo,
         companyInfo,
         setModalLengthSelectRow,
         // setIsOpenModalCompany,
@@ -324,7 +325,7 @@ const ReactDataTableDevCost = (props) => {
         const newRow = {};
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
-                newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
+                newRow[column.accessor] = condition.poiId || ""; // poiId를 항상 선택한놈으로 설정
             } else if (column.accessor === "versionId") {
                 newRow[column.accessor] = versionInfo.versionId; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "esntlId") {
@@ -432,7 +433,7 @@ const ReactDataTableDevCost = (props) => {
                         pjbgDt: upItem.pjbgDt,
                         pjbgManpower: upItem.pjbgManpower,
                         pjbgEndDt: upItem.pjbgEndDt,
-                        poiId: projectInfo.poiId,
+                        poiId: condition.poiId || "",
                         devOutId: devOutId[index],
                         pjbgPrice: upItem[name],
                         cltNm: companyInfo.cltNm,

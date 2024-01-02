@@ -56,7 +56,7 @@ const ReactDataTable = (props) => {
         modalPageName,
         isCancelTable,
         setIsCancelTable,
-        //projectInfo,
+        // projectInfo,
         isOpenModalPgNm,
         setIsOpenModalPgNm,
         projectPgNm,
@@ -92,9 +92,9 @@ const ReactDataTable = (props) => {
     const inputRef = useRef(null); //날짜
     const calendarRef = useRef(null);
 
-    useEffect(() => {
-        console.log(tableData, "리액트테이블 데이터");
-    }, [tableData]);
+    // useEffect(() => {
+    //     console.log(tableData, "리액트테이블 데이터");
+    // }, [tableData]);
 
     //취소시에 오리지널 테이블로 돌아감
     useEffect(() => {
@@ -177,6 +177,7 @@ const ReactDataTable = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
+        console.log("current:", current, "innerPageName:", innerPageName, "currentPageName:",currentPageName, "editing",editing);
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
             //inner tab에서 저장을 눌렀을 때
@@ -195,7 +196,7 @@ const ReactDataTable = (props) => {
         if (current !== innerPageName) {
             setTableData([]); //초기화
         }
-    }, [innerPageName, current, editing, nameOfButton]);
+    }, [innerPageName, editing, nameOfButton, currentPageName]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
@@ -348,11 +349,11 @@ const ReactDataTable = (props) => {
                 lockAt: "Y",
                 useAt: "Y",
                 deleteAt: "N",
-                poiId: condition.poiId,
+                poiId: condition.poiId || "",
                 typeCode: "MM",
                 modeCode: "BUDGET",
-                poiDesc: addData.poiDesc || condition.poiVersion,
-                poId: condition.poId,
+                // poiDesc: addData.poiDesc || condition.poiVersion,
+                poId: condition.poId || "",
             };
 
             console.log("dataToSend:", dataToSend);
@@ -489,6 +490,7 @@ const ReactDataTable = (props) => {
 
     /* current- 현재 보는페이지, table button 활성화 on off */
     useEffect(() => {
+        // console.log("current:", current, "currentPageName:", currentPageName, "innerPageName:", innerPageName);
         if (isModalTable && current === modalPageName) {
             //모달화면일때
             setModalLengthSelectRow(selectedFlatRows.length);
@@ -540,7 +542,7 @@ const ReactDataTable = (props) => {
         const newRow = {};
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
-                newRow[column.accessor] = condition.poiId; // poiId를 항상 SLSP로 설정
+                newRow[column.accessor] = condition.poiId || ""; // poiId를 항상 SLSP로 설정
             } else if (column.accessor === "typeCode") {
                 newRow[column.accessor] = "MM"; // poiId를 항상 SLSP로 설정
             } else if (column.accessor === "modeCode") {
