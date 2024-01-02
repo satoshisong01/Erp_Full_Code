@@ -328,7 +328,7 @@ const ReactDataTableURL = (props) => {
             if (column.accessor === "poiId") {
                 newRow[column.accessor] = condition.poiId || ""; // poiId를 항상 선택한놈으로 설정
             } else if (column.accessor === "versionId") {
-                newRow[column.accessor] = versionInfo.versionId; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                newRow[column.accessor] = condition.versionId; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "esntlId") {
                 //임시 업무회원 삭제해야함
                 newRow[column.accessor] = emUserInfo.uniqId; // pjbgTypeCode 항상 "EXPNS10"로 설정
