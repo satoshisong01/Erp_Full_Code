@@ -38,8 +38,8 @@ function ExecutionCost() {
     const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/pjOrdrInfo/totalListAll.do", {
             ...condition,
-            searchCondition: "",
-            searchKeyword: "",
+            // searchCondition: "",
+            // searchKeyword: "",
         });
         setTableData(resultData);
     };
@@ -75,7 +75,8 @@ function ExecutionCost() {
                     <PopupButton targetUrl={URL.PostCostsDoc} data={{ label: "정산서", ...selectedRows[0] }} />
                     {/* <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} /> */}
                     <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
-                    <RefreshButton onClick={() => setNameOfButton("refresh")} />
+                    {/* <RefreshButton onClick={() => setNameOfButton("refresh")} /> */}
+                    <RefreshButton onClick={() => fetchAllData({poiStatusExecute : "ALL"})} />
                 </div>
                 <ReactDataTable
                     columns={columns.orderMgmt.project}

@@ -5,7 +5,7 @@ import { axiosFetch } from "api/axiosFetch";
 import BasicDataTable from "components/DataTable/BasicDataTable";
 import FormDataTable from "components/DataTable/FormDataTable";
 
-/* 사후정산서 */
+/* 사전원가서 */
 const PostCostDoc = () => {
     const coreTable = useRef(null); // 손익계산서 테이블
     const purchasingTable = useRef(null); // 구매재료비 테이블
@@ -19,7 +19,7 @@ const PostCostDoc = () => {
     const [chargeTableData, setChargeTableData] = useState([{ data: [""], className: [""] }]); //경비
     const [outTableData, setOutTableData] = useState([{ data: ["", "", ""], className: [""] }]); //개발외주비
     const [laborTableData, setLaborTableData] = useState([{ data: [""], className: [""] }]); //인건비
-    const [ProjectInfoToServer, setProjectInfoToServer] = useState({});
+    const [projectInfoToServer, setProjectInfoToServer] = useState({});
     const [title, setTitle] = useState("");
 
     /* 스타일 */
@@ -30,10 +30,12 @@ const PostCostDoc = () => {
         // URL에서 "data" 파라미터 읽기
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
-        console.log("사후정산서 시작~~ ", data);
-        setTitle(data.label);
-        if (data.poiId) {
-            getInitData(data.poiId); //서버에서 데이터 호출
+        const {label, poiId, poiNm} = data;
+        // console.log("실행원가서 시작~~ ", data);
+        setTitle(label);
+        setProjectInfoToServer({poiId, poiNm})
+        if (poiId) {
+            getInitData(poiId); //서버에서 데이터 호출
         }
     }, []);
 
@@ -50,22 +52,20 @@ const PostCostDoc = () => {
 
     const infoColumns = [
         [
-            { label: "프로젝트 이름", key: "poiNm", type: "data", colSpan: "3", value: ProjectInfoToServer.poiNm },
-            { label: "프로젝트 아이디", key: "poiId", type: "data", value: ProjectInfoToServer.poiId },
-            { label: "프로젝트 버전", key: "poiDesc", type: "data", value: ProjectInfoToServer.poiDesc },
+            { label: "프로젝트 이름", key: "poiNm", type: "data", colSpan: "2", value: projectInfoToServer.poiNm },
         ],
-        [
-            { label: "수주부서", key: "poiGroupId", type: "data", value: ProjectInfoToServer.poiGroupId },
-            { label: "매출부서", key: "poiSalesGroupId", type: "data", value: ProjectInfoToServer.poiSalesGroupId },
-            { label: "영업대표", key: "poiSalmanagerId", type: "data", value: ProjectInfoToServer.poiSalmanagerId },
-            { label: "담당자(PM)", key: "poiManagerId", type: "data", value: ProjectInfoToServer.poiManagerId },
-        ],
-        [
-            { label: "수주 시작일", key: "poiBeginDt", type: "data", value: ProjectInfoToServer.poiBeginDt },
-            { label: "수주 마감일", key: "poiEndDt", type: "data", value: ProjectInfoToServer.poiEndDt },
-            { label: "사전원가 기준 이익률", key: "standardMargin", type: "data", value: ProjectInfoToServer.standardMargin + "%" },
-            { label: "상태", key: "poiStatus", type: "data", value: ProjectInfoToServer.poiStatus },
-        ],
+        // [
+        //     { label: "수주부서", key: "poiGroupId", type: "data", value: ProjectInfoToServer.poiGroupId },
+        //     { label: "매출부서", key: "poiSalesGroupId", type: "data", value: ProjectInfoToServer.poiSalesGroupId },
+        //     { label: "영업대표", key: "poiSalmanagerId", type: "data", value: ProjectInfoToServer.poiSalmanagerId },
+        //     { label: "담당자(PM)", key: "poiManagerId", type: "data", value: ProjectInfoToServer.poiManagerId },
+        // ],
+        // [
+        //     { label: "수주 시작일", key: "poiBeginDt", type: "data", value: ProjectInfoToServer.poiBeginDt },
+        //     { label: "수주 마감일", key: "poiEndDt", type: "data", value: ProjectInfoToServer.poiEndDt },
+        //     { label: "사전원가 기준 이익률", key: "standardMargin", type: "data", value: ProjectInfoToServer.standardMargin + "%" },
+        //     { label: "상태", key: "poiStatus", type: "data", value: ProjectInfoToServer.poiStatus },
+        // ],
     ];
 
     const coreColumns = [
@@ -109,20 +109,49 @@ const PostCostDoc = () => {
         } else if (code === "EXPNS02") {
             return "숙박비";
         } else if (code === "EXPNS03") {
-            return "파견비";
+            return "일비/파견비";
         } else if (code === "EXPNS04") {
             return "식비";
         } else if (code === "EXPNS05") {
             return "자재/소모품";
         } else if (code === "EXPNS06") {
+            return "국내출장비";
+        } else if (code === "EXPNS07 ") {
+            return "시내교통비";
+        } else if (code === "EXPNS08") {
+            return "PJT 파견비";
+        } else if (code === "EXPNS09") {
+            return "사무실임대료";
+        } else if (code === "EXPNS10") {
+             return "소모품비";
+        } else if (code === "EXPNS11") {
+             return "행사비";
+        } else if (code === "EXPNS12") {
+             return "요식성경비";
+        } else if (code === "EXPNS13") {
+            return "전산소모품비";
+        } else if (code === "EXPNS14") {
+            return "도서인쇄비";
+        } else if (code === "EXPNS15") {
+            return "통신비";
+        } else if (code === "EXPNS16") {
+            return "해외출장비";
+        } else if (code === "EXPNS17") {
+            return "배송비";
+        } else if (code === "EXPNS18") {
+            return "예비비";
+        } else if (code === "EXPNS19") {
             return "영업비";
+        } else if (code === "EXPNS20") {
+            return "기타";
         }
     };
 
     const getInitData = async (poiId) => {
         const url = "/api/calculate/execut/totalListAll.do";
+        console.log("조회>>>", poiId);
         const resultData = await axiosFetch(url, { poiId });
-        console.log("💜실행원가서: ", resultData);
+        console.log("💜사후정산서: ", resultData);
         const {
             projectInfoToServer, //수주정보
             salesBudgetIn, //수주액>자체용역
@@ -189,7 +218,8 @@ const PostCostDoc = () => {
         if (outLaborList) {
             const updatedOutData = outLaborList.map((item) => {
                 return {
-                    data: [item.esntlId, item.pjbgDesc, item.pjbgPrice],
+                    // data: [item.esntlId, item.pjbgDesc, item.pjbgPrice],
+                    data: [item.cltNm, item.devOutMm, item.devOutPrice],
                     className: ["", "", ""],
                 };
             });
