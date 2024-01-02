@@ -1233,6 +1233,28 @@ export const columns = {
                 type: "desc",
             },
         ],
+        buyCal: [
+            { header: "품목그룹", col: "pgNm", cellWidth: "50%" },
+            { header: "금액", col: "price", cellWidth: "50%" },
+        ],
+        planView: [
+            { header: "품목그룹", col: "pgNm", cellWidth: "15%" },
+            { header: "품명", col: "pdiNm", cellWidth: "15%" },
+            { header: "규격", col: "pdiStnd", cellWidth: "20%" },
+            { header: "수량", col: "byQunty", cellWidth: "10%" },
+            { header: "단가", col: "byUnitPrice", cellWidth: "10%" },
+            { header: "비고", col: "byDesc", cellWidth: "30%" },
+        ],
+        view: [
+            { header: "품목그룹", col: "pgNm", cellWidth: "15%" },
+            { header: "품명", col: "pdiNm", cellWidth: "15%" },
+            { header: "규격", col: "pdiStnd", cellWidth: "20%" },
+            { header: "수량", col: "byQunty", cellWidth: "10%" },
+            { header: "단가", col: "byUnitPrice", cellWidth: "10%" },
+            // { header: "금액", col: "price", cellWidth: "30%" },
+            { header: "구매예상일", col: "byExpectedDt", cellWidth: "15%" },
+            { header: "비고", col: "byDesc", cellWidth: "30%" },
+        ],
         run: [
             //구매 실행
             {
@@ -1260,30 +1282,47 @@ export const columns = {
                 cellWidth: "10%",
             },
             {
-                header: "구매거래처",
-                col: "cltId",
+                header: "판매사",
+                col: "pdiSeller",
+                cellWidth: "10%",
+            },
+            {
+                header: "제조사",
+                col: "pdiMenufut",
                 cellWidth: "10%",
             },
             {
                 header: "발주일",
                 col: "byOrderDt",
                 cellWidth: "10%",
-            },
-            {
-                header: "제조사",
-                col: "tmp3",
-                cellWidth: "10%",
+                type: "dayPicker"
             },
             {
                 header: "요청납기일",
-                col: "temp1",
+                col: "byRequestDt",
                 cellWidth: "10%",
+                type: "dayPicker"
             },
             {
                 header: "입고일",
-                col: "temp2",
+                col: "rcvDt",
                 cellWidth: "10%",
+                type: "dayPicker"
             },
+            {
+                header: "입고수량",
+                col: "rcvQunty",
+                cellWidth: "10%",
+                type: "input"
+            },
+            // { header: "발주상태", col: "byStatus", cellWidth: "10%", type: "select", options: [
+            //         { label: "--선택--", value: "" },
+            //         { label: "미발주", value: "미발주" },
+            //         { label: "발주중", value: "발주중" },
+            //         { label: "완료", value: "완료" },
+            //     ],
+            // },
+            { header: "입고상태", col: "rcvStatus", cellWidth: "10%" },
         ],
         condition: [
             //검색조건

@@ -256,16 +256,14 @@ const ReactDataTablePdorder = (props) => {
 
     const setValueDataPdiNm = (rowIndex, selectedPdiNm) => {
         // 선택된 품명에 해당하는 데이터 찾기
-        const selectedPdiData = selectedPdiNm;
-
-        if (selectedPdiData) {
+        if (selectedPdiNm) {
             // 테이블 데이터를 복제
             const updatedTableData = [...tableData];
 
             // 선택된 품명의 데이터로 해당 행(row)의 데이터 업데이트
             updatedTableData[rowIndex] = {
                 ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
-                ...selectedPdiData, // projectPdiNm 객체의 데이터로 업데이트
+                ...selectedPdiNm, // projectPdiNm 객체의 데이터로 업데이트
             };
 
             // 업데이트된 데이터로 tableData 업데이트
@@ -372,7 +370,7 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const updateList = async (toUpdate) => {
-        console.log("mod ", toUpdate, "con:", condition);
+        console.log("❤️mod ", toUpdate, "con:", condition);
 
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(toUpdate)) return;
         if (!condition || condition.poiId === undefined) {

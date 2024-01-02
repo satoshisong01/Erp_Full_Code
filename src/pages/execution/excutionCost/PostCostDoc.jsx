@@ -5,8 +5,8 @@ import { axiosFetch } from "api/axiosFetch";
 import BasicDataTable from "components/DataTable/BasicDataTable";
 import FormDataTable from "components/DataTable/FormDataTable";
 
-/* 실행원가서 */
-const ExecutionCostsDoc = () => {
+/* 사후정산서 */
+const PostCostDoc = () => {
     const coreTable = useRef(null); // 손익계산서 테이블
     const purchasingTable = useRef(null); // 구매재료비 테이블
     const chargeTable = useRef(null); // 경비테이블
@@ -30,7 +30,7 @@ const ExecutionCostsDoc = () => {
         // URL에서 "data" 파라미터 읽기
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
-        console.log("실행원가서 시작~~ ", data);
+        console.log("사후정산서 시작~~ ", data);
         setTitle(data.label);
         if (data.poiId) {
             getInitData(data.poiId); //서버에서 데이터 호출
@@ -725,4 +725,4 @@ const ExecutionCostsDoc = () => {
     );
 };
 
-export default ExecutionCostsDoc;
+export default PostCostDoc;
