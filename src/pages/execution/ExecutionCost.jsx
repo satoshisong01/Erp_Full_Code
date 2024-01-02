@@ -20,7 +20,6 @@ import { axiosFetch, axiosUpdate } from "api/axiosFetch";
 function ExecutionCost() {
     const { setNameOfButton, projectInfo, currentPageName } = useContext(PageContext);
     const [isOpenMod, setIsOpenMod] = useState(false);
-    const [returnKeyWord, setReturnKeyWord] = useState("");
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
     const [tableData, setTableData] = useState([]);
 
@@ -46,8 +45,7 @@ function ExecutionCost() {
     };
 
     const handleReturn = (value) => {
-        setReturnKeyWord(value);
-        // console.log(value, "제대로 들어오냐");
+        fetchAllData(value);
     };
 
     const modifyToServer = async (updatedData) => {

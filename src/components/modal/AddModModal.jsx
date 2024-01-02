@@ -46,6 +46,7 @@ export default function AddModModal(props) {
 
     useEffect(() => {
         return () => {
+            console.log("종료~");
             setCompanyInfo({});
             setPdiNmList([]);
             setProjectPdiNm({});
@@ -67,10 +68,12 @@ export default function AddModModal(props) {
 
     useEffect(() => {
         //거래처
-        if(companyInfo.cltId === "" || !companyInfo) return;
-        setData(prevData => {
-            return { ...prevData, ...companyInfo};
-        });
+        if (Object.keys(companyInfo).length > 0) {
+            setData(prevData => {
+                return { ...prevData, ...companyInfo};
+            });
+            setCompanyInfo({})
+        }
     }, [companyInfo]);
 
     // useEffect(() => {
@@ -83,26 +86,32 @@ export default function AddModModal(props) {
 
     useEffect(() => {
         //품목
-        if(projectPdiNm.pdiId === "" || !projectPdiNm) return;
-        setData(prevData => {
-            return { ...prevData, ...projectPdiNm};
-        });
+        if (Object.keys(projectPdiNm).length > 0) {
+            setData(prevData => {
+                return { ...prevData, ...projectPdiNm};
+            });
+            setProjectPdiNm({});
+        }
     }, [projectPdiNm]);
 
     useEffect(() => {
         // 품목그룹
-        if (!projectPgNm || projectPgNm.pgId === "" || Object.keys(projectPgNm).length === 0) return;
-        setData(prevData => {
-            return { ...prevData, ...projectPgNm};
-        });
+        if (Object.keys(projectPgNm).length > 0) {
+            setData(prevData => {
+                return { ...prevData, ...projectPgNm};
+            });
+            setProjectPgNm({});
+        }
     }, [projectPgNm]);
 
     useEffect(() => {
         //업무회원
-        if(!emUserInfo || emUserInfo.uniqId === "") return;
-        setData(prevData => {
-            return { ...prevData, ...emUserInfo};
-        });
+        if (Object.keys(emUserInfo).length > 0) {
+            setData(prevData => {
+                return { ...prevData, ...emUserInfo};
+            });
+            setEmUserInfo({});
+        }
     }, [emUserInfo]);
 
     // 데이터 추가 버튼을 눌렀을 때 실행되는 함수

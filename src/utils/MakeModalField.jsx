@@ -52,8 +52,10 @@ export default function MakeModalField({ list, onChange, initialData }) {
 
     useEffect(() => {
         //거래처
-        if(companyInfo.cltId === "" || !companyInfo) return;
-        setData({...companyInfo });
+        if (Object.keys(companyInfo).length > 0) {
+            setData({...companyInfo });
+            setCompanyInfo({}); //초기화
+        }
     }, [companyInfo]);
 
     // useEffect(() => {
@@ -69,10 +71,18 @@ export default function MakeModalField({ list, onChange, initialData }) {
         });
     }
 
+    // useEffect(() => {
+    //     //품목
+    //     if(projectPdiNm.pdiId === "" || !projectPdiNm) return;
+    //     setData({...projectPdiNm});
+    // }, [projectPdiNm]);
+
     useEffect(() => {
         //품목
-        if(projectPdiNm.pdiId === "" || !projectPdiNm) return;
-        setData({...projectPdiNm});
+        if (Object.keys(projectPdiNm).length > 0) {
+            setData({...projectPdiNm});
+            setProjectPdiNm({});
+        }
     }, [projectPdiNm]);
 
     useEffect(() => {
@@ -85,8 +95,10 @@ export default function MakeModalField({ list, onChange, initialData }) {
 
     useEffect(() => {
         // 품목그룹
-        if (!projectPgNm || projectPgNm.pgId === "" || Object.keys(projectPgNm).length === 0) return;
-        setData({ ...projectPgNm });
+        if (Object.keys(projectPgNm).length > 0) {
+            setData({ ...projectPgNm });
+            setProjectPgNm({});
+        }
     }, [projectPgNm]);
 
     useEffect(() => {
