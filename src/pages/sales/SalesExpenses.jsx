@@ -154,10 +154,10 @@ function SalesExpenses() {
         console.log(viewUpdated, "viewUpdated");
         setSalesCostView(viewUpdated);
         const updatedData = processResultData(resultData, condition);
-        const filteredData = filterArrayByNonNullPjbgBeginDt(updatedData);
+        const filteredData = filterData(updatedData);
+        console.log(updatedData, "updatedData 추가되어서 나와야하는데");
         console.log(filteredData, "이건 걸러진 데이터임");
         setSalesCost(filteredData);
-        console.log(updatedData, "updatedData 추가되어서 나와야하는데");
     };
 
     useEffect(() => {
@@ -196,18 +196,12 @@ function SalesExpenses() {
         return updatedViewData;
     };
 
-    function filterArrayByNonNullPjbgBeginDt(data) {
-        // 주어진 배열을 복제하여 새로운 배열을 만듭니다.
-        const filteredArray = data.filter((obj) => obj.pjbgBeginDt === null);
-        const arrayWithNonNullPjbgBeginDt = data.filter((obj) => obj.pjbgBeginDt !== null);
+    function filterData(data) {
+        // 배열 필터링
+        const filteredData = data.filter((item) => item.pjbgBeginDt === null);
 
-        // 배열에서 pjbgBeginDt가 null인 객체들을 찾아 해당 객체가 속한 배열을 남깁니다.
-        const remainingArray = arrayWithNonNullPjbgBeginDt.filter((obj) => {
-            const index = filteredArray.findIndex((item) => item === obj);
-            return index === -1;
-        });
-
-        return remainingArray;
+        // 결과 반환
+        return filteredData;
     }
 
     const processResultData = (resultData, condition) => {
@@ -217,11 +211,11 @@ function SalesExpenses() {
                 pjbgTypeCode,
                 modeCode,
                 pjbgPrice,
-                //pjbgBeginDt,
-                //pjbgEndDt,
+                pjbgBeginDt,
+                pjbgEndDt,
                 empNm,
                 esntlId,
-                //pjbgDt,
+                pjbgDt,
                 pgNm,
                 pjbgDesc,
                 pjbgTypeCode1,
@@ -241,11 +235,11 @@ function SalesExpenses() {
                         pjbgTypeCodes: [],
                         modeCode,
                         pjbgPrices: [],
-                        //pjbgBeginDt,
-                        //pjbgEndDt,
+                        pjbgBeginDt,
+                        pjbgEndDt,
                         empNm,
                         esntlId,
-                        //pjbgDt,
+                        pjbgDt,
                         pgNm,
                         pjbgDesc,
                         pjbgTypeCode1,
@@ -272,11 +266,11 @@ function SalesExpenses() {
                         pjbgTypeCodes: [],
                         modeCode,
                         pjbgPrices: [],
-                        //pjbgBeginDt,
-                        //pjbgEndDt,
+                        pjbgBeginDt,
+                        pjbgEndDt,
                         empNm,
                         esntlId,
-                        //pjbgDt,
+                        pjbgDt,
                         pgNm,
                         pjbgDesc,
                         pjbgTypeCode1,
@@ -305,11 +299,11 @@ function SalesExpenses() {
             const newObj = {};
             console.log(mergedItem, "이거머더라");
             newObj["modeCode"] = mergedItem.modeCode;
-            //newObj["pjbgBeginDt"] = mergedItem.pjbgBeginDt;
-            //newObj["pjbgEndDt"] = mergedItem.pjbgEndDt;
+            newObj["pjbgBeginDt"] = mergedItem.pjbgBeginDt;
+            newObj["pjbgEndDt"] = mergedItem.pjbgEndDt;
             newObj["esntlId"] = mergedItem.esntlId;
             newObj["empNm"] = mergedItem.empNm;
-            //newObj["pjbgDt"] = mergedItem.pjbgBeginDt;
+            newObj["pjbgDt"] = mergedItem.pjbgBeginDt;
             newObj["pgNm"] = mergedItem.pgNm;
             newObj["pjbgDesc"] = mergedItem.pjbgDesc;
             newObj["pjbgId"] = mergedItem.pjbgId;

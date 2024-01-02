@@ -1337,12 +1337,6 @@ export const columns = {
                 cellWidth: "10%",
                 type: "input",
             },
-            {
-                header: "입고단가",
-                col: "rcvUnitPrice",
-                cellWidth: "10%",
-                type: "input",
-            },
             // { header: "발주상태", col: "byStatus", cellWidth: "10%", type: "select", options: [
             //         { label: "--선택--", value: "" },
             //         { label: "미발주", value: "미발주" },

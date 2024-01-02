@@ -473,8 +473,9 @@ function ExpenseMgmtExe() {
         setRunMgmtView(updatedViewData);
         if (resultData && resultData.length > 0) {
             const updatedData = processResultData(resultData, condition);
-            setExeRunMgmt(updatedData);
-            console.log("✨✨경비실행 조회 updatedData:", updatedData);
+            const filteredData = filterArray(updatedData);
+            setExeRunMgmt(filteredData);
+            console.log("✨✨경비실행 조회 updatedData:", filteredData);
             let total = 0,
                 pjbgTypeCode1 = 0,
                 pjbgTypeCode2 = 0,
@@ -482,7 +483,7 @@ function ExpenseMgmtExe() {
                 pjbgTypeCode4 = 0,
                 pjbgTypeCode5 = 0,
                 pjbgTypeCode20 = 0;
-            updatedData.map((data) => {
+            filteredData.map((data) => {
                 pjbgTypeCode1 += data.pjbgTypeCode1; //교통비
                 pjbgTypeCode2 += data.pjbgTypeCode2; //숙박비
                 pjbgTypeCode3 += data.pjbgTypeCode3; //일비/파견비
