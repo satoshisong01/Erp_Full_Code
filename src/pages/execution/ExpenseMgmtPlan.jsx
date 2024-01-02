@@ -19,9 +19,10 @@ function ExpenseMgmtPlan() {
     const current = "경비계획";
 
     useEffect(() => {
-        if (current === "경비계획" && currentPageName !== current) {
+        if(currentPageName === "경비" && current === "경비계획") {
             setCurrentPageName(current);
         }
+        setInnerPageName("");
     }, [currentPageName]);
 
     const refresh = () => {

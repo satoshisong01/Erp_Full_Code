@@ -12,9 +12,10 @@ import SaveButton from "components/button/SaveButton";
 
 /** 실행관리-구매-계획 */
 function PurchasingMgmtPlan() {
-    const { setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton, setInnerPageName } = useContext(PageContext);
+    const { projectInfo, setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton, setInnerPageName, prevCurrentPageName, setPrevCurrentPageName } = useContext(PageContext);
     const [condition, setCondition] = useState({});
     const [budgetMgmt, setBudgetMgmt] = useState([]);
+    const current = "구매계획";
 
     useEffect(() => {
         return () => {
@@ -22,13 +23,9 @@ function PurchasingMgmtPlan() {
         };
     }, []);
 
-    const current = "구매계획";
-
     useEffect(() => {
-        if(currentPageName === "구매(재료비)") {
-            if(currentPageName !== current) {
-                setCurrentPageName(current);
-            }
+        if(currentPageName === "구매(재료비)" && current === "구매계획") {
+            setCurrentPageName(current);
         }
         setInnerPageName("");
     }, [currentPageName]);
