@@ -5,7 +5,7 @@ import { PageContext } from "components/PageProvider";
 
 /** 실행 폼 */
 function ApprovalFormExe({ viewPageName, returnData }) {
-    // const {currentPageName } = useContext(PageContext);
+    const { currentPageName } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
@@ -13,12 +13,16 @@ function ApprovalFormExe({ viewPageName, returnData }) {
     //     console.log("data:", data);
     // }, [data])
 
+    useEffect(() => {
+        setData({}); //초기화
+    }, [currentPageName]);
+
     const onChange = (value) => {
         // console.log("ㅋㅋ", viewPageName , "2", currentPageName);
         // if(viewPageName === currentPageName) {
-            setData({...value});
+        setData({ ...value });
         // }
-    }
+    };
 
     const onClick = () => {
         returnData({ poiId: data.poiId });
@@ -44,7 +48,13 @@ function ApprovalFormExe({ viewPageName, returnData }) {
                                     readOnly
                                 />
                                 {isOpenProjectModal && (
-                                    <ProjectModal width={500} height={710} onClose={() => setIsOpenProjectModal(false)} title="프로젝트 목록" returnInfo={onChange}/>
+                                    <ProjectModal
+                                        width={500}
+                                        height={710}
+                                        onClose={() => setIsOpenProjectModal(false)}
+                                        title="프로젝트 목록"
+                                        returnInfo={onChange}
+                                    />
                                 )}
                             </td>
                             <th>기준연도</th>

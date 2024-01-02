@@ -55,9 +55,9 @@ function OrderPlanMgmt() {
     const [isOpenDel, setIsOpenDel] = useState(false);
     const [condition, setCondition] = useState({}); //poiMonth:기준연도
 
-    // useEffect(() => {
-    //     console.log(prmnPlanDatas, "prmnPlanDatas");
-    // }, [prmnPlanDatas]);
+    useEffect(() => {
+        console.log(prmnPlanDatas, "prmnPlanDatas");
+    }, [prmnPlanDatas]);
 
     useEffect(() => {
         setInnerPageName("원가버전조회");
@@ -173,7 +173,7 @@ function OrderPlanMgmt() {
                 toAdd.useAt = "Y";
                 toAdd.deleteAt = "N";
                 toAdd.poiId = condition.poiId;
-                toAdd.versionId = versionInfo.versionId;
+                toAdd.versionId = condition.versionId;
 
                 for (let j = 1; j <= 14; j++) {
                     if (toAdd[`pmpmmPositionCode${j}`] === null) {
@@ -281,6 +281,7 @@ function OrderPlanMgmt() {
                 console.log("😈영업-원가버전조회:", requestData, "resultData:", resultData);
             } else if (innerPageName === "인건비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
+                console.log(resultData, "인건비 불러오는지확인");
                 const changeData = ChangePrmnPlanData(resultData, condition.poiId);
                 let mm1 = 0; //임원
                 let mm9 = 0; //부장
@@ -290,65 +291,70 @@ function OrderPlanMgmt() {
                 let mm13 = 0; //주임
                 let mm14 = 0; //사원
                 const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === requestData.poiMonth);
-                changeData.forEach((Item) => {
-                    mm1 += Item.pmpmmPositionCode1;
-                    mm9 += Item.pmpmmPositionCode9;
-                    mm10 += Item.pmpmmPositionCode10;
-                    mm11 += Item.pmpmmPositionCode11;
-                    mm12 += Item.pmpmmPositionCode12;
-                    mm13 += Item.pmpmmPositionCode13;
-                    mm14 += Item.pmpmmPositionCode14;
-                });
-                setPrmnCalDatas([
-                    {
-                        total: mm1 + mm9 + mm10 + mm11 + mm12 + mm13 + mm14,
-                        pmpmmPositionCode1Total: mm1,
-                        pmpmmPositionCode9Total: mm9,
-                        pmpmmPositionCode10Total: mm10,
-                        pmpmmPositionCode11Total: mm11,
-                        pmpmmPositionCode12Total: mm12,
-                        pmpmmPositionCode13Total: mm13,
-                        pmpmmPositionCode14Total: mm14,
-                    },
-                    {
-                        total:
-                            mm1 * matchingAItem.gupPrice1 +
-                            mm9 * matchingAItem.gupPrice9 +
-                            mm10 * matchingAItem.gupPrice10 +
-                            mm11 * matchingAItem.gupPrice11 +
-                            mm12 * matchingAItem.gupPrice12 +
-                            mm13 * matchingAItem.gupPrice13 +
-                            mm14 * matchingAItem.gupPrice14,
-                        pmpmmPositionCode1Total: mm1 * matchingAItem.gupPrice1,
-                        pmpmmPositionCode9Total: mm9 * matchingAItem.gupPrice9,
-                        pmpmmPositionCode10Total: mm10 * matchingAItem.gupPrice10,
-                        pmpmmPositionCode11Total: mm11 * matchingAItem.gupPrice11,
-                        pmpmmPositionCode12Total: mm12 * matchingAItem.gupPrice12,
-                        pmpmmPositionCode13Total: mm13 * matchingAItem.gupPrice13,
-                        pmpmmPositionCode14Total: mm14 * matchingAItem.gupPrice14,
-                    },
-                ]);
-                changeData.forEach((Item) => {
-                    const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
-                    const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
-                    if (matchingAItem) {
-                        let totalPrice = 0;
+                console.log(matchingAItem, "기준연도와 맞는지확인");
+                if (matchingAItem) {
+                    changeData.forEach((Item) => {
+                        mm1 += Item.pmpmmPositionCode1;
+                        mm9 += Item.pmpmmPositionCode9;
+                        mm10 += Item.pmpmmPositionCode10;
+                        mm11 += Item.pmpmmPositionCode11;
+                        mm12 += Item.pmpmmPositionCode12;
+                        mm13 += Item.pmpmmPositionCode13;
+                        mm14 += Item.pmpmmPositionCode14;
+                    });
+                    setPrmnCalDatas([
+                        {
+                            total: mm1 + mm9 + mm10 + mm11 + mm12 + mm13 + mm14,
+                            pmpmmPositionCode1Total: mm1,
+                            pmpmmPositionCode9Total: mm9,
+                            pmpmmPositionCode10Total: mm10,
+                            pmpmmPositionCode11Total: mm11,
+                            pmpmmPositionCode12Total: mm12,
+                            pmpmmPositionCode13Total: mm13,
+                            pmpmmPositionCode14Total: mm14,
+                        },
+                        {
+                            total:
+                                mm1 * matchingAItem.gupPrice1 +
+                                mm9 * matchingAItem.gupPrice9 +
+                                mm10 * matchingAItem.gupPrice10 +
+                                mm11 * matchingAItem.gupPrice11 +
+                                mm12 * matchingAItem.gupPrice12 +
+                                mm13 * matchingAItem.gupPrice13 +
+                                mm14 * matchingAItem.gupPrice14,
+                            pmpmmPositionCode1Total: mm1 * matchingAItem.gupPrice1,
+                            pmpmmPositionCode9Total: mm9 * matchingAItem.gupPrice9,
+                            pmpmmPositionCode10Total: mm10 * matchingAItem.gupPrice10,
+                            pmpmmPositionCode11Total: mm11 * matchingAItem.gupPrice11,
+                            pmpmmPositionCode12Total: mm12 * matchingAItem.gupPrice12,
+                            pmpmmPositionCode13Total: mm13 * matchingAItem.gupPrice13,
+                            pmpmmPositionCode14Total: mm14 * matchingAItem.gupPrice14,
+                        },
+                    ]);
+                    changeData.forEach((Item) => {
+                        const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
+                        const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
+                        if (matchingAItem) {
+                            let totalPrice = 0;
 
-                        // Iterate over gupPrice and pmpmmPositionCode arrays
-                        for (let i = 1; i <= 14; i++) {
-                            const gupPriceKey = `gupPrice${i}`;
-                            const pmpmmPositionCodeKey = `pmpmmPositionCode${i}`;
-                            // Multiply corresponding values and add to totalPrice
-                            if (matchingAItem[gupPriceKey]) {
-                                totalPrice += matchingAItem[gupPriceKey] * Item[pmpmmPositionCodeKey];
+                            // Iterate over gupPrice and pmpmmPositionCode arrays
+                            for (let i = 1; i <= 14; i++) {
+                                const gupPriceKey = `gupPrice${i}`;
+                                const pmpmmPositionCodeKey = `pmpmmPositionCode${i}`;
+                                // Multiply corresponding values and add to totalPrice
+                                if (matchingAItem[gupPriceKey]) {
+                                    totalPrice += matchingAItem[gupPriceKey] * Item[pmpmmPositionCodeKey];
+                                }
+                                console.log(totalPrice);
                             }
-                            console.log(totalPrice);
+                            Item.totalPrice = totalPrice;
                         }
-                        Item.totalPrice = totalPrice;
-                    }
-                });
-                setPrmnPlanDatas(changeData);
-                console.log("😈영업-인건비:", changeData);
+                    });
+                    setPrmnPlanDatas(changeData);
+                    console.log("😈영업-인건비:", changeData);
+                } else {
+                    //alert("해당하는 기준연도에 데이터가 없습니다");
+                }
             } else if (innerPageName === "경비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
                 setPjbudgetDatas(resultData);
