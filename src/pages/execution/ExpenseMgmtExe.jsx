@@ -27,18 +27,20 @@ function ExpenseMgmtExe() {
     } = useContext(PageContext);
 
     // const { showDetailTable } = useContext(PageContext);
-    useEffect(() => {
-        setInnerPageName("경비실행");
-        setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
+    const [condition, setCondition] = useState({});
+    //const [conditionView, setConditionView] = useState({});
 
-        return () => {
-            setProjectInfo({});
-        };
+    const current = "경비실행";
+
+    useEffect(() => {
+        if (current === "경비실행" && currentPageName !== current) {
+            setCurrentPageName(current);
+        }
     }, [currentPageName]);
 
     const refresh = () => {
-        if (projectInfo.poiId) {
-            fetchAllData({ poiId: projectInfo.poiId, modeCode: "EXECUTE" });
+        if (condition.poiId) {
+            fetchAllData(condition);
         }
     };
 
@@ -66,6 +68,35 @@ function ExpenseMgmtExe() {
             } = item;
 
             if (/^EXPNS\d{2}$/.test(pjbgTypeCode) && ["EXECUTE"].includes(modeCode)) {
+                const key = `${modeCode}_${pjbgBeginDt}_${pjbgEndDt}_${pgNm}_${empNm}_${pjbgDesc}`;
+                if (!accumulator[key]) {
+                    accumulator[key] = {
+                        pjbgTypeCodes: [],
+                        modeCode,
+                        pjbgPrices: [],
+                        pjbgBeginDt,
+                        pjbgEndDt,
+                        empNm,
+                        esntlId,
+                        pjbgDt,
+                        pgNm,
+                        pjbgDesc,
+                        pjbgTypeCode1,
+                        pjbgTypeCode2,
+                        pjbgTypeCode3,
+                        pjbgTypeCode4,
+                        pjbgTypeCode5,
+                        pjbgTypeCode20,
+                        pjbgId: [],
+                    };
+                }
+
+                accumulator[key].pjbgTypeCodes.push(pjbgTypeCode);
+                accumulator[key].pjbgPrices.push(pjbgPrice);
+                accumulator[key].pjbgId.push(pjbgId);
+
+                return accumulator;
+            } else if (/^EXPNS\d{2}$/.test(pjbgTypeCode) && ["BUDGET"].includes(modeCode)) {
                 const key = `${modeCode}_${pjbgBeginDt}_${pjbgEndDt}_${pgNm}_${empNm}_${pjbgDesc}`;
                 if (!accumulator[key]) {
                     accumulator[key] = {
@@ -333,21 +364,31 @@ function ExpenseMgmtExe() {
 
     const fetchAllData = async (condition) => {
         console.log("경비계획 조회 컨디션:", condition);
-        const requestData = { modeCode: "BUDGET" };
         const resultData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", condition);
-        const viewData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", requestData);
+        const viewData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", { poiId: condition.poiId, modeCode: "BUDGET" });
         console.log(viewData, "이거안나오나봐 ㅜ");
-        const updatedViewData = updatePjbgType(viewData);
+        const updatedViewData = processResultData(viewData);
         setRunMgmtView(updatedViewData);
         const updatedData = processResultData(resultData);
         setExeRunMgmt(updatedData);
         console.log("경비계획 조회 updatedData:", updatedData);
     };
 
+    const conditionInfo = (value) => {
+        setCondition((prev) => {
+            if (prev.poiId !== value.poiId) {
+                const newCondition = { poiId: value.poiId, modeCode: "EXECUTE" };
+                fetchAllData(newCondition);
+                return newCondition;
+            }
+            return prev;
+        });
+    };
+
     return (
         <>
             <Location pathList={locationPath.ExpenseMgmt} />
-            <ApprovalFormExe viewPageName="경비실행" returnData={(condition) => fetchAllData({ ...condition, modeCode: "EXECUTE" })} />
+            <ApprovalFormExe viewPageName={current} returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
                 <ReactDataTable columns={columns.expenseMgmt.budget} customDatas={runMgmtView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
@@ -361,9 +402,10 @@ function ExpenseMgmtExe() {
                     editing={true}
                     columns={columns.expenseMgmt.budget}
                     returnList={returnList}
-                    viewPageName="경비실행"
+                    viewPageName={current}
                     customDatas={runExeMgmt}
                     customDatasRefresh={refresh}
+                    condition={condition}
                 />
             </HideCard>
         </>

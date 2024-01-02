@@ -478,19 +478,22 @@ export const columns = {
             },
         ],
         addMod: [
-            { items: [{
-                header: "상태",
-                col: "poiStatus",
-                type: "select",
-                option: [ { label: "전체보기", value: "" },
-                    { label: "전체보기", value: "" },
-                    { label: "프로젝트접수", value: "프로젝트접수" },
-                    { label: "실행예산완료", value: "실행예산완료" },
-                    { label: "실행정산중", value: "실행정산중" },
-                    { label: "프로젝트종료", value: "프로젝트종료" },
+            {
+                items: [
+                    {
+                        header: "상태",
+                        col: "poiStatus",
+                        type: "select",
+                        option: [
+                            { label: "전체보기", value: "" },
+                            { label: "프로젝트접수", value: "프로젝트접수" },
+                            { label: "실행예산완료", value: "실행예산완료" },
+                            { label: "실행정산중", value: "실행정산중" },
+                            { label: "프로젝트종료", value: "프로젝트종료" },
+                        ],
+                    },
                 ],
-                   
-            }]},
+            },
         ],
     },
     laborCostMgmt: {
@@ -725,7 +728,8 @@ export const columns = {
                 type: "productGroup",
                 require: true,
             },
-            { header: "담당자", col: "esntlId", cellWidth: "25%", type: "input" },
+            { header: "담당자", col: "empNm", cellWidth: "25%", type: "employerInfo" },
+            { header: "담당자ID", col: "esntlId", cellWidth: "25%", notView: true },
             { header: "부서", col: "groupNm", cellWidth: "25%", type: "input" },
             {
                 header: "직급",

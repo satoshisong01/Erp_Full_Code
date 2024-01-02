@@ -40,7 +40,7 @@ const ReactDataTableURL = (props) => {
         setLengthSelectRow,
         newRowData,
         currentPageName,
-        // projectInfo,
+        projectInfo,
         companyInfo,
         setCompanyInfo,
         projectPgNm,
@@ -117,22 +117,24 @@ const ReactDataTableURL = (props) => {
             returnList(originTableData, tableData);
             setNameOfButton("");
         }
-    }, [innerPageName, editing, nameOfButton]);
+    }, [innerPageName, currentPageName, editing, nameOfButton]);
 
     useEffect(() => {
-        //업무회원
-        if (!emUserInfo || emUserInfo.uniqId === "") return;
-        const updatedTableData = [...tableData];
-        updatedTableData[rowIndex] = {
-            ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
-            ...emUserInfo,
-            esntlId: emUserInfo.uniqId,
-        };
-        setTableData(updatedTableData);
+        if (isCurrentPage()) {
+            //업무회원
+            if (!emUserInfo || emUserInfo.uniqId === "") return;
+            const updatedTableData = [...tableData];
+            updatedTableData[rowIndex] = {
+                ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+                ...emUserInfo,
+                esntlId: emUserInfo.uniqId,
+            };
+            setTableData(updatedTableData);
 
-        //setTableData((prevData) => {
-        //    return [{ ...prevData, ...emUserInfo }];
-        //});
+            //setTableData((prevData) => {
+            //    return [{ ...prevData, ...emUserInfo }];
+            //});
+        }
     }, [emUserInfo]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */

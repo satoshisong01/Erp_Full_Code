@@ -17,6 +17,8 @@ import { v4 as uuidv4 } from "uuid";
 import DayPicker from "components/input/DayPicker";
 import MonthPicker from "components/input/MonthPicker";
 import ProductGroupModal from "components/modal/ProductGroupModal";
+import EmployerInfoModal from "components/modal/EmployerInfoModal";
+import BasicInput from "components/input/BasicInput";
 // import DataPostModalReactTable from "./DataPostModalReactTable";
 const ReactDataTable = (props) => {
     const {
@@ -61,6 +63,7 @@ const ReactDataTable = (props) => {
         setProjectPgNm,
         setProjectInfo,
         unitPriceList,
+        emUserInfo,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -74,6 +77,8 @@ const ReactDataTable = (props) => {
     const [rowIndex, setRowIndex] = useState(0);
 
     const [isOpenModalProductGroup, setIsOpenModalProductGroup] = useState(false); //품목그룹목록
+    const [isOpenModalEmployerInfo, setIsOpenModalEmployerInfo] = useState(false); //업무회원목록
+    const [colName, setColName] = useState("");
 
     const handleDateClick = (date, colName, index) => {
         const updatedTableData = [...tableData];
@@ -176,10 +181,8 @@ const ReactDataTable = (props) => {
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
             //inner tab에서 저장을 눌렀을 때
-            if (current === innerPageName && nameOfButton === "save") {
-                if (typeof returnList === "function") {
-                    returnList(originTableData, tableData);
-                }
+            if (current === "인건비" && nameOfButton === "save") {
+                returnList(originTableData, tableData);
             } else if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
                 returnList(originTableData, tableData);
             } else if (innerPageName === "사전원가지표" && !editing) {
@@ -218,6 +221,24 @@ const ReactDataTable = (props) => {
             setNameOfButton(""); //초기화
         }
     }, [nameOfButton]);
+
+    useEffect(() => {
+        if (isCurrentPage()) {
+            //업무회원
+            if (!emUserInfo || emUserInfo.uniqId === "") return;
+            const updatedTableData = [...tableData];
+            updatedTableData[rowIndex] = {
+                ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+                ...emUserInfo,
+                esntlId: emUserInfo.uniqId,
+            };
+            setTableData(updatedTableData);
+
+            //setTableData((prevData) => {
+            //    return [{ ...prevData, ...emUserInfo }];
+            //});
+        }
+    }, [emUserInfo]);
 
     const columnsConfig = useMemo(
         //컬럼 초기 상태
@@ -617,6 +638,12 @@ const ReactDataTable = (props) => {
         refreshClick();
     }, [viewPageName]);
 
+    const changeEmployerInfo = (colName, rowIndex) => {
+        setRowIndex(rowIndex);
+        setColName(colName);
+        setIsOpenModalEmployerInfo(true);
+    };
+
     const isCurrentPage = () => {
         // if(current === "") {
         //     console.log("Current is undefined");
@@ -737,6 +764,13 @@ const ReactDataTable = (props) => {
                                                                 }}
                                                             />
                                                         </div>
+                                                    ) : cell.column.type === "employerInfo" ? (
+                                                        <BasicInput
+                                                            item={cell.column}
+                                                            onClick={() => changeEmployerInfo(cell.column.id, rowIndex)}
+                                                            value={tableData[row.index][cell.column.id] ?? ""}
+                                                            readOnly
+                                                        />
                                                     ) : cell.column.type === "dayPicker" ? (
                                                         <DayPicker
                                                             name={cell.column.id}
@@ -887,6 +921,14 @@ const ReactDataTable = (props) => {
                 title="품목그룹 목록"
                 isOpen={isOpenModalProductGroup}
                 onClose={() => setIsOpenModalProductGroup(false)}
+            />
+            <EmployerInfoModal
+                width={600}
+                height={770}
+                title="업무회원 목록"
+                isOpen={isOpenModalEmployerInfo}
+                onClose={() => setIsOpenModalEmployerInfo(false)}
+                colName={colName}
             />
             {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
         </>

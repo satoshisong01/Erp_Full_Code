@@ -50,12 +50,17 @@ function LaborCostMgmtPlan() {
     const orderPlanMgmtTable3 = useRef(null);
 
     const [isClicked3, setIsClicked3] = useState(false);
-    const [poiIdToSend, setPoiIdToSend] = useState();
 
-    useEffect(() => {
-        console.log(poiIdToSend, "poiIdToSend");
-        fetchData();
-    }, [poiIdToSend]);
+    const conditionInfo = (value) => {
+        setCondition((prev) => {
+            if (prev.poiId !== value.poiId) {
+                const newCondition = { poiId: value.poiId, typeCode: "MM", modeCode: "BUDGET" };
+                fetchAllData(newCondition);
+                return newCondition;
+            }
+            return prev;
+        });
+    };
 
     const handleClick3 = () => {
         setIsClicked3(!isClicked3);
@@ -65,46 +70,51 @@ function LaborCostMgmtPlan() {
     const [budgetMgmtView, setBudgetMgmtView] = useState([]); // 실행인건비계획
 
     useEffect(() => {
-        if (projectInfo.poiId === undefined || projectInfo.poId === "") {
+        if (condition.poiId === undefined || condition.poId === "") {
             //테이블 초기화
             setBudgetMgmt([]);
         }
-    }, [currentPageName, innerPageName, projectInfo]);
+    }, [currentPageName, innerPageName, condition]);
 
     const refresh = () => {
-        fetchData();
-    };
-
-    const fetchData = async () => {
-        try {
-            if (innerPageName === "실행인건비계획") {
-                console.log("unitPriceList", unitPriceList);
-                console.log("unitPriceListRenew", unitPriceListRenew);
-                const datas = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", innerPageName); // 인건비 예산관리
-                if (unitPriceList && datas) {
-                    const updatedDatas = datas.map((data) => {
-                        const unit = unitPriceList.find((unit) => data.pecPosition === unit.guppName && unit.gupDesc === new Date().getFullYear());
-                        if (unit) {
-                            const price = unit ? data.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
-                            return { ...data, price: price, positionPrice: unit.gupPrice };
-                        } else {
-                            return { ...data, price: 0, positionPrice: 0 };
-                        }
-                    });
-                    setBudgetMgmt(updatedDatas);
-                }
-            }
-        } catch (error) {
-            console.error("데이터를 가져오는 중에 오류 발생:", error);
+        if (condition.poiId) {
+            fetchAllData(condition);
         }
     };
 
+    //const fetchData = async () => {
+    //    try {
+    //        if (current === "실행인건비계획") {
+    //            console.log("unitPriceList", unitPriceList);
+    //            console.log("unitPriceListRenew", unitPriceListRenew);
+    //            const datas = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", {
+    //                poiId: condition.poiId,
+    //                typeCode: "MM",
+    //                modeCode: "BUDGET",
+    //            }); // 인건비 예산관리
+    //            if (unitPriceList && datas) {
+    //                const updatedDatas = datas.map((data) => {
+    //                    const unit = unitPriceList.find((unit) => data.pecPosition === unit.guppName && unit.gupDesc === new Date().getFullYear());
+    //                    if (unit) {
+    //                        const price = unit ? data.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
+    //                        return { ...data, price: price, positionPrice: unit.gupPrice };
+    //                    } else {
+    //                        return { ...data, price: 0, positionPrice: 0 };
+    //                    }
+    //                });
+    //                setBudgetMgmt(updatedDatas);
+    //            }
+    //        }
+    //    } catch (error) {
+    //        console.error("데이터를 가져오는 중에 오류 발생:", error);
+    //    }
+    //};
+
     useEffect(() => {
         setBudgetMgmt([]);
-        fetchData();
-    }, [innerPageName, projectInfo]);
+    }, [condition]);
 
-    const fetchAllData = async () => {
+    const fetchAllData = async (condition) => {
         const requestSearch = {
             poiId: projectInfo.poiId,
             poiNm: projectInfo.poiNm,
@@ -114,14 +124,55 @@ function LaborCostMgmtPlan() {
         };
 
         const choiceData = {
-            poiId: projectInfo.poiId,
+            poiId: condition.poiId,
+            poiNm: condition.poiNm,
+            modeCode: "BUDGET",
             versionId: 91,
         };
 
-        const resultData = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", requestSearch);
+        const resultData = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", condition);
         const viewResult = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", choiceData);
-        setBudgetMgmtView(ChangePrmnPlanData(viewResult));
+        const changeData = ChangePrmnPlanData(viewResult);
+        changeData.forEach((Item) => {
+            const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
+            const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
+
+            console.log(matchingAItem, "변견된값?");
+
+            if (matchingAItem) {
+                let totalPrice = 0;
+
+                // Iterate over gupPrice and pmpmmPositionCode arrays
+                for (let i = 1; i <= 14; i++) {
+                    const gupPriceKey = `gupPrice${i}`;
+                    const pmpmmPositionCodeKey = `pmpmmPositionCode${i}`;
+                    // Multiply corresponding values and add to totalPrice
+                    if (matchingAItem[gupPriceKey]) {
+                        totalPrice += matchingAItem[gupPriceKey] * Item[pmpmmPositionCodeKey];
+                    }
+                    console.log(totalPrice);
+                }
+                console.log(totalPrice);
+                // Add totalPrice to bItem
+                Item.totalPrice = totalPrice;
+                console.log(totalPrice);
+            }
+            console.log(changeData, "changeData이거왜 안나오지 💥💥💥");
+        });
+        setBudgetMgmtView(changeData);
         if (resultData) {
+            if (unitPriceList && resultData) {
+                const updatedDatas = resultData.map((data) => {
+                    const unit = unitPriceList.find((unit) => data.pecPosition === unit.guppName && unit.gupDesc === new Date().getFullYear());
+                    if (unit) {
+                        const price = unit ? data.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
+                        return { ...data, price: price, positionPrice: unit.gupPrice };
+                    } else {
+                        return { ...data, price: 0, positionPrice: 0 };
+                    }
+                });
+                setBudgetMgmt(updatedDatas);
+            }
             console.log("get data success:)");
             return resultData;
         } else {
@@ -131,6 +182,7 @@ function LaborCostMgmtPlan() {
     };
 
     const compareData = (originData, updatedData) => {
+        console.log("이거안타나");
         const filterData = updatedData.filter((data) => data.poiId); //pgNm 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -166,7 +218,7 @@ function LaborCostMgmtPlan() {
             updateList(addUpdate);
 
             for (let i = originDataLength; i < updatedDataLength; i++) {
-                const add = { poiId: poiIdToSend || projectInfo.poiId };
+                const add = { poiId: condition.poiId };
                 const typeCode = { typeCode: "MM" };
                 const modeCode = { modeCode: "BUDGET" };
                 toAdds.push({ ...filterData[i], ...add, ...typeCode, ...modeCode });
@@ -203,7 +255,7 @@ function LaborCostMgmtPlan() {
     return (
         <>
             <Location pathList={locationPath.LaborCostMgmt} />
-            <ApprovalFormExe viewPageName={current} returnData={fetchAllData} />
+            <ApprovalFormExe viewPageName={current} returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
                 <ReactDataTable columns={columns.orderPlanMgmt.labor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
@@ -216,10 +268,12 @@ function LaborCostMgmtPlan() {
                 <ReactDataTable
                     editing={true}
                     columns={columns.laborCostMgmt.budget}
-                    tableRef={orderPlanMgmtTable3}
                     customDatas={budgetMgmt}
                     viewPageName={current}
                     returnList={compareData}
+                    condition={condition}
+
+                    //hideCheckBox={true}
                 />
             </HideCard>
         </>
