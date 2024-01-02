@@ -1,311 +1,69 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import { locationPath } from "constants/locationPath";
-import { PageContext } from "components/PageProvider";
+import ReactDataTable from "components/DataTable/ReactDataTable";
 import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
+import { PageContext } from "components/PageProvider";
 import { columns } from "constants/columns";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import RefreshButton from "components/button/RefreshButton";
-import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
 import ApprovalFormExe from "components/form/ApprovalFormExe";
 import HideCard from "components/HideCard";
 import SaveButton from "components/button/SaveButton";
-import ReactDataTable from "components/DataTable/ReactDataTable";
-/** 실행관리-경비-계획 */
-function ExpenseMgmtPlan() {
-    const { projectInfo, setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton, setInnerPageName, prevCurrentPageName, setPrevCurrentPageName } = useContext(PageContext);
-    const [pjbudgetDatasView, setPjbudgetDatasView] = useState([]); // 경비
+import ReactDataTableView from "components/DataTable/ReactDataTableView";
+import { ChangePrmnPlanData } from "components/DataTable/function/ReplaceDataFormat";
+
+/** 실행관리-인건비-계획 */
+function LaborCostMgmtPlan() {
+    const {
+        innerPageName,
+        setCurrentPageName,
+        setInnerPageName,
+        projectInfo,
+        setProjectInfo,
+        // viewSetPoiId,
+        unitPriceList,
+        currentPageName,
+        unitPriceListRenew,
+        setNameOfButton,
+        versionInfo,
+    } = useContext(PageContext);
+
     const [condition, setCondition] = useState({});
 
-    const current = "인건비계획";
+    const current = "인건비";
 
     useEffect(() => {
-        if(currentPageName === "인건비" && current === "인건비계획") {
+        if (currentPageName === "인건비" && current === "인건비계획") {
             setCurrentPageName(current);
         }
         setInnerPageName("");
     }, [currentPageName]);
 
-    const refresh = () => {
-        if (condition.poiId) {
-            fetchAllData(condition);
-        }
-    };
-
-    const processResultData = (resultData) => {
-        console.log(resultData, "처음받는값인데");
-        const transformedData = resultData.reduce((accumulator, item) => {
-            const {
-                pjbgTypeCode,
-                modeCode,
-                pjbgPrice,
-                pjbgBeginDt,
-                pjbgEndDt,
-                empNm,
-                esntlId,
-                pjbgDt,
-                pgNm,
-                pjbgDesc,
-                pjbgTypeCode1,
-                pjbgTypeCode2,
-                pjbgTypeCode3,
-                pjbgTypeCode4,
-                pjbgTypeCode5,
-                pjbgTypeCode20,
-                pjbgId,
-            } = item;
-
-            if (/^EXPNS\d{2}$/.test(pjbgTypeCode) && ["BUDGET"].includes(modeCode)) {
-                const key = `${modeCode}_${pjbgBeginDt}_${pjbgEndDt}_${pgNm}_${empNm}_${pjbgDesc}`;
-                if (!accumulator[key]) {
-                    accumulator[key] = {
-                        pjbgTypeCodes: [],
-                        modeCode,
-                        pjbgPrices: [],
-                        pjbgBeginDt,
-                        pjbgEndDt,
-                        empNm,
-                        esntlId,
-                        pjbgDt,
-                        pgNm,
-                        pjbgDesc,
-                        pjbgTypeCode1,
-                        pjbgTypeCode2,
-                        pjbgTypeCode3,
-                        pjbgTypeCode4,
-                        pjbgTypeCode5,
-                        pjbgTypeCode20,
-                        pjbgId: [],
-                    };
-                }
-
-                accumulator[key].pjbgTypeCodes.push(pjbgTypeCode);
-                accumulator[key].pjbgPrices.push(pjbgPrice);
-                accumulator[key].pjbgId.push(pjbgId);
-
-                return accumulator;
-            }
-
-            return accumulator;
-        }, {});
-        console.log(transformedData, "transformedData");
-
-        const mergedData = Object.values(transformedData).map((mergedItem, index) => {
-            const newObj = {};
-            console.log(mergedItem, "이거머더라");
-            newObj["modeCode"] = mergedItem.modeCode;
-            newObj["pjbgBeginDt"] = mergedItem.pjbgBeginDt;
-            newObj["pjbgEndDt"] = mergedItem.pjbgEndDt;
-            newObj["esntlId"] = mergedItem.esntlId;
-            newObj["empNm"] = mergedItem.empNm;
-            newObj["pjbgDt"] = mergedItem.pjbgBeginDt;
-            newObj["pgNm"] = mergedItem.pgNm;
-            newObj["pjbgDesc"] = mergedItem.pjbgDesc;
-            newObj["pjbgId"] = mergedItem.pjbgId;
-            newObj["pjbgId1"] = mergedItem.pjbgId[0];
-            newObj["pjbgId2"] = mergedItem.pjbgId[1];
-            newObj["pjbgId3"] = mergedItem.pjbgId[2];
-            newObj["pjbgId4"] = mergedItem.pjbgId[3];
-            newObj["pjbgId5"] = mergedItem.pjbgId[4];
-            newObj["pjbgId20"] = mergedItem.pjbgId[5];
-            newObj["pjbgTypeCode1"] = mergedItem.pjbgPrices[0];
-            newObj["pjbgTypeCode2"] = mergedItem.pjbgPrices[1];
-            newObj["pjbgTypeCode3"] = mergedItem.pjbgPrices[2];
-            newObj["pjbgTypeCode4"] = mergedItem.pjbgPrices[3];
-            newObj["pjbgTypeCode5"] = mergedItem.pjbgPrices[4];
-            newObj["pjbgTypeCode20"] = mergedItem.pjbgPrices[5];
-            newObj["poiId"] = projectInfo.poiId;
-
-            return newObj;
-        });
-        console.log(mergedData);
-        return mergedData;
-    };
-
-    const [budgetMgmt, setBudgetMgmt] = useState([]); // 경비 예산관리
-    const allowedPjbgTypeCodes = ["EXPNS01", "EXPNS02", "EXPNS03", "EXPNS04", "EXPNS05", "EXPNS06"];
-    const [saveNum, setSaveNum] = useState([]);
-
-    // pjbgTypeCode를 기반으로 그룹화된 데이터 객체 생성
-    // view에 계산된 Total값 출력구문
-    useEffect(() => {
-        const groupedData =
-            saveNum && saveNum.length > 0
-                ? saveNum.reduce((result, item) => {
-                      const { pjbgTypeCode, pjbgPrice } = item;
-
-                      // 허용된 pjbgTypeCode만 고려
-                      if (allowedPjbgTypeCodes.includes(pjbgTypeCode)) {
-                          if (!result[pjbgTypeCode]) {
-                              result[pjbgTypeCode] = 0;
-                          }
-                          result[pjbgTypeCode] += pjbgPrice;
-                      }
-
-                      return result;
-                  }, {})
-                : {};
-
-        // 모든 허용된 pjbgTypeCode에 대해 확인하여 누락된 경우 0 값 객체 추가
-        allowedPjbgTypeCodes.forEach((code) => {
-            if (!groupedData[code]) {
-                groupedData[code] = 0;
-            }
-        });
-
-        // 결과를 배열로 변환
-        const resultObject = Object.keys(groupedData).reduce((acc, code) => {
-            acc[code] = groupedData[code];
-            return acc;
-        }, {});
-
-        console.log(resultObject, "경비수주 경비더한 토탈값");
-    }, [saveNum]);
-
-    const returnList = (originTableData, tableData) => {
-        console.log(originTableData, tableData);
-        compareData(originTableData, tableData);
-    };
-
-    const compareData = (originData, updatedData) => {
-        console.log("타나");
-        const filterData = updatedData.filter((data) => data.poiId); //pmpMonth가 없는 데이터 제외
-        const originDataLength = originData ? originData.length : 0;
-        const updatedDataLength = filterData ? filterData.length : 0;
-
-        if (originDataLength > updatedDataLength) {
-            console.log(originDataLength, "originDataLength");
-            console.log(updatedDataLength, "updatedDataLength");
-
-            //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
-            const updateDataInOrigin = (originData, updatedData) => {
-                const updatedArray = [...originData];
-
-                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
-                    const updatedItem = updatedData[i];
-                    updatedArray[i] = {
-                        ...updatedItem,
-                        pjbgId: updatedArray[i].pjbgId,
-                        pjbgId1: updatedArray[i].pjbgId1,
-                        pjbgId2: updatedArray[i].pjbgId2,
-                        pjbgId3: updatedArray[i].pjbgId3,
-                        pjbgId4: updatedArray[i].pjbgId4,
-                        pjbgId5: updatedArray[i].pjbgId5,
-                        pjbgId20: updatedArray[i].pjbgId20,
-                    };
-                }
-
-                return updatedArray;
-            };
-
-            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
-            updateItem(firstRowUpdate); //수정
-
-            const delList = [];
-            const delListTest = [];
-            for (let i = updatedDataLength; i < originDataLength; i++) {
-                delList.push(originData[i].pjbgId);
-                delListTest.push(originData[i]);
-            }
-            deleteItem(delList); //삭제
-        } else if (originDataLength === updatedDataLength) {
-            updateItem(filterData); //수정
-        } else if (originDataLength < updatedDataLength) {
-            const updateList = [];
-
-            for (let i = 0; i < originDataLength; i++) {
-                updateList.push(filterData[i]);
-            }
-            updateItem(updateList); //수정
-
-            const addList = [];
-            for (let i = originDataLength; i < updatedDataLength; i++) {
-                const newItem = filterData[i];
-
-                // Add default value for esntlId if it doesn't exist
-                if (!newItem.esntlId) {
-                    newItem.esntlId = "EMPLY_00000000000001";
-                }
-                for (let j = 1; j <= 5; j++) {
-                    const propName = `pjbgTypeCode${j}`;
-                    if (newItem[propName] === null || newItem[propName] === undefined) {
-                        newItem[propName] = 0;
-                    }
-                }
-
-                const propName20 = "pjbgTypeCode20";
-                if (newItem[propName20] === null || newItem[propName20] === undefined) {
-                    newItem[propName20] = 0;
-                }
-                addList.push(newItem);
-            }
-            console.log(addList, "이거나오는거보자");
-            addItem(addList); //추가
-        }
-    };
-
-    //function transformData(inputData) {
-    //    // Iterate over each item in the array
-    //    for (let i = 0; i < inputData.length; i++) {
-    //        const item = inputData[i];
-
-    //        // Extract the pjbgId array and iterate over its values
-    //        const pjbgIdArray = item.pjbgId;
-    //        for (let j = 0; j < pjbgIdArray.length; j++) {
-    //            // Create new property with modified name and value
-    //            item[`pjbgId${j + 1}`] = pjbgIdArray[j];
-    //        }
-
-    //        // Rename the last property to pjbgId20
-    //        const lastIdx = pjbgIdArray.length;
-    //        item.pjbgId20 = item[`pjbgId${lastIdx}`];
-    //        delete item[`pjbgId${lastIdx}`];
-
-    //        // Remove the original pjbgId property
-    //        delete item.pjbgId;
+    //useEffect(() => {
+    //    if (currentPageName === "인건비") {
+    //        fetchAllData();
+    //    } else {
+    //        setBudgetMgmt([]);
+    //        setBudgetMgmtView([]);
+    //        setCondition({});
     //    }
-    //    return inputData;
-    //}
+    //}, [currentPageName]);
 
-    const addItem = async (addData) => {
-        addData.forEach((item) => {
-            if (item.pjbgDt) {
-                item.pjbgDt = `${item.pjbgDt}-01`;
-            }
-        });
-        console.log(addData, "추가되야함");
-        const url = `/api/baseInfrm/product/pjbudgetExe/addArrayList.do`;
-        const resultData = await axiosPost(url, addData);
+    //useEffect(() => {
+    //    if (current === "실행인건비계획" && currentPageName !== current) {
+    //        setCurrentPageName(current);
+    //    }
+    //}, [currentPageName]);
 
-        if (resultData) {
-            refresh && refresh();
-        }
-    };
-
-    const updateItem = async (toUpdate) => {
-        console.log(toUpdate, "업데이트 값은?");
-        const url = `/api/baseInfrm/product/pjbudgetExe/editArrayList.do`;
-        const resultData = await axiosUpdate(url, toUpdate);
-
-        if (resultData) {
-            refresh && refresh();
-        }
-    };
-
-    const deleteItem = async (removeItem) => {
-        const mergedArray = [].concat(...removeItem);
-        console.log(mergedArray, "삭제될놈들");
-        const url = `/api/baseInfrm/product/pjbudgetExe/removeAll.do`;
-        const resultData = await axiosDelete(url, mergedArray);
-
-        if (resultData) {
-            refresh && refresh();
-        }
-    };
+    const [isClicked3, setIsClicked3] = useState(false);
 
     const conditionInfo = (value) => {
         setCondition((prev) => {
             if (prev.poiId !== value.poiId) {
-                const newCondition = { poiId: value.poiId, modeCode: "BUDGET" };
+                const newCondition = { poiId: value.poiId, typeCode: "MM", modeCode: "BUDGET" };
                 fetchAllData(newCondition);
                 return newCondition;
             }
@@ -313,56 +71,202 @@ function ExpenseMgmtPlan() {
         });
     };
 
-    const updatePjbgType = (viewData) => {
-        const pjbgTypeMap = {
-            EXPNS01: "교통비",
-            EXPNS02: "숙박비",
-            EXPNS03: "일비/파견비",
-            EXPNS04: "식비",
-            EXPNS05: "자재/소모품외",
-            EXPNS06: "국내출장비",
-            EXPNS07: "시내교통비",
-            EXPNS08: "PJT 파견비",
-            EXPNS09: "사무실임대료",
-            EXPNS10: "소모품비",
-            EXPNS11: "행사비",
-            EXPNS12: "요식성경비",
-            EXPNS13: "전산소모품비",
-            EXPNS14: "도서인쇄비",
-            EXPNS15: "통신비",
-            EXPNS16: "해외출장비",
-            EXPNS17: "배송비",
-            EXPNS18: "예비비",
-            EXPNS19: "영업비",
-            EXPNS20: "기타",
-        };
-
-        const updatedViewData = viewData.map((item) => ({
-            ...item,
-            pjbgTypeCode: pjbgTypeMap[item.pjbgTypeCode] || item.pjbgTypeCode,
-        }));
-
-        return updatedViewData;
+    const handleClick3 = () => {
+        setIsClicked3(!isClicked3);
     };
 
+    const [budgetMgmt, setBudgetMgmt] = useState([]); // 실행인건비계획
+    const [budgetMgmtView, setBudgetMgmtView] = useState([]); // 실행인건비계획
+
+    useEffect(() => {
+        if (condition.poiId === undefined || condition.poId === "") {
+            //테이블 초기화
+            setBudgetMgmt([]);
+        }
+    }, [currentPageName, innerPageName, condition]);
+
+    const refresh = () => {
+        if (condition.poiId) {
+            fetchAllData(condition);
+        }
+    };
+
+    //const fetchData = async () => {
+    //    try {
+    //        if (current === "실행인건비계획") {
+    //            console.log("unitPriceList", unitPriceList);
+    //            console.log("unitPriceListRenew", unitPriceListRenew);
+    //            const datas = await fetchAllData("/api/baseInfrm/product/prstmCost/totalListAll.do", {
+    //                poiId: condition.poiId,
+    //                typeCode: "MM",
+    //                modeCode: "BUDGET",
+    //            }); // 인건비 예산관리
+    //            if (unitPriceList && datas) {
+    //                const updatedDatas = datas.map((data) => {
+    //                    const unit = unitPriceList.find((unit) => data.pecPosition === unit.guppName && unit.gupDesc === new Date().getFullYear());
+    //                    if (unit) {
+    //                        const price = unit ? data.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
+    //                        return { ...data, price: price, positionPrice: unit.gupPrice };
+    //                    } else {
+    //                        return { ...data, price: 0, positionPrice: 0 };
+    //                    }
+    //                });
+    //                setBudgetMgmt(updatedDatas);
+    //            }
+    //        }
+    //    } catch (error) {
+    //        console.error("데이터를 가져오는 중에 오류 발생:", error);
+    //    }
+    //};
+
+    useEffect(() => {
+        setBudgetMgmt([]);
+    }, [condition]);
+
     const fetchAllData = async (condition) => {
-        console.log("경비계획 조회 컨디션:", condition);
-        const resultData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", condition);
-        const viewData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", condition);
-        const updatedViewData = updatePjbgType(viewData);
-        console.log(updatedViewData, "일단찎어봐");
-        setPjbudgetDatasView(updatedViewData);
-        const updatedData = processResultData(resultData);
-        setBudgetMgmt(updatedData);
-        console.log("경비계획 조회 updatedData:", updatedData);
+        const requestSearch = {
+            poiId: projectInfo.poiId,
+            poiNm: projectInfo.poiNm,
+            useAt: "Y",
+            typeCode: "MM",
+            modeCode: "BUDGET",
+        };
+
+        const choiceData = {
+            poiId: condition.poiId,
+            poiNm: condition.poiNm,
+            modeCode: "BUDGET",
+            versionId: versionInfo.versionId,
+        };
+
+        const resultData = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", condition);
+        const viewResult = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", choiceData);
+        const changeData = ChangePrmnPlanData(viewResult);
+        changeData.forEach((Item) => {
+            const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
+            const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
+
+            console.log(matchingAItem, "변견된값?");
+
+            if (matchingAItem) {
+                let totalPrice = 0;
+
+                // Iterate over gupPrice and pmpmmPositionCode arrays
+                for (let i = 1; i <= 14; i++) {
+                    const gupPriceKey = `gupPrice${i}`;
+                    const pmpmmPositionCodeKey = `pmpmmPositionCode${i}`;
+                    // Multiply corresponding values and add to totalPrice
+                    if (matchingAItem[gupPriceKey]) {
+                        totalPrice += matchingAItem[gupPriceKey] * Item[pmpmmPositionCodeKey];
+                    }
+                    console.log(totalPrice);
+                }
+                console.log(totalPrice);
+                // Add totalPrice to bItem
+                Item.totalPrice = totalPrice;
+                console.log(totalPrice);
+            }
+            console.log(changeData, "changeData이거왜 안나오지 💥💥💥");
+        });
+        setBudgetMgmtView(changeData);
+        if (resultData) {
+            if (unitPriceList && resultData) {
+                const updatedDatas = resultData.map((data) => {
+                    const unit = unitPriceList.find((unit) => data.pecPosition === unit.guppName && unit.gupDesc === new Date().getFullYear());
+                    if (unit) {
+                        const price = unit ? data.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
+                        return { ...data, price: price, positionPrice: unit.gupPrice };
+                    } else {
+                        return { ...data, price: 0, positionPrice: 0 };
+                    }
+                });
+                setBudgetMgmt(updatedDatas);
+            }
+            console.log("get data success:)");
+            return resultData;
+        } else {
+            console.log("get data fail:(");
+            return []; // 빈 배열 보내주기
+        }
+    };
+
+    const compareData = (originData, updatedData) => {
+        console.log("이거안타나");
+        const filterData = updatedData.filter((data) => data.poiId); //pgNm 없는 데이터 제외
+        const originDataLength = originData ? originData.length : 0;
+        const updatedDataLength = filterData ? filterData.length : 0;
+
+        if (originDataLength > updatedDataLength) {
+            const updateDataInOrigin = (originData, updatedData) => {
+                // 복제하여 새로운 배열 생성
+                const updatedArray = [...originData];
+                // updatedData의 길이만큼 반복하여 originData 갱신
+                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
+                    const updatedItem = updatedData[i];
+                    updatedArray[i] = { ...updatedItem, pecId: updatedArray[i].pecId };
+                }
+                return updatedArray;
+            };
+
+            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
+            updateList(firstRowUpdate);
+
+            const toDelete = [];
+            for (let i = updatedDataLength; i < originDataLength; i++) {
+                toDelete.push(originData[i].pecId);
+            }
+            deleteList(toDelete);
+        } else if (originDataLength === updatedDataLength) {
+            updateList(filterData);
+        } else if (originDataLength < updatedDataLength) {
+            const toAdds = [];
+            const addUpdate = [];
+            for (let i = 0; i < originDataLength; i++) {
+                addUpdate.push(filterData[i]);
+            }
+            updateList(addUpdate);
+
+            for (let i = originDataLength; i < updatedDataLength; i++) {
+                const add = { poiId: condition.poiId };
+                const typeCode = { typeCode: "MM" };
+                const modeCode = { modeCode: "BUDGET" };
+                toAdds.push({ ...filterData[i], ...add, ...typeCode, ...modeCode });
+            }
+            addList(toAdds);
+        }
+    };
+
+    const addList = async (addNewData) => {
+        console.log("❗addList:", addNewData);
+        const url = `/api/baseInfrm/product/prstmCost/addList.do`;
+        const resultData = await axiosPost(url, addNewData);
+        refresh();
+    };
+    const updateList = async (toUpdate) => {
+        console.log("❗updateList:", toUpdate);
+        const updatedFilterData = toUpdate.map((data) => ({
+            ...data,
+            useAt: "Y",
+            deleteAt: "N",
+        }));
+        const url = `/api/baseInfrm/product/prstmCost/editList.do`;
+        const resultData = await axiosUpdate(url, updatedFilterData);
+        refresh();
+    };
+
+    const deleteList = async (removeItem) => {
+        console.log("❗deleteList:", removeItem);
+        const url = `/api/baseInfrm/product/prstmCost/removeAll.do`;
+        const resultData = await axiosDelete(url, removeItem);
+        refresh();
     };
 
     return (
         <>
-            <Location pathList={locationPath.ExpenseMgmt} />
+            <Location pathList={locationPath.LaborCostMgmt} />
             <ApprovalFormExe viewPageName={current} returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
-                <ReactDataTable columns={columns.orderPlanMgmt.expenses} customDatas={pjbudgetDatasView} defaultPageSize={5} hideCheckBox={true} />
+                <ReactDataTable columns={columns.orderPlanMgmt.labor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
             <HideCard title="계획 등록/수정" color="back-lightblue">
@@ -370,18 +274,19 @@ function ExpenseMgmtPlan() {
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <RefreshButton onClick={refresh} />
                 </div>
-                <ReactDataTableURL
+                <ReactDataTable
                     editing={true}
-                    returnList={returnList}
-                    columns={columns.expenseMgmt.budget}
+                    columns={columns.laborCostMgmt.budget}
                     customDatas={budgetMgmt}
                     viewPageName={current}
-                    customDatasRefresh={refresh}
+                    returnList={compareData}
                     condition={condition}
+
+                    //hideCheckBox={true}
                 />
             </HideCard>
         </>
     );
 }
 
-export default ExpenseMgmtPlan;
+export default LaborCostMgmtPlan;

@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Location from "components/Location/Location";
 import DataTable from "components/DataTable/DataTable";
 import SearchList from "components/SearchList";
@@ -14,7 +14,7 @@ import { columns } from "constants/columns";
 import HideCard from "components/HideCard";
 import SaveButton from "components/button/SaveButton";
 import AddModModal from "components/modal/AddModModal";
-import { axiosUpdate } from "api/axiosFetch";
+import { axiosFetch, axiosUpdate } from "api/axiosFetch";
 
 /** 실행관리-실행원가관리 */
 function ExecutionCost() {
@@ -22,7 +22,24 @@ function ExecutionCost() {
     const [isOpenMod, setIsOpenMod] = useState(false);
     const [returnKeyWord, setReturnKeyWord] = useState("");
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
-    const orderMgmtTable = useRef(null);
+    const [tableData, setTableData] = useState([]);
+
+    //const orderMgmtTable = useRef(null);
+
+    useEffect(() => {
+        console.log("selectedRows:", selectedRows);
+    }, [selectedRows]);
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+    const fetchData = async () => {
+        const resultData = await axiosFetch("/api/baseInfrm/product/pjOrdrInfo/totalListAll.do", {
+            searchCondition: "",
+            searchKeyword: "",
+        });
+        setTableData(resultData);
+    };
 
     const handleReturn = (value) => {
         setReturnKeyWord(value);
@@ -37,10 +54,11 @@ function ExecutionCost() {
         }
         const url = `/api/baseInfrm/product/pjOrdrInfo/edit.do`;
         const updated = { ...updatedData, lockAt: "Y", useAt: "Y" };
+        console.log(updated, "이게 서버로넘어갈꺼야");
         const resultData = await axiosUpdate(url, updated);
         if (resultData) {
             alert("수정되었습니다");
-            setNameOfButton("refresh")
+            fetchData();
         } else {
             alert("error!!");
         }
@@ -58,7 +76,15 @@ function ExecutionCost() {
                     <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
                     <RefreshButton onClick={() => setNameOfButton("refresh")} />
                 </div>
-                <ReactDataTable columns={columns.executionCost.project} suffixUrl="/baseInfrm/product/pjOrdrInfo" tableRef={orderMgmtTable} viewPageName="원가조회" />
+                <ReactDataTable
+                    columns={columns.orderMgmt.project}
+                    customDatas={tableData}
+                    suffixUrl="/baseInfrm/product/pjOrdrInfo"
+                    viewPageName="원가조회"
+                    returnSelectRows={(data) => {
+                        setSelectedRows(data);
+                    }}
+                />
             </HideCard>
             {isOpenMod && (
                 <AddModModal
@@ -68,7 +94,7 @@ function ExecutionCost() {
                     initialData={selectedRows}
                     resultData={modifyToServer}
                     onClose={() => setIsOpenMod(false)}
-                    title="프로젝트 수정"
+                    title="프로젝트 상태 수정"
                 />
             )}
         </>
