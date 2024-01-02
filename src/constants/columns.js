@@ -245,16 +245,46 @@ export const columns = {
             { header: "외주비", col: "outsourcing", cellWidth: "10%", type: "input" },
             { header: "경비", col: "expenses", cellWidth: "10%", type: "input" },
             { header: "영업관리비", col: "generalExpenses", cellWidth: "10%", type: "input" },
+            {
+                header: "확정여부",
+                col: "costAt",
+                cellWidth: "10%",
+                type: "select",
+                options: [
+                    { value: "", label: "선택" },
+                    { value: "Y", label: "Y" },
+                    { value: "N", label: "N" },
+                ],
+            },
         ],
         versionCondition: [
             //원가버전조회
             { title: "프로젝트명", col: "poiNm", type: "input" },
             { title: "계약일", col: "poiBeginDt", type: "dayPicker" },
         ],
-        versionAddMod: [
+        versionAdd: [
             { items: [{ header: "프로젝트명", col: "poiNm", require: true, type: "project" }] },
             { items: [{ header: "버전", col: "versionNum", require: true, type: "input" }] },
             { items: [{ header: "비고", col: "versionDesc", type: "desc" }] },
+        ],
+        versionMod: [
+            { items: [{ header: "프로젝트명", col: "poiNm", require: true, type: "project" }] },
+            { items: [{ header: "버전", col: "versionNum", require: true, type: "input" }] },
+            { items: [{ header: "비고", col: "versionDesc", type: "desc" }] },
+            {
+                items: [
+                    {
+                        header: "확정여부",
+                        col: "costAt",
+                        type: "select",
+                        option: [
+                            { label: "선택", value: "" },
+                            { label: "N", value: "N" },
+                            { label: "Y", value: "Y" },
+                        ],
+                    },
+                ],
+            },
         ],
         labor: [
             //인건비
@@ -734,12 +764,12 @@ export const columns = {
             },
             { header: "담당자", col: "empNm", cellWidth: "25%", type: "employerInfo" },
             { header: "담당자ID", col: "esntlId", cellWidth: "25%", notView: true },
-            { header: "부서", col: "groupNm", cellWidth: "25%", type: "input" },
+            { header: "부서", col: "groupNm", cellWidth: "25%" },
             {
                 header: "직급",
                 col: "pecPosition",
                 cellWidth: "10%",
-                type: "select",
+                //type: "select",
                 require: true,
                 options: [
                     { value: "", label: "선택" },
@@ -767,7 +797,7 @@ export const columns = {
                 header: "금액",
                 col: "price",
                 cellWidth: "40%",
-                type: "input",
+                //type: "input",
             },
         ],
         budgetView: [
@@ -801,7 +831,7 @@ export const columns = {
                 header: "직급",
                 col: "pecPosition",
                 cellWidth: "10%",
-                type: "select",
+                //type: "select",
                 options: [
                     { value: "", label: "선택" },
                     { value: "부장", label: "부장" },
@@ -811,18 +841,6 @@ export const columns = {
                     { value: "주임", label: "주임" },
                     { value: "사원", label: "사원" },
                 ],
-                require: true,
-            },
-            {
-                header: "직급단가",
-                col: "positionPrice",
-                cellWidth: "10%",
-            },
-            {
-                header: "실행(M/M)",
-                col: "pecMm",
-                cellWidth: "10%",
-                type: "input",
                 require: true,
             },
             {
@@ -836,6 +854,13 @@ export const columns = {
                 col: "pecEnddate",
                 cellWidth: "10%",
                 type: "dayPicker",
+            },
+            {
+                header: "누계(M/M)",
+                col: "pecMm",
+                cellWidth: "10%",
+                type: "input",
+                require: true,
             },
             {
                 header: "금액",
