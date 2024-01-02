@@ -96,10 +96,6 @@ function OrderPlanMgmt() {
         }
     }, [innerPageName, condition]);
 
-    useEffect(() => {
-        console.log("🎄컨디션:", condition);
-    }, [condition]);
-
     const refresh = () => {
         if (condition.poiId && condition.versionId) {
             const requestData = { poiId: condition.poiId, versionId: condition.versionId };
@@ -539,7 +535,7 @@ function OrderPlanMgmt() {
                             <SearchList conditionList={columns.orderPlanMgmt.versionCondition} onSearch={onSearch} />
                             <HideCard title="원가 버전 목록" color="back-lightblue" className="mg-b-40">
                                 <div className="table-buttons mg-b-m-30">
-                                    <PopupButton targetUrl={URL.PreCostDoc} data={{ label: "사전원가서", projectInfo }} />
+                                    <PopupButton targetUrl={URL.PreCostDoc} data={{ label: "사전원가서", ...selectedRows[0] }} />
                                     <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
                                     <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
                                     <DelButton label={"삭제"} onClick={() => setIsOpenDel(true)} />
