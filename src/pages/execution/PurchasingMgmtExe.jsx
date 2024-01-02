@@ -25,10 +25,8 @@ function PurchasingMgmtExe() {
     const current = "구매실행";
     
     useEffect(() => {
-        if(currentPageName === "구매(재료비)") {
-            if(currentPageName !== current) {
-                setCurrentPageName(current);
-            }
+        if(currentPageName === "구매(재료비)" && current === "구매실행") {
+            setCurrentPageName(current);
         }
         setInnerPageName("");
     }, [currentPageName]);

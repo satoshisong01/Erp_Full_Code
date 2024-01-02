@@ -12,16 +12,17 @@ import SaveButton from "components/button/SaveButton";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 /** 실행관리-경비-계획 */
 function ExpenseMgmtPlan() {
-    const { projectInfo, setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton, setInnerPageName } = useContext(PageContext);
+    const { projectInfo, setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton, setInnerPageName, prevCurrentPageName, setPrevCurrentPageName } = useContext(PageContext);
     const [pjbudgetDatasView, setPjbudgetDatasView] = useState([]); // 경비
     const [condition, setCondition] = useState({});
 
-    const current = "경비계획";
+    const current = "인건비계획";
 
     useEffect(() => {
-        if (current === "경비계획" && currentPageName !== current) {
+        if(currentPageName === "인건비" && current === "인건비계획") {
             setCurrentPageName(current);
         }
+        setInnerPageName("");
     }, [currentPageName]);
 
     const refresh = () => {

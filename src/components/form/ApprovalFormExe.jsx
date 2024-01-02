@@ -21,7 +21,7 @@ function ApprovalFormExe({ viewPageName, returnData }) {
     }
 
     const onClick = () => {
-        returnData({ ...data });
+        returnData({ poiId: data.poiId });
     };
 
     return (
