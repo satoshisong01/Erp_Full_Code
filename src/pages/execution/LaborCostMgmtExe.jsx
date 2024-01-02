@@ -72,12 +72,12 @@ function LaborCostMgmtExe() {
     const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", condition);
         const viewResult = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", {...condition, modeCode: "BUDGET"});
+        const viewUpdatedDatas = calculation(unitPriceList, viewResult, condition.poiMonth);
+        setBudgetMgmtView(viewUpdatedDatas);
         if (resultData && resultData.length > 0) {
             if(unitPriceList && unitPriceList.length > 0) {
                 const updatedDatas = calculation(unitPriceList, resultData, condition.poiMonth);
-                const viewUpdatedDatas = calculation(unitPriceList, viewResult, condition.poiMonth);
                 setBudgetMgmRun(updatedDatas);
-                setBudgetMgmtView(viewUpdatedDatas);
                 let mmTotal = 0;
                 let priceTotal = 0;
                 let price9 = 0;
@@ -112,6 +112,9 @@ function LaborCostMgmtExe() {
                 })
                 setBudgetCal([{mmTotal: mmTotal+"(M/M)",price9,price10,price11,price12,price13,price14}]);
             }
+        } else {
+            alert('no data');
+            setBudgetMgmRun([]);
         }
     };
 
