@@ -38,8 +38,8 @@ function LaborCostMgmtPlan() {
     useEffect(() => {
         if (currentPageName === "인건비" && current === "인건비계획") {
             setCurrentPageName(current);
+            setInnerPageName("");
         }
-        setInnerPageName("");
     }, [currentPageName]);
 
     //useEffect(() => {
@@ -167,11 +167,11 @@ function LaborCostMgmtPlan() {
                     { mmTotal: priceTotal.toLocaleString() + "원", mm9, mm10, mm11, mm12, mm13, mm14 },
                 ]);
             }
-            console.log("get data success:)");
-            return resultData;
+            // console.log("get data success:)");
+            // return resultData;
         } else {
-            console.log("get data fail:(");
-            return []; // 빈 배열 보내주기
+            alert('no data');
+            setBudgetMgmt([]); // 빈 배열 보내주기
         }
     };
 
@@ -259,7 +259,7 @@ function LaborCostMgmtPlan() {
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                 <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
-            <HideCard title="계획 등록/수정" color="back-lightblue">
+            <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <RefreshButton onClick={refresh} />
