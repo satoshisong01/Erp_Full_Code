@@ -37,8 +37,8 @@ function LaborCostMgmtExe() {
     useEffect(() => {
         if (currentPageName === "인건비" && current === "인건비실행") {
             setCurrentPageName(current);
+            setInnerPageName("");
         }
-        setInnerPageName("");
     }, [currentPageName]);
 
     const conditionInfo = (value) => {
@@ -211,7 +211,7 @@ function LaborCostMgmtExe() {
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                 <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
-            <HideCard title="계획 등록/수정" color="back-lightblue">
+            <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <RefreshButton onClick={refresh} />

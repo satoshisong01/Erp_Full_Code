@@ -30,8 +30,8 @@ function PurchasingMgmtExe() {
     useEffect(() => {
         if(currentPageName === "구매(재료비)" && current === "구매실행") {
             setCurrentPageName(current);
+            setInnerPageName("");
         }
-        setInnerPageName("");
     }, [currentPageName]);
     
 
@@ -99,7 +99,7 @@ function PurchasingMgmtExe() {
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                 <ReactDataTable columns={columns.purchasingMgmt.buyCal} customDatas={buyCall} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
-            <HideCard title="계획 등록/수정" color="back-lightblue">
+            <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <RefreshButton onClick={refresh} />

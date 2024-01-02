@@ -22,8 +22,8 @@ function ExpenseMgmtPlan() {
     useEffect(() => {
         if (currentPageName === "경비" && current === "경비계획") {
             setCurrentPageName(current);
+            setInnerPageName("");
         }
-        setInnerPageName("");
     }, [currentPageName]);
 
     const refresh = () => {
@@ -130,6 +130,7 @@ function ExpenseMgmtPlan() {
     const [budgetMgmt, setBudgetMgmt] = useState([]); // 경비 예산관리
     const allowedPjbgTypeCodes = ["EXPNS01", "EXPNS02", "EXPNS03", "EXPNS04", "EXPNS05", "EXPNS06"];
     const [saveNum, setSaveNum] = useState([]);
+    const [cal, setCal] = useState([]);
 
     // pjbgTypeCode를 기반으로 그룹화된 데이터 객체 생성
     // view에 계산된 Total값 출력구문
@@ -359,11 +360,27 @@ function ExpenseMgmtPlan() {
         const resultData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", condition);
         const viewData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", condition);
         const updatedViewData = updatePjbgType(viewData);
-        console.log(updatedViewData, "일단찎어봐");
-        setPjbudgetDatasView(updatedViewData);
-        const updatedData = processResultData(resultData, condition);
-        setBudgetMgmt(updatedData);
-        console.log("경비계획 조회 updatedData:", updatedData);
+        // console.log(updatedViewData, "일단찎어봐");
+        setPjbudgetDatasView(updatedViewData || []);
+        if(resultData && resultData.length > 0) {
+            const updatedData = processResultData(resultData, condition);
+            setBudgetMgmt(updatedData);
+            console.log("✨✨경비계획 조회 updatedData:", updatedData);
+            let total=0, pjbgTypeCode1=0, pjbgTypeCode2=0, pjbgTypeCode3=0, pjbgTypeCode4=0, pjbgTypeCode5=0, pjbgTypeCode20=0;
+            updatedData.map((data) => {
+                pjbgTypeCode1 += data.pjbgTypeCode1; //교통비
+                pjbgTypeCode2 += data.pjbgTypeCode2; //숙박비
+                pjbgTypeCode3 += data.pjbgTypeCode3; //일비/파견비
+                pjbgTypeCode4 += data.pjbgTypeCode4; //식비
+                pjbgTypeCode5 += data.pjbgTypeCode5; //자재/소모품외
+                pjbgTypeCode20 += data.pjbgTypeCode20; //기타
+            })
+            total = pjbgTypeCode1+pjbgTypeCode2+pjbgTypeCode3+pjbgTypeCode4+pjbgTypeCode5+pjbgTypeCode20;
+            setCal([{total, pjbgTypeCode1, pjbgTypeCode2, pjbgTypeCode3, pjbgTypeCode4, pjbgTypeCode5, pjbgTypeCode20}])
+        } else {
+            alert('no data');
+            setBudgetMgmt([]);
+        }
     };
 
     return (
@@ -373,8 +390,10 @@ function ExpenseMgmtPlan() {
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
                 <ReactDataTable columns={columns.orderPlanMgmt.expenses} customDatas={pjbudgetDatasView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
-            <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
-            <HideCard title="계획 등록/수정" color="back-lightblue">
+            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+                <ReactDataTable columns={columns.expenseMgmt.cal} customDatas={cal} defaultPageSize={5} hideCheckBox={true} />
+            </HideCard>
+            <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <RefreshButton onClick={refresh} />

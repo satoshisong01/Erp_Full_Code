@@ -828,7 +828,6 @@ export const columns = {
                     { value: "주임", label: "주임" },
                     { value: "사원", label: "사원" },
                 ],
-                require: true,
             },
             {
                 header: "시작일",
@@ -996,6 +995,15 @@ export const columns = {
                 cellWidth: "15%",
                 type: "input",
             },
+        ],
+        cal: [
+            { header: "합계", col: "total", cellWidth: "20%" },
+            { header: "교통비", col: "pjbgTypeCode1", cellWidth: "20%" },
+            { header: "숙박비", col: "pjbgTypeCode2", cellWidth: "20%" },
+            { header: "일비/파견비", col: "pjbgTypeCode3", cellWidth: "20%" },
+            { header: "식비", col: "pjbgTypeCode4", cellWidth: "20%" },
+            { header: "자재/소모품외", col: "pjbgTypeCode5", cellWidth: "20%" },
+            { header: "기타", col: "pjbgTypeCode20", cellWidth: "20%" },
         ],
         budget: [
             { header: "수주 아이디", col: "poiId", cellWidth: "5%", notView: true },
@@ -1271,7 +1279,7 @@ export const columns = {
                 cellWidth: "15%",
             },
             { header: "품명", col: "pdiNm", cellWidth: "15%", type: "productInfo" },
-            { header: "규격", col: "pdiStnd", cellWidth: "30%", type: "input" },
+            { header: "규격", col: "pdiStnd", cellWidth: "30%" },
             {
                 header: "수량",
                 col: "byQunty",
@@ -1320,6 +1328,18 @@ export const columns = {
             {
                 header: "입고수량",
                 col: "rcvQunty",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "입고단가",
+                col: "rcvUnitPrice",
+                cellWidth: "10%",
+                type: "input",
+            },
+            {
+                header: "입고단가",
+                col: "rcvUnitPrice",
                 cellWidth: "10%",
                 type: "input",
             },
