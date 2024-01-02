@@ -31,13 +31,21 @@ function LaborCostMgmtPlan() {
     } = useContext(PageContext);
 
     useEffect(() => {
-        setInnerPageName("실행인건비계획");
-        setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
-
         return () => {
             setProjectInfo({});
         };
     }, []);
+
+    const current = "인건비계획";
+
+    useEffect(() => {
+        if(currentPageName === "인건비") {
+            if(currentPageName !== current) {
+                setCurrentPageName(current);
+            }
+        }
+        setInnerPageName("");
+    }, [currentPageName]);
 
     const orderPlanMgmtTable3 = useRef(null);
 
@@ -195,7 +203,7 @@ function LaborCostMgmtPlan() {
     return (
         <>
             <Location pathList={locationPath.LaborCostMgmt} />
-            <ApprovalFormExe viewPageName="실행인건비계획" returnData={fetchAllData} />
+            <ApprovalFormExe viewPageName={current} returnData={fetchAllData} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
                 <ReactDataTable columns={columns.orderPlanMgmt.labor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
@@ -210,9 +218,8 @@ function LaborCostMgmtPlan() {
                     columns={columns.laborCostMgmt.budget}
                     tableRef={orderPlanMgmtTable3}
                     customDatas={budgetMgmt}
-                    viewPageName="실행인건비계획"
+                    viewPageName={current}
                     returnList={compareData}
-                    //hideCheckBox={true}
                 />
             </HideCard>
         </>

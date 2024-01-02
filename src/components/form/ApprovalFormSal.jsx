@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 /** 영업 폼 */
 function ApprovalFormSal({ viewPageName, returnData }) {
-    // const { projectInfo, setProjectInfo, innerPageName, versionInfo, setVersionInfo } = useContext(PageContext);
+    const { innerPageName } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
@@ -17,6 +17,16 @@ function ApprovalFormSal({ viewPageName, returnData }) {
     //         setData({ poiId: projectInfo.poiId, poiNm: projectInfo.poiNm });
     //     }
     // }, [projectInfo, innerPageName]);
+
+    useEffect(() => {
+        setData({}); //초기화
+    }, [innerPageName]);
+
+    useEffect(() => {
+        if(Object.keys(data).length === 0) {
+            returnData({}); //초기화
+        }
+    }, [data]);
 
     useEffect(() => {
         if (data.poiId && !data.versionId) {
@@ -49,8 +59,7 @@ function ApprovalFormSal({ viewPageName, returnData }) {
     }
 
     const onClick = () => {
-        console.log(data, "데이터 돌아가나");
-        returnData({ ...data });
+        returnData({ poiId: data.poiId, versionId: data.versionId, poiMonth: data.poiMonth });
     };
 
     return (

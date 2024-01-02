@@ -108,6 +108,7 @@ export const buyIngInfoCalculation = (list) => {
         // 7.이익률 : 이익금 / 금액
         const updatedPlannedProfitMargin = plannedProfitMargin ? plannedProfitMargin : division(updatedPlannedProfits, updatedPlanAmount);
 
+        console.log("실시간 이익율:", updatedPlannedProfitMargin);
         return {
             ...row,
             estimatedCost: Math.round(updatedEstimatedCost),
@@ -116,7 +117,8 @@ export const buyIngInfoCalculation = (list) => {
             consumerPrice: Math.round(updatedConsumerPrice * 100),
             consumerAmount: Math.round(updatedConsumerAmount * 100),
             plannedProfits: Math.round(updatedPlannedProfits),
-            plannedProfitMargin: Math.round(updatedPlannedProfitMargin * 100),
+            // plannedProfitMargin: Math.round(updatedPlannedProfitMargin * 100),
+            plannedProfitMargin: updatedPlannedProfitMargin * 100,
             byStandardMargin: Math.round(byStandardMargin),
             byConsumerOutputRate: Math.round(byConsumerOutputRate),
         };
@@ -125,7 +127,7 @@ export const buyIngInfoCalculation = (list) => {
     return updatedData;
 };
 
-const division = (value1, value2) => {
+export const division = (value1, value2) => {
     if (!value1 || !value2) {
         return 0;
     }

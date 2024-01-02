@@ -12,7 +12,7 @@ import RefreshButton from "components/button/RefreshButton";
 
 /** 실행관리-구매관리 */
 function PurchasingMgmtExe() {
-    const { currentPageName, setCurrentPageName, projectInfo, setProjectInfo, setNameOfButton } = useContext(PageContext);
+    const { currentPageName, setCurrentPageName, projectInfo, setProjectInfo, setNameOfButton, setInnerPageName } = useContext(PageContext);
     const [condition, setCondition] = useState({});
     const [runMgmt, setRunMgmt] = useState([]); // 구매 실행관리
 
@@ -23,11 +23,14 @@ function PurchasingMgmtExe() {
     }, []);
 
     const current = "구매실행";
-
+    
     useEffect(() => {
-        if(current === "구매실행" && currentPageName !== current) {
-            setCurrentPageName(current)
+        if(currentPageName === "구매(재료비)") {
+            if(currentPageName !== current) {
+                setCurrentPageName(current);
+            }
         }
+        setInnerPageName("");
     }, [currentPageName]);
     
 

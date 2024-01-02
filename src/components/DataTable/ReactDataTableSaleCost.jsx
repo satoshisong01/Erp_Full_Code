@@ -26,6 +26,7 @@ const ReactDataTableSaleCost = (props) => {
         hideCheckBox,
         returnSelect,
         returnSelectRows,
+        condition,
     } = props;
     const {
         prevCurrentPageName,
@@ -35,7 +36,7 @@ const ReactDataTableSaleCost = (props) => {
         setLengthSelectRow,
         newRowData,
         currentPageName,
-        projectInfo,
+        // projectInfo,
         companyInfo,
         setModalLengthSelectRow,
         // setIsOpenModalCompany,
@@ -271,7 +272,7 @@ const ReactDataTableSaleCost = (props) => {
         const newRow = {};
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
-                newRow[column.accessor] = projectInfo.poiId; // poiId를 항상 선택한놈으로 설정
+                newRow[column.accessor] = condition.poiId || ""; // poiId를 항상 선택한놈으로 설정
             } else if (column.accessor === "versionId") {
                 newRow[column.accessor] = versionInfo.versionId; //
             } else if (column.accessor === "esntlId") {
