@@ -141,6 +141,7 @@ export const columns = {
                         require: true,
                         type: "select",
                         option: [
+                            { label: "---부서 선택---", value: "---부서 선택---" },
                             { label: "PS", value: "PS" },
                             { label: "PA", value: "PA" },
                         ],
@@ -152,6 +153,7 @@ export const columns = {
                         require: true,
                         type: "select",
                         option: [
+                            { label: "---부서 선택---", value: "---부서 선택---" },
                             { label: "PS", value: "PS" },
                             { label: "PA", value: "PA" },
                         ],
@@ -183,6 +185,7 @@ export const columns = {
                         col: "poiCurrcy",
                         type: "select",
                         option: [
+                            { label: "---통화 선택---", value: "---통화 선택---" },
                             { label: "원(KRW)", value: "원(KRW)" },
                             { label: "동(VND)", value: "동(VND)" },
                             { label: "위안(CNY)", value: "위안(CNY)" },
@@ -197,6 +200,7 @@ export const columns = {
                         //type: "itemSelect",
                         type: "select",
                         option: [
+                            { label: "---상태 선택---", value: "---상태 선택---" },
                             { label: "인벤토리접수", value: "인벤토리접수" },
                             { label: "원가작성중", value: "원가작성중" },
                             { label: "견적완료", value: "견적완료" },
