@@ -85,7 +85,7 @@ const ReactDataTablePdorder = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        console.log("current:", current, "innerPageName:", innerPageName, "currentPageName:",currentPageName, "editing",editing);
+        console.log("current:", current, "innerPageName:", innerPageName, "currentPageName:", currentPageName, "editing", editing);
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
@@ -94,7 +94,7 @@ const ReactDataTablePdorder = (props) => {
             setNameOfButton(""); //초기화
         }
     }, [innerPageName, currentPageName, editing, nameOfButton]);
-    
+
     const columnsConfig = useMemo(
         () =>
             columns.map((column) => ({
@@ -191,7 +191,7 @@ const ReactDataTablePdorder = (props) => {
             //모달화면일때
             setModalLengthSelectRow(selectedFlatRows.length);
             if (selectedFlatRows.length > 0) {
-                const selects = selectedFlatRows.map((row) =>  row.values )
+                const selects = selectedFlatRows.map((row) => row.values);
                 returnSelectRows && returnSelectRows(selects);
                 returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
@@ -335,22 +335,25 @@ const ReactDataTablePdorder = (props) => {
 
     const addList = async (addNewData) => {
         console.log("🎄🎄add ", addNewData, "con:", condition);
-        if(!isCurrentPage() && !suffixUrl && !Array.isArray(addNewData)) return;
-        if(!condition || condition.poiId === undefined) {
-            console.log('❗프로젝트 정보 없음', currentPageName);
+        if (!isCurrentPage() && !suffixUrl && !Array.isArray(addNewData)) return;
+        if (!condition || condition.poiId === undefined) {
+            console.log("❗프로젝트 정보 없음", currentPageName);
             return;
         }
-        if(currentPageName === "구매계획") { //실행
+        if (currentPageName === "구매계획") {
+            //실행
             addNewData.forEach((data) => {
                 data.poiId = condition.poiId || "";
                 data.modeCode = "BUDGET";
             });
-        } else if(currentPageName === "구매실행") { //실행
+        } else if (currentPageName === "구매실행") {
+            //실행
             addNewData.forEach((data) => {
                 data.poiId = condition.poiId || "";
                 data.modeCode = "EXECUTE";
             });
-        } else if(innerPageName === "구매(재료비)") { //영업
+        } else if (innerPageName === "구매(재료비)") {
+            //영업
             addNewData.forEach((data) => {
                 data.poiId = condition.poiId || "";
                 data.versionId = condition.versionId;
@@ -367,22 +370,23 @@ const ReactDataTablePdorder = (props) => {
     const updateList = async (toUpdate) => {
         console.log("mod ", toUpdate, "con:", condition);
 
-        if(!isCurrentPage() && !suffixUrl && !Array.isArray(toUpdate)) return;
-        if(!condition || condition.poiId === undefined) {
-            console.log('❗프로젝트 정보 없음');
+        if (!isCurrentPage() && !suffixUrl && !Array.isArray(toUpdate)) return;
+        if (!condition || condition.poiId === undefined) {
+            console.log("❗프로젝트 정보 없음");
             return;
         }
-        if(currentPageName === "구매계획") {
+        if (currentPageName === "구매계획") {
             toUpdate.forEach((data) => {
                 data.poiId = condition.poiId || "";
                 data.modeCode = "BUDGET";
             });
-        } else if(currentPageName === "구매실행") {
+        } else if (currentPageName === "구매실행") {
             toUpdate.forEach((data) => {
                 data.poiId = condition.poiId || "";
                 data.modeCode = "EXECUTE";
             });
-        } else if(innerPageName === "구매(재료비)") { //영업
+        } else if (innerPageName === "구매(재료비)") {
+            //영업
             toUpdate.forEach((data) => {
                 data.poiId = condition.poiId || "";
                 data.versionId = condition.versionId;
@@ -390,7 +394,7 @@ const ReactDataTablePdorder = (props) => {
         }
         const url = `/api${suffixUrl}/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
-        console.log("✨2.",resultData, "toUpdate:", toUpdate);
+        console.log("✨2.", resultData, "toUpdate:", toUpdate);
         customDatasRefresh();
         setOriginTableData([]);
     };
@@ -398,10 +402,10 @@ const ReactDataTablePdorder = (props) => {
     const deleteList = async (removeItem) => {
         console.log("del ", removeItem, "con:", condition);
 
-        if(!isCurrentPage() && !suffixUrl && !Array.isArray(removeItem)) return;
+        if (!isCurrentPage() && !suffixUrl && !Array.isArray(removeItem)) return;
         const url = `/api${suffixUrl}/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        console.log("✨3.",resultData, "removeItem:", removeItem);
+        console.log("✨3.", resultData, "removeItem:", removeItem);
         customDatasRefresh();
         setOriginTableData([]);
     };
@@ -438,7 +442,6 @@ const ReactDataTablePdorder = (props) => {
             deleteList(extraOriginData);
         } else if (originDataLength === updatedDataLength) {
             updateList(filterData);
-
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
             const toUpdate = [];
@@ -457,7 +460,7 @@ const ReactDataTablePdorder = (props) => {
 
     const isCurrentPage = () => {
         return current !== "" && (current === currentPageName || current === innerPageName || current === modalPageName);
-    }
+    };
 
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
@@ -541,9 +544,7 @@ const ReactDataTablePdorder = (props) => {
                                                     ) : cell.column.type === "select" ? (
                                                         <select
                                                             name={cell.column.id}
-                                                            value={
-                                                                tableData[row.index]?.[cell.column.id] || cell.column.options[row.index].value || ""
-                                                            }
+                                                            value={tableData[row.index]?.[cell.column.id] || cell.column.options[row.index].value || ""}
                                                             onChange={(e) => handleChange(e, row, cell.column.id)}>
                                                             {cell.column.options.map((option, index) => (
                                                                 <option key={index} value={option.value || ""}>
@@ -561,9 +562,7 @@ const ReactDataTablePdorder = (props) => {
                                                         <div className="box3-1 boxDate">
                                                             <MonthPicker
                                                                 name={cell.column.id}
-                                                                value={
-                                                                    tableData[row.index]?.[cell.column.id].substring(0, 7) || ""
-                                                                }
+                                                                value={tableData[row.index]?.[cell.column.id].substring(0, 7) || ""}
                                                                 onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                             />
                                                         </div>
@@ -574,7 +573,10 @@ const ReactDataTablePdorder = (props) => {
                                                                 name={cell.column.id}
                                                                 type="text"
                                                                 className="basic-input"
-                                                                onClick={() => {goSetting(rowIndex); setIsOpenModalProductInfo(true)}}
+                                                                onClick={() => {
+                                                                    goSetting(rowIndex);
+                                                                    setIsOpenModalProductInfo(true);
+                                                                }}
                                                                 placeholder="품명을 선택하세요."
                                                                 value={tableData[rowIndex]?.[cell.column.id] || ""}
                                                                 // onChange={(e) => handleChange(e, row, cell.column.id)}
@@ -595,6 +597,8 @@ const ReactDataTablePdorder = (props) => {
                                                                 readOnly
                                                             />
                                                         </div>
+                                                    ) : typeof cell.value === "number" ? (
+                                                        cell.value && cell.value.toLocaleString()
                                                     ) : (
                                                         cell.render("Cell")
                                                     )
