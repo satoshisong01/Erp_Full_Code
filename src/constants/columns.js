@@ -240,11 +240,11 @@ export const columns = {
             { header: "계약일", col: "poiBeginDt", cellWidth: "10%" },
             { header: "납기시작일", col: "poiDueBeginDt", cellWidth: "10%", type: "input" },
             { header: "납기종료일", col: "poiDueEndDt", cellWidth: "10%", type: "input" },
-            { header: "인건비", col: "labor", cellWidth: "10%", type: "input" },
-            { header: "구매비", col: "purchase", cellWidth: "10%", type: "input" },
-            { header: "외주비", col: "outsourcing", cellWidth: "10%", type: "input" },
-            { header: "경비", col: "expenses", cellWidth: "10%", type: "input" },
-            { header: "영업관리비", col: "generalExpenses", cellWidth: "10%", type: "input" },
+            { header: "인건비", col: "totalPrmnPlan", cellWidth: "10%", type: "input" },
+            { header: "구매비", col: "totalBuyIngInfo", cellWidth: "10%", type: "input" },
+            { header: "외주비", col: "totalDevOutCost", cellWidth: "10%", type: "input" },
+            { header: "경비", col: "totalPjbudget", cellWidth: "10%", type: "input" },
+            { header: "영업관리비", col: "totalSlsmnExpns", cellWidth: "10%", type: "input" },
             {
                 header: "확정여부",
                 col: "costAt",
@@ -762,7 +762,7 @@ export const columns = {
                 type: "productGroup",
                 require: true,
             },
-            { header: "담당자", col: "empNm", cellWidth: "25%", type: "employerInfo", require: true},
+            { header: "담당자", col: "empNm", cellWidth: "25%", type: "employerInfo", require: true },
             { header: "담당자ID", col: "esntlId", cellWidth: "25%", notView: true },
             { header: "부서", col: "orgNm", cellWidth: "25%" },
             {
@@ -812,7 +812,8 @@ export const columns = {
                 type: "productGroup",
                 require: true,
             },
-            { header: "담당자", col: "pecManpower", cellWidth: "25%", type: "input" },
+            { header: "담당자", col: "empNm", cellWidth: "25%", type: "employerInfo", require: true },
+            { header: "담당자ID", col: "esntlId", cellWidth: "25%", notView: true },
             {
                 header: "직급",
                 col: "pecPosition",
@@ -1302,25 +1303,25 @@ export const columns = {
                 header: "발주일",
                 col: "byOrderDt",
                 cellWidth: "10%",
-                type: "dayPicker"
+                type: "dayPicker",
             },
             {
                 header: "요청납기일",
                 col: "byRequestDt",
                 cellWidth: "10%",
-                type: "dayPicker"
+                type: "dayPicker",
             },
             {
                 header: "입고일",
                 col: "rcvDt",
                 cellWidth: "10%",
-                type: "dayPicker"
+                type: "dayPicker",
             },
             {
                 header: "입고수량",
                 col: "rcvQunty",
                 cellWidth: "10%",
-                type: "input"
+                type: "input",
             },
             // { header: "발주상태", col: "byStatus", cellWidth: "10%", type: "select", options: [
             //         { label: "--선택--", value: "" },

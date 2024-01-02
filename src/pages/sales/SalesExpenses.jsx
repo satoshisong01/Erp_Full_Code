@@ -154,8 +154,10 @@ function SalesExpenses() {
         console.log(viewUpdated, "viewUpdated");
         setSalesCostView(viewUpdated);
         const updatedData = processResultData(resultData, condition);
+        const filteredData = filterArrayByNonNullPjbgBeginDt(updatedData);
+        console.log(filteredData, "이건 걸러진 데이터임");
+        setSalesCost(filteredData);
         console.log(updatedData, "updatedData 추가되어서 나와야하는데");
-        setSalesCost(updatedData);
     };
 
     useEffect(() => {
@@ -193,6 +195,20 @@ function SalesExpenses() {
 
         return updatedViewData;
     };
+
+    function filterArrayByNonNullPjbgBeginDt(data) {
+        // 주어진 배열을 복제하여 새로운 배열을 만듭니다.
+        const filteredArray = data.filter((obj) => obj.pjbgBeginDt === null);
+        const arrayWithNonNullPjbgBeginDt = data.filter((obj) => obj.pjbgBeginDt !== null);
+
+        // 배열에서 pjbgBeginDt가 null인 객체들을 찾아 해당 객체가 속한 배열을 남깁니다.
+        const remainingArray = arrayWithNonNullPjbgBeginDt.filter((obj) => {
+            const index = filteredArray.findIndex((item) => item === obj);
+            return index === -1;
+        });
+
+        return remainingArray;
+    }
 
     const processResultData = (resultData, condition) => {
         console.log(resultData, "처음받는값인데");
@@ -246,6 +262,7 @@ function SalesExpenses() {
                 accumulator[key].pjbgTypeCodes.push(pjbgTypeCode);
                 accumulator[key].pjbgPrices.push(pjbgPrice);
                 accumulator[key].pjbgId.push(pjbgId);
+                accumulator[key].pjbgId.sort((a, b) => a - b);
 
                 return accumulator;
             } else if (/^EXPNS\d{2}$/.test(pjbgTypeCode) && ["BUDGET"].includes(modeCode)) {
@@ -296,18 +313,18 @@ function SalesExpenses() {
             newObj["pgNm"] = mergedItem.pgNm;
             newObj["pjbgDesc"] = mergedItem.pjbgDesc;
             newObj["pjbgId"] = mergedItem.pjbgId;
-            newObj["pjbgId1"] = mergedItem.pjbgId[1];
-            newObj["pjbgId2"] = mergedItem.pjbgId[2];
-            newObj["pjbgId3"] = mergedItem.pjbgId[3];
-            newObj["pjbgId4"] = mergedItem.pjbgId[4];
-            newObj["pjbgId5"] = mergedItem.pjbgId[0];
+            newObj["pjbgId1"] = mergedItem.pjbgId[0];
+            newObj["pjbgId2"] = mergedItem.pjbgId[1];
+            newObj["pjbgId3"] = mergedItem.pjbgId[2];
+            newObj["pjbgId4"] = mergedItem.pjbgId[3];
+            newObj["pjbgId5"] = mergedItem.pjbgId[4];
             newObj["pjbgId19"] = mergedItem.pjbgId[5];
             newObj["pjbgId20"] = mergedItem.pjbgId[6];
-            newObj["pjbgTypeCode1"] = mergedItem.pjbgPrices[1];
-            newObj["pjbgTypeCode2"] = mergedItem.pjbgPrices[2];
-            newObj["pjbgTypeCode3"] = mergedItem.pjbgPrices[3];
-            newObj["pjbgTypeCode4"] = mergedItem.pjbgPrices[4];
-            newObj["pjbgTypeCode5"] = mergedItem.pjbgPrices[0];
+            newObj["pjbgTypeCode1"] = mergedItem.pjbgPrices[0];
+            newObj["pjbgTypeCode2"] = mergedItem.pjbgPrices[1];
+            newObj["pjbgTypeCode3"] = mergedItem.pjbgPrices[2];
+            newObj["pjbgTypeCode4"] = mergedItem.pjbgPrices[3];
+            newObj["pjbgTypeCode5"] = mergedItem.pjbgPrices[4];
             newObj["pjbgTypeCode19"] = mergedItem.pjbgPrices[5];
             newObj["pjbgTypeCode20"] = mergedItem.pjbgPrices[6];
             newObj["poiId"] = condition.poiId;

@@ -45,8 +45,122 @@ function ExpenseMgmtExe() {
         }
     };
 
+    const processResultDataView = (resultData, condition) => {
+        console.log(resultData, "처음받는값인데");
+        console.log(condition, "컨디션받나");
+        const transformedData = resultData.reduce((accumulator, item) => {
+            const {
+                pjbgTypeCode,
+                modeCode,
+                pjbgPrice,
+                pjbgBeginDt,
+                pjbgEndDt,
+                empNm,
+                esntlId,
+                pjbgDt,
+                pgNm,
+                pjbgDesc,
+                pjbgTypeCode1,
+                pjbgTypeCode2,
+                pjbgTypeCode3,
+                pjbgTypeCode4,
+                pjbgTypeCode5,
+                pjbgTypeCode19,
+                pjbgTypeCode20,
+                pjbgId,
+            } = item;
+
+            if (/^EXPNS\d{2}$/.test(pjbgTypeCode) && ["BUDGET"].includes(modeCode)) {
+                const key = `${modeCode}_${pjbgBeginDt}_${pjbgEndDt}_${pgNm}_${empNm}`;
+                if (!accumulator[key]) {
+                    accumulator[key] = {
+                        pjbgTypeCodes: [],
+                        modeCode,
+                        pjbgPrices: [],
+                        pjbgBeginDt,
+                        pjbgEndDt,
+                        empNm,
+                        esntlId,
+                        pjbgDt,
+                        pgNm,
+                        pjbgDesc,
+                        pjbgTypeCode1,
+                        pjbgTypeCode2,
+                        pjbgTypeCode3,
+                        pjbgTypeCode4,
+                        pjbgTypeCode5,
+                        pjbgTypeCode19,
+                        pjbgTypeCode20,
+                        pjbgId: [],
+                    };
+                }
+
+                accumulator[key].pjbgTypeCodes.push(pjbgTypeCode);
+                accumulator[key].pjbgPrices.push(pjbgPrice);
+
+                accumulator[key].pjbgId.push(pjbgId);
+                accumulator[key].pjbgId.sort((a, b) => a - b);
+
+                return accumulator;
+            }
+
+            return accumulator;
+        }, {});
+        console.log(transformedData, "transformedData");
+
+        const mergedData = Object.values(transformedData).map((mergedItem, index) => {
+            const newObj = {};
+            console.log(mergedItem, "이거머더라");
+            newObj["modeCode"] = mergedItem.modeCode;
+            newObj["pjbgBeginDt"] = mergedItem.pjbgBeginDt;
+            newObj["pjbgEndDt"] = mergedItem.pjbgEndDt;
+            newObj["esntlId"] = mergedItem.esntlId;
+            newObj["empNm"] = mergedItem.empNm;
+            newObj["pjbgDt"] = mergedItem.pjbgBeginDt;
+            newObj["pgNm"] = mergedItem.pgNm;
+            newObj["pjbgDesc"] = mergedItem.pjbgDesc;
+            newObj["pjbgId"] = mergedItem.pjbgId;
+            newObj["pjbgId1"] = mergedItem.pjbgId[0];
+            newObj["pjbgId2"] = mergedItem.pjbgId[1];
+            newObj["pjbgId3"] = mergedItem.pjbgId[2];
+            newObj["pjbgId4"] = mergedItem.pjbgId[3];
+            newObj["pjbgId5"] = mergedItem.pjbgId[4];
+            newObj["pjbgId19"] = mergedItem.pjbgId[5];
+            newObj["pjbgId20"] = mergedItem.pjbgId[6];
+            newObj["pjbgTypeCode1"] = mergedItem.pjbgPrices[0];
+            newObj["pjbgTypeCode2"] = mergedItem.pjbgPrices[1];
+            newObj["pjbgTypeCode3"] = mergedItem.pjbgPrices[2];
+            newObj["pjbgTypeCode4"] = mergedItem.pjbgPrices[3];
+            newObj["pjbgTypeCode5"] = mergedItem.pjbgPrices[4];
+            newObj["pjbgTypeCode19"] = mergedItem.pjbgPrices[5];
+            newObj["pjbgTypeCode20"] = mergedItem.pjbgPrices[6];
+            newObj["poiId"] = condition.poiId;
+
+            return newObj;
+        });
+        console.log(mergedData);
+        return mergedData;
+    };
+
+    //실행경비에서 (영업비(정산)) 걸러주는함수
+    function filterArray(data) {
+        // 주어진 배열을 복제하여 새로운 배열을 만듭니다.
+        const filteredArray = [...data];
+
+        // 배열을 순회하면서 pjbgBeginDt가 null인 객체를 제거합니다.
+        for (let i = 0; i < filteredArray.length; i++) {
+            if (filteredArray[i].pjbgBeginDt === null) {
+                filteredArray.splice(i, 1);
+                i--; // 삭제 후 배열의 인덱스를 감소시켜 중복 체크를 방지합니다.
+            }
+        }
+
+        return filteredArray;
+    }
+
     const processResultData = (resultData, condition) => {
         console.log(resultData, "처음받는값인데");
+        console.log(condition, "컨디션받나");
         const transformedData = resultData.reduce((accumulator, item) => {
             const {
                 pjbgTypeCode,
@@ -97,40 +211,10 @@ function ExpenseMgmtExe() {
                 accumulator[key].pjbgTypeCodes.push(pjbgTypeCode);
                 accumulator[key].pjbgPrices.push(pjbgPrice);
                 accumulator[key].pjbgId.push(pjbgId);
-
-                return accumulator;
-            } else if (/^EXPNS\d{2}$/.test(pjbgTypeCode) && ["BUDGET"].includes(modeCode)) {
-                const key = `${modeCode}_${pjbgBeginDt}_${pjbgEndDt}_${pgNm}_${empNm}`;
-                if (!accumulator[key]) {
-                    accumulator[key] = {
-                        pjbgTypeCodes: [],
-                        modeCode,
-                        pjbgPrices: [],
-                        pjbgBeginDt,
-                        pjbgEndDt,
-                        empNm,
-                        esntlId,
-                        pjbgDt,
-                        pgNm,
-                        pjbgDesc,
-                        pjbgTypeCode1,
-                        pjbgTypeCode2,
-                        pjbgTypeCode3,
-                        pjbgTypeCode4,
-                        pjbgTypeCode5,
-                        pjbgTypeCode19,
-                        pjbgTypeCode20,
-                        pjbgId: [],
-                    };
-                }
-
-                accumulator[key].pjbgTypeCodes.push(pjbgTypeCode);
-                accumulator[key].pjbgPrices.push(pjbgPrice);
-                accumulator[key].pjbgId.push(pjbgId);
+                accumulator[key].pjbgId.sort((a, b) => a - b);
 
                 return accumulator;
             }
-
             return accumulator;
         }, {});
         console.log(transformedData, "transformedData");
@@ -152,15 +236,15 @@ function ExpenseMgmtExe() {
             newObj["pjbgId3"] = mergedItem.pjbgId[2];
             newObj["pjbgId4"] = mergedItem.pjbgId[3];
             newObj["pjbgId5"] = mergedItem.pjbgId[4];
-            newObj["pjbgId19"] = mergedItem.pjbgId[6];
-            newObj["pjbgId20"] = mergedItem.pjbgId[5];
+            newObj["pjbgId19"] = mergedItem.pjbgId[5];
+            newObj["pjbgId20"] = mergedItem.pjbgId[6];
             newObj["pjbgTypeCode1"] = mergedItem.pjbgPrices[0];
             newObj["pjbgTypeCode2"] = mergedItem.pjbgPrices[1];
             newObj["pjbgTypeCode3"] = mergedItem.pjbgPrices[2];
             newObj["pjbgTypeCode4"] = mergedItem.pjbgPrices[3];
             newObj["pjbgTypeCode5"] = mergedItem.pjbgPrices[4];
-            newObj["pjbgTypeCode19"] = mergedItem.pjbgPrices[6];
-            newObj["pjbgTypeCode20"] = mergedItem.pjbgPrices[5];
+            newObj["pjbgTypeCode19"] = mergedItem.pjbgPrices[5];
+            newObj["pjbgTypeCode20"] = mergedItem.pjbgPrices[6];
             newObj["poiId"] = condition.poiId;
 
             return newObj;
@@ -384,11 +468,14 @@ function ExpenseMgmtExe() {
         const resultData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", condition);
         const viewData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", { poiId: condition.poiId, modeCode: "BUDGET" });
         console.log(viewData, "이거안나오나봐 ㅜ");
-        const updatedViewData = processResultData(viewData);
+        const updatedViewData = processResultDataView(viewData, condition);
         setRunMgmtView(updatedViewData);
         const updatedData = processResultData(resultData, condition);
-        setExeRunMgmt(updatedData);
         console.log("경비계획 조회 updatedData:", updatedData);
+        const filteredData = filterArray(updatedData);
+        console.log(filteredData);
+        console.log(filteredData, "이건 걸러진 데이터임");
+        setExeRunMgmt(filteredData);
     };
 
     return (

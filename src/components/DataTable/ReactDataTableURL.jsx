@@ -385,14 +385,10 @@ const ReactDataTableURL = (props) => {
                     newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
                 } else if (column.accessor === "pjbgTypeCode5") {
                     newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                } else if (column.accessor === "pjbgTypeCode19") {
+                    newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
                 } else if (column.accessor === "pjbgTypeCode20") {
                     newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
-                } else if (column.accessor === "pjbgBeginDt") {
-                    newRow[column.accessor] = "2022-02-01"; // pjbgTypeCode 항상 "EXPNS10"로 설정
-                } else if (column.accessor === "pjbgDt") {
-                    newRow[column.accessor] = "2022-02-01"; // pjbgTypeCode 항상 "EXPNS10"로 설정
-                } else if (column.accessor === "pjbgEndDt") {
-                    newRow[column.accessor] = "2022-02-01"; // pjbgTypeCode 항상 "EXPNS10"로 설정
                 }
             }
         });

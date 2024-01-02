@@ -84,6 +84,7 @@ function ExpenseMgmtPlan() {
                 accumulator[key].pjbgTypeCodes.push(pjbgTypeCode);
                 accumulator[key].pjbgPrices.push(pjbgPrice);
                 accumulator[key].pjbgId.push(pjbgId);
+                accumulator[key].pjbgId.sort((a, b) => a - b);
 
                 return accumulator;
             }
@@ -109,15 +110,15 @@ function ExpenseMgmtPlan() {
             newObj["pjbgId3"] = mergedItem.pjbgId[2];
             newObj["pjbgId4"] = mergedItem.pjbgId[3];
             newObj["pjbgId5"] = mergedItem.pjbgId[4];
-            newObj["pjbgId19"] = mergedItem.pjbgId[6];
-            newObj["pjbgId20"] = mergedItem.pjbgId[5];
+            newObj["pjbgId19"] = mergedItem.pjbgId[5];
+            newObj["pjbgId20"] = mergedItem.pjbgId[6];
             newObj["pjbgTypeCode1"] = mergedItem.pjbgPrices[0];
             newObj["pjbgTypeCode2"] = mergedItem.pjbgPrices[1];
             newObj["pjbgTypeCode3"] = mergedItem.pjbgPrices[2];
             newObj["pjbgTypeCode4"] = mergedItem.pjbgPrices[3];
             newObj["pjbgTypeCode5"] = mergedItem.pjbgPrices[4];
-            newObj["pjbgTypeCode19"] = mergedItem.pjbgPrices[6];
-            newObj["pjbgTypeCode20"] = mergedItem.pjbgPrices[5];
+            newObj["pjbgTypeCode19"] = mergedItem.pjbgPrices[5];
+            newObj["pjbgTypeCode20"] = mergedItem.pjbgPrices[6];
             newObj["poiId"] = condition.poiId;
 
             return newObj;
