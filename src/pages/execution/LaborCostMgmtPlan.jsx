@@ -136,7 +136,7 @@ function LaborCostMgmtPlan() {
             poiId: condition.poiId,
             poiNm: condition.poiNm,
             modeCode: "BUDGET",
-            versionId: condition.versionId,
+            costAt: "Y",
         };
 
         const resultData = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", condition);

@@ -1069,6 +1069,13 @@ export const columns = {
                 type: "input",
             },
             {
+                header: "영업비",
+                col: "pjbgTypeCode19",
+                cellWidth: "10%",
+                type: "input",
+                notView: true,
+            },
+            {
                 header: "기타",
                 col: "pjbgTypeCode20",
                 cellWidth: "10%",

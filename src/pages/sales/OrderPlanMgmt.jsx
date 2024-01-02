@@ -353,6 +353,7 @@ function OrderPlanMgmt() {
                 }
             } else if (innerPageName === "경비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
+                console.log(requestData, "경비에들어가는거 머야");
                 setPjbudgetDatas(resultData);
                 let pjbgPriceTotal = 0;
                 resultData.forEach((data) => {
@@ -768,7 +769,7 @@ function OrderPlanMgmt() {
                 <AddModModal
                     width={500}
                     height={250}
-                    list={columns.orderPlanMgmt.versionAddMod}
+                    list={columns.orderPlanMgmt.versionAdd}
                     resultData={addVersionToServer}
                     onClose={() => setIsOpenAdd(false)}
                     title="버전 추가"
@@ -777,8 +778,8 @@ function OrderPlanMgmt() {
             {isOpenMod && (
                 <AddModModal
                     width={500}
-                    height={250}
-                    list={columns.orderPlanMgmt.versionAddMod}
+                    height={300}
+                    list={columns.orderPlanMgmt.versionMod}
                     initialData={selectedRows}
                     resultData={modifyToServer}
                     onClose={() => setIsOpenMod(false)}

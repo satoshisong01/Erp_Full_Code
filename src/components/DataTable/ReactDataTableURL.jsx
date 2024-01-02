@@ -77,6 +77,10 @@ const ReactDataTableURL = (props) => {
     }, []);
 
     useEffect(() => {
+        console.log(tableData, "받아온 경비 데이터");
+    }, [tableData]);
+
+    useEffect(() => {
         if (customDatas && customDatas.length > 0) {
             setTableData([...customDatas]);
             setOriginTableData([...customDatas]);
@@ -103,20 +107,38 @@ const ReactDataTableURL = (props) => {
     }, [currentPageName, innerPageName]);
 
     /* 테이블 cell에서 수정하는 경우의 on off */
+    //useEffect(() => {
+    //    //  console.log("💜경비 current:", current, "currentPageName:",currentPageName, "editing",editing);
+    //    if (isCurrentPage()) {
+    //        setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
+    //        if (nameOfButton === "save") {
+    //            returnList(originTableData, tableData);
+    //        }
+    //    }
+    //}, [innerPageName, currentPageName, editing, nameOfButton]);
+
     useEffect(() => {
         //  console.log("💜경비 current:", current, "currentPageName:",currentPageName, "editing",editing);
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
-        if (current === "경비" && nameOfButton === "save") {
+        if (innerPageName === "경비" && nameOfButton === "save") {
             compareData(originTableData, tableData);
-        } else if (current === "경비계획" && nameOfButton === "save") {
-            returnList(originTableData, tableData);
-            setNameOfButton("");
-        } else if (current === "경비실행" && nameOfButton === "save") {
-            returnList(originTableData, tableData);
+        }
+        if (nameOfButton === "save") {
+            returnList && returnList(originTableData, tableData);
             setNameOfButton("");
         }
+        //else if (currentPageName === "경비계획" && nameOfButton === "save") {
+        //    returnList(originTableData, tableData);
+        //    setNameOfButton("");
+        //} else if (currentPageName === "경비실행" && nameOfButton === "save") {
+        //    returnList(originTableData, tableData);
+        //    setNameOfButton("");
+        //} else if (currentPageName === "영업비(정산)" && nameOfButton === "save") {
+        //    returnList(originTableData, tableData);
+        //    setNameOfButton("");
+        //}
     }, [innerPageName, currentPageName, editing, nameOfButton]);
 
     useEffect(() => {
@@ -332,8 +354,8 @@ const ReactDataTableURL = (props) => {
             } else if (column.accessor === "esntlId") {
                 //임시 업무회원 삭제해야함
                 newRow[column.accessor] = emUserInfo.uniqId; // pjbgTypeCode 항상 "EXPNS10"로 설정
-            } else if (column.accessor === "pjbgTypeCode") {
-                newRow[column.accessor] = "EXPNS01"; // pjbgTypeCode 항상 "EXPNS10"로 설정
+            } else if (column.accessor === "pjbgTypeCode19") {
+                newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "useAt") {
                 newRow[column.accessor] = "Y"; // useAt 항상 "Y"로 설정
             } else if (column.accessor === "modeCode") {
@@ -346,6 +368,31 @@ const ReactDataTableURL = (props) => {
             if (viewPageName === "경비실행") {
                 if (column.accessor === "modeCode") {
                     newRow[column.accessor] = "EXECUTE"; // useAt 항상 "Y"로 설정
+                } else if (column.accessor === "pjbgTypeCode19") {
+                    newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                }
+            }
+            if (viewPageName === "영업비(정산)") {
+                if (column.accessor === "modeCode") {
+                    newRow[column.accessor] = "EXECUTE"; // useAt 항상 "Y"로 설정
+                } else if (column.accessor === "pjbgTypeCode1") {
+                    newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                } else if (column.accessor === "pjbgTypeCode2") {
+                    newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                } else if (column.accessor === "pjbgTypeCode3") {
+                    newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                } else if (column.accessor === "pjbgTypeCode4") {
+                    newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                } else if (column.accessor === "pjbgTypeCode5") {
+                    newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                } else if (column.accessor === "pjbgTypeCode20") {
+                    newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                } else if (column.accessor === "pjbgBeginDt") {
+                    newRow[column.accessor] = "2022-02-01"; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                } else if (column.accessor === "pjbgDt") {
+                    newRow[column.accessor] = "2022-02-01"; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                } else if (column.accessor === "pjbgEndDt") {
+                    newRow[column.accessor] = "2022-02-01"; // pjbgTypeCode 항상 "EXPNS10"로 설정
                 }
             }
         });
@@ -355,6 +402,70 @@ const ReactDataTableURL = (props) => {
             return newData;
         });
     };
+
+    //const onAddRow = () => {
+    //    const newRowArray = [];
+
+    //    if (tableData.length === 0) {
+    //        const pjbgTypeCodes = [
+    //            "EXPNS02",
+    //            "EXPNS06",
+    //            "EXPNS07",
+    //            "EXPNS08",
+    //            "EXPNS09",
+    //            "EXPNS10",
+    //            "EXPNS11",
+    //            "EXPNS12",
+    //            "EXPNS13",
+    //            "EXPNS14",
+    //            "EXPNS15",
+    //            "EXPNS16",
+    //            "EXPNS17",
+    //            "EXPNS18",
+    //            "EXPNS19",
+    //            "EXPNS20",
+    //        ];
+
+    //        pjbgTypeCodes.forEach((code) => {
+    //            const newRow = {};
+    //            columnsConfig.forEach((column) => {
+    //                if (column.accessor === "poiId") {
+    //                    newRow[column.accessor] = condition.poiId || "";
+    //                } else if (column.accessor === "versionId") {
+    //                    newRow[column.accessor] = condition.versionId;
+    //                } else if (column.accessor === "esntlId") {
+    //                    newRow[column.accessor] = emUserInfo.uniqId;
+    //                } else if (column.accessor === "pjbgTypeCode") {
+    //                    newRow[column.accessor] = code;
+    //                } else if (column.accessor === "useAt") {
+    //                    newRow[column.accessor] = "Y";
+    //                } else if (column.accessor === "modeCode") {
+    //                    newRow[column.accessor] = "BUDGET";
+    //                } else if (column.accessor === "deleteAt") {
+    //                    newRow[column.accessor] = "N";
+    //                } else {
+    //                    newRow[column.accessor] = null;
+    //                }
+
+    //                if (viewPageName === "경비실행" && column.accessor === "modeCode") {
+    //                    newRow[column.accessor] = "EXECUTE";
+    //                }
+    //                //if (viewPageName === "경비실행") {
+    //                //    if (column.accessor === "modeCode") {
+    //                //        newRow[column.accessor] = "EXECUTE"; // useAt 항상 "Y"로 설정
+    //                //    }
+    //                //}
+    //            });
+
+    //            newRowArray.push(newRow);
+    //        });
+    //    }
+
+    //    setTableData((prevData) => {
+    //        const newData = [...prevData, ...newRowArray];
+    //        return newData;
+    //    });
+    //};
 
     const onDeleteRow = (row) => {
         const rowId = row.index;
@@ -446,7 +557,7 @@ const ReactDataTableURL = (props) => {
     const handleDateClick = (date, colName, index) => {
         const updatedTableData = [...tableData];
         updatedTableData[index][colName] = date;
-        const month = date.substring(0, 7);
+        const month = date.substring(0, 10);
         updatedTableData[index]["pjbgDt"] = month; //연월
         setTableData(updatedTableData);
     };
@@ -588,7 +699,7 @@ const ReactDataTableURL = (props) => {
                                                             value={
                                                                 tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
                                                                     ? tableData[row.index][cell.column.id] || cell.value
-                                                                    : cell.value || ""
+                                                                    : cell.value
                                                             }
                                                             name={cell.column.id}
                                                             onChange={(e) => onChangeInput(e, row)}
@@ -612,21 +723,7 @@ const ReactDataTableURL = (props) => {
                                                                     : ""
                                                             }
                                                         />
-                                                    ) : //<input
-                                                    //    type="text"
-                                                    //    value={tableData[row.index] && tableData[row.index][cell.column.id] !== undefined ? "[비고]" : null}
-                                                    //    name={cell.column.id}
-                                                    //    onChange={(e) => onChangeInput(e, row)}
-                                                    //    style={{
-                                                    //        backgroundColor: cell.value ? "lightgreen" : "gray",
-                                                    //    }}
-                                                    //    title={
-                                                    //        tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
-                                                    //            ? tableData[row.index][cell.column.id]
-                                                    //            : null
-                                                    //    }
-                                                    ///>
-                                                    cell.column.type === "productGroup" ? (
+                                                    ) : cell.column.type === "productGroup" ? (
                                                         <div>
                                                             <input
                                                                 className="buttonSelect"
@@ -683,33 +780,21 @@ const ReactDataTableURL = (props) => {
                                                             value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id] : ""}
                                                             onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                         />
+                                                    ) : cell.column.Header === "연월" && cell.value ? (
+                                                        cell.value.substring(0, 7)
+                                                    ) : cell.column.col === "pjbgDt" ? (
+                                                        cell.value.substring(0, 7)
+                                                    ) : typeof cell.value === "number" ? (
+                                                        cell.value && cell.value.toLocaleString()
                                                     ) : (
-                                                        // <div className="box3-1 boxDate">
-                                                        //     <DatePicker
-                                                        //         key={cell.column.id + row.index}
-                                                        //         name={cell.column.col}
-                                                        //         className="form-control flex-item"
-                                                        //         type="text"
-                                                        //         value={tableData[row.index].pjbgBeginDt ? tableData[row.index].pjbgBeginDt.substring(0, 7) : ""}
-                                                        //         ref={inputRef}
-                                                        //         dateFormat="yyyy-MM"
-                                                        //         showMonthYearPicker
-                                                        //         locale={ko} // 한국어로 설정
-                                                        //         onClick={() => toggleCalendarVisible(row.index)}
-                                                        //         onChange={(date) => {
-                                                        //             const formatted = handleDateChange(date);
-                                                        //             const updatedTableData = [...tableData];
-                                                        //             updatedTableData[row.index].pjbgBeginDt
-                                                        //                 ? (updatedTableData[row.index].pjbgBeginDt = formatted)
-                                                        //                 : (updatedTableData[row.index].pjbgBeginDt = formatted);
-                                                        //             setTableData(updatedTableData);
-                                                        //         }}
-                                                        //     />
-                                                        // </div>
-                                                        cell.render("Cell")
+                                                        cell.render("Cell") || ""
                                                     )
                                                 ) : cell.column.Header === "연월" && cell.value ? (
                                                     cell.value.substring(0, 7)
+                                                ) : cell.column.col === "pjbgDt" ? (
+                                                    cell.value.substring(0, 7)
+                                                ) : typeof cell.value === "number" ? (
+                                                    cell.value && cell.value.toLocaleString()
                                                 ) : (
                                                     cell.render("Cell") || ""
                                                 )}

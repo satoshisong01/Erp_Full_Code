@@ -35,7 +35,7 @@ function LaborCostMgmtExe() {
     const current = "인건비실행";
 
     useEffect(() => {
-        if(currentPageName === "인건비" && current === "인건비실행") {
+        if (currentPageName === "인건비" && current === "인건비실행") {
             setCurrentPageName(current);
         }
         setInnerPageName("");
@@ -186,7 +186,7 @@ function LaborCostMgmtExe() {
                 </div>
                 <ReactDataTable
                     editing={true}
-                    columns={columns.laborCostMgmt.budget}
+                    columns={columns.laborCostMgmt.run}
                     customDatas={budgetMgmtRun}
                     viewPageName={current}
                     returnList={compareData}

@@ -25,7 +25,7 @@ export const ChangePrmnPlanData = (data, poiId) => {
             groupedData[key] = {
                 //pgNm: item.pgNm,
                 pmpId: [],
-                poiId: item.poiId,
+                poiId: poiId,
                 useAt: "Y",
                 deleteAt: "N",
                 calendarVisible: false,

@@ -33,7 +33,7 @@ function ExpenseMgmtExe() {
     const current = "경비실행";
 
     useEffect(() => {
-        if(currentPageName === "경비" && current === "경비실행") {
+        if (currentPageName === "경비" && current === "경비실행") {
             setCurrentPageName(current);
         }
         setInnerPageName("");
@@ -45,7 +45,7 @@ function ExpenseMgmtExe() {
         }
     };
 
-    const processResultData = (resultData) => {
+    const processResultData = (resultData, condition) => {
         console.log(resultData, "처음받는값인데");
         const transformedData = resultData.reduce((accumulator, item) => {
             const {
@@ -64,12 +64,13 @@ function ExpenseMgmtExe() {
                 pjbgTypeCode3,
                 pjbgTypeCode4,
                 pjbgTypeCode5,
+                pjbgTypeCode19,
                 pjbgTypeCode20,
                 pjbgId,
             } = item;
 
             if (/^EXPNS\d{2}$/.test(pjbgTypeCode) && ["EXECUTE"].includes(modeCode)) {
-                const key = `${modeCode}_${pjbgBeginDt}_${pjbgEndDt}_${pgNm}_${empNm}_${pjbgDesc}`;
+                const key = `${modeCode}_${pjbgBeginDt}_${pjbgEndDt}_${pgNm}_${empNm}`;
                 if (!accumulator[key]) {
                     accumulator[key] = {
                         pjbgTypeCodes: [],
@@ -87,6 +88,7 @@ function ExpenseMgmtExe() {
                         pjbgTypeCode3,
                         pjbgTypeCode4,
                         pjbgTypeCode5,
+                        pjbgTypeCode19,
                         pjbgTypeCode20,
                         pjbgId: [],
                     };
@@ -98,7 +100,7 @@ function ExpenseMgmtExe() {
 
                 return accumulator;
             } else if (/^EXPNS\d{2}$/.test(pjbgTypeCode) && ["BUDGET"].includes(modeCode)) {
-                const key = `${modeCode}_${pjbgBeginDt}_${pjbgEndDt}_${pgNm}_${empNm}_${pjbgDesc}`;
+                const key = `${modeCode}_${pjbgBeginDt}_${pjbgEndDt}_${pgNm}_${empNm}`;
                 if (!accumulator[key]) {
                     accumulator[key] = {
                         pjbgTypeCodes: [],
@@ -116,6 +118,7 @@ function ExpenseMgmtExe() {
                         pjbgTypeCode3,
                         pjbgTypeCode4,
                         pjbgTypeCode5,
+                        pjbgTypeCode19,
                         pjbgTypeCode20,
                         pjbgId: [],
                     };
@@ -149,14 +152,16 @@ function ExpenseMgmtExe() {
             newObj["pjbgId3"] = mergedItem.pjbgId[2];
             newObj["pjbgId4"] = mergedItem.pjbgId[3];
             newObj["pjbgId5"] = mergedItem.pjbgId[4];
+            newObj["pjbgId19"] = mergedItem.pjbgId[6];
             newObj["pjbgId20"] = mergedItem.pjbgId[5];
             newObj["pjbgTypeCode1"] = mergedItem.pjbgPrices[0];
             newObj["pjbgTypeCode2"] = mergedItem.pjbgPrices[1];
             newObj["pjbgTypeCode3"] = mergedItem.pjbgPrices[2];
             newObj["pjbgTypeCode4"] = mergedItem.pjbgPrices[3];
             newObj["pjbgTypeCode5"] = mergedItem.pjbgPrices[4];
+            newObj["pjbgTypeCode19"] = mergedItem.pjbgPrices[6];
             newObj["pjbgTypeCode20"] = mergedItem.pjbgPrices[5];
-            newObj["poiId"] = projectInfo.poiId;
+            newObj["poiId"] = condition.poiId;
 
             return newObj;
         });
@@ -193,6 +198,7 @@ function ExpenseMgmtExe() {
                         pjbgId3: updatedArray[i].pjbgId3,
                         pjbgId4: updatedArray[i].pjbgId4,
                         pjbgId5: updatedArray[i].pjbgId5,
+                        pjbgId19: updatedArray[i].pjbgId19,
                         pjbgId20: updatedArray[i].pjbgId20,
                     };
                 }
@@ -235,6 +241,10 @@ function ExpenseMgmtExe() {
                     }
                 }
 
+                const propName19 = "pjbgTypeCode19";
+                if (newItem[propName19] === null || newItem[propName19] === undefined) {
+                    newItem[propName19] = 0;
+                }
                 const propName20 = "pjbgTypeCode20";
                 if (newItem[propName20] === null || newItem[propName20] === undefined) {
                     newItem[propName20] = 0;
@@ -247,11 +257,6 @@ function ExpenseMgmtExe() {
     };
 
     const addItem = async (addData) => {
-        addData.forEach((item) => {
-            if (item.pjbgDt) {
-                item.pjbgDt = `${item.pjbgDt}-01`;
-            }
-        });
         console.log(addData, "추가되야함");
         const url = `/api/baseInfrm/product/pjbudgetExe/addArrayList.do`;
         const resultData = await axiosPost(url, addData);
@@ -363,18 +368,6 @@ function ExpenseMgmtExe() {
         return updatedViewData;
     };
 
-    const fetchAllData = async (condition) => {
-        console.log("경비계획 조회 컨디션:", condition);
-        const resultData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", condition);
-        const viewData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", { poiId: condition.poiId, modeCode: "BUDGET" });
-        console.log(viewData, "이거안나오나봐 ㅜ");
-        const updatedViewData = processResultData(viewData);
-        setRunMgmtView(updatedViewData);
-        const updatedData = processResultData(resultData);
-        setExeRunMgmt(updatedData);
-        console.log("경비계획 조회 updatedData:", updatedData);
-    };
-
     const conditionInfo = (value) => {
         setCondition((prev) => {
             if (prev.poiId !== value.poiId) {
@@ -384,6 +377,18 @@ function ExpenseMgmtExe() {
             }
             return prev;
         });
+    };
+
+    const fetchAllData = async (condition) => {
+        console.log("경비계획 조회 컨디션:", condition);
+        const resultData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", condition);
+        const viewData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", { poiId: condition.poiId, modeCode: "BUDGET" });
+        console.log(viewData, "이거안나오나봐 ㅜ");
+        const updatedViewData = processResultData(viewData);
+        setRunMgmtView(updatedViewData);
+        const updatedData = processResultData(resultData, condition);
+        setExeRunMgmt(updatedData);
+        console.log("경비계획 조회 updatedData:", updatedData);
     };
 
     return (

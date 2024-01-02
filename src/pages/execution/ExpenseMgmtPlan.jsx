@@ -14,12 +14,13 @@ import ReactDataTable from "components/DataTable/ReactDataTable";
 function ExpenseMgmtPlan() {
     const { projectInfo, setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton, setInnerPageName } = useContext(PageContext);
     const [pjbudgetDatasView, setPjbudgetDatasView] = useState([]); // 경비
+    const [pjbudgetCalDatas, setPjbudgetCalDatas] = useState([]); // 경비
     const [condition, setCondition] = useState({});
 
     const current = "경비계획";
 
     useEffect(() => {
-        if(currentPageName === "경비" && current === "경비계획") {
+        if (currentPageName === "경비" && current === "경비계획") {
             setCurrentPageName(current);
         }
         setInnerPageName("");
@@ -31,7 +32,7 @@ function ExpenseMgmtPlan() {
         }
     };
 
-    const processResultData = (resultData) => {
+    const processResultData = (resultData, condition) => {
         console.log(resultData, "처음받는값인데");
         const transformedData = resultData.reduce((accumulator, item) => {
             const {
@@ -50,12 +51,13 @@ function ExpenseMgmtPlan() {
                 pjbgTypeCode3,
                 pjbgTypeCode4,
                 pjbgTypeCode5,
+                pjbgTypeCode19,
                 pjbgTypeCode20,
                 pjbgId,
             } = item;
 
             if (/^EXPNS\d{2}$/.test(pjbgTypeCode) && ["BUDGET"].includes(modeCode)) {
-                const key = `${modeCode}_${pjbgBeginDt}_${pjbgEndDt}_${pgNm}_${empNm}_${pjbgDesc}`;
+                const key = `${modeCode}_${pjbgBeginDt}_${pjbgEndDt}_${pgNm}_${empNm}`;
                 if (!accumulator[key]) {
                     accumulator[key] = {
                         pjbgTypeCodes: [],
@@ -73,6 +75,7 @@ function ExpenseMgmtPlan() {
                         pjbgTypeCode3,
                         pjbgTypeCode4,
                         pjbgTypeCode5,
+                        pjbgTypeCode19,
                         pjbgTypeCode20,
                         pjbgId: [],
                     };
@@ -106,14 +109,16 @@ function ExpenseMgmtPlan() {
             newObj["pjbgId3"] = mergedItem.pjbgId[2];
             newObj["pjbgId4"] = mergedItem.pjbgId[3];
             newObj["pjbgId5"] = mergedItem.pjbgId[4];
+            newObj["pjbgId19"] = mergedItem.pjbgId[6];
             newObj["pjbgId20"] = mergedItem.pjbgId[5];
             newObj["pjbgTypeCode1"] = mergedItem.pjbgPrices[0];
             newObj["pjbgTypeCode2"] = mergedItem.pjbgPrices[1];
             newObj["pjbgTypeCode3"] = mergedItem.pjbgPrices[2];
             newObj["pjbgTypeCode4"] = mergedItem.pjbgPrices[3];
             newObj["pjbgTypeCode5"] = mergedItem.pjbgPrices[4];
+            newObj["pjbgTypeCode19"] = mergedItem.pjbgPrices[6];
             newObj["pjbgTypeCode20"] = mergedItem.pjbgPrices[5];
-            newObj["poiId"] = projectInfo.poiId;
+            newObj["poiId"] = condition.poiId;
 
             return newObj;
         });
@@ -190,6 +195,7 @@ function ExpenseMgmtPlan() {
                         pjbgId3: updatedArray[i].pjbgId3,
                         pjbgId4: updatedArray[i].pjbgId4,
                         pjbgId5: updatedArray[i].pjbgId5,
+                        pjbgId19: updatedArray[i].pjbgId19,
                         pjbgId20: updatedArray[i].pjbgId20,
                     };
                 }
@@ -231,7 +237,10 @@ function ExpenseMgmtPlan() {
                         newItem[propName] = 0;
                     }
                 }
-
+                const propName19 = "pjbgTypeCode19";
+                if (newItem[propName19] === null || newItem[propName19] === undefined) {
+                    newItem[propName19] = 0;
+                }
                 const propName20 = "pjbgTypeCode20";
                 if (newItem[propName20] === null || newItem[propName20] === undefined) {
                     newItem[propName20] = 0;
@@ -267,11 +276,6 @@ function ExpenseMgmtPlan() {
     //}
 
     const addItem = async (addData) => {
-        addData.forEach((item) => {
-            if (item.pjbgDt) {
-                item.pjbgDt = `${item.pjbgDt}-01`;
-            }
-        });
         console.log(addData, "추가되야함");
         const url = `/api/baseInfrm/product/pjbudgetExe/addArrayList.do`;
         const resultData = await axiosPost(url, addData);
@@ -282,6 +286,11 @@ function ExpenseMgmtPlan() {
     };
 
     const updateItem = async (toUpdate) => {
+        //toUpdate.forEach((item) => {
+        //    if (item.pjbgDt) {
+        //        item.pjbgDt = `${item.pjbgDt}-01`;
+        //    }
+        //});
         console.log(toUpdate, "업데이트 값은?");
         const url = `/api/baseInfrm/product/pjbudgetExe/editArrayList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
@@ -352,7 +361,7 @@ function ExpenseMgmtPlan() {
         const updatedViewData = updatePjbgType(viewData);
         console.log(updatedViewData, "일단찎어봐");
         setPjbudgetDatasView(updatedViewData);
-        const updatedData = processResultData(resultData);
+        const updatedData = processResultData(resultData, condition);
         setBudgetMgmt(updatedData);
         console.log("경비계획 조회 updatedData:", updatedData);
     };
