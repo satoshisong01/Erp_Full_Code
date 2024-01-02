@@ -260,13 +260,25 @@ function OrderPlanMgmt() {
         }
     };
 
+    const fetchVersion = async () => {
+        const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", {
+            searchCondition: "",
+            searchKeyword: "",
+        });
+        setSearchDates(resultData);
+    };
+
     const fetchAllData = async (requestData) => {
+        console.log(requestData, "이거나오는거보자");
         try {
             if (innerPageName === "원가버전조회") {
-                const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", {...requestData , searchCondition: "", searchKeyword: ""});
+                const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", {
+                    ...requestData,
+                    searchCondition: "",
+                    searchKeyword: "",
+                });
                 setSearchDates(resultData);
                 console.log("😈영업-원가버전조회:", requestData, "resultData:", resultData);
-
             } else if (innerPageName === "인건비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
                 const changeData = ChangePrmnPlanData(resultData, condition.poiId);
@@ -286,35 +298,36 @@ function OrderPlanMgmt() {
                     mm12 += Item.pmpmmPositionCode12;
                     mm13 += Item.pmpmmPositionCode13;
                     mm14 += Item.pmpmmPositionCode14;
-                })
+                });
                 setPrmnCalDatas([
                     {
-                        total: mm1+mm9+mm10+mm11+mm12+mm13+mm14,
-                        pmpmmPositionCode1Total : mm1,
-                        pmpmmPositionCode9Total : mm9,
-                        pmpmmPositionCode10Total : mm10,
-                        pmpmmPositionCode11Total : mm11,
-                        pmpmmPositionCode12Total : mm12,
-                        pmpmmPositionCode13Total : mm13,
-                        pmpmmPositionCode14Total : mm14
+                        total: mm1 + mm9 + mm10 + mm11 + mm12 + mm13 + mm14,
+                        pmpmmPositionCode1Total: mm1,
+                        pmpmmPositionCode9Total: mm9,
+                        pmpmmPositionCode10Total: mm10,
+                        pmpmmPositionCode11Total: mm11,
+                        pmpmmPositionCode12Total: mm12,
+                        pmpmmPositionCode13Total: mm13,
+                        pmpmmPositionCode14Total: mm14,
                     },
                     {
-                        total : mm1 * matchingAItem.gupPrice1 +
-                                mm9 * matchingAItem.gupPrice9 +
-                                mm10 * matchingAItem.gupPrice10 +
-                                mm11 * matchingAItem.gupPrice11 +
-                                mm12 * matchingAItem.gupPrice12 +
-                                mm13 * matchingAItem.gupPrice13 +
-                                mm14 * matchingAItem.gupPrice14,
-                        pmpmmPositionCode1Total : mm1 * matchingAItem.gupPrice1,
-                        pmpmmPositionCode9Total : mm9 * matchingAItem.gupPrice9,
-                        pmpmmPositionCode10Total : mm10 * matchingAItem.gupPrice10,
-                        pmpmmPositionCode11Total : mm11 * matchingAItem.gupPrice11,
-                        pmpmmPositionCode12Total : mm12 * matchingAItem.gupPrice12,
-                        pmpmmPositionCode13Total : mm13 * matchingAItem.gupPrice13,
-                        pmpmmPositionCode14Total : mm14 * matchingAItem.gupPrice14
-                    }
-                ])
+                        total:
+                            mm1 * matchingAItem.gupPrice1 +
+                            mm9 * matchingAItem.gupPrice9 +
+                            mm10 * matchingAItem.gupPrice10 +
+                            mm11 * matchingAItem.gupPrice11 +
+                            mm12 * matchingAItem.gupPrice12 +
+                            mm13 * matchingAItem.gupPrice13 +
+                            mm14 * matchingAItem.gupPrice14,
+                        pmpmmPositionCode1Total: mm1 * matchingAItem.gupPrice1,
+                        pmpmmPositionCode9Total: mm9 * matchingAItem.gupPrice9,
+                        pmpmmPositionCode10Total: mm10 * matchingAItem.gupPrice10,
+                        pmpmmPositionCode11Total: mm11 * matchingAItem.gupPrice11,
+                        pmpmmPositionCode12Total: mm12 * matchingAItem.gupPrice12,
+                        pmpmmPositionCode13Total: mm13 * matchingAItem.gupPrice13,
+                        pmpmmPositionCode14Total: mm14 * matchingAItem.gupPrice14,
+                    },
+                ]);
                 changeData.forEach((Item) => {
                     const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
                     const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
@@ -336,18 +349,16 @@ function OrderPlanMgmt() {
                 });
                 setPrmnPlanDatas(changeData);
                 console.log("😈영업-인건비:", changeData);
-                
             } else if (innerPageName === "경비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
                 setPjbudgetDatas(resultData);
                 let pjbgPriceTotal = 0;
                 resultData.forEach((data) => {
                     pjbgPriceTotal += data.pjbgPrice;
-                })
-                setPjbudgetCalDatas([{pjbgPriceTotal}]);
+                });
+                setPjbudgetCalDatas([{ pjbgPriceTotal }]);
 
                 console.log("😈영업-경비:", resultData);
-
             } else if (innerPageName === "구매(재료비)") {
                 console.log("😈구매조회!!", requestData);
                 const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
@@ -365,11 +376,18 @@ function OrderPlanMgmt() {
                     estimatedCostTotal += data.estimatedCost; // 원가
                     plannedProfitsTotal += data.plannedProfits; // 이익금
                 });
-                const nego = division((consumerAmountTotal-planAmountTotal), consumerAmountTotal)*100+'%'; // 네고율
-                const plannedProfitMarginTotal =division(plannedProfitsTotal, planAmountTotal)*100+'%'; // 이익금/금액
-                setPdOrdrCalDatas([{
-                    consumerAmountTotal, planAmountTotal, nego, estimatedCostTotal, plannedProfitsTotal, plannedProfitMarginTotal
-                }]);
+                const nego = division(consumerAmountTotal - planAmountTotal, consumerAmountTotal) * 100 + "%"; // 네고율
+                const plannedProfitMarginTotal = division(plannedProfitsTotal, planAmountTotal) * 100 + "%"; // 이익금/금액
+                setPdOrdrCalDatas([
+                    {
+                        consumerAmountTotal,
+                        planAmountTotal,
+                        nego,
+                        estimatedCostTotal,
+                        plannedProfitsTotal,
+                        plannedProfitMarginTotal,
+                    },
+                ]);
 
                 console.log("😈영업-구매비:", requestData, "resultData:", resultData);
             } else if (innerPageName === "개발외주비") {
@@ -378,10 +396,9 @@ function OrderPlanMgmt() {
                 let devOutPriceTotal = 0;
                 resultData.forEach((data) => {
                     devOutPriceTotal += data.devOutPrice;
-                })
-                setOutCalDatas([{devOutPriceTotal}]);
+                });
+                setOutCalDatas([{ devOutPriceTotal }]);
                 console.log("😈영업-개발외주비:", requestData, "resultData:", resultData);
-
             } else if (innerPageName === "영업관리비") {
                 const resultData = await axiosFetch("/api/baseInfrm/product/slsmnExpns/totalListAll.do", requestData);
                 setGeneralExpensesDatas(resultData);
@@ -391,8 +408,8 @@ function OrderPlanMgmt() {
                 resultData.forEach((data) => {
                     total += data.slsmnEnterpriseProfit + data.slsmnAdmnsCost;
                     negoTotal += data.slsmnNego;
-                })
-                setGeneralCalDatas([{total, negoTotal}]);
+                });
+                setGeneralCalDatas([{ total, negoTotal }]);
                 console.log("😈영업-영업관리비:", requestData, "resultData:", resultData);
             }
         } catch (error) {
@@ -401,6 +418,10 @@ function OrderPlanMgmt() {
     };
 
     const [isOpenAdd, setIsOpenAdd] = useState(false);
+
+    const refreshVersion = () => {
+        fetchAllData();
+    };
 
     const addVersionToServer = async (addData) => {
         console.log(">>>>>>>>>", addData);
@@ -418,7 +439,7 @@ function OrderPlanMgmt() {
         console.log(resultData);
         if (resultData) {
             alert("추가되었습니다");
-            refresh();
+            fetchVersion();
         } else {
             alert("error!");
         }
@@ -434,29 +455,30 @@ function OrderPlanMgmt() {
     }, [selectedRows]);
 
     const deleteToServer = async (value) => {
-        // if (value === "임시삭제") {
-        //     /* 임시삭제 코드 구현 */
-        // } else if (value === "영구삭제") {
-        //     const poiNms = selectedRows.map((row) => row.poiId);
-        //     const url = `/api/baseInfrm/product/pjOrdrInfo/removeAll.do`;
-        //     const resultData = await axiosDelete(url, poiNms);
-        //     if (resultData) {
-        //         alert(`선택한 항목들이 삭제되었습니다.`);
-        //         refresh();
-        //     } else {
-        //         alert("삭제 중 에러가 발생했습니다.");
-        //     }
-        // }
+        if (value === "임시삭제") {
+            /* 임시삭제 코드 구현 */
+        } else if (value === "영구삭제") {
+            const poiNms = selectedRows.map((row) => row.versionId);
+            const url = `/api/baseInfrm/product/versionControl/removeAll.do`;
+            const resultData = await axiosDelete(url, poiNms);
+            console.log(resultData);
+            if (resultData) {
+                alert(`선택한 항목들이 삭제되었습니다.`);
+                fetchVersion();
+            } else {
+                alert("삭제 중 에러가 발생했습니다.");
+            }
+        }
     };
 
     const modifyToServer = async (updatedData) => {
-        console.log(innerPageName , "💜 modifyToServer:", updatedData);
+        console.log(innerPageName, "💜 modifyToServer:", updatedData);
         if (updatedData.length === 0) {
             alert("수정할 항목을 선택하세요.");
             return;
         }
         let url = "";
-        if(innerPageName === "원가버전조회") {
+        if (innerPageName === "원가버전조회") {
             url = `/api/baseInfrm/product/versionControl/edit.do`;
         } else {
             url = `/api/baseInfrm/product/pjOrdrInfo/edit.do`;
@@ -466,7 +488,7 @@ function OrderPlanMgmt() {
         console.log(resultData);
         if (resultData) {
             alert("수정되었습니다");
-            refresh();
+            fetchVersion();
         } else {
             alert("error!!");
         }
@@ -485,17 +507,17 @@ function OrderPlanMgmt() {
     };
 
     const conditionInfo = (value) => {
-        if(Object.keys(value).length === 0) {
+        if (Object.keys(value).length === 0) {
             setCondition({});
         } else {
             console.log("❗❗❗value:", value);
             setCondition((prev) => {
-                const newCondition = { poiId: value.poiId, versionId: value.versionId, poiMonth: value.poiMonth};
+                const newCondition = { poiId: value.poiId, versionId: value.versionId, poiMonth: value.poiMonth };
                 fetchAllData(newCondition);
                 return newCondition;
             });
         }
-    }
+    };
 
     return (
         <>
@@ -591,11 +613,7 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalFormSal viewPageName="구매(재료비)" returnData={conditionInfo} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                                <ReactDataTable
-                                    columns={columns.orderPlanMgmt.purchaseCal}
-                                    customDatas={pdOrdrCalDatas}
-                                    hideCheckBox={true}
-                                />
+                                <ReactDataTable columns={columns.orderPlanMgmt.purchaseCal} customDatas={pdOrdrCalDatas} hideCheckBox={true} />
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-b-m-30">
@@ -704,8 +722,7 @@ function OrderPlanMgmt() {
                     <div className="seventh">
                         <ul>
                             <ApprovalFormSal viewPageName="견적용 인건비" returnData={conditionInfo} />
-                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                            </HideCard>
+                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-b-m-30">
                                     <RefreshButton onClick={refresh} />
@@ -725,8 +742,7 @@ function OrderPlanMgmt() {
                     <div className="eighth">
                         <ul>
                             <ApprovalFormSal viewPageName="견적용 구매비" returnData={conditionInfo} />
-                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                            </HideCard>
+                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-b-m-30">
                                     <RefreshButton onClick={refresh} />
