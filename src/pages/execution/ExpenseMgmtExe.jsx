@@ -26,19 +26,11 @@ function ExpenseMgmtExe() {
         setNameOfButton,
     } = useContext(PageContext);
 
-    // const { showDetailTable } = useContext(PageContext);
     const [condition, setCondition] = useState({});
     const [cal, setCal] = useState([]);
-    //const [conditionView, setConditionView] = useState({});
 
     const current = "경비실행";
 
-    useEffect(() => {
-        if (currentPageName === "경비" && current === "경비실행") {
-            setCurrentPageName(current);
-            setInnerPageName("");
-        }
-    }, [currentPageName]);
 
     const refresh = () => {
         if (condition.poiId) {

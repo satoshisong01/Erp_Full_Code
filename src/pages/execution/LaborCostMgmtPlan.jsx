@@ -33,15 +33,6 @@ function LaborCostMgmtPlan() {
 
     const [condition, setCondition] = useState({});
 
-    const current = "인건비계획";
-
-    useEffect(() => {
-        if (currentPageName === "인건비" && current === "인건비계획") {
-            setCurrentPageName(current);
-            setInnerPageName("");
-        }
-    }, [currentPageName]);
-
     //useEffect(() => {
     //    if (currentPageName === "인건비") {
     //        fetchAllData();
@@ -52,13 +43,6 @@ function LaborCostMgmtPlan() {
     //    }
     //}, [currentPageName]);
 
-    //useEffect(() => {
-    //    if (current === "실행인건비계획" && currentPageName !== current) {
-    //        setCurrentPageName(current);
-    //    }
-    //}, [currentPageName]);
-
-    // const [isClicked3, setIsClicked3] = useState(false);
 
     const conditionInfo = (value) => {
         setCondition((prev) => {
@@ -71,9 +55,6 @@ function LaborCostMgmtPlan() {
         });
     };
 
-    // const handleClick3 = () => {
-    //     setIsClicked3(!isClicked3);
-    // };
 
     const [budgetMgmt, setBudgetMgmt] = useState([]); // 실행인건비계획
     const [budgetMgmtView, setBudgetMgmtView] = useState([]); // 영업인건비
@@ -176,8 +157,8 @@ function LaborCostMgmtPlan() {
     };
 
     const compareData = (originData, updatedData) => {
-        console.log("currentPageName:", currentPageName, "current:", current);
-        if (currentPageName !== current) return;
+        // console.log("currentPageName:", currentPageName, "current:", current);
+        if (currentPageName !== "인건비계획") return;
         const filterData = updatedData.filter((data) => data.pgNm); //pgNm 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -252,7 +233,7 @@ function LaborCostMgmtPlan() {
     return (
         <>
             <Location pathList={locationPath.LaborCostMgmt} />
-            <ApprovalFormExe viewPageName={current} returnData={conditionInfo} />
+            <ApprovalFormExe viewPageName="인건비계획" returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
                 <ReactDataTable columns={columns.orderPlanMgmt.labor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
@@ -268,7 +249,7 @@ function LaborCostMgmtPlan() {
                     editing={true}
                     columns={columns.laborCostMgmt.budget}
                     customDatas={budgetMgmt}
-                    viewPageName={current}
+                    viewPageName="인건비계획"
                     returnList={compareData}
                     condition={condition}
 

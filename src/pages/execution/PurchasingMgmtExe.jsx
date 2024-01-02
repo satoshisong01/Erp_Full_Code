@@ -27,17 +27,6 @@ function PurchasingMgmtExe() {
 
     const current = "구매실행";
     
-    useEffect(() => {
-        if(currentPageName === "구매(재료비)" && current === "구매실행") {
-            setCurrentPageName(current);
-            setInnerPageName("");
-        }
-    }, [currentPageName]);
-    
-
-    // useEffect(() => {
-    //         setRunMgmt([]); //테이블 초기화
-    // }, [projectInfo]);
 
     const fetchAllData = async (condition) => {
         //rcvStatus 입고상태 ...
@@ -48,8 +37,6 @@ function PurchasingMgmtExe() {
         if(data && data.length > 0) {
             const changes = changeData(data);
             setRunMgmt(changes);
-            console.log("1. condition:", condition);
-            console.log("2. changes:", changes);
             const groupedData = changes.reduce((result, current) => {
                 const existingGroup = result.find(group => group.pgNm === current.pgNm);
                 if (existingGroup) {

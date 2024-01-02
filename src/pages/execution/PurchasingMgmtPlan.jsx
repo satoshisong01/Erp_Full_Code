@@ -26,13 +26,6 @@ function PurchasingMgmtPlan() {
         };
     }, []);
 
-    useEffect(() => {
-        if(currentPageName === "구매(재료비)" && current === "구매계획") {
-            setCurrentPageName(current);
-            setInnerPageName("");
-        }
-    }, [currentPageName]);
-
 
     const fetchAllData = async (condition) => {
         const data = await axiosFetch("/api/baseInfrm/product/buyIngInfoExe/totalListAll.do", condition);

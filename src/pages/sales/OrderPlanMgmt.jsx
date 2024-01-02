@@ -55,58 +55,35 @@ function OrderPlanMgmt() {
     const [isOpenDel, setIsOpenDel] = useState(false);
     const [condition, setCondition] = useState({}); //poiMonth:기준연도
 
-    // useEffect(() => {
-    //     console.log("인건비 데이터:", prmnPlanDatas);
-    // }, [prmnPlanDatas]);
 
     useEffect(() => {
         setInnerPageName("원가버전조회");
         setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
         fetchAllData();
         return () => {
-            // 컴포넌트 종료 시
-            // setProjectInfo({}); // 초기화
-            // setVersionInfo({}); // 초기화
         };
     }, []);
 
     useEffect(() => {
-        if (currentPageName === "계획관리") {
-            // fetchAllData();
-            const activeTab = document.querySelector(".mini_board_1 .tab li a.on");
-            const activeTabText = activeTab.textContent;
-            setInnerPageName(activeTabText || "원가버전조회"); //마지막으로 활성화 된 탭
-        }
+        const activeTab = document.querySelector(".mini_board_1 .tab li a.on");
+        const activeTabText = activeTab.textContent; //마지막으로 활성화 된 탭
+        setInnerPageName(activeTabText);
+        setCurrentPageName("");
+        fetchAllData();
     }, [currentPageName]);
 
     useEffect(() => {
-        if (innerPageName === "원가버전조회") {
+        console.log("innerPageName:",innerPageName, "currentPageName:",currentPageName);
+        if (innerPageName === "원가버전조회" || currentPageName === "원가버전조회") {
             fetchAllData();
-            console.log("2222222222");
         }
-    }, [innerPageName]);
-
-    // useEffect(() => {
-    //     // if (innerPageName === "원가버전조회") {
-    //     //     fetchAllData();
-    //     // } else {
-    //     //     console.log("야~ prmnPlanDatas:", prmnPlanDatas);
-    //         // setPrmnPlanDatas([]);
-    //         // setPrmnCalDatas([]);
-    //         // setPjbudgetDatas([]);
-    //         // setPjbudgetCalDatas([]);
-    //         // setPdOrdrDatas([]);
-    //         // setPdOrdrCalDatas([]);
-    //         // setOutsourcingDatas([]);
-    //         // setOutCalDatas([]);
-    //         // setGeneralExpensesDatas([]);
-    //         // setGeneralCalDatas([]);
-    //     // }
-    // }, [innerPageName, condition, prmnPlanDatas]);
+    }, [innerPageName, currentPageName]);
 
     const refresh = () => {
         if (condition.poiId && condition.versionId) {
             fetchAllData(condition);
+        } else {
+            fetchAllData();
         }
     };
 
@@ -116,7 +93,7 @@ function OrderPlanMgmt() {
 
     const changeTabs = (task) => {
         setInnerPageName((prev) => {
-            setCurrentPageName("");
+            // setCurrentPageName("");
             setPrevInnerPageName(prev);
             return task;
         });
@@ -263,8 +240,7 @@ function OrderPlanMgmt() {
     };
 
     const fetchAllData = async (requestData) => {
-        console.log("조건:", requestData, "innerPageName:", innerPageName);
-        if (innerPageName === "원가버전조회") {
+        if (innerPageName === "원가버전조회" || currentPageName === "원가버전조회") {
             const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", {
                 // ...requestData,
                 searchCondition: "",
@@ -465,7 +441,7 @@ function OrderPlanMgmt() {
         if (innerPageName === "원가버전조회") {
             selectedRows && setDeleteNames(selectedRows.map((row) => row.versionNum));
         }
-    }, [selectedRows]);
+    }, [selectedRows, innerPageName]);
 
     const deleteToServer = async (value) => {
         if (value === "임시삭제") {
@@ -522,7 +498,7 @@ function OrderPlanMgmt() {
 
     return (
         <>
-            <Location pathList={locationPath.OrderPlanMgmt} />
+            {/* <Location pathList={locationPath.OrderPlanMgmt} /> */}
             <div className="common_board_style mini_board_1">
                 <ul className="tab">
                     <li

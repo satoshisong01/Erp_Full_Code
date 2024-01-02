@@ -34,13 +34,6 @@ function LaborCostMgmtExe() {
 
     const current = "인건비실행";
 
-    useEffect(() => {
-        if (currentPageName === "인건비" && current === "인건비실행") {
-            setCurrentPageName(current);
-            setInnerPageName("");
-        }
-    }, [currentPageName]);
-
     const conditionInfo = (value) => {
         setCondition((prev) => {
             if (prev.poiId !== value.poiId) {
