@@ -85,7 +85,8 @@ const ReactDataTablePdorder = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        console.log("current:", current, "innerPageName:", innerPageName, "currentPageName:", currentPageName, "editing", editing);
+        // if(current === currentPageName) console.log("✨구매, 일치✨", current, currentPageName);
+        // console.log("current:", current, "innerPageName:", innerPageName, "currentPageName:",currentPageName, "editing",editing);
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
@@ -255,16 +256,14 @@ const ReactDataTablePdorder = (props) => {
 
     const setValueDataPdiNm = (rowIndex, selectedPdiNm) => {
         // 선택된 품명에 해당하는 데이터 찾기
-        const selectedPdiData = selectedPdiNm;
-
-        if (selectedPdiData) {
+        if (selectedPdiNm) {
             // 테이블 데이터를 복제
             const updatedTableData = [...tableData];
 
             // 선택된 품명의 데이터로 해당 행(row)의 데이터 업데이트
             updatedTableData[rowIndex] = {
                 ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
-                ...selectedPdiData, // projectPdiNm 객체의 데이터로 업데이트
+                ...selectedPdiNm, // projectPdiNm 객체의 데이터로 업데이트
             };
 
             // 업데이트된 데이터로 tableData 업데이트
@@ -290,19 +289,21 @@ const ReactDataTablePdorder = (props) => {
 
         //영업
         if (innerPageName === "구매(재료비)") {
+            // 원단가, 기준이익율, 소비자가산출률, 수량
             if (accessor === "byUnitPrice" || accessor === "byStandardMargin" || accessor === "byConsumerOutputRate" || accessor === "byQunty") {
                 if (row.original.byUnitPrice && row.original.byStandardMargin && row.original.byConsumerOutputRate && row.original.byQunty) {
-                    // 1.원가(견적가) : 수량 * 원단가
+                    // 1.원가 : 수량 * 원단가
                     const estimatedCost = row.original.byQunty * row.original.byUnitPrice;
-                    // 2.단가 : 원가(견적가) / (1 - 사전원가기준이익율)
-                    const unitPrice = division(estimatedCost, 1 - row.original.byStandardMargin / 100);
+                    // 2.단가 : 원가 / (1 - 사전원가기준이익율)
+                    // estimatedCost / 1-byStandardMargin/100
+                    const unitPrice = division(estimatedCost, 100-row.original.byStandardMargin) * 100;
                     // 3.금액 : 수량 * 단가ㅔ
                     const planAmount = row.original.byQunty * unitPrice;
                     // 4.소비자단가 : 단가 / 소비자산출율
-                    const consumerPrice = division(unitPrice, row.original.byConsumerOutputRate);
+                    const consumerPrice = division(unitPrice, row.original.byConsumerOutputRate) * 10;
                     // 5.소비자금액 : 수량 * 소비자단가
                     const consumerAmount = row.original.byQunty * consumerPrice;
-                    // 6.이익금 : 금액 - 원가(견적가)
+                    // 6.이익금 : 금액 - 원단가
                     const plannedProfits = planAmount - estimatedCost;
                     // 7.이익률 : 이익금 / 금액
                     const plannedProfitMargin = division(plannedProfits, planAmount);
@@ -330,7 +331,8 @@ const ReactDataTablePdorder = (props) => {
         if (!value1 || !value2) {
             return 0;
         }
-        return Math.round(value1 / value2);
+        // return Math.round(value1 / value2);
+        return value1 / value2;
     };
 
     const addList = async (addNewData) => {
@@ -368,7 +370,7 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const updateList = async (toUpdate) => {
-        console.log("mod ", toUpdate, "con:", condition);
+        console.log("❤️mod ", toUpdate, "con:", condition);
 
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(toUpdate)) return;
         if (!condition || condition.poiId === undefined) {

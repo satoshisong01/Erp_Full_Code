@@ -25,7 +25,7 @@ function ApprovalFormExe({ viewPageName, returnData }) {
     };
 
     const onClick = () => {
-        returnData({ poiId: data.poiId });
+        returnData({ poiId: data.poiId, poiMonth: data.poiMonth });
     };
 
     return (

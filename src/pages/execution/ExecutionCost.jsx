@@ -18,7 +18,7 @@ import { axiosFetch, axiosUpdate } from "api/axiosFetch";
 
 /** 실행관리-실행원가관리 */
 function ExecutionCost() {
-    const { setNameOfButton, projectInfo } = useContext(PageContext);
+    const { setNameOfButton, projectInfo, currentPageName } = useContext(PageContext);
     const [isOpenMod, setIsOpenMod] = useState(false);
     const [returnKeyWord, setReturnKeyWord] = useState("");
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
@@ -26,15 +26,19 @@ function ExecutionCost() {
 
     //const orderMgmtTable = useRef(null);
 
-    useEffect(() => {
-        console.log("selectedRows:", selectedRows);
-    }, [selectedRows]);
+    // useEffect(() => {
+    //     console.log("selectedRows:", selectedRows);
+    // }, [selectedRows]);
 
     useEffect(() => {
-        fetchData();
-    }, []);
-    const fetchData = async () => {
+        if (currentPageName === "원가조회") {
+            fetchAllData({poiStatusExecute : "ALL"}); //맨처음에 부르기..
+        }
+    }, [currentPageName]);
+
+    const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/pjOrdrInfo/totalListAll.do", {
+            ...condition,
             searchCondition: "",
             searchKeyword: "",
         });
@@ -43,7 +47,7 @@ function ExecutionCost() {
 
     const handleReturn = (value) => {
         setReturnKeyWord(value);
-        console.log(value, "제대로 들어오냐");
+        // console.log(value, "제대로 들어오냐");
     };
 
     const modifyToServer = async (updatedData) => {
@@ -54,11 +58,10 @@ function ExecutionCost() {
         }
         const url = `/api/baseInfrm/product/pjOrdrInfo/edit.do`;
         const updated = { ...updatedData, lockAt: "Y", useAt: "Y" };
-        console.log(updated, "이게 서버로넘어갈꺼야");
         const resultData = await axiosUpdate(url, updated);
         if (resultData) {
             alert("수정되었습니다");
-            fetchData();
+            fetchAllData({poiStatusExecute : "ALL"});
         } else {
             alert("error!!");
         }
@@ -70,8 +73,8 @@ function ExecutionCost() {
             <SearchList conditionList={columns.executionCost.condition} onSearch={handleReturn} />
             <HideCard title="계획 등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
-                    <PopupButton targetUrl={URL.ExecutionCostsDoc} data={{ label: "실행원가서", projectInfo }} />
-                    <PopupButton targetUrl={URL.PostCostsDoc} data={{ label: "정산서", projectInfo }} />
+                    <PopupButton targetUrl={URL.ExecutionCostsDoc} data={{ label: "실행원가서", ...selectedRows[0] }} />
+                    <PopupButton targetUrl={URL.PostCostsDoc} data={{ label: "정산서", ...selectedRows[0] }} />
                     {/* <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} /> */}
                     <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
                     <RefreshButton onClick={() => setNameOfButton("refresh")} />

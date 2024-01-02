@@ -330,7 +330,7 @@ const ReactDataTableDevCost = (props) => {
                 newRow[column.accessor] = condition.versionId; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "esntlId") {
                 //임시 업무회원 삭제해야함
-                newRow[column.accessor] = "EMPLY_00000000000001"; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                newRow[column.accessor] = ""; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "pjbgTypeCode") {
                 newRow[column.accessor] = "EXPNS01"; // pjbgTypeCode 항상 "EXPNS10"로 설정
             } else if (column.accessor === "useAt") {

@@ -4,6 +4,7 @@ import "datatables.net-dt/js/dataTables.dataTables";
 import { axiosFetch } from "api/axiosFetch";
 import BasicDataTable from "components/DataTable/BasicDataTable";
 import FormDataTable from "components/DataTable/FormDataTable";
+import Title from "antd/es/skeleton/Title";
 
 /* 사전 원가 계산서 */
 const PreCostDoc = () => {
@@ -19,7 +20,8 @@ const PreCostDoc = () => {
     const [chargeTableData, setChargeTableData] = useState([{ data: [""], className: [""] }]); //경비
     const [outTableData, setOutTableData] = useState([{ data: ["", "", ""], className: [""] }]); //개발외주비
     const [laborTableData, setLaborTableData] = useState([{ data: [""], className: [""] }]); //인건비
-    const [ProjectInfoToServer, setProjectInfoToServer] = useState({});
+    const [projectInfoToServer, setProjectInfoToServer] = useState({});
+    const [title, setTitle] = useState("");
 
     /* 스타일 */
     const purStyle = { marginBottom: 20, maxHeight: 250 };
@@ -29,10 +31,11 @@ const PreCostDoc = () => {
         // URL에서 "data" 파라미터 읽기
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
-        const {projectInfo, versionInfo} = data;
-        console.log("✨사전원가: 프로젝트:", projectInfo, "버전:", versionInfo);
-        if (projectInfo.poiId && versionInfo.versionId) {
-            getInitData(projectInfo.poiId, versionInfo.versionId); //서버에서 데이터 호출
+        const {label, poiId, poiNm, versionId, versionNum, versionDesc} = data;
+        setTitle(label);
+        setProjectInfoToServer({versionId, versionNum, versionDesc})
+        if (poiId && versionId) {
+            getInitData(poiId, versionId); //서버에서 데이터 호출
         }
     }, []);
 
@@ -47,24 +50,28 @@ const PreCostDoc = () => {
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
+    useEffect(() => {
+        console.log("projectInfoToServer:", projectInfoToServer);
+    })
+
     const infoColumns = [
         [
-            { label: "프로젝트 이름", key: "poiNm", type: "data", colSpan: "3", value: ProjectInfoToServer.poiNm },
-            { label: "프로젝트 아이디", key: "poiId", type: "data", value: ProjectInfoToServer.poiId },
-            { label: "프로젝트 버전", key: "poiDesc", type: "data", value: ProjectInfoToServer.poiDesc },
+            { label: "프로젝트 이름", key: "poiNm", type: "data", colSpan: "2", value: projectInfoToServer.poiNm },
+            { label: "버전", key: "versionNum", type: "data", value: projectInfoToServer.versionNum },
+            { label: "버전 비고", key: "versionDesc", type: "data", value: projectInfoToServer.versionDesc },
         ],
-        [
-            { label: "수주부서", key: "poiGroupId", type: "data", value: ProjectInfoToServer.poiGroupId },
-            { label: "매출부서", key: "poiSalesGroupId", type: "data", value: ProjectInfoToServer.poiSalesGroupId },
-            { label: "영업대표", key: "poiSalmanagerId", type: "data", value: ProjectInfoToServer.poiSalmanagerId },
-            { label: "담당자(PM)", key: "poiManagerId", type: "data", value: ProjectInfoToServer.poiManagerId },
-        ],
-        [
-            { label: "수주 시작일", key: "poiBeginDt", type: "data", value: ProjectInfoToServer.poiBeginDt },
-            { label: "수주 마감일", key: "poiEndDt", type: "data", value: ProjectInfoToServer.poiEndDt },
-            { label: "사전원가 기준 이익률", key: "standardMargin", type: "data", value: ProjectInfoToServer.standardMargin + "%" },
-            { label: "상태", key: "poiStatus", type: "data", value: ProjectInfoToServer.poiStatus },
-        ],
+        // [
+        //     { label: "수주부서", key: "poiGroupId", type: "data", value: projectInfoToServer.poiGroupId },
+        //     { label: "매출부서", key: "poiSalesGroupId", type: "data", value: projectInfoToServer.poiSalesGroupId },
+        //     { label: "영업대표", key: "poiSalmanagerId", type: "data", value: projectInfoToServer.poiSalmanagerId },
+        //     { label: "담당자(PM)", key: "poiManagerId", type: "data", value: projectInfoToServer.poiManagerId },
+        // ],
+        // [
+        //     { label: "수주 시작일", key: "poiBeginDt", type: "data", value: projectInfoToServer.poiBeginDt },
+        //     { label: "수주 마감일", key: "poiEndDt", type: "data", value: projectInfoToServer.poiEndDt },
+        //     { label: "사전원가 기준 이익률", key: "standardMargin", type: "data", value: projectInfoToServer.standardMargin + "%" },
+        //     { label: "상태", key: "poiStatus", type: "data", value: projectInfoToServer.poiStatus },
+        // ],
     ];
 
     const coreColumns = [
@@ -83,7 +90,7 @@ const PreCostDoc = () => {
     ];
 
     const purchasingColumns = [
-        { header: "품목", col: "item", className: "flex-col-2" },
+        { header: "품목그룹", col: "pgNm", className: "flex-col-2" },
         { header: "일반/도입", col: "type", className: "flex-col-2" },
         { header: "금액", col: "amount", className: "flex-col-2" },
     ];
@@ -108,22 +115,51 @@ const PreCostDoc = () => {
         } else if (code === "EXPNS02") {
             return "숙박비";
         } else if (code === "EXPNS03") {
-            return "파견비";
+            return "일비/파견비";
         } else if (code === "EXPNS04") {
             return "식비";
         } else if (code === "EXPNS05") {
             return "자재/소모품";
         } else if (code === "EXPNS06") {
+            return "국내출장비";
+        } else if (code === "EXPNS07 ") {
+            return "시내교통비";
+        } else if (code === "EXPNS08") {
+            return "PJT 파견비";
+        } else if (code === "EXPNS09") {
+            return "사무실임대료";
+        } else if (code === "EXPNS10") {
+             return "소모품비";
+        } else if (code === "EXPNS11") {
+             return "행사비";
+        } else if (code === "EXPNS12") {
+             return "요식성경비";
+        } else if (code === "EXPNS13") {
+            return "전산소모품비";
+        } else if (code === "EXPNS14") {
+            return "도서인쇄비";
+        } else if (code === "EXPNS15") {
+            return "통신비";
+        } else if (code === "EXPNS16") {
+            return "해외출장비";
+        } else if (code === "EXPNS17") {
+            return "배송비";
+        } else if (code === "EXPNS18") {
+            return "예비비";
+        } else if (code === "EXPNS19") {
             return "영업비";
+        } else if (code === "EXPNS20") {
+            return "기타";
         }
     };
 
     const getInitData = async (poiId, versionId) => {
-        // const url = "http://localhost:8080/api/baseInfrm/product/prstmCost/mm/listAll.do";
-        const url = "/api/baseInfrm/product/prstmCost/mm/listAll.do";
+        const url = "/api/calculate/cost/totalListAll.do";
         // const requestData = { poiId };
+        console.log("조회하기~~~~~~~~~", poiId, versionId);
         const resultData = await axiosFetch(url, { poiId, versionId });
-        console.log("💜 사전원가서 resultData:",resultData);
+        console.log("resultData::::", resultData);
+        console.log("💜 사전원가서 resultData:",resultData, "url:", url);
         const {
             projectInfoToServer, //수주정보
             salesBudgetIn, //수주액>자체용역
@@ -137,15 +173,21 @@ const PreCostDoc = () => {
             outLaborList, //개발외주비 목록
             outLaborTotalMM, //개발외주비  총 mm
             outLaborTotalPrice, //개발외주비 총 합
-            negoTotalPrice, //네고 합
-            legalTotalPrice, //판관비 합
+
             //구매데이터..
             buyingList, //구매리스트
-            buyingTotalPrice //구매총합
+            buyingTotalPrice, //구매총합
+
+
+            negoTotalPrice, //네고 합
+            legalTotalPrice, //판관비 합
+
         } = resultData || {};
 
         /* 프로젝트 정보 */
-        setProjectInfoToServer(projectInfoToServer);
+        setProjectInfoToServer((prev) =>( {
+            ...prev, ...projectInfoToServer
+        }));
 
         /* 경비 테이블 데이터 */
         if (budgetList) {
@@ -190,7 +232,7 @@ const PreCostDoc = () => {
         if (outLaborList) {
             const updatedOutData = outLaborList.map((item) => {
                 return {
-                    data: [item.esntlId, item.pjbgDesc, item.pjbgPrice],
+                    data: [item.cltNm, item.devOutMm, item.devOutPrice],
                     className: ["", "", ""],
                 };
             });
@@ -689,8 +731,8 @@ const PreCostDoc = () => {
     return (
         <div className="precost-container">
             <div className="flex-column mg-t-20 mg-b-20">
+                <div className="precost-title" style={{margin: "auto", marginBottom: "20px", fontSize: "25px"}}>{title}</div>
                 <FormDataTable formTableColumns={infoColumns} useStatus={false} />
-
                 <div className="precost-title">1.손익계산서</div>
                 <BasicDataTable columns={coreColumns} data={coreTableData} datatableRef={coreTable} />
 

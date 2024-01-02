@@ -31,7 +31,7 @@ function OrderMgmt() {
 
     useEffect(() => {
         if (currentPageName === "프로젝트관리") {
-            fetchAllData(); //맨처음에 부르기..
+            fetchAllData({poiStatusBudget : "ALL"}); //맨처음에 부르기..
         }
     }, [currentPageName]);
 
@@ -91,7 +91,7 @@ function OrderMgmt() {
     };
 
     const refresh = () => {
-        fetchAllData();
+        fetchAllData({poiStatusBudget : "ALL"});
     };
 
     const onSearch = (condition) => {

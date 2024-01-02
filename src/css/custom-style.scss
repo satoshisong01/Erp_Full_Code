@@ -482,16 +482,16 @@ $disabled: gray;
 .table-content td {
     text-align: center;
     padding: 4px 0 4px 0;
-    border-left: 1px solid $default-gray;
+    border-left: 1px solid #bbb;
 }
 .table-content tbody tr:not(:first-child) {
-    border-top: 1px solid $default-gray;
+    border-top: 1px solid #bbb;
 }
 .table-content tr {
-    border-right: 1px solid $default-gray;
+    border-right: 1px solid #bbb;
 }
 .table-content tbody tr:last-child {
-    border-bottom: 1px solid $default-gray;
+    border-bottom: 1px solid #bbb;
 }
 .table-sub {
     font-weight: bold;
@@ -501,10 +501,11 @@ $disabled: gray;
     .table-header th {
         text-align: center;
         padding: 5px 0 5px 0;
-        background-color: $default-gray;
+        // background-color: $default-gray;
+        background-color: $gray;
         color: #eee;
-        border-left: 1px solid $darkgray;
-        border-bottom: 1px solid $darkgray;
+        border-left: 1px solid #bbb;
+        border-bottom: 1px solid #bbb;
         font-weight: 400;
     }
     .table-row {
@@ -596,26 +597,27 @@ $disabled: gray;
         font-weight: bold;
     }
     .b-gray {
-        background-color: $darkgray;
+        background-color: #eee;
     }
     .b-highlight {
         background-color: cornsilk;
     }
     .col-header {
-        background-color: $default-gray;
+        background-color: $gray;
         font-weight: 400;
         color: #eeeeee;
-        border-left: 1px solid $darkgray;
+        border-left: 1px solid #bbb;
     }
     .b-lightblue {
-        background-color: $darkgray;
+        background-color: $lightblue;
+        background-color: #d6dde7;
     }
     .line-t {
-        border-top: 1px solid $darkgray;
+        border-top: 1px solid $default-gray;
     }
     .line-t-b {
-        border-top: 1px solid $darkgray;
-        border-bottom: 1px solid $darkgray;
+        border-top: 1px solid $default-gray;
+        border-bottom: 1px solid $default-gray;
     }
     .precost-title {
         font-weight: bold;
@@ -1171,6 +1173,8 @@ body > div:nth-child(4) > div {
 
 /* 숨길 수 있는 영역 박스 */
 .hide-card {
+    pointer-events: none;
+    
     .hide-header {
         padding: 5px 10px 5px 10px; 
     }
@@ -1179,9 +1183,13 @@ body > div:nth-child(4) > div {
         font-weight: bold;
     }
     .hide-content {
+        pointer-events: auto;
         border: 1px solid $default-gray; 
         padding: 10px; 
         border-top: none;
+    }
+    .hide-button {
+        pointer-events: auto;
     }
 }
 

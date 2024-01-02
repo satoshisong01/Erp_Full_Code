@@ -9,12 +9,15 @@ import { columns } from "constants/columns";
 import ApprovalFormExe from "components/form/ApprovalFormExe";
 import HideCard from "components/HideCard";
 import SaveButton from "components/button/SaveButton";
+import ReactDataTable from "components/DataTable/ReactDataTable";
 
 /** 실행관리-구매-계획 */
 function PurchasingMgmtPlan() {
     const { projectInfo, setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton, setInnerPageName, prevCurrentPageName, setPrevCurrentPageName } = useContext(PageContext);
     const [condition, setCondition] = useState({});
     const [budgetMgmt, setBudgetMgmt] = useState([]);
+    const [buyCall, setBuyCall] = useState([]);
+    const [view, setView] = useState([]);
     const current = "구매계획";
 
     useEffect(() => {
@@ -33,8 +36,26 @@ function PurchasingMgmtPlan() {
 
     const fetchAllData = async (condition) => {
         const data = await axiosFetch("/api/baseInfrm/product/buyIngInfoExe/totalListAll.do", condition);
-        console.log("🎄1.구매:",condition, "data:", data);
-        data ? setBudgetMgmt(changeData(data)) : setBudgetMgmt([]);
+        const viewResult = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", {poiId: condition.poiId, costAt: "Y"});
+        setView(viewResult);
+        if(data && data.length > 0) {
+            const changes = changeData(data);
+            setBudgetMgmt(changes);
+            const groupedData = changes.reduce((result, current) => {
+                const existingGroup = result.find(group => group.pgNm === current.pgNm);
+                if (existingGroup) {
+                    existingGroup.price += current.price;
+                } else {
+                    result.push({ pgNm: current.pgNm, price: current.price });
+                }
+                return result;
+            }, []);
+            setBuyCall(groupedData)
+        } else {
+            alert('no data');
+            setBuyCall([]);
+            setBudgetMgmt([]);
+        }
     };
 
     const changeData = (data) => {
@@ -62,10 +83,12 @@ function PurchasingMgmtPlan() {
     return (
         <>
             <Location pathList={locationPath.PurchasingMgmt} />
-            {/* <ApprovalFormExe viewPageName={current} returnData={conditionInfo}/> */}
+            <ApprovalFormExe viewPageName={current} returnData={conditionInfo}/>
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
+                <ReactDataTable columns={columns.purchasingMgmt.planView} customDatas={view} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+                <ReactDataTable columns={columns.purchasingMgmt.buyCal} customDatas={buyCall} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
             <HideCard title="계획 등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">

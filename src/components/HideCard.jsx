@@ -10,11 +10,12 @@ export default function HideCard({ children, title, color, style, className }) {
 
     const [isClicked, setIsClicked] = useState(false);
 
+    //pointer-events: none;
     return (
-        <div className={`hide-card ${className||""}`} style={style}>
+        <div className={`hide-card ${className||""}`}>
             <div className={`hide-header flex-between ${color||""}`}>
-                <div className="hide-title">{title}</div>
-                <div className={`buttonBody ${isClicked ? "" : "clicked"}`}>
+                <div className="hide-title" style={{userSelect: "none"}}>{title}</div>
+                <div className={`hide-button ${isClicked ? "" : "clicked"}`}>
                     <button className="arrowBtnStyle" style={{ zIndex: "100" }} onClick={handleClick1}>
                         <FontAwesomeIcon className={`arrowBtn ${isClicked ? "" : "clicked"}`} icon={faArrowUp} />
                     </button>
