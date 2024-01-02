@@ -48,11 +48,12 @@ export default function MakeItemField({ item, resultData, initialData }) {
 
     useEffect(() => {
         //거래처
-        if(companyInfo.cltId === "" || !companyInfo) return;
-        setData((prevData) => {
-            return { ...prevData, ...companyInfo };
-        });
-        // setCompanyInfo({}); //초기화
+        if (Object.keys(companyInfo).length > 0) {
+            setData((prevData) => {
+                return { ...prevData, ...companyInfo };
+            });
+            setCompanyInfo({}); //초기화
+        }
     }, [companyInfo]);
 
     // useEffect(() => { //프로젝트
@@ -72,12 +73,12 @@ export default function MakeItemField({ item, resultData, initialData }) {
 
     useEffect(() => {
         //품목
-        if(projectPdiNm.pdiId === "" || !projectPdiNm) return;
-        setData((prevData) => {
-            return { ...prevData, ...projectPdiNm };
-        });
-        // setProjectPdiNm({}); //초기화
-        // console.log("품목정보 변경: ", projectPdiNm);
+        if (Object.keys(projectPdiNm).length > 0) {
+            setData(prevData => {
+                return { ...prevData, ...projectPdiNm};
+            });
+            setProjectPdiNm({});
+        }
     }, [projectPdiNm]);
 
     useEffect(() => {
@@ -91,12 +92,13 @@ export default function MakeItemField({ item, resultData, initialData }) {
     }, [pdiNmList]);
 
     useEffect(() => {
-        //품목그룹
-        if(!projectPgNm || projectPgNm.pgId === "") return;
-        setData((prevData) => {
-            return { ...prevData, ...projectPgNm };
-        });
-        // setProjectPgNm({}); //초기화
+        // 품목그룹
+        if (Object.keys(projectPgNm).length > 0) {
+            setData((prevData) => {
+                return { ...prevData, ...projectPgNm };
+            });
+            setProjectPgNm({});
+        }
     }, [projectPgNm]);
 
     useEffect(() => {

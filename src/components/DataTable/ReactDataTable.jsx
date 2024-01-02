@@ -521,6 +521,7 @@ const ReactDataTable = (props) => {
         if (isCurrentPage() && Object.keys(projectPgNm).length > 0) {
             console.log("🔥🔥projectPgNm: ", projectPgNm);
             setValueDataPgInfo(rowIndex, projectPgNm);
+            setProjectPgNm({});
         }
     }, [projectPgNm]);
 

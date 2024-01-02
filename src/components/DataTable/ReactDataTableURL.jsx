@@ -203,6 +203,7 @@ const ReactDataTableURL = (props) => {
     useEffect(() => {
         if (isCurrentPage() && Object.keys(projectPgNm).length > 0) {
             setValueDataPgInfo(rowIndex, projectPgNm);
+            setProjectPgNm({});
         }
     }, [projectPgNm]);
 

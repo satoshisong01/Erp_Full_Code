@@ -43,6 +43,7 @@ const ReactDataTablePdorder = (props) => {
         isOpenModalPgNm,
         setIsOpenModalPgNm,
         projectPdiNm,
+        setProjectPdiNm,
         setIsOpenModalCompany,
         isOpenModalCompany,
     } = useContext(PageContext);
@@ -245,8 +246,9 @@ const ReactDataTablePdorder = (props) => {
     const [countIndex, setCountIndex] = useState(0);
 
     useEffect(() => {
-        if (isCurrentPage() && projectPdiNm) {
+        if (isCurrentPage() && Object.keys(projectPdiNm).length > 0) {
             setValueDataPdiNm(countIndex, projectPdiNm);
+            setProjectPdiNm({});
         }
     }, [projectPdiNm]);
 
@@ -336,7 +338,7 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const addList = async (addNewData) => {
-        console.log("🎄🎄add ", addNewData, "con:", condition);
+        // console.log("🎄🎄add ", addNewData, "con:", condition);
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(addNewData)) return;
         if (!condition || condition.poiId === undefined) {
             console.log("❗프로젝트 정보 없음", currentPageName);
@@ -364,14 +366,14 @@ const ReactDataTablePdorder = (props) => {
 
         const url = `/api${suffixUrl}/addList.do`;
         const resultData = await axiosPost(url, addNewData);
-        console.log("✨1.", resultData, "addNewData:", addNewData, "url:", url);
+        // console.log("✨1.", resultData, "addNewData:", addNewData, "url:", url);
         customDatasRefresh();
         setOriginTableData([]);
     };
 
     const updateList = async (toUpdate) => {
-        console.log("❤️mod ", toUpdate, "con:", condition);
-
+        // console.log("❤️mod ", toUpdate, "con:", condition);
+        // console.log("currentPageName:", currentPageName);
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(toUpdate)) return;
         if (!condition || condition.poiId === undefined) {
             console.log("❗프로젝트 정보 없음");
@@ -385,7 +387,7 @@ const ReactDataTablePdorder = (props) => {
         } else if (currentPageName === "구매실행") {
             toUpdate.forEach((data) => {
                 data.poiId = condition.poiId || "";
-                data.modeCode = "EXECUTE";
+                // data.modeCode = "EXECUTE";
             });
         } else if (innerPageName === "구매(재료비)") {
             //영업
@@ -394,7 +396,9 @@ const ReactDataTablePdorder = (props) => {
                 data.versionId = condition.versionId;
             });
         }
+
         const url = `/api${suffixUrl}/editList.do`;
+        // console.log(url + "업데이트데이터:", toUpdate);
         const resultData = await axiosUpdate(url, toUpdate);
         console.log("✨2.", resultData, "toUpdate:", toUpdate);
         customDatasRefresh();
@@ -402,7 +406,7 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const deleteList = async (removeItem) => {
-        console.log("del ", removeItem, "con:", condition);
+        // console.log("del ", removeItem, "con:", condition);
 
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(removeItem)) return;
         const url = `/api${suffixUrl}/removeAll.do`;
@@ -414,10 +418,10 @@ const ReactDataTablePdorder = (props) => {
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
     const compareData = (originData, updatedData) => {
-        console.log("🎄컴페어", originData, "mod:", updatedData);
+        // console.log("🎄컴페어", originData, "mod:", updatedData);
         const filterData = updatedData.filter((data) => data.pdiId); //필수값 체크
 
-        console.log("🎄filterData:", filterData);
+        // console.log("🎄filterData:", filterData);
 
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;

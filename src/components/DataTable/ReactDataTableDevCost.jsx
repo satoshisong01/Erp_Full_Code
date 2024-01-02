@@ -170,6 +170,7 @@ const ReactDataTableDevCost = (props) => {
         if (Object.keys(projectPgNm).length > 0) {
             console.log("🔥🔥projectPgNm: ", projectPgNm);
             setValueDataPgInfo(rowIndex, projectPgNm);
+            setProjectPgNm({});
         }
     }, [projectPgNm]);
 
@@ -186,6 +187,7 @@ const ReactDataTableDevCost = (props) => {
     useEffect(() => {
         if (Object.keys(companyInfo).length > 0) {
             setValueDataCmInfo(rowIndex, companyInfo);
+            setCompanyInfo({})
         }
     }, [companyInfo]);
 
