@@ -159,10 +159,6 @@ const ReactDataTable = (props) => {
         }
     }, [customDatas]);
 
-    useEffect(() => {
-        setTableData(customDatas);
-    }, [customDatas]);
-
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
         if (currentPageName !== prevCurrentPageName || innerPageName !== prevInnerPageName) {
@@ -177,21 +173,24 @@ const ReactDataTable = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        console.log("current:", current, "innerPageName:", innerPageName, "currentPageName:",currentPageName, "editing",editing);
+        // console.log("current:", current, "innerPageName:", innerPageName, "currentPageName:",currentPageName, "editing",editing);
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
             //inner tab에서 저장을 눌렀을 때
-            if (current === "인건비" && nameOfButton === "save") {
+            if(nameOfButton === "save") {
                 returnList(originTableData, tableData);
-            } else if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
-                returnList(originTableData, tableData);
-            } else if (innerPageName === "사전원가지표" && !editing) {
-                sendToParentCostIndex(originTableData, tableData);
-            } else if ((innerPageName === "급별단가(인건비)" && !editing) || (innerPageName === "급별단가(경비)" && !editing)) {
-                sendToParentGrade(originTableData, tableData);
-            } else {
-                //compareData(originTableData, tableData);
             }
+            // if (current === "인건비계획" || current === "인건비실행" && nameOfButton === "save") {
+            //     returnList(originTableData, tableData);
+            // } else if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
+            //     returnList(originTableData, tableData);
+            // } else if (innerPageName === "사전원가지표" && !editing) {
+            //     sendToParentCostIndex(originTableData, tableData);
+            // } else if ((innerPageName === "급별단가(인건비)" && !editing) || (innerPageName === "급별단가(경비)" && !editing)) {
+            //     sendToParentGrade(originTableData, tableData);
+            // } else {
+            //     //compareData(originTableData, tableData);
+            // }
         }
         if (current !== innerPageName) {
             setTableData([]); //초기화
@@ -548,7 +547,7 @@ const ReactDataTable = (props) => {
             } else if (column.accessor === "modeCode") {
                 newRow[column.accessor] = "BUDGET"; // poiId를 항상 SLSP로 설정
             } else if (column.accessor === "esntlId") {
-                newRow[column.accessor] = "EMPLY_00000000000001"; // poiId를 항상 SLSP로 설정
+                newRow[column.accessor] = ""; // poiId를 항상 SLSP로 설정
             } else {
                 newRow[column.accessor] = null; // 다른 열은 초기화
             }

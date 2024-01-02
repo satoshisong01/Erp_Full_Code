@@ -762,15 +762,14 @@ export const columns = {
                 type: "productGroup",
                 require: true,
             },
-            { header: "담당자", col: "empNm", cellWidth: "25%", type: "employerInfo" },
+            { header: "담당자", col: "empNm", cellWidth: "25%", type: "employerInfo", require: true},
             { header: "담당자ID", col: "esntlId", cellWidth: "25%", notView: true },
-            { header: "부서", col: "groupNm", cellWidth: "25%" },
+            { header: "부서", col: "orgNm", cellWidth: "25%" },
             {
                 header: "직급",
-                col: "pecPosition",
+                col: "posNm",
                 cellWidth: "10%",
                 //type: "select",
-                require: true,
                 options: [
                     { value: "", label: "선택" },
                     { value: "부장", label: "부장" },
@@ -780,11 +779,6 @@ export const columns = {
                     { value: "주임", label: "주임" },
                     { value: "사원", label: "사원" },
                 ],
-            },
-            {
-                header: "직급단가",
-                col: "positionPrice",
-                cellWidth: "10%",
             },
             {
                 header: "예산(M/M)",

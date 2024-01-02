@@ -167,7 +167,6 @@ function ExpenseMgmtPlan() {
     };
 
     const compareData = (originData, updatedData) => {
-        console.log("타나");
         const filterData = updatedData.filter((data) => data.poiId); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -223,7 +222,7 @@ function ExpenseMgmtPlan() {
 
                 // Add default value for esntlId if it doesn't exist
                 if (!newItem.esntlId) {
-                    newItem.esntlId = "EMPLY_00000000000001";
+                    newItem.esntlId = "";
                 }
                 for (let j = 1; j <= 5; j++) {
                     const propName = `pjbgTypeCode${j}`;

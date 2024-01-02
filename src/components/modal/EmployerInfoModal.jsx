@@ -34,13 +34,14 @@ export default function EmployerInfoModal(props) {
 
     const getEmployerList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/member/employMember/totalListAll.do", requestData || {});
-        console.log(resultData, "결과값");
+        console.log(resultData, "🎉🎉🎉🎉결과값");
         const modifiedResultData = resultData.map((item) => {
             return {
                 ...item,
                 uniqId: item.uniqId,
                 [colName]: item.empNm,
                 posNm: item.posNm,
+                orgNm: item.orgNm,
             };
         });
         setEmployerInfoList(modifiedResultData);
@@ -50,6 +51,7 @@ export default function EmployerInfoModal(props) {
         { header: "고유아이디", col: "uniqId", notView: true },
         { header: "사용자명", col: colName || "empNm", cellWidth: "50%" },
         { header: "직급", col: "posNm", cellWidth: "50%" },
+        { header: "부서", col: "orgNm", cellWidth: "50%" },
     ];
 
     const conditionList = [

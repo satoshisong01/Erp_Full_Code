@@ -226,7 +226,7 @@ function ExpenseMgmtExe() {
 
                 // Add default value for esntlId if it doesn't exist
                 if (!newItem.esntlId) {
-                    newItem.esntlId = "EMPLY_00000000000001";
+                    newItem.esntlId = "";
                 }
                 for (let j = 1; j <= 5; j++) {
                     const propName = `pjbgTypeCode${j}`;
