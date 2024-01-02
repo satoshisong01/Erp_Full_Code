@@ -771,22 +771,14 @@ export const columns = {
             },
         ],
         budgetView: [
-            {
-                header: "품목그룹명",
-                col: "pgNm",
-                cellWidth: "25%",
-            },
-            { header: "수주수량(M/M)", col: "pecMm", cellWidth: "25%" },
-            {
-                header: "단가",
-                col: "pecUnitPrice",
-                cellWidth: "25%",
-            },
-            {
-                header: "금액",
-                col: "pmpmmNum1",
-                cellWidth: "25%",
-            },
+            { header: "합계", col: "mmTotal", cellWidth: "20%", type: "datePicker" },
+            // { header: "임원", col: "pmpmmPositionCode1", type: "input", notView: true },
+            { header: "부장", col: "price9", cellWidth: "20%", type: "input" },
+            { header: "차장", col: "price10", cellWidth: "20%", type: "input" },
+            { header: "과장", col: "price11", cellWidth: "20%", type: "input" },
+            { header: "대리", col: "price12", cellWidth: "20%", type: "input" },
+            { header: "주임", col: "price13", cellWidth: "20%", type: "input" },
+            { header: "사원", col: "price14", cellWidth: "20%", type: "input" },
         ],
         run: [
             {
