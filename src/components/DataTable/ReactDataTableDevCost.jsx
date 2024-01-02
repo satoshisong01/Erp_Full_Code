@@ -167,7 +167,7 @@ const ReactDataTableDevCost = (props) => {
     };
 
     useEffect(() => {
-        if (Object.keys(projectPgNm).length > 0) {
+        if (isCurrentPage() && Object.keys(projectPgNm).length > 0) {
             console.log("🔥🔥projectPgNm: ", projectPgNm);
             setValueDataPgInfo(rowIndex, projectPgNm);
             setProjectPgNm({});
@@ -185,9 +185,10 @@ const ReactDataTableDevCost = (props) => {
     };
 
     useEffect(() => {
-        if (Object.keys(companyInfo).length > 0) {
+        if (isCurrentPage() && Object.keys(companyInfo).length > 0) {
             setValueDataCmInfo(rowIndex, companyInfo);
             setCompanyInfo({})
+            console.log(".......회사목록 초기화.......");
         }
     }, [companyInfo]);
 
