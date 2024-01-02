@@ -58,7 +58,7 @@ function LaborCostMgmtPlan() {
     //    }
     //}, [currentPageName]);
 
-    const [isClicked3, setIsClicked3] = useState(false);
+    // const [isClicked3, setIsClicked3] = useState(false);
 
     const conditionInfo = (value) => {
         setCondition((prev) => {
@@ -71,12 +71,13 @@ function LaborCostMgmtPlan() {
         });
     };
 
-    const handleClick3 = () => {
-        setIsClicked3(!isClicked3);
-    };
+    // const handleClick3 = () => {
+    //     setIsClicked3(!isClicked3);
+    // };
 
     const [budgetMgmt, setBudgetMgmt] = useState([]); // 실행인건비계획
-    const [budgetMgmtView, setBudgetMgmtView] = useState([]); // 실행인건비계획
+    const [budgetMgmtView, setBudgetMgmtView] = useState([]); // 영업인건비
+    const [budgetCal, setBudgetCal] = useState([]); // 합계
 
     useEffect(() => {
         if (condition.poiId === undefined || condition.poId === "") {
@@ -124,33 +125,15 @@ function LaborCostMgmtPlan() {
     }, [condition]);
 
     const fetchAllData = async (condition) => {
-        const requestSearch = {
-            poiId: projectInfo.poiId,
-            poiNm: projectInfo.poiNm,
-            useAt: "Y",
-            typeCode: "MM",
-            modeCode: "BUDGET",
-        };
-
-        const choiceData = {
-            poiId: condition.poiId,
-            poiNm: condition.poiNm,
-            modeCode: "BUDGET",
-            versionId: versionInfo.versionId,
-        };
-
         const resultData = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", condition);
-        const viewResult = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", choiceData);
+        const viewResult = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", {poiId: condition.poiId, costAt: "Y"});
         const changeData = ChangePrmnPlanData(viewResult);
         changeData.forEach((Item) => {
             const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
             const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
-
-            console.log(matchingAItem, "변견된값?");
-
+            // console.log(matchingAItem, "변견된값?");
             if (matchingAItem) {
                 let totalPrice = 0;
-
                 // Iterate over gupPrice and pmpmmPositionCode arrays
                 for (let i = 1; i <= 14; i++) {
                     const gupPriceKey = `gupPrice${i}`;
@@ -159,14 +142,13 @@ function LaborCostMgmtPlan() {
                     if (matchingAItem[gupPriceKey]) {
                         totalPrice += matchingAItem[gupPriceKey] * Item[pmpmmPositionCodeKey];
                     }
-                    console.log(totalPrice);
+                    // console.log(totalPrice);
                 }
-                console.log(totalPrice);
-                // Add totalPrice to bItem
+                // console.log(totalPrice);
                 Item.totalPrice = totalPrice;
-                console.log(totalPrice);
+                // console.log(totalPrice);
             }
-            console.log(changeData, "changeData이거왜 안나오지 💥💥💥");
+            // console.log(changeData, "changeData이거왜 안나오지 💥💥💥");
         });
         setBudgetMgmtView(changeData);
         if (resultData) {
@@ -181,6 +163,30 @@ function LaborCostMgmtPlan() {
                     }
                 });
                 setBudgetMgmt(updatedDatas);
+                let mmTotal = 0;
+                let price9 = 0;
+                let price10 = 0;
+                let price11 = 0;
+                let price12 = 0;
+                let price13 = 0;
+                let price14 = 0;
+                updatedDatas.map((data) => { //합계 계산
+                    mmTotal += data.pecMm;
+                    if(data.pecPosition === "부장") {
+                        price9 += data.price;
+                    } else if(data.pecPosition === "차장") {
+                        price10 += data.price;
+                    } else if(data.pecPosition === "과장") {
+                        price11 += data.price;
+                    } else if(data.pecPosition === "대리") {
+                        price12 += data.price;
+                    } else if(data.pecPosition === "주임") {
+                        price13 += data.price;
+                    } else if(data.pecPosition === "사원") {
+                        price14 += data.price;
+                    }
+                })
+                setBudgetCal([{mmTotal,price9,price10,price11,price12,price13,price14}]);
             }
             console.log("get data success:)");
             return resultData;
@@ -268,7 +274,9 @@ function LaborCostMgmtPlan() {
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
                 <ReactDataTable columns={columns.orderPlanMgmt.labor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
-            <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
+            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+                <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} />
+            </HideCard>
             <HideCard title="계획 등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
