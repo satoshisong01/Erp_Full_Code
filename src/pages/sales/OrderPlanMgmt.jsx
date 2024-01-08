@@ -23,6 +23,8 @@ import SearchList from "components/SearchList";
 import ReactDataTableSaleCost from "components/DataTable/ReactDataTableSaleCost";
 import PopupButton from "components/button/PopupButton";
 import URL from "constants/url";
+import BasicButton from "components/button/BasicButton";
+import SearchModal from "components/modal/SearchModal";
 
 /** 영업관리-계획관리 */
 function OrderPlanMgmt() {
@@ -53,6 +55,7 @@ function OrderPlanMgmt() {
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 rows
     const [isOpenMod, setIsOpenMod] = useState(false);
     const [isOpenDel, setIsOpenDel] = useState(false);
+    const [isOpenSearch, setIsOpenSearch] = useState(false);
     const [condition, setCondition] = useState({}); //poiMonth:기준연도
 
 
@@ -594,6 +597,7 @@ function OrderPlanMgmt() {
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-b-m-30">
+                                    <BasicButton label="검색하기" onClick={() => setIsOpenSearch(true)}/>
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <RefreshButton onClick={refresh} />
                                 </div>
@@ -761,6 +765,7 @@ function OrderPlanMgmt() {
                 />
             )}
             <DeleteModal initialData={deleteNames} resultData={deleteToServer} onClose={() => setIsOpenDel(false)} isOpen={isOpenDel} />
+            <SearchModal returnData={(condition) => fetchAllData(condition)} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} />
         </>
     );
 }
