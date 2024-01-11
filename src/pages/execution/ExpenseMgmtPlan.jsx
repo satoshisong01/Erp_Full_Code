@@ -47,6 +47,8 @@ function ExpenseMgmtPlan() {
                 pjbgTypeCode19,
                 pjbgTypeCode20,
                 pjbgId,
+                //posNm,
+                //uniqId,
             } = item;
 
             if (/^EXPNS\d{2}$/.test(pjbgTypeCode) && ["BUDGET"].includes(modeCode)) {
@@ -71,6 +73,8 @@ function ExpenseMgmtPlan() {
                         pjbgTypeCode19,
                         pjbgTypeCode20,
                         pjbgId: [],
+                        //posNm,
+                        //uniqId,
                     };
                 }
 
@@ -113,6 +117,8 @@ function ExpenseMgmtPlan() {
             newObj["pjbgTypeCode19"] = mergedItem.pjbgPrices[5];
             newObj["pjbgTypeCode20"] = mergedItem.pjbgPrices[6];
             newObj["poiId"] = condition.poiId;
+            newObj["posNm"] = mergedItem.posNm;
+            newObj["uniqId"] = mergedItem.uniqId;
 
             return newObj;
         });
@@ -181,6 +187,7 @@ function ExpenseMgmtPlan() {
 
                 for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
                     const updatedItem = updatedData[i];
+                    console.log(updatedItem, "길이가궁금");
                     updatedArray[i] = {
                         ...updatedItem,
                         pjbgId: updatedArray[i].pjbgId,
@@ -355,11 +362,18 @@ function ExpenseMgmtPlan() {
         const updatedViewData = updatePjbgType(viewData);
         // console.log(updatedViewData, "일단찎어봐");
         setPjbudgetDatasView(updatedViewData || []);
-        if(resultData && resultData.length > 0) {
+        if (resultData && resultData.length > 0) {
+            console.log(resultData, "경비데이터에 직급불러오는지보자");
             const updatedData = processResultData(resultData, condition);
             setBudgetMgmt(updatedData);
             console.log("✨✨경비계획 조회 updatedData:", updatedData);
-            let total=0, pjbgTypeCode1=0, pjbgTypeCode2=0, pjbgTypeCode3=0, pjbgTypeCode4=0, pjbgTypeCode5=0, pjbgTypeCode20=0;
+            let total = 0,
+                pjbgTypeCode1 = 0,
+                pjbgTypeCode2 = 0,
+                pjbgTypeCode3 = 0,
+                pjbgTypeCode4 = 0,
+                pjbgTypeCode5 = 0,
+                pjbgTypeCode20 = 0;
             updatedData.map((data) => {
                 pjbgTypeCode1 += data.pjbgTypeCode1; //교통비
                 pjbgTypeCode2 += data.pjbgTypeCode2; //숙박비
@@ -367,11 +381,11 @@ function ExpenseMgmtPlan() {
                 pjbgTypeCode4 += data.pjbgTypeCode4; //식비
                 pjbgTypeCode5 += data.pjbgTypeCode5; //자재/소모품외
                 pjbgTypeCode20 += data.pjbgTypeCode20; //기타
-            })
-            total = pjbgTypeCode1+pjbgTypeCode2+pjbgTypeCode3+pjbgTypeCode4+pjbgTypeCode5+pjbgTypeCode20;
-            setCal([{total, pjbgTypeCode1, pjbgTypeCode2, pjbgTypeCode3, pjbgTypeCode4, pjbgTypeCode5, pjbgTypeCode20}])
+            });
+            total = pjbgTypeCode1 + pjbgTypeCode2 + pjbgTypeCode3 + pjbgTypeCode4 + pjbgTypeCode5 + pjbgTypeCode20;
+            setCal([{ total, pjbgTypeCode1, pjbgTypeCode2, pjbgTypeCode3, pjbgTypeCode4, pjbgTypeCode5, pjbgTypeCode20 }]);
         } else {
-            alert('no data');
+            alert("no data");
             setBudgetMgmt([]);
         }
     };

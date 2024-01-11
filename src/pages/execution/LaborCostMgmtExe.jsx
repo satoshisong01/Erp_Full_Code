@@ -10,6 +10,7 @@ import HideCard from "components/HideCard";
 import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 import SaveButton from "components/button/SaveButton";
 import { ChangePrmnPlanData } from "components/DataTable/function/ReplaceDataFormat";
+import LoadButton from "components/button/LoadButton";
 
 /** 실행관리-인건비-실행 */
 function LaborCostMgmtExe() {
@@ -26,6 +27,7 @@ function LaborCostMgmtExe() {
         // viewSetPoiId,
         unitPriceList,
         currentPageName,
+        setLoadButton,
         setNameOfButton,
         unitPriceListRenew,
     } = useContext(PageContext);
@@ -64,11 +66,11 @@ function LaborCostMgmtExe() {
 
     const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", condition);
-        const viewResult = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", {...condition, modeCode: "BUDGET"});
+        const viewResult = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", { ...condition, modeCode: "BUDGET" });
         const viewUpdatedDatas = calculation(unitPriceList, viewResult, condition.poiMonth);
         setBudgetMgmtView(viewUpdatedDatas);
         if (resultData && resultData.length > 0) {
-            if(unitPriceList && unitPriceList.length > 0) {
+            if (unitPriceList && unitPriceList.length > 0) {
                 const updatedDatas = calculation(unitPriceList, resultData, condition.poiMonth);
                 setBudgetMgmRun(updatedDatas);
                 let mmTotal = 0;
@@ -79,34 +81,40 @@ function LaborCostMgmtExe() {
                 let price12 = 0;
                 let price13 = 0;
                 let price14 = 0;
-                let mm9=0, mm10=0, mm11=0, mm12=0, mm13=0, mm14=0; 
-                updatedDatas.map((data) => { //합계 계산
+                let mm9 = 0,
+                    mm10 = 0,
+                    mm11 = 0,
+                    mm12 = 0,
+                    mm13 = 0,
+                    mm14 = 0;
+                updatedDatas.map((data) => {
+                    //합계 계산
                     mmTotal += data.pecMm;
                     priceTotal += data.price;
-                    if(data.pecPosition === "부장") {
+                    if (data.pecPosition === "부장") {
                         mm9 += data.pecMm;
                         price9 += data.price;
-                    } else if(data.pecPosition === "차장") {
+                    } else if (data.pecPosition === "차장") {
                         mm10 += data.pecMm;
                         price10 += data.price;
-                    } else if(data.pecPosition === "과장") {
+                    } else if (data.pecPosition === "과장") {
                         mm11 += data.pecMm;
                         price11 += data.price;
-                    } else if(data.pecPosition === "대리") {
+                    } else if (data.pecPosition === "대리") {
                         mm12 += data.pecMm;
                         price12 += data.price;
-                    } else if(data.pecPosition === "주임") {
+                    } else if (data.pecPosition === "주임") {
                         mm13 += data.pecMm;
                         price13 += data.price;
-                    } else if(data.pecPosition === "사원") {
+                    } else if (data.pecPosition === "사원") {
                         mm14 += data.pecMm;
                         price14 += data.price;
                     }
-                })
-                setBudgetCal([{mmTotal: mmTotal+"(M/M)",price9,price10,price11,price12,price13,price14}]);
+                });
+                setBudgetCal([{ mmTotal: mmTotal + "(M/M)", price9, price10, price11, price12, price13, price14 }]);
             }
         } else {
-            alert('no data');
+            alert("no data");
             setBudgetMgmRun([]);
         }
     };
@@ -122,7 +130,7 @@ function LaborCostMgmtExe() {
             }
         });
         return updatedDatas;
-    }
+    };
 
     const compareData = (originData, updatedData) => {
         const filterData = updatedData.filter((data) => data.pgNm); //pgNm 없는 데이터 제외
@@ -206,12 +214,14 @@ function LaborCostMgmtExe() {
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
+                    <LoadButton label={"가져오기"} onClick={() => setNameOfButton("load")} />
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTable
                     editing={true}
                     columns={columns.laborCostMgmt.run}
+                    viewLoadDatas={budgetMgmtView}
                     customDatas={budgetMgmtRun}
                     viewPageName={current}
                     returnList={compareData}

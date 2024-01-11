@@ -866,6 +866,9 @@ select::-ms-expand {
     background: url(images/bg_form_chk.png) no-repeat;
     vertical-align: top;
 }
+
+.register {
+}
 .f_chk.on {
     background: url(images/bg_form_chk_on.png) no-repeat;
 }

@@ -10,10 +10,22 @@ import ApprovalFormExe from "components/form/ApprovalFormExe";
 import HideCard from "components/HideCard";
 import SaveButton from "components/button/SaveButton";
 import ReactDataTable from "components/DataTable/ReactDataTable";
+import LoadButton from "components/button/LoadButton";
+import BasicButton from "components/button/BasicButton";
 
 /** 실행관리-구매-계획 */
 function PurchasingMgmtPlan() {
-    const { projectInfo, setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton, setInnerPageName, prevCurrentPageName, setPrevCurrentPageName } = useContext(PageContext);
+    const {
+        projectInfo,
+        setProjectInfo,
+        currentPageName,
+        setCurrentPageName,
+        setLoadButton,
+        setNameOfButton,
+        setInnerPageName,
+        prevCurrentPageName,
+        setPrevCurrentPageName,
+    } = useContext(PageContext);
     const [condition, setCondition] = useState({});
     const [budgetMgmt, setBudgetMgmt] = useState([]);
     const [buyCall, setBuyCall] = useState([]);
@@ -26,26 +38,31 @@ function PurchasingMgmtPlan() {
         };
     }, []);
 
+    useEffect(() => {
+        console.log(view, "이거왜 뜨다말지");
+    }, [view]);
 
     const fetchAllData = async (condition) => {
         const data = await axiosFetch("/api/baseInfrm/product/buyIngInfoExe/totalListAll.do", condition);
-        const viewResult = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", {poiId: condition.poiId, costAt: "Y"});
+        const viewResult = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", { poiId: condition.poiId, costAt: "Y" });
+        console.log(viewResult, "뷰데이트");
         setView(viewResult);
-        if(data && data.length > 0) {
+        if (data && data.length > 0) {
             const changes = changeData(data);
             setBudgetMgmt(changes);
             const groupedData = changes.reduce((result, current) => {
-                const existingGroup = result.find(group => group.pgNm === current.pgNm);
+                //const existingGroup = result.find((group) => group.pgNm === current.pgNm);
+                const existingGroup = result.find((group) => group.pdiMenufut === current.pdiMenufut && group.pgNm === current.pgNm);
                 if (existingGroup) {
                     existingGroup.price += current.price;
                 } else {
-                    result.push({ pgNm: current.pgNm, price: current.price });
+                    result.push({ pgNm: current.pgNm, pdiMenufut: current.pdiMenufut, price: current.price });
                 }
                 return result;
             }, []);
-            setBuyCall(groupedData)
+            setBuyCall(groupedData);
         } else {
-            alert('no data');
+            alert("no data");
             setBuyCall([]);
             setBudgetMgmt([]);
         }
@@ -57,10 +74,10 @@ function PurchasingMgmtPlan() {
     };
 
     const refresh = () => {
-        if(condition.poiId) {
+        if (condition.poiId) {
             fetchAllData(condition);
         }
-    }
+    };
 
     const conditionInfo = (value) => {
         setCondition((prev) => {
@@ -69,14 +86,14 @@ function PurchasingMgmtPlan() {
                 fetchAllData(newCondition);
                 return newCondition;
             }
-            return prev; 
+            return prev;
         });
-    }
+    };
 
     return (
         <>
             <Location pathList={locationPath.PurchasingMgmt} />
-            <ApprovalFormExe viewPageName={current} returnData={conditionInfo}/>
+            <ApprovalFormExe viewPageName={current} returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
                 <ReactDataTable columns={columns.purchasingMgmt.planView} customDatas={view} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
@@ -85,6 +102,7 @@ function PurchasingMgmtPlan() {
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
+                    <BasicButton label={"가져오기"} onClick={() => setNameOfButton("load")} />
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <RefreshButton onClick={refresh} />
                 </div>
@@ -92,6 +110,7 @@ function PurchasingMgmtPlan() {
                     suffixUrl="/baseInfrm/product/buyIngInfoExe"
                     editing={true}
                     columns={columns.purchasingMgmt.budget}
+                    viewLoadDatas={view}
                     customDatas={budgetMgmt}
                     viewPageName={current}
                     customDatasRefresh={refresh}

@@ -29,6 +29,7 @@ const ReactDataTableURL = (props) => {
         returnSelect,
         returnSelectRows,
         modalPageName,
+        viewLoadDatas,
         returnList,
         condition,
     } = props;
@@ -41,6 +42,8 @@ const ReactDataTableURL = (props) => {
         newRowData,
         currentPageName,
         projectInfo,
+        loadButton,
+        setLoadButton,
         companyInfo,
         setCompanyInfo,
         projectPgNm,
@@ -104,7 +107,20 @@ const ReactDataTableURL = (props) => {
         if (current !== currentPageName && current !== innerPageName) {
             return;
         }
-    }, [currentPageName, innerPageName]);
+        if (nameOfButton === "load" && viewLoadDatas) {
+            loadOnAddRow(viewLoadDatas);
+        }
+        setNameOfButton(""); //초기화
+    }, [currentPageName, innerPageName, nameOfButton]);
+
+    //useEffect(() => {
+    //    console.log(loadButton, "이게머가들어옴");
+    //    if (loadButton === "load" && viewLoadDatas) {
+    //        loadOnAddRow(viewLoadDatas);
+    //        setLoadButton(""); //초기화
+    //    }
+    //    console.log(viewLoadDatas, "viewLoadDatas!!!!!@@@");
+    //}, [loadButton]);
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     //useEffect(() => {
@@ -343,6 +359,12 @@ const ReactDataTableURL = (props) => {
     useEffect(() => {
         calTotalPrice();
     }, [tableData]);
+
+    const loadOnAddRow = (viewLoadDatas) => {
+        setTableData(() => {
+            return [...viewLoadDatas];
+        });
+    };
 
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {

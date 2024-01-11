@@ -10,6 +10,7 @@ import HideCard from "components/HideCard";
 import SaveButton from "components/button/SaveButton";
 import RefreshButton from "components/button/RefreshButton";
 import ReactDataTable from "components/DataTable/ReactDataTable";
+import BasicButton from "components/button/BasicButton";
 /** 실행관리-경비관리-실행 */
 function ExpenseMgmtExe() {
     const {
@@ -23,6 +24,7 @@ function ExpenseMgmtExe() {
         projectInfo,
         setProjectInfo,
         projectItem,
+        setLoadButton,
         setNameOfButton,
     } = useContext(PageContext);
 
@@ -30,7 +32,6 @@ function ExpenseMgmtExe() {
     const [cal, setCal] = useState([]);
 
     const current = "경비실행";
-
 
     const refresh = () => {
         if (condition.poiId) {
@@ -61,6 +62,8 @@ function ExpenseMgmtExe() {
                 pjbgTypeCode19,
                 pjbgTypeCode20,
                 pjbgId,
+                //posNm,
+                //uniqId,
             } = item;
 
             if (/^EXPNS\d{2}$/.test(pjbgTypeCode) && ["BUDGET"].includes(modeCode)) {
@@ -85,6 +88,8 @@ function ExpenseMgmtExe() {
                         pjbgTypeCode19,
                         pjbgTypeCode20,
                         pjbgId: [],
+                        //posNm,
+                        //uniqId,
                     };
                 }
 
@@ -128,6 +133,8 @@ function ExpenseMgmtExe() {
             newObj["pjbgTypeCode19"] = mergedItem.pjbgPrices[5];
             newObj["pjbgTypeCode20"] = mergedItem.pjbgPrices[6];
             newObj["poiId"] = condition.poiId;
+            newObj["posNm"] = mergedItem.posNm;
+            newObj["uniqId"] = mergedItem.uniqId;
 
             return newObj;
         });
@@ -267,6 +274,7 @@ function ExpenseMgmtExe() {
 
                 for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
                     const updatedItem = updatedData[i];
+                    console.log(updatedItem, "길이가궁금");
                     updatedArray[i] = {
                         ...updatedItem,
                         pjbgId: updatedArray[i].pjbgId,
@@ -333,10 +341,38 @@ function ExpenseMgmtExe() {
         }
     };
 
+    //그대로 가져올시 Id를 가져오기떄문에 추가할때는 자동추가를 위해 삭제해줘야함
+    const removeSpecificProperties = (data) => {
+        // 제거할 속성 목록
+        const propertiesToRemove = ["pjbgId", "pjbgId1", "pjbgId2", "pjbgId3", "pjbgId4", "pjbgId5", "pjbgId19", "pjbgId20"];
+
+        // 주어진 데이터의 각 항목에 대해 속성 제거
+        const modifiedData = data.map((item) => {
+            // 주어진 속성 목록에서 각 속성을 제거
+            propertiesToRemove.forEach((property) => {
+                delete item[property];
+            });
+
+            return item;
+        });
+
+        return modifiedData;
+    };
+
     const addItem = async (addData) => {
         console.log(addData, "추가되야함");
+        addData.forEach((data) => {
+            data.modeCode = "EXECUTE";
+            data.poiId = condition.poiId;
+        });
+        let resultData = "";
         const url = `/api/baseInfrm/product/pjbudgetExe/addArrayList.do`;
-        const resultData = await axiosPost(url, addData);
+        if (addData.length > 0 && addData[0].pjbgId) {
+            const modifiedAddData = removeSpecificProperties(addData);
+            resultData = await axiosPost(url, modifiedAddData);
+        } else {
+            resultData = await axiosPost(url, addData);
+        }
 
         if (resultData) {
             refresh && refresh();
@@ -345,6 +381,12 @@ function ExpenseMgmtExe() {
 
     const updateItem = async (toUpdate) => {
         console.log(toUpdate, "업데이트 값은?");
+        toUpdate.forEach((data) => {
+            data.modeCode = "EXECUTE";
+            data.poiId = condition.poiId;
+        });
+        console.log(toUpdate, "업데이트 변경후");
+
         const url = `/api/baseInfrm/product/pjbudgetExe/editArrayList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
 
@@ -462,6 +504,7 @@ function ExpenseMgmtExe() {
         const viewData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", { poiId: condition.poiId, modeCode: "BUDGET" });
         console.log(viewData, "이거안나오나봐 ㅜ");
         const updatedViewData = processResultDataView(viewData, condition);
+        console.log(updatedViewData, "이거설마 초기화댐?");
         setRunMgmtView(updatedViewData);
         if (resultData && resultData.length > 0) {
             const updatedData = processResultData(resultData, condition);
@@ -503,6 +546,7 @@ function ExpenseMgmtExe() {
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
+                    <BasicButton label={"가져오기"} onClick={() => setNameOfButton("load")} />
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <RefreshButton onClick={refresh} />
                 </div>
@@ -510,6 +554,7 @@ function ExpenseMgmtExe() {
                     editing={true}
                     columns={columns.expenseMgmt.budget}
                     returnList={returnList}
+                    viewLoadDatas={runMgmtView}
                     viewPageName={current}
                     customDatas={runExeMgmt}
                     customDatasRefresh={refresh}

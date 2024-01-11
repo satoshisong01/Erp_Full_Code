@@ -21,23 +21,54 @@ $green: #436043;
 $orange: #ba871f;
 $disabled: gray;
 
-.default-gray { color: $default-gray }
-.btn-blue { color: $blue }
-.black { color: $black }
-.blue { color: $blue }
-.lightblue { color: $lightblue }
-.darkblue { color: $darkblue }
-.gray { color: $gray }
-.lightgray { color: $lightgray }
-.darkgray { color: $darkgray }
-.purple { color: $purple }
-.cherry { color: $cherry }
-.burgundy { color: $burgundy }
-.darkburgundy { color: $darkburgundy }
-.green { color: $green }
-.orange { color: $orange }
-.disabled { color: $disabled }
-
+.default-gray {
+    color: $default-gray;
+}
+.btn-blue {
+    color: $blue;
+}
+.black {
+    color: $black;
+}
+.blue {
+    color: $blue;
+}
+.lightblue {
+    color: $lightblue;
+}
+.darkblue {
+    color: $darkblue;
+}
+.gray {
+    color: $gray;
+}
+.lightgray {
+    color: $lightgray;
+}
+.darkgray {
+    color: $darkgray;
+}
+.purple {
+    color: $purple;
+}
+.cherry {
+    color: $cherry;
+}
+.burgundy {
+    color: $burgundy;
+}
+.darkburgundy {
+    color: $darkburgundy;
+}
+.green {
+    color: $green;
+}
+.orange {
+    color: $orange;
+}
+.disabled {
+    color: $disabled;
+}
 
 /* 보더 + 배경 */
 .back-white {
@@ -107,7 +138,7 @@ $disabled: gray;
     color: #356635;
 }
 .back-lightgreen:active {
-    background-color: #356635 ;
+    background-color: #356635;
     color: white;
 }
 .back-darkgray {
@@ -809,7 +840,6 @@ select {
     -webkit-appearance: auto;
 }
 
-
 .react-datepicker__input-container input[type="text"] {
     background-color: #ccc;
 }
@@ -928,20 +958,19 @@ input:disabled {
     /* 다른 스타일 옵션도 추가할 수 있습니다. */
 }
 
-/* tr,
+tr,
 td,
 th {
     border: 1px solid #ddd;
-} */
+}
 
-/*.other-column {
-    padding: 0;
-}*/
+//.other-column {
+//    padding: 0;
+//}
 
 td > input {
     width: 100%;
 }
-
 
 .react-calendar {
     position: absolute;
@@ -1044,8 +1073,7 @@ td > input {
 .common_board_style .list .fifth,
 .common_board_style .list .sixth,
 .common_board_style .list .seventh,
-.common_board_style .list .eighth
-{
+.common_board_style .list .eighth {
     display: none;
 }
 
@@ -1087,7 +1115,7 @@ body > div:nth-child(4) > div {
     /* border: 1px solid black; */
     background-color: white;
 }
-  
+
 .table-custom tr:last-child td {
     /* border-bottom: 0; */
 }
@@ -1125,7 +1153,7 @@ body > div:nth-child(4) > div {
     top: 0;
     transform: translateX(50%);
     z-index: 1;
-    touch-action:none;
+    touch-action: none;
 
     &.isResizing {
         background: $burgundy;
@@ -1174,9 +1202,9 @@ body > div:nth-child(4) > div {
 /* 숨길 수 있는 영역 박스 */
 .hide-card {
     pointer-events: none;
-    
+
     .hide-header {
-        padding: 5px 10px 5px 10px; 
+        padding: 5px 10px 5px 10px;
     }
     .hide-title {
         font-size: 14px;
@@ -1184,8 +1212,8 @@ body > div:nth-child(4) > div {
     }
     .hide-content {
         pointer-events: auto;
-        border: 1px solid $default-gray; 
-        padding: 10px; 
+        border: 1px solid $default-gray;
+        padding: 10px;
         border-top: none;
     }
     .hide-button {
@@ -1196,18 +1224,17 @@ body > div:nth-child(4) > div {
 /* 라디오 버튼 */
 .radio-container {
     display: flex;
-    gap: 15px; 
+    gap: 15px;
     align-items: center;
-  }
-  
-  .radio-container input[type="radio"] {
+}
+
+.radio-container input[type="radio"] {
     margin-right: 3px;
-  }
-  
-  /* 라벨 스타일 (선택사항) */
-  .radio-container label {
-    
-  }
+}
+
+/* 라벨 스타일 (선택사항) */
+.radio-container label {
+}
 
 .search-btn {
     border: 1px solid #8ac38b;
@@ -1219,6 +1246,42 @@ body > div:nth-child(4) > div {
     color: #356635;
 }
 
+//table {
+//    border-collapse: collapse;
+//    margin: 0rem;
+//}
+
+th,
+td {
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    box-sizing: content-box;
+}
+
+.resizer {
+    display: inline-block;
+    background: blue;
+    width: 1px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translateX(50%);
+    z-index: 1;
+    /* prevent scroll on touch devices */
+    touch-action: none;
+}
+
+.table-styled {
+    width: 100%;
+}
+
+.table-styled > tbody > tr > td {
+    width: 70px;
+}
+
+.isResizing {
+    background: red;
+}
 
 /* 반응형 스타일 */
 @media (max-width: 768px) {

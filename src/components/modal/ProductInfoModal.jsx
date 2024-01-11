@@ -21,39 +21,43 @@ export default function ProductInfoModal(props) {
     useEffect(() => {
         if (isOpen) {
             getProductInfoList();
-            setModalPageName("품목정보팝업")
+            setModalPageName("품목정보팝업");
             setIsModalTable(true);
             setPdiNmList([]); //초기화
             setProjectPdiNm({}); //초기화
         }
         return () => {
-            setIsModalTable(false)
-            setModalPageName("")
+            setIsModalTable(false);
+            setModalPageName("");
         };
     }, [isOpen]);
 
     const getProductInfoList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/productInfo/totalListAll.do", requestData || {});
+        console.log("임시품명 컬럼보기", resultData);
         setProductInfoList(resultData);
-    }
+    };
 
     const columns = [
-        { header: "품목아이디", col: "pdiId", notView: true},
-        { header: "품명", col: "pdiNm", cellWidth: "40%", type: "buttonPdiNm"},
+        { header: "품목아이디", col: "pdiId", notView: true },
+        { header: "품명", col: "pdiNm", cellWidth: "40%", type: "buttonPdiNm" },
+        { header: "모델명", col: "pdiNum", cellWidth: "30%" },
         { header: "품목그룹명", col: "pgNm", cellWidth: "20%" },
-        { header: "규격", col: "pdiStnd", notView: true},
+        { header: "규격", col: "pdiStnd", cellWidth: "30%" },
         { header: "단위", col: "pdiUnit", notView: true },
         { header: "제조사", col: "pdiMenufut", cellWidth: "20%" },
         { header: "판매사", col: "pdiSeller", cellWidth: "20%" },
         { header: "원가", col: "pupUnitPrice", notView: true },
-    ]
+    ];
 
     const conditionList = [
         { title: "품명", col: "pdiNm", type: "input" },
+        { title: "모델명", col: "pdiNum", type: "input" },
         { title: "픔목그룹명", col: "pgNm", type: "input" },
         { title: "제조사", col: "pdiMenufut", type: "input" },
         { title: "판매사", col: "pdiSeller", type: "input" },
-    ]
+        { title: "규격", col: "pdiStnd", type: "input" },
+    ];
 
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
@@ -67,21 +71,22 @@ export default function ProductInfoModal(props) {
 
     const onSearch = (value) => {
         getProductInfoList(value);
-    }
+    };
 
     const onClick = () => {
-        if (selectedRows && selectedRows.length === 1) { //객체로 저장
+        if (selectedRows && selectedRows.length === 1) {
+            //객체로 저장
             setProjectPdiNm(selectedRows[0]);
-
         } else if (selectedRows && selectedRows.length > 1) {
             setPdiNmList([...selectedRows]);
         }
         onClose();
-    }
+    };
 
     let selectedRows = [];
 
     const returnSelectRows = (rows) => {
+        console.log(rows, "💥💥💥💥");
         const newArr = rows.filter((row) => !selectedRows.some((pre) => pre.pdiId === row.pdiId));
         selectedRows.push(...newArr);
     };
@@ -92,8 +97,7 @@ export default function ProductInfoModal(props) {
             isOpen={isOpen}
             onRequestClose={onClose}
             contentLabel={title}
-            style={{ content: { width, height, },}}
-        >
+            style={{ content: { width, height } }}>
             <div className="me-modal">
                 <div className="me-modal-container" style={{ width, height }}>
                     <div className="me-modal-inner">

@@ -55,13 +55,11 @@ function OrderPlanMgmt() {
     const [isOpenDel, setIsOpenDel] = useState(false);
     const [condition, setCondition] = useState({}); //poiMonth:기준연도
 
-
     useEffect(() => {
         setInnerPageName("원가버전조회");
         setCurrentPageName(""); //inner와 pageName은 동시에 사용 X
         fetchAllData();
-        return () => {
-        };
+        return () => {};
     }, []);
 
     useEffect(() => {
@@ -73,7 +71,7 @@ function OrderPlanMgmt() {
     }, [currentPageName]);
 
     useEffect(() => {
-        console.log("innerPageName:",innerPageName, "currentPageName:",currentPageName);
+        console.log("innerPageName:", innerPageName, "currentPageName:", currentPageName);
         if (innerPageName === "원가버전조회" || currentPageName === "원가버전조회") {
             fetchAllData();
         }
@@ -236,177 +234,189 @@ function OrderPlanMgmt() {
             searchCondition: "",
             searchKeyword: "",
         });
+        console.log(resultData, "버전정보");
         setSearchDates(resultData);
     };
 
     const fetchAllData = async (requestData) => {
-        if (innerPageName === "원가버전조회" || currentPageName === "원가버전조회") {
-            const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", {
-                // ...requestData,
-                searchCondition: "",
-                searchKeyword: "",
-            });
-            if(resultData && resultData.length > 0) {
-                setSearchDates(resultData);
-                console.log("😈영업-원가버전조회:", requestData, "resultData:", resultData);
-            } else {
-                alert('no data');
-                setSearchDates([]);
-            }
-        } else if (innerPageName === "인건비") {
-            const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
-            if(resultData && resultData.length > 0) {
-                const changeData = ChangePrmnPlanData(resultData, condition.poiId);
-                let total = 0, mm1 = 0, mm9 = 0, mm10 = 0, mm11 = 0, mm12 = 0, mm13 = 0, mm14 = 0; //임원
-                const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === requestData.poiMonth);
-                if (matchingAItem) {
-                    changeData.forEach((Item) => {
-                        mm1 += Item.pmpmmPositionCode1;
-                        mm9 += Item.pmpmmPositionCode9;
-                        mm10 += Item.pmpmmPositionCode10;
-                        mm11 += Item.pmpmmPositionCode11;
-                        mm12 += Item.pmpmmPositionCode12;
-                        mm13 += Item.pmpmmPositionCode13;
-                        mm14 += Item.pmpmmPositionCode14;
+        if (requestData) {
+            if (innerPageName === "원가버전조회" || currentPageName === "원가버전조회") {
+                const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", {
+                    // ...requestData,
+                    searchCondition: "",
+                    searchKeyword: "",
+                });
+                if (resultData && resultData.length > 0) {
+                    setSearchDates(resultData);
+                    console.log("😈영업-원가버전조회:", requestData, "resultData:", resultData);
+                } else {
+                    alert("no data");
+                    setSearchDates([]);
+                }
+            } else if (innerPageName === "인건비") {
+                const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
+                if (resultData && resultData.length > 0) {
+                    const changeData = ChangePrmnPlanData(resultData, condition.poiId);
+                    let total = 0,
+                        mm1 = 0,
+                        mm9 = 0,
+                        mm10 = 0,
+                        mm11 = 0,
+                        mm12 = 0,
+                        mm13 = 0,
+                        mm14 = 0; //임원
+                    const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === requestData.poiMonth);
+                    if (matchingAItem) {
+                        changeData.forEach((Item) => {
+                            mm1 += Item.pmpmmPositionCode1;
+                            mm9 += Item.pmpmmPositionCode9;
+                            mm10 += Item.pmpmmPositionCode10;
+                            mm11 += Item.pmpmmPositionCode11;
+                            mm12 += Item.pmpmmPositionCode12;
+                            mm13 += Item.pmpmmPositionCode13;
+                            mm14 += Item.pmpmmPositionCode14;
+                        });
+                        total = (mm1 + mm9 + mm10 + mm11 + mm12 + mm13 + mm14).toLocaleString() + "(M/M)";
+                        setPrmnCalDatas([
+                            {
+                                total,
+                                pmpmmPositionCode1Total: mm1,
+                                pmpmmPositionCode9Total: mm9,
+                                pmpmmPositionCode10Total: mm10,
+                                pmpmmPositionCode11Total: mm11,
+                                pmpmmPositionCode12Total: mm12,
+                                pmpmmPositionCode13Total: mm13,
+                                pmpmmPositionCode14Total: mm14,
+                            },
+                            {
+                                total:
+                                    (
+                                        mm1 * matchingAItem.gupPrice1 +
+                                        mm9 * matchingAItem.gupPrice9 +
+                                        mm10 * matchingAItem.gupPrice10 +
+                                        mm11 * matchingAItem.gupPrice11 +
+                                        mm12 * matchingAItem.gupPrice12 +
+                                        mm13 * matchingAItem.gupPrice13 +
+                                        mm14 * matchingAItem.gupPrice14
+                                    ).toLocaleString() + "원",
+                                pmpmmPositionCode1Total: mm1 * matchingAItem.gupPrice1,
+                                pmpmmPositionCode9Total: mm9 * matchingAItem.gupPrice9,
+                                pmpmmPositionCode10Total: mm10 * matchingAItem.gupPrice10,
+                                pmpmmPositionCode11Total: mm11 * matchingAItem.gupPrice11,
+                                pmpmmPositionCode12Total: mm12 * matchingAItem.gupPrice12,
+                                pmpmmPositionCode13Total: mm13 * matchingAItem.gupPrice13,
+                                pmpmmPositionCode14Total: mm14 * matchingAItem.gupPrice14,
+                            },
+                        ]);
+                        changeData.forEach((Item) => {
+                            const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
+                            const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
+                            if (matchingAItem) {
+                                let totalPrice = 0;
+                                for (let i = 1; i <= 14; i++) {
+                                    const gupPriceKey = `gupPrice${i}`;
+                                    const pmpmmPositionCodeKey = `pmpmmPositionCode${i}`;
+                                    if (matchingAItem[gupPriceKey]) {
+                                        totalPrice += matchingAItem[gupPriceKey] * Item[pmpmmPositionCodeKey];
+                                    }
+                                }
+                                Item.totalPrice = totalPrice;
+                            }
+                        });
+                        setPrmnPlanDatas(changeData);
+                        console.log("😈영업-인건비:", changeData);
+                    }
+                } else {
+                    alert("no data");
+                    setPrmnPlanDatas([]);
+                    setPrmnCalDatas([]);
+                }
+            } else if (innerPageName === "경비") {
+                const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
+                if (resultData && resultData.length > 0) {
+                    setPjbudgetDatas(resultData);
+                    let pjbgPriceTotal = 0;
+                    resultData.forEach((data) => {
+                        pjbgPriceTotal += data.pjbgPrice;
                     });
-                    total = (mm1 + mm9 + mm10 + mm11 + mm12 + mm13 + mm14).toLocaleString() + "(M/M)"
-                    setPrmnCalDatas([
+                    setPjbudgetCalDatas([{ pjbgPriceTotal }]);
+                    console.log("😈영업-경비:", resultData);
+                } else {
+                    alert("no data");
+                    setPjbudgetDatas([]);
+                    setPjbudgetCalDatas([]);
+                }
+            } else if (innerPageName === "구매(재료비)") {
+                console.log("😈구매조회!!", requestData);
+                const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
+                if (resultData && resultData.length > 0) {
+                    const calData = buyIngInfoCalculation(resultData);
+                    console.log("⭐⭐⭐영업-구매비:", requestData, "calData:", calData);
+                    setPdOrdrDatas(calData);
+
+                    let consumerAmountTotal = 0; // 소비자금액
+                    let planAmountTotal = 0; // 금액
+                    let estimatedCostTotal = 0; // 원가
+                    let plannedProfitsTotal = 0; // 이익금
+
+                    calData.forEach((data) => {
+                        consumerAmountTotal += data.consumerAmount; // 소비자금액
+                        planAmountTotal += data.planAmount; // 금액
+                        estimatedCostTotal += data.estimatedCost; // 원가
+                        plannedProfitsTotal += data.plannedProfits; // 이익금
+                    });
+                    const nego = division(consumerAmountTotal - planAmountTotal, consumerAmountTotal) * 100 + "%"; // 네고율
+                    const plannedProfitMarginTotal = division(plannedProfitsTotal, planAmountTotal) * 100 + "%"; // 이익금/금액
+                    setPdOrdrCalDatas([
                         {
-                            total,
-                            pmpmmPositionCode1Total: mm1,
-                            pmpmmPositionCode9Total: mm9,
-                            pmpmmPositionCode10Total: mm10,
-                            pmpmmPositionCode11Total: mm11,
-                            pmpmmPositionCode12Total: mm12,
-                            pmpmmPositionCode13Total: mm13,
-                            pmpmmPositionCode14Total: mm14,
-                        },
-                        {
-                            total:
-                                (
-                                    mm1 * matchingAItem.gupPrice1 +
-                                    mm9 * matchingAItem.gupPrice9 +
-                                    mm10 * matchingAItem.gupPrice10 +
-                                    mm11 * matchingAItem.gupPrice11 +
-                                    mm12 * matchingAItem.gupPrice12 +
-                                    mm13 * matchingAItem.gupPrice13 +
-                                    mm14 * matchingAItem.gupPrice14
-                                ).toLocaleString() + "원",
-                            pmpmmPositionCode1Total: mm1 * matchingAItem.gupPrice1,
-                            pmpmmPositionCode9Total: mm9 * matchingAItem.gupPrice9,
-                            pmpmmPositionCode10Total: mm10 * matchingAItem.gupPrice10,
-                            pmpmmPositionCode11Total: mm11 * matchingAItem.gupPrice11,
-                            pmpmmPositionCode12Total: mm12 * matchingAItem.gupPrice12,
-                            pmpmmPositionCode13Total: mm13 * matchingAItem.gupPrice13,
-                            pmpmmPositionCode14Total: mm14 * matchingAItem.gupPrice14,
+                            consumerAmountTotal,
+                            planAmountTotal,
+                            nego,
+                            estimatedCostTotal,
+                            plannedProfitsTotal,
+                            plannedProfitMarginTotal,
                         },
                     ]);
-                    changeData.forEach((Item) => {
-                        const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
-                        const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
-                        if (matchingAItem) {
-                            let totalPrice = 0;
-                            for (let i = 1; i <= 14; i++) {
-                                const gupPriceKey = `gupPrice${i}`;
-                                const pmpmmPositionCodeKey = `pmpmmPositionCode${i}`;
-                                if (matchingAItem[gupPriceKey]) {
-                                    totalPrice += matchingAItem[gupPriceKey] * Item[pmpmmPositionCodeKey];
-                                }
-                            }
-                            Item.totalPrice = totalPrice;
-                        }
-                    });
-                    setPrmnPlanDatas(changeData);
-                    console.log("😈영업-인건비:", changeData);
+
+                    console.log("😈영업-구매비:", requestData, "resultData:", resultData);
+                } else {
+                    alert("no data");
+                    //setPdOrdrDatas([]);
+                    //setPdOrdrCalDatas([]);
                 }
-            } else {
-                alert('no data');
-                setPrmnPlanDatas([]);
-                setPrmnCalDatas([]);
-            }
-        } else if (innerPageName === "경비") {
-            const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
-            if(resultData && resultData.length > 0) {
-                setPjbudgetDatas(resultData);
-                let pjbgPriceTotal = 0;
-                resultData.forEach((data) => {
-                    pjbgPriceTotal += data.pjbgPrice;
-                });
-                setPjbudgetCalDatas([{ pjbgPriceTotal }]);
-                console.log("😈영업-경비:", resultData);
-            } else {
-                alert('no data');
-                setPjbudgetDatas([]);
-                setPjbudgetCalDatas([]);
-            }
-        } else if (innerPageName === "구매(재료비)") {
-            console.log("😈구매조회!!", requestData);
-            const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
-            if(resultData && resultData.length > 0) {
-                const calData = buyIngInfoCalculation(resultData);
-                setPdOrdrDatas(calData);
-
-                let consumerAmountTotal = 0; // 소비자금액
-                let planAmountTotal = 0; // 금액
-                let estimatedCostTotal = 0; // 원가
-                let plannedProfitsTotal = 0; // 이익금
-
-                calData.forEach((data) => {
-                    consumerAmountTotal += data.consumerAmount; // 소비자금액
-                    planAmountTotal += data.planAmount; // 금액
-                    estimatedCostTotal += data.estimatedCost; // 원가
-                    plannedProfitsTotal += data.plannedProfits; // 이익금
-                });
-                const nego = division(consumerAmountTotal - planAmountTotal, consumerAmountTotal) * 100 + "%"; // 네고율
-                const plannedProfitMarginTotal = division(plannedProfitsTotal, planAmountTotal) * 100 + "%"; // 이익금/금액
-                setPdOrdrCalDatas([
-                    {
-                        consumerAmountTotal,
-                        planAmountTotal,
-                        nego,
-                        estimatedCostTotal,
-                        plannedProfitsTotal,
-                        plannedProfitMarginTotal,
-                    },
-                ]);
-                console.log("😈영업-구매비:", requestData, "resultData:", resultData);
-            } else {
-                alert('no data');
-                setPdOrdrDatas([]);
-                setPdOrdrCalDatas([]);
-            }
-        } else if (innerPageName === "개발외주비") {
-            const resultData = await axiosFetch("/api/baseInfrm/product/devOutCost/totalListAll.do", requestData);
-            if(resultData && resultData.length > 0) {
-                setOutsourcingDatas(resultData);
-                let devOutPriceTotal = 0;
-                resultData.forEach((data) => {
-                    devOutPriceTotal += data.devOutPrice;
-                });
-                setOutCalDatas([{ devOutPriceTotal }]);
-                console.log("😈영업-개발외주비:", requestData, "resultData:", resultData);
-            } else {
-                alert('no data');
-                setOutsourcingDatas([]);
-                setOutCalDatas([]);
-            }
-        } else if (innerPageName === "영업관리비") {
-            const resultData = await axiosFetch("/api/baseInfrm/product/slsmnExpns/totalListAll.do", requestData);
-            if(resultData && resultData.length > 0) {
-                setGeneralExpensesDatas(resultData);
-                // slsmnEnterpriseProfit 기업이윤, slsmnAdmnsCost 일반관리비, slsmnNego 네고
-                let total = 0; //판관비
-                let negoTotal = 0; //네고
-                resultData.forEach((data) => {
-                    total += data.slsmnEnterpriseProfit + data.slsmnAdmnsCost;
-                    negoTotal += data.slsmnNego;
-                });
-                setGeneralCalDatas([{ total, negoTotal }]);
-                console.log("😈영업-영업관리비:", requestData, "resultData:", resultData);
-            } else {
-                alert('no data');
-                setGeneralExpensesDatas([]);
-                setGeneralCalDatas([]);
+            } else if (innerPageName === "개발외주비") {
+                const resultData = await axiosFetch("/api/baseInfrm/product/devOutCost/totalListAll.do", requestData);
+                if (resultData && resultData.length > 0) {
+                    setOutsourcingDatas(resultData);
+                    let devOutPriceTotal = 0;
+                    resultData.forEach((data) => {
+                        devOutPriceTotal += data.devOutMm * data.devOutPrice;
+                    });
+                    setOutCalDatas([{ devOutPriceTotal }]);
+                    console.log("😈영업-개발외주비:", requestData, "resultData:", resultData);
+                } else {
+                    alert("no data");
+                    setOutsourcingDatas([]);
+                    setOutCalDatas([]);
+                }
+            } else if (innerPageName === "영업관리비") {
+                const resultData = await axiosFetch("/api/baseInfrm/product/slsmnExpns/totalListAll.do", requestData);
+                if (resultData && resultData.length > 0) {
+                    setGeneralExpensesDatas(resultData);
+                    // slsmnEnterpriseProfit 기업이윤, slsmnAdmnsCost 일반관리비, slsmnNego 네고
+                    let total = 0; //판관비
+                    let negoTotal = 0; //네고
+                    resultData.forEach((data) => {
+                        total += data.slsmnEnterpriseProfit + data.slsmnAdmnsCost;
+                        negoTotal += data.slsmnNego;
+                    });
+                    setGeneralCalDatas([{ total, negoTotal }]);
+                    console.log("😈영업-영업관리비:", requestData, "resultData:", resultData);
+                } else {
+                    alert("no data");
+                    setGeneralExpensesDatas([]);
+                    setGeneralCalDatas([]);
+                }
             }
         }
     };

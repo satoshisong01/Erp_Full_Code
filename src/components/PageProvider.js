@@ -7,6 +7,8 @@ export const PageContext = createContext();
  * 외부에서 <PageProvider>로 감싸야 children으로 인정 됨
  */
 export function PageProvider({ children }) {
+    //const [loadButton, setLoadButton] = useState(""); // 클릭된 데이터 테이블의 CRUD 버튼 이름
+
     const [nameOfButton, setNameOfButton] = useState(""); // 클릭된 데이터 테이블의 CRUD 버튼 이름
     const [isSaveFormTable, setIsSaveFormTable] = useState(true); // 버튼 on/off, false일때 저장 실행
     const [newRowData, setNewRowData] = useState({}); // 외부에서 추가된 table row data (수주등록, 팝업으로 추가)
@@ -20,9 +22,18 @@ export function PageProvider({ children }) {
     const [projectPgNm, setProjectPgNm] = useState({ pgNm: "", pgId: "" }); // 클릭한 품목그룹명, 품목그룹id 저장
 
     const [pdiNmList, setPdiNmList] = useState([]); // 품목ID,품명,(품목그룹명),단위,규격,제조사
-    const [projectPdiNm, setProjectPdiNm] = useState({ pdiId: "", pdiNm: "", pgNm: "", pdiWght: "", pdiStnd: "", pdiMenufut: "", pupUnitPrice: "", byUnitPrice: "" }); // 선택한 id 저장
+    const [projectPdiNm, setProjectPdiNm] = useState({
+        pdiId: "",
+        pdiNm: "",
+        pgNm: "",
+        pdiWght: "",
+        pdiStnd: "",
+        pdiMenufut: "",
+        pupUnitPrice: "",
+        byUnitPrice: "",
+    }); // 선택한 id 저장
 
-    const [emUserInfo, setEmUserInfo] = useState({uniqId: "", empNm: "", posNm: ""}); // 업무회원 정보 - 고유아이디, 사용자명, 직급
+    const [emUserInfo, setEmUserInfo] = useState({ uniqId: "", empNm: "", posNm: "" }); // 업무회원 정보 - 고유아이디, 사용자명, 직급
 
     const [unitPriceList, setUnitPriceList] = useState([]); // 급별단가 목록
     const [unitPriceListRenew, setUnitPriceListRenew] = useState([]); // 급별포맷 변경 목록
@@ -124,10 +135,14 @@ export function PageProvider({ children }) {
         setRefesh,
         gnbLabel,
         setGnbLabel,
-        versionInfo, setVersionInfo,
+        versionInfo,
+        setVersionInfo,
         unitPriceListRenew,
         setUnitPriceListRenew,
-        emUserInfo, setEmUserInfo,
+        emUserInfo,
+        setEmUserInfo,
+        //loadButton,
+        //setLoadButton,
     };
 
     return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>;

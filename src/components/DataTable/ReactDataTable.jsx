@@ -39,6 +39,7 @@ const ReactDataTable = (props) => {
         sendToParentGrade, //부모로 리턴 ---> returnList 사용하세요!
         saveIdNm, //이건뭐죠? 부모로 배열 리턴이면 returnList 사용하세요!
         condition, //poiId와 같은 조회에 필요한 조건
+        viewLoadDatas, //불러오기 view데이터
     } = props;
     const {
         nameOfButton,
@@ -92,9 +93,9 @@ const ReactDataTable = (props) => {
     const inputRef = useRef(null); //날짜
     const calendarRef = useRef(null);
 
-    // useEffect(() => {
-    //     console.log(tableData, "리액트테이블 데이터");
-    // }, [tableData]);
+    useEffect(() => {
+        console.log(tableData, "리액트테이블 데이터");
+    }, [tableData]);
 
     //취소시에 오리지널 테이블로 돌아감
     useEffect(() => {
@@ -157,6 +158,7 @@ const ReactDataTable = (props) => {
             setTableData([]);
             setOriginTableData([]);
         }
+        console.log(customDatas);
     }, [customDatas]);
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
@@ -177,8 +179,12 @@ const ReactDataTable = (props) => {
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
             //inner tab에서 저장을 눌렀을 때
-            if(nameOfButton === "save") {
+            if (nameOfButton === "save") {
                 returnList(originTableData, tableData);
+            }
+            if (nameOfButton === "load" && viewLoadDatas) {
+                loadOnAddRow(viewLoadDatas);
+                setNameOfButton(""); //초기화
             }
             // if (current === "인건비계획" || current === "인건비실행" && nameOfButton === "save") {
             //     returnList(originTableData, tableData);
@@ -196,6 +202,15 @@ const ReactDataTable = (props) => {
             setTableData([]); //초기화
         }
     }, [innerPageName, editing, nameOfButton, currentPageName]);
+
+    //useEffect(() => {
+    //    console.log(loadButton, "이게머가들어옴");
+    //    if (loadButton === "load" && viewLoadDatas) {
+    //        loadOnAddRow(viewLoadDatas);
+    //        setLoadButton(""); //초기화
+    //    }
+    //    console.log(viewLoadDatas, "viewLoadDatas!!!!!@@@");
+    //}, [loadButton]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
@@ -535,6 +550,12 @@ const ReactDataTable = (props) => {
 
         setTableData(updatedTableData);
         setProjectPgNm({});
+    };
+
+    const loadOnAddRow = (viewLoadDatas) => {
+        setTableData(() => {
+            return [...viewLoadDatas];
+        });
     };
 
     /* 새로운 빈 row 추가 */
