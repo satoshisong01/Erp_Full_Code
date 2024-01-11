@@ -15,11 +15,10 @@ const AntTabs = (props) => {
 
     /* navi 클릭시 탭 생성 */
     useEffect(() => {
-        const tab = Children.find((item) => item.id === snbId || lnbId);
+        const tab = Children.find((item) => item.id === snbId || item.id === lnbId);
         if (!tab) return;
         addTab(tab);
 
-        // console.log("🎄>>>tab:", tab.label, ", ", tab.id);
         setCurrentPageName((pre) => {
             setInnerPageName({});
             setPrevCurrentPageName({...pre});
@@ -30,7 +29,6 @@ const AntTabs = (props) => {
 
     const onChange = (key) => {
         const selectedTab = items.find((item) => item.key === key);
-        // console.log("❗❗탭 selectedTab: ", selectedTab);
         if (selectedTab) {
             store.dispatch(selectSnb(selectedTab.label, selectedTab.key));
         }

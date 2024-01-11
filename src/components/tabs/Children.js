@@ -194,6 +194,7 @@ export const execution = [
         path: URL.ExecutionCost,
         component: <ExecutionCost />,
         label: "원가조회",
+        etc: "원가조회",
         pLabel: "실행관리",
     },
     {
@@ -201,6 +202,7 @@ export const execution = [
         path: URL.LaborCostMgmtPlan,
         component: <LaborCostMgmtPlan />,
         label: "인건비",
+        etc: "계획 인건비",
         pLabel: "실행관리",
     },
     {
@@ -208,6 +210,7 @@ export const execution = [
         path: URL.LaborCostMgmtExe,
         component: <LaborCostMgmtExe />,
         label: "인건비",
+        etc: "실행 인건비",
         pLabel: "실행관리",
     },
     {
@@ -215,6 +218,7 @@ export const execution = [
         path: URL.PurchasingMgmtPlan,
         component: <PurchasingMgmtPlan />,
         label: "구매(재료비)",
+        etc: "계획 구매(재료비)",
         pLabel: "실행관리",
     },
     {
@@ -222,6 +226,7 @@ export const execution = [
         path: URL.PurchasingMgmtExe,
         component: <PurchasingMgmtExe />,
         label: "구매(재료비)",
+        etc: "실행 구매(재료비)",
         pLabel: "실행관리",
     },
     {
@@ -229,6 +234,7 @@ export const execution = [
         path: URL.ExpenseMgmtPlan,
         component: <ExpenseMgmtPlan />,
         label: "경비",
+        etc: "계획 경비",
         pLabel: "실행관리",
     },
     {
@@ -236,6 +242,7 @@ export const execution = [
         path: URL.ExpenseMgmtExe,
         component: <ExpenseMgmtExe />,
         label: "경비",
+        etc: "실행 경비",
         pLabel: "실행관리",
     },
     //{
@@ -271,17 +278,17 @@ export const system = [
         pLabel: "시스템관리",
     },
     {
-        id: "CategoryCode",
-        path: URL.CategoryCode,
-        component: <CategoryCode />,
-        label: "분류코드관리",
-        pLabel: "시스템관리",
-    },
-    {
         id: "GroupCode",
         path: URL.GroupCode,
         component: <GroupCode />,
         label: "그룹코드관리",
+        pLabel: "시스템관리",
+    },
+    {
+        id: "CategoryCode",
+        path: URL.CategoryCode,
+        component: <CategoryCode />,
+        label: "공통코드관리",
         pLabel: "시스템관리",
     },
     {
