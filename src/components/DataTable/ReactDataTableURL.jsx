@@ -77,10 +77,6 @@ const ReactDataTableURL = (props) => {
     }, []);
 
     useEffect(() => {
-        console.log(tableData, "받아온 경비 데이터");
-    }, [tableData]);
-
-    useEffect(() => {
         if (customDatas && customDatas.length > 0) {
             setTableData([...customDatas]);
             setOriginTableData([...customDatas]);
@@ -90,55 +86,31 @@ const ReactDataTableURL = (props) => {
         }
     }, [customDatas]);
 
-    // useEffect(() => {
-    //     console.log(tableData, "tableData");
-    // }, [tableData]);
-
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
-        if (currentPageName !== prevCurrentPageName || innerPageName !== prevInnerPageName) {
+        if (currentPageName.id !== prevCurrentPageName.id || innerPageName.id !== prevInnerPageName.id) {
             // 현재 페이지와 이전 페이지가 같지 않다면
             toggleAllRowsSelected(false);
         }
         // 현재 보는 페이지(current)가 클릭한 페이지와 같은게 없다면 return
-        if (current !== currentPageName && current !== innerPageName) {
+        if (current.id !== currentPageName.id && current.id !== innerPageName.id) {
             return;
         }
     }, [currentPageName, innerPageName]);
 
-    /* 테이블 cell에서 수정하는 경우의 on off */
-    //useEffect(() => {
-    //    //  console.log("💜경비 current:", current, "currentPageName:",currentPageName, "editing",editing);
-    //    if (isCurrentPage()) {
-    //        setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
-    //        if (nameOfButton === "save") {
-    //            returnList(originTableData, tableData);
-    //        }
-    //    }
-    //}, [innerPageName, currentPageName, editing, nameOfButton]);
-
     useEffect(() => {
-        //  console.log("💜경비 current:", current, "currentPageName:",currentPageName, "editing",editing);
+        // console.log("경비 current:", current.name, "inner:", innerPageName.name, "current:",currentPageName.name);
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
+            if (nameOfButton === "save") {
+                if(returnList) {
+                    returnList(originTableData, tableData);
+                } else {
+                    compareData(originTableData, tableData);
+                }
+                setNameOfButton("");
+            }
         }
-        if (innerPageName === "경비" && nameOfButton === "save") {
-            compareData(originTableData, tableData);
-        }
-        if (nameOfButton === "save") {
-            returnList && returnList(originTableData, tableData);
-            setNameOfButton("");
-        }
-        //else if (currentPageName === "경비계획" && nameOfButton === "save") {
-        //    returnList(originTableData, tableData);
-        //    setNameOfButton("");
-        //} else if (currentPageName === "경비실행" && nameOfButton === "save") {
-        //    returnList(originTableData, tableData);
-        //    setNameOfButton("");
-        //} else if (currentPageName === "영업비(정산)" && nameOfButton === "save") {
-        //    returnList(originTableData, tableData);
-        //    setNameOfButton("");
-        //}
     }, [innerPageName, currentPageName, editing, nameOfButton]);
 
     useEffect(() => {
@@ -152,10 +124,6 @@ const ReactDataTableURL = (props) => {
                 esntlId: emUserInfo.uniqId,
             };
             setTableData(updatedTableData);
-
-            //setTableData((prevData) => {
-            //    return [{ ...prevData, ...emUserInfo }];
-            //});
         }
     }, [emUserInfo]);
 
@@ -310,7 +278,7 @@ const ReactDataTableURL = (props) => {
 
     /* table button 활성화 on off */
     useEffect(() => {
-        if (isModalTable && current === modalPageName) {
+        if (isModalTable && current.name === modalPageName) {
             //모달화면일때
             setModalLengthSelectRow(selectedFlatRows.length);
             if (selectedFlatRows.length > 0) {
@@ -318,7 +286,7 @@ const ReactDataTableURL = (props) => {
                 returnSelectRows && returnSelectRows(selects);
                 returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
-        } else if (!isModalTable && (current === currentPageName || current === innerPageName)) {
+        } else if (!isModalTable && isCurrentPage()) {
             //모달화면이 아닐때
             if (selectedFlatRows.length > 0) {
                 const selects = selectedFlatRows.map((row) => row.values);
@@ -560,7 +528,6 @@ const ReactDataTableURL = (props) => {
     };
 
     const compareData = (originData, updatedData) => {
-        console.log("타나 cur", current, "in", innerPageName);
         const filterData = updatedData.filter((data) => data.pjbgTypeCode); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -622,7 +589,7 @@ const ReactDataTableURL = (props) => {
     };
 
     const isCurrentPage = () => {
-        return current !== "" && (current === currentPageName || current === innerPageName || current === modalPageName);
+        return current.id !== "" && (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName);
     };
     //------------------------------- 초기값과 비교하는 코드
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
@@ -695,8 +662,8 @@ const ReactDataTableURL = (props) => {
                                                             type="text"
                                                             value={
                                                                 tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
-                                                                    ? tableData[row.index][cell.column.id] || cell.value
-                                                                    : cell.value
+                                                                    ? tableData[row.index][cell.column.id]
+                                                                    : cell.value || ""
                                                             }
                                                             name={cell.column.id}
                                                             onChange={(e) => onChangeInput(e, row)}

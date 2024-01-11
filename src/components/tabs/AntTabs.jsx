@@ -9,7 +9,7 @@ import { PageContext } from "components/PageProvider.js";
 /* nav, header 클릭 시  label props로 전달 & 해당하는 화면(컴포넌트) children 으로 보여줌 */
 const AntTabs = (props) => {
     const { snbId, lnbId } = props;
-    const  { setCurrentPageName, setPrevCurrentPageName, setInnerPageName, setGnbLabel, setProjectInfo } = useContext(PageContext);
+    const  { setCurrentPageName, setPrevCurrentPageName, setInnerPageName, setGnbLabel } = useContext(PageContext);
     const [activeKey, setActiveKey] = useState(""); // 프로젝트 등록 키 0번(활성화)
     const [items, setItems] = useState([]);
 
@@ -19,14 +19,12 @@ const AntTabs = (props) => {
         if (!tab) return;
         addTab(tab);
 
-        const label = tab.label
-        // console.log("현재페이지: ", label);
+        // console.log("🎄>>>tab:", tab.label, ", ", tab.id);
         setCurrentPageName((pre) => {
-            setInnerPageName("");
-            setPrevCurrentPageName(pre);
-            return label
+            setInnerPageName({});
+            setPrevCurrentPageName({...pre});
+            return {name: tab.label, id: tab.id}
         })
-        // setProjectInfo({}); //초기화
 
     }, [snbId, lnbId]);
 

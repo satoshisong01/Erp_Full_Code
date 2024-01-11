@@ -74,20 +74,19 @@ const ReactDataTablePdorder = (props) => {
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
-        if (currentPageName !== prevCurrentPageName || innerPageName !== prevInnerPageName) {
+        if (currentPageName.id !== prevCurrentPageName.id || innerPageName.id !== prevInnerPageName.id) {
             // 현재 페이지와 이전 페이지가 같지 않다면
             toggleAllRowsSelected(false);
         }
         // 현재 보는 페이지(current)가 클릭한 페이지와 같은게 없다면 return
-        if ((current !== currentPageName && current !== innerPageName) || (current !== modalPageName && current !== innerPageName)) {
+        if ((current.id !== currentPageName.id && current.id !== innerPageName.id) || (current.name !== modalPageName && current.id !== innerPageName.id)) {
             return;
         }
     }, [current, currentPageName, innerPageName, modalPageName]);
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        // if(current === currentPageName) console.log("✨구매, 일치✨", current, currentPageName);
-        // console.log("current:", current, "innerPageName:", innerPageName, "currentPageName:",currentPageName, "editing",editing);
+        // console.log("구매 current:", current.name, "inner:", innerPageName.name, "current:",currentPageName.name);
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
@@ -189,7 +188,7 @@ const ReactDataTablePdorder = (props) => {
 
     /* table button 활성화 on off */
     useEffect(() => {
-        if (isModalTable && current === modalPageName) {
+        if (isModalTable && current.name === modalPageName) {
             //모달화면일때
             setModalLengthSelectRow(selectedFlatRows.length);
             if (selectedFlatRows.length > 0) {
@@ -197,7 +196,7 @@ const ReactDataTablePdorder = (props) => {
                 returnSelectRows && returnSelectRows(selects);
                 returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
-        } else if (!isModalTable && (current === currentPageName || current === innerPageName)) {
+        } else if (!isModalTable && (current.id === currentPageName.id || current.id === innerPageName.id)) {
             //모달화면이 아닐때
             if (selectedFlatRows.length > 0) {
                 const selects = selectedFlatRows.map((row) => row.values);
@@ -282,7 +281,7 @@ const ReactDataTablePdorder = (props) => {
         updatedTableData[row.index][accessor] = value;
 
         //실행
-        if (currentPageName === "구매(재료비)") {
+        if (currentPageName.name === "구매(재료비)") {
             if (row.original.byUnitPrice && row.original.byQunty) {
                 const price = row.original.byUnitPrice * row.original.byQunty;
                 updatedTableData[index]["price"] = Math.round(price);
@@ -290,7 +289,7 @@ const ReactDataTablePdorder = (props) => {
         }
 
         //영업
-        if (innerPageName === "구매(재료비)") {
+        if (innerPageName.name === "구매(재료비)") {
             // 원단가, 기준이익율, 소비자가산출률, 수량
             if (accessor === "byUnitPrice" || accessor === "byStandardMargin" || accessor === "byConsumerOutputRate" || accessor === "byQunty") {
                 if (row.original.byUnitPrice && row.original.byStandardMargin && row.original.byConsumerOutputRate && row.original.byQunty) {
@@ -338,25 +337,24 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const addList = async (addNewData) => {
-        // console.log("🎄🎄add ", addNewData, "con:", condition);
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(addNewData)) return;
         if (!condition || condition.poiId === undefined) {
             console.log("❗프로젝트 정보 없음", currentPageName);
             return;
         }
-        if (currentPageName === "구매계획") {
+        if (currentPageName.id === "PurchasingMgmtPlan") { //실행-계획구매
             //실행
             addNewData.forEach((data) => {
                 data.poiId = condition.poiId || "";
                 data.modeCode = "BUDGET";
             });
-        } else if (currentPageName === "구매실행") {
+        } else if (currentPageName.id === "PurchasingMgmtExe") { //실행-구매
             //실행
             addNewData.forEach((data) => {
                 data.poiId = condition.poiId || "";
                 data.modeCode = "EXECUTE";
             });
-        } else if (innerPageName === "구매(재료비)") {
+        } else if (innerPageName.id === "buying") { //영업-구메
             //영업
             addNewData.forEach((data) => {
                 data.poiId = condition.poiId || "";
@@ -379,17 +377,17 @@ const ReactDataTablePdorder = (props) => {
             console.log("❗프로젝트 정보 없음");
             return;
         }
-        if (currentPageName === "구매계획") {
+        if (currentPageName.id === "PurchasingMgmtPlan") { //실행-계획구매
             toUpdate.forEach((data) => {
                 data.poiId = condition.poiId || "";
                 data.modeCode = "BUDGET";
             });
-        } else if (currentPageName === "구매실행") {
+        } else if (currentPageName.id === "PurchasingMgmtExe") { //실행-구매
             toUpdate.forEach((data) => {
                 data.poiId = condition.poiId || "";
                 // data.modeCode = "EXECUTE";
             });
-        } else if (innerPageName === "구매(재료비)") {
+        } else if (innerPageName.id === "buying") { //영업-구메
             //영업
             toUpdate.forEach((data) => {
                 data.poiId = condition.poiId || "";
@@ -465,7 +463,7 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const isCurrentPage = () => {
-        return current !== "" && (current === currentPageName || current === innerPageName || current === modalPageName);
+        return current.id !== "" && (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName);
     };
 
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;

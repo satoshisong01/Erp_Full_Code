@@ -5,44 +5,23 @@ import ReactDataTable from "components/DataTable/ReactDataTable";
 import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 import { PageContext } from "components/PageProvider";
 import { columns } from "constants/columns";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import RefreshButton from "components/button/RefreshButton";
 import ApprovalFormExe from "components/form/ApprovalFormExe";
 import HideCard from "components/HideCard";
 import SaveButton from "components/button/SaveButton";
-import ReactDataTableView from "components/DataTable/ReactDataTableView";
 import { ChangePrmnPlanData } from "components/DataTable/function/ReplaceDataFormat";
 
 /** 실행관리-인건비-계획 */
 function LaborCostMgmtPlan() {
     const {
         innerPageName,
-        setCurrentPageName,
-        setInnerPageName,
-        projectInfo,
-        setProjectInfo,
-        // viewSetPoiId,
         unitPriceList,
         currentPageName,
         unitPriceListRenew,
         setNameOfButton,
-        versionInfo,
     } = useContext(PageContext);
 
     const [condition, setCondition] = useState({});
-
-    //useEffect(() => {
-    //    if (currentPageName === "인건비") {
-    //        fetchAllData();
-    //    } else {
-    //        setBudgetMgmt([]);
-    //        setBudgetMgmtView([]);
-    //        setCondition({});
-    //    }
-    //}, [currentPageName]);
-
 
     const conditionInfo = (value) => {
         setCondition((prev) => {
@@ -50,22 +29,23 @@ function LaborCostMgmtPlan() {
                 const newCondition = { poiId: value.poiId, poiMonth: value.poiMonth, typeCode: "MM", modeCode: "BUDGET" };
                 fetchAllData(newCondition);
                 return newCondition;
+            } else {
+                fetchAllData(prev);
+                return prev;
             }
-            return prev;
         });
     };
-
 
     const [budgetMgmt, setBudgetMgmt] = useState([]); // 실행인건비계획
     const [budgetMgmtView, setBudgetMgmtView] = useState([]); // 영업인건비
     const [budgetCal, setBudgetCal] = useState([]); // 합계
 
-    useEffect(() => {
-        if (condition.poiId === undefined || condition.poId === "") {
-            //테이블 초기화
-            setBudgetMgmt([]);
-        }
-    }, [currentPageName, innerPageName, condition]);
+    // useEffect(() => {
+    //     if (condition.poiId === undefined || condition.poId === "") {
+    //         //테이블 초기화
+    //         setBudgetMgmt([]);
+    //     }
+    // }, [currentPageName, innerPageName, condition]);
 
     const refresh = () => {
         if (condition.poiId) {
@@ -157,8 +137,7 @@ function LaborCostMgmtPlan() {
     };
 
     const compareData = (originData, updatedData) => {
-        // console.log("currentPageName:", currentPageName, "current:", current);
-        if (currentPageName !== "인건비계획") return;
+        if (currentPageName.id !== "LaborCostMgmtPlan") return;
         const filterData = updatedData.filter((data) => data.pgNm); //pgNm 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -233,7 +212,7 @@ function LaborCostMgmtPlan() {
     return (
         <>
             <Location pathList={locationPath.LaborCostMgmt} />
-            <ApprovalFormExe viewPageName="인건비계획" returnData={conditionInfo} />
+            <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
                 <ReactDataTable columns={columns.orderPlanMgmt.labor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
@@ -249,11 +228,9 @@ function LaborCostMgmtPlan() {
                     editing={true}
                     columns={columns.laborCostMgmt.budget}
                     customDatas={budgetMgmt}
-                    viewPageName="인건비계획"
+                    viewPageName={{name: "인건비계획", id: "LaborCostMgmtPlan"}}
                     returnList={compareData}
                     condition={condition}
-
-                    //hideCheckBox={true}
                 />
             </HideCard>
         </>

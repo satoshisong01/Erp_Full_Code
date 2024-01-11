@@ -155,7 +155,7 @@ export const sales = [
         path: URL.OrderPlanMgmt,
         component: <OrderPlanMgmt />,
         // label: "계획관리",
-        label: "원가버전조회", //첫 페이지
+        label: "계획관리", //첫 페이지
         pLabel: "영업관리",
     },
     {
@@ -200,42 +200,42 @@ export const execution = [
         id: "LaborCostMgmtPlan", //계획인건비
         path: URL.LaborCostMgmtPlan,
         component: <LaborCostMgmtPlan />,
-        label: "인건비계획",
+        label: "인건비",
         pLabel: "실행관리",
     },
     {
         id: "LaborCostMgmtExe", //실행인건비
         path: URL.LaborCostMgmtExe,
         component: <LaborCostMgmtExe />,
-        label: "인건비실행",
+        label: "인건비",
         pLabel: "실행관리",
     },
     {
         id: "PurchasingMgmtPlan", //계획구매
         path: URL.PurchasingMgmtPlan,
         component: <PurchasingMgmtPlan />,
-        label: "구매계획",
+        label: "구매(재료비)",
         pLabel: "실행관리",
     },
     {
         id: "PurchasingMgmtExe", //실행구매
         path: URL.PurchasingMgmtExe,
         component: <PurchasingMgmtExe />,
-        label: "구매실행",
+        label: "구매(재료비)",
         pLabel: "실행관리",
     },
     {
         id: "ExpenseMgmtPlan", //계획경비
         path: URL.ExpenseMgmtPlan,
         component: <ExpenseMgmtPlan />,
-        label: "경비계획",
+        label: "경비",
         pLabel: "실행관리",
     },
     {
         id: "ExpenseMgmtExe", //실행경비
         path: URL.ExpenseMgmtExe,
         component: <ExpenseMgmtExe />,
-        label: "경비실행",
+        label: "경비",
         pLabel: "실행관리",
     },
     //{

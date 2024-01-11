@@ -6,31 +6,16 @@ import { PageContext } from "components/PageProvider";
 import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
 import ApprovalFormExe from "components/form/ApprovalFormExe";
 import HideCard from "components/HideCard";
-import AddButton from "components/button/AddButton";
-import ModButton from "components/button/ModButton";
-import DelButton from "components/button/DelButton";
 import RefreshButton from "components/button/RefreshButton";
-import DeleteModal from "components/modal/DeleteModal";
-import AddModModal from "components/modal/AddModModal";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import SaveButton from "components/button/SaveButton";
 import { columns } from "constants/columns";
 
 /** 영업관리-영업비(정산) */
 function SalesExpenses() {
-    const { isSaveFormTable, currentPageName, setInnerPageName, innerPageName, setNameOfButton, projectInfo, setProjectInfo, setCurrentPageName } =
-        useContext(PageContext);
+    const { currentPageName, setNameOfButton} = useContext(PageContext);
 
     const [condition, setCondition] = useState({});
-
-    const current = "영업비(정산)";
-
-    useEffect(() => {
-        if (currentPageName === "영업비(정산)" && current === "영업비(정산)") {
-            setCurrentPageName(current);
-        }
-        setInnerPageName("");
-    }, [currentPageName]);
 
     const conditionInfo = (value) => {
         setCondition((prev) => {
@@ -38,6 +23,8 @@ function SalesExpenses() {
                 const newCondition = { poiId: value.poiId, modeCode: "EXECUTE" };
                 fetchAllData(newCondition);
                 return newCondition;
+            } else {
+                fetchAllData(prev);
             }
             return prev;
         });
@@ -57,12 +44,7 @@ function SalesExpenses() {
             //테이블 초기화
             setSalesCost([]);
         }
-    }, [currentPageName, innerPageName, condition]);
-
-    //useEffect(() => {
-    //    console.log(selectedRows);
-    //    selectedRows && setDeleteNames(selectedRows.map((row) => row.poiNm));
-    //}, [selectedRows]);
+    }, [currentPageName, condition]);
 
     const totalColumns = [
         {
@@ -148,15 +130,10 @@ function SalesExpenses() {
 
         const resultData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", requestSearch);
         const viewResult = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", choiceData);
-        console.log(resultData, "실행 영업비");
-        console.log(viewResult, choiceData, "영업 영업비");
         const viewUpdated = updatePjbgType(viewResult);
-        console.log(viewUpdated, "viewUpdated");
         setSalesCostView(viewUpdated);
         const updatedData = processResultData(resultData, condition);
         const filteredData = filterData(updatedData);
-        console.log(updatedData, "updatedData 추가되어서 나와야하는데");
-        console.log(filteredData, "이건 걸러진 데이터임");
         setSalesCost(filteredData);
     };
 
@@ -297,7 +274,6 @@ function SalesExpenses() {
 
         const mergedData = Object.values(transformedData).map((mergedItem, index) => {
             const newObj = {};
-            console.log(mergedItem, "이거머더라");
             newObj["modeCode"] = mergedItem.modeCode;
             newObj["pjbgBeginDt"] = mergedItem.pjbgBeginDt;
             newObj["pjbgEndDt"] = mergedItem.pjbgEndDt;
@@ -325,31 +301,25 @@ function SalesExpenses() {
 
             return newObj;
         });
-        console.log(mergedData, "추가된거있나");
         return mergedData;
     };
 
     const returnList = (originTableData, tableData) => {
-        console.log(originTableData, tableData);
         compareData(originTableData, tableData);
     };
 
     const compareData = (originData, updatedData) => {
-        console.log("타나");
         const filterData = updatedData.filter((data) => data.poiId); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
 
         if (originDataLength > updatedDataLength) {
-            console.log(originDataLength, "originDataLength");
-            console.log(updatedDataLength, "updatedDataLength");
-
             //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
-            const updateDataInOrigin = (originData, updatedData) => {
+            const updateDataInOrigin = (originData, filterData) => {
                 const updatedArray = [...originData];
 
-                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
-                    const updatedItem = updatedData[i];
+                for (let i = 0; i < Math.min(filterData.length, originData.length); i++) {
+                    const updatedItem = filterData[i];
                     updatedArray[i] = {
                         ...updatedItem,
                         pjbgId: updatedArray[i].pjbgId,
@@ -366,7 +336,7 @@ function SalesExpenses() {
                 return updatedArray;
             };
 
-            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
+            const firstRowUpdate = updateDataInOrigin(originData, filterData);
             updateItem(firstRowUpdate); //수정
 
             const delList = [];
@@ -389,10 +359,8 @@ function SalesExpenses() {
             const addList = [];
             for (let i = originDataLength; i < updatedDataLength; i++) {
                 const newItem = filterData[i];
-
-                // Add default value for esntlId if it doesn't exist
                 if (!newItem.esntlId) {
-                    newItem.esntlId = "EMPLY_00000000000001";
+                    newItem.esntlId = "EMPLY_00000000000001"; //고정이라니? 확인해봐야됨..
                 }
 
                 for (let j = 1; j <= 5; j++) {
@@ -412,13 +380,11 @@ function SalesExpenses() {
                 }
                 addList.push(newItem);
             }
-            console.log(addList, "이거나오는거보자");
             addItem(addList); //추가
         }
     };
 
     const addItem = async (addData) => {
-        console.log(addData, "추가되야함");
         const url = `/api/baseInfrm/product/pjbudgetExe/addArrayList.do`;
         const resultData = await axiosPost(url, addData);
         if (resultData) {
@@ -427,10 +393,8 @@ function SalesExpenses() {
     };
 
     const updateItem = async (toUpdate) => {
-        console.log(toUpdate, "업데이트 값은?");
         const url = `/api/baseInfrm/product/pjbudgetExe/editArrayList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
-        console.log(resultData, "수정된값");
         if (resultData) {
             refresh && refresh();
         }
@@ -438,10 +402,8 @@ function SalesExpenses() {
 
     const deleteItem = async (removeItem) => {
         const mergedArray = [].concat(...removeItem);
-        console.log(mergedArray, "삭제될놈들");
         const url = `/api/baseInfrm/product/pjbudgetExe/removeAll.do`;
         const resultData = await axiosDelete(url, mergedArray);
-
         if (resultData) {
             refresh && refresh();
         }
@@ -450,7 +412,7 @@ function SalesExpenses() {
     return (
         <>
             <Location pathList={locationPath.SalesExpenses} />
-            <ApprovalFormExe viewPageName={current} returnData={conditionInfo} />
+            <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
                 <ReactDataTable columns={columns.orderPlanMgmt.expenses} customDatas={salesCostView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
@@ -465,9 +427,9 @@ function SalesExpenses() {
                 <ReactDataTableURL
                     editing={true}
                     columns={columnsData}
-                    returnList={returnList}
+                    returnList={(origin, update) => compareData(origin, update)}
                     customDatas={salesCost}
-                    viewPageName={current}
+                    viewPageName={{name: "영업비(정산)", id: "SalesExpenses"}}
                     customDatasRefresh={refresh}
                     condition={condition}
                 />

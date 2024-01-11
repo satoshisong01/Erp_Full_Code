@@ -15,24 +15,12 @@ import { ChangePrmnPlanData } from "components/DataTable/function/ReplaceDataFor
 function LaborCostMgmtExe() {
     const {
         innerPageName,
-        setCurrentPageName,
-        setPrevInnerPageName,
-        setInnerPageName,
-        isSaveFormTable,
-        setIsSaveFormTable,
-        projectInfo,
-        setProjectInfo,
-        projectItem,
-        // viewSetPoiId,
         unitPriceList,
         currentPageName,
         setNameOfButton,
-        unitPriceListRenew,
     } = useContext(PageContext);
 
     const [condition, setCondition] = useState({});
-
-    const current = "인건비실행";
 
     const conditionInfo = (value) => {
         setCondition((prev) => {
@@ -55,12 +43,12 @@ function LaborCostMgmtExe() {
     const [budgetMgmtView, setBudgetMgmtView] = useState([]); // 실행인건비실행
     const [budgetCal, setBudgetCal] = useState([]); // 합계
 
-    useEffect(() => {
-        if (condition.poiId === undefined || condition.poId === "") {
-            //테이블 초기화
-            setBudgetMgmRun([]);
-        }
-    }, [currentPageName, innerPageName, condition]);
+    // useEffect(() => {
+    //     if (condition.poiId === undefined || condition.poId === "") {
+    //         //테이블 초기화
+    //         setBudgetMgmRun([]);
+    //     }
+    // }, [currentPageName, innerPageName, condition]);
 
     const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", condition);
@@ -213,7 +201,7 @@ function LaborCostMgmtExe() {
                     editing={true}
                     columns={columns.laborCostMgmt.run}
                     customDatas={budgetMgmtRun}
-                    viewPageName={current}
+                    viewPageName={{name:"인건비실행", id:"LaborCostMgmtExe"}}
                     returnList={compareData}
                     condition={condition}
                 />
