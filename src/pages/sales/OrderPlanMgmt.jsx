@@ -388,7 +388,7 @@ function OrderPlanMgmt() {
                 setOutsourcingDatas(resultData);
                 let devOutPriceTotal = 0;
                 resultData.forEach((data) => {
-                    devOutPriceTotal += data.devOutPrice;
+                    devOutPriceTotal += data.devOutMm * data.devOutPrice;
                 });
                 setOutCalDatas([{ devOutPriceTotal }]);
                 console.log("😈영업-개발외주비:", requestData, "resultData:", resultData);

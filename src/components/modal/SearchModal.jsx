@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { PageContext } from "components/PageProvider";
 import SearchList from "components/SearchList";
-import MakeItemField from "utils/MakeItemField copy";
+import MakeItemField from "utils/MakeItemField";
 
 Modal.setAppElement("#root"); // Set the root element for accessibility
 
@@ -19,23 +19,28 @@ export default function SearchModal(props) {
 
     useEffect(() => {
         if (isOpen) {
-            setModalPageName("검색팝업")
+            setModalPageName("검색팝업");
             setIsModalTable(true);
         }
         return () => {
-            setIsModalTable(false)
-            setModalPageName("")
+            setIsModalTable(false);
+            setModalPageName("");
         };
     }, [isOpen]);
 
     const conditionList = [
-        { title: "회사타입", col: "cltType", type: "radio", option: [
-            {label: "협력사", value: "P"},
-            {label: "고객사", value: "C"},
-        ] },
+        {
+            title: "회사타입",
+            col: "cltType",
+            type: "radio",
+            option: [
+                { label: "협력사", value: "P" },
+                { label: "고객사", value: "C" },
+            ],
+        },
         { title: "거래처명", col: "cltNm", type: "input" },
-        { title: "픔목그룹명", col: "pgNm", type: "input" }
-    ]
+        { title: "픔목그룹명", col: "pgNm", type: "input" },
+    ];
 
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
@@ -60,7 +65,7 @@ export default function SearchModal(props) {
                 delete searchData[key]; //빈값 제외
             }
         });
-        returnData && returnData(searchData)
+        returnData && returnData(searchData);
     };
 
     // const onClick = (e) => {
@@ -74,12 +79,7 @@ export default function SearchModal(props) {
     // }
 
     return (
-        <Modal
-            appElement={document.getElementById("root")}
-            isOpen={isOpen}
-            onRequestClose={onClose}
-            contentLabel={title}
-        >
+        <Modal appElement={document.getElementById("root")} isOpen={isOpen} onRequestClose={onClose} contentLabel={title}>
             <div className="me-modal">
                 <div className="me-modal-container" style={{ width, height }}>
                     <div className="me-modal-inner">
@@ -92,7 +92,7 @@ export default function SearchModal(props) {
 
                         <div className="me-modal-body" ref={bodyRef}>
                             <div className="body-area" style={{ gap: 0 }}>
-                                <div className="flex-container" style={{justifyContent: "center"}}>
+                                <div className="flex-container" style={{ justifyContent: "center" }}>
                                     {conditionList.map((param, idx) => (
                                         <div key={idx} className="flex-group mg-b-10">
                                             <div className="flex-label">
