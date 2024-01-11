@@ -5,63 +5,72 @@ import NavLinkTabs from "components/tabs/NavLinkTabs";
 import store from "store/configureStore";
 
 function EgovLeftNavSystem(props) {
-    const {lnbLabel, snbLabel} = props;
+    const { lnbId, snbId } = props;
     const [activeSub, setActiveSub] = useState("");
     const [activeLabel, setActiveLabel] = useState("");
 
     /* header 또는 tabs에서 선택된 라벨을 저장  */
     useEffect(() => {
-        const propsLabel = lnbLabel || snbLabel;
-        let parentLabel = "";
+        const propsId = lnbId || snbId;
+        let parentId = "";
 
         for (const item of menuItems) {
-            if (item.label === propsLabel) {
-                parentLabel = item.label;
+            if (item.id === propsId) {
+                parentId = item.id;
                 break;
             }
 
             for (const subMenu of item.subMenus) {
-                if (subMenu.label === propsLabel) {
-                    parentLabel = item.label;
+                if (subMenu.id === propsId) {
+                    parentId = item.id;
                     break;
                 }
             }
         }
-        setActiveSub(lnbLabel || snbLabel);
-        if (activeLabel !== parentLabel) setActiveLabel(parentLabel);
-    }, [lnbLabel, snbLabel]);
+        setActiveSub(lnbId || snbId);
+        if (activeLabel !== parentId) setActiveLabel(parentId);
+    }, [lnbId, snbId]);
 
-    const clickHandle = (label, sub) => {
-        setActiveSub(sub);
-        setActiveLabel(label);
-        store.dispatch(selectSnb(sub));
+    const clickHandle = (menuItem, subMenu) => {
+        if(subMenu === null || subMenu === undefined) { //하위 없을때
+            const label = menuItem.subMenus && menuItem.subMenus.length > 0 ? menuItem.subMenus[0].label : menuItem.label;
+            const id = menuItem.subMenus && menuItem.subMenus.length > 0 ? menuItem.subMenus[0].id : menuItem.id;
+            setActiveLabel(id);
+            setActiveSub(id);
+            store.dispatch(selectSnb(label, menuItem.id));
+        } else if(subMenu !== null || subMenu !== undefined) {
+            setActiveSub(subMenu.id);
+            store.dispatch(selectSnb(subMenu.label, subMenu.id));
+        }
     };
 
     const menuItems = [
         {
             label: "메뉴관리",
+            id: "MenuInfo",
             subMenus: [
-                { label: "메뉴정보관리" },
-                { label: "프로그램목록관리" },
+                { label: "메뉴정보관리", id: "MenuInfo" },
+                { label: "프로그램목록관리", id: "ProgramList" },
             ],
         },
-        { label: "권한관리", subMenus: [] },
+        { label: "권한관리", id: "AuthorizationMgmt", subMenus: [] },
 
         //{
         //    label: "게시판관리",
+        //    id: "",
         //    subMenus: [
-        //        { label: "게시물관리" },
-        //        { label: "게시판마스터관리" },
-        //        { label: "게시판열람권한관리" },
-        //        { label: "댓글관리" },
+        //        { label: "게시물관리", id: "" },
+        //        { label: "게시판마스터관리", id: "" },
+        //        { label: "게시판열람권한관리", id: "" },
+        //        { label: "댓글관리", id: "" },
         //    ],
         //},
         {
             label: "코드관리",
             subMenus: [
-                { label: "분류코드관리" },
-                { label: "그룹코드관리" },
-                { label: "상세코드관리" },
+                { label: "그룹코드관리", id: "GroupCode" },
+                { label: "공통코드관리", id: "CategoryCode" },
+                { label: "상세코드관리", id: "DetailCode" },
             ],
         },
         // { label: "접속이력관리", subMenus: [] },
@@ -77,19 +86,10 @@ function EgovLeftNavSystem(props) {
                             <li key={menuItem.label}>
                                 <NavLinkTabs
                                     to="#"
-                                    onClick={(e) =>
-                                        clickHandle(
-                                            menuItem.label,
-                                            menuItem.subMenus.length > 0
-                                                ? menuItem.subMenus[0].label
-                                                : menuItem.label
-                                        )
-                                    }
-                                    activeName={
-                                        activeLabel === menuItem.label
-                                            ? menuItem.label
-                                            : null
-                                    }>
+                                    onClick={(e) => clickHandle(menuItem) }
+                                    activeName={activeLabel === menuItem.id ? menuItem.label : null}
+                                    styled={`padding-x ${menuItem.subMenus.length > 0 ? '' : 'libg'}`}
+                                >
                                     {menuItem.label}
                                 </NavLinkTabs>
 
@@ -99,13 +99,10 @@ function EgovLeftNavSystem(props) {
                                             <li key={subMenu.label}>
                                                 <NavLinkTabs
                                                     to="#"
-                                                    onClick={(e) =>
-                                                        clickHandle(
-                                                            menuItem.label,
-                                                            subMenu.label
-                                                        )
-                                                    }
-                                                    activeName={activeSub}>
+                                                    onClick={(e) => clickHandle( menuItem, subMenu ) }
+                                                    activeName={activeSub === subMenu.id ? subMenu.label : null}
+                                                    styled="padding-x libg"
+                                                >
                                                     {subMenu.label}
                                                 </NavLinkTabs>
                                             </li>

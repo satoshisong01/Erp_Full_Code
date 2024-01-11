@@ -17,6 +17,7 @@ import DeleteModal from "components/modal/DeleteModal";
 /** 영업관리-프로젝트관리 */
 function OrderMgmt() {
     const { projectInfo, currentPageName } = useContext(PageContext);
+    // const [viewPageName, setViewPageName] = useState({id:"OrderMgmt", name:"프로젝트관리"})
     const [isOpenAdd, setIsOpenAdd] = useState(false);
     const [isOpenMod, setIsOpenMod] = useState(false);
     const [isOpenDel, setIsOpenDel] = useState(false);
@@ -30,7 +31,7 @@ function OrderMgmt() {
     }, [selectedRows]);
 
     useEffect(() => {
-        if (currentPageName === "프로젝트관리") {
+        if (currentPageName.id === "OrderMgmt") {
             fetchAllData({poiStatusBudget : "ALL"}); //맨처음에 부르기..
         }
     }, [currentPageName]);
@@ -100,7 +101,7 @@ function OrderMgmt() {
 
     const fetchAllData = async (condition) => {
         const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
-        console.log("condition:", condition);
+        // console.log("condition:", condition);
         const resultData = await axiosFetch(url, condition || {});
         setTableData(resultData);
     };
@@ -119,7 +120,7 @@ function OrderMgmt() {
                 <ReactDataTable
                     columns={columns.orderMgmt.project}
                     customDatas={tableData}
-                    viewPageName="프로젝트관리"
+                    viewPageName={{id:"OrderMgmt", name:"프로젝트관리"}}
                     returnSelectRows={(data) => {
                         setSelectedRows(data);
                     }}

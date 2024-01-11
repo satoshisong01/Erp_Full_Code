@@ -4,10 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PageContext } from "components/PageProvider";
 
 export default function ModalPage({onClose}) {
-    const { projectItem, setProjectInfo, setRefesh } = useContext(PageContext);
+    const { projectItem, setProjectInfo, setRefresh } = useContext(PageContext);
 
     useEffect(() => { //임시로 새로고침
-        setRefesh(true);
+        setRefresh(true);
     }, [])
     function handleItemClick(poiId, poiNm, poiCode, poiVersion, poId, poiMonth) {
         setProjectInfo({ poiId, poiNm, poiCode, poiVersion, poId, poiMonth });

@@ -74,21 +74,8 @@ const ReactDataTableDevCost = (props) => {
         }
     }, []);
 
-    const setValueCompany = (rowIndex) => {
-        //setRowIndex()
-        if (isCurrentPage()) {
-            setIsOpenModalCompany(true);
-            setRowIndex(rowIndex);
-        }
-    };
-
     const isCurrentPage = () => {
-        // if(current === "") {
-        //     console.log("Current is undefined");
-        // } else if(current !== currentPageName && current !== innerPageName && current !== modalPageName) {
-        //     console.log("Current page does not match all pages");
-        // }
-        return current !== "" && (current === currentPageName || current === innerPageName || current === modalPageName);
+        return current.id !== "" && (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName);
     };
 
     useEffect(() => {
@@ -103,22 +90,23 @@ const ReactDataTableDevCost = (props) => {
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
-        if (currentPageName !== prevCurrentPageName || innerPageName !== prevInnerPageName) {
+        if (currentPageName.id !== prevCurrentPageName.id || innerPageName.id !== prevInnerPageName.id) {
             // 현재 페이지와 이전 페이지가 같지 않다면
             toggleAllRowsSelected(false);
         }
         // 현재 보는 페이지(current)가 클릭한 페이지와 같은게 없다면 return
-        if (current !== currentPageName && current !== innerPageName) {
+        if (current.id !== currentPageName.id && current.id !== innerPageName.id) {
             return;
         }
     }, [currentPageName, innerPageName]);
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
+        // console.log("개발외주비 current:", current.name, "inner:", innerPageName.name, "current:",currentPageName.name);
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
-        if (current === innerPageName && nameOfButton === "save") {
+        if (current.id === innerPageName.id && nameOfButton === "save") {
             compareData(originTableData, tableData);
             setNameOfButton("");
         }
@@ -168,7 +156,6 @@ const ReactDataTableDevCost = (props) => {
 
     useEffect(() => {
         if (isCurrentPage() && Object.keys(projectPgNm).length > 0) {
-            console.log("🔥🔥projectPgNm: ", projectPgNm);
             setValueDataPgInfo(rowIndex, projectPgNm);
             setProjectPgNm({});
         }
@@ -289,7 +276,7 @@ const ReactDataTableDevCost = (props) => {
 
     /* table button 활성화 on off */
     useEffect(() => {
-        if (isModalTable && current === modalPageName) {
+        if (isModalTable && current.name === modalPageName) {
             //모달화면일때
             setModalLengthSelectRow(selectedFlatRows.length);
             if (selectedFlatRows.length > 0) {
@@ -297,7 +284,7 @@ const ReactDataTableDevCost = (props) => {
                 returnSelectRows && returnSelectRows(selects);
                 returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
             }
-        } else if (!isModalTable && (current === currentPageName || current === innerPageName)) {
+        } else if (!isModalTable && (current.id === currentPageName.id || current.id === innerPageName.id)) {
             //모달화면이 아닐때
             if (selectedFlatRows.length > 0) {
                 const selects = selectedFlatRows.map((row) => row.values);

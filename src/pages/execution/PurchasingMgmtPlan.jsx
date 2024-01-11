@@ -15,32 +15,11 @@ import BasicButton from "components/button/BasicButton";
 
 /** 실행관리-구매-계획 */
 function PurchasingMgmtPlan() {
-    const {
-        projectInfo,
-        setProjectInfo,
-        currentPageName,
-        setCurrentPageName,
-        setLoadButton,
-        setNameOfButton,
-        setInnerPageName,
-        prevCurrentPageName,
-        setPrevCurrentPageName,
-    } = useContext(PageContext);
+    const { setNameOfButton } = useContext(PageContext);
     const [condition, setCondition] = useState({});
     const [budgetMgmt, setBudgetMgmt] = useState([]);
     const [buyCall, setBuyCall] = useState([]);
     const [view, setView] = useState([]);
-    const current = "구매계획";
-
-    useEffect(() => {
-        return () => {
-            setProjectInfo({});
-        };
-    }, []);
-
-    useEffect(() => {
-        console.log(view, "이거왜 뜨다말지");
-    }, [view]);
 
     const fetchAllData = async (condition) => {
         const data = await axiosFetch("/api/baseInfrm/product/buyIngInfoExe/totalListAll.do", condition);
@@ -93,7 +72,7 @@ function PurchasingMgmtPlan() {
     return (
         <>
             <Location pathList={locationPath.PurchasingMgmt} />
-            <ApprovalFormExe viewPageName={current} returnData={conditionInfo} />
+            <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
                 <ReactDataTable columns={columns.purchasingMgmt.planView} customDatas={view} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
@@ -112,7 +91,7 @@ function PurchasingMgmtPlan() {
                     columns={columns.purchasingMgmt.budget}
                     viewLoadDatas={view}
                     customDatas={budgetMgmt}
-                    viewPageName={current}
+                    viewPageName={{ name: "구매(재료비)", id: "PurchasingMgmtPlan" }}
                     customDatasRefresh={refresh}
                     condition={condition}
                 />

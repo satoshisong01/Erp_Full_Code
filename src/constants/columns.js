@@ -109,7 +109,7 @@ export const columns = {
             { header: "계약일", col: "poiBeginDt", cellWidth: "10%" },
             { header: "납기시작일", col: "poiDueBeginDt", cellWidth: "10%" },
             { header: "납기종료일", col: "poiDueEndDt", cellWidth: "10%" },
-            { header: "이익률", col: "standardMargin", cellWidth: "6%" },
+            { header: "이익률(%)", col: "standardMargin", cellWidth: "8%" },
             { header: "상태", col: "poiStatus", cellWidth: "10%" },
         ],
         condition: [
@@ -273,7 +273,6 @@ export const columns = {
             { items: [{ header: "비고", col: "versionDesc", type: "desc" }] },
         ],
         versionMod: [
-            { items: [{ header: "프로젝트명", col: "poiNm", require: true, type: "project" }] },
             { items: [{ header: "버전", col: "versionNum", require: true, type: "input" }] },
             { items: [{ header: "비고", col: "versionDesc", type: "desc" }] },
             {

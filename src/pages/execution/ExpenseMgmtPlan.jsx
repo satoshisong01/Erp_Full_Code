@@ -12,12 +12,10 @@ import SaveButton from "components/button/SaveButton";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 /** 실행관리-경비-계획 */
 function ExpenseMgmtPlan() {
-    const { projectInfo, setProjectInfo, currentPageName, setCurrentPageName, setNameOfButton, setInnerPageName } = useContext(PageContext);
+    const { setNameOfButton } = useContext(PageContext);
     const [pjbudgetDatasView, setPjbudgetDatasView] = useState([]); // 경비
     const [pjbudgetCalDatas, setPjbudgetCalDatas] = useState([]); // 경비
     const [condition, setCondition] = useState({});
-
-    const current = "경비계획";
 
     const refresh = () => {
         if (condition.poiId) {
@@ -360,7 +358,6 @@ function ExpenseMgmtPlan() {
         const resultData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", condition);
         const viewData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", condition);
         const updatedViewData = updatePjbgType(viewData);
-        // console.log(updatedViewData, "일단찎어봐");
         setPjbudgetDatasView(updatedViewData || []);
         if (resultData && resultData.length > 0) {
             console.log(resultData, "경비데이터에 직급불러오는지보자");
@@ -393,7 +390,7 @@ function ExpenseMgmtPlan() {
     return (
         <>
             <Location pathList={locationPath.ExpenseMgmt} />
-            <ApprovalFormExe viewPageName={current} returnData={conditionInfo} />
+            <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
                 <ReactDataTable columns={columns.orderPlanMgmt.expenses} customDatas={pjbudgetDatasView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
@@ -410,7 +407,7 @@ function ExpenseMgmtPlan() {
                     returnList={returnList}
                     columns={columns.expenseMgmt.budget}
                     customDatas={budgetMgmt}
-                    viewPageName={current}
+                    viewPageName={{name: "경비", id: "ExpenseMgmtPlan"}}
                     customDatasRefresh={refresh}
                     condition={condition}
                 />

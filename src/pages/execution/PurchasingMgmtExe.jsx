@@ -15,23 +15,13 @@ import BasicButton from "components/button/BasicButton";
 
 /** 실행관리-구매관리 */
 function PurchasingMgmtExe() {
-    const { currentPageName, setCurrentPageName, projectInfo, setProjectInfo, setNameOfButton, setLoadButton, setInnerPageName } = useContext(PageContext);
+    const { setNameOfButton } = useContext(PageContext);
     const [condition, setCondition] = useState({});
     const [runMgmt, setRunMgmt] = useState([]); // 구매 실행관리
     const [view, setView] = useState([]); // 계획 조회
     const [buyCall, setBuyCall] = useState([]); //합계
 
-    useEffect(() => {
-        return () => {
-            setProjectInfo({});
-        };
-    }, []);
-
-    const current = "구매실행";
-
     const fetchAllData = async (condition) => {
-        //rcvStatus 입고상태 ...
-        // const data = await axiosFetch("/api/baseInfrm/product/buyIngInfoExe/totalListAll.do", condition);
         const data = await axiosFetch("/api/baseInfrm/product/receivingInfo/totalListAll.do", condition);
         const viewData = await axiosFetch("/api/baseInfrm/product/buyIngInfoExe/totalListAll.do", { ...condition, modeCode: "BUDGET" });
         console.log(viewData, "뷰데이트");
@@ -94,7 +84,7 @@ function PurchasingMgmtExe() {
     return (
         <>
             <Location pathList={locationPath.PurchasingMgmt} />
-            <ApprovalFormExe viewPageName={current} returnData={conditionInfo} />
+            <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
                 <ReactDataTable columns={columns.purchasingMgmt.view} customDatas={view} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
@@ -113,7 +103,7 @@ function PurchasingMgmtExe() {
                     columns={columns.purchasingMgmt.run}
                     viewLoadDatas={view}
                     customDatas={runMgmt}
-                    viewPageName={current}
+                    viewPageName={{ name: "구매(재료비)", id: "PurchasingMgmtExe" }}
                     customDatasRefresh={refresh}
                     condition={condition}
                 />

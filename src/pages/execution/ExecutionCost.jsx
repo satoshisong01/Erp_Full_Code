@@ -18,38 +18,40 @@ import { axiosFetch, axiosUpdate } from "api/axiosFetch";
 
 /** 실행관리-실행원가관리 */
 function ExecutionCost() {
-    const { setNameOfButton, projectInfo, currentPageName } = useContext(PageContext);
+    const { currentPageName, setNameOfButton } = useContext(PageContext);
     const [isOpenMod, setIsOpenMod] = useState(false);
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
     const [tableData, setTableData] = useState([]);
+    const [condition, setCondition] = useState({poiStatusExecute: "ALL"});
 
-    //const orderMgmtTable = useRef(null);
+    const onSearch = (value) => {
+        if(value && value.poiStatus) {
+            setCondition({...value})
+        } else {
+            delete condition.poiStatus;
+            setCondition({...value, poiStatusExecute: "ALL"})
+        }
+    }
 
     // useEffect(() => {
-    //     console.log("selectedRows:", selectedRows);
-    // }, [selectedRows]);
+    //     if (currentPageName.id === "ExecutionCost") {
+    //         fetchAllData({poiStatusExecute : "ALL"}); //맨처음에 부르기..
+    //     }
+    // }, [currentPageName]);
 
-    useEffect(() => {
-        if (currentPageName === "원가조회") {
-            fetchAllData({poiStatusExecute : "ALL"}); //맨처음에 부르기..
-        }
-    }, [currentPageName]);
+    // const fetchAllData = async (condition) => {
+    //     const resultData = await axiosFetch("/api/baseInfrm/product/pjOrdrInfo/totalListAll.do", {
+    //         ...condition,
+    //     });
+    //     setTableData(resultData);
+    // };
 
-    const fetchAllData = async (condition) => {
-        const resultData = await axiosFetch("/api/baseInfrm/product/pjOrdrInfo/totalListAll.do", {
-            ...condition,
-            // searchCondition: "",
-            // searchKeyword: "",
-        });
-        setTableData(resultData);
-    };
-
-    const handleReturn = (value) => {
-        fetchAllData(value);
-    };
+    // const handleReturn = (value) => {
+    //     fetchAllData(value);
+    // };
 
     const modifyToServer = async (updatedData) => {
-        console.log("💜 modifyToServer:", updatedData);
+        // console.log("💜 modifyToServer:", updatedData);
         if (updatedData.length === 0) {
             alert("수정할 항목을 선택하세요.");
             return;
@@ -59,7 +61,8 @@ function ExecutionCost() {
         const resultData = await axiosUpdate(url, updated);
         if (resultData) {
             alert("수정되었습니다");
-            fetchAllData({poiStatusExecute : "ALL"});
+            setNameOfButton("refresh");
+        //     fetchAllData({poiStatusExecute : "ALL"});
         } else {
             alert("error!!");
         }
@@ -68,24 +71,24 @@ function ExecutionCost() {
     return (
         <>
             <Location pathList={locationPath.ExecutionCost} />
-            <SearchList conditionList={columns.executionCost.condition} onSearch={handleReturn} />
+            <SearchList conditionList={columns.executionCost.condition} onSearch={onSearch} />
             <HideCard title="계획 등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
                     <PopupButton targetUrl={URL.ExecutionCostsDoc} data={{ label: "실행원가서", ...selectedRows[0] }} />
                     <PopupButton targetUrl={URL.PostCostsDoc} data={{ label: "정산서", ...selectedRows[0] }} />
-                    {/* <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} /> */}
                     <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
-                    {/* <RefreshButton onClick={() => setNameOfButton("refresh")} /> */}
-                    <RefreshButton onClick={() => fetchAllData({poiStatusExecute : "ALL"})} />
+                    {/* <RefreshButton onClick={() => fetchAllData({poiStatusExecute : "ALL"})} /> */}
+                    <RefreshButton onClick={() => setNameOfButton("refresh")} />
                 </div>
                 <ReactDataTable
                     columns={columns.orderMgmt.project}
                     customDatas={tableData}
                     suffixUrl="/baseInfrm/product/pjOrdrInfo"
-                    viewPageName="원가조회"
+                    viewPageName={{name: "원가조회", id:"ExecutionCost"}}
                     returnSelectRows={(data) => {
                         setSelectedRows(data);
                     }}
+                    condition={condition}
                 />
             </HideCard>
             {isOpenMod && (

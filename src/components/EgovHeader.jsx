@@ -4,9 +4,9 @@ import URL from 'constants/url';
 import store from 'store/configureStore';
 import { selectLnb } from './tabs/TabsActions';
 import { connect } from 'react-redux';
-import { execution, reference, sales } from './tabs/Children';
+import { execution, reference, sales, system } from './tabs/Children';
 import NavLinkTabs from './tabs/NavLinkTabs';
-import { axiosGet } from 'api/axiosFetch';
+import { axiosGet } from '../api/axiosFetch';
 import { PageContext } from './PageProvider';
 import { v4 as uuidv4 } from "uuid";
 
@@ -21,7 +21,9 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
     const sessionUserName = JSON.parse(sessionUser)?.name;
     const sessionUserSe = JSON.parse(sessionUser)?.userSe;
 
-    const { setGnbLabel } = useContext(PageContext);
+    // console.log("🎄로그인🎄 ID:", sessionUserId, "name:", sessionUserName, "userSe:",sessionUserSe);
+
+    const { gnbLabel, setGnbLabel } = useContext(PageContext);
     const [activeGnb, setActiveGnb] = useState('');
     const [activeLnb, setActiveLnb] = useState('');
 
@@ -38,6 +40,10 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
             setActiveGnb(tabLabel);
         }
     }, [lnbId, snbId]);
+
+    useEffect(() => {
+        setActiveGnb(gnbLabel); //헤더 4중류 active
+    }, [gnbLabel])
 
     const navigate = useNavigate();
 
@@ -66,9 +72,10 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
     }
 
     const lnbClick = (gnbLabel, lnbLabel, id) => {
-        store.dispatch(selectLnb(lnbLabel, id));
-        setGnbLabel(gnbLabel);
+        store.dispatch(selectLnb(lnbLabel, id)); //액션
+        setGnbLabel(gnbLabel); //프로바이더
         setActiveLnb(lnbLabel)
+        setActiveGnb(gnbLabel)
     }
     const gnbClick = (e) => {
         const gnbLabel = e.target.innerText;
@@ -98,10 +105,9 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
                         <li key={uuidv4()}><NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="기준정보관리">기준정보관리</NavLinkTabs></li>
                         <li key={uuidv4()}><NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="영업관리">영업관리</NavLinkTabs></li>
                         <li key={uuidv4()}><NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="실행관리">실행관리</NavLinkTabs></li>
-                        {/* {sessionUserSe === 'USR' && (
-                            <li><NavLinkTabs to={URL.Tabs} activeName={activeGnb} header="관리자페이지">관리자페이지</NavLinkTabs></li>
+                        {/* {sessionUserSe === 'USR' && ( */}
                             <li><NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="시스템관리">시스템관리</NavLinkTabs></li>
-                        )} */}
+                        {/* )} */}
                     </ul>
                 </div>
 
@@ -152,23 +158,20 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
                         <h3>실행관리</h3> 
                         <ul> 
                             {execution.map((item) => (
-                                <li  key={uuidv4()}><NavLinkTabs to={URL.Tabs} onClick={(e) => lnbClick("실행관리", item.label, item.id)} activeName={activeLnb}>{item.label}</NavLinkTabs></li>
+                                <li  key={uuidv4()}><NavLinkTabs to={URL.Tabs} onClick={(e) => lnbClick("실행관리", item.label, item.id)} activeName={activeLnb}>{item.etc}</NavLinkTabs></li>
                             ))}
                         </ul> 
                     </div> 
-                    {/* <div className="col"> 
-                        <h3>시스템관리</h3> 
-                        <ul> 
-                            {system.map((item) => (
-                                <li key={item.title}><NavLinkTabs to={URL.Tabs} onClick={(e) => lnbClick(e, "시스템관리")} activeName={activeLnb}>{item.label}</NavLinkTabs></li>
-                            ))}
-                        </ul>
-                    </div> */}
-                    {/* {sessionUserSe ==='USR' &&
-                        <div className="col">
-                            <h3>관리자페이지</h3>
+                    {/* {sessionUserSe ==='USR' && */}
+                        <div className="col"> 
+                            <h3>시스템관리</h3> 
+                            <ul> 
+                                {system.map((item) => (
+                                    <li key={uuidv4()}><NavLinkTabs to={URL.Tabs} onClick={(e) => lnbClick("시스템관리", item.label, item.id)} activeName={activeLnb}>{item.label}</NavLinkTabs></li>
+                                ))}
+                            </ul>
                         </div>
-                    } */}
+                    {/* } */}
                 </div>
             </div>
         </div>

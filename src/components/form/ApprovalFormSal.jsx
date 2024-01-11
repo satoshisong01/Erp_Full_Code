@@ -5,35 +5,22 @@ import { axiosFetch } from "api/axiosFetch";
 import { v4 as uuidv4 } from "uuid";
 
 /** 영업 폼 */
-function ApprovalFormSal({ viewPageName, returnData }) {
-    const { innerPageName } = useContext(PageContext);
+function ApprovalFormSal({ returnData, initial }) {
+    const { innerPageName, } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
-    // useEffect(() => {
-    //     if (viewPageName !== innerPageName) return;
-    //     if (projectInfo.poiId !== "" && projectInfo.poiId !== undefined && projectInfo.poiId !== data.poiId) {
-    //         //프로젝트정보 바뀌었을 때
-    //         setData({ poiId: projectInfo.poiId, poiNm: projectInfo.poiNm });
-    //     }
-    // }, [projectInfo, innerPageName]);
+    useEffect(() => {
+        setData({...initial}); //초기화
+    }, [initial]);
 
     useEffect(() => {
-        setData({}); //초기화
-    }, [innerPageName]);
-
-    useEffect(() => {
-        if(Object.keys(data).length === 0) {
-            returnData({}); //초기화
-        }
-    }, [data]);
-
-    useEffect(() => {
+        // if (data.poiId && !data.versionId) {
         if (data.poiId && !data.versionId) {
             //선택된 버전정보가 없다면
             getVersionList({ poiId: data.poiId });
         } 
-    }, [data.poiId]);
+    }, [data.poiId, innerPageName]);
 
     const getVersionList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});
@@ -55,11 +42,11 @@ function ApprovalFormSal({ viewPageName, returnData }) {
     };
 
     const onChange = (value) => {
-        setData({...value});
+        setData({poiId: value.poiId, poiNm: value.poiNm, versionId: value.versionId, poiMonth: value.poiMonth, option: value.option});
     }
 
     const onClick = () => {
-        returnData({ poiId: data.poiId, versionId: data.versionId, poiMonth: data.poiMonth });
+        returnData({ ...data });
     };
 
     return (

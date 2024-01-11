@@ -13,25 +13,10 @@ import ReactDataTable from "components/DataTable/ReactDataTable";
 import BasicButton from "components/button/BasicButton";
 /** 실행관리-경비관리-실행 */
 function ExpenseMgmtExe() {
-    const {
-        currentPageName,
-        innerPageName,
-        setInnerPageName,
-        setCurrentPageName,
-        setPrevInnerPageName,
-        isSaveFormTable,
-        setIsSaveFormTable,
-        projectInfo,
-        setProjectInfo,
-        projectItem,
-        setLoadButton,
-        setNameOfButton,
-    } = useContext(PageContext);
+    const { setNameOfButton } = useContext(PageContext);
 
     const [condition, setCondition] = useState({});
     const [cal, setCal] = useState([]);
-
-    const current = "경비실행";
 
     const refresh = () => {
         if (condition.poiId) {
@@ -40,8 +25,6 @@ function ExpenseMgmtExe() {
     };
 
     const processResultDataView = (resultData, condition) => {
-        console.log(resultData, "처음받는값인데");
-        console.log(condition, "컨디션받나");
         const transformedData = resultData.reduce((accumulator, item) => {
             const {
                 pjbgTypeCode,
@@ -144,14 +127,11 @@ function ExpenseMgmtExe() {
 
     //실행경비에서 (영업비(정산)) 걸러주는함수
     function filterArray(data) {
-        // 주어진 배열을 복제하여 새로운 배열을 만듭니다.
         const filteredArray = [...data];
-
-        // 배열을 순회하면서 pjbgBeginDt가 null인 객체를 제거합니다.
         for (let i = 0; i < filteredArray.length; i++) {
             if (filteredArray[i].pjbgBeginDt === null) {
                 filteredArray.splice(i, 1);
-                i--; // 삭제 후 배열의 인덱스를 감소시켜 중복 체크를 방지합니다.
+                i--;
             }
         }
 
@@ -436,25 +416,6 @@ function ExpenseMgmtExe() {
     const [runExeMgmt, setExeRunMgmt] = useState([]); // 경비 실행관리
     const [runMgmtView, setRunMgmtView] = useState([]); // 경비 계획조회
 
-    // pjbgTypeCode를 기반으로 그룹화된 데이터 객체 생성
-    // view에 계산된 Total값 출력구문
-
-    //function calculateTotalPrices(arr) {
-    //    const result = {};
-
-    //    arr.forEach((obj) => {
-    //        const { pjbgTypeCode, pjbgPrice } = obj;
-
-    //        if (!result[pjbgTypeCode]) {
-    //            result[pjbgTypeCode] = pjbgPrice;
-    //        } else {
-    //            result[pjbgTypeCode] += pjbgPrice;
-    //        }
-    //    });
-    //    console.log(result, "나와라잇");
-    //    return result;
-    //}
-
     const updatePjbgType = (viewData) => {
         const pjbgTypeMap = {
             EXPNS01: "교통비",
@@ -499,10 +460,8 @@ function ExpenseMgmtExe() {
     };
 
     const fetchAllData = async (condition) => {
-        console.log("경비계획 조회 컨디션:", condition);
         const resultData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", condition);
         const viewData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", { poiId: condition.poiId, modeCode: "BUDGET" });
-        console.log(viewData, "이거안나오나봐 ㅜ");
         const updatedViewData = processResultDataView(viewData, condition);
         console.log(updatedViewData, "이거설마 초기화댐?");
         setRunMgmtView(updatedViewData);
@@ -510,7 +469,6 @@ function ExpenseMgmtExe() {
             const updatedData = processResultData(resultData, condition);
             const filteredData = filterArray(updatedData);
             setExeRunMgmt(filteredData);
-            console.log("✨✨경비실행 조회 updatedData:", filteredData);
             let total = 0,
                 pjbgTypeCode1 = 0,
                 pjbgTypeCode2 = 0,
@@ -537,7 +495,7 @@ function ExpenseMgmtExe() {
     return (
         <>
             <Location pathList={locationPath.ExpenseMgmt} />
-            <ApprovalFormExe viewPageName={current} returnData={conditionInfo} />
+            <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
                 <ReactDataTable columns={columns.expenseMgmt.budget} customDatas={runMgmtView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
@@ -555,7 +513,7 @@ function ExpenseMgmtExe() {
                     columns={columns.expenseMgmt.budget}
                     returnList={returnList}
                     viewLoadDatas={runMgmtView}
-                    viewPageName={current}
+                    viewPageName={{ name: "경비", id: "ExpenseMgmtExe" }}
                     customDatas={runExeMgmt}
                     customDatasRefresh={refresh}
                     condition={condition}

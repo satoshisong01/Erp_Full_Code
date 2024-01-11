@@ -16,7 +16,7 @@ export function PageProvider({ children }) {
 
     const [projectItem, setProjectItem] = useState([]); //프로젝트 id, 이름, 코드 저장(프로젝트 수주발주)
     const [projectInfo, setProjectInfo] = useState({ poiId: "", poiNm: "", poiMonth: "", isPoIdSelected: false }); // 프로젝트 오브젝트 정보
-    const [versionInfo, setVersionInfo] = useState({ versionId: "" }); // 버전 정보
+    const [conditionExe, setConditionExe] = useState({}); // 실행의 조회 조건
 
     const [pgNmList, setPgNmList] = useState([]); // 품목그룹 ID, 품목그룹명 저장
     const [projectPgNm, setProjectPgNm] = useState({ pgNm: "", pgId: "" }); // 클릭한 품목그룹명, 품목그룹id 저장
@@ -52,10 +52,10 @@ export function PageProvider({ children }) {
     const [returnKeyWordPdiNm, setReturnKeyWordPdiNm] = useState(""); //pdiNm검색어 저장
     const [isOpenModalPdiNm, setIsOpenModalPdiNm] = useState(false);
 
-    const [currentPageName, setCurrentPageName] = useState(""); // tab 현재페이지
-    const [prevCurrentPageName, setPrevCurrentPageName] = useState(""); // tab 이전페이지
-    const [innerPageName, setInnerPageName] = useState(""); // snbLabel과 같은 역할. 컴포넌트 안의 탭 라벨
-    const [prevInnerPageName, setPrevInnerPageName] = useState("");
+    const [currentPageName, setCurrentPageName] = useState({ name: "", id: "" }); // tab 현재페이지
+    const [prevCurrentPageName, setPrevCurrentPageName] = useState({ name: "", id: "" }); // tab 이전페이지
+    const [innerPageName, setInnerPageName] = useState({ name: "", id: "" }); // snbLabel과 같은 역할. 컴포넌트 안의 탭 라벨
+    const [prevInnerPageName, setPrevInnerPageName] = useState({ name: "", id: "" });
     const [modalPageName, setModalPageName] = useState("");
     const [modalLengthSelectRow, setModalLengthSelectRow] = useState(0); //모달 테이블의 버튼 플래그
     const [lengthSelectRow, setLengthSelectRow] = useState(0); // 테이블 버튼 플래그
@@ -64,7 +64,7 @@ export function PageProvider({ children }) {
     const [saveSaleManCost, setSaveSaleManCost] = useState([]);
     const [isCancelTable, setIsCancelTable] = useState(false); // 테이블 초기값으로 돌리기
 
-    const [refesh, setRefesh] = useState(false); //임시로 리프레시 flag 생성
+    const [refresh, setRefresh] = useState(false); //임시로 리프레시 flag 생성
 
     const [gnbLabel, setGnbLabel] = useState(""); //헤더
 
@@ -131,12 +131,12 @@ export function PageProvider({ children }) {
         setIsOpenModalCompany,
         saveSaleManCost,
         setSaveSaleManCost,
-        refesh,
-        setRefesh,
+        refresh,
+        setRefresh,
         gnbLabel,
         setGnbLabel,
-        versionInfo,
-        setVersionInfo,
+        conditionExe,
+        setConditionExe,
         unitPriceListRenew,
         setUnitPriceListRenew,
         emUserInfo,

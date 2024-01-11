@@ -64,7 +64,6 @@ export default function ProjectModal(props) {
     const onClick = (e) => {
         e.preventDefault();
         returnInfo({...selectInfo})
-        // setProjectInfo({...selectInfo})
         setProjectInfo({}) //초기화
         onClose();
     }
@@ -91,7 +90,7 @@ export default function ProjectModal(props) {
                                 columns={columns}
                                 customDatas={projectList}
                                 returnSelect={returnSelect}
-                                viewPageName="프로젝트팝업"
+                                viewPageName={{name:"프로젝트팝업"}}
                             />
                         </div>
                     </div>

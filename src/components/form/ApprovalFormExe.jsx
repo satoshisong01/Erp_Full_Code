@@ -4,28 +4,27 @@ import { v4 as uuidv4 } from "uuid";
 import { PageContext } from "components/PageProvider";
 
 /** 실행 폼 */
-function ApprovalFormExe({ viewPageName, returnData }) {
-    const { currentPageName } = useContext(PageContext);
+function ApprovalFormExe({ returnData }) {
+    const { conditionExe, setConditionExe } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
-    const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
-
-    // useEffect(() => {
-    //     console.log("data:", data);
-    // }, [data])
+    const [data, setData] = useState({ poiId: "", poiNm: "" });
 
     useEffect(() => {
-        setData({}); //초기화
-    }, [currentPageName]);
+        setData((prev) => {
+            if(conditionExe.poiId !== "" && prev.poiId !== conditionExe.poiId) {
+                return conditionExe
+            }
+            return prev
+        })
+    }, [conditionExe])
 
     const onChange = (value) => {
-        // console.log("ㅋㅋ", viewPageName , "2", currentPageName);
-        // if(viewPageName === currentPageName) {
         setData({ ...value });
-        // }
     };
 
     const onClick = () => {
-        returnData({ poiId: data.poiId, poiMonth: data.poiMonth });
+        returnData({ poiId: data.poiId, poiNm: data.poiNm, poiMonth: data.poiMonth });
+        setConditionExe({ poiId: data.poiId, poiNm: data.poiNm, poiMonth: data.poiMonth });
     };
 
     return (
