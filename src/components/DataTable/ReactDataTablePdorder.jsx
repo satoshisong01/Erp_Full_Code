@@ -74,10 +74,6 @@ const ReactDataTablePdorder = (props) => {
         }
     }, [customDatas]);
 
-    // useEffect(() => {
-    //     console.log("tableData", tableData);
-    // }, [tableData]);
-
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
         if (currentPageName.id !== prevCurrentPageName.id || innerPageName.id !== prevInnerPageName.id) {
@@ -92,7 +88,6 @@ const ReactDataTablePdorder = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        // console.log("구매 current:", current.name, "inner:", innerPageName.name, "current:",currentPageName.name);
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
         }
@@ -101,19 +96,10 @@ const ReactDataTablePdorder = (props) => {
             setNameOfButton(""); //초기화
         }
         if (nameOfButton === "load" && viewLoadDatas) {
-            loadOnAddRow(viewLoadDatas);
+            setTableData(viewLoadDatas);
             setNameOfButton(""); //초기화
         }
     }, [innerPageName, currentPageName, editing, nameOfButton]);
-
-    //useEffect(() => {
-    //    console.log(loadButton, "이게머가들어옴");
-    //    if (loadButton === "load" && viewLoadDatas) {
-    //        loadOnAddRow(viewLoadDatas);
-    //        setLoadButton(""); //초기화
-    //    }
-    //    console.log(viewLoadDatas, "viewLoadDatas!!!!!@@@");
-    //}, [loadButton]);
 
     const columnsConfig = useMemo(
         () =>
@@ -230,7 +216,6 @@ const ReactDataTablePdorder = (props) => {
 
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {
-        console.log("이거실행되나??");
         const newRow = {};
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
@@ -243,13 +228,6 @@ const ReactDataTablePdorder = (props) => {
         setTableData((prevData) => {
             const newData = [...prevData, { ...newRow }];
             return newData;
-        });
-    };
-
-    /* 기존 row에 view 대체 */
-    const loadOnAddRow = (viewLoadDatas) => {
-        setTableData(() => {
-            return [...viewLoadDatas];
         });
     };
 
@@ -396,7 +374,6 @@ const ReactDataTablePdorder = (props) => {
 
         const url = `/api${suffixUrl}/addList.do`;
         const resultData = await axiosPost(url, addNewData);
-        // console.log("✨1.", resultData, "addNewData:", addNewData, "url:", url);
         customDatasRefresh();
         setOriginTableData([]);
     };
@@ -506,7 +483,7 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const isCurrentPage = () => {
-        return current.id !== "" && (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName);
+        return current.id !== "" && current.id !== undefined && (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName);
     };
 
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;

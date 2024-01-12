@@ -611,7 +611,7 @@ const ReactDataTableURL = (props) => {
     };
 
     const isCurrentPage = () => {
-        return current.id !== "" && (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName);
+        return current.id !== "" && current.id !== undefined && (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName);
     };
     //------------------------------- 초기값과 비교하는 코드
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;

@@ -93,9 +93,9 @@ const ReactDataTable = (props) => {
     const inputRef = useRef(null); //날짜
     const calendarRef = useRef(null);
 
-    useEffect(() => {
-        console.log(tableData, "리액트테이블 데이터");
-    }, [tableData]);
+    // useEffect(() => {
+    //     console.log(tableData, "리액트테이블 데이터");
+    // }, [tableData]);
 
     //취소시에 오리지널 테이블로 돌아감
     useEffect(() => {
@@ -156,7 +156,6 @@ const ReactDataTable = (props) => {
             setTableData([]);
             setOriginTableData([]);
         }
-        console.log(customDatas);
     }, [customDatas]);
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
@@ -173,43 +172,18 @@ const ReactDataTable = (props) => {
 
     /* 테이블 cell에서 수정하는 경우의 on off */
     useEffect(() => {
-        // console.log(current.name, "current.name", "inner:", innerPageName.id, "current:",currentPageName.id);
-        // console.log(current.name, "current", current.id, "pageName:",currentPageName.id);
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
             //inner tab에서 저장을 눌렀을 때
             if (nameOfButton === "save") {
                 returnList && returnList(originTableData, tableData);
-            }
-            if (nameOfButton === "load" && viewLoadDatas) {
+            } else if (nameOfButton === "load" && viewLoadDatas) {
                 setTableData([...viewLoadDatas]);
             }
             setNameOfButton(""); //초기화
-            // if (current === "인건비계획" || current === "인건비실행" && nameOfButton === "save") {
-            //     returnList(originTableData, tableData);
-            // } else if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {
-            //     returnList(originTableData, tableData);
-            // } else if (innerPageName === "사전원가지표" && !editing) {
-            //     sendToParentCostIndex(originTableData, tableData);
-            // } else if ((innerPageName === "급별단가(인건비)" && !editing) || (innerPageName === "급별단가(경비)" && !editing)) {
-            //     sendToParentGrade(originTableData, tableData);
-            // } else {
-            //     //compareData(originTableData, tableData);
-            // }
-        }
-        if (current !== innerPageName) {
-            setTableData([]); //초기화
         }
     }, [innerPageName, editing, nameOfButton, currentPageName]);
 
-    //useEffect(() => {
-    //    console.log(loadButton, "이게머가들어옴");
-    //    if (loadButton === "load" && viewLoadDatas) {
-    //        loadOnAddRow(viewLoadDatas);
-    //        setLoadButton(""); //초기화
-    //    }
-    //    console.log(viewLoadDatas, "viewLoadDatas!!!!!@@@");
-    //}, [loadButton]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
@@ -662,7 +636,7 @@ const ReactDataTable = (props) => {
     };
 
     const isCurrentPage = () => {
-        return current.id !== "" && (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName);
+        return current.id !== "" && current.id !== undefined && (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName);
     };
 
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;

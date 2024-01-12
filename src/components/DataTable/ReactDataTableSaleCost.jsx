@@ -73,7 +73,7 @@ const ReactDataTableSaleCost = (props) => {
     };
 
     const isCurrentPage = () => {
-        return current.id !== "" && (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName);
+        return current.id !== "" && current.id !== undefined && (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName);
     };
 
     useEffect(() => {
