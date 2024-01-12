@@ -146,17 +146,6 @@ function EgovLoginContent(props) {
                                 <label className="f_chk" htmlFor="saveid" ref={checkRef}>
                                     <input type="checkbox" name="" id="saveid" onChange={handleSaveIDFlag} checked={saveIDFlag} /> <em>ID저장</em>
                                 </label>
-                                <label className="MyInfo" htmlFor="saveid" ref={checkRef}>
-                                    <div className="location">
-                                        <ul>
-                                            <li>
-                                                <Link id="MyInfoBtn" to={URL.MyInfo}>
-                                                    나의 회원정보
-                                                </Link>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </label>
                             </div>
                             <button type="button" onClick={submitFormHandler}>
                                 <span>LOGIN</span>

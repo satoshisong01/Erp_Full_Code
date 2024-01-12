@@ -179,12 +179,12 @@ const ReactDataTable = (props) => {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
             //inner tab에서 저장을 눌렀을 때
             if (nameOfButton === "save") {
-                returnList(originTableData, tableData);
+                returnList && returnList(originTableData, tableData);
             }
             if (nameOfButton === "load" && viewLoadDatas) {
-                loadOnAddRow(viewLoadDatas);
-                setNameOfButton(""); //초기화
+                setTableData([...viewLoadDatas]);
             }
+            setNameOfButton(""); //초기화
             // if (current === "인건비계획" || current === "인건비실행" && nameOfButton === "save") {
             //     returnList(originTableData, tableData);
             // } else if (innerPageName === "인건비 수주관리" || innerPageName === "인건비 예산관리" || innerPageName === "인건비 실행관리") {

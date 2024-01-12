@@ -122,8 +122,8 @@ const ReactDataTablePdorder = (props) => {
                 Header: column.header,
                 accessor: column.col,
                 sortable: true,
-                //width: column.cellWidth,
-                width: 150,
+                width: column.cellWidth,
+                //width: 150,
                 type: column.type,
                 options: column.options,
                 notView: column.notView,
@@ -660,7 +660,7 @@ const ReactDataTablePdorder = (props) => {
                                             );
                                         })}
                                         {isEditing && (
-                                            <td style={{ textAlign: "center" }}>
+                                            <td style={{ textAlign: "center", width: "70px" }}>
                                                 <button className="btnR btn-primary redDelete" onClick={() => onDeleteRow(row)}>
                                                     삭제
                                                 </button>
