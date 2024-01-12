@@ -42,7 +42,6 @@ const ReactDataTablePdorder = (props) => {
         modalPageName,
         isCancelTable,
         setIsCancelTable,
-        // projectInfo,
         isOpenModalPgNm,
         setIsOpenModalPgNm,
         projectPdiNm,
@@ -75,9 +74,9 @@ const ReactDataTablePdorder = (props) => {
         }
     }, [customDatas]);
 
-    useEffect(() => {
-        console.log("tableData", tableData);
-    }, [tableData]);
+    // useEffect(() => {
+    //     console.log("tableData", tableData);
+    // }, [tableData]);
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
@@ -122,8 +121,7 @@ const ReactDataTablePdorder = (props) => {
                 Header: column.header,
                 accessor: column.col,
                 sortable: true,
-                //width: column.cellWidth,
-                width: 150,
+                width: column.cellWidth,
                 type: column.type,
                 options: column.options,
                 notView: column.notView,
@@ -542,7 +540,6 @@ const ReactDataTablePdorder = (props) => {
                                         <th
                                             {...column.getHeaderProps(column.getSortByToggleProps())}
                                             className={columnIndex === 0 ? "first-column" : ""}
-                                            //style={{ width: column.width }}
                                         >
                                             {column.render("Header")}
                                             <div {...column.getResizerProps()} className={`resizer ${column.isResizing ? "isResizing" : ""}`} />
@@ -552,7 +549,7 @@ const ReactDataTablePdorder = (props) => {
                                     );
                                 })}
                                 {isEditing && (
-                                    <th style={{ width: "70px", textAlign: "center" }}>
+                                    <th style={{ width: "43px", textAlign: "center" }}>
                                         <button className="btn-primary" onClick={onAddRow} style={{ margin: 0 }}>
                                             추가
                                         </button>
@@ -660,7 +657,7 @@ const ReactDataTablePdorder = (props) => {
                                             );
                                         })}
                                         {isEditing && (
-                                            <td style={{ textAlign: "center" }}>
+                                            <td style={{ textAlign: "center",  width: "43px" }}>
                                                 <button className="btnR btn-primary redDelete" onClick={() => onDeleteRow(row)}>
                                                     삭제
                                                 </button>
@@ -675,7 +672,7 @@ const ReactDataTablePdorder = (props) => {
                             <tr>
                                 <td
                                     colSpan={visibleColumnCount + 1}
-                                    style={{ textAlign: "center", fontSize: "15px", height: "80px" }}
+                                    style={{ textAlign: "center", fontSize: "15px", height: "43px" }}
                                     className="back-lightgray">
                                     조회된 데이터가 없습니다.
                                 </td>
