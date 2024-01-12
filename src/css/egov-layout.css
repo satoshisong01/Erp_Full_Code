@@ -201,8 +201,8 @@ body {
     /* 왼쪽과 아래 패딩 */
 }
 .c_wrap .layout {
-    display: table;
-    width: 90%;
+    /* display: table; */
+    /* width: 90%; */
     table-layout: fixed;
 }
 

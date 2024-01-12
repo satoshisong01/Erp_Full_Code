@@ -1,4 +1,4 @@
-import { Tabs } from "antd";
+import { Button, Tabs } from "antd";
 import React, { useState, useEffect, useContext } from "react";
 import { connect } from "react-redux";
 import { Children } from "./Children.js";
@@ -81,6 +81,14 @@ const AntTabs = (props) => {
         removeTab(targetKey);
     };
 
+    const removeAllTabs = () => {
+        setItems([]);
+        setActiveKey(""); // 모든 탭 닫을 때 activeKey 초기화
+        store.dispatch(selectSnb("", ""));
+        store.dispatch(selectLnb("", ""));
+        // setGnbLabel("");
+    };
+
     return (
         <Tabs
             hideAdd={true}
@@ -89,6 +97,7 @@ const AntTabs = (props) => {
             type="editable-card"
             onEdit={onEdit}
             items={items}
+            tabBarExtraContent={<Button onClick={removeAllTabs}>모두 닫기</Button>}
         />
     );
 };
