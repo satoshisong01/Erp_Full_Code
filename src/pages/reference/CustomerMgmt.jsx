@@ -203,7 +203,7 @@ function CustomerMgmt() {
                 suffixUrl="/baseInfrm/client/client/type/c"
                 tableRef={itemDetailMgmtTable}
                 setLengthSelectRow={setLengthSelectRow}
-                viewPageName="고객사"
+                viewPageName={{ name: "고객사", id: "CustomerMgmt" }}
             />
         </>
     );

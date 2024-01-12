@@ -46,7 +46,7 @@ function ItemGroupMgmt() {
                 columns={columns.reference.itemGroupMgmt}
                 suffixUrl="/baseInfrm/product/productGroup"
                 tableRef={itemGroupMgmtTable}
-                viewPageName="품목그룹관리"
+                viewPageName={{ name: "품목그룹관리", id: "ItemGroupMgmt" }}
             />
         </>
     );

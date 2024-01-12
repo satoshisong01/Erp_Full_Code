@@ -16,29 +16,29 @@ export default function CompanyModal(props) {
     const { setCompanyInfo, setModalPageName, setIsModalTable } = useContext(PageContext);
 
     const [companyList, setCompanyList] = useState([]);
-    const [selectInfo, setSelectInfo]  = useState({});
+    const [selectInfo, setSelectInfo] = useState({});
     const bodyRef = useRef(null);
 
     useEffect(() => {
         if (isOpen) {
             getCompanyList();
-            setModalPageName("거래처팝업")
+            setModalPageName("거래처팝업");
             setIsModalTable(true);
             setCompanyInfo({}); //초기화
         }
         return () => {
-            setIsModalTable(false)
-            setModalPageName("")
+            setIsModalTable(false);
+            setModalPageName("");
         };
     }, [isOpen]);
 
     const getCompanyList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/client/client/totalListAll.do", requestData || {});
-        const changeData = resultData.map(item => {
+        const changeData = resultData.map((item) => {
             const pgNms = Object.keys(item)
-                                .filter(key => key.startsWith("pgNm") && item[key] !== null && item[key] !== "")
-                                .map(key => item[key]);
-        
+                .filter((key) => key.startsWith("pgNm") && item[key] !== null && item[key] !== "")
+                .map((key) => item[key]);
+
             return {
                 cltId: item.cltId,
                 cltNm: item.cltNm,
@@ -47,24 +47,29 @@ export default function CompanyModal(props) {
             };
         });
 
-        setCompanyList(changeData)
-    }
+        setCompanyList(changeData);
+    };
 
     const columns = [
         { header: "거래처아이디", col: "cltId", cellWidth: "35%", notView: true },
         { header: "거래처명", col: "cltNm", cellWidth: "35%" },
         { header: "품목그룹명", col: "pgNms", cellWidth: "35%" },
         { header: "업체유형", col: "cltBusstype", cellWidth: "35%" },
-    ]
+    ];
 
     const conditionList = [
-        { title: "회사타입", col: "cltType", type: "radio", option: [
-            {label: "협력사", value: "P"},
-            {label: "고객사", value: "C"},
-        ] },
+        {
+            title: "회사타입",
+            col: "cltType",
+            type: "radio",
+            option: [
+                { label: "협력사", value: "P" },
+                { label: "고객사", value: "C" },
+            ],
+        },
         { title: "거래처명", col: "cltNm", type: "input" },
-        { title: "픔목그룹명", col: "pgNm", type: "input" }
-    ]
+        { title: "픔목그룹명", col: "pgNm", type: "input" },
+    ];
 
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
@@ -72,23 +77,23 @@ export default function CompanyModal(props) {
             const headerHeight = document.querySelector(".me-modal-header")?.clientHeight || 0;
             const footerHeight = document.querySelector(".me-modal-footer")?.clientHeight || 0;
             const calculatedHeight = height - headerHeight - footerHeight;
-            bodyRef.current.style.height = `${calculatedHeight+10}px`;
+            bodyRef.current.style.height = `${calculatedHeight + 10}px`;
         }
     }, [height]);
 
     const onSearch = (value) => {
         getCompanyList(value);
-    }
+    };
 
     const onClick = (e) => {
         e.preventDefault();
-        setCompanyInfo({...selectInfo})
+        setCompanyInfo({ ...selectInfo });
         onClose();
-    }
+    };
 
     const returnSelect = (value) => {
         setSelectInfo((prev) => (prev.cltId !== value.cltId ? value : prev));
-    }
+    };
 
     return (
         <Modal
@@ -111,12 +116,7 @@ export default function CompanyModal(props) {
                         <div className="me-modal-body" ref={bodyRef}>
                             <div className="body-area" style={{ gap: 0 }}>
                                 <ModalSearchList conditionList={conditionList} onSearch={onSearch} refresh={() => getCompanyList()} />
-                                <ReactDataTable 
-                                    columns={columns}
-                                    customDatas={companyList}
-                                    returnSelect={returnSelect}
-                                    viewPageName="거래처팝업"
-                                />
+                                <ReactDataTable columns={columns} customDatas={companyList} returnSelect={returnSelect} viewPageName={{ name: "거래처팝업" }} />
                             </div>
                         </div>
 

@@ -217,7 +217,7 @@ function CostIndex() {
                 sendToParentCostIndex={compareData}
                 //suffixUrl="/baseInfrm/product/costBase"
                 tableRef={costIndexMgmtTable}
-                viewPageName="사전원가지표"
+                viewPageName={{ name: "사전원가지표", id: "CostIndex" }}
                 perSent="%"
             />
         </>

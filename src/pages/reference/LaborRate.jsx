@@ -93,7 +93,7 @@ function LaborRate() {
                 columns={columns}
                 suffixUrl="/baseInfrm/product/personelXp"
                 tableRef={LaborRateTable}
-                viewPageName="인건비단가"
+                viewPageName={{ name: "인건비단가", id: "LaborRate" }}
             />
         </>
     );

@@ -160,7 +160,7 @@ function WorkMemberMgmt() {
                 suffixUrl="/baseInfrm/member/employMember"
                 tableRef={WorkMemberTable}
                 setLengthSelectRow={setLengthSelectRow}
-                viewPageName="업무회원관리"
+                viewPageName={{ name: "업무회원관리", id: "WorkMemberMgmt" }}
             />
         </>
     );

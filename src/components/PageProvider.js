@@ -25,9 +25,11 @@ export function PageProvider({ children }) {
     const [projectPdiNm, setProjectPdiNm] = useState({
         pdiId: "",
         pdiNm: "",
+        pdiNum: "",
         pgNm: "",
-        pdiWght: "",
         pdiStnd: "",
+        pdiUnit: "",
+        pdiWght: "",
         pdiMenufut: "",
         pupUnitPrice: "",
         byUnitPrice: "",

@@ -31,7 +31,6 @@ export default function EmployerInfoModal(props) {
         };
     }, [isOpen]);
 
-
     const getEmployerList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/member/employMember/totalListAll.do", requestData || {});
         console.log(resultData, "🎉🎉🎉🎉결과값");
@@ -112,7 +111,7 @@ export default function EmployerInfoModal(props) {
                                     columns={columns}
                                     customDatas={employerInfoList}
                                     returnSelectRows={(rows) => returnSelectRows(rows)}
-                                    viewPageName="회원목록팝업"
+                                    viewPageName={{ name: "회원목록팝업" }}
                                 />
                             </div>
                         </div>

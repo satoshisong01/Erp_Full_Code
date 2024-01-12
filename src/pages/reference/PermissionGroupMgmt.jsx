@@ -143,7 +143,7 @@ function PermissionGroupMgmt() {
                 suffixUrl="/baseInfrm/member/authorGroup"
                 tableRef={permissionTable}
                 setLengthSelectRow={setLengthSelectRow}
-                viewPageName="권한그룹정보관리"
+                viewPageName={{ name: "권한그룹정보관리", id: "PermissionGroupMgmt" }}
             />
         </>
     );

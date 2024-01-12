@@ -179,7 +179,7 @@ function EnterpriseMemberMgmt() {
                 suffixUrl="/baseInfrm/member/entrprsMember"
                 tableRef={EnterpriseTable}
                 setLengthSelectRow={setLengthSelectRow}
-                viewPageName="기업회원관리"
+                viewPageName={{ name: "기업회원관리", id: "EnterpriseMemberMgmt" }}
             />
         </>
     );

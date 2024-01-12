@@ -54,7 +54,7 @@ function GradeWageExpense() {
                 //suffixUrl="/api/baseInfrm/product/gradeunitPrice/type/g"
                 tableRef={gradeWageExpenseTable}
                 //setLengthSelectRow={setLengthSelectRow}
-                viewPageName="급별단가(경비)"
+                viewPageName={{ name: "급별단가(경비)", id: "GradeWageExpense" }}
             />
         </>
     );

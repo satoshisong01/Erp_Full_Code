@@ -201,7 +201,7 @@ function PartnerMgmt() {
                 suffixUrl="/baseInfrm/client/client/type/p"
                 tableRef={itemDetailMgmtTable}
                 setLengthSelectRow={setLengthSelectRow}
-                viewPageName="협력사"
+                viewPageName={{ name: "협력사", id: "PartnerMgmt" }}
             />
         </>
     );

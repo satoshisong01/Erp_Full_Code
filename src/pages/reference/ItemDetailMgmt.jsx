@@ -67,7 +67,7 @@ function ItemDetailMgmt() {
                 suffixUrl="/baseInfrm/product/productInfo"
                 tableRef={itemDetailMgmtTable}
                 setLengthSelectRow={setLengthSelectRow}
-                viewPageName="품목상세관리"
+                viewPageName={{ name: "품목상세관리", id: "ItemDetailMgmt" }}
             />
         </>
     );

@@ -158,7 +158,7 @@ function RegularMemberMgmt() {
                 suffixUrl="/baseInfrm/member/generalMember"
                 tableRef={RegularMemberTable}
                 setLengthSelectRow={setLengthSelectRow}
-                viewPageName="일반회원관리"
+                viewPageName={{ name: "일반회원관리", id: "RegularMemberMgmt" }}
             />
         </>
     );

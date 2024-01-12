@@ -190,7 +190,7 @@ function GradeWageLaborCost() {
                 //suffixUrl="/api/baseInfrm/product/gradeunitPrice/type/p"
                 tableRef={gradeWageExpenseTable}
                 //setLengthSelectRow={setLengthSelectRow}
-                viewPageName="급별단가(인건비)"
+                viewPageName={{ name: "급별단가(인건비)", id: "GradeWageLaborCost" }}
             />
         </>
     );

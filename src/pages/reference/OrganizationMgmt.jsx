@@ -99,7 +99,7 @@ function OrganizationMgmt() {
                 columns={columns}
                 suffixUrl="/baseInfrm/member/orgNzt"
                 tableRef={organizationTable}
-                viewPageName="조직부서정보관리"
+                viewPageName={{ name: "조직부서정보관리", id: "OrganizationMgmt" }}
                 addBtn={addBtn}
             />
         </>

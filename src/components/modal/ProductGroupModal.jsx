@@ -21,30 +21,28 @@ export default function ProductGroupModal(props) {
     useEffect(() => {
         if (isOpen) {
             getProductInfoList();
-            setModalPageName("품목그룹팝업")
+            setModalPageName("품목그룹팝업");
             setIsModalTable(true);
             setPgNmList([]); //초기화
             setProjectPgNm({}); //초기화
         }
         return () => {
-            setIsModalTable(false)
-            setModalPageName("")
+            setIsModalTable(false);
+            setModalPageName("");
         };
     }, [isOpen]);
 
     const getProductInfoList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/productGroup/totalListAll.do", requestData || {});
         setProductInfoList(resultData);
-    }
+    };
 
     const columns = [
         { header: "품목그룹아이디", col: "pgId", notView: true },
         { header: "품목그룹명", col: "pgNm", cellWidth: "100%" },
-    ]
+    ];
 
-    const conditionList = [
-        { title: "픔목그룹명", col: "pgNm", type: "input" },
-    ]
+    const conditionList = [{ title: "픔목그룹명", col: "pgNm", type: "input" }];
 
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
@@ -58,17 +56,17 @@ export default function ProductGroupModal(props) {
 
     const onSearch = (value) => {
         getProductInfoList(value);
-    }
+    };
 
     const onClick = () => {
-        if (selectedRows && selectedRows.length === 1) { //객체로 저장
+        if (selectedRows && selectedRows.length === 1) {
+            //객체로 저장
             setProjectPgNm(selectedRows[0]);
-
         } else if (selectedRows && selectedRows.length > 1) {
             setPgNmList([...selectedRows]);
         }
         onClose();
-    }
+    };
 
     let selectedRows = [];
 
@@ -83,8 +81,7 @@ export default function ProductGroupModal(props) {
             isOpen={isOpen}
             onRequestClose={onClose}
             contentLabel={title}
-            style={{ content: { width, height, },}}
-        >
+            style={{ content: { width, height } }}>
             <div className="me-modal">
                 <div className="me-modal-container" style={{ width, height }}>
                     <div className="me-modal-inner">
@@ -102,7 +99,7 @@ export default function ProductGroupModal(props) {
                                     columns={columns}
                                     customDatas={productInfoList}
                                     returnSelectRows={(rows) => returnSelectRows(rows)}
-                                    viewPageName="품목그룹팝업"
+                                    viewPageName={{ name: "품목그룹팝업" }}
                                 />
                             </div>
                         </div>
