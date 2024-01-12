@@ -160,8 +160,8 @@ const RootRoutes = () => {
     const unitPriceItem = async () => {
         //급별단가
         const resultData = await axiosFetch("/api/baseInfrm/product/gradeunitPrice/totalListAll.do", { searchCondition: "1", searchKeyword: "13" });
-        setUnitPriceList([...resultData]);
-        setUnitPriceListRenew(ReorganizeManCost(resultData));
+        setUnitPriceList && setUnitPriceList([...resultData]);
+        setUnitPriceListRenew && setUnitPriceListRenew(ReorganizeManCost(resultData));
     };
     //const unitPriceRenew = async () => {
     //    const url = `/api/baseInfrm/product/gradeunitPrice/type/p/listAll.do`;

@@ -67,6 +67,7 @@ function EgovLeftNavSystem(props) {
         //},
         {
             label: "코드관리",
+            id: "GroupCode",
             subMenus: [
                 { label: "그룹코드관리", id: "GroupCode" },
                 { label: "공통코드관리", id: "CategoryCode" },
@@ -74,6 +75,13 @@ function EgovLeftNavSystem(props) {
             ],
         },
         // { label: "접속이력관리", subMenus: [] },
+        {
+            label: "사용자관리",
+            id: "WorkMemberMgmt",
+            subMenus: [
+                { label: "업무회원관리", id: "WorkMemberMgmt" },
+            ],
+        },
     ];
 
     return (

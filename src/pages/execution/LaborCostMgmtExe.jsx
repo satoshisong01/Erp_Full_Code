@@ -10,7 +10,6 @@ import HideCard from "components/HideCard";
 import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 import SaveButton from "components/button/SaveButton";
 import { ChangePrmnPlanData } from "components/DataTable/function/ReplaceDataFormat";
-import LoadButton from "components/button/LoadButton";
 
 /** 실행관리-인건비-실행 */
 function LaborCostMgmtExe() {
@@ -18,7 +17,6 @@ function LaborCostMgmtExe() {
         innerPageName,
         unitPriceList,
         currentPageName,
-        setLoadButton,
         setNameOfButton,
     } = useContext(PageContext);
 
@@ -202,7 +200,6 @@ function LaborCostMgmtExe() {
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">
-                    <LoadButton label={"가져오기"} onClick={() => setNameOfButton("load")} />
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <RefreshButton onClick={refresh} />
                 </div>

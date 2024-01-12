@@ -390,6 +390,7 @@
 .T_MAIN .colbox .right_col {
     width: 78%;
     padding-top: 25px;
+    text-align: -webkit-center;
 }
 .T_MAIN .colbox .left_col {
     width: 17%;

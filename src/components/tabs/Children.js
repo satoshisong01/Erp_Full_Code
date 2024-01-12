@@ -74,30 +74,6 @@ export const reference = [
     //     pLabel: "기준정보관리",
     //     activeKey: 104,
     // },
-    // {
-    //     id: "WorkMemberMgmt",
-    //     path: URL.WorkMemberMgmt,
-    //     component: <WorkMemberMgmt />,
-    //     label: "업무회원관리",
-    //     pLabel: "기준정보관리",
-    //     activeKey: 105,
-    // },
-    // {
-    //     id: "RegularMemberMgmt",
-    //     path: URL.RegularMemberMgmt,
-    //     component: <RegularMemberMgmt />,
-    //     label: "일반회원관리",
-    //     pLabel: "기준정보관리",
-    //     activeKey: 106,
-    // },
-    // {
-    //     id: "EnterpriseMemberMgmt",
-    //     path: URL.EnterpriseMemberMgmt,
-    //     component: <EnterpriseMemberMgmt />,
-    //     label: "기업회원관리",
-    //     pLabel: "기준정보관리",
-    //     activeKey: 107,
-    // },
     {
         id: "PermissionGroupMgmt",
         path: URL.PermissionGroupMgmt,
@@ -298,12 +274,32 @@ export const system = [
         label: "상세코드관리",
         pLabel: "시스템관리",
     },
+    {
+        id: "WorkMemberMgmt",
+        path: URL.WorkMemberMgmt,
+        component: <WorkMemberMgmt />,
+        label: "업무회원관리",
+        pLabel: "시스템관리",
+    },
+    // {
+    //     id: "RegularMemberMgmt",
+    //     path: URL.RegularMemberMgmt,
+    //     component: <RegularMemberMgmt />,
+    //     label: "일반회원관리",
+    //     pLabel: "기준정보관리",
+    // },
+    // {
+    //     id: "EnterpriseMemberMgmt",
+    //     path: URL.EnterpriseMemberMgmt,
+    //     component: <EnterpriseMemberMgmt />,
+    //     label: "기업회원관리",
+    //     pLabel: "기준정보관리",
+    // },
     // {
     //     id: "AccessHistoryMgmt",
     //     path: URL.AccessHistoryMgmt,
     //     component: <AccessHistoryMgmt />,
     //     label: "접속이력관리",
-    //     activeKey: 410,
     // },
 
     // {
@@ -311,28 +307,24 @@ export const system = [
     //     path: URL.PostMgmt,
     //     component: <PostMgmt />,
     //     label: "게시물관리",
-    //     activeKey: 403,
     // },
     // {
     //     id: "BoardMaster",
     //     path: URL.BoardMaster,
     //     component: <BoardMaster />,
     //     label: "게시판마스터관리",
-    //     activeKey: 404,
     // },
     // {
     //     id: "Comment",
     //     path: URL.Comment,
     //     component: <Comment />,
     //     label: "댓글관리",
-    //     activeKey: 405,
     // },
     // {
     //     id: "BoardViewing",
     //     path: URL.BoardViewing,
     //     component: <BoardViewing />,
     //     label: "게시판열람권한관리",
-    //     activeKey: 406,
     // },
 ];
 

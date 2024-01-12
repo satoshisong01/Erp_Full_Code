@@ -880,6 +880,7 @@ select {
 
 .approval-form {
     font-size: 12px;
+    max-width: 1400px;
 
     .approval-row {
         display: flex;
@@ -1204,7 +1205,7 @@ body > div:nth-child(4) > div {
 /* 숨길 수 있는 영역 박스 */
 .hide-card {
     pointer-events: none;
-
+    max-width: 1400px;
     .hide-header {
         padding: 5px 10px 5px 10px;
     }
@@ -1276,10 +1277,6 @@ td {
 .table-styled {
     width: 100%;
 }
-
-//.table-styled > tbody > tr > td {
-//    width: 70px;
-//}
 
 .isResizing {
     background: red;
