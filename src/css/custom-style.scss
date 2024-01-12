@@ -674,7 +674,9 @@ $disabled: gray;
 .table-styled td {
     padding: 7px;
     text-align: left;
-    border: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+
     vertical-align: middle;
 }
 
@@ -690,7 +692,7 @@ $disabled: gray;
 }
 
 .table-styled select {
-    /* width: 100%; */
+    //width: 100%;
     padding: 3px;
     border: 1px solid #ccc;
     border-radius: 3px;
@@ -959,11 +961,11 @@ input:disabled {
     /* 다른 스타일 옵션도 추가할 수 있습니다. */
 }
 
-tr,
-td,
-th {
-    border: 1px solid #ddd;
-}
+//tr,
+//td,
+//th {
+//    border: 1px solid #ddd;
+//}
 
 //.other-column {
 //    padding: 0;
@@ -1278,6 +1280,16 @@ td {
 
 .isResizing {
     background: red;
+}
+//style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+#MyInfoBtn {
+    box-sizing: border-box;
+    color: #fff;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 /* 반응형 스타일 */

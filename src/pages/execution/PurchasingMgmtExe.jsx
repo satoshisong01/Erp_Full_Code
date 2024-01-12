@@ -31,9 +31,9 @@ function PurchasingMgmtExe() {
             const groupedData = changes.reduce((result, current) => {
                 const existingGroup = result.find((group) => group.pdiMenufut === current.pdiMenufut && group.pgNm === current.pgNm);
                 if (existingGroup) {
-                    existingGroup.price += current.price;
+                    existingGroup.rcvPrice += current.rcvPrice;
                 } else {
-                    result.push({ pgNm: current.pgNm, pdiMenufut: current.pdiMenufut, price: current.price });
+                    result.push({ pgNm: current.pgNm, pdiMenufut: current.pdiMenufut, rcvPrice: current.rcvPrice });
                 }
                 return result;
             }, []);
@@ -49,6 +49,7 @@ function PurchasingMgmtExe() {
         const updateData = data.map((data) => ({
             ...data,
             price: data.byUnitPrice * data.byQunty,
+            rcvPrice: data.rcvUnitPrice * data.rcvQunty,
             rcvState:
                 data.byQunty < data.rcvQunty
                     ? "초과입고"

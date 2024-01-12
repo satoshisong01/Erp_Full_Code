@@ -11,12 +11,12 @@ function ApprovalFormExe({ returnData }) {
 
     useEffect(() => {
         setData((prev) => {
-            if(conditionExe.poiId !== "" && prev.poiId !== conditionExe.poiId) {
-                return conditionExe
+            if (conditionExe.poiId !== "" && prev.poiId !== conditionExe.poiId) {
+                return conditionExe;
             }
-            return prev
-        })
-    }, [conditionExe])
+            return prev;
+        });
+    }, [conditionExe]);
 
     const onChange = (value) => {
         setData({ ...value });
@@ -30,7 +30,7 @@ function ApprovalFormExe({ returnData }) {
     return (
         <>
             <div className="approval-form mg-b-40">
-                <table className="table-styled header-width">
+                <table className="table-styled header-width" style={{ border: "solid 1px #ddd" }}>
                     <tbody>
                         <tr>
                             <th>

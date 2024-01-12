@@ -6,12 +6,12 @@ import { v4 as uuidv4 } from "uuid";
 
 /** 영업 폼 */
 function ApprovalFormSal({ returnData, initial }) {
-    const { innerPageName, } = useContext(PageContext);
+    const { innerPageName } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
     useEffect(() => {
-        setData({...initial}); //초기화
+        setData({ ...initial }); //초기화
     }, [initial]);
 
     useEffect(() => {
@@ -19,7 +19,7 @@ function ApprovalFormSal({ returnData, initial }) {
         if (data.poiId && !data.versionId) {
             //선택된 버전정보가 없다면
             getVersionList({ poiId: data.poiId });
-        } 
+        }
     }, [data.poiId, innerPageName]);
 
     const getVersionList = async (requestData) => {
@@ -42,8 +42,8 @@ function ApprovalFormSal({ returnData, initial }) {
     };
 
     const onChange = (value) => {
-        setData({poiId: value.poiId, poiNm: value.poiNm, versionId: value.versionId, poiMonth: value.poiMonth, option: value.option});
-    }
+        setData({ poiId: value.poiId, poiNm: value.poiNm, versionId: value.versionId, poiMonth: value.poiMonth, option: value.option });
+    };
 
     const onClick = () => {
         returnData({ ...data });
@@ -52,7 +52,7 @@ function ApprovalFormSal({ returnData, initial }) {
     return (
         <>
             <div className="approval-form mg-b-40">
-                <table className="table-styled header-width">
+                <table className="table-styled header-width" style={{ border: "solid 1px #ddd" }}>
                     <tbody>
                         <tr>
                             <th>
@@ -69,7 +69,13 @@ function ApprovalFormSal({ returnData, initial }) {
                                     readOnly
                                 />
                                 {isOpenProjectModal && (
-                                     <ProjectModal width={500} height={710} onClose={() => setIsOpenProjectModal(false)} title="프로젝트 목록" returnInfo={onChange}/>
+                                    <ProjectModal
+                                        width={500}
+                                        height={710}
+                                        onClose={() => setIsOpenProjectModal(false)}
+                                        title="프로젝트 목록"
+                                        returnInfo={onChange}
+                                    />
                                 )}
                             </td>
                             <th>
