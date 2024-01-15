@@ -483,7 +483,11 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const isCurrentPage = () => {
-        return current.id !== "" && current.id !== undefined && (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName);
+        return (
+            current.id !== "" &&
+            current.id !== undefined &&
+            (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName)
+        );
     };
 
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
@@ -503,7 +507,7 @@ const ReactDataTablePdorder = (props) => {
                 </div>
             </div>
             <div style={{ position: "relative", overflow: "auto", width: "auto" }}>
-                <table {...getTableProps()} className="table-styled" ref={tableRef}>
+                <table {...getTableProps()} className="table-styled" ref={tableRef} style={{ tableLayout: "auto" }}>
                     <thead>
                         {headerGroups.map((headerGroup, headerGroupIndex) => (
                             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -514,10 +518,7 @@ const ReactDataTablePdorder = (props) => {
                                     }
 
                                     return (
-                                        <th
-                                            {...column.getHeaderProps(column.getSortByToggleProps())}
-                                            className={columnIndex === 0 ? "first-column" : ""}
-                                        >
+                                        <th {...column.getHeaderProps(column.getSortByToggleProps())} className={columnIndex === 0 ? "first-column" : ""}>
                                             {column.render("Header")}
                                             <div {...column.getResizerProps()} className={`resizer ${column.isResizing ? "isResizing" : ""}`} />
                                             <span style={{ color: "red", margin: 0 }}>{column.require === true ? "*" : ""}</span>
@@ -634,7 +635,7 @@ const ReactDataTablePdorder = (props) => {
                                             );
                                         })}
                                         {isEditing && (
-                                            <td style={{ textAlign: "center",  width: "43px" }}>
+                                            <td style={{ textAlign: "center", width: "43px" }}>
                                                 <button className="btnR btn-primary redDelete" onClick={() => onDeleteRow(row)}>
                                                     삭제
                                                 </button>

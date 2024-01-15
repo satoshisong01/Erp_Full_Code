@@ -27,13 +27,23 @@ const PreCostDoc = () => {
     const purStyle = { marginBottom: 20, maxHeight: 250 };
     const chargeStyle = { maxHeight: 860 };
 
+    const pdfButton = document.querySelector(".pdfBtn");
+
+    const handlePrintButtonClick = () => {
+        if (pdfButton) {
+            pdfButton.style.display = "none";
+            window.print();
+            pdfButton.style.display = "block";
+        }
+    };
+
     useEffect(() => {
         // URL에서 "data" 파라미터 읽기
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
-        const {label, poiId, poiNm, versionId, versionNum, versionDesc} = data;
+        const { label, poiId, poiNm, versionId, versionNum, versionDesc } = data;
         setTitle(label);
-        setProjectInfoToServer({versionId, versionNum, versionDesc})
+        setProjectInfoToServer({ versionId, versionNum, versionDesc });
         if (poiId && versionId) {
             getInitData(poiId, versionId); //서버에서 데이터 호출
         }
@@ -52,7 +62,7 @@ const PreCostDoc = () => {
 
     useEffect(() => {
         console.log("projectInfoToServer:", projectInfoToServer);
-    })
+    });
 
     const infoColumns = [
         [
@@ -75,18 +85,18 @@ const PreCostDoc = () => {
     ];
 
     const coreColumns = [
-        { header: "구분", col: "item", className: "flex-col-2" },
-        { header: "전체", col: "total", className: "flex-col-2" },
-        { header: "자체용역", col: "inHouse", className: "flex-col-2" },
+        { header: "구분", col: "item", className: "flex-col-3" },
+        { header: "전체", col: "total", className: "flex-col-3" },
+        { header: "자체용역", col: "inHouse", className: "flex-col-3" },
         { header: "%", col: "inHousePercent", className: "flex-col-1" },
         { header: "외주", col: "outSourcing", className: "flex-col-2" },
         { header: "%", col: "outSourcingPercent", className: "flex-col-1" },
-        { header: "H/W 및 S/W", col: "purchasing", className: "flex-col-2" },
+        { header: "H/W 및 S/W", col: "purchasing", className: "flex-col-3" },
         { header: "%", col: "purchasingPercent", className: "flex-col-1" },
         { header: "판관비", col: "overhead", className: "flex-col-2" },
         { header: "NEGO", col: "nego", className: "flex-col-2" },
-        { header: "자사솔루션", col: "proprietarySolution", className: "flex-col-2" },
-        { header: "도입솔루션", col: "implementedSolution", className: "flex-col-2" },
+        { header: "자사", col: "proprietarySolution", className: "flex-col-1" },
+        { header: "도입", col: "implementedSolution", className: "flex-col-1" },
     ];
 
     const purchasingColumns = [
@@ -129,11 +139,11 @@ const PreCostDoc = () => {
         } else if (code === "EXPNS09") {
             return "사무실임대료";
         } else if (code === "EXPNS10") {
-             return "소모품비";
+            return "소모품비";
         } else if (code === "EXPNS11") {
-             return "행사비";
+            return "행사비";
         } else if (code === "EXPNS12") {
-             return "요식성경비";
+            return "요식성경비";
         } else if (code === "EXPNS13") {
             return "전산소모품비";
         } else if (code === "EXPNS14") {
@@ -159,7 +169,7 @@ const PreCostDoc = () => {
         console.log("조회하기~~~~~~~~~", poiId, versionId);
         const resultData = await axiosFetch(url, { poiId, versionId });
         console.log("resultData::::", resultData);
-        console.log("💜 사전원가서 resultData:",resultData, "url:", url);
+        console.log("💜 사전원가서 resultData:", resultData, "url:", url);
         const {
             projectInfoToServer, //수주정보
             salesBudgetIn, //수주액>자체용역
@@ -178,15 +188,14 @@ const PreCostDoc = () => {
             buyingList, //구매리스트
             buyingTotalPrice, //구매총합
 
-
             negoTotalPrice, //네고 합
             legalTotalPrice, //판관비 합
-
         } = resultData || {};
 
         /* 프로젝트 정보 */
-        setProjectInfoToServer((prev) =>( {
-            ...prev, ...projectInfoToServer
+        setProjectInfoToServer((prev) => ({
+            ...prev,
+            ...projectInfoToServer,
         }));
 
         /* 경비 테이블 데이터 */
@@ -216,15 +225,15 @@ const PreCostDoc = () => {
             setChargeTableData(newChargeTableData);
         }
         /* 구매재료비 테이블 데이터 */
-        const updatedPurchasingData = buyingList.map(item => {
+        const updatedPurchasingData = buyingList.map((item) => {
             return {
                 data: [item.pgNm, item.type, item.totalPrice],
-                className: ['', '', '']
+                className: ["", "", ""],
             };
         });
         const purTotalRow = {
-            data: ['합계', '', buyingTotalPrice],
-            className: ['point line-t', 'line-t', 'line-t']
+            data: ["합계", "", buyingTotalPrice],
+            className: ["point line-t", "line-t", "line-t"],
         };
         setPurchasingTableData([...updatedPurchasingData, purTotalRow]);
 
@@ -729,41 +738,48 @@ const PreCostDoc = () => {
     };
 
     return (
-        <div className="precost-container">
-            <div className="flex-column mg-t-20 mg-b-20">
-                <div className="precost-title" style={{margin: "auto", marginBottom: "20px", fontSize: "25px"}}>{title}</div>
-                <FormDataTable formTableColumns={infoColumns} useStatus={false} />
-                <div className="precost-title">1.손익계산서</div>
-                <BasicDataTable columns={coreColumns} data={coreTableData} datatableRef={coreTable} />
-
-                <div className="empty" />
-
-                <div className="precost-title">2.직접원가 내역</div>
-                <div className="wrap">
-                    <div style={{ flex: 4 }}>
-                        <BasicDataTable
-                            columns={purchasingColumns}
-                            data={purchasingTableData}
-                            datatableRef={purchasingTable}
-                            tableSize={purStyle}
-                            subtitle="재료비"
-                        />
-                        <BasicDataTable
-                            columns={outsourcingColumns}
-                            data={outTableData}
-                            datatableRef={outsourcingTable}
-                            tableSize={purStyle}
-                            subtitle="개발외주비"
-                        />
-                        <BasicDataTable columns={laborColumns} data={laborTableData} datatableRef={laborTable} subtitle="인건비" />
+        <>
+            <div className="precost-container">
+                <button onClick={handlePrintButtonClick} className="pdfBtn">
+                    PDF로 다운로드
+                </button>
+                <div className="flex-column mg-t-20 mg-b-20">
+                    <div className="precost-title" style={{ margin: "auto", marginBottom: "20px", fontSize: "23px" }}>
+                        {title}
                     </div>
-                    <div style={{ flex: 0.5 }} />
-                    <div style={{ flex: 5.5 }}>
-                        <BasicDataTable columns={chargeColumns} data={chargeTableData} datatableRef={chargeTable} tableSize={chargeStyle} subtitle="경비" />
+                    <FormDataTable formTableColumns={infoColumns} useStatus={false} />
+                    <div className="precost-title">1.손익계산서</div>
+                    <BasicDataTable columns={coreColumns} data={coreTableData} datatableRef={coreTable} />
+
+                    <div className="empty" />
+
+                    <div className="precost-title">2.직접원가 내역</div>
+                    <div className="wrap">
+                        <div style={{ flex: 4 }}>
+                            <BasicDataTable
+                                columns={purchasingColumns}
+                                data={purchasingTableData}
+                                datatableRef={purchasingTable}
+                                tableSize={purStyle}
+                                subtitle="재료비"
+                            />
+                            <BasicDataTable
+                                columns={outsourcingColumns}
+                                data={outTableData}
+                                datatableRef={outsourcingTable}
+                                tableSize={purStyle}
+                                subtitle="개발외주비"
+                            />
+                            <BasicDataTable columns={laborColumns} data={laborTableData} datatableRef={laborTable} subtitle="인건비" />
+                        </div>
+                        <div style={{ flex: 0.5 }} />
+                        <div style={{ flex: 5.5 }}>
+                            <BasicDataTable columns={chargeColumns} data={chargeTableData} datatableRef={chargeTable} tableSize={chargeStyle} subtitle="경비" />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

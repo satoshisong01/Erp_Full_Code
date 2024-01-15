@@ -537,6 +537,7 @@ $disabled: gray;
         color: #eee;
         border-left: 1px solid #bbb;
         border-bottom: 1px solid #bbb;
+        border-top: 1px solid #bbb;
         font-weight: 400;
     }
     .table-row {
@@ -547,6 +548,9 @@ $disabled: gray;
         }
         .flex-col-2 {
             flex: 2;
+        }
+        .flex-col-3 {
+            flex: 3;
         }
         .flex-col-4 {
             flex: 4;
@@ -674,8 +678,9 @@ $disabled: gray;
 .table-styled td {
     padding: 7px;
     text-align: left;
-    border-right: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
+    //border-right: 1px solid #ddd;
+    //border-bottom: 1px solid #ddd;
+    border: 1px solid #ddd;
 
     vertical-align: middle;
 }
