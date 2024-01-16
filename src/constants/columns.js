@@ -1445,4 +1445,97 @@ export const columns = {
             // },
         ],
     },
+    /* 시스템관리 */
+    user: { //유저
+        employ: [
+            {
+                header: "고유ID",
+                col: "uniqId",
+                notView: true,
+            },
+            {
+                header: "업무회원ID",
+                col: "empId",
+                cellWidth: "100",
+                enable: false,
+                modify: true,
+                add: true,
+                require: true,
+            },
+            {
+                header: "사용자명",
+                col: "empNm",
+                cellWidth: "100",
+                modify: true,
+                add: true,
+                require: true,
+            },
+            {
+                header: "사원번호",
+                col: "empNum",
+                cellWidth: "100",
+                modify: true,
+                add: true,
+                require: true,
+            },
+            { header: "비밀번호", col: "password", notView: true },
+            {
+                header: "상태",
+                col: "usrSttCd",
+                itemType: ["타입을 선택해 주세요", "가입신청", "가입삭제", "가입승인"],
+                itemTypeSymbol: ["", "A", "D", "P"],
+                cellWidth: "100",
+                modify: true,
+                add: true,
+                require: true,
+            },
+            { header: "나이", col: "birthday", cellWidth: "100", modify: true, add: true },
+            { header: "전화번호", col: "mbTelNm", cellWidth: "100", modify: true, add: true },
+            { header: "직위", col: "posNm", cellWidth: "100", modify: true, add: true },
+            { header: "소속기관", col: "aflOrgCd", cellWidth: "100", modify: true, add: true },
+            { header: "입사일", col: "joiningDt", cellWidth: "100", modify: true, add: true },
+            // { header: "잠금여부", col: "lockAt", cellWidth: "100" },
+            { header: "작성일", col: "createDate", cellWidth: "100" },
+            { header: "작성자", col: "createIdBy", cellWidth: "100" },
+            { header: "수정일", col: "lastModifyDate", cellWidth: "100" },
+            { header: "수정자", col: "lastModifiedUserName", cellWidth: "100" },
+            { header: "그룹ID", col: "groupId", notView: true },
+        ],
+        employCondition: [
+            {
+                title: "업무회원ID",
+                colName: "empId", //컬럼명
+                type: "input",
+                value: "",
+                searchLevel: "1",
+            },
+            {
+                title: "사용자명",
+                colName: "empNm", //컬럼명
+                type: "input",
+                value: "",
+                searchLevel: "2",
+            },
+            {
+                title: "소속기관",
+                colName: "aflOrgCd", //컬럼명
+                type: "input",
+                value: "",
+                searchLevel: "3",
+            },
+            {
+                title: "작성일",
+                colName: "createDate",
+                type: "datepicker",
+                searchLevel: "1",
+            },
+        ],
+        add: [
+            { items: [{ header: "업무회원ID", col: "empId", require: true, type: "input" }] },
+            { items: [{ header: "사용자명", col: "empNm", require: true, type: "input" }] },
+            { items: [{ header: "사원번호", col: "empNum", require: true, type: "input" }] },
+            { items: [{ header: "비밀번호", col: "password", require: true, type: "input" }] },
+            { items: [{ header: "상태", col: "usrSttCd", require: true, type: "input" }] },
+        ]
+    },
 };
