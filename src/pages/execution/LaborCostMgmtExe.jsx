@@ -13,14 +13,74 @@ import { ChangePrmnPlanData } from "components/DataTable/function/ReplaceDataFor
 
 /** 실행관리-인건비-실행 */
 function LaborCostMgmtExe() {
-    const {
-        innerPageName,
-        unitPriceList,
-        currentPageName,
-        setNameOfButton,
-    } = useContext(PageContext);
+    const { innerPageName, unitPriceList, currentPageName, setNameOfButton } = useContext(PageContext);
 
     const [condition, setCondition] = useState({});
+
+    const columnBugetView = [
+        //인건비 예산
+        { header: "프로젝트ID", col: "poiId", notView: true },
+        {
+            header: "구분코드",
+            col: "modeCode",
+            notView: true,
+        },
+        {
+            header: "타입코드",
+            col: "typeCode",
+            notView: true,
+        },
+        {
+            header: "품목그룹명",
+            col: "pgNm",
+            cellWidth: "235",
+            type: "productGroup",
+            require: true,
+        },
+        { header: "담당자", col: "empNm", cellWidth: "150", type: "employerInfo", require: true },
+        { header: "담당자ID", col: "esntlId", cellWidth: "150", notView: true },
+        { header: "부서", col: "orgNm", cellWidth: "150" },
+        {
+            header: "직급",
+            col: "posNm",
+            cellWidth: "150",
+            //type: "select",
+            options: [
+                { value: "", label: "선택" },
+                { value: "부장", label: "부장" },
+                { value: "차장", label: "차장" },
+                { value: "과장", label: "과장" },
+                { value: "대리", label: "대리" },
+                { value: "주임", label: "주임" },
+                { value: "사원", label: "사원" },
+            ],
+        },
+        {
+            header: "시작일",
+            col: "pecStartdate",
+            cellWidth: "150",
+            type: "dayPicker",
+        },
+        {
+            header: "종료일",
+            col: "pecEnddate",
+            cellWidth: "150",
+            type: "dayPicker",
+        },
+        {
+            header: "예산(M/M)",
+            col: "pecMm",
+            cellWidth: "150",
+            type: "input",
+            require: true,
+        },
+        {
+            header: "금액",
+            col: "price",
+            cellWidth: "245",
+            //type: "input",
+        },
+    ];
 
     const conditionInfo = (value) => {
         setCondition((prev) => {
@@ -193,7 +253,7 @@ function LaborCostMgmtExe() {
             <Location pathList={locationPath.LaborCostMgmt} />
             <ApprovalFormExe viewPageName="인건비실행" returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
-                <ReactDataTable columns={columns.laborCostMgmt.budget} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
+                <ReactDataTable columns={columnBugetView} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                 <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} />
@@ -208,7 +268,7 @@ function LaborCostMgmtExe() {
                     columns={columns.laborCostMgmt.run}
                     viewLoadDatas={budgetMgmtView}
                     customDatas={budgetMgmtRun}
-                    viewPageName={{name:"인건비실행", id:"LaborCostMgmtExe"}}
+                    viewPageName={{ name: "인건비실행", id: "LaborCostMgmtExe" }}
                     returnList={compareData}
                     condition={condition}
                 />

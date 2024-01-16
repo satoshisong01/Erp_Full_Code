@@ -23,6 +23,47 @@ function ExpenseMgmtPlan() {
         }
     };
 
+    const columnExpensesView = [
+        // 경비
+        {
+            header: "경비목록",
+            col: "pjbgTypeCode",
+            cellWidth: "300",
+            type: "select",
+            options: [
+                { value: "", label: "선택" },
+                { value: "EXPNS01", label: "교통비" },
+                { value: "EXPNS02", label: "숙박비" },
+                { value: "EXPNS03", label: "일비/파견비" },
+                { value: "EXPNS04", label: "식비" },
+                { value: "EXPNS05", label: "자재/소모품외" },
+                { value: "EXPNS06", label: "국내출장비" },
+                { value: "EXPNS07", label: "시내교통비" },
+                { value: "EXPNS08", label: "PJT 파견비" },
+                { value: "EXPNS09", label: "사무실임대료" },
+                { value: "EXPNS10", label: "소모품비" },
+                { value: "EXPNS11", label: "행사비" },
+                { value: "EXPNS12", label: "요식성경비" },
+                { value: "EXPNS13", label: "전산소모품비" },
+                { value: "EXPNS14", label: "도서인쇄비" },
+                { value: "EXPNS15", label: "통신비" },
+                { value: "EXPNS16", label: "해외출장비" },
+                { value: "EXPNS17", label: "배송비" },
+                { value: "EXPNS18", label: "예비비" },
+                { value: "EXPNS19", label: "영업비" },
+                { value: "EXPNS20", label: "기타" },
+            ],
+            require: true,
+        },
+        { header: "내용", col: "pjbgDesc", cellWidth: "780", type: "desc" },
+        { header: "금액", col: "pjbgPrice", cellWidth: "300", type: "input", require: true },
+        { header: "프로젝트ID", col: "poiId", notView: true, cellWidth: "0" },
+        // { header: "영업타입", col: "modeCode", notView: true },
+        { header: "사용여부", col: "deleteAt", notView: true, cellWidth: "0" },
+        { header: "삭제여부", col: "useAt", notView: true, cellWidth: "0" },
+        { header: "버전", col: "versionId", notView: true, cellWidth: "0" },
+    ];
+
     const processResultData = (resultData, condition) => {
         console.log(resultData, "처음받는값인데");
         const transformedData = resultData.reduce((accumulator, item) => {
@@ -392,7 +433,7 @@ function ExpenseMgmtPlan() {
             <Location pathList={locationPath.ExpenseMgmt} />
             <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
-                <ReactDataTable columns={columns.orderPlanMgmt.expenses} customDatas={pjbudgetDatasView} defaultPageSize={5} hideCheckBox={true} />
+                <ReactDataTable columns={columnExpensesView} customDatas={pjbudgetDatasView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                 <ReactDataTable columns={columns.expenseMgmt.cal} customDatas={cal} defaultPageSize={5} hideCheckBox={true} />
@@ -407,7 +448,7 @@ function ExpenseMgmtPlan() {
                     returnList={returnList}
                     columns={columns.expenseMgmt.budget}
                     customDatas={budgetMgmt}
-                    viewPageName={{name: "경비", id: "ExpenseMgmtPlan"}}
+                    viewPageName={{ name: "경비", id: "ExpenseMgmtPlan" }}
                     customDatasRefresh={refresh}
                     condition={condition}
                 />
