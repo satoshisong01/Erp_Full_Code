@@ -11,22 +11,22 @@ function GradeWageExpense() {
     const gradeWageExpenseTable = useRef(null);
 
     const columns = [
-        { header: "단가ID", col: "gupId", cellWidth: "50%", type: "input", notView: true },
-        { header: "기준명", col: "gupDesc", cellWidth: "60%", type: "input" },
-        { header: "임원", col: "gupPrice1", cellWidth: "50%", type: "input" },
-        { header: "특급기술사", col: "gupPrice2", cellWidth: "50%", type: "input" },
-        { header: "고급기술사", col: "gupPrice3", cellWidth: "50%", type: "input" },
-        { header: "중급기술사", col: "gupPrice4", cellWidth: "50%", type: "input" },
-        { header: "초급기술사", col: "gupPrice5", cellWidth: "50%", type: "input" },
-        { header: "고급기능사", col: "gupPrice6", cellWidth: "50%", type: "input" },
-        { header: "중급기능사", col: "gupPrice7", cellWidth: "50%", type: "input" },
-        { header: "초급기능사", col: "gupPrice8", cellWidth: "50%", type: "input" },
-        { header: "부장", col: "gupPrice9", cellWidth: "50%", type: "input" },
-        { header: "차장", col: "gupPrice10", cellWidth: "50%", type: "input" },
-        { header: "과장", col: "gupPrice11", cellWidth: "50%", type: "input" },
-        { header: "대리", col: "gupPrice12", cellWidth: "50%", type: "input" },
-        { header: "주임", col: "gupPrice13", cellWidth: "50%", type: "input" },
-        { header: "사원", col: "gupPrice14", cellWidth: "50%", type: "input" },
+        { header: "단가ID", col: "gupId", cellWidth: "0", type: "input", notView: true },
+        { header: "기준명", col: "gupDesc", cellWidth: "100", type: "input" },
+        { header: "임원", col: "gupPrice1", cellWidth: "100", type: "input" },
+        { header: "특급기술사", col: "gupPrice2", cellWidth: "100", type: "input" },
+        { header: "고급기술사", col: "gupPrice3", cellWidth: "100", type: "input" },
+        { header: "중급기술사", col: "gupPrice4", cellWidth: "100", type: "input" },
+        { header: "초급기술사", col: "gupPrice5", cellWidth: "100", type: "input" },
+        { header: "고급기능사", col: "gupPrice6", cellWidth: "100", type: "input" },
+        { header: "중급기능사", col: "gupPrice7", cellWidth: "100", type: "input" },
+        { header: "초급기능사", col: "gupPrice8", cellWidth: "100", type: "input" },
+        { header: "부장", col: "gupPrice9", cellWidth: "100", type: "input" },
+        { header: "차장", col: "gupPrice10", cellWidth: "100", type: "input" },
+        { header: "과장", col: "gupPrice11", cellWidth: "100", type: "input" },
+        { header: "대리", col: "gupPrice12", cellWidth: "100", type: "input" },
+        { header: "주임", col: "gupPrice13", cellWidth: "100", type: "input" },
+        { header: "사원", col: "gupPrice14", cellWidth: "100", type: "input" },
     ];
 
     useEffect(() => {

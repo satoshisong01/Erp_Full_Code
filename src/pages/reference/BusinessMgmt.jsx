@@ -9,9 +9,9 @@ function BusinessMgmt() {
     const [returnKeyWord, setReturnKeyWord] = useState("");
 
     const columns = [
-        { header: "사업장명", col: "createDate", cellWidth: "40%" },
-        { header: "사업장코드", col: "createDate", cellWidth: "40%" },
-        { header: "구분", col: "createIdBy", cellWidth: "40%" },
+        { header: "사업장명", col: "createDate", cellWidth: "500" },
+        { header: "사업장코드", col: "createDate", cellWidth: "500" },
+        { header: "구분", col: "createIdBy", cellWidth: "500" },
     ];
 
     const conditionList = [
@@ -48,13 +48,7 @@ function BusinessMgmt() {
         <>
             <Location pathList={locationPath.BusinessMgmt} />
             <SearchList conditionList={conditionList} onSearch={handleReturn} />
-            <DataTable
-                returnKeyWord={returnKeyWord}
-                columns={columns}
-                suffixUrl=""
-                currentPage=""
-                addBtn={addBtn}
-            />
+            <DataTable returnKeyWord={returnKeyWord} columns={columns} suffixUrl="" currentPage="" addBtn={addBtn} />
         </>
     );
 }

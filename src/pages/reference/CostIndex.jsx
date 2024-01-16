@@ -13,13 +13,13 @@ function CostIndex() {
     const { setNameOfButton, innerPageName, setInnerPageName } = useContext(PageContext);
 
     const columns = [
-        { header: "분류코드", col: "cbTypeCode", cellWidth: "30%", notView: true },
-        { header: "분류", type: "input", col: "cbName", cellWidth: "30%" },
-        { header: "간접원가", type: "input", col: "cbPer1", cellWidth: "30%" },
-        { header: "판매비", type: "input", col: "cbPer2", cellWidth: "30%" },
-        { header: "사내본사비", type: "input", col: "cbPer3", cellWidth: "30%" },
-        { header: "일반관리비", type: "input", col: "cbPer4", cellWidth: "30%" },
-        { header: "영업외수지", type: "input", col: "cbPer5", cellWidth: "30%" },
+        { header: "분류코드", col: "cbTypeCode", cellWidth: "0", notView: true },
+        { header: "분류", type: "input", col: "cbName", cellWidth: "230" },
+        { header: "간접원가", type: "input", col: "cbPer1", cellWidth: "230" },
+        { header: "판매비", type: "input", col: "cbPer2", cellWidth: "230" },
+        { header: "사내본사비", type: "input", col: "cbPer3", cellWidth: "230" },
+        { header: "일반관리비", type: "input", col: "cbPer4", cellWidth: "220" },
+        { header: "영업외수지", type: "input", col: "cbPer5", cellWidth: "220" },
     ];
 
     useEffect(() => {
