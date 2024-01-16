@@ -13,13 +13,13 @@ function CostIndex() {
     const { setNameOfButton, innerPageName, setInnerPageName } = useContext(PageContext);
 
     const columns = [
-        { header: "분류코드", col: "cbTypeCode", cellWidth: "0", notView: true },
-        { header: "분류", type: "input", col: "cbName", cellWidth: "230" },
-        { header: "간접원가", type: "input", col: "cbPer1", cellWidth: "230" },
-        { header: "판매비", type: "input", col: "cbPer2", cellWidth: "230" },
-        { header: "사내본사비", type: "input", col: "cbPer3", cellWidth: "230" },
-        { header: "일반관리비", type: "input", col: "cbPer4", cellWidth: "220" },
-        { header: "영업외수지", type: "input", col: "cbPer5", cellWidth: "220" },
+        { header: "기준연도", type: "input", col: "cbMonth", cellWidth: "200" },
+        { header: "분류코드", col: "cbTypeCode", cellWidth: "200" },
+        { header: "간접원가", type: "input", col: "cbPer1", cellWidth: "200" },
+        { header: "판매비", type: "input", col: "cbPer2", cellWidth: "190" },
+        { header: "사내본사비", type: "input", col: "cbPer3", cellWidth: "190" },
+        { header: "일반관리비", type: "input", col: "cbPer4", cellWidth: "190" },
+        { header: "영업외수지", type: "input", col: "cbPer5", cellWidth: "190" },
     ];
 
     useEffect(() => {
@@ -178,30 +178,47 @@ function CostIndex() {
     //    return resultData;
     //};
 
+    //const reorganizeData = (data) => {
+    //    // reduce 함수를 사용하여 데이터 배열을 순회하면서 재구성된 결과를 구축합니다.
+    //    return data.reduce((acc, item, index) => {
+    //        // 현재 아이템에서 속성들을 비구조화하여 가져옵니다.
+    //        const { cbMonth, cbName, cbTypeCode, cbId, cbPer } = item;
+
+    //        // gupBaseDate 배열에서 연도를 추출합니다.
+    //        const name = cbName;
+
+    //        // 찾은 데이터의 인덱스
+    //        // cbName 기반으로 누적 배열에서 그룹의 인덱스를 찾습니다.
+    //        const foundIndex = acc.findIndex((group) => group && group.cbName === cbName);
+    //        const roleKey = `cbPer${roleMapping[cbName]}`;
+
+    //        // 해당하는 그룹이 없을 경우 새로운 그룹 생성
+    //        // 동일한 cbName를 가진 그룹이 존재하는지 확인합니다.
+    //        if (foundIndex === -1) {
+    //            // 그룹이 존재하지 않으면 새로운 그룹을 생성하고 누적 배열에 추가합니다.
+    //            acc.push({ cbTypeCode, cbMonth, cbName, name, [roleKey]: Number(cbPer), cbId: [cbId] });
+    //        } else {
+    //            // 그룹이 이미 존재하면 데이터를 기존 그룹에 추가합니다.
+    //            acc[foundIndex][`cbPer${roleMapping[cbName]}`] = Number(cbPer);
+    //            //항상 배열로 쓰이고 낮은순서로 저장됨
+    //            acc[foundIndex].cbId = [...acc[foundIndex].cbId, ...(Array.isArray(cbId) ? cbId : [cbId])].sort((a, b) => a - b);
+    //        }
+
+    //        return acc;
+    //    }, []);
+    //};
+
     const reorganizeData = (data) => {
-        // reduce 함수를 사용하여 데이터 배열을 순회하면서 재구성된 결과를 구축합니다.
-        return data.reduce((acc, item, index) => {
-            // 현재 아이템에서 속성들을 비구조화하여 가져옵니다.
-            const { cbName, cbTypeCode, cbId, cbPer } = item;
+        return data.reduce((acc, item) => {
+            const { cbMonth, cbTypeCode, cbName, cbId, cbPer } = item;
 
-            // gupBaseDate 배열에서 연도를 추출합니다.
-            const name = cbName;
+            const foundIndex = acc.findIndex((group) => group && group.cbMonth === cbMonth && group.cbTypeCode === cbTypeCode);
 
-            // 찾은 데이터의 인덱스
-            // cbName 기반으로 누적 배열에서 그룹의 인덱스를 찾습니다.
-            const foundIndex = acc.findIndex((group) => group && group.cbName === cbName);
-            const roleKey = `cbPer${roleMapping[index]}`;
-
-            // 해당하는 그룹이 없을 경우 새로운 그룹 생성
-            // 동일한 cbName를 가진 그룹이 존재하는지 확인합니다.
             if (foundIndex === -1) {
-                // 그룹이 존재하지 않으면 새로운 그룹을 생성하고 누적 배열에 추가합니다.
-                acc.push({ cbName, name, [roleKey]: Number(cbPer), cbId: [cbId] });
+                acc.push({ cbId: [cbId], cbMonth, cbTypeCode, [`cbPer${roleMapping[cbName]}`]: Number(cbPer) });
             } else {
-                // 그룹이 이미 존재하면 데이터를 기존 그룹에 추가합니다.
-                acc[foundIndex][`cbPer${roleMapping[cbTypeCode]}`] = Number(cbPer);
-                //항상 배열로 쓰이고 낮은순서로 저장됨
-                acc[foundIndex].cbId = [...acc[foundIndex].cbId, ...(Array.isArray(cbId) ? cbId : [cbId])].sort((a, b) => a - b);
+                acc[foundIndex].cbId = [...acc[foundIndex].cbId, ...(Array.isArray(cbId) ? cbId : [cbId])];
+                acc[foundIndex][`cbPer${roleMapping[cbName]}`] = (acc[foundIndex][`cbPer${roleMapping[cbName]}`] || 0) + Number(cbPer);
             }
 
             return acc;

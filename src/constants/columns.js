@@ -48,38 +48,93 @@ export const columns = {
                 notView: true,
             },
             {
+                header: "모델명",
+                col: "pdiNum",
+                cellWidth: "250",
+                modify: true,
+                add: true,
+            },
+            {
                 header: "품목그룹명",
                 col: "pgNm",
                 type: "productGroup",
-                cellWidth: "260",
+                cellWidth: "150",
                 modify: true,
                 add: true,
                 require: true,
             },
             {
-                header: "품번",
-                col: "pdiNum",
-                cellWidth: "300",
-                modify: true,
-                add: true,
-            },
-            {
-                header: "품목명",
+                header: "품명",
                 col: "pdiNm",
-                cellWidth: "300",
-                modify: true,
-                add: true,
-                require: true,
-            },
-            { header: "단위", col: "pdiWght", cellWidth: "100", modify: true, add: true },
-            {
-                header: "품목코드",
-                col: "pdiCode",
                 cellWidth: "200",
                 modify: true,
                 add: true,
             },
-            { header: "규격", col: "pdiStnd", cellWidth: "200" },
+            {
+                header: "품목규격",
+                col: "pdiStnd",
+                cellWidth: "250",
+                modify: true,
+                add: true,
+            },
+            {
+                header: "품목단위",
+                col: "pdiUnit",
+                cellWidth: "70",
+                modify: true,
+                add: true,
+            },
+            {
+                header: "단가",
+                col: "pupUnitPrice",
+                cellWidth: "100",
+                modify: true,
+                add: true,
+            },
+            {
+                header: "판매사",
+                col: "pdiSeller",
+                cellWidth: "150",
+                modify: true,
+                add: true,
+            },
+            {
+                header: "내외자구분",
+                col: "pdiIotype",
+                cellWidth: "90",
+                modify: true,
+                add: true,
+            },
+            {
+                header: "기준이익률",
+                col: "pupPfmgrate",
+                cellWidth: "90",
+                modify: true,
+                add: true,
+            },
+            {
+                header: "기준소비자가산출율",
+                col: "pupCalrate",
+                cellWidth: "90",
+                modify: true,
+                add: true,
+            },
+            {
+                header: "제품구분",
+                col: "pdiType",
+                cellWidth: "100",
+                modify: true,
+                add: true,
+            },
+            { header: "단위중량", col: "pdiWght", cellWidth: "100", modify: true, add: true },
+            //{
+            //    header: "품목코드",
+            //    col: "pdiCode",
+            //    cellWidth: "200",
+            //    modify: true,
+            //    add: true,
+            //},
+            { header: "비고", col: "pdiDesc", cellWidth: "200", modify: true, add: true },
             {
                 header: "품목그룹ID",
                 col: "pgId",
@@ -1446,7 +1501,8 @@ export const columns = {
         ],
     },
     /* 시스템관리 */
-    user: { //유저
+    user: {
+        //유저
         employ: [
             {
                 header: "고유ID",
@@ -1536,6 +1592,6 @@ export const columns = {
             { items: [{ header: "사원번호", col: "empNum", require: true, type: "input" }] },
             { items: [{ header: "비밀번호", col: "password", require: true, type: "input" }] },
             { items: [{ header: "상태", col: "usrSttCd", require: true, type: "input" }] },
-        ]
+        ],
     },
 };
