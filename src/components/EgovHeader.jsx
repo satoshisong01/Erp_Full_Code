@@ -21,7 +21,7 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
     const sessionUserName = JSON.parse(sessionUser)?.name;
     const sessionUserSe = JSON.parse(sessionUser)?.userSe;
 
-    // console.log("🎄로그인🎄 ID:", sessionUserId, "name:", sessionUserName, "userSe:",sessionUserSe);
+    console.log("🎄로그인🎄", JSON.parse(sessionUser));
 
     const { gnbLabel, setGnbLabel } = useContext(PageContext);
     const [activeGnb, setActiveGnb] = useState('');
@@ -78,14 +78,27 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
         setActiveGnb(gnbLabel)
     }
     const gnbClick = (e) => {
-        const gnbLabel = e.target.innerText;
-        setGnbLabel(gnbLabel);
-        setActiveGnb(gnbLabel)
+        // if(sessionUserSe) {
+            console.log("정보있음>>>>>>", sessionUserSe);
+            const gnbLabel = e.target.innerText;
+            setGnbLabel(gnbLabel);
+            setActiveGnb(gnbLabel)
+        // } else {
+        //     console.log("정보없음>>>>>>", sessionUserSe);
+        //     navigate(URL.LOGIN);
+        // }
     }
     const mainClick = (e) => {
         setGnbLabel("");
         setActiveGnb("");
         setActiveLnb("");
+    }
+
+    const roleCheck = () => {
+        if(!sessionUserId) return navigate(URL.LOGIN);
+        if(sessionUserId === "") {
+
+        }
     }
 
     // console.log("------------------------------EgovHeader [End]");
