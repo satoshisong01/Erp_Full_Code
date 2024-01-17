@@ -115,7 +115,7 @@ export default function ProductInfoModal(props) {
                                     columns={columns}
                                     customDatas={productInfoList}
                                     returnSelectRows={(rows) => returnSelectRows(rows)}
-                                    viewPageName={{ name: "품목정보팝업" }}
+                                    viewPageName={{ name: "품목정보팝업", id: "품목정보팝업" }}
                                 />
                             </div>
                         </div>

@@ -463,6 +463,7 @@ const ReactDataTable = (props) => {
 
     /* current- 현재 보는페이지, table button 활성화 on off */
     useEffect(() => {
+        // console.log("modal:", modalPageName, "current:", current.name);
         if (isCurrentPage()) {
             if (isModalTable) {
                 //모달화면일때
@@ -480,7 +481,6 @@ const ReactDataTable = (props) => {
                     returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
                     setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
                 }
-                console.log("11111111111", selectedFlatRows.length);
                 setLengthSelectRow(selectedFlatRows.length);
             }
         }

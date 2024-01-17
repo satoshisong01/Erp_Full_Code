@@ -21,7 +21,7 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
     const sessionUserName = JSON.parse(sessionUser)?.name;
     const sessionUserSe = JSON.parse(sessionUser)?.userSe;
 
-    console.log("🎄로그인🎄", JSON.parse(sessionUser));
+    // console.log("🎄로그인🎄", JSON.parse(sessionUser));
 
     const { gnbLabel, setGnbLabel } = useContext(PageContext);
     const [activeGnb, setActiveGnb] = useState("");
@@ -81,7 +81,7 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
     };
     const gnbClick = (e) => {
         // if(sessionUserSe) {
-            console.log("정보있음>>>>>>", sessionUserSe);
+            // console.log("정보있음>>>>>>", sessionUserSe);
             const gnbLabel = e.target.innerText;
             setGnbLabel(gnbLabel);
             setActiveGnb(gnbLabel)

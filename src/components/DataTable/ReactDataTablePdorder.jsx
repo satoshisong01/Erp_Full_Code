@@ -206,7 +206,6 @@ const ReactDataTablePdorder = (props) => {
                     returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
                 }
                 // console.log("current:", current.id, "currentPageName:", currentPageName.id, "innerPageName:", innerPageName.id, "length:", selectedFlatRows.length);
-                console.log("33333333", selectedFlatRows.length);
                 setLengthSelectRow(selectedFlatRows.length);
             }
         }

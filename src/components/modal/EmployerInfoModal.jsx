@@ -111,7 +111,7 @@ export default function EmployerInfoModal(props) {
                                     columns={columns}
                                     customDatas={employerInfoList}
                                     returnSelectRows={(rows) => returnSelectRows(rows)}
-                                    viewPageName={{ name: "회원목록팝업" }}
+                                    viewPageName={{ name: "회원목록팝업", id: "회원목록팝업"}}
                                 />
                             </div>
                         </div>

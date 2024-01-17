@@ -275,7 +275,6 @@ const ReactDataTableURL = (props) => {
                     returnSelectRows && returnSelectRows(selects);
                     returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
                 }
-                console.log("555555555555", selectedFlatRows.length);
                 setLengthSelectRow(selectedFlatRows.length);
             }
         }
