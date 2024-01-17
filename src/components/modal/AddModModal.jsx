@@ -21,8 +21,6 @@ import Number from "components/input/Number";
 export default function AddModModal(props) {
     const { width, height, list, onClose, resultData, title, initialData } = props;
     const {
-        // projectInfo,
-        // setProjectInfo,
         companyInfo,
         pdiNmList,
         projectPdiNm,
@@ -34,27 +32,16 @@ export default function AddModModal(props) {
         setProjectPgNm,
         setEmUserInfo,
     } = useContext(PageContext);
-    // const [data, setData] = useState({});
+    
     const [data, setData] = useState(initialData?.[0] || {});
     const bodyRef = useRef(null);
+    const [errorList, setErrorList] = useState({}); // 필수값 에러 메시지
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false); //거래처목록
     const [isOpenModalProject, setIsOpenModalProject] = useState(false); //프로젝트목록
     const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
     const [isOpenModalProductGroup, setIsOpenModalProductGroup] = useState(false); //품목그룹목록
     const [isOpenModalEmployerInfo, setIsOpenModalEmployerInfo] = useState(false); //업무회원목록
     const [colName, setColName] = useState("");
-
-    useEffect(() => {
-        return () => {
-            console.log("종료~");
-            setCompanyInfo({});
-            setPdiNmList([]);
-            setProjectPdiNm({});
-            setProjectPgNm({});
-            setEmUserInfo({});
-            // setProjectInfo({});
-        };
-    }, []);
 
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
@@ -75,14 +62,6 @@ export default function AddModModal(props) {
             setCompanyInfo({})
         }
     }, [companyInfo]);
-
-    // useEffect(() => {
-    //     //프로젝트
-    //     if(projectInfo.poiId === "" || !projectInfo) return;
-    //     setData(prevData => {
-    //         return { ...prevData, ...projectInfo};
-    //     });
-    // }, [projectInfo]);
 
     useEffect(() => {
         //품목
@@ -118,11 +97,27 @@ export default function AddModModal(props) {
     const onClick = async (e) => {
         e.preventDefault();
         // 필수 필드가 비어있는지 확인
-        // const requiredColumns = list && list.filter((column) => column.require);
-        // const hasEmptyRequiredFields = requiredColumns.some((column) => !data[column.col]);
-
-        resultData(data); //데이터 부모로 전송
-        onClose();
+        const requiredColumns = list
+            ? list.flatMap((column) =>
+                    column.items.filter((item) => item.require).map((item) => ({ ...item }))
+                )
+            : [];
+        const hasEmptyRequiredFields = requiredColumns.some((column) => !data[column.col]);
+        
+        if (hasEmptyRequiredFields) {
+            setErrorList((prevErrors) => {
+                const newErrors = { ...prevErrors };
+                requiredColumns.forEach((column) => {
+                    if (!data[column.col]) {
+                        newErrors[column.col] = true;
+                    }
+                });
+                return newErrors;
+            });
+        } else {
+            resultData(data); //데이터 부모로 전송
+            onClose();
+        }
     };
 
     const inputChange = (e, type) => {
@@ -130,6 +125,12 @@ export default function AddModModal(props) {
         setData(prevData => {
             return { ...prevData, [name]: value};
         });
+
+        // 에러 메시지 상태 업데이트
+        setErrorList((prevErrors) => ({
+            ...prevErrors,
+            [name]: false,
+        }));
     };
 
     const dateClick = (date, col) => {
@@ -186,7 +187,6 @@ export default function AddModModal(props) {
                         item={item}
                         onChange={(e) => inputChange(e, "number")}
                         value={data?.[item.col] ? data[item.col].toLocaleString() : ""}
-                        disabled={item.disabled}
                     />
                 ) : item.type === "select" ? (
                     <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
@@ -217,6 +217,7 @@ export default function AddModModal(props) {
                         value={data?.[item.col] ? data[item.col] : ""}
                         placeholder="품명을 선택하세요."
                         readOnly
+                        disabled={data?.[item.col].disabled}
                     />
                 ) : item.type === "productGroup" ? (
                     <BasicInput item={item} onClick={() => setIsOpenModalProductGroup(true)} value={data?.[item.col] ?? ""} readOnly />
@@ -224,6 +225,7 @@ export default function AddModModal(props) {
                     // <BasicInput item={item} onClick={() => setIsOpenModalEmployerInfo(true)} value={data?.[item.col] ?? ""} readOnly />
                     <BasicInput item={item} onClick={() => changeEmployerInfo(item.col)} value={data?.[item.col] ?? ""} readOnly />
                 ) : null}
+                {errorList[item.col] && <span className="error">* 필수값을 입력하세요.</span>}
             </div>
         </div>
     );

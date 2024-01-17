@@ -35,6 +35,7 @@ import PurchasingMgmtPlan from "pages/execution/PurchasingMgmtPlan";
 import PurchasingMgmtExe from "pages/execution/PurchasingMgmtExe";
 import ExpenseMgmtExe from "pages/execution/ExpenseMgmtExe";
 import ExpenseMgmtPlan from "pages/execution/ExpenseMgmtPlan";
+import Quotation from "pages/sales/Quotation";
 
 export const reference = [
     //기준정보관리
@@ -141,13 +142,13 @@ export const sales = [
         label: "영업비(정산)",
         pLabel: "영업관리",
     },
-    // {
-    //     id: "Quotation",
-    //     path: URL.Quotation,
-    //     component: <Quotation />,
-    //     label: "견적서관리",
-    //     activeKey: 203,
-    // },
+    {
+        id: "Quotation",
+        path: URL.Quotation,
+        component: <Quotation />,
+        label: "견적서관리",
+        pLabel: "영업관리",
+    },
     //{
     //    id: "InvoiceMgmt",
     //    path: URL.InvoiceMgmt,
@@ -232,67 +233,67 @@ export const execution = [
 ];
 export const system = [
     //시스템관리
-    {
-        id: "MenuInfo",
-        path: URL.MenuInfo,
-        component: <MenuInfo />,
-        label: "메뉴정보관리",
-        pLabel: "시스템관리",
-    },
-    {
-        id: "ProgramList",
-        path: URL.ProgramList,
-        component: <ProgramList />,
-        label: "프로그램목록관리",
-        pLabel: "시스템관리",
-    },
-    {
-        id: "AuthorizationMgmt",
-        path: URL.AuthorizationMgmt,
-        component: <AuthorizationMgmt />,
-        label: "권한관리",
-        pLabel: "시스템관리",
-    },
+    // {
+    //     id: "MenuInfo",
+    //     path: URL.MenuInfo,
+    //     component: <MenuInfo />,
+    //     label: "메뉴정보관리",
+    //     pLabel: "시스템관리",
+    // },
+    // {
+    //     id: "ProgramList",
+    //     path: URL.ProgramList,
+    //     component: <ProgramList />,
+    //     label: "프로그램목록관리",
+    //     pLabel: "시스템관리",
+    // },
+    // {
+    //     id: "AuthorizationMgmt",
+    //     path: URL.AuthorizationMgmt,
+    //     component: <AuthorizationMgmt />,
+    //     label: "권한관리",
+    //     pLabel: "시스템관리",
+    // },
     {
         id: "GroupCode",
         path: URL.GroupCode,
         component: <GroupCode />,
-        label: "그룹코드관리",
+        label: "그룹코드",
         pLabel: "시스템관리",
     },
     {
         id: "CategoryCode",
         path: URL.CategoryCode,
         component: <CategoryCode />,
-        label: "공통코드관리",
+        label: "공통코드",
         pLabel: "시스템관리",
     },
     {
         id: "DetailCode",
         path: URL.DetailCode,
         component: <DetailCode />,
-        label: "상세코드관리",
+        label: "상세코드",
         pLabel: "시스템관리",
     },
     {
         id: "WorkMemberMgmt",
         path: URL.WorkMemberMgmt,
         component: <WorkMemberMgmt />,
-        label: "업무회원관리",
+        label: "업무회원",
         pLabel: "시스템관리",
     },
     // {
     //     id: "RegularMemberMgmt",
     //     path: URL.RegularMemberMgmt,
     //     component: <RegularMemberMgmt />,
-    //     label: "일반회원관리",
+    //     label: "일반회원",
     //     pLabel: "기준정보관리",
     // },
     // {
     //     id: "EnterpriseMemberMgmt",
     //     path: URL.EnterpriseMemberMgmt,
     //     component: <EnterpriseMemberMgmt />,
-    //     label: "기업회원관리",
+    //     label: "기업회원",
     //     pLabel: "기준정보관리",
     // },
     // {

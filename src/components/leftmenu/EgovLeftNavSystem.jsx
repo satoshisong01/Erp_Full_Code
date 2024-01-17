@@ -45,16 +45,15 @@ function EgovLeftNavSystem(props) {
     };
 
     const menuItems = [
-        {
-            label: "메뉴관리",
-            id: "MenuInfo",
-            subMenus: [
-                { label: "메뉴정보관리", id: "MenuInfo" },
-                { label: "프로그램목록관리", id: "ProgramList" },
-            ],
-        },
-        { label: "권한관리", id: "AuthorizationMgmt", subMenus: [] },
-
+        // {
+        //     label: "메뉴관리",
+        //     id: "MenuInfo",
+        //     subMenus: [
+        //         { label: "메뉴정보관리", id: "MenuInfo" },
+        //         { label: "프로그램목록관리", id: "ProgramList" },
+        //     ],
+        // },
+        // { label: "권한관리", id: "AuthorizationMgmt", subMenus: [] },
         //{
         //    label: "게시판관리",
         //    id: "",
@@ -69,9 +68,9 @@ function EgovLeftNavSystem(props) {
             label: "코드관리",
             id: "GroupCode",
             subMenus: [
-                { label: "그룹코드관리", id: "GroupCode" },
-                { label: "공통코드관리", id: "CategoryCode" },
-                { label: "상세코드관리", id: "DetailCode" },
+                { label: "그룹코드", id: "GroupCode" },
+                { label: "공통코드", id: "CategoryCode" },
+                { label: "상세코드", id: "DetailCode" },
             ],
         },
         // { label: "접속이력관리", subMenus: [] },
@@ -79,7 +78,7 @@ function EgovLeftNavSystem(props) {
             label: "사용자관리",
             id: "WorkMemberMgmt",
             subMenus: [
-                { label: "업무회원관리", id: "WorkMemberMgmt" },
+                { label: "업무회원", id: "WorkMemberMgmt" },
             ],
         },
     ];

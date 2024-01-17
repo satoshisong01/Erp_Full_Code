@@ -25,10 +25,11 @@ const ReactDataTablePdorder = (props) => {
         viewLoadDatas,
         suffixUrl,
         condition, //poiId와 같은 조회에 필요한 조건
+        isPageNation
     } = props;
     const {
-        loadButton,
-        setLoadButton,
+        pdiNmList,
+        setPdiNmList,
         nameOfButton,
         setNameOfButton,
         prevCurrentPageName,
@@ -90,13 +91,16 @@ const ReactDataTablePdorder = (props) => {
     useEffect(() => {
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
-        }
-        if (isCurrentPage() && nameOfButton === "save") {
-            compareData(originTableData, tableData);
-            setNameOfButton(""); //초기화
-        }
-        if (nameOfButton === "load" && viewLoadDatas) {
-            setTableData(viewLoadDatas);
+
+            if (nameOfButton === "save") {
+                compareData(originTableData, tableData);
+            } else if (nameOfButton === "load" && viewLoadDatas) {
+                setTableData(viewLoadDatas);
+            } else if (nameOfButton === "deleteRow") {
+                onDeleteRow();
+            } else if (nameOfButton === "addRow") {
+                onAddRow();
+            }
             setNameOfButton(""); //초기화
         }
     }, [innerPageName, currentPageName, editing, nameOfButton]);
@@ -132,15 +136,6 @@ const ReactDataTablePdorder = (props) => {
         headerGroups,
         prepareRow,
         page,
-        state: { pageIndex, pageSize },
-        previousPage,
-        nextPage,
-        canPreviousPage,
-        canNextPage,
-        pageOptions,
-        gotoPage,
-        setPageSize,
-        pageCount,
         selectedFlatRows, // 선택된 행 데이터
         toggleRowSelected, // 선택된 체크 박스
         toggleAllRowsSelected, // 전체선택 on off
@@ -148,7 +143,7 @@ const ReactDataTablePdorder = (props) => {
         {
             columns: columnsConfig,
             data: tableData,
-            initialState: { pageIndex: 0, pageSize: defaultPageSize || 10 }, // 초기값
+            initialState: { pageIndex: 0, pageSize: isPageNation ? (defaultPageSize || 10) : tableData && tableData.length || 200 }, // 초기값
         },
         useSortBy,
         usePagination,
@@ -195,22 +190,25 @@ const ReactDataTablePdorder = (props) => {
 
     /* table button 활성화 on off */
     useEffect(() => {
-        if (isModalTable && current.name === modalPageName) {
-            //모달화면일때
-            setModalLengthSelectRow(selectedFlatRows.length);
-            if (selectedFlatRows.length > 0) {
-                const selects = selectedFlatRows.map((row) => row.values);
-                returnSelectRows && returnSelectRows(selects);
-                returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
+        if (isCurrentPage()) {
+            if (isModalTable) {
+                //모달화면일때
+                setModalLengthSelectRow(selectedFlatRows.length);
+                if (selectedFlatRows.length > 0) {
+                    const selects = selectedFlatRows.map((row) => row.values);
+                    returnSelectRows && returnSelectRows(selects);
+                    returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
+                }
+            } else if (!isModalTable) {
+                if (selectedFlatRows.length > 0) {
+                    const selects = selectedFlatRows.map((row) => row.values);
+                    returnSelectRows && returnSelectRows(selects);
+                    returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
+                }
+                // console.log("current:", current.id, "currentPageName:", currentPageName.id, "innerPageName:", innerPageName.id, "length:", selectedFlatRows.length);
+                console.log("33333333", selectedFlatRows.length);
+                setLengthSelectRow(selectedFlatRows.length);
             }
-        } else if (!isModalTable && (current.id === currentPageName.id || current.id === innerPageName.id)) {
-            //모달화면이 아닐때
-            if (selectedFlatRows.length > 0) {
-                const selects = selectedFlatRows.map((row) => row.values);
-                returnSelectRows && returnSelectRows(selects);
-                returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
-            }
-            setLengthSelectRow(selectedFlatRows.length);
         }
     }, [selectedFlatRows]);
 
@@ -231,15 +229,13 @@ const ReactDataTablePdorder = (props) => {
         });
     };
 
-    const onDeleteRow = (row) => {
-        const rowId = row.index;
-        const updateTableData = tableData.filter((_, index) => index !== rowId);
-        setTableData([...updateTableData]);
-    };
-
-    const pageSizeChange = (value) => {
-        setPageSize(Number(value)); // 페이지 크기 변경
-        gotoPage(0); // 첫 페이지로 이동
+    const onDeleteRow = () => {
+        if (!selectedFlatRows || selectedFlatRows.length === 0) { return; }
+        const values = selectedFlatRows.map((item) => item.index);
+        setTableData((prevTableData) => {
+            const updateTableData = prevTableData.filter((_, index) => !values.includes(index));
+            return [...updateTableData];
+        });
     };
 
     const setValueCompany = (rowIndex) => {
@@ -258,6 +254,23 @@ const ReactDataTablePdorder = (props) => {
         }
     }, [projectPdiNm]);
 
+    useEffect(() => {
+        if (isCurrentPage() && pdiNmList && pdiNmList.length > 0) {
+            setTableData((prevTableData) => {
+                const start = prevTableData.length-1;
+                const end = start + pdiNmList.length;
+                const newTableData = [...prevTableData];
+    
+                for (let i = start, j = 0; i < end; i++, j++) {
+                    newTableData[i] = { ...pdiNmList[j] };
+                }
+
+                return newTableData;
+            });
+            setPdiNmList([]);
+        }
+    }, [pdiNmList]);
+
     const goSetting = (rowIndex) => {
         setCountIndex(rowIndex);
     };
@@ -273,6 +286,9 @@ const ReactDataTablePdorder = (props) => {
                 ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
                 ...selectedPdiNm, // projectPdiNm 객체의 데이터로 업데이트
             };
+
+            console.log("1.rowIndex:",rowIndex);
+            console.log("2.updatedTableData:",updatedTableData);
 
             // 업데이트된 데이터로 tableData 업데이트
             setTableData(updatedTableData);
@@ -494,20 +510,8 @@ const ReactDataTablePdorder = (props) => {
 
     return (
         <>
-            <div className="flex-between mg-b-10">
-                <div className="page-size">
-                    {/* <span className="mg-r-10">페이지 크기 :</span> */}
-                    <select className="select" id={uuidv4()} value={pageSize || defaultPageSize} onChange={(e) => pageSizeChange(e.target.value)}>
-                        {pageSizeOptions.map((size) => (
-                            <option key={size} value={size}>
-                                {size}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-            <div style={{ position: "relative", overflow: "auto", width: "auto" }}>
-                <table {...getTableProps()} className="table-styled" ref={tableRef} style={{ tableLayout: "auto" }}>
+            <div className={isPageNation ? "" : "table-scroll"}>
+                <table {...getTableProps()} className="table-styled" ref={tableRef} style={{ tableLayout: "auto", marginBottom: 20 }}>
                     <thead>
                         {headerGroups.map((headerGroup, headerGroupIndex) => (
                             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -526,27 +530,18 @@ const ReactDataTablePdorder = (props) => {
                                         </th>
                                     );
                                 })}
-                                {isEditing && (
-                                    <th style={{ width: "43px", textAlign: "center" }}>
-                                        <button className="btn-primary" onClick={onAddRow} style={{ margin: 0 }}>
-                                            추가
-                                        </button>
-                                    </th>
-                                )}
                             </tr>
                         ))}
                     </thead>
 
                     {tableData.length > 0 ? (
                         <tbody {...getTableBodyProps()}>
-                            {page.map((row, rowIndex) => {
+                            {page.map((row) => {
                                 prepareRow(row);
                                 return (
-                                    // <tr {...row.getRowProps()} onClick={(e) => onCLickRow(row)}>
                                     <tr {...row.getRowProps()}>
                                         {row.cells.map((cell, cellIndex) => {
                                             if (cell.column.notView) {
-                                                // notView가 true인 경우, 셀을 출력하지 않음
                                                 return null;
                                             }
 
@@ -554,7 +549,6 @@ const ReactDataTablePdorder = (props) => {
                                                 <td
                                                     {...cell.getCellProps()}
                                                     className={cellIndex === 0 ? "first-column" : "other-column"}
-                                                    // onClick={(e) => onClickCell(e, cell)}
                                                 >
                                                     {cell.column.id === "selection" ? (
                                                         cell.render("Cell")
@@ -600,11 +594,11 @@ const ReactDataTablePdorder = (props) => {
                                                                     type="text"
                                                                     className="basic-input"
                                                                     onClick={() => {
-                                                                        goSetting(rowIndex);
+                                                                        goSetting(row.index);
                                                                         setIsOpenModalProductInfo(true);
                                                                     }}
                                                                     placeholder="품명을 선택하세요."
-                                                                    value={tableData[rowIndex]?.[cell.column.id] || ""}
+                                                                    value={tableData[row.index]?.[cell.column.id] || ""}
                                                                     // onChange={(e) => handleChange(e, row, cell.column.id)}
                                                                     readOnly
                                                                 />
@@ -615,10 +609,10 @@ const ReactDataTablePdorder = (props) => {
                                                                     className="buttonSelect"
                                                                     id={cell.column.id}
                                                                     name={cell.column.id}
-                                                                    onClick={() => setValueCompany(rowIndex)}
+                                                                    onClick={() => setValueCompany(row.index)}
                                                                     type="text"
                                                                     placeholder={`거래처명을 선택해 주세요.`}
-                                                                    value={tableData[rowIndex]?.[cell.column.id] || ""}
+                                                                    value={tableData[row.index]?.[cell.column.id] || ""}
                                                                     onChange={(e) => handleChange(e, row, cell.column.id)}
                                                                     readOnly
                                                                 />
@@ -634,13 +628,6 @@ const ReactDataTablePdorder = (props) => {
                                                 </td>
                                             );
                                         })}
-                                        {isEditing && (
-                                            <td style={{ textAlign: "center", width: "43px" }}>
-                                                <button className="btnR btn-primary redDelete" onClick={() => onDeleteRow(row)}>
-                                                    삭제
-                                                </button>
-                                            </td>
-                                        )}
                                     </tr>
                                 );
                             })}
@@ -659,30 +646,6 @@ const ReactDataTablePdorder = (props) => {
                     )}
                 </table>
             </div>
-
-            <div className="me-pagination">
-                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                    {" "}
-                    처음{" "}
-                </button>
-                <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-                    {" "}
-                    이전{" "}
-                </button>
-                <span>
-                    {" "}
-                    페이지 {pageIndex + 1} / {pageOptions && pageOptions.length}{" "}
-                </span>
-                <button onClick={() => nextPage()} disabled={!canNextPage}>
-                    {" "}
-                    다음{" "}
-                </button>
-                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-                    {" "}
-                    마지막{" "}
-                </button>
-            </div>
-
             {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
             {isOpenModalCompany && <ModalPageCompany rowIndex={rowIndex} onClose={() => setIsOpenModalCompany(false)} />}
             <ProductInfoModal width={900} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />

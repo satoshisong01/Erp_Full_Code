@@ -469,6 +469,9 @@ $disabled: gray;
 
 .flex-input {
     flex: 2;
+    select {
+        margin: 0;
+    }
 }
 
 /*달력 크기(인건비 월별선택)*/
@@ -678,10 +681,7 @@ $disabled: gray;
 .table-styled td {
     padding: 7px;
     text-align: left;
-    //border-right: 1px solid #ddd;
-    //border-bottom: 1px solid #ddd;
     border: 1px solid #ddd;
-
     vertical-align: middle;
 }
 
@@ -697,7 +697,6 @@ $disabled: gray;
 }
 
 .table-styled select {
-    //width: 100%;
     padding: 3px;
     border: 1px solid #ccc;
     border-radius: 3px;
@@ -761,7 +760,7 @@ $disabled: gray;
     cursor: pointer;
 }
 
-.me-pagination {
+.me-pagenation {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -770,7 +769,7 @@ $disabled: gray;
     gap: 10px;
 }
 
-.me-pagination button {
+.me-pagenation button {
     padding: 0.25rem 0.5rem;
     font-size: 14px;
     cursor: pointer;
@@ -779,11 +778,11 @@ $disabled: gray;
     margin: 0;
 }
 
-.me-pagination button:disabled {
+.me-pagenation button:disabled {
     color: $default-gray;
 }
 
-.me-pagination button:not(:disabled):hover {
+.me-pagenation button:not(:disabled):hover {
     color: $default-gray;
 }
 
@@ -989,6 +988,9 @@ td > input {
 .page-size {
     // position: relative;
     z-index: 99;
+    select {
+        margin: 0;
+    }
 }
 
 .redDelete {
@@ -1296,6 +1298,50 @@ td {
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+.table-scroll {
+    max-height: 500px;
+    position: "relative";
+    overflow: auto;
+    width: "auto";
+
+    /* 커스텀 스크롤바 스타일링 추가 */
+    scrollbar-width: thin; /* Firefox에만 적용되는 스크롤바 너비 설정 */
+
+    &::-webkit-scrollbar {
+        width: 8px; /* Chrome, Safari, Opera 스크롤바 너비 설정 */
+        height: 8px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: #d4cdcd50; /* 스크롤바 색상 */
+        border-radius: 3px; /* 스크롤바 모양 */
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: #294f7769;
+    }
+    &::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+    &::-webkit-scrollbar-corner {
+        background-color: transparent;
+    }
+
+    /* Firefox 스크롤바 스타일 */
+    &::-moz-scrollbar-thumb {
+        background-color: #d4cdcd50; /* 스크롤바 색상 */
+        border-radius: 2px; /* 스크롤바 모양 */
+    }
+    &::-moz-scrollbar-thumb:hover {
+        background-color: #294f7769; /* 스크롤바 호버 시 색상 */
+    }
+    &::-moz-scrollbar-track {
+        background-color: transparent; /* 스크롤바 트랙 배경색 */
+    }
+    &::-moz-scrollbar-corner {
+        background-color: transparent; /* 스크롤바 트랙 배경색 */
+    }
+
 }
 
 /* 반응형 스타일 */
