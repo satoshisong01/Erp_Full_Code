@@ -714,6 +714,7 @@ const ReactDataTable = (props) => {
                                                 <td
                                                     {...cell.getCellProps()}
                                                     className={cellIndex === 0 ? "first-column" : "other-column"}
+                                                    id="otherCol"
                                                     onClick={(e) => onClickCell(e, cell)}>
                                                     {cell.column.id === "selection" ? (
                                                         cell.render("Cell")

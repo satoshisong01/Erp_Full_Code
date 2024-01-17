@@ -73,7 +73,11 @@ const ReactDataTableSaleCost = (props) => {
     };
 
     const isCurrentPage = () => {
-        return current.id !== "" && current.id !== undefined && (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName);
+        return (
+            current.id !== "" &&
+            current.id !== undefined &&
+            (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName)
+        );
     };
 
     useEffect(() => {
@@ -506,7 +510,7 @@ const ReactDataTableSaleCost = (props) => {
                                         }
 
                                         return (
-                                            <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"}>
+                                            <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"} id="otherCol">
                                                 {cell.column.id === "selection" ? (
                                                     cell.render("Cell")
                                                 ) : isEditing ? (

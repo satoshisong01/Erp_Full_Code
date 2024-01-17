@@ -17,6 +17,9 @@ function ExpenseMgmtExe() {
 
     const [condition, setCondition] = useState({});
     const [cal, setCal] = useState([]);
+    const [monthCal, setMonthCal] = useState([]);
+
+    console.log(monthCal, "잉?");
 
     const refresh = () => {
         if (condition.poiId) {
@@ -44,6 +47,7 @@ function ExpenseMgmtExe() {
                 pjbgTypeCode5,
                 pjbgTypeCode19,
                 pjbgTypeCode20,
+                pjbgTotal,
                 pjbgId,
                 //posNm,
                 //uniqId,
@@ -71,6 +75,7 @@ function ExpenseMgmtExe() {
                         pjbgTypeCode19,
                         pjbgTypeCode20,
                         pjbgId: [],
+                        pjbgTotal,
                         //posNm,
                         //uniqId,
                     };
@@ -115,6 +120,13 @@ function ExpenseMgmtExe() {
             newObj["pjbgTypeCode5"] = mergedItem.pjbgPrices[4];
             newObj["pjbgTypeCode19"] = mergedItem.pjbgPrices[5];
             newObj["pjbgTypeCode20"] = mergedItem.pjbgPrices[6];
+            newObj["pjbgTotal"] =
+                mergedItem.pjbgPrices[0] +
+                mergedItem.pjbgPrices[1] +
+                mergedItem.pjbgPrices[2] +
+                mergedItem.pjbgPrices[3] +
+                mergedItem.pjbgPrices[4] +
+                mergedItem.pjbgPrices[6];
             newObj["poiId"] = condition.poiId;
             newObj["posNm"] = mergedItem.posNm;
             newObj["uniqId"] = mergedItem.uniqId;
@@ -160,6 +172,7 @@ function ExpenseMgmtExe() {
                 pjbgTypeCode5,
                 pjbgTypeCode19,
                 pjbgTypeCode20,
+                pjbgTotal,
                 pjbgId,
             } = item;
 
@@ -184,6 +197,7 @@ function ExpenseMgmtExe() {
                         pjbgTypeCode5,
                         pjbgTypeCode19,
                         pjbgTypeCode20,
+                        pjbgTotal,
                         pjbgId: [],
                     };
                 }
@@ -225,6 +239,13 @@ function ExpenseMgmtExe() {
             newObj["pjbgTypeCode5"] = mergedItem.pjbgPrices[4];
             newObj["pjbgTypeCode19"] = mergedItem.pjbgPrices[5];
             newObj["pjbgTypeCode20"] = mergedItem.pjbgPrices[6];
+            newObj["pjbgTotal"] =
+                mergedItem.pjbgPrices[0] +
+                mergedItem.pjbgPrices[1] +
+                mergedItem.pjbgPrices[2] +
+                mergedItem.pjbgPrices[3] +
+                mergedItem.pjbgPrices[4] +
+                mergedItem.pjbgPrices[6];
             newObj["poiId"] = condition.poiId;
 
             return newObj;
@@ -459,6 +480,47 @@ function ExpenseMgmtExe() {
         });
     };
 
+    function calculateMonthlyTotals(data) {
+        const totalsArray = [];
+
+        const totals = {
+            totalAllm: 0,
+        };
+
+        data.forEach((entry) => {
+            const month = new Date(entry.pjbgBeginDt).getMonth() + 1; // Adding 1 because months are zero-based
+            const key = `total${month}m`;
+
+            // Initialize total for the month if it doesn't exist
+            if (!totals[key]) {
+                totals[key] = 0;
+            }
+
+            // Add up the specified codes for the month
+            totals[key] += entry.pjbgTypeCode1 + entry.pjbgTypeCode2 + entry.pjbgTypeCode3 + entry.pjbgTypeCode4 + entry.pjbgTypeCode5 + entry.pjbgTypeCode20;
+
+            // Add to the total for all months
+            totals.totalAllm =
+                (totals.total1m || 0) +
+                (totals.total2m || 0) +
+                (totals.total3m || 0) +
+                (totals.total4m || 0) +
+                (totals.total5m || 0) +
+                (totals.total6m || 0) +
+                (totals.total7m || 0) +
+                (totals.total8m || 0) +
+                (totals.total9m || 0) +
+                (totals.total10m || 0) +
+                (totals.total11m || 0) +
+                (totals.total12m || 0);
+        });
+
+        // Push totals object to the array
+        totalsArray.push(totals);
+
+        return totalsArray;
+    }
+
     const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", condition);
         const viewData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", { poiId: condition.poiId, modeCode: "BUDGET" });
@@ -468,6 +530,9 @@ function ExpenseMgmtExe() {
         if (resultData && resultData.length > 0) {
             const updatedData = processResultData(resultData, condition);
             const filteredData = filterArray(updatedData);
+            console.log(filteredData, "궁금");
+            const monthCal = calculateMonthlyTotals(filteredData);
+            setMonthCal(monthCal);
             setExeRunMgmt(filteredData);
             let total = 0,
                 pjbgTypeCode1 = 0,
@@ -501,6 +566,9 @@ function ExpenseMgmtExe() {
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                 <ReactDataTable columns={columns.expenseMgmt.cal} customDatas={cal} defaultPageSize={5} hideCheckBox={true} />
+            </HideCard>
+            <HideCard title="월별합계" color="back-lightyellow" className="mg-b-40">
+                <ReactDataTable columns={columns.expenseMgmt.monthCal} customDatas={monthCal} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-b-m-30">

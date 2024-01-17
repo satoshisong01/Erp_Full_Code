@@ -135,7 +135,7 @@ const ReactDataTableView = (props) => {
                     ))}
                 </thead>
                 {tableData.length <= 0 && (
-                    <div >
+                    <div>
                         <div style={{ fontSize: 15 }}>no data</div>
                     </div>
                 )}
@@ -159,7 +159,7 @@ const ReactDataTableView = (props) => {
                                     }
 
                                     return (
-                                        <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"}>
+                                        <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"} id="otherCol">
                                             {cell.column.Header === "연월" && cell.value ? cell.value.substring(0, 7) : cell.render("Cell") || ""}
                                         </td>
                                     );
@@ -179,7 +179,7 @@ const ReactDataTableView = (props) => {
                     {" "}
                     이전{" "}
                 </button>
-                <span >
+                <span>
                     {" "}
                     페이지 {pageIndex + 1} / {pageOptions && pageOptions.length}{" "}
                 </span>
