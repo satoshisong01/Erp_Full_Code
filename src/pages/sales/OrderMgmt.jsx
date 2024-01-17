@@ -124,6 +124,7 @@ function OrderMgmt() {
                     returnSelectRows={(data) => {
                         setSelectedRows(data);
                     }}
+                    isPageNation={true}
                 />
             </HideCard>
             {isOpenAdd && (

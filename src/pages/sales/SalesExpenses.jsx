@@ -10,6 +10,8 @@ import RefreshButton from "components/button/RefreshButton";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import SaveButton from "components/button/SaveButton";
 import { columns } from "constants/columns";
+import AddButton from "components/button/AddButton";
+import DelButton from "components/button/DelButton";
 
 /** 영업관리-영업비(정산) */
 function SalesExpenses() {
@@ -454,14 +456,16 @@ function SalesExpenses() {
             <Location pathList={locationPath.SalesExpenses} />
             <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
-                <ReactDataTable columns={costListCol} customDatas={salesCostView} defaultPageSize={5} hideCheckBox={true} />
+                <ReactDataTable columns={costListCol} customDatas={salesCostView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                <ReactDataTable columns={totalColumns} customDatas={salesCostView} defaultPageSize={5} hideCheckBox={true} />
+                <ReactDataTable columns={totalColumns} customDatas={salesCostView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
-                <div className="table-buttons mg-b-m-30">
+                <div className="table-buttons mg-t-10 mg-b-10">
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
+                    <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTableURL

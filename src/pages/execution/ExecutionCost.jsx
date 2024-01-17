@@ -91,6 +91,7 @@ function ExecutionCost() {
                         setSelectedRows(data);
                     }}
                     condition={condition}
+                    isPageNation={true}
                 />
             </HideCard>
             {isOpenMod && (

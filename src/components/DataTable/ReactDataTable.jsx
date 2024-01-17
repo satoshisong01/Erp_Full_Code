@@ -647,8 +647,7 @@ const ReactDataTable = (props) => {
                 </div>
             </div>}
             <div className={isPageNation ? "x-scroll" : "table-scroll"}>
-                {/* <table {...getTableProps()} className="table-custom table-styled" style={{ tableLayout: "auto" }}> */}
-                <table {...getTableProps()} className="table-custom table-styled">
+                <table {...getTableProps()} className="table-custom table-styled" style={{ tableLayout: "auto" }}>
                     <thead>
                         {headerGroups.map((headerGroup, headerGroupIndex) => (
                             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -657,20 +656,12 @@ const ReactDataTable = (props) => {
                                         // notView가 true인 경우, 헤더 셀을 출력하지 않음
                                         return null;
                                     }
-
                                     return (
-                                        <th
-                                            {...column.getHeaderProps(column.getSortByToggleProps())}
-                                            id={`header-${column.id}`}
-                                            className={columnIndex === 0 ? "first-column" : ""}
-                                            style={{ width: column.width }}
-                                        >
+                                        <th {...column.getHeaderProps(column.getSortByToggleProps())} className={columnIndex === 0 ? "first-column" : ""}>
                                             {column.render("Header")}
                                             <div {...column.getResizerProps()} className={`resizer ${column.isResizing ? "isResizing" : ""}`} />
-
                                             <span style={{ color: "red", margin: 0 }}>{column.require === true ? "*" : ""}</span>
-                                            <span style={{ overflow: "auto" }}>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
-                                            {/*<div>{column.canFilter ? column.render("Filter") : null}</div>*/}
+                                            <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
                                         </th>
                                     );
                                 })}

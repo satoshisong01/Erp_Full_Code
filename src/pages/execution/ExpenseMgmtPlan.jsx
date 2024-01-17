@@ -435,10 +435,10 @@ function ExpenseMgmtPlan() {
             <Location pathList={locationPath.ExpenseMgmt} />
             <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
-                <ReactDataTable columns={columnExpensesView} customDatas={pjbudgetDatasView} defaultPageSize={5} hideCheckBox={true} />
+                <ReactDataTable columns={columnExpensesView} customDatas={pjbudgetDatasView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                <ReactDataTable columns={columns.expenseMgmt.cal} customDatas={cal} defaultPageSize={5} hideCheckBox={true} />
+                <ReactDataTable columns={columns.expenseMgmt.cal} customDatas={cal} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">

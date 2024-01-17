@@ -88,10 +88,10 @@ function PurchasingMgmtExe() {
             <Location pathList={locationPath.PurchasingMgmt} />
             <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
-                <ReactDataTable columns={columns.purchasingMgmt.view} customDatas={view} defaultPageSize={5} hideCheckBox={true} />
+                <ReactDataTable columns={columns.purchasingMgmt.view} customDatas={view} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                <ReactDataTable columns={columns.purchasingMgmt.buyCal} customDatas={buyCall} defaultPageSize={5} hideCheckBox={true} />
+                <ReactDataTable columns={columns.purchasingMgmt.buyCal} customDatas={buyCall} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">
