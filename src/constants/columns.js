@@ -1071,13 +1071,28 @@ export const columns = {
             },
         ],
         cal: [
-            { header: "합계", col: "total", cellWidth: "200" },
+            { header: "비용합계", col: "total", cellWidth: "200" },
             { header: "교통비", col: "pjbgTypeCode1", cellWidth: "190" },
             { header: "숙박비", col: "pjbgTypeCode2", cellWidth: "190" },
             { header: "일비/파견비", col: "pjbgTypeCode3", cellWidth: "200" },
             { header: "식비", col: "pjbgTypeCode4", cellWidth: "200" },
             { header: "자재/소모품외", col: "pjbgTypeCode5", cellWidth: "200" },
             { header: "기타", col: "pjbgTypeCode20", cellWidth: "200" },
+        ],
+        monthCal: [
+            { header: "월합계", col: "totalAllm", cellWidth: "150" },
+            { header: "1월", col: "total1m", cellWidth: "110" },
+            { header: "2월", col: "total2m", cellWidth: "110" },
+            { header: "3월", col: "total3m", cellWidth: "110" },
+            { header: "4월", col: "total4m", cellWidth: "110" },
+            { header: "5월", col: "total5m", cellWidth: "110" },
+            { header: "6월", col: "total6m", cellWidth: "110" },
+            { header: "7월", col: "total7m", cellWidth: "110" },
+            { header: "8월", col: "total8m", cellWidth: "110" },
+            { header: "9월", col: "total9m", cellWidth: "110" },
+            { header: "10월", col: "total10m", cellWidth: "110" },
+            { header: "11월", col: "total11m", cellWidth: "110" },
+            { header: "12월", col: "total12m", cellWidth: "110" },
         ],
         budget: [
             { header: "수주 아이디", col: "poiId", cellWidth: "0", notView: true },
@@ -1152,12 +1167,7 @@ export const columns = {
             },
             {
                 header: "지출합계",
-                col: "pmpmmNum62",
-                cellWidth: "150",
-            },
-            {
-                header: "월합계",
-                col: "pmpmmNum63",
+                col: "pjbgTotal",
                 cellWidth: "150",
             },
             {

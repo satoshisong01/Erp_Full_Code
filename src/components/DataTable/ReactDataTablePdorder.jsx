@@ -25,7 +25,7 @@ const ReactDataTablePdorder = (props) => {
         viewLoadDatas,
         suffixUrl,
         condition, //poiId와 같은 조회에 필요한 조건
-        isPageNation
+        isPageNation,
     } = props;
     const {
         pdiNmList,
@@ -143,7 +143,7 @@ const ReactDataTablePdorder = (props) => {
         {
             columns: columnsConfig,
             data: tableData,
-            initialState: { pageIndex: 0, pageSize: isPageNation ? (defaultPageSize || 10) : tableData && tableData.length || 200 }, // 초기값
+            initialState: { pageIndex: 0, pageSize: isPageNation ? defaultPageSize || 10 : (tableData && tableData.length) || 200 }, // 초기값
         },
         useSortBy,
         usePagination,
@@ -230,7 +230,9 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const onDeleteRow = () => {
-        if (!selectedFlatRows || selectedFlatRows.length === 0) { return; }
+        if (!selectedFlatRows || selectedFlatRows.length === 0) {
+            return;
+        }
         const values = selectedFlatRows.map((item) => item.index);
         setTableData((prevTableData) => {
             const updateTableData = prevTableData.filter((_, index) => !values.includes(index));
@@ -257,10 +259,10 @@ const ReactDataTablePdorder = (props) => {
     useEffect(() => {
         if (isCurrentPage() && pdiNmList && pdiNmList.length > 0) {
             setTableData((prevTableData) => {
-                const start = prevTableData.length-1;
+                const start = prevTableData.length - 1;
                 const end = start + pdiNmList.length;
                 const newTableData = [...prevTableData];
-    
+
                 for (let i = start, j = 0; i < end; i++, j++) {
                     newTableData[i] = { ...pdiNmList[j] };
                 }
@@ -287,8 +289,8 @@ const ReactDataTablePdorder = (props) => {
                 ...selectedPdiNm, // projectPdiNm 객체의 데이터로 업데이트
             };
 
-            console.log("1.rowIndex:",rowIndex);
-            console.log("2.updatedTableData:",updatedTableData);
+            console.log("1.rowIndex:", rowIndex);
+            console.log("2.updatedTableData:", updatedTableData);
 
             // 업데이트된 데이터로 tableData 업데이트
             setTableData(updatedTableData);
@@ -549,6 +551,8 @@ const ReactDataTablePdorder = (props) => {
                                                 <td
                                                     {...cell.getCellProps()}
                                                     className={cellIndex === 0 ? "first-column" : "other-column"}
+                                                    id="otherCol"
+                                                    // onClick={(e) => onClickCell(e, cell)}
                                                 >
                                                     {cell.column.id === "selection" ? (
                                                         cell.render("Cell")

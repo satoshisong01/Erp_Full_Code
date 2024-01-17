@@ -40,6 +40,11 @@ function SalesExpenses() {
 
     const [salesCost, setSalesCost] = useState([]); //실행 영업비
     const [salesCostView, setSalesCostView] = useState([]); //영업 영업비
+    const [salesCostTotal, setSalesCostTotal] = useState([{ totalPrice: 0 }]); // 구매합계
+
+    let totalPrice = 0;
+
+    console.log(salesCost, "나오는거함볼래");
 
     useEffect(() => {
         if (condition.poiId === undefined || condition.poId === "") {
@@ -96,7 +101,7 @@ function SalesExpenses() {
         },
     ];
     const columnsData = [
-        { header: "수주 아이디", col: "poiId", cellWidth: "5%", notView: true },
+        { header: "수주 아이디", col: "poiId", cellWidth: "0", notView: true },
         {
             header: "구분코드",
             col: "modeCode",
@@ -177,7 +182,17 @@ function SalesExpenses() {
         const updatedData = processResultData(resultData, condition);
         const filteredData = filterData(updatedData);
         setSalesCost(filteredData);
+        console.log(filteredData, "이거 원하는거맞나");
+        filteredData.forEach((item) => {
+            totalPrice += item.pjbgTypeCode19;
+        });
+        console.log(totalPrice);
+        setSalesCostTotal([{ totalPrice: totalPrice }]);
     };
+
+    useEffect(() => {
+        console.log(salesCostTotal, "합친거맞나");
+    }, [salesCostTotal]);
 
     useEffect(() => {
         setSalesCost([]);
@@ -405,6 +420,8 @@ function SalesExpenses() {
                     newItem.esntlId = "EMPLY_00000000000001"; //고정이라니? 확인해봐야됨..
                 }
 
+                newItem.modeCode = "EXECUTE";
+
                 for (let j = 1; j <= 5; j++) {
                     const propName = `pjbgTypeCode${j}`;
                     if (newItem[propName] === null || newItem[propName] === undefined) {
@@ -429,6 +446,7 @@ function SalesExpenses() {
     const addItem = async (addData) => {
         const url = `/api/baseInfrm/product/pjbudgetExe/addArrayList.do`;
         const resultData = await axiosPost(url, addData);
+        console.log(resultData, "추가되는 영업비?");
         if (resultData) {
             refresh && refresh();
         }
@@ -459,7 +477,7 @@ function SalesExpenses() {
                 <ReactDataTable columns={costListCol} customDatas={salesCostView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                <ReactDataTable columns={totalColumns} customDatas={salesCostView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+                <ReactDataTable columns={totalColumns} customDatas={salesCostTotal} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">

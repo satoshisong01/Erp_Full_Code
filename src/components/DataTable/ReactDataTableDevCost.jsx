@@ -62,7 +62,11 @@ const ReactDataTableDevCost = (props) => {
     }, []);
 
     const isCurrentPage = () => {
-        return current.id !== "" && current.id !== undefined && (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName);
+        return (
+            current.id !== "" &&
+            current.id !== undefined &&
+            (current.id === currentPageName.id || current.id === innerPageName.id || current.name === modalPageName)
+        );
     };
 
     useEffect(() => {
@@ -158,7 +162,7 @@ const ReactDataTableDevCost = (props) => {
     useEffect(() => {
         if (isCurrentPage() && Object.keys(companyInfo).length > 0) {
             setValueDataCmInfo(rowIndex, companyInfo);
-            setCompanyInfo({})
+            setCompanyInfo({});
             console.log(".......회사목록 초기화.......");
         }
     }, [companyInfo]);
@@ -441,7 +445,7 @@ const ReactDataTableDevCost = (props) => {
                                         }
 
                                         return (
-                                            <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"}>
+                                            <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"} id="otherCol">
                                                 {cell.column.id === "selection" ? (
                                                     cell.render("Cell")
                                                 ) : isEditing ? (

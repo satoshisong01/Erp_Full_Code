@@ -976,9 +976,11 @@ input:disabled {
 //    border: 1px solid #ddd;
 //}
 
-//.other-column {
-//    padding: 0;
-//}
+#otherCol {
+    display: flex !important;
+    align-items: center;
+    //justify-content: center;
+}
 
 td > input {
     width: 100%;
