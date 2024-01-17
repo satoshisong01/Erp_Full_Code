@@ -11,6 +11,8 @@ import SaveButton from "components/button/SaveButton";
 import RefreshButton from "components/button/RefreshButton";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import BasicButton from "components/button/BasicButton";
+import AddButton from "components/button/AddButton";
+import DelButton from "components/button/DelButton";
 
 /** 실행관리-구매관리 */
 function PurchasingMgmtExe() {
@@ -23,7 +25,7 @@ function PurchasingMgmtExe() {
     const fetchAllData = async (condition) => {
         const data = await axiosFetch("/api/baseInfrm/product/receivingInfo/totalListAll.do", condition);
         const viewData = await axiosFetch("/api/baseInfrm/product/buyIngInfoExe/totalListAll.do", { ...condition, modeCode: "BUDGET" });
-        console.log(viewData, "뷰데이트");
+        // console.log(viewData, "뷰데이트");
         setView(viewData);
         if (data && data.length > 0) {
             const changes = changeData(data);
@@ -92,9 +94,11 @@ function PurchasingMgmtExe() {
                 <ReactDataTable columns={columns.purchasingMgmt.buyCal} customDatas={buyCall} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
-                <div className="table-buttons mg-b-m-30">
+                <div className="table-buttons mg-t-10 mg-b-10">
                     <BasicButton label={"가져오기"} onClick={() => setNameOfButton("load")} />
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
+                    <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTablePdorder

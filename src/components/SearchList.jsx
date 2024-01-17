@@ -10,6 +10,8 @@ import HideCard from "./HideCard";
 /* 데이터 테이블 검색 */
 export default function SearchList({ conditionList, onSearch }) {
     const [searchData, setSearchData] = useState({});
+    const [initialData, setInitialData] = useState({});
+
 
     //상태 첫번째 값을 검색어에 넣어주는 함수
     function extractOptionValue(data) {
@@ -36,6 +38,7 @@ export default function SearchList({ conditionList, onSearch }) {
             }
         });
         onSearch && onSearch(searchData);
+        // setInitialData({}); //초기화
     };
 
     /* 검색 데이터 */
@@ -44,12 +47,6 @@ export default function SearchList({ conditionList, onSearch }) {
             return { ...prevData, ...value };
         });
     };
-
-    const handleClick1 = () => {
-        setIsClicked(!isClicked);
-    };
-
-    const [isClicked, setIsClicked] = useState(false);
 
     return (
         <>
@@ -61,7 +58,7 @@ export default function SearchList({ conditionList, onSearch }) {
                                 <label>{param.title}</label>
                             </div>
                             <div className="flex-input">
-                                <MakeItemField item={param} resultData={onChange} />
+                                <MakeItemField item={param} resultData={onChange} initialData={initialData}/>
                             </div>
                         </div>
                     ))}

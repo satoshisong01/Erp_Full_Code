@@ -18,7 +18,7 @@ import { axiosFetch, axiosUpdate } from "api/axiosFetch";
 
 /** 실행관리-실행원가관리 */
 function ExecutionCost() {
-    const { currentPageName, setNameOfButton } = useContext(PageContext);
+    const { currentPageName, setNameOfButton, nameOfButton } = useContext(PageContext);
     const [isOpenMod, setIsOpenMod] = useState(false);
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
     const [tableData, setTableData] = useState([]);
@@ -26,10 +26,12 @@ function ExecutionCost() {
 
     const onSearch = (value) => {
         if(value && value.poiStatus) {
-            setCondition({...value})
+            setCondition({...value});
+            setNameOfButton("refresh");
         } else {
             delete condition.poiStatus;
             setCondition({...value, poiStatusExecute: "ALL"})
+            setNameOfButton("refresh");
         }
     }
 

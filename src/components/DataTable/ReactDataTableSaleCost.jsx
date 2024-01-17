@@ -26,6 +26,7 @@ const ReactDataTableSaleCost = (props) => {
         returnSelect,
         returnSelectRows,
         condition,
+        isPageNation,
     } = props;
     const {
         prevCurrentPageName,
@@ -39,17 +40,13 @@ const ReactDataTableSaleCost = (props) => {
         isModalTable,
         nameOfButton,
         setNameOfButton,
-
         modalPageName,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
     const [originTableData, setOriginTableData] = useState([]);
-    // const [changeTable, setChangeTable] = useState([]);
-    const pageSizeOptions = [5, 10, 15, 20, 30, 50, 100];
     const [isEditing, setIsEditing] = useState(false);
     const [current, setCurrent] = useState(viewPageName); //==viewPageName
-    //const [selectRow, setSelectRow] = useState({}); //마지막으로 선택한 row
     const [rowIndex, setRowIndex] = useState(0);
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false); //거래처정보목록
     const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
@@ -63,14 +60,6 @@ const ReactDataTableSaleCost = (props) => {
             setCurrentTable(tableRef);
         }
     }, []);
-
-    const setValueCompany = (rowIndex) => {
-        //setRowIndex()
-        if (isCurrentPage()) {
-            setIsOpenModalCompany(true);
-            setRowIndex(rowIndex);
-        }
-    };
 
     const isCurrentPage = () => {
         return (
@@ -107,10 +96,14 @@ const ReactDataTableSaleCost = (props) => {
         // console.log("영업관리비 current:", current.name, "inner:", innerPageName.name, "current:",currentPageName.name);
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
-        }
-        if (current.id === innerPageName.id && nameOfButton === "save") {
-            compareData(originTableData, tableData);
-            setNameOfButton("");
+            if (nameOfButton === "save") {
+                compareData(originTableData, tableData);
+            } else if (nameOfButton === "deleteRow") {
+                onDeleteRow();
+            } else if (nameOfButton === "addRow") {
+                onAddRow();
+            }
+            setNameOfButton(""); //초기화
         }
     }, [innerPageName, editing, nameOfButton]);
 
@@ -146,15 +139,6 @@ const ReactDataTableSaleCost = (props) => {
         toggleRowSelected(row.id);
     };
 
-    const handleChange = (e, rowIndex, accessor) => {
-        const { value } = e.target;
-        // tableData를 복제하여 수정
-        const updatedTableData = [...tableData];
-        updatedTableData[rowIndex][accessor] = value;
-        // 수정된 데이터로 tableData 업데이트
-        setTableData(updatedTableData);
-    };
-
     const {
         getTableProps,
         getTableBodyProps,
@@ -162,14 +146,8 @@ const ReactDataTableSaleCost = (props) => {
         prepareRow,
         page,
         state: { pageIndex, pageSize },
-        previousPage,
-        nextPage,
-        canPreviousPage,
-        canNextPage,
-        pageOptions,
         gotoPage,
         setPageSize,
-        pageCount,
         selectedFlatRows, // 선택된 행 데이터
         toggleRowSelected, // 선택된 체크 박스
         toggleAllRowsSelected, // 전체선택 on off
@@ -177,7 +155,7 @@ const ReactDataTableSaleCost = (props) => {
         {
             columns: columnsConfig,
             data: tableData,
-            initialState: { pageIndex: 0, pageSize: defaultPageSize || 10 }, // 초기값
+            initialState: { pageIndex: 0, pageSize: isPageNation ? (defaultPageSize || 10) : tableData && tableData.length || 200 }, // 초기값
         },
         useSortBy,
         usePagination,
@@ -222,22 +200,24 @@ const ReactDataTableSaleCost = (props) => {
 
     /* table button 활성화 on off */
     useEffect(() => {
-        if (isModalTable && current.name === modalPageName) {
-            //모달화면일때
-            setModalLengthSelectRow(selectedFlatRows.length);
-            if (selectedFlatRows.length > 0) {
-                const selects = selectedFlatRows.map((row) => row.values);
-                returnSelectRows && returnSelectRows(selects);
-                returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
+        if (isCurrentPage()) {
+            if (isModalTable) {
+                //모달화면일때
+                setModalLengthSelectRow(selectedFlatRows.length);
+                if (selectedFlatRows.length > 0) {
+                    const selects = selectedFlatRows.map((row) => row.values);
+                    returnSelectRows && returnSelectRows(selects);
+                    returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
+                }
+            } else if (!isModalTable) {
+                if (selectedFlatRows.length > 0) {
+                    const selects = selectedFlatRows.map((row) => row.values);
+                    returnSelectRows && returnSelectRows(selects);
+                    returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
+                }
+                console.log("444444444", selectedFlatRows.length);
+                setLengthSelectRow(selectedFlatRows.length);
             }
-        } else if (!isModalTable && (current.id === currentPageName.id || current.id === innerPageName.id)) {
-            //모달화면이 아닐때
-            if (selectedFlatRows.length > 0) {
-                const selects = selectedFlatRows.map((row) => row.values);
-                returnSelectRows && returnSelectRows(selects);
-                returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
-            }
-            setLengthSelectRow(selectedFlatRows.length);
         }
     }, [selectedFlatRows]);
 
@@ -252,9 +232,6 @@ const ReactDataTableSaleCost = (props) => {
         setTableData(newTableData);
         // setChangeTable(newTableData);
     };
-    useEffect(() => {
-        calTotalPrice();
-    }, [tableData]);
 
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {
@@ -285,36 +262,20 @@ const ReactDataTableSaleCost = (props) => {
         });
     };
 
-    const onDeleteRow = (row) => {
-        const rowId = row.index;
-        // const deletedPjbgId = tableData[rowId].slsmnExpnsId;
-        // setDeleteNumList((prevIds) => [...prevIds, deletedPjbgId]);
-        const updateTableData = tableData.filter((_, index) => index !== rowId);
-        console.log("💜💜💜onDeleteRow:", updateTableData);
-        setTableData([...updateTableData]);
+    const onDeleteRow = () => {
+        if (!selectedFlatRows || selectedFlatRows.length === 0) { return; }
+        const values = selectedFlatRows.map((item) => item.index);
+        setTableData((prevTableData) => {
+            const updateTableData = prevTableData.filter((_, index) => !values.includes(index));
+            return [...updateTableData];
+        });
     };
-
-    const pageSizeChange = (value) => {
-        setPageSize(Number(value)); // 페이지 크기 변경
-        gotoPage(0); // 첫 페이지로 이동
-    };
-
-    //-------------------------------배열 추가, 수정, 삭제
 
     const addItem = async (addData) => {
         console.log(addData, "영업관리비 추가!!");
         const url = `/api/baseInfrm/product/slsmnExpns/addList.do`;
         const resultData = await axiosPost(url, addData);
         console.log(resultData, "💜addItem");
-        if (resultData) {
-            customDatasRefresh && customDatasRefresh();
-        }
-    };
-
-    const addItemArray = async (addData) => {
-        const url = `/api/baseInfrm/product/slsmnExpns/addArrayList.do`;
-        const resultData = await axiosPost(url, addData);
-        console.log(resultData, "💜addItemArray");
         if (resultData) {
             customDatasRefresh && customDatasRefresh();
         }
@@ -331,18 +292,6 @@ const ReactDataTableSaleCost = (props) => {
         }
     };
 
-    //const updateItemArray = async (toUpdate) => {
-    //    const dataArray = generateUpdateObjects(toUpdate);
-    //    const url = `/api/baseInfrm/product/slsmnExpns/editList.do`;
-    //    console.log(toUpdate, "변경되는 값?");
-    //    const resultData = await axiosUpdate(url, dataArray);
-    //    console.log(resultData, "변경된거 맞음?");
-
-    //    if (resultData) {
-    //        customDatasRefresh && customDatasRefresh();
-    //    }
-    //};
-
     const deleteItem = async (removeItem) => {
         const url = `/api/baseInfrm/product/slsmnExpns/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
@@ -352,40 +301,6 @@ const ReactDataTableSaleCost = (props) => {
             customDatasRefresh && customDatasRefresh();
         }
     };
-
-    //const generateUpdateObjects = (updatedData) => {
-    //    let updates = [];
-
-    //    updatedData.forEach((upItem) => {
-    //        const { slsmnExpnsId } = upItem; // id 배열
-    //        const colNames = Object.keys(upItem).filter((key) => key.startsWith("pjbgPrice")); // 경비종류 배열
-    //        if (slsmnExpnsId && colNames && slsmnExpnsId.length > 0 && colNames.length > 0 && slsmnExpnsId.length === colNames.length) {
-    //            colNames.forEach((name, index) => {
-    //                const dataSet = {
-    //                    versionId: versionInfo.versionId,
-    //                    pgNm: upItem.pgNm,
-    //                    pgId: upItem.pgId,
-    //                    pjbgBeginDt: upItem.pjbgBeginDt,
-    //                    pjbgDesc: upItem.pjbgDesc,
-    //                    pjbgDt: upItem.pjbgDt,
-    //                    pjbgManpower: upItem.pjbgManpower,
-    //                    pjbgEndDt: upItem.pjbgEndDt,
-    //                    poiId: projectInfo.poiId,
-    //                    slsmnExpnsId: slsmnExpnsId[index],
-    //                    pjbgPrice: upItem[name],
-    //                    cltNm: companyInfo.cltNm,
-    //                    cltId: companyInfo.cltId,
-    //                };
-
-    //                updates.push(dataSet);
-    //            });
-    //        }
-    //    });
-
-    //    return updates;
-    //};
-
-    // 초기 데이터와 수정된 데이터를 비교하는 함수
 
     const compareData = (originData, updatedData) => {
         console.log("영업관리비", originData);
@@ -435,37 +350,12 @@ const ReactDataTableSaleCost = (props) => {
         }
     };
 
-    useEffect(() => {
-        console.log(tableData);
-    }, [tableData]);
-
     //-------총합 나타내기--------
-    const [totalPrice, setTotalPrice] = useState(0);
-    const calTotalPrice = () => {
-        let total = 0;
-        tableData.map((item) => {
-            total += item.pjbgPrice;
-            setTotalPrice(total);
-        });
-    };
     //------------------------------- 초기값과 비교하는 코드
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
     return (
-        <>
-            <div className="flex-between mg-b-10">
-                <div className="page-size">
-                    {/* <span className="mg-r-10">페이지 크기 :</span> */}
-                    <select className="select" id={uuidv4()} value={pageSize || defaultPageSize} onChange={(e) => pageSizeChange(e.target.value)}>
-                        {pageSizeOptions.map((size) => (
-                            <option key={size} value={size}>
-                                {size}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-
+        <div className={isPageNation ? "x-scroll" : "table-scroll"}>
             <table {...getTableProps()} className="table-styled" ref={tableRef}>
                 <thead>
                     {headerGroups.map((headerGroup, headerGroupIndex) => (
@@ -487,13 +377,6 @@ const ReactDataTableSaleCost = (props) => {
                                     </th>
                                 );
                             })}
-                            {isEditing && (
-                                <th style={{ width: "70px", textAlign: "center" }}>
-                                    <button className="btn-primary" onClick={onAddRow} style={{ margin: 0 }}>
-                                        추가
-                                    </button>
-                                </th>
-                            )}
                         </tr>
                     ))}
                 </thead>
@@ -536,13 +419,6 @@ const ReactDataTableSaleCost = (props) => {
                                             </td>
                                         );
                                     })}
-                                    {isEditing && (
-                                        <td style={{ textAlign: "center" }}>
-                                            <button className="btnR btn-primary redDelete" onClick={() => onDeleteRow(row)}>
-                                                삭제
-                                            </button>
-                                        </td>
-                                    )}
                                 </tr>
                             );
                         })}
@@ -558,28 +434,6 @@ const ReactDataTableSaleCost = (props) => {
                 )}
             </table>
 
-            <div className="me-pagination">
-                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                    {" "}
-                    처음{" "}
-                </button>
-                <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-                    {" "}
-                    이전{" "}
-                </button>
-                <span>
-                    {" "}
-                    페이지 {pageIndex + 1} / {pageOptions && pageOptions.length}{" "}
-                </span>
-                <button onClick={() => nextPage()} disabled={!canNextPage}>
-                    {" "}
-                    다음{" "}
-                </button>
-                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-                    {" "}
-                    마지막{" "}
-                </button>
-            </div>
             <CompanyModal width={600} height={720} title="거래처 목록" isOpen={isOpenModalCompany} onClose={() => setIsOpenModalCompany(false)} />
             <ProductInfoModal width={600} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
             <ProductGroupModal
@@ -596,15 +450,7 @@ const ReactDataTableSaleCost = (props) => {
                 isOpen={isOpenModalEmployerInfo}
                 onClose={() => setIsOpenModalEmployerInfo(false)}
             />
-            {/*<div style={{ display: "flex" }}>
-                <span style={{ display: "flex", justifyContent: "center", width: "100px", backgroundColor: "#f2f2f2", border: "solid gray 1px" }}>
-                    {current} 합계
-                </span>
-                <span style={{ display: "flex", justifyContent: "center", width: "100px", border: "solid gray 1px" }}>
-                    {`${totalPrice.toLocaleString("ko-KR")} 원`}
-                </span>
-            </div>*/}
-        </>
+        </div>
     );
 };
 

@@ -1,91 +1,118 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Location from "components/Location/Location";
-import SearchList from "components/SearchList";
-import DataTable from "components/DataTable/DataTable";
 import { locationPath } from "constants/locationPath";
+import { PageContext } from "components/PageProvider";
+import ApprovalFormSal from "components/form/ApprovalFormSal";
+import HideCard from "components/HideCard";
+import RefreshButton from "components/button/RefreshButton";
+import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
+import { columns } from "constants/columns";
 
 /** 영업관리-견적서관리 */
 function Quotation() {
-    const [returnKeyWord, setReturnKeyWord] = useState("");
+    const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, setNameOfButton } = useContext(PageContext);
+    const [infoList, setInfoList] = useState([{ name: "수주인건비", id: "orderLabor" }, { name: "수주구매비", id: "orderBuying" }]);
+    const [condition, setCondition] = useState({});
 
-    const columns = [
-        {
-            header: "프로젝트명",
-            col: "projectName",
-            cellWidth: "20%",
-            update: false,
-            updating: true,
-            write: true,
-        },
-        {
-            header: "지출일",
-            col: "byeDay",
-            cellWidth: "20%",
-            updating: true,
-            write: true,
-        },
-        {
-            header: "금액",
-            col: "won",
-            cellWidth: "50%",
-            updating: true,
-            write: true,
-        },
-        { header: "비고", col: "beeGo", cellWidth: "20%" },
-        { header: "구분", col: "gooBoom", cellWidth: "20%" },
-    ];
+    useEffect(() => {
+        if (currentPageName.id === "OrderPlanMgmt") {
+            const activeTab = document.querySelector(".mini_board_3 .tab li a.on"); //마지막으로 활성화 된 탭
+            if (activeTab) {
+                const activeTabInfo = infoList.find((data) => data.name === activeTab.textContent);
+                setInnerPageName({ ...activeTabInfo });
+                setCurrentPageName({});
+                // fetchAllData();
+            }
+        }
+    }, [currentPageName]);
 
-    const conditionList = [
-        {
-            title: "분류코드",
-            colName: "clCode", //컬럼명
-            type: "input",
-            value: "",
-            searchLevel: "1",
-        },
-        {
-            title: "분류코드명",
-            colName: "clCodeNm", //컬럼명
-            type: "input",
-            value: "",
-            searchLevel: "2",
-        },
-        {
-            title: "분류코드설명",
-            colName: "clCodeDc", //컬럼명
-            type: "input",
-            value: "",
-            searchLevel: "3",
-        },
-        {
-            title: "이름",
-            colName: "name",
-            type: "select",
-            option: [
-                { value: "다섯글자의옵션1" },
-                { value: "다섯글자의옵션2" },
-            ],
-            searchLevel: "3",
-        },
-    ];
-
-    const handleReturn = (value) => {
-        setReturnKeyWord(value);
-        console.log(value, "제대로 들어오냐");
+    const changeTabs = (name, id) => {
+        setInnerPageName((prev) => {
+            setPrevInnerPageName({ ...prev });
+            return { name, id };
+        });
+        setCurrentPageName({});
     };
 
-    const addBtn = ["costPage"];
+    const conditionInfo = (value) => {
+        // console.log("🎄컨디션:", value);
+        // setCondition((prev) => {
+        //     if (prev.poiId !== value.poiId) {
+        //         const newCondition = { ...value };
+        //         fetchAllData(newCondition);
+        //         return newCondition;
+        //     } else {
+        //         fetchAllData({ ...prev });
+        //         return prev;
+        //     }
+        // });
+    };
+
+    const refresh = () => {
+        // if (condition.poiId && condition.versionId) {
+        //     fetchAllData(condition);
+        // } else {
+        //     fetchAllData();
+        // }
+    };
 
     return (
         <>
             <Location pathList={locationPath.Quotation} />
-            <SearchList conditionList={conditionList} onSearch={handleReturn} />
-            <DataTable
-                returnKeyWord={returnKeyWord}
-                columns={columns}
-                suffixUrl="/system/code/clCode"
-                addBtn={addBtn}
-            />
+            <div className="common_board_style mini_board_3">
+                <ul className="tab">
+                    <li onClick={() => changeTabs("수주인건비", "orderLabor")}>
+                        <a href="#견적용 인건비" className="on">견적용 인건비</a>
+                    </li>
+                    <li onClick={() => changeTabs("수주구매비", "orderBuying")}>
+                        <a href="#견적용 구매비">견적용 구매비</a>
+                    </li>
+                </ul>
+                <div className="list">
+                        <div className="first">
+                            <ul>
+                                <ApprovalFormSal returnData={conditionInfo} initial={condition} />
+                                <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+                                </HideCard>
+                                <HideCard title="계획 등록/수정" color="back-lightblue">
+                                    <div className="table-buttons mg-t-10 mg-b-10">
+                                        <RefreshButton onClick={refresh} />
+                                    </div>
+                                    <ReactDataTableURL
+                                        editing={true}
+                                        columns={columns.orderPlanMgmt.estimateLabor}
+                                        // customDatas={generalExpensesDatas}
+                                        viewPageName={{ name: "수주인건비", id: "orderLabor" }}
+                                        customDatasRefresh={refresh}
+                                        condition={condition}
+                                    />
+                                </HideCard>
+                            </ul>
+                        </div>
+                        <div className="second">
+                            <ul>
+                                <ApprovalFormSal returnData={conditionInfo} initial={condition} />
+                                <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+                                </HideCard>
+                                <HideCard title="계획 등록/수정" color="back-lightblue">
+                                    <div className="table-buttons mg-t-10 mg-b-10">
+                                        <RefreshButton onClick={refresh} />
+                                    </div>
+                                    <ReactDataTableURL
+                                        editing={true}
+                                        columns={columns.orderPlanMgmt.estimatePurchase}
+                                        suffixUrl="/baseInfrm/product/pjbudget"
+                                        // customDatas={generalExpensesDatas}
+                                        viewPageName={{ name: "수주구매비", id: "orderBuying" }}
+                                        customDatasRefresh={refresh}
+                                        condition={condition}
+                                    />
+                                </HideCard>
+                            </ul>
+                        </div>
+                </div>
+            </div>
+
         </>
     );
 }

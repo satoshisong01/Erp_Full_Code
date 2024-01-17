@@ -125,7 +125,8 @@
         
         .row-group {
             display: flex;
-            align-items: center;
+            // align-items: center;
+            align-items: baseline;
             width: 100%;
             gap: 10px;
             
@@ -137,6 +138,17 @@
 
             .right {
                 width: calc(100% - 85px);
+                display: flex;
+                flex-direction: column;
+                text-align: start;
+
+                select {
+                    margin: 0;
+                }
+                .error {
+                    color: red;
+                    font-size: 11px;
+                }
             }
         }
     }

@@ -11,6 +11,8 @@ import HideCard from "components/HideCard";
 import SaveButton from "components/button/SaveButton";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import BasicButton from "components/button/BasicButton";
+import DelButton from "components/button/DelButton";
+import AddButton from "components/button/AddButton";
 
 /** 실행관리-구매-계획 */
 function PurchasingMgmtPlan() {
@@ -23,9 +25,9 @@ function PurchasingMgmtPlan() {
     const fetchAllData = async (condition) => {
         const data = await axiosFetch("/api/baseInfrm/product/buyIngInfoExe/totalListAll.do", condition);
         const viewResult = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", { poiId: condition.poiId, costAt: "Y" });
-        console.log(viewResult, "뷰데이트");
         setView(viewResult);
         if (data && data.length > 0) {
+            console.log("데이터있음>>>>");
             const changes = changeData(data);
             setBudgetMgmt(changes);
             const groupedData = changes.reduce((result, current) => {
@@ -67,7 +69,7 @@ function PurchasingMgmtPlan() {
             return prev;
         });
     };
-
+    
     return (
         <>
             <Location pathList={locationPath.PurchasingMgmt} />
@@ -79,9 +81,11 @@ function PurchasingMgmtPlan() {
                 <ReactDataTable columns={columns.purchasingMgmt.buyCal} customDatas={buyCall} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
-                <div className="table-buttons mg-b-m-30">
-                    <BasicButton label={"가져오기"} onClick={() => setNameOfButton("load")} />
+                <div className="table-buttons mg-t-10 mg-b-10">
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                    <BasicButton label={"가져오기"} onClick={() => setNameOfButton("load")} />
+                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
+                    <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTablePdorder

@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import Location from "components/Location/Location";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { PageContext } from "components/PageProvider";
-import { locationPath } from "constants/locationPath";
 import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
 import { ChangePrmnPlanData, buyIngInfoCalculation, division } from "components/DataTable/function/ReplaceDataFormat";
@@ -11,7 +9,6 @@ import { columns } from "constants/columns";
 import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 import ApprovalFormSal from "components/form/ApprovalFormSal";
 import HideCard from "components/HideCard";
-import ReactDataTableView from "components/DataTable/ReactDataTableView";
 import AddButton from "components/button/AddButton";
 import ModButton from "components/button/ModButton";
 import DelButton from "components/button/DelButton";
@@ -53,8 +50,6 @@ function OrderPlanMgmt() {
         { name: "개발외주비", id: "outsourcing" },
         { name: "경비", id: "budget" },
         { name: "영업관리비", id: "general" },
-        { name: "수주인건비", id: "orderLabor" },
-        { name: "수주구매비", id: "orderBuying" },
     ]);
 
     useEffect(() => {
@@ -532,12 +527,6 @@ function OrderPlanMgmt() {
                     <li onClick={() => changeTabs("영업관리비", "general")}>
                         <a href="#영업관리비">영업관리비</a>
                     </li>
-                    <li onClick={() => changeTabs("수주인건비", "orderLabor")}>
-                        <a href="#견적용 인건비">견적용 인건비</a>
-                    </li>
-                    <li onClick={() => changeTabs("수주구매비", "orderBuying")}>
-                        <a href="#견적용 구매비">견적용 구매비</a>
-                    </li>
                 </ul>
 
                 <div className="list">
@@ -560,6 +549,7 @@ function OrderPlanMgmt() {
                                     returnSelectRows={(data) => {
                                         setSelectedRows(data);
                                     }}
+                                    isPageNation={true}
                                 />
                             </HideCard>
                         </ul>
@@ -568,13 +558,13 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                                <ReactDataTable columns={columns.orderPlanMgmt.laborCal} customDatas={prmnCalDatas} hideCheckBox={true} />
+                                <ReactDataTable columns={columns.orderPlanMgmt.laborCal} customDatas={prmnCalDatas} hideCheckBox={true} isPageNation={true}/>
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
-                                <div className="table-buttons mg-b-m-30">
+                                <div className="table-buttons mg-t-10 mg-b-10">
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
-                                    {/*<ModButton label={"수정"} onClick={() => setIsOpenUpDate(true)} />*/}
-                                    {/*<DelButton label={"삭제"} onClick={deleteToServer} />*/}
+                                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
+                                    <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
                                     <RefreshButton onClick={refresh} />
                                 </div>
                                 <ReactDataTable
@@ -593,12 +583,14 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                                <ReactDataTable columns={columns.orderPlanMgmt.purchaseCal} customDatas={pdOrdrCalDatas} hideCheckBox={true} />
+                                <ReactDataTable columns={columns.orderPlanMgmt.purchaseCal} customDatas={pdOrdrCalDatas} hideCheckBox={true} isPageNation={true}/>
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
-                                <div className="table-buttons mg-b-m-30">
+                                <div className="table-buttons mg-t-10 mg-b-10">
                                     <BasicButton label="검색하기" onClick={() => setIsOpenSearch(true)} />
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
+                                    <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
                                     <RefreshButton onClick={refresh} />
                                 </div>
                                 <ReactDataTablePdorder
@@ -617,16 +609,18 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                                <ReactDataTable columns={columns.orderPlanMgmt.outCal} customDatas={outCalDatas} hideCheckBox={true} condition={condition} />
+                                <ReactDataTable columns={columns.orderPlanMgmt.outCal} customDatas={outCalDatas} hideCheckBox={true} condition={condition}  isPageNation={true}/>
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
-                                <div className="table-buttons mg-b-m-30">
+                                <div className="table-buttons mg-t-10 mg-b-10">
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
+                                    <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
                                     <RefreshButton onClick={refresh} />
                                 </div>
                                 <ReactDataTableDevCost
                                     editing={true}
-                                    singleUrl="/baseInfrm/product/devOutCost"
+                                    suffixUrl="/baseInfrm/product/devOutCost"
                                     columns={columns.orderPlanMgmt.outsourcing}
                                     customDatas={outsourcingDatas}
                                     viewPageName={{ name: "개발외주비", id: "outsourcing" }}
@@ -640,16 +634,18 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                                <ReactDataTable columns={columns.orderPlanMgmt.expensesCal} customDatas={pjbudgetCalDatas} hideCheckBox={true} />
+                                <ReactDataTable columns={columns.orderPlanMgmt.expensesCal} customDatas={pjbudgetCalDatas} hideCheckBox={true} isPageNation={true} />
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
-                                <div className="table-buttons mg-b-m-30">
+                                <div className="table-buttons mg-t-10 mg-b-10">
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
+                                    <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
                                     <RefreshButton onClick={refresh} />
                                 </div>
                                 <ReactDataTableURL
                                     editing={true}
-                                    singleUrl="/baseInfrm/product/pjbudget"
+                                    suffixUrl="/baseInfrm/product/pjbudget"
                                     columns={columns.orderPlanMgmt.expenses}
                                     customDatas={pjbudgetDatas}
                                     viewPageName={{ name: "경비", id: "budget" }}
@@ -668,58 +664,22 @@ function OrderPlanMgmt() {
                                     customDatas={generalCalDatas}
                                     hideCheckBox={true}
                                     condition={condition}
+                                    isPageNation={true}
                                 />
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
-                                <div className="table-buttons mg-b-m-30">
+                                <div className="table-buttons mg-t-10 mg-b-10">
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
+                                    <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
                                     <RefreshButton onClick={refresh} />
                                 </div>
                                 <ReactDataTableSaleCost
                                     editing={true}
                                     columns={columns.orderPlanMgmt.generalExpenses}
-                                    singleUrl="/baseInfrm/product/pjbudget"
+                                    suffixUrl="/baseInfrm/product/pjbudget"
                                     customDatas={generalExpensesDatas}
                                     viewPageName={{ name: "영업관리비", id: "general" }}
-                                    customDatasRefresh={refresh}
-                                    condition={condition}
-                                />
-                            </HideCard>
-                        </ul>
-                    </div>
-                    <div className="seventh">
-                        <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
-                            <HideCard title="계획 등록/수정" color="back-lightblue">
-                                <div className="table-buttons mg-b-m-30">
-                                    <RefreshButton onClick={refresh} />
-                                </div>
-                                <ReactDataTableURL
-                                    editing={true}
-                                    columns={columns.orderPlanMgmt.estimateLabor}
-                                    customDatas={generalExpensesDatas}
-                                    viewPageName={{ name: "수주인건비", id: "orderLabor" }}
-                                    customDatasRefresh={refresh}
-                                    condition={condition}
-                                />
-                            </HideCard>
-                        </ul>
-                    </div>
-                    <div className="eighth">
-                        <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
-                            <HideCard title="계획 등록/수정" color="back-lightblue">
-                                <div className="table-buttons mg-b-m-30">
-                                    <RefreshButton onClick={refresh} />
-                                </div>
-                                <ReactDataTableURL
-                                    editing={true}
-                                    columns={columns.orderPlanMgmt.estimatePurchase}
-                                    singleUrl="/baseInfrm/product/pjbudget"
-                                    customDatas={generalExpensesDatas}
-                                    viewPageName={{ name: "수주구매비", id: "orderBuying" }}
                                     customDatasRefresh={refresh}
                                     condition={condition}
                                 />
