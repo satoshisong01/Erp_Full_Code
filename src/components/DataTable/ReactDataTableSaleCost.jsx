@@ -151,7 +151,7 @@ const ReactDataTableSaleCost = (props) => {
         {
             columns: columnsConfig,
             data: tableData,
-            initialState: { pageIndex: 0, pageSize: defaultPageSize || 10 }, // 초기값
+            initialState: { pageIndex: 0, pageSize: isPageNation ? (defaultPageSize || 10) : tableData && tableData.length || 200 }, // 초기값
         },
         useSortBy,
         usePagination,
@@ -351,7 +351,7 @@ const ReactDataTableSaleCost = (props) => {
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
     return (
-        <div className={isPageNation ? "" : "table-scroll"}>
+        <div className={isPageNation ? "x-scroll" : "table-scroll"}>
             <table {...getTableProps()} className="table-styled" ref={tableRef}>
                 <thead>
                     {headerGroups.map((headerGroup, headerGroupIndex) => (

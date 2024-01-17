@@ -10,6 +10,8 @@ import HideCard from "components/HideCard";
 import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 import SaveButton from "components/button/SaveButton";
 import { ChangePrmnPlanData } from "components/DataTable/function/ReplaceDataFormat";
+import AddButton from "components/button/AddButton";
+import DelButton from "components/button/DelButton";
 
 /** 실행관리-인건비-실행 */
 function LaborCostMgmtExe() {
@@ -259,8 +261,10 @@ function LaborCostMgmtExe() {
                 <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
-                <div className="table-buttons mg-b-m-30">
+            <div className="table-buttons mg-t-10 mg-b-10">
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
+                    <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTable

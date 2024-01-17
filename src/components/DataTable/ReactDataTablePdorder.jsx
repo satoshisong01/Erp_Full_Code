@@ -510,7 +510,7 @@ const ReactDataTablePdorder = (props) => {
 
     return (
         <>
-            <div className={isPageNation ? "" : "table-scroll"}>
+            <div className={isPageNation ? "x-scroll" : "table-scroll"}>
                 <table {...getTableProps()} className="table-styled" ref={tableRef} style={{ tableLayout: "auto", marginBottom: 20 }}>
                     <thead>
                         {headerGroups.map((headerGroup, headerGroupIndex) => (

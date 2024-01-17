@@ -10,6 +10,8 @@ import ApprovalFormExe from "components/form/ApprovalFormExe";
 import HideCard from "components/HideCard";
 import SaveButton from "components/button/SaveButton";
 import ReactDataTable from "components/DataTable/ReactDataTable";
+import AddButton from "components/button/AddButton";
+import DelButton from "components/button/DelButton";
 /** 실행관리-경비-계획 */
 function ExpenseMgmtPlan() {
     const { setNameOfButton } = useContext(PageContext);
@@ -439,8 +441,10 @@ function ExpenseMgmtPlan() {
                 <ReactDataTable columns={columns.expenseMgmt.cal} customDatas={cal} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
-                <div className="table-buttons mg-b-m-30">
+                <div className="table-buttons mg-t-10 mg-b-10">
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
+                    <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTableURL

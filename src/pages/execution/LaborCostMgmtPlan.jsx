@@ -10,6 +10,8 @@ import ApprovalFormExe from "components/form/ApprovalFormExe";
 import HideCard from "components/HideCard";
 import SaveButton from "components/button/SaveButton";
 import { ChangePrmnPlanData } from "components/DataTable/function/ReplaceDataFormat";
+import AddButton from "components/button/AddButton";
+import DelButton from "components/button/DelButton";
 
 /** 실행관리-인건비-계획 */
 function LaborCostMgmtPlan() {
@@ -22,14 +24,14 @@ function LaborCostMgmtPlan() {
         { header: "연월", col: "pmpMonth", cellWidth: "240", type: "datePicker" },
         { header: "M/M계", col: "total", cellWidth: "150" },
         { header: "인건비계", col: "totalPrice", cellWidth: "150", type: "number" },
-        { header: "임원", col: "pmpmmPositionCode1", type: "input", cellWidth: "0", notView: true },
-        { header: "특급기술사", col: "pmpmmPositionCode2", type: "input", cellWidth: "0", notView: true },
-        { header: "고급기술사", col: "pmpmmPositionCode3", type: "input", cellWidth: "0", notView: true },
-        { header: "중급기술사", col: "pmpmmPositionCode4", type: "input", cellWidth: "0", notView: true },
-        { header: "초급기술사", col: "pmpmmPositionCode5", type: "input", cellWidth: "0", notView: true },
-        { header: "고급기능사", col: "pmpmmPositionCode6", type: "input", cellWidth: "0", notView: true },
-        { header: "중급기능사", col: "pmpmmPositionCode7", type: "input", cellWidth: "0", notView: true },
-        { header: "초급기능사", col: "pmpmmPositionCode8", type: "input", cellWidth: "0", notView: true },
+        { header: "임원", col: "pmpmmPositionCode1", notView: true },
+        { header: "특급기술사", col: "pmpmmPositionCode2", notView: true },
+        { header: "고급기술사", col: "pmpmmPositionCode3", notView: true },
+        { header: "중급기술사", col: "pmpmmPositionCode4", notView: true },
+        { header: "초급기술사", col: "pmpmmPositionCode5", notView: true },
+        { header: "고급기능사", col: "pmpmmPositionCode6", notView: true },
+        { header: "중급기능사", col: "pmpmmPositionCode7", notView: true },
+        { header: "초급기능사", col: "pmpmmPositionCode8", notView: true },
         { header: "부장", col: "pmpmmPositionCode9", cellWidth: "140", type: "input" },
         { header: "차장", col: "pmpmmPositionCode10", cellWidth: "140", type: "input" },
         { header: "과장", col: "pmpmmPositionCode11", cellWidth: "140", type: "input" },
@@ -229,14 +231,16 @@ function LaborCostMgmtPlan() {
             <Location pathList={locationPath.LaborCostMgmt} />
             <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
-                <ReactDataTable columns={columnlabor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
+                <ReactDataTable columns={columnlabor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} />
+                <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
-                <div className="table-buttons mg-b-m-30">
+                <div className="table-buttons mg-t-10 mg-b-10">
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
+                    <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTable

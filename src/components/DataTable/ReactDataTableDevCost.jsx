@@ -401,7 +401,7 @@ const ReactDataTableDevCost = (props) => {
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
     return (
-        <div className={isPageNation ? "" : "table-scroll"}>
+        <div className={isPageNation ? "x-scroll" : "table-scroll"}>
             <table {...getTableProps()} className="table-styled" ref={tableRef}>
                 <thead>
                     {headerGroups.map((headerGroup, headerGroupIndex) => (

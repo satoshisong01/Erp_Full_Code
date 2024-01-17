@@ -646,8 +646,9 @@ const ReactDataTable = (props) => {
                     </select>
                 </div>
             </div>}
-            <div className={isPageNation ? "" : "table-scroll"}>
-                <table {...getTableProps()} className="table-custom table-styled" style={{ tableLayout: "auto" }}>
+            <div className={isPageNation ? "x-scroll" : "table-scroll"}>
+                {/* <table {...getTableProps()} className="table-custom table-styled" style={{ tableLayout: "auto" }}> */}
+                <table {...getTableProps()} className="table-custom table-styled">
                     <thead>
                         {headerGroups.map((headerGroup, headerGroupIndex) => (
                             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -662,7 +663,7 @@ const ReactDataTable = (props) => {
                                             {...column.getHeaderProps(column.getSortByToggleProps())}
                                             id={`header-${column.id}`}
                                             className={columnIndex === 0 ? "first-column" : ""}
-                                            //style={{ width: column.width }}
+                                            style={{ width: column.width }}
                                         >
                                             {column.render("Header")}
                                             <div {...column.getResizerProps()} className={`resizer ${column.isResizing ? "isResizing" : ""}`} />
@@ -673,13 +674,6 @@ const ReactDataTable = (props) => {
                                         </th>
                                     );
                                 })}
-                                {isEditing && (
-                                    <th style={{ width: "43px", textAlign: "center" }}>
-                                        <button className="back-blue" onClick={onAddRow} style={{ margin: 0, overflow: "auto" }}>
-                                            추가
-                                        </button>
-                                    </th>
-                                )}
                             </tr>
                         ))}
                     </thead>
@@ -700,7 +694,7 @@ const ReactDataTable = (props) => {
                                             <td
                                                 {...cell.getCellProps()}
                                                 className={cellIndex === 0 ? "first-column" : "other-column"}
-                                                onClick={(e) => onClickCell(e, cell)}>
+                                            >
                                                 {cell.column.id === "selection" ? (
                                                     cell.render("Cell")
                                                 ) : isEditing ? (
@@ -825,31 +819,22 @@ const ReactDataTable = (props) => {
                                             </td>
                                         );
                                     })}
-                                    {isEditing && (
-                                        <td style={{ textAlign: "center" }}>
-                                            <button className="back-cherry" style={{ margin: 0, overflow: "auto" }} onClick={() => onDeleteRow(row)}>
-                                                삭제
-                                            </button>
-                                            {/* <button className="btnR btn-primary redDelete" onClick={() => onDeleteRow(row)}> */}
-                                            {/* 삭제 */}
-                                            {/* </button> */}
-                                        </td>
-                                    )}
                                 </tr>
                             );
                         })}
-                    </tbody>
-                ) : (
-                    <tbody>
-                        <tr>
-                            <td colSpan={visibleColumnCount + 1} style={{ textAlign: "center", fontSize: "15px", height: "80px" }} className="back-lightgray">
-                                조회된 데이터가 없습니다.
-                            </td>
-                        </tr>
-                    </tbody>
-                )}
-            </table>
-            <div className="me-pagination mg-t-10">
+                        </tbody>
+                    ) : (
+                        <tbody>
+                            <tr>
+                                <td colSpan={visibleColumnCount + 1} style={{ textAlign: "center", fontSize: "15px", height: "80px" }} className="back-lightgray">
+                                    조회된 데이터가 없습니다.
+                                </td>
+                            </tr>
+                        </tbody>
+                    )}
+                    </table>
+            </div>
+            {isPageNation && <div className="me-pagination mg-t-10">
                 <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
                     {" "}
                     처음{" "}

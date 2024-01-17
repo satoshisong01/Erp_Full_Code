@@ -473,19 +473,7 @@ const ReactDataTableURL = (props) => {
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
     return (
-        <div className={isPageNation ? "" : "table-scroll"}>
-            <div className="flex-between mg-b-10">
-                <div className="page-size">
-                    {/* <span className="mg-r-10">페이지 크기 :</span> */}
-                    <select className="select" id={uuidv4()} value={pageSize || defaultPageSize} onChange={(e) => pageSizeChange(e.target.value)}>
-                        {pageSizeOptions.map((size) => (
-                            <option key={size} value={size}>
-                                {size}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
+        <div className={isPageNation ? "x-scroll" : "table-scroll"}>
             <div style={{ position: "relative", overflow: "auto", width: "auto" }}>
                 <table {...getTableProps()} className="table-styled" ref={tableRef} style={{ tableLayout: "auto" }}>
                     <thead>
@@ -506,13 +494,6 @@ const ReactDataTableURL = (props) => {
                                         </th>
                                     );
                                 })}
-                                {isEditing && (
-                                    <th style={{ width: "43px", textAlign: "center" }}>
-                                        <button className="btn-primary" onClick={onAddRow} style={{ margin: 0 }}>
-                                            추가
-                                        </button>
-                                    </th>
-                                )}
                             </tr>
                         ))}
                     </thead>
@@ -641,13 +622,6 @@ const ReactDataTableURL = (props) => {
                                                 </td>
                                             );
                                         })}
-                                        {isEditing && (
-                                            <td style={{ textAlign: "center", width: "43px" }}>
-                                                <button className="btnR btn-primary redDelete" onClick={() => onDeleteRow(row)}>
-                                                    삭제
-                                                </button>
-                                            </td>
-                                        )}
                                     </tr>
                                 );
                             })}
