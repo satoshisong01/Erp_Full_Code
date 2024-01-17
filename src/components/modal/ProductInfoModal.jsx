@@ -40,13 +40,13 @@ export default function ProductInfoModal(props) {
 
     const columns = [
         { header: "품목아이디", col: "pdiId", notView: true },
-        { header: "품명", col: "pdiNm", cellWidth: "40%", type: "buttonPdiNm" },
-        { header: "모델명", col: "pdiNum", cellWidth: "30%" },
-        { header: "품목그룹명", col: "pgNm", cellWidth: "20%" },
-        { header: "규격", col: "pdiStnd", cellWidth: "30%" },
+        { header: "품명", col: "pdiNm", cellWidth: "120", type: "buttonPdiNm" },
+        { header: "모델명", col: "pdiNum", cellWidth: "180" },
+        { header: "품목그룹명", col: "pgNm", cellWidth: "120" },
+        { header: "규격", col: "pdiStnd", cellWidth: "140" },
         { header: "단위", col: "pdiUnit", notView: true },
-        { header: "제조사", col: "pdiMenufut", cellWidth: "20%" },
-        { header: "판매사", col: "pdiSeller", cellWidth: "20%" },
+        { header: "제조사", col: "pdiMenufut", cellWidth: "100" },
+        { header: "판매사", col: "pdiSeller", cellWidth: "130" },
         { header: "원가", col: "pupUnitPrice", notView: true },
     ];
 

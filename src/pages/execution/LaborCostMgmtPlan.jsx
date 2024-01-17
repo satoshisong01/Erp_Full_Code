@@ -13,15 +13,30 @@ import { ChangePrmnPlanData } from "components/DataTable/function/ReplaceDataFor
 
 /** 실행관리-인건비-계획 */
 function LaborCostMgmtPlan() {
-    const {
-        innerPageName,
-        unitPriceList,
-        currentPageName,
-        unitPriceListRenew,
-        setNameOfButton,
-    } = useContext(PageContext);
+    const { innerPageName, unitPriceList, currentPageName, unitPriceListRenew, setNameOfButton } = useContext(PageContext);
 
     const [condition, setCondition] = useState({});
+
+    const columnlabor = [
+        //인건비
+        { header: "연월", col: "pmpMonth", cellWidth: "240", type: "datePicker" },
+        { header: "M/M계", col: "total", cellWidth: "150" },
+        { header: "인건비계", col: "totalPrice", cellWidth: "150", type: "number" },
+        { header: "임원", col: "pmpmmPositionCode1", type: "input", cellWidth: "0", notView: true },
+        { header: "특급기술사", col: "pmpmmPositionCode2", type: "input", cellWidth: "0", notView: true },
+        { header: "고급기술사", col: "pmpmmPositionCode3", type: "input", cellWidth: "0", notView: true },
+        { header: "중급기술사", col: "pmpmmPositionCode4", type: "input", cellWidth: "0", notView: true },
+        { header: "초급기술사", col: "pmpmmPositionCode5", type: "input", cellWidth: "0", notView: true },
+        { header: "고급기능사", col: "pmpmmPositionCode6", type: "input", cellWidth: "0", notView: true },
+        { header: "중급기능사", col: "pmpmmPositionCode7", type: "input", cellWidth: "0", notView: true },
+        { header: "초급기능사", col: "pmpmmPositionCode8", type: "input", cellWidth: "0", notView: true },
+        { header: "부장", col: "pmpmmPositionCode9", cellWidth: "140", type: "input" },
+        { header: "차장", col: "pmpmmPositionCode10", cellWidth: "140", type: "input" },
+        { header: "과장", col: "pmpmmPositionCode11", cellWidth: "140", type: "input" },
+        { header: "대리", col: "pmpmmPositionCode12", cellWidth: "140", type: "input" },
+        { header: "주임", col: "pmpmmPositionCode13", cellWidth: "140", type: "input" },
+        { header: "사원", col: "pmpmmPositionCode14", cellWidth: "140", type: "input" },
+    ];
 
     const conditionInfo = (value) => {
         setCondition((prev) => {
@@ -131,7 +146,7 @@ function LaborCostMgmtPlan() {
             // console.log("get data success:)");
             // return resultData;
         } else {
-            alert('no data');
+            alert("no data");
             setBudgetMgmt([]); // 빈 배열 보내주기
         }
     };
@@ -214,7 +229,7 @@ function LaborCostMgmtPlan() {
             <Location pathList={locationPath.LaborCostMgmt} />
             <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
-                <ReactDataTable columns={columns.orderPlanMgmt.labor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
+                <ReactDataTable columns={columnlabor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
                 <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} />
@@ -228,7 +243,7 @@ function LaborCostMgmtPlan() {
                     editing={true}
                     columns={columns.laborCostMgmt.budget}
                     customDatas={budgetMgmt}
-                    viewPageName={{name: "인건비계획", id: "LaborCostMgmtPlan"}}
+                    viewPageName={{ name: "인건비계획", id: "LaborCostMgmtPlan" }}
                     returnList={compareData}
                     condition={condition}
                 />
