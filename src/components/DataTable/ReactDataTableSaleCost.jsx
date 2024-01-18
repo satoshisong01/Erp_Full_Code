@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { axiosDelete, axiosFetch, axiosPost, axiosScan, axiosUpdate } from "api/axiosFetch";
-import { useTable, usePagination, useSortBy, useRowSelect } from "react-table";
+import { useTable, usePagination, useSortBy, useRowSelect, useBlockLayout, useResizeColumns } from "react-table";
 import { PageContext } from "components/PageProvider";
 import ModalPageCompany from "components/modal/ModalPageCompany";
 import { v4 as uuidv4 } from "uuid";
@@ -155,11 +155,13 @@ const ReactDataTableSaleCost = (props) => {
         {
             columns: columnsConfig,
             data: tableData,
-            initialState: { pageIndex: 0, pageSize: isPageNation ? (defaultPageSize || 10) : tableData && tableData.length || 200 }, // 초기값
+            initialState: { pageIndex: 0, pageSize: isPageNation ? defaultPageSize || 10 : (tableData && tableData.length) || 200 }, // 초기값
         },
         useSortBy,
         usePagination,
         useRowSelect,
+        useBlockLayout,
+        useResizeColumns,
         (hooks) => {
             hooks.visibleColumns.push((columns) => [
                 ...(hideCheckBox !== undefined && hideCheckBox
@@ -263,7 +265,9 @@ const ReactDataTableSaleCost = (props) => {
     };
 
     const onDeleteRow = () => {
-        if (!selectedFlatRows || selectedFlatRows.length === 0) { return; }
+        if (!selectedFlatRows || selectedFlatRows.length === 0) {
+            return;
+        }
         const values = selectedFlatRows.map((item) => item.index);
         setTableData((prevTableData) => {
             const updateTableData = prevTableData.filter((_, index) => !values.includes(index));
@@ -356,7 +360,7 @@ const ReactDataTableSaleCost = (props) => {
 
     return (
         <div className={isPageNation ? "x-scroll" : "table-scroll"}>
-            <table {...getTableProps()} className="table-styled" ref={tableRef}>
+            <table {...getTableProps()} className="table-styled" ref={tableRef} style={{ tableLayout: "auto", marginBottom: 20 }}>
                 <thead>
                     {headerGroups.map((headerGroup, headerGroupIndex) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
@@ -367,11 +371,9 @@ const ReactDataTableSaleCost = (props) => {
                                 }
 
                                 return (
-                                    <th
-                                        {...column.getHeaderProps(column.getSortByToggleProps())}
-                                        className={columnIndex === 0 ? "first-column" : ""}
-                                        style={{ width: column.width }}>
+                                    <th {...column.getHeaderProps(column.getSortByToggleProps())} className={columnIndex === 0 ? "first-column" : ""}>
                                         {column.render("Header")}
+                                        <div {...column.getResizerProps()} className={`resizer ${column.isResizing ? "isResizing" : ""}`} />
                                         <span style={{ color: "red", margin: 0 }}>{column.require === true ? "*" : ""}</span>
                                         <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
                                     </th>
