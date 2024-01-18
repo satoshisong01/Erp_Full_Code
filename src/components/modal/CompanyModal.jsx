@@ -51,10 +51,10 @@ export default function CompanyModal(props) {
     };
 
     const columns = [
-        { header: "거래처아이디", col: "cltId", cellWidth: "35%", notView: true },
-        { header: "거래처명", col: "cltNm", cellWidth: "35%" },
-        { header: "품목그룹명", col: "pgNms", cellWidth: "35%" },
-        { header: "업체유형", col: "cltBusstype", cellWidth: "35%" },
+        { header: "거래처아이디", col: "cltId", cellWidth: "0", notView: true },
+        { header: "거래처명", col: "cltNm", cellWidth: "150" },
+        { header: "품목그룹명", col: "pgNms", cellWidth: "170" },
+        { header: "업체유형", col: "cltBusstype", cellWidth: "180" },
     ];
 
     const conditionList = [
@@ -116,7 +116,12 @@ export default function CompanyModal(props) {
                         <div className="me-modal-body" ref={bodyRef}>
                             <div className="body-area" style={{ gap: 0 }}>
                                 <ModalSearchList conditionList={conditionList} onSearch={onSearch} refresh={() => getCompanyList()} />
-                                <ReactDataTable columns={columns} customDatas={companyList} returnSelect={returnSelect} viewPageName={{ name: "거래처팝업", id: "거래처팝업" }} />
+                                <ReactDataTable
+                                    columns={columns}
+                                    customDatas={companyList}
+                                    returnSelect={returnSelect}
+                                    viewPageName={{ name: "거래처팝업", id: "거래처팝업" }}
+                                />
                             </div>
                         </div>
 
