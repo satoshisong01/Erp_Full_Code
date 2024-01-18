@@ -86,7 +86,7 @@ export default function ProjectModal(props) {
                     <div className="me-modal-body" ref={bodyRef}>
                         <div className="body-area" style={{ gap: 0 }}>
                             <ModalCondition conditionList={conditionList} onSearch={onSearch} refresh={() => getProjectList()} />
-                            <ReactDataTable columns={columns} customDatas={projectList} returnSelect={returnSelect} viewPageName={{ name: "프로젝트팝업", id: "프로젝트팝업" }} />
+                            <ReactDataTable columns={columns} customDatas={projectList} returnSelect={returnSelect} viewPageName={{ name: "프로젝트팝업", id: "프로젝트팝업" }} isPageNation={true} />
                         </div>
                     </div>
 

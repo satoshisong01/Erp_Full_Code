@@ -53,14 +53,13 @@ const ReactDataTable = (props) => {
         modalPageName,
         isCancelTable,
         setIsCancelTable,
-        // projectInfo,
         isOpenModalPgNm,
         setIsOpenModalPgNm,
         projectPgNm,
         setProjectPgNm,
-        setProjectInfo,
         unitPriceList,
         emUserInfo,
+        setEmUserInfo,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -206,18 +205,16 @@ const ReactDataTable = (props) => {
     useEffect(() => {
         if (isCurrentPage()) {
             //업무회원
-            if (!emUserInfo || emUserInfo.uniqId === "") return;
-            const updatedTableData = [...tableData];
-            updatedTableData[rowIndex] = {
-                ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
-                ...emUserInfo,
-                esntlId: emUserInfo.uniqId,
-            };
-            setTableData(updatedTableData);
-
-            //setTableData((prevData) => {
-            //    return [{ ...prevData, ...emUserInfo }];
-            //});
+            if (Object.keys(emUserInfo).length > 0) {
+                const updatedTableData = [...tableData];
+                updatedTableData[rowIndex] = {
+                    ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+                    ...emUserInfo,
+                    esntlId: emUserInfo.uniqId,
+                };
+                setTableData(updatedTableData);
+                setEmUserInfo({})
+            }
         }
     }, [emUserInfo]);
 
@@ -833,7 +830,7 @@ const ReactDataTable = (props) => {
                 </table>
             </div>
             {isPageNation && (
-                <div className="me-pagination mg-t-10">
+                <div className="me-pagenation mg-t-10">
                     <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
                         {" "}
                         처음{" "}

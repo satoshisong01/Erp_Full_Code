@@ -1353,6 +1353,7 @@ td {
     position: "relative";
     overflow: auto;
     width: "auto";
+    padding-bottom: 10px;
 
     /* 커스텀 스크롤바 스타일링 추가 */
     scrollbar-width: thin; /* Firefox에만 적용되는 스크롤바 너비 설정 */

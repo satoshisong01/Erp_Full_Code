@@ -223,13 +223,17 @@ export const execution = [
         etc: "실행 경비",
         pLabel: "실행관리",
     },
+
+];
+export const mail = [
+    //전자결재
     {
-       id: "Approval",
-       path: URL.Approval,
-       component: <Approval />,
-       label: "결재수신함",
-       pLabel: "전자결재",
-    },
+        id: "Approval",
+        path: URL.Approval,
+        component: <Approval />,
+        label: "결재수신함",
+        pLabel: "전자결재",
+     },
 ];
 export const system = [
     //시스템관리

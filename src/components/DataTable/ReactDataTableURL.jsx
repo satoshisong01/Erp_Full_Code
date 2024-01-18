@@ -45,6 +45,7 @@ const ReactDataTableURL = (props) => {
         setNameOfButton,
         setModalLengthSelectRow,
         emUserInfo,
+        setEmUserInfo,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -113,14 +114,16 @@ const ReactDataTableURL = (props) => {
     useEffect(() => {
         if (isCurrentPage()) {
             //업무회원
-            if (!emUserInfo || emUserInfo.uniqId === "") return;
-            const updatedTableData = [...tableData];
-            updatedTableData[rowIndex] = {
-                ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
-                ...emUserInfo,
-                esntlId: emUserInfo.uniqId,
-            };
-            setTableData(updatedTableData);
+            if (Object.keys(emUserInfo).length > 0) {
+                const updatedTableData = [...tableData];
+                updatedTableData[rowIndex] = {
+                    ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+                    ...emUserInfo,
+                    esntlId: emUserInfo.uniqId,
+                };
+                setTableData(updatedTableData);
+                setEmUserInfo({})
+            }
         }
     }, [emUserInfo]);
 
@@ -473,7 +476,7 @@ const ReactDataTableURL = (props) => {
 
     return (
         <div className={isPageNation ? "x-scroll" : "table-scroll"}>
-            <div style={{ position: "relative", overflow: "auto", width: "auto" }}>
+            {/* <div style={{ position: "relative", overflow: "auto", width: "auto" }}> */}
                 <table {...getTableProps()} className="table-styled" ref={tableRef} style={{ tableLayout: "auto" }}>
                     <thead>
                         {headerGroups.map((headerGroup, headerGroupIndex) => (
@@ -550,10 +553,10 @@ const ReactDataTableURL = (props) => {
                                                                     id={cell.column.id}
                                                                     name={cell.column.col}
                                                                     key={cell.column.id + row.index}
-                                                                    onClick={() => setValueData(rowIndex)}
+                                                                    onClick={() => setValueData(row.index)}
                                                                     type="text"
                                                                     placeholder={`품목그룹명을 선택해 주세요.`}
-                                                                    value={tableData[rowIndex].pgNm || ""}
+                                                                    value={tableData[row.index].pgNm || ""}
                                                                     onChange={(e) => handleChange(e, row, cell.column.id)}
                                                                     readOnly
                                                                 />
@@ -579,18 +582,18 @@ const ReactDataTableURL = (props) => {
                                                                     className="buttonSelect"
                                                                     id={cell.column.id}
                                                                     name={cell.column.id}
-                                                                    onClick={() => setValueDataCompany(rowIndex)}
+                                                                    onClick={() => setValueDataCompany(row.index)}
                                                                     type="text"
                                                                     placeholder={`거래처명을 선택해 주세요.`}
-                                                                    value={tableData[rowIndex][cell.column.id] || ""}
-                                                                    onChange={(e) => handleChange(e, rowIndex, cell.column.id)}
+                                                                    value={tableData[row.index][cell.column.id] || ""}
+                                                                    onChange={(e) => handleChange(e, row.index, cell.column.id)}
                                                                     readOnly
                                                                 />
                                                             </div>
                                                         ) : cell.column.type === "employerInfo" ? (
                                                             <BasicInput
                                                                 item={cell.column}
-                                                                onClick={() => changeEmployerInfo(cell.column.id, rowIndex)}
+                                                                onClick={() => changeEmployerInfo(cell.column.id, row.index)}
                                                                 value={tableData[row.index][cell.column.id] ?? ""}
                                                                 readOnly
                                                             />
@@ -638,8 +641,8 @@ const ReactDataTableURL = (props) => {
                         </tbody>
                     )}
                 </table>
-            </div>
-            <div className="me-pagination">
+            {/* </div> */}
+            <div className="me-pagenation">
                 <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
                     {" "}
                     처음{" "}

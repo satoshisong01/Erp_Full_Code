@@ -170,7 +170,7 @@ const ReactDataTableView = (props) => {
                 </tbody>
             </table>
 
-            <div className="me-pagination">
+            <div className="me-pagenation">
                 <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
                     {" "}
                     처음{" "}

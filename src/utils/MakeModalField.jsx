@@ -101,10 +101,20 @@ export default function MakeModalField({ list, onChange, initialData }) {
         }
     }, [projectPgNm]);
 
+    // useEffect(() => {
+    //     //업무회원
+    //     if(!emUserInfo || emUserInfo.uniqId === "") return;
+    //     setData({...emUserInfo });
+    // }, [emUserInfo]);
+
     useEffect(() => {
         //업무회원
-        if(!emUserInfo || emUserInfo.uniqId === "") return;
-        setData({...emUserInfo });
+        if (Object.keys(emUserInfo).length > 0) {
+            setData(prevData => {
+                return { ...prevData, ...emUserInfo};
+            });
+            setEmUserInfo({});
+        }
     }, [emUserInfo]);
 
     const inputChange = (e, type) => {

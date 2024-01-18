@@ -4,7 +4,7 @@ import URL from "constants/url";
 import store from "store/configureStore";
 import { selectLnb } from "./tabs/TabsActions";
 import { connect } from "react-redux";
-import { execution, reference, sales, system } from "./tabs/Children";
+import { execution, reference, sales, mail, system } from "./tabs/Children";
 import NavLinkTabs from "./tabs/NavLinkTabs";
 import { axiosGet } from "../api/axiosFetch";
 import { PageContext } from "./PageProvider";
@@ -22,7 +22,7 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
     const sessionUserSe = JSON.parse(sessionUser)?.userSe;
     const authorCode = JSON.parse(sessionUser)?.authorCode;
 
-    console.log("🎄로그인🎄", JSON.parse(sessionUser));
+    // console.log("🎄로그인🎄", authorCode);
 
     const { gnbLabel, setGnbLabel } = useContext(PageContext);
     const [activeGnb, setActiveGnb] = useState("");
@@ -35,7 +35,7 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
 
     /** 라벨 선택 시 CSS 활성화 */
     useEffect(() => {
-        const tabs = { 실행관리: execution, 기준정보관리: reference, 영업관리: sales }; //tabLabel: tabItems
+        const tabs = { 기준정보관리: reference, 영업관리: sales, 실행관리: execution, 전자결재: mail, 시스템관리: system }; //tabLabel: tabItems
 
         const activeLabel = Object.entries(tabs).find(
             ([tabLabel, tabItems]) => tabItems.some((item) => item.id === (lnbId || snbId)) //네비게이션에서 선택한 id
@@ -86,7 +86,7 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
         setActiveGnb(gnbLabel);
     };
     const gnbClick = (e) => {
-            const gnbLabel = e.target.innerText;
+        const gnbLabel = e.target.innerText;
             setGnbLabel(gnbLabel);
             setActiveGnb(gnbLabel)
     }

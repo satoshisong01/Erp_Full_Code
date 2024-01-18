@@ -97,7 +97,7 @@ const AntTabs = (props) => {
             type="editable-card"
             onEdit={onEdit}
             items={items}
-            tabBarExtraContent={<Button onClick={removeAllTabs}>모두 닫기</Button>}
+            tabBarExtraContent={items && items.length > 0 && <Button onClick={removeAllTabs}>모두 닫기</Button>}
         />
     );
 };

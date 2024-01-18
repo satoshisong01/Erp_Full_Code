@@ -103,11 +103,12 @@ export default function MakeItemField({ item, resultData, initialData }) {
 
     useEffect(() => {
         //업무회원
-        if(!emUserInfo || emUserInfo.esntlId === "") return;
-        setData((prevData) => {
-            return { ...prevData, ...emUserInfo };
-        });
-        // setEmUserInfo({}); //초기화
+        if (Object.keys(emUserInfo).length > 0) {
+            setData(prevData => {
+                return { ...prevData, ...emUserInfo};
+            });
+            setEmUserInfo({});
+        }
     }, [emUserInfo]);
     
     const inputChange = (e) => {
