@@ -87,15 +87,15 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
     };
     const gnbClick = (e) => {
         const gnbLabel = e.target.innerText;
-            setGnbLabel(gnbLabel);
-            setActiveGnb(gnbLabel)
-    }
+        setGnbLabel(gnbLabel);
+        setActiveGnb(gnbLabel);
+    };
 
     const mainClick = (e) => {
         setGnbLabel("");
         setActiveGnb("");
         setActiveLnb("");
-    }
+    };
 
     // console.log("------------------------------EgovHeader [End]");
     // console.groupEnd("EgovHeader");
@@ -113,41 +113,41 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
                 <div className="gnb">
                     <h2 className="blind">주메뉴</h2>
                     <ul>
-                    {accessRoleReference.includes(authorCode) && (
-                        <li key={uuidv4()}>
-                            <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="기준정보관리">
-                                기준정보관리
-                            </NavLinkTabs>
-                        </li>
-                    )}
-                    {accessRoleSales.includes(authorCode) && (
-                        <li key={uuidv4()}>
-                            <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="영업관리">
-                                영업관리
-                            </NavLinkTabs>
-                        </li>
-                    )}
-                    {accessRoleExecution.includes(authorCode) && (
-                        <li key={uuidv4()}>
-                            <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="실행관리">
-                                실행관리
-                            </NavLinkTabs>
-                        </li>
-                    )}
-                    {accessRoleMail.includes(authorCode) && (
-                        <li>
-                            <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="전자결재">
-                                전자결재
-                            </NavLinkTabs>
-                        </li>
-                    )}
-                    {accessRoleSystem.includes(authorCode) && (
-                        <li>
-                            <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="시스템관리">
-                                시스템관리
-                            </NavLinkTabs>
-                        </li>
-                    )}
+                        {accessRoleReference.includes(authorCode) && (
+                            <li key={uuidv4()}>
+                                <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="기준정보관리">
+                                    기준정보관리
+                                </NavLinkTabs>
+                            </li>
+                        )}
+                        {accessRoleSales.includes(authorCode) && (
+                            <li key={uuidv4()}>
+                                <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="영업관리">
+                                    영업관리
+                                </NavLinkTabs>
+                            </li>
+                        )}
+                        {accessRoleExecution.includes(authorCode) && (
+                            <li key={uuidv4()}>
+                                <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="실행관리">
+                                    실행관리
+                                </NavLinkTabs>
+                            </li>
+                        )}
+                        {accessRoleMail.includes(authorCode) && (
+                            <li>
+                                <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="전자결재">
+                                    전자결재
+                                </NavLinkTabs>
+                            </li>
+                        )}
+                        {accessRoleSystem.includes(authorCode) && (
+                            <li>
+                                <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="시스템관리">
+                                    시스템관리
+                                </NavLinkTabs>
+                            </li>
+                        )}
                     </ul>
                 </div>
 
@@ -160,7 +160,7 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
                             <button onClick={logOutHandler} className="btn" style={{ position: "relative", width: "100px" }}>
                                 로그아웃
                             </button>
-                            <button className="btn login" style={{ position: "relative", width: "100px" }}>
+                            <button className="btn" style={{ position: "relative", width: "100px", height: "32px" }}>
                                 <Link id="MyInfoBtn" to={URL.MyInfo}>
                                     나의 회원정보
                                 </Link>
@@ -172,11 +172,6 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
                         <div style={{ display: "flex" }}>
                             <button onClick={logInHandler} className="btn login">
                                 로그인
-                            </button>
-                            <button className="btn login" style={{ position: "relative", width: "100px" }}>
-                                <Link id="MyInfoBtn" to={URL.MyInfo}>
-                                    나의 회원정보
-                                </Link>
                             </button>
                         </div>
                     )}
