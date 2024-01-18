@@ -38,7 +38,7 @@ function EgovLeftNavMailBox(props) {
             const id = menuItem.subMenus && menuItem.subMenus.length > 0 ? menuItem.subMenus[0].id : menuItem.id;
             setActiveLabel(id);
             setActiveSub(id);
-            store.dispatch(selectSnb(label, menuItem.id));
+            store.dispatch(selectSnb(label, id));
         } else if(subMenu !== null || subMenu !== undefined) {
             setActiveSub(subMenu.id);
             store.dispatch(selectSnb(subMenu.label, subMenu.id));

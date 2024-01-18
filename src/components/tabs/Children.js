@@ -333,4 +333,4 @@ export const system = [
     // },
 ];
 
-export const Children = [...reference, ...sales, ...execution, ...system];
+export const Children = [...reference, ...sales, ...execution, ...mail, ...system];
