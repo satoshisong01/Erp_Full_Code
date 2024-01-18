@@ -419,10 +419,10 @@ export const columns = {
         expensesCal: [{ header: "총 경비", col: "pjbgPriceTotal", cellWidth: "1379" }],
         outsourcing: [
             // 개발외주비
-            { header: "회사목록", col: "cltNm", cellWidth: "50%", type: "company", require: true },
-            { header: "턴키/MM", col: "devOutMm", cellWidth: "25%", type: "input" },
-            { header: "금액", col: "devOutPrice", cellWidth: "25%", type: "input", require: true },
-            { header: "첨부파일", col: "file", cellWidth: "10%", type: "file" },
+            { header: "회사목록", col: "cltNm", cellWidth: "400", type: "company", require: true },
+            { header: "턴키/MM", col: "devOutMm", cellWidth: "400", type: "input" },
+            { header: "금액", col: "devOutPrice", cellWidth: "400", type: "input", require: true },
+            { header: "첨부파일", col: "file", cellWidth: "140", type: "file" },
             { header: "아이디", col: "devOutId", notView: true },
             { header: "버전", col: "versionId", notView: true },
             { header: "프로젝트ID", col: "poiId", notView: true },
@@ -1295,7 +1295,7 @@ export const columns = {
         ],
         budget: [
             //구매 예산
-            { header: "품목그룹명", col: "pgNm", cellWidth: "150", type: "productGroup", },
+            { header: "품목그룹명", col: "pgNm", cellWidth: "150", type: "productGroup" },
             { header: "품명", col: "pdiNm", cellWidth: "150", type: "productInfo" },
             { header: "모델명", col: "pdiNum", cellWidth: "150" },
             { header: "규격", col: "pdiStnd", cellWidth: "150" },
@@ -1508,16 +1508,16 @@ export const columns = {
     user: {
         //유저
         employ: [
-            { header: "고유ID", col: "uniqId", notView: true, },
-            { header: "업무회원ID", col: "empId", cellWidth: "100", require: true, },
-            { header: "사용자명", col: "empNm", cellWidth: "100", require: true, },
-            { header: "사원번호", col: "empNum", cellWidth: "100", require: true, },
+            { header: "고유ID", col: "uniqId", notView: true },
+            { header: "업무회원ID", col: "empId", cellWidth: "100", require: true },
+            { header: "사용자명", col: "empNm", cellWidth: "100", require: true },
+            { header: "사원번호", col: "empNum", cellWidth: "100", require: true },
             { header: "비밀번호", col: "password", notView: true },
-            { header: "나이", col: "birthday", cellWidth: "100",  },
-            { header: "전화번호", col: "mbTelNm", cellWidth: "100", },
-            { header: "직위", col: "posNm", cellWidth: "100",  },
-            { header: "소속기관", col: "aflOrgCd", cellWidth: "100", },
-            { header: "입사일", col: "joiningDt", cellWidth: "100", },
+            { header: "나이", col: "birthday", cellWidth: "100" },
+            { header: "전화번호", col: "mbTelNm", cellWidth: "100" },
+            { header: "직위", col: "posNm", cellWidth: "100" },
+            { header: "소속기관", col: "aflOrgCd", cellWidth: "100" },
+            { header: "입사일", col: "joiningDt", cellWidth: "100" },
             // { header: "잠금여부", col: "lockAt", cellWidth: "100" },
             { header: "작성일", col: "createDate", cellWidth: "100" },
             { header: "작성자", col: "createIdBy", cellWidth: "100" },
@@ -1547,6 +1547,6 @@ export const columns = {
             { items: [{ header: "나이", col: "birthday", type: "input" }, { header: "전화번호", col: "mbTelNm", type: "input" }] },
             { items: [{ header: "직위", col: "posNm", type: "input" }, { header: "소속기관", col: "aflOrgCd", type: "input" }] },
             { items: [{ header: "입사일", col: "joiningDt", type: "dayPicker" }, {}] },
-        ]
+        ],
     },
 };

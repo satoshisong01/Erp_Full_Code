@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 import DayPicker from "components/input/DayPicker";
 import MonthPicker from "components/input/MonthPicker";
 import ProductInfoModal from "components/modal/ProductInfoModal";
+import FileModal from "components/modal/FileModal";
 
 /* 구매 테이블 */
 const ReactDataTablePdorder = (props) => {
@@ -58,6 +59,7 @@ const ReactDataTablePdorder = (props) => {
     const [current, setCurrent] = useState(viewPageName); //==viewPageName
     const [rowIndex, setRowIndex] = useState(0);
     const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
+    const [isOpenModalFile, setIsOpenModalFile] = useState(false); //첨부파일업로드
 
     //취소시에 오리지널 테이블로 돌아감
     useEffect(() => {
@@ -606,6 +608,19 @@ const ReactDataTablePdorder = (props) => {
                                                                     readOnly
                                                                 />
                                                             </div>
+                                                        ) : cell.column.type === "file" ? (
+                                                            <div>
+                                                                <button
+                                                                    id={cell.column.id}
+                                                                    name={cell.column.id}
+                                                                    className="basic-input"
+                                                                    onClick={() => {
+                                                                        goSetting(row.index);
+                                                                        setIsOpenModalFile(true);
+                                                                    }}>
+                                                                    첨부파일
+                                                                </button>
+                                                            </div>
                                                         ) : cell.column.type === "company" ? (
                                                             <div>
                                                                 <input
@@ -652,6 +667,7 @@ const ReactDataTablePdorder = (props) => {
             {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
             {isOpenModalCompany && <ModalPageCompany rowIndex={rowIndex} onClose={() => setIsOpenModalCompany(false)} />}
             <ProductInfoModal width={900} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
+            <FileModal width={600} height={330} title="첨부파일" isOpen={isOpenModalFile} onClose={() => setIsOpenModalFile(false)} />
         </>
     );
 };
