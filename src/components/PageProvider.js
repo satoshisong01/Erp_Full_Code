@@ -48,6 +48,7 @@ export function PageProvider({ children }) {
     const [companyList, setCompanyList] = useState([]); // 회사명 선택
     const [companyInfo, setCompanyInfo] = useState({ cltNm: "", cltId: "" }); // 선택한 id 저장
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
+    const [authorGroupInfo, setAuthorGroupInfo] = useState({}) //권한그룹 정보
 
     const [addPdiNm, setAddPdiNm] = useState("");
 
@@ -145,6 +146,8 @@ export function PageProvider({ children }) {
         setEmUserInfo,
         //loadButton,
         //setLoadButton,
+        authorGroupInfo,
+        setAuthorGroupInfo,
     };
 
     return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>;

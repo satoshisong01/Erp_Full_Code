@@ -37,10 +37,12 @@ function WorkMemberMgmt() {
             <ReactDataTable
                 suffixUrl="/baseInfrm/member/employMember"
                 columns={columns.user.employ}
-                modColumns={columns.user.add}
+                modColumns={columns.user.mod}
+                addColumns={columns.user.add}
                 viewPageName={{ name: "업무회원", id: "WorkMemberMgmt" }}
                 deleteInfo={{ id: "uniqId", name: "empNm"}}
                 condition={condition}
+                isPageNation={true}
             />
         </>
     );

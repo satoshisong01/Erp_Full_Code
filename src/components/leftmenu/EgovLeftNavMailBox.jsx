@@ -4,14 +4,11 @@ import { selectSnb } from "components/tabs/TabsActions";
 import NavLinkTabs from "components/tabs/NavLinkTabs";
 import store from "store/configureStore";
 
-/* 실행관리 네비게이션 */
-function EgovLeftNavExecution(props) {
+/* 전자결재 네비게이션 */
+function EgovLeftNavMailBox(props) {
     const { lnbId, snbId } = props;
     const [activeSub, setActiveSub] = useState("");
     const [activeLabel, setActiveLabel] = useState("");
-
-    const sessionUser = sessionStorage.getItem("loginUser");
-    const authorCode = JSON.parse(sessionUser)?.authorCode;
 
     /* header 또는 tabs에서 선택된 라벨을 저장  */
     useEffect(() => {
@@ -50,30 +47,9 @@ function EgovLeftNavExecution(props) {
 
     const menuItems = [
         {
-            label: "원가조회",
-            id: "ExecutionCost",
-            subMenus: [],
-            role: ["ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"]
-        },
-        {
-            label: "계획관리",
-            id: "LaborCostMgmtPlan",
-            subMenus: [
-                { label: "인건비", id: "LaborCostMgmtPlan" },
-                { label: "구매(재료비)", id: "PurchasingMgmtPlan" },
-                { label: "경비", id: "ExpenseMgmtPlan" },
-            ],
-            role: ["ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"]
-        },
-        {
-            label: "실행관리",
-            id: "LaborCostMgmtExe",
-            subMenus: [
-                { label: "인건비", id: "LaborCostMgmtExe" },
-                { label: "구매(재료비)", id: "PurchasingMgmtExe" },
-                { label: "경비", id: "ExpenseMgmtExe" },
-            ],
-            role: ["ROLE_USER", "ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"]
+            label: "결재수신함",
+            id: "Approval",
+            subMenus: []
         },
     ];
 
@@ -81,10 +57,9 @@ function EgovLeftNavExecution(props) {
         <div className="layout">
             <div className="nav">
                 <div className="inner">
-                    <h2>실행관리</h2>
+                    <h2>전자결재</h2>
                     <ul className="menu4">
                         {menuItems.map((menuItem) => (
-                            menuItem.role.includes(authorCode) &&
                             <li key={menuItem.label}>
                                 <NavLinkTabs
                                     to="#"
@@ -121,4 +96,4 @@ function EgovLeftNavExecution(props) {
 }
 
 const mapStateToProps = (data) => data.tabs;
-export default connect(mapStateToProps)(EgovLeftNavExecution);
+export default connect(mapStateToProps)(EgovLeftNavMailBox);
