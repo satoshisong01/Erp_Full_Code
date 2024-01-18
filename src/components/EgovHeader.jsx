@@ -20,12 +20,18 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
     const sessionUserId = JSON.parse(sessionUser)?.id;
     const sessionUserName = JSON.parse(sessionUser)?.name;
     const sessionUserSe = JSON.parse(sessionUser)?.userSe;
+    const authorCode = JSON.parse(sessionUser)?.authorCode;
 
-    // console.log("🎄로그인🎄", JSON.parse(sessionUser));
+    console.log("🎄로그인🎄", JSON.parse(sessionUser));
 
     const { gnbLabel, setGnbLabel } = useContext(PageContext);
     const [activeGnb, setActiveGnb] = useState("");
     const [activeLnb, setActiveLnb] = useState("");
+    const accessRoleSystem = ["ROLE_MANAGER", "ROLE_ADMIN"];
+    const accessRoleMail = ["ROLE_USER", "ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"];
+    const accessRoleExecution = ["ROLE_USER", "ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"];
+    const accessRoleSales = ["ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"];
+    const accessRoleReference = ["ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"];
 
     /** 라벨 선택 시 CSS 활성화 */
     useEffect(() => {
@@ -52,9 +58,9 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
         navigate(URL.LOGIN);
         // PC와 Mobile 열린메뉴 닫기: 2023.04.13(목) 김일국 추가
         document.querySelector(".all_menu.WEB").classList.add("closed");
-        document.querySelector(".btnAllMenu").classList.remove("active");
-        document.querySelector(".btnAllMenu").title = "전체메뉴 닫힘";
-        document.querySelector(".all_menu.Mobile").classList.add("closed");
+        // document.querySelector(".btnAllMenu").classList.remove("active");
+        // document.querySelector(".btnAllMenu").title = "전체메뉴 닫힘";
+        // document.querySelector(".all_menu.Mobile").classList.add("closed");
     };
     const logOutHandler = async () => {
         // 로그인 정보 존재할 때
@@ -67,9 +73,9 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
             navigate(URL.MAIN);
             // PC와 Mobile 열린메뉴 닫기: 2023.04.13(목) 김일국 추가
             document.querySelector(".all_menu.WEB").classList.add("closed");
-            document.querySelector(".btnAllMenu").classList.remove("active");
-            document.querySelector(".btnAllMenu").title = "전체메뉴 닫힘";
-            document.querySelector(".all_menu.Mobile").classList.add("closed");
+            // document.querySelector(".btnAllMenu").classList.remove("active");
+            // document.querySelector(".btnAllMenu").title = "전체메뉴 닫힘";
+            // document.querySelector(".all_menu.Mobile").classList.add("closed");
         }
     };
 
@@ -80,27 +86,15 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
         setActiveGnb(gnbLabel);
     };
     const gnbClick = (e) => {
-        // if(sessionUserSe) {
-            // console.log("정보있음>>>>>>", sessionUserSe);
             const gnbLabel = e.target.innerText;
             setGnbLabel(gnbLabel);
             setActiveGnb(gnbLabel)
-        // } else {
-        //     console.log("정보없음>>>>>>", sessionUserSe);
-        //     navigate(URL.LOGIN);
-        // }
     }
+
     const mainClick = (e) => {
         setGnbLabel("");
         setActiveGnb("");
         setActiveLnb("");
-    }
-
-    const roleCheck = () => {
-        if(!sessionUserId) return navigate(URL.LOGIN);
-        if(sessionUserId === "") {
-
-        }
     }
 
     // console.log("------------------------------EgovHeader [End]");
@@ -119,28 +113,41 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
                 <div className="gnb">
                     <h2 className="blind">주메뉴</h2>
                     <ul>
+                    {accessRoleReference.includes(authorCode) && (
                         <li key={uuidv4()}>
                             <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="기준정보관리">
                                 기준정보관리
                             </NavLinkTabs>
                         </li>
+                    )}
+                    {accessRoleSales.includes(authorCode) && (
                         <li key={uuidv4()}>
                             <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="영업관리">
                                 영업관리
                             </NavLinkTabs>
                         </li>
+                    )}
+                    {accessRoleExecution.includes(authorCode) && (
                         <li key={uuidv4()}>
                             <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="실행관리">
                                 실행관리
                             </NavLinkTabs>
                         </li>
-                        {/* {sessionUserSe === 'USR' && ( */}
+                    )}
+                    {accessRoleMail.includes(authorCode) && (
+                        <li>
+                            <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="전자결재">
+                                전자결재
+                            </NavLinkTabs>
+                        </li>
+                    )}
+                    {accessRoleSystem.includes(authorCode) && (
                         <li>
                             <NavLinkTabs to={URL.Tabs} onClick={gnbClick} activeName={activeGnb} header="시스템관리">
                                 시스템관리
                             </NavLinkTabs>
                         </li>
-                        {/* )} */}
+                    )}
                     </ul>
                 </div>
 
@@ -149,7 +156,7 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
                     {/* 로그아웃 : 로그인 정보 있을때 */}
                     {sessionUserId && (
                         <>
-                            <span className="person">{sessionUserName} </span> 님이, 관리자로 로그인하셨습니다.
+                            <span className="person">{sessionUserName} </span>님이, 로그인하셨습니다.
                             <button onClick={logOutHandler} className="btn" style={{ position: "relative", width: "100px" }}>
                                 로그아웃
                             </button>
@@ -177,14 +184,14 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
                 {/* <!--// PC web에서 보여지는 영역 --> */}
 
                 {/* <!-- right area --> */}
-                <div className="right_a">
+                {/* <div className="right_a">
                     <button type="button" className="btn btnAllMenu" title="전체메뉴 닫힘">
                         전체메뉴
                     </button>
                     <button type="button" className="btn mobile btnAllMenuM" title="전체메뉴 닫힘">
                         전체메뉴
                     </button>
-                </div>
+                </div> */}
             </div>
 
             {/* <!-- All menu : web --> */}

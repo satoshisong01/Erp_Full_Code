@@ -36,6 +36,7 @@ import PurchasingMgmtExe from "pages/execution/PurchasingMgmtExe";
 import ExpenseMgmtExe from "pages/execution/ExpenseMgmtExe";
 import ExpenseMgmtPlan from "pages/execution/ExpenseMgmtPlan";
 import Quotation from "pages/sales/Quotation";
+import Approval from "pages/execution/Approval";
 
 export const reference = [
     //기준정보관리
@@ -222,14 +223,13 @@ export const execution = [
         etc: "실행 경비",
         pLabel: "실행관리",
     },
-    //{
-    //    id: "Approval",
-    //    path: URL.Approval,
-    //    component: <Approval />,
-    //    label: "전자결재",
-    //    pLabel: "실행관리",
-    //    activeKey: 305,
-    //},
+    {
+       id: "Approval",
+       path: URL.Approval,
+       component: <Approval />,
+       label: "결재수신함",
+       pLabel: "전자결재",
+    },
 ];
 export const system = [
     //시스템관리

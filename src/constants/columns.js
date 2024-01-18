@@ -1532,23 +1532,20 @@ export const columns = {
             { title: "작성일", col: "createDate", type: "dayPicker" },
         ],
         add: [
+            { items: [{ header: "업무회원ID", col: "empId", require: true, type: "input" }] },
+            { items: [{ header: "사용자명", col: "empNm", require: true, type: "input" }] },
+            { items: [{ header: "비밀번호", col: "password", require: true, type: "password" }] },
+            { items: [{ header: "나이", col: "birthday", type: "input" }, { header: "전화번호", col: "mbTelNm", type: "input" }] },
+            { items: [{ header: "직위", col: "posNm", type: "input" }, { header: "그룹명", col: "groupNm", type: "group" }] },
+            { items: [{ header: "입사일", col: "joiningDt", type: "dayPicker" }, {}] },
+        ],
+        mod: [
             { items: [{ header: "업무회원ID", col: "empId", require: true, disabled: true, type: "input" }] },
             { items: [{ header: "사용자명", col: "empNm", require: true, type: "input" }] },
             { items: [{ header: "사원번호", col: "empNum", require: true, type: "input" }] },
             { items: [{ header: "비밀번호", col: "password", require: true, type: "input" }] },
-            { items: [{ header: "상태", col: "usrSttCd", require: true, type: "input" }] },
-            {
-                items: [
-                    { header: "나이", col: "birthday", type: "input" },
-                    { header: "전화번호", col: "mbTelNm", type: "input" },
-                ],
-            },
-            {
-                items: [
-                    { header: "직위", col: "posNm", type: "input" },
-                    { header: "소속기관", col: "aflOrgCd", type: "input" },
-                ],
-            },
+            { items: [{ header: "나이", col: "birthday", type: "input" }, { header: "전화번호", col: "mbTelNm", type: "input" }] },
+            { items: [{ header: "직위", col: "posNm", type: "input" }, { header: "소속기관", col: "aflOrgCd", type: "input" }] },
             { items: [{ header: "입사일", col: "joiningDt", type: "dayPicker" }, {}] },
         ],
     },

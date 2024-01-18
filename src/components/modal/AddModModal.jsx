@@ -17,6 +17,7 @@ import BasicTextarea from "components/input/BasicTextarea";
 import Percentage from "components/input/Percentage";
 import BasicSelect from "components/input/BasicSelect";
 import Number from "components/input/Number";
+import AuthorGroupModal from "./AuthorGroupModal";
 /* 추가, 수정 모달 */
 export default function AddModModal(props) {
     const { width, height, list, onClose, resultData, title, initialData } = props;
@@ -31,12 +32,15 @@ export default function AddModModal(props) {
         setProjectPdiNm,
         setProjectPgNm,
         setEmUserInfo,
+        authorGroupInfo,
+        setAuthorGroupInfo,
     } = useContext(PageContext);
     
     const [data, setData] = useState(initialData?.[0] || {});
     const bodyRef = useRef(null);
     const [errorList, setErrorList] = useState({}); // 필수값 에러 메시지
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false); //거래처목록
+    const [isOpenModalGroup, setIsOpenModalGroup] = useState(false); //권한그룹
     const [isOpenModalProject, setIsOpenModalProject] = useState(false); //프로젝트목록
     const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
     const [isOpenModalProductGroup, setIsOpenModalProductGroup] = useState(false); //품목그룹목록
@@ -92,6 +96,17 @@ export default function AddModModal(props) {
             setEmUserInfo({});
         }
     }, [emUserInfo]);
+
+    useEffect(() => {
+        //권한그룹
+        if (Object.keys(authorGroupInfo).length > 0) {
+            console.log("authorGroupInfo:", authorGroupInfo);
+            setData(prevData => {
+                return { ...prevData, ...authorGroupInfo};
+            });
+            setAuthorGroupInfo({});
+        }
+    }, [authorGroupInfo]);
 
     // 데이터 추가 버튼을 눌렀을 때 실행되는 함수
     const onClick = async (e) => {
@@ -165,6 +180,15 @@ export default function AddModModal(props) {
                         item={item}
                         onClick={() => {
                             setIsOpenModalCompany(true);
+                        }}
+                        value={data?.[item.col] ?? ""}
+                        readOnly
+                    />
+                ) : item.type === "group" ? (
+                    <BasicInput
+                        item={item}
+                        onClick={() => {
+                            setIsOpenModalGroup(true);
                         }}
                         value={data?.[item.col] ?? ""}
                         readOnly
@@ -281,6 +305,7 @@ export default function AddModModal(props) {
                     <ProductInfoModal width={600} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
                     <ProductGroupModal width={600} height={720} title="품목그룹 목록" isOpen={isOpenModalProductGroup} onClose={() => setIsOpenModalProductGroup(false)} />
                     <EmployerInfoModal width={600} height={770} title="업무회원 목록" isOpen={isOpenModalEmployerInfo} onClose={() => setIsOpenModalEmployerInfo(false)} colName={colName}/>
+                    <AuthorGroupModal width={600} height={500} title="권한그룹 목록" isOpen={isOpenModalGroup} onClose={() => setIsOpenModalGroup(false)} />
                 </div>
             </div>
         </article>

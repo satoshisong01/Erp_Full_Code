@@ -95,9 +95,9 @@ function EgovLoginContent(props) {
                     navigate(URL.MAIN);
                     // PC와 Mobile 열린메뉴 닫기
                     document.querySelector(".all_menu.WEB").classList.add("closed");
-                    document.querySelector(".btnAllMenu").classList.remove("active");
-                    document.querySelector(".btnAllMenu").title = "전체메뉴 닫힘";
-                    document.querySelector(".all_menu.Mobile").classList.add("closed");
+                    // document.querySelector(".btnAllMenu").classList.remove("active");
+                    // document.querySelector(".btnAllMenu").title = "전체메뉴 닫힘";
+                    // document.querySelector(".all_menu.Mobile").classList.add("closed");
                 } else {
                     alert("로그인 실패");
                 }
@@ -113,15 +113,15 @@ function EgovLoginContent(props) {
     return (
         <div className="contents" id="contents">
             {/* <!-- 본문 --> */}
-            <div className="Plogin">
+            <div className="Plogin mg-t-20">
                 <h1>로그인</h1>
-                <p className="txt">
+                {/* <p className="txt">
                     전자정부표준프레임워크 경량환경 홈페이지 로그인 페이지입니다.
                     <br />
                     로그인을 하시면 모든 서비스를 제한없이 이용하실 수 있습니다.
-                </p>
+                </p> */}
 
-                <div className="login_box">
+                <div className="login_box" style={{backgroundColor: "white"}}>
                     <form name="" method="" action="">
                         <fieldset>
                             <legend>로그인</legend>

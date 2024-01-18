@@ -33,6 +33,7 @@ const ReactDataTable = (props) => {
         condition, //poiId와 같은 조회에 필요한 조건
         viewLoadDatas, //불러오기 view데이터
         modColumns, //팝업수정 목록
+        addColumns, //팝업추가 목록
         deleteInfo, //팝업삭제 정보
         isPageNation,
     } = props;
@@ -321,7 +322,6 @@ const ReactDataTable = (props) => {
 
     /* 데이터 추가 */
     const addClick = async (addData) => {
-        console.log(addData, "나와");
         setOpenModalAdd(false);
         if (!suffixUrl) return;
         if (addData && typeof addData === "object" && !Array.isArray(addData)) {
@@ -332,10 +332,9 @@ const ReactDataTable = (props) => {
                 useAt: "Y",
                 deleteAt: "N",
                 poiId: condition.poiId || "",
-                typeCode: "MM",
-                modeCode: "BUDGET",
+                // typeCode: "MM",
+                // modeCode: "BUDGET",
                 // poiDesc: addData.poiDesc || condition.poiVersion,
-                poId: condition.poId || "",
             };
 
             console.log("dataToSend:", dataToSend);
@@ -859,13 +858,20 @@ const ReactDataTable = (props) => {
             )}
 
             {Object.keys(selectRow).length > 0 && openModalMod && (
-                // 수정
                 <AddModModal
                     list={modColumns}
                     initialData={[selectRow]}
                     resultData={modifyClick}
                     onClose={() => setOpenModalMod(false)}
                     title={current.name + " 수정"}
+                />
+            )}
+            {openModalAdd && (
+                <AddModModal
+                    list={addColumns}
+                    resultData={addClick}
+                    onClose={() => setOpenModalAdd(false)}
+                    title={current.name + " 추가"}
                 />
             )}
             <DeleteModal initialData={deleteList} resultData={deleteClick} onClose={() => setOpenModalDel(false)} isOpen={openModalDel} />
