@@ -1,22 +1,25 @@
+import { axiosFileUpload } from "api/axiosFetch";
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
-const FileUpload = () => {
+const FileUpload = ({ onFileSelect }) => {
     const [uploadedFileName, setUploadedFileName] = useState("");
 
-    const onDrop = useCallback((acceptedFiles) => {
-        // 업로드할 파일에 대한 처리를 수행
-        console.log(acceptedFiles);
+    const onDrop = useCallback(
+        (acceptedFiles) => {
+            console.log(acceptedFiles);
 
-        // 파일명을 상태에 저장
-        if (acceptedFiles.length > 0) {
-            setUploadedFileName(acceptedFiles[0].name);
-        }
-    }, []);
+            if (onFileSelect && acceptedFiles.length > 0) {
+                onFileSelect(acceptedFiles[0]);
+                setUploadedFileName(acceptedFiles[0].name);
+            }
+        },
+        [onFileSelect]
+    );
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        accept: "image/*",
         onDrop,
-        accept: "image/*", // 원하는 파일 형식으로 수정
     });
 
     return (

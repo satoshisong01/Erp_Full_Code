@@ -3,7 +3,7 @@ import Modal from "react-modal";
 import "../../components/modal/ModalCss.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { axiosFetch } from "api/axiosFetch";
+import { axiosFetch, axiosFileUpload } from "api/axiosFetch";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import ModalSearchList from "components/ModalCondition";
 import { PageContext } from "components/PageProvider";
@@ -32,11 +32,21 @@ export default function FileModal(props) {
         };
     }, [isOpen]);
 
-    //const getProductInfoList = async (requestData) => {
-    //    const resultData = await axiosFetch("/api/baseInfrm/product/productInfo/totalListAll.do", requestData || {});
-    //    console.log("임시품명 컬럼보기", resultData);
-    //    setProductInfoList(resultData);
-    //};
+    const onFileSelect = async (acceptedFiles) => {
+        const url = `/file/upload.do`;
+        try {
+            const result = await axiosFileUpload(url, acceptedFiles[0]);
+            if (result) {
+                // Handle success
+                console.log("File uploaded successfully:", result);
+            } else {
+                // Handle failure
+                console.error("File upload failed.");
+            }
+        } catch (error) {
+            console.error("Error uploading file:", error);
+        }
+    };
 
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
@@ -71,7 +81,7 @@ export default function FileModal(props) {
 
                         <div className="me-modal-body" ref={bodyRef}>
                             <div className="body-area" style={{ gap: 0 }}>
-                                <FileUpload />
+                                <FileUpload onFileSelect={onFileSelect} />
                             </div>
                         </div>
                         <div className="me-modal-footer mg-t-10 mg-b-20">

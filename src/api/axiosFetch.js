@@ -22,6 +22,30 @@ export async function axiosFetch(url, requestData) {
     }
 }
 
+//업로드하기
+export async function axiosFileUpload(url, file) {
+    const headers = {
+        Authorization: process.env.REACT_APP_POST,
+        "Content-Type": "multipart/form-data",
+    };
+
+    try {
+        const formData = new FormData();
+        formData.append("attachFile", file); // Assuming your server expects a 'file' field
+
+        const response = await axios.post(url, formData, { headers });
+
+        if (Number(response.data.resultCode) === Number(CODE.RCV_SUCCESS)) {
+            return response.data.result.resultData;
+        } else {
+            console.error("❌axiosFileUpload error: ", response);
+            return false;
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
 /* axios 데이터 업데이트 */
 export async function axiosUpdate(url, requestData) {
     const headers = {
@@ -164,7 +188,7 @@ export async function axiosGet(url) {
         if (Number(response.data.resultCode) === Number(CODE.RCV_SUCCESS)) {
             return true;
         } else {
-        console.error("❌axiosGet error: ");
+            console.error("❌axiosGet error: ");
             return false;
         }
     } catch (error) {
