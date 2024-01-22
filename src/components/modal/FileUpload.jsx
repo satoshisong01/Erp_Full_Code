@@ -1,17 +1,21 @@
-import { axiosFileUpload } from "api/axiosFetch";
-import React, { useCallback, useState } from "react";
+import { axiosFetch, axiosFileUpload } from "api/axiosFetch";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 const FileUpload = ({ onFileSelect }) => {
     const [uploadedFileName, setUploadedFileName] = useState("");
+
+    useEffect(() => {
+        fetchAllData();
+    }, []);
 
     const onDrop = useCallback(
         (acceptedFiles) => {
             console.log(acceptedFiles);
 
             if (onFileSelect && acceptedFiles.length > 0) {
-                onFileSelect(acceptedFiles[0]);
-                setUploadedFileName(acceptedFiles[0].name);
+                onFileSelect(acceptedFiles);
+                setUploadedFileName(acceptedFiles);
             }
         },
         [onFileSelect]
@@ -21,17 +25,33 @@ const FileUpload = ({ onFileSelect }) => {
         accept: "image/*",
         onDrop,
     });
+    const fetchAllData = async () => {
+        const url = `/file/totalListAll.do`;
+        const resultData = await axiosFetch(url, { useAt: "Y" });
+        if (resultData) {
+            console.log(resultData, "데이터나오나");
+        } else if (!resultData) {
+            console.log("에러코드나오나");
+        }
+    };
+
+    const showDefaultMessage = uploadedFileName.length === 0;
 
     return (
-        <div {...getRootProps()} style={dropzoneStyles(isDragActive)}>
-            <input {...getInputProps()} />
-            {isDragActive ? <p>파일을 놓아주세요!</p> : <p>파일을 끌어서 놓거나 클릭하여 업로드하세요.</p>}
-            {uploadedFileName && (
-                <p>
-                    업로드된 파일: <span style={{ backgroundColor: "yellow" }}>{uploadedFileName}</span>
-                </p>
-            )}
-        </div>
+        <>
+            <div {...getRootProps()} style={dropzoneStyles(isDragActive)}>
+                <input {...getInputProps()} />
+                {isDragActive ? <p>파일을 놓아주세요!</p> : null}
+                {showDefaultMessage && !isDragActive && <p>파일을 끌어서 놓거나 클릭하여 업로드하세요.</p>}
+                {uploadedFileName &&
+                    uploadedFileName.map((item) => (
+                        <p key={item.name}>
+                            업로드된 파일: <span style={{ backgroundColor: "yellow" }}>{item.name}</span>
+                        </p>
+                    ))}
+            </div>
+            <div></div>
+        </>
     );
 };
 
