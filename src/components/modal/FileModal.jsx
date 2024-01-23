@@ -15,6 +15,7 @@ Modal.setAppElement("#root"); // Set the root element for accessibility
 export default function FileModal(props) {
     const { width, height, isOpen, title, onClose } = props;
     const { setModalPageName, setIsModalTable, setPdiNmList, pdiNmList, projectPdiNm, setProjectPdiNm } = useContext(PageContext);
+    const [fileData, setFileData] = useState({});
 
     const [productInfoList, setProductInfoList] = useState([]);
     const bodyRef = useRef(null);
@@ -32,22 +33,6 @@ export default function FileModal(props) {
         };
     }, [isOpen]);
 
-    const onFileSelect = async (acceptedFiles) => {
-        const url = `/file/upload.do`;
-        try {
-            const result = await axiosFileUpload(url, acceptedFiles[0]);
-            if (result) {
-                // Handle success
-                console.log("File uploaded successfully:", result);
-            } else {
-                // Handle failure
-                console.error("File upload failed.");
-            }
-        } catch (error) {
-            console.error("Error uploading file:", error);
-        }
-    };
-
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
         if (bodyRef.current) {
@@ -58,7 +43,26 @@ export default function FileModal(props) {
         }
     }, [height]);
 
-    const onClick = () => {
+    const onFileSelect = (acceptedFiles) => {
+        setFileData(acceptedFiles);
+    };
+
+    const onClick = async () => {
+        // 확인 버튼을 눌렀을 때에만 서버에 요청
+        const url = `/file/upload.do`;
+        try {
+            const result = await axiosFileUpload(url, fileData);
+            if (result) {
+                // Handle success
+                console.log("File uploaded successfully:", result);
+            } else {
+                // Handle failure
+                console.error("File upload failed.");
+            }
+        } catch (error) {
+            console.error("Error uploading file:", error);
+        }
+
         onClose();
     };
 
