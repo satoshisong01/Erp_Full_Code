@@ -52,6 +52,7 @@ const ReactDataTableURL = (props) => {
     const [originTableData, setOriginTableData] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [current, setCurrent] = useState(viewPageName); //==viewPageName
+
     const [rowIndex, setRowIndex] = useState(0);
     const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false); //거래처정보목록
@@ -102,7 +103,7 @@ const ReactDataTableURL = (props) => {
                 }
             } else if (nameOfButton === "load" && viewLoadDatas) {
                 loadOnAddRow(viewLoadDatas);
-            }  else if (nameOfButton === "deleteRow") {
+            } else if (nameOfButton === "deleteRow") {
                 onDeleteRow();
             } else if (nameOfButton === "addRow") {
                 onAddRow();
@@ -110,6 +111,10 @@ const ReactDataTableURL = (props) => {
             setNameOfButton("");
         }
     }, [innerPageName, currentPageName, editing, nameOfButton]);
+
+    useEffect(() => {
+        console.log(tableData, "테이블 데이터URL");
+    }, [tableData]);
 
     useEffect(() => {
         if (isCurrentPage()) {
@@ -122,7 +127,7 @@ const ReactDataTableURL = (props) => {
                     esntlId: emUserInfo.uniqId,
                 };
                 setTableData(updatedTableData);
-                setEmUserInfo({})
+                setEmUserInfo({});
             }
         }
     }, [emUserInfo]);
@@ -191,6 +196,7 @@ const ReactDataTableURL = (props) => {
         const updatedTableData = [...tableData];
         updatedTableData[rowIndex][accessor] = value;
         // 수정된 데이터로 tableData 업데이트
+
         setTableData(updatedTableData);
     };
 
@@ -216,7 +222,7 @@ const ReactDataTableURL = (props) => {
         {
             columns: columnsConfig,
             data: tableData,
-            initialState: { pageIndex: 0, pageSize: isPageNation ? (defaultPageSize || 10) : tableData && tableData.length || 200 }, // 초기값
+            initialState: { pageIndex: 0, pageSize: isPageNation ? defaultPageSize || 10 : (tableData && tableData.length) || 200 }, // 초기값
         },
         useSortBy,
         usePagination,
@@ -283,8 +289,13 @@ const ReactDataTableURL = (props) => {
         }
     }, [selectedFlatRows]);
 
-    const onChangeInput = (e, preRow) => {
+    const onChangeInput = (e, preRow, accessor) => {
         const { name, value } = e.target;
+        const index = preRow.index;
+        const updatedTableData = [...tableData];
+        updatedTableData[rowIndex][accessor] = value;
+        // 수정된 데이터로 tableData 업데이트
+
         const newTableData = tableData.map((rowData, rowIndex) => {
             if (rowIndex === preRow.index) {
                 return { ...rowData, [name]: value };
@@ -292,6 +303,42 @@ const ReactDataTableURL = (props) => {
             return rowData;
         });
         setTableData(newTableData);
+
+        if (innerPageName.id === "estimateLabor") {
+            console.log(updatedTableData, "updatedTableData");
+
+            console.log(preRow, "비교해보자잇");
+
+            let price = 0;
+            let total = 0;
+
+            const positionCount = preRow.original.estPosition;
+
+            console.log(positionCount);
+
+            //price = row.original.pecPosition * row.original.estMm;
+            //total = parseInt(row.original.m, 10) ? parseInt(row.original.estMm, 10) : 0;
+
+            // m1부터 m11까지 루프를 돕니다.
+            for (let i = 1; i <= 12; i++) {
+                let mKey = `estMm${i}`;
+                let mValue = preRow.original[mKey];
+                let mValueInt = parseInt(preRow.original[mKey], 10);
+
+                if (!isNaN(mValueInt)) {
+                    total += mValueInt;
+                }
+
+                price += positionCount * mValue;
+            }
+
+            updatedTableData[index]["price"] = price;
+            updatedTableData[index]["total"] = total;
+            updatedTableData[index]["estUnitPrice"] = positionCount;
+
+            console.log(rowIndex, "비교해보자잇");
+            setTableData(updatedTableData);
+        }
         // setChangeTable(newTableData);
     };
     // useEffect(() => {
@@ -361,7 +408,9 @@ const ReactDataTableURL = (props) => {
     };
 
     const onDeleteRow = () => {
-        if (!selectedFlatRows || selectedFlatRows.length === 0) { return; }
+        if (!selectedFlatRows || selectedFlatRows.length === 0) {
+            return;
+        }
         const values = selectedFlatRows.map((item) => item.index);
         setTableData((prevTableData) => {
             const updateTableData = prevTableData.filter((_, index) => !values.includes(index));
@@ -477,15 +526,15 @@ const ReactDataTableURL = (props) => {
     return (
         <div className={isPageNation ? "x-scroll" : "table-scroll"}>
             {/* <div style={{ position: "relative", overflow: "auto", width: "auto" }}> */}
-                <table {...getTableProps()} className="table-styled" ref={tableRef} style={{ tableLayout: "auto" }}>
-                    <thead>
-                        {headerGroups.map((headerGroup, headerGroupIndex) => (
-                            <tr {...headerGroup.getHeaderGroupProps()}>
-                                {headerGroup.headers.map((column, columnIndex) => {
-                                    if (column.notView) {
-                                        // notView가 true인 경우, 헤더 셀을 출력하지 않음
-                                        return null;
-                                    }
+            <table {...getTableProps()} className="table-styled" ref={tableRef} style={{ tableLayout: "auto" }}>
+                <thead>
+                    {headerGroups.map((headerGroup, headerGroupIndex) => (
+                        <tr {...headerGroup.getHeaderGroupProps()}>
+                            {headerGroup.headers.map((column, columnIndex) => {
+                                if (column.notView) {
+                                    // notView가 true인 경우, 헤더 셀을 출력하지 않음
+                                    return null;
+                                }
 
                                     return (
                                         <th {...column.getHeaderProps(column.getSortByToggleProps())} className={columnIndex === 0 ? "first-column" : ""}>
@@ -512,107 +561,99 @@ const ReactDataTableURL = (props) => {
                                                 return null;
                                             }
 
-                                            return (
-                                                <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"} id="otherCol">
-                                                    {cell.column.id === "selection" ? (
-                                                        cell.render("Cell")
-                                                    ) : isEditing ? (
-                                                        cell.column.type === "input" ? (
+                                        return (
+                                            <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"} id="otherCol">
+                                                {cell.column.id === "selection" ? (
+                                                    cell.render("Cell")
+                                                ) : isEditing ? (
+                                                    cell.column.type === "input" ? (
+                                                        <input
+                                                            id={cell.column.id}
+                                                            name={cell.column.col}
+                                                            type="text"
+                                                            value={
+                                                                tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
+                                                                    ? tableData[row.index][cell.column.id]
+                                                                    : cell.value || ""
+                                                            }
+                                                            onChange={(e) => onChangeInput(e, row, cell.column.id)}
+                                                        />
+                                                    ) : cell.column.type === "desc" ? (
+                                                        <input
+                                                            type="text"
+                                                            value={
+                                                                tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
+                                                                    ? tableData[row.index][cell.column.id]
+                                                                    : ""
+                                                            }
+                                                            name={cell.column.id}
+                                                            onChange={(e) => onChangeInput(e, row)}
+                                                            style={{
+                                                                backgroundColor: cell.value ? "white" : "lightgray",
+                                                            }}
+                                                            title={
+                                                                tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
+                                                                    ? tableData[row.index][cell.column.id]
+                                                                    : ""
+                                                            }
+                                                        />
+                                                    ) : cell.column.type === "productGroup" ? (
+                                                        <div>
                                                             <input
+                                                                className="buttonSelect"
+                                                                id={cell.column.id}
+                                                                name={cell.column.col}
+                                                                key={cell.column.id + row.index}
+                                                                onClick={() => setValueData(row.index)}
                                                                 type="text"
-                                                                value={
-                                                                    tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
-                                                                        ? tableData[row.index][cell.column.id]
-                                                                        : cell.value || ""
-                                                                }
-                                                                name={cell.column.id}
-                                                                onChange={(e) => onChangeInput(e, row)}
-                                                            />
-                                                        ) : cell.column.type === "desc" ? (
-                                                            <input
-                                                                type="text"
-                                                                value={
-                                                                    tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
-                                                                        ? tableData[row.index][cell.column.id]
-                                                                        : ""
-                                                                }
-                                                                name={cell.column.id}
-                                                                onChange={(e) => onChangeInput(e, row)}
-                                                                style={{
-                                                                    backgroundColor: cell.value ? "white" : "lightgray",
-                                                                }}
-                                                                title={
-                                                                    tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
-                                                                        ? tableData[row.index][cell.column.id]
-                                                                        : ""
-                                                                }
-                                                            />
-                                                        ) : cell.column.type === "productGroup" ? (
-                                                            <div>
-                                                                <input
-                                                                    className="buttonSelect"
-                                                                    id={cell.column.id}
-                                                                    name={cell.column.col}
-                                                                    key={cell.column.id + row.index}
-                                                                    onClick={() => setValueData(row.index)}
-                                                                    type="text"
-                                                                    placeholder={`품목그룹명을 선택해 주세요.`}
-                                                                    value={tableData[row.index].pgNm || ""}
-                                                                    onChange={(e) => handleChange(e, row, cell.column.id)}
-                                                                    readOnly
-                                                                />
-                                                            </div>
-                                                        ) : cell.column.type === "select" ? (
-                                                            <select
-                                                                name={cell.column.id}
-                                                                defaultValue={
-                                                                    tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
-                                                                        ? tableData[row.index][cell.column.id]
-                                                                        : cell.column.options[row.index].value || "" // 기본값: 해당 행의 인덱스에 해당하는 옵션의 value 값 또는 빈 문자열
-                                                                }
-                                                                onChange={(e) => onChangeInput(e, row)}>
-                                                                {cell.column.options.map((option, index) => (
-                                                                    <option key={index} value={option.value || ""} selected={index === 0 ? true : false}>
-                                                                        {option.label}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-                                                        ) : cell.column.type === "company" ? (
-                                                            <div>
-                                                                <input
-                                                                    className="buttonSelect"
-                                                                    id={cell.column.id}
-                                                                    name={cell.column.id}
-                                                                    onClick={() => setValueDataCompany(row.index)}
-                                                                    type="text"
-                                                                    placeholder={`거래처명을 선택해 주세요.`}
-                                                                    value={tableData[row.index][cell.column.id] || ""}
-                                                                    onChange={(e) => handleChange(e, row.index, cell.column.id)}
-                                                                    readOnly
-                                                                />
-                                                            </div>
-                                                        ) : cell.column.type === "employerInfo" ? (
-                                                            <BasicInput
-                                                                item={cell.column}
-                                                                onClick={() => changeEmployerInfo(cell.column.id, row.index)}
-                                                                value={tableData[row.index][cell.column.id] ?? ""}
+                                                                placeholder={`품목그룹명을 선택해 주세요.`}
+                                                                value={tableData[row.index].pgNm || ""}
+                                                                onChange={(e) => handleChange(e, row, cell.column.id)}
                                                                 readOnly
                                                             />
-                                                        ) : cell.column.type === "dayPicker" ? (
-                                                            <DayPicker
+                                                        </div>
+                                                    ) : cell.column.type === "select" ? (
+                                                        <select
+                                                            name={cell.column.id}
+                                                            defaultValue={
+                                                                tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
+                                                                    ? tableData[row.index][cell.column.id]
+                                                                    : cell.column.options[row.index].value || "" // 기본값: 해당 행의 인덱스에 해당하는 옵션의 value 값 또는 빈 문자열
+                                                            }
+                                                            onChange={(e) => onChangeInput(e, row, cell.column.id)}>
+                                                            {cell.column.options.map((option, index) => (
+                                                                <option key={index} value={option.value || ""} selected={index === 0 ? true : false}>
+                                                                    {option.label}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    ) : cell.column.type === "company" ? (
+                                                        <div>
+                                                            <input
+                                                                className="buttonSelect"
+                                                                id={cell.column.id}
                                                                 name={cell.column.id}
-                                                                value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id] : ""}
-                                                                onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
+                                                                onClick={() => setValueDataCompany(row.index)}
+                                                                type="text"
+                                                                placeholder={`거래처명을 선택해 주세요.`}
+                                                                value={tableData[row.index][cell.column.id] || ""}
+                                                                onChange={(e) => handleChange(e, row.index, cell.column.id)}
+                                                                readOnly
                                                             />
-                                                        ) : cell.column.Header === "연월" && cell.value ? (
-                                                            cell.value.substring(0, 7)
-                                                        ) : cell.column.col === "pjbgDt" ? (
-                                                            cell.value.substring(0, 7)
-                                                        ) : typeof cell.value === "number" ? (
-                                                            cell.value && cell.value.toLocaleString()
-                                                        ) : (
-                                                            cell.render("Cell") || ""
-                                                        )
+                                                        </div>
+                                                    ) : cell.column.type === "employerInfo" ? (
+                                                        <BasicInput
+                                                            item={cell.column}
+                                                            onClick={() => changeEmployerInfo(cell.column.id, row.index)}
+                                                            value={tableData[row.index][cell.column.id] ?? ""}
+                                                            readOnly
+                                                        />
+                                                    ) : cell.column.type === "dayPicker" ? (
+                                                        <DayPicker
+                                                            name={cell.column.id}
+                                                            value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id] : ""}
+                                                            onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
+                                                        />
                                                     ) : cell.column.Header === "연월" && cell.value ? (
                                                         cell.value.substring(0, 7)
                                                     ) : cell.column.col === "pjbgDt" ? (
@@ -621,27 +662,33 @@ const ReactDataTableURL = (props) => {
                                                         cell.value && cell.value.toLocaleString()
                                                     ) : (
                                                         cell.render("Cell") || ""
-                                                    )}
-                                                </td>
-                                            );
-                                        })}
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    ) : (
-                        <tbody>
-                            <tr>
-                                <td
-                                    colSpan={visibleColumnCount + 1}
-                                    style={{ textAlign: "center", fontSize: "15px", height: "80px" }}
-                                    className="back-lightgray">
-                                    조회된 데이터가 없습니다.
-                                </td>
-                            </tr>
-                        </tbody>
-                    )}
-                </table>
+                                                    )
+                                                ) : cell.column.Header === "연월" && cell.value ? (
+                                                    cell.value.substring(0, 7)
+                                                ) : cell.column.col === "pjbgDt" ? (
+                                                    cell.value.substring(0, 7)
+                                                ) : typeof cell.value === "number" ? (
+                                                    cell.value && cell.value.toLocaleString()
+                                                ) : (
+                                                    cell.render("Cell") || ""
+                                                )}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                ) : (
+                    <tbody>
+                        <tr>
+                            <td colSpan={visibleColumnCount + 1} style={{ textAlign: "center", fontSize: "15px", height: "80px" }} className="back-lightgray">
+                                조회된 데이터가 없습니다.
+                            </td>
+                        </tr>
+                    </tbody>
+                )}
+            </table>
             {/* </div> */}
             <div className="me-pagenation">
                 <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>

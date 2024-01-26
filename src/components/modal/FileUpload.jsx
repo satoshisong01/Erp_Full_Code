@@ -1,9 +1,14 @@
 import { axiosFetch, axiosFileUpload } from "api/axiosFetch";
-import React, { useCallback, useEffect, useState } from "react";
+import { PageContext } from "components/PageProvider";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 const FileUpload = ({ onFileSelect }) => {
-    const [uploadedFileName, setUploadedFileName] = useState("");
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+
+    const { fileName } = useContext(PageContext);
+
+    console.log(fileName, "나오긴하나");
 
     useEffect(() => {
         fetchAllData();
@@ -11,11 +16,11 @@ const FileUpload = ({ onFileSelect }) => {
 
     const onDrop = useCallback(
         (acceptedFiles) => {
-            console.log(acceptedFiles);
+            console.log("Accepted Files:", acceptedFiles);
 
             if (onFileSelect && acceptedFiles.length > 0) {
                 onFileSelect(acceptedFiles);
-                setUploadedFileName(acceptedFiles);
+                setUploadedFiles(acceptedFiles);
             }
         },
         [onFileSelect]
@@ -35,7 +40,7 @@ const FileUpload = ({ onFileSelect }) => {
         }
     };
 
-    const showDefaultMessage = uploadedFileName.length === 0;
+    const showDefaultMessage = uploadedFiles.length === 0;
 
     return (
         <>
@@ -43,14 +48,21 @@ const FileUpload = ({ onFileSelect }) => {
                 <input {...getInputProps()} />
                 {isDragActive ? <p>파일을 놓아주세요!</p> : null}
                 {showDefaultMessage && !isDragActive && <p>파일을 끌어서 놓거나 클릭하여 업로드하세요.</p>}
-                {uploadedFileName &&
-                    uploadedFileName.map((item) => (
+                {uploadedFiles &&
+                    uploadedFiles.map((item) => (
                         <p key={item.name}>
                             업로드된 파일: <span style={{ backgroundColor: "yellow" }}>{item.name}</span>
                         </p>
                     ))}
             </div>
-            <div></div>
+            <div>
+                {fileName &&
+                    fileName.map((item) => (
+                        <p>
+                            업로드 된 파일: <span>{item}</span>
+                        </p>
+                    ))}
+            </div>
         </>
     );
 };

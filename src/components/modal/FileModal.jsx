@@ -15,10 +15,14 @@ Modal.setAppElement("#root"); // Set the root element for accessibility
 export default function FileModal(props) {
     const { width, height, isOpen, title, onClose } = props;
     const { setModalPageName, setIsModalTable, setPdiNmList, pdiNmList, projectPdiNm, setProjectPdiNm } = useContext(PageContext);
-    const [fileData, setFileData] = useState({});
+    const [fileData, setFileData] = useState([]);
 
     const [productInfoList, setProductInfoList] = useState([]);
     const bodyRef = useRef(null);
+
+    useEffect(() => {
+        console.log("File Data Updated:", fileData);
+    }, [fileData]);
 
     useEffect(() => {
         if (isOpen) {
@@ -44,11 +48,16 @@ export default function FileModal(props) {
     }, [height]);
 
     const onFileSelect = (acceptedFiles) => {
+        console.log("Accepted Files:", acceptedFiles);
+        console.log("Type of Accepted Files:", typeof acceptedFiles);
         setFileData(acceptedFiles);
+        console.log(typeof fileData, "타입좀보자");
     };
 
     const onClick = async () => {
         // 확인 버튼을 눌렀을 때에만 서버에 요청
+        console.log(fileData, "배열로 들어와서 변경해줘야함");
+        console.log(typeof fileData, "타입좀보자");
         const url = `/file/upload.do`;
         try {
             const result = await axiosFileUpload(url, fileData);
@@ -62,7 +71,6 @@ export default function FileModal(props) {
         } catch (error) {
             console.error("Error uploading file:", error);
         }
-
         onClose();
     };
 

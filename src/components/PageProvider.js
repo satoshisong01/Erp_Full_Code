@@ -48,7 +48,7 @@ export function PageProvider({ children }) {
     const [companyList, setCompanyList] = useState([]); // 회사명 선택
     const [companyInfo, setCompanyInfo] = useState({ cltNm: "", cltId: "" }); // 선택한 id 저장
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
-    const [authorGroupInfo, setAuthorGroupInfo] = useState({}) //권한그룹 정보
+    const [authorGroupInfo, setAuthorGroupInfo] = useState({}); //권한그룹 정보
 
     const [addPdiNm, setAddPdiNm] = useState("");
 
@@ -70,6 +70,9 @@ export function PageProvider({ children }) {
     const [refresh, setRefresh] = useState(false); //임시로 리프레시 flag 생성
 
     const [gnbLabel, setGnbLabel] = useState(""); //헤더
+
+    const [fileId, setFileId] = useState([]);
+    const [fileName, setFileName] = useState([]);
 
     const contextValue = {
         isOpenModalPgNm,
@@ -148,6 +151,11 @@ export function PageProvider({ children }) {
         //setLoadButton,
         authorGroupInfo,
         setAuthorGroupInfo,
+
+        fileName,
+        setFileName,
+        fileId,
+        setFileId,
     };
 
     return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>;
