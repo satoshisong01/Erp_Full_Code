@@ -21,26 +21,42 @@ function PurchasingMgmtPlan() {
     const [budgetMgmt, setBudgetMgmt] = useState([]);
     const [buyCall, setBuyCall] = useState([]);
     const [view, setView] = useState([]);
+    const [totalSummary, setTotalSummary] = useState({byQunty: 0, price: 0})
 
     const fetchAllData = async (condition) => {
         const data = await axiosFetch("/api/baseInfrm/product/buyIngInfoExe/totalListAll.do", condition);
         const viewResult = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", { poiId: condition.poiId, costAt: "Y" });
         setView(viewResult);
         if (data && data.length > 0) {
-            console.log("데이터있음>>>>");
             const changes = changeData(data);
             setBudgetMgmt(changes);
             const groupedData = changes.reduce((result, current) => {
-                //const existingGroup = result.find((group) => group.pgNm === current.pgNm);
-                const existingGroup = result.find((group) => group.pdiMenufut === current.pdiMenufut && group.pgNm === current.pgNm);
+                const existingGroup = result.find((group) => group.pdiSeller === current.pdiSeller && group.pgNm === current.pgNm); //제조사, 품목그룹
                 if (existingGroup) {
+                    existingGroup.byQunty += current.byQunty;
                     existingGroup.price += current.price;
                 } else {
-                    result.push({ pgNm: current.pgNm, pdiMenufut: current.pdiMenufut, price: current.price });
+                    result.push({ ...current});
                 }
                 return result;
             }, []);
-            setBuyCall(groupedData);
+
+            //마지막 토탈 행 구하기
+            const temp = groupedData.reduce((summary, item) => {
+                summary.byQunty += item.byQunty || 0;
+                summary.price += item.price || 0;
+                return summary;
+            }, { byQunty: 0, price: 0 });
+            
+            groupedData.push({
+                pgNm: "TOTAL",
+                pdiSeller: "",
+                byQunty: temp.byQunty,
+                price: temp.price,
+            });
+
+            setTotalSummary({byQunty: temp.byQunty.toLocaleString() || 0, price: temp.price.toLocaleString() || 0});
+            setBuyCall(groupedData); //합계
         } else {
             alert("no data");
             setBuyCall([]);
@@ -74,11 +90,11 @@ function PurchasingMgmtPlan() {
         <>
             <Location pathList={locationPath.PurchasingMgmt} />
             <ApprovalFormExe returnData={conditionInfo} />
-            <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
-                <ReactDataTable columns={columns.purchasingMgmt.planView} customDatas={view} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+            <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
+                <ReactDataTable columns={columns.PurchasingMgmtExe.planView} customDatas={view} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
-            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                <ReactDataTable columns={columns.purchasingMgmt.buyCal} customDatas={buyCall} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+            <HideCard title={"합계 [수량:" + totalSummary.byQunty + " 금액:" + totalSummary.price + "]" } color="back-lightblue" className="mg-b-40">
+                <ReactDataTable columns={columns.PurchasingMgmtPlan.total} customDatas={buyCall} defaultPageSize={5} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">
@@ -91,7 +107,7 @@ function PurchasingMgmtPlan() {
                 <ReactDataTablePdorder
                     suffixUrl="/baseInfrm/product/buyIngInfoExe"
                     editing={true}
-                    columns={columns.purchasingMgmt.budget}
+                    columns={columns.PurchasingMgmtExe.budget}
                     viewLoadDatas={view}
                     customDatas={budgetMgmt}
                     viewPageName={{ name: "구매(재료비)", id: "PurchasingMgmtPlan" }}

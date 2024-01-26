@@ -527,32 +527,44 @@ function ExpenseMgmtExe() {
         const resultData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", condition);
         const viewData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", { poiId: condition.poiId, modeCode: "BUDGET" });
         const updatedViewData = processResultDataView(viewData, condition);
-        console.log(updatedViewData, "이거설마 초기화댐?");
         setRunMgmtView(updatedViewData);
         if (resultData && resultData.length > 0) {
             const updatedData = processResultData(resultData, condition);
             const filteredData = filterArray(updatedData);
-            console.log(filteredData, "궁금");
-            const monthCal = calculateMonthlyTotals(filteredData);
-            setMonthCal(monthCal);
             setExeRunMgmt(filteredData);
-            let total = 0,
-                pjbgTypeCode1 = 0,
-                pjbgTypeCode2 = 0,
-                pjbgTypeCode3 = 0,
-                pjbgTypeCode4 = 0,
-                pjbgTypeCode5 = 0,
-                pjbgTypeCode20 = 0;
-            filteredData.map((data) => {
-                pjbgTypeCode1 += data.pjbgTypeCode1; //교통비
-                pjbgTypeCode2 += data.pjbgTypeCode2; //숙박비
-                pjbgTypeCode3 += data.pjbgTypeCode3; //일비/파견비
-                pjbgTypeCode4 += data.pjbgTypeCode4; //식비
-                pjbgTypeCode5 += data.pjbgTypeCode5; //자재/소모품외
-                pjbgTypeCode20 += data.pjbgTypeCode20; //기타
-            });
-            total = pjbgTypeCode1 + pjbgTypeCode2 + pjbgTypeCode3 + pjbgTypeCode4 + pjbgTypeCode5 + pjbgTypeCode20;
-            setCal([{ total, pjbgTypeCode1, pjbgTypeCode2, pjbgTypeCode3, pjbgTypeCode4, pjbgTypeCode5, pjbgTypeCode20 }]);
+
+            const calDatas = filteredData.reduce((result, current) => {
+                const existingGroup = result.find(item => item.pjbgDt === current.pjbgDt);
+                if(existingGroup) {
+                    existingGroup.pjbgDt = current.pjbgDt;
+                    existingGroup.total += current.pjbgTypeCode1 + current.pjbgTypeCode2 + current.pjbgTypeCode3 + current.pjbgTypeCode4 + current.pjbgTypeCode5 + current.pjbgTypeCode20;
+                    existingGroup.pjbgTypeCode1 += current.pjbgTypeCode1; //교통비
+                    existingGroup.pjbgTypeCode2 += current.pjbgTypeCode2; //숙박비
+                    existingGroup.pjbgTypeCode3 += current.pjbgTypeCode3; //일비/파견비
+                    existingGroup.pjbgTypeCode4 += current.pjbgTypeCode4; //식비
+                    existingGroup.pjbgTypeCode5 += current.pjbgTypeCode5; //자재/소모품외
+                    existingGroup.pjbgTypeCode20 += current.pjbgTypeCode20; //기타
+                } else {
+                    result.push({ ...current, total: current.pjbgTypeCode1 + current.pjbgTypeCode2 + current.pjbgTypeCode3 + current.pjbgTypeCode4 + current.pjbgTypeCode5 + current.pjbgTypeCode20 });
+                }
+
+                return result;
+            }, [])
+
+            const total = calDatas.reduce((acc, item) => {
+                acc.pjbgDt = "TOTAL";
+                acc.total += item.total;
+                acc.pjbgTypeCode1 += item.pjbgTypeCode1;
+                acc.pjbgTypeCode2 += item.pjbgTypeCode2;
+                acc.pjbgTypeCode3 += item.pjbgTypeCode3;
+                acc.pjbgTypeCode4 += item.pjbgTypeCode4;
+                acc.pjbgTypeCode5 += item.pjbgTypeCode5;
+                acc.pjbgTypeCode20 += item.pjbgTypeCode20;
+                return acc;
+            }, { pjbgDt: "", total: 0, pjbgTypeCode1: 0, pjbgTypeCode2: 0, pjbgTypeCode3: 0, pjbgTypeCode4: 0, pjbgTypeCode5: 0, pjbgTypeCode20: 0 });
+
+            calDatas.push({...total})
+            setCal(calDatas);
         } else {
             alert("no data");
             setExeRunMgmt([]);
@@ -563,14 +575,11 @@ function ExpenseMgmtExe() {
         <>
             <Location pathList={locationPath.ExpenseMgmt} />
             <ApprovalFormExe returnData={conditionInfo} />
-            <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
-                <ReactDataTable columns={columns.expenseMgmt.budget} customDatas={runMgmtView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+            <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
+                <ReactDataTable columns={columns.expenseMgmt.plan} customDatas={runMgmtView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
-            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                <ReactDataTable columns={columns.expenseMgmt.cal} customDatas={cal} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
-            </HideCard>
-            <HideCard title="월별합계" color="back-lightyellow" className="mg-b-40">
-                <ReactDataTable columns={columns.expenseMgmt.monthCal} customDatas={monthCal} defaultPageSize={5} hideCheckBox={true} />
+            <HideCard title="합계" color="back-lightblue" className="mg-b-40">
+                <ReactDataTable columns={columns.expenseMgmt.cal} customDatas={cal} defaultPageSize={5} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">

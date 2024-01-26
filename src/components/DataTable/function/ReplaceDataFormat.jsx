@@ -93,32 +93,31 @@ export const buyIngInfoCalculation = (list) => {
             byStandardMargin: row.byStandardMargin ? row.byStandardMargin : 0,
             byConsumerOutputRate: row.byConsumerOutputRate ? row.byConsumerOutputRate : 0,
         };
-        // 1.원가(견적가) : 수량 * 원단가
+        // 1.원가 : 수량 * 원단가
         const updatedEstimatedCost = estimatedCost ? estimatedCost : byQunty * byUnitPrice;
-        // 2.단가 : 원가(견적가) / (1 - 사전원가기준이익율)
+        // 2.공급단가 : 원가 / (1 - 사전원가기준이익율)
         const updatedUnitPrice = unitPrice ? unitPrice : division(updatedEstimatedCost, 1 - byStandardMargin / 100);
-        // 3.금액 : 수량 * 단가
+        // 3.공급금액 : 수량 * 공급단가
         const updatedPlanAmount = planAmount ? planAmount : byQunty * updatedUnitPrice;
-        // 4.소비자단가 : 단가 / 소비자산출율
+        // 4.소비자단가 : 공급단가 / 소비자산출율
         const updatedConsumerPrice = consumerPrice ? consumerPrice : division(updatedUnitPrice, byConsumerOutputRate);
         // 5.소비자금액 : 수량 * 소비자단가
         const updatedConsumerAmount = consumerAmount ? consumerAmount : byQunty * updatedConsumerPrice;
-        // 6.이익금 : 금액 - 원가(견적가)
+        // 6.이익금 : 공급금액 - 원가
         const updatedPlannedProfits = plannedProfits ? plannedProfits : updatedPlanAmount - updatedEstimatedCost;
-        // 7.이익률 : 이익금 / 금액
+        // 7.이익률 : 이익금 / 공급금액
         const updatedPlannedProfitMargin = plannedProfitMargin ? plannedProfitMargin : division(updatedPlannedProfits, updatedPlanAmount);
 
-        console.log("실시간 이익율:", updatedPlannedProfitMargin);
         return {
             ...row,
             estimatedCost: Math.round(updatedEstimatedCost),
             unitPrice: Math.round(updatedUnitPrice),
             planAmount: Math.round(updatedPlanAmount),
-            consumerPrice: Math.round(updatedConsumerPrice * 100),
-            consumerAmount: Math.round(updatedConsumerAmount * 100),
+            consumerPrice: Math.round(updatedConsumerPrice * 100) ,
+            consumerAmount: Math.round(updatedConsumerAmount * 100) ,
             plannedProfits: Math.round(updatedPlannedProfits),
-            // plannedProfitMargin: Math.round(updatedPlannedProfitMargin * 100),
-            plannedProfitMargin: updatedPlannedProfitMargin * 100,
+            plannedProfitMargin: Math.round(updatedPlannedProfitMargin * 100),
+            // plannedProfitMargin: updatedPlannedProfitMargin,
             byStandardMargin: Math.round(byStandardMargin),
             byConsumerOutputRate: Math.round(byConsumerOutputRate),
         };
@@ -131,5 +130,5 @@ export const division = (value1, value2) => {
     if (!value1 || !value2) {
         return 0;
     }
-    return Math.round(value1 / value2);
+    return value1 / value2;
 };

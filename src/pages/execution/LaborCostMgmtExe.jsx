@@ -121,45 +121,143 @@ function LaborCostMgmtExe() {
             if (unitPriceList && unitPriceList.length > 0) {
                 const updatedDatas = calculation(unitPriceList, resultData, condition.poiMonth);
                 setBudgetMgmRun(updatedDatas);
-                let mmTotal = 0;
-                let priceTotal = 0;
-                let price9 = 0;
-                let price10 = 0;
-                let price11 = 0;
-                let price12 = 0;
-                let price13 = 0;
-                let price14 = 0;
-                let mm9 = 0,
-                    mm10 = 0,
-                    mm11 = 0,
-                    mm12 = 0,
-                    mm13 = 0,
-                    mm14 = 0;
-                updatedDatas.map((data) => {
-                    //합계 계산
-                    mmTotal += data.pecMm;
-                    priceTotal += data.price;
-                    if (data.pecPosition === "부장") {
-                        mm9 += data.pecMm;
-                        price9 += data.price;
-                    } else if (data.pecPosition === "차장") {
-                        mm10 += data.pecMm;
-                        price10 += data.price;
-                    } else if (data.pecPosition === "과장") {
-                        mm11 += data.pecMm;
-                        price11 += data.price;
-                    } else if (data.pecPosition === "대리") {
-                        mm12 += data.pecMm;
-                        price12 += data.price;
-                    } else if (data.pecPosition === "주임") {
-                        mm13 += data.pecMm;
-                        price13 += data.price;
-                    } else if (data.pecPosition === "사원") {
-                        mm14 += data.pecMm;
-                        price14 += data.price;
+
+                // let mmTotal = 0;
+                // let priceTotal = 0;
+                // let price9 = 0;
+                // let price10 = 0;
+                // let price11 = 0;
+                // let price12 = 0;
+                // let price13 = 0;
+                // let price14 = 0;
+                // let mm9 = 0,
+                //     mm10 = 0,
+                //     mm11 = 0,
+                //     mm12 = 0,
+                //     mm13 = 0,
+                //     mm14 = 0;
+                // updatedDatas.map((data) => {
+                //     //합계 계산
+                //     mmTotal += data.pecMm;
+                //     priceTotal += data.price;
+                //     if (data.pecPosition === "부장") {
+                //         mm9 += data.pecMm;
+                //         price9 += data.price;
+                //     } else if (data.pecPosition === "차장") {
+                //         mm10 += data.pecMm;
+                //         price10 += data.price;
+                //     } else if (data.pecPosition === "과장") {
+                //         mm11 += data.pecMm;
+                //         price11 += data.price;
+                //     } else if (data.pecPosition === "대리") {
+                //         mm12 += data.pecMm;
+                //         price12 += data.price;
+                //     } else if (data.pecPosition === "주임") {
+                //         mm13 += data.pecMm;
+                //         price13 += data.price;
+                //     } else if (data.pecPosition === "사원") {
+                //         mm14 += data.pecMm;
+                //         price14 += data.price;
+                //     }
+                // });
+
+                // 월을 추출하는 함수
+                function extractMonth(dateString) {
+                    return dateString && dateString.substring(0, 7);
+                }
+
+                const groupedData = updatedDatas.reduce((result, current) => {
+                    const dateToGroup = extractMonth(current.pecStartdate); // 연월 부분 추출
+                    let existingGroup = result.find(group => extractMonth(group.month) === dateToGroup);
+                
+                    console.log("current:", current.pecPosition);
+
+                    if (!existingGroup) {
+                        // 그룹이 없을 경우 초기값 설정
+                        existingGroup = {
+                            month: dateToGroup,
+                            totalMm: 0,
+                            totalPrice: 0,
+                            mm9: 0,
+                            price9: 0,
+                            mm10: 0,
+                            price10: 0,
+                            mm11: 0,
+                            price11: 0,
+                            mm12: 0,
+                            price12: 0,
+                            mm13: 0,
+                            price13: 0,
+                            mm14: 0,
+                            price14: 0,
+                        };
+                
+                        result.push(existingGroup);
                     }
-                });
-                setBudgetCal([{ mmTotal: mmTotal + "(M/M)", price9, price10, price11, price12, price13, price14 }]);
+                
+                    // 누적 값 할당
+                    existingGroup.totalMm +=  Number(current.pecMm);
+                    existingGroup.totalPrice +=  Number(current.price);
+                    if (current.pecPosition === "부장") {
+                        existingGroup.mm9 += Number(current.pecMm);
+                        existingGroup.price9 += Number(current.price);
+                    } else if (current.pecPosition === "차장") {
+                        existingGroup.mm10 += Number(current.pecMm);
+                        existingGroup.price10 += Number(current.price);
+                    } else if (current.pecPosition === "과장") {
+                        existingGroup.mm11 += Number(current.pecMm);
+                        existingGroup.price11 += Number(current.price);
+                    } else if (current.pecPosition === "대리") {
+                        existingGroup.mm12 += Number(current.pecMm);
+                        existingGroup.price12 += Number(current.price);
+                    } else if (current.pecPosition === "주임") {
+                        existingGroup.mm13 += Number(current.pecMm);
+                        existingGroup.price13 += Number(current.price);
+                    } else if (current.pecPosition === "사원") {
+                        existingGroup.mm14 += Number(current.pecMm);
+                        existingGroup.price14 += Number(current.price);
+                    }
+                
+                    return result;
+                }, []);
+                
+                let temp = {
+                    month: "TOTAL",
+                    totalMm: 0,
+                    totalPrice: 0,
+                    price9: 0,
+                    price10: 0,
+                    price11: 0,
+                    price12: 0,
+                    price13: 0,
+                    price14: 0,
+                };
+
+                groupedData.forEach(item => {
+                    temp.totalMm += item.totalMm;
+                    temp.totalPrice += item.totalPrice;
+                    temp.price9 += item.price9;
+                    temp.price10 += item.price10;
+                    temp.price11 += item.price11;
+                    temp.price12 += item.price12;
+                    temp.price13 += item.price13;
+                    temp.price14 += item.price14;
+                })
+
+                groupedData.forEach(item => {
+                    item.price9 = item.price9.toLocaleString() + " (" + item.mm9 + ")";
+                    item.price10 = item.price10.toLocaleString() + " (" + item.mm10 + ")";
+                    item.price11 = item.price11.toLocaleString() + " (" + item.mm11 + ")";
+                    item.price12 = item.price12.toLocaleString() + " (" + item.mm12 + ")";
+                    item.price13 = item.price13.toLocaleString() + " (" + item.mm13 + ")";
+                    item.price14 = item.price14.toLocaleString() + " (" + item.mm14 + ")";
+                })
+
+                groupedData.push({...temp});
+
+                setBudgetCal(groupedData);
+
+                // setBudgetCal([{ mmTotal: mmTotal + "(M/M)", price9, price10, price11, price12, price13, price14 }]);
             }
         } else {
             alert("no data");
@@ -254,11 +352,11 @@ function LaborCostMgmtExe() {
         <>
             <Location pathList={locationPath.LaborCostMgmt} />
             <ApprovalFormExe viewPageName="인건비실행" returnData={conditionInfo} />
-            <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
+            <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
                 <ReactDataTable columns={columnBugetView} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
-            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+            <HideCard title="합계" color="back-lightblue" className="mg-b-40">
+                <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">

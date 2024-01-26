@@ -504,7 +504,8 @@ const ReactDataTableURL = (props) => {
                             {page.map((row, rowIndex) => {
                                 prepareRow(row);
                                 return (
-                                    <tr {...row.getRowProps()} onClick={(e) => onCLickRow(row)}>
+                                    // <tr {...row.getRowProps()} onClick={(e) => onCLickRow(row)}>
+                                    <tr {...row.getRowProps()}>
                                         {row.cells.map((cell, cellIndex) => {
                                             if (cell.column.notView) {
                                                 // notView가 true인 경우, 셀을 출력하지 않음
