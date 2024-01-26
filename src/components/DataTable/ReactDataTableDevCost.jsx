@@ -463,19 +463,17 @@ const ReactDataTableDevCost = (props) => {
                                                             onChange={(e) => onChangeInput(e, row)}
                                                         />
                                                     ) : cell.column.type === "company" ? (
-                                                        <div>
-                                                            <input
-                                                                className="buttonSelect"
-                                                                id={cell.column.id}
-                                                                name={cell.column.id}
-                                                                onClick={() => setValueDataCompany(row.index)}
-                                                                type="text"
-                                                                placeholder={`거래처명을 선택해 주세요.`}
-                                                                value={tableData[row.index][cell.column.id] || ""}
-                                                                onChange={(e) => handleChange(e, row.index, cell.column.id)}
-                                                                readOnly
-                                                            />
-                                                        </div>
+                                                        <input
+                                                            className="buttonSelect"
+                                                            id={cell.column.id}
+                                                            name={cell.column.id}
+                                                            onClick={() => setValueDataCompany(row.index)}
+                                                            type="text"
+                                                            placeholder={`거래처명을 선택해 주세요.`}
+                                                            value={tableData[row.index][cell.column.id] || ""}
+                                                            onChange={(e) => handleChange(e, row.index, cell.column.id)}
+                                                            readOnly
+                                                        />
                                                     ) : (
                                                         cell.render("Cell")
                                                     )
