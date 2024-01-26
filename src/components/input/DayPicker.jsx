@@ -4,17 +4,18 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { v4 as uuidv4 } from "uuid";
 
-export default function DayPicker ({name, value, onClick}) {
+export default function DayPicker({ name, value, onClick }) {
     const [isCalendarVisible, setIsCalendarVisible] = useState(false);
     const datePickerRef = useRef(null);
 
     const handleOutsideClick = (event) => {
-        if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
+        if (datePickerRef.current && !datePickerRef.current.contains(event.target) && event.target.classList.contains("react-calendar")) {
             setIsCalendarVisible(false);
         }
     };
 
-    useEffect(() => { //다른 곳 클릭 시 닫음
+    useEffect(() => {
+        //다른 곳 클릭 시 닫음
         document.addEventListener("click", handleOutsideClick);
         return () => {
             document.removeEventListener("click", handleOutsideClick);
@@ -24,7 +25,7 @@ export default function DayPicker ({name, value, onClick}) {
     const onClickDay = (data) => {
         onClick(fomatChange(data));
         setIsCalendarVisible(false);
-    }
+    };
 
     const fomatChange = (date) => {
         const year = date.getFullYear();
@@ -44,18 +45,14 @@ export default function DayPicker ({name, value, onClick}) {
                 onClick={() => setIsCalendarVisible(true)}
                 readOnly
                 className="basic-input"
-                style={{backgroundColor: '#ccc'}}
+                style={{ backgroundColor: "#ccc" }}
             />
 
             {isCalendarVisible && (
-                <div
-                    id={uuidv4()}
-                >
-                    <Calendar
-                        onClickDay={(data) => onClickDay(data)}
-                    />
+                <div id={uuidv4()}>
+                    <Calendar onClickDay={(data) => onClickDay(data)} />
                 </div>
             )}
         </div>
-    )
-} 
+    );
+}

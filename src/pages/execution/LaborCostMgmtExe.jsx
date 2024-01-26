@@ -12,6 +12,7 @@ import SaveButton from "components/button/SaveButton";
 import { ChangePrmnPlanData } from "components/DataTable/function/ReplaceDataFormat";
 import AddButton from "components/button/AddButton";
 import DelButton from "components/button/DelButton";
+import BasicButton from "components/button/BasicButton";
 
 /** 실행관리-인건비-실행 */
 function LaborCostMgmtExe() {
@@ -255,13 +256,20 @@ function LaborCostMgmtExe() {
             <Location pathList={locationPath.LaborCostMgmt} />
             <ApprovalFormExe viewPageName="인건비실행" returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
-                <ReactDataTable columns={columnBugetView} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+                <ReactDataTable columns={columnBugetView} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} isPageNation={true} />
             </HideCard>
             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+                <ReactDataTable
+                    columns={columns.laborCostMgmt.budgetView}
+                    customDatas={budgetCal}
+                    defaultPageSize={5}
+                    hideCheckBox={true}
+                    isPageNation={true}
+                />
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">
+                    <BasicButton label={"가져오기"} onClick={() => setNameOfButton("load")} />
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
                     <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />

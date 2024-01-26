@@ -22,16 +22,19 @@ export async function axiosFetch(url, requestData) {
     }
 }
 
-//업로드하기
-export async function axiosFileUpload(url, file) {
+// 업로드하기
+export async function axiosFileUpload(url, files) {
     const headers = {
         Authorization: process.env.REACT_APP_POST,
-        "Content-Type": "multipart/form-data",
     };
 
     try {
         const formData = new FormData();
-        formData.append("attachFile", file); // Assuming your server expects a 'file' field
+
+        // 모든 파일을 FormData에 추가
+        files.forEach((file) => {
+            formData.append(`attachFile`, file);
+        });
 
         const response = await axios.post(url, formData, { headers });
 
