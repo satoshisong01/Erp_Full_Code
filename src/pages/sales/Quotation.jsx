@@ -72,7 +72,7 @@ function Quotation() {
                         <div className="first">
                             <ul>
                                 <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                                <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+                                <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 </HideCard>
                                 <HideCard title="계획 등록/수정" color="back-lightblue">
                                     <div className="table-buttons mg-t-10 mg-b-10">
@@ -92,7 +92,7 @@ function Quotation() {
                         <div className="second">
                             <ul>
                                 <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                                <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+                                <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 </HideCard>
                                 <HideCard title="계획 등록/수정" color="back-lightblue">
                                     <div className="table-buttons mg-t-10 mg-b-10">
