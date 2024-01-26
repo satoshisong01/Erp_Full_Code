@@ -1208,6 +1208,14 @@ export const columns = {
             },
         ],
     },
+    PurchasingMgmtPlan: { //구매(재료비) 실행 계획
+        total: [
+            { header: "품목그룹", col: "pgNm", cellWidth: "200" },
+            { header: "판매사", col: "pdiSeller", cellWidth: "200" },
+            { header: "수량", col: "byQunty", cellWidth: "100" },
+            { header: "금액", col: "price", cellWidth: "100" },
+        ],
+    },
     purchasingMgmt: {
         //구매관리
         project: [
@@ -1328,6 +1336,7 @@ export const columns = {
             { header: "품목그룹명", col: "pgNm", cellWidth: "150", type: "productGroup" },
             { header: "품명", col: "pdiNm", cellWidth: "150", type: "productInfo" },
             { header: "모델명", col: "pdiNum", cellWidth: "150" },
+            { header: "판매사", col: "pdiSeller", cellWidth: "150" },
             { header: "규격", col: "pdiStnd", cellWidth: "150" },
             {
                 header: "수량",
@@ -1360,15 +1369,18 @@ export const columns = {
             {
                 header: "비고",
                 col: "byDesc",
-                // cellWidth: "260",
                 cellWidth: "300",
-                type: "desc",
+                type: "input",
             },
         ],
         buyCal: [
-            { header: "품목그룹", col: "pgNm", cellWidth: "700" },
-            { header: "제조사", col: "pdiMenufut", cellWidth: "200" },
-            { header: "입고금액(합산)", col: "rcvPrice", cellWidth: "480" },
+            { header: "품목그룹", col: "pgNm", cellWidth: "200" },
+            { header: "판매사", col: "pdiSeller", cellWidth: "200" },
+            { header: "구매수량", col: "byQunty", cellWidth: "100" },
+            { header: "구매금액", col: "price", cellWidth: "100" },
+            { header: "입고수량", col: "rcvQunty", cellWidth: "100" },
+            { header: "입고금액", col: "rcvPrice", cellWidth: "100" },
+            { header: "입고상태", col: "rcvState", cellWidth: "100" },
         ],
         planView: [
             { header: "품목그룹", col: "pgNm", cellWidth: "200" },
@@ -1398,6 +1410,16 @@ export const columns = {
             },
             { header: "품명", col: "pdiNm", cellWidth: "150", type: "productInfo" },
             { header: "모델명", col: "pdiNum", cellWidth: "150" },
+            {
+                header: "판매사",
+                col: "pdiSeller",
+                cellWidth: "150",
+            },
+            // {
+            //     header: "제조사",
+            //     col: "pdiMenufut",
+            //     cellWidth: "130",
+            // },
             { header: "규격", col: "pdiStnd", cellWidth: "150" },
             {
                 header: "단위",
@@ -1420,16 +1442,6 @@ export const columns = {
                 header: "금액",
                 col: "price",
                 cellWidth: "100",
-            },
-            {
-                header: "판매사",
-                col: "pdiSeller",
-                cellWidth: "150",
-            },
-            {
-                header: "제조사",
-                col: "pdiMenufut",
-                cellWidth: "130",
             },
             {
                 header: "발주일",
@@ -1466,14 +1478,8 @@ export const columns = {
                 cellWidth: "80",
                 type: "input",
             },
-            // { header: "발주상태", col: "byStatus", cellWidth: "10%", type: "select", options: [
-            //         { label: "--선택--", value: "" },
-            //         { label: "미발주", value: "미발주" },
-            //         { label: "발주중", value: "발주중" },
-            //         { label: "완료", value: "완료" },
-            //     ],
-            // },
             { header: "입고상태", col: "rcvState", cellWidth: "80" },
+            { header: "비고", col: "rcvDesc", cellWidth: "250", type: "input" },
         ],
         condition: [
             //검색조건
