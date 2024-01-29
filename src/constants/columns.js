@@ -415,7 +415,7 @@ export const columns = {
                 require: true,
             },
             { header: "금액", col: "pjbgPrice", cellWidth: "300", type: "input", require: true },
-            { header: "내용", col: "pjbgDesc", cellWidth: "740", type: "desc" },
+            { header: "비고", col: "pjbgDesc", cellWidth: "740", type: "desc" },
         ],
         expensesCal: [{ header: "금액", col: "pjbgPriceTotal", cellWidth: "1374" }],
         outsourcing: [
@@ -470,9 +470,9 @@ export const columns = {
             { header: "공급금액", col: "planAmount", cellWidth: "130" },
             { header: "원단가", col: "byUnitPrice", cellWidth: "100", type: "input" },
             { header: "원가", col: "estimatedCost", cellWidth: "100" },
-            { header: "이익금", col: "plannedProfits", cellWidth: "130" },
-            { header: "이익률", col: "plannedProfitMargin", cellWidth: "60" },
-            { header: "기준 이익률", col: "byStandardMargin", cellWidth: "100", type: "input" },
+            { header: "이익금", col: "plannedProfits", cellWidth: "100" },
+            // { header: "이익률", col: "plannedProfitMargin", cellWidth: "60" },
+            { header: "이익률", col: "byStandardMargin", cellWidth: "100", type: "input" },
             { header: "소비자가 산출률", col: "byConsumerOutputRate", cellWidth: "130", type: "input" },
             { header: "첨부파일", col: "file", cellWidth: "70", type: "file" },
             { header: "비고", col: "byDesc", cellWidth: "300", type: "input" },
@@ -486,7 +486,14 @@ export const columns = {
             { header: "네고율", col: "nego", cellWidth: "170" },
             { header: "원가", col: "estimatedCost", cellWidth: "170" },
             { header: "이익금", col: "profits", cellWidth: "170" },
-            { header: "이익율", col: "margin", cellWidth: "170" },
+            { header: "이익률", col: "margin", cellWidth: "170" },
+        ],
+        purchaseCal2: [
+            //구매합계
+            { header: "품목그룹", col: "pgNm", cellWidth: "450" },
+            { header: "수량", col: "byQunty", cellWidth: "124" },
+            { header: "소비자금액", col: "consumerAmount", cellWidth: "400" },
+            { header: "공급금액", col: "planAmount", cellWidth: "400" },
         ],
         estimateLabor: [
             //견적용 인건비

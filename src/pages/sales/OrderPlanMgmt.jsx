@@ -34,6 +34,7 @@ function OrderPlanMgmt() {
     const [pjbudgetCalDatas, setPjbudgetCalDatas] = useState([]); // 경비합계
     const [pdOrdrDatas, setPdOrdrDatas] = useState([]); // 구매(재료비)
     const [pdOrdrCalDatas, setPdOrdrCalDatas] = useState([]); // 구매합계
+    const [pdOrdrCalDatas2, setPdOrdrCalDatas2] = useState([]); // 구매합계
     const [outsourcingDatas, setOutsourcingDatas] = useState([]); // 개발외주비
     const [outCalDatas, setOutCalDatas] = useState([]); // 개발외주비합계
     const [generalExpensesDatas, setGeneralExpensesDatas] = useState([]); // 영업관리비
@@ -156,7 +157,6 @@ function OrderPlanMgmt() {
     };
 
     const addList = async (addNewData) => {
-        // console.log(addNewData, "추가");
         addNewData.forEach((data) => {
             data.poiId = condition.poiId || "";
         });
@@ -168,13 +168,11 @@ function OrderPlanMgmt() {
         toUpdate.forEach((data) => {
             data.poiId = condition.poiId || "";
         });
-        // console.log("❗updateList:", toUpdate);
         const updatedData = toUpdate.map((obj) => {
             const { pmpId, ...rest } = obj;
             return rest;
         });
 
-        // console.log("❗❗❗updateList:", updatedData);
         const url = `/api/baseInfrm/product/prmnPlan/editArrayList.do`;
         const resultData = await axiosUpdate(url, updatedData);
         refresh();
@@ -243,7 +241,6 @@ function OrderPlanMgmt() {
             });
             if (resultData && resultData.length > 0) {
                 setSearchDates(resultData);
-                console.log("😈영업-원가버전조회:", requestData, "resultData:", resultData);
             } else {
                 alert("no data");
                 setSearchDates([]);
@@ -312,7 +309,6 @@ function OrderPlanMgmt() {
                         }
                     });
                     setPrmnPlanDatas(changeData);
-                    console.log("😈영업-인건비:", changeData);
                 }
             } else {
                 alert("no data");
@@ -328,7 +324,6 @@ function OrderPlanMgmt() {
                     pjbgPriceTotal += data.pjbgPrice;
                 });
                 setPjbudgetCalDatas([{ pjbgPriceTotal }]);
-                console.log("😈영업-경비:", resultData);
             } else {
                 alert("no data");
                 setPjbudgetDatas([]);
@@ -347,6 +342,7 @@ function OrderPlanMgmt() {
                         existingGroup.estimatedCost += current.estimatedCost; //원가
                         existingGroup.consumerAmount += current.consumerAmount; //소비자금액
                         existingGroup.planAmount += current.planAmount; //공급금액
+                        existingGroup.byQunty += current.byQunty; //수량
                     } else {
                         result.push({ ...current});
                     }
@@ -359,9 +355,8 @@ function OrderPlanMgmt() {
                     group.nego = group.planAmount !== 0 ? ((group.consumerAmount / group.planAmount) - 1) * 100 : 0;
                     // 이익금: 공급금액 - 원가
                     group.profits = group.planAmount - group.estimatedCost;
-                    // 이익율: (이익금 / 공급금액) * 100
-                    group.margin =  group.planAmount !== 0 ? (group.profits / group.planAmount) * 100 + "%" : 0  + "%";
-                
+                    // 이익율: (공급금액-원가)/원가*100
+                    group.margin =  group.planAmount !== 0 ? (group.planAmount - group.estimatedCost) / group.planAmount * 100 + "%" : 0  + "%";
                     return group;
                 });
 
@@ -371,7 +366,50 @@ function OrderPlanMgmt() {
                     sums.consumerAmount += group.consumerAmount || 0;
                     sums.planAmount += group.planAmount || 0;
                     sums.profits += group.profits || 0;
+                    sums.byQunty += group.byQunty
                     sums.margin = sums.margin + "%"
+                    return sums;
+                }, {
+                    estimatedCost: 0,
+                    consumerAmount: 0,
+                    planAmount: 0,
+                    nego: 0,
+                    profits: 0,
+                    margin: 0,
+                    byQunty: 0,
+                });
+
+                groupedDataWithCalculations.push({
+                    pgNm: "TOTAL",
+                    pdiSeller: "",
+                    consumerAmount: totals.consumerAmount, //소비자금액
+                    planAmount: totals.planAmount, //공급금액
+                    nego: totals.planAmount !== 0 ? ((totals.consumerAmount / totals.planAmount) - 1) * 100 : 0, //네고율
+                    estimatedCost: totals.estimatedCost, //원가
+                    profits: totals.profits, //이익금
+                    // (공급금액-원가)/원가*100
+                    margin: totals.planAmount !== 0 ? (totals.planAmount-totals.estimatedCost)/totals.estimatedCost * 100 + "%" : 0 + "%", //이익율
+                    byQunty: totals.byQunty
+                });
+
+
+                // 품목그룹별 합계
+                const group2 = groupedDataWithCalculations.reduce((result, current) => {
+                    const extra =result.find(item => item.pgNm === current.pgNm);
+                    if(extra) {
+                        extra.byQunty += current.byQunty;
+                        extra.planAmount += current.planAmount;
+                    } else {
+                        result.push({...current})
+                    }
+                
+                    return result;
+                }, [])
+
+                const totals2 = group2.reduce((sums, group) => {
+                    sums.consumerAmount += group.consumerAmount || 0;
+                    sums.planAmount += group.planAmount || 0;
+                    sums.byQunty += group.byQunty || 0;
                     return sums;
                 }, {
                     estimatedCost: 0,
@@ -382,19 +420,8 @@ function OrderPlanMgmt() {
                     margin: 0,
                 });
                 
-                console.log("totals.profitAmount:", totals.profitAmount, " totals.planAmount:",  totals.planAmount);
-                groupedDataWithCalculations.push({
-                    pgNm: "TOTAL",
-                    pdiSeller: "",
-                    consumerAmount: totals.consumerAmount, //소비자금액
-                    planAmount: totals.planAmount, //공급금액
-                    nego: totals.planAmount !== 0 ? ((totals.consumerAmount / totals.planAmount) - 1) * 100 : 0, //네고율
-                    estimatedCost: totals.estimatedCost, //원가
-                    profits: totals.profits, //이익금
-                    margin: totals.planAmount !== 0 ? (totals.profits / totals.planAmount) * 100 + "%" : 0 + "%" //이익율
-                });
-
-                setPdOrdrCalDatas(groupedDataWithCalculations); //하계
+                setPdOrdrCalDatas(groupedDataWithCalculations); //합계
+                setPdOrdrCalDatas2(group2); //합계2
             } else {
                 alert("no data");
                 setPdOrdrDatas([]);
@@ -426,11 +453,13 @@ function OrderPlanMgmt() {
                 // slsmnEnterpriseProfit 기업이윤, slsmnAdmnsCost 일반관리비, slsmnNego 네고
                 let total = 0; //판관비
                 let negoTotal = 0; //네고
+                let price = 0; //네고
                 resultData.forEach((data) => {
                     total += data.slsmnEnterpriseProfit + data.slsmnAdmnsCost;
                     negoTotal += data.slsmnNego;
+                    price = total+negoTotal;
                 });
-                setGeneralCalDatas([{ total, negoTotal }]);
+                setGeneralCalDatas([{ total, negoTotal, price }]);
                 console.log("😈영업-영업관리비:", requestData, "resultData:", resultData);
             } else {
                 alert("no data");
@@ -610,6 +639,9 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
+                                <span style={{textAlign: "start", fontWeight: "bold", fontSize: "14px"}} className="darkblue">품목그룹별 합계</span>
+                                <ReactDataTable columns={columns.orderPlanMgmt.purchaseCal2} customDatas={pdOrdrCalDatas2} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
+                                <span style={{textAlign: "start", fontWeight: "bold", fontSize: "14px"}} className="cherry">품목그룹/판매사별 합계</span>
                                 <ReactDataTable columns={columns.orderPlanMgmt.purchaseCal} customDatas={pdOrdrCalDatas} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">

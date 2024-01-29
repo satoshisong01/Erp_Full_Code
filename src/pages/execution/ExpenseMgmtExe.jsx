@@ -523,6 +523,11 @@ function ExpenseMgmtExe() {
         return totalsArray;
     }
 
+    // 월을 추출하는 함수
+    function extractMonth(dateString) {
+        return dateString && dateString.substring(0, 7);
+    }
+
     const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", condition);
         const viewData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", { poiId: condition.poiId, modeCode: "BUDGET" });
@@ -534,7 +539,7 @@ function ExpenseMgmtExe() {
             setExeRunMgmt(filteredData);
 
             const calDatas = filteredData.reduce((result, current) => {
-                const existingGroup = result.find(item => item.pjbgDt === current.pjbgDt);
+                const existingGroup = result.find(item => extractMonth(item.pjbgDt) === extractMonth(current.pjbgDt));
                 if(existingGroup) {
                     existingGroup.pjbgDt = current.pjbgDt;
                     existingGroup.total += current.pjbgTypeCode1 + current.pjbgTypeCode2 + current.pjbgTypeCode3 + current.pjbgTypeCode4 + current.pjbgTypeCode5 + current.pjbgTypeCode20;
