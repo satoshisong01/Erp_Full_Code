@@ -181,6 +181,7 @@ function OrderPlanMgmt() {
     };
 
     const deleteList = async (removeItem) => {
+        console.log(removeItem, "삭제할애들");
         const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         refresh();
@@ -558,7 +559,7 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                                <ReactDataTable columns={columns.orderPlanMgmt.laborCal} customDatas={prmnCalDatas} hideCheckBox={true} isPageNation={true}/>
+                                <ReactDataTable columns={columns.orderPlanMgmt.laborCal} customDatas={prmnCalDatas} hideCheckBox={true} isPageNation={true} />
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
@@ -583,7 +584,12 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                                <ReactDataTable columns={columns.orderPlanMgmt.purchaseCal} customDatas={pdOrdrCalDatas} hideCheckBox={true} isPageNation={true}/>
+                                <ReactDataTable
+                                    columns={columns.orderPlanMgmt.purchaseCal}
+                                    customDatas={pdOrdrCalDatas}
+                                    hideCheckBox={true}
+                                    isPageNation={true}
+                                />
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
@@ -609,7 +615,13 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                                <ReactDataTable columns={columns.orderPlanMgmt.outCal} customDatas={outCalDatas} hideCheckBox={true} condition={condition}  isPageNation={true}/>
+                                <ReactDataTable
+                                    columns={columns.orderPlanMgmt.outCal}
+                                    customDatas={outCalDatas}
+                                    hideCheckBox={true}
+                                    condition={condition}
+                                    isPageNation={true}
+                                />
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
@@ -634,7 +646,12 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                                <ReactDataTable columns={columns.orderPlanMgmt.expensesCal} customDatas={pjbudgetCalDatas} hideCheckBox={true} isPageNation={true} />
+                                <ReactDataTable
+                                    columns={columns.orderPlanMgmt.expensesCal}
+                                    customDatas={pjbudgetCalDatas}
+                                    hideCheckBox={true}
+                                    isPageNation={true}
+                                />
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
@@ -645,7 +662,6 @@ function OrderPlanMgmt() {
                                 </div>
                                 <ReactDataTableURL
                                     editing={true}
-                                    suffixUrl="/baseInfrm/product/pjbudget"
                                     columns={columns.orderPlanMgmt.expenses}
                                     customDatas={pjbudgetDatas}
                                     viewPageName={{ name: "경비", id: "budget" }}

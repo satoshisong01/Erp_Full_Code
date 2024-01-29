@@ -494,15 +494,16 @@ export const columns = {
                 type: "select",
                 options: [
                     { value: "", label: "선택" },
-                    { value: 70000, label: "특2" },
-                    { value: 60000, label: "특1" },
-                    { value: 50000, label: "고2" },
-                    { value: 40000, label: "고1" },
-                    { value: 30000, label: "중" },
-                    { value: 20000, label: "초2" },
-                    { value: 10000, label: "초1" },
+                    { value: "특2", label: "특2" },
+                    { value: "특1", label: "특1" },
+                    { value: "고2", label: "고2" },
+                    { value: "고1", label: "고1" },
+                    { value: "중", label: "중" },
+                    { value: "초2", label: "초2" },
+                    { value: "초1", label: "초1" },
                 ],
             },
+            { header: "positionCount", col: "positionCount", cellWidth: "0", notView: true },
             { header: "M", col: "estMm1", type: "input", cellWidth: "50" },
             { header: "M+1", col: "estMm2", type: "input", cellWidth: "50" },
             { header: "M+2", col: "estMm3", type: "input", cellWidth: "50" },
@@ -1208,7 +1209,8 @@ export const columns = {
             },
         ],
     },
-    PurchasingMgmtPlan: { //구매(재료비) 실행 계획
+    PurchasingMgmtPlan: {
+        //구매(재료비) 실행 계획
         total: [
             { header: "품목그룹", col: "pgNm", cellWidth: "200" },
             { header: "판매사", col: "pdiSeller", cellWidth: "200" },

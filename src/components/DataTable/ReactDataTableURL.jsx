@@ -98,9 +98,10 @@ const ReactDataTableURL = (props) => {
             if (nameOfButton === "save") {
                 if (returnList) {
                     returnList(originTableData, tableData);
-                } else {
-                    compareData(originTableData, tableData);
                 }
+                //else {
+                //    compareData(originTableData, tableData);
+                //}
             } else if (nameOfButton === "load" && viewLoadDatas) {
                 loadOnAddRow(viewLoadDatas);
             } else if (nameOfButton === "deleteRow") {
@@ -289,6 +290,16 @@ const ReactDataTableURL = (props) => {
         }
     }, [selectedFlatRows]);
 
+    const positionMapping = {
+        특1: 1000000,
+        특2: 900000,
+        고1: 800000,
+        고2: 700000,
+        중: 600000,
+        초2: 500000,
+        초1: 400000,
+    };
+
     const onChangeInput = (e, preRow, accessor) => {
         const { name, value } = e.target;
         const index = preRow.index;
@@ -306,37 +317,34 @@ const ReactDataTableURL = (props) => {
 
         if (innerPageName.id === "estimateLabor") {
             console.log(updatedTableData, "updatedTableData");
-
-            console.log(preRow, "비교해보자잇");
-
             let price = 0;
             let total = 0;
 
-            const positionCount = preRow.original.estPosition;
+            console.log(preRow.original.estPosition);
+            const positionCount = positionMapping[preRow.original.estPosition] || 0;
 
             console.log(positionCount);
 
             //price = row.original.pecPosition * row.original.estMm;
             //total = parseInt(row.original.m, 10) ? parseInt(row.original.estMm, 10) : 0;
 
-            // m1부터 m11까지 루프를 돕니다.
-            for (let i = 1; i <= 12; i++) {
+            // m1부터 m24까지 루프를 돕니다.
+            for (let i = 1; i <= 24; i++) {
                 let mKey = `estMm${i}`;
                 let mValue = preRow.original[mKey];
                 let mValueInt = parseInt(preRow.original[mKey], 10);
 
-                if (!isNaN(mValueInt)) {
+                if (!isNaN(mValueInt) && !isNaN(mValue)) {
                     total += mValueInt;
+                    price += positionCount * mValue;
                 }
-
-                price += positionCount * mValue;
             }
 
             updatedTableData[index]["price"] = price;
             updatedTableData[index]["total"] = total;
             updatedTableData[index]["estUnitPrice"] = positionCount;
 
-            console.log(rowIndex, "비교해보자잇");
+            console.log(updatedTableData, "비교해보자잇");
             setTableData(updatedTableData);
         }
         // setChangeTable(newTableData);
@@ -397,6 +405,11 @@ const ReactDataTableURL = (props) => {
                     newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
                 } else if (column.accessor === "pjbgTypeCode20") {
                     newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                }
+            }
+            if (viewPageName === "견적용 인건비") {
+                if (column.accessor === "estPosition") {
+                    newRow[column.accessor] = "특1"; // useAt 항상 "Y"로 설정
                 }
             }
         });
