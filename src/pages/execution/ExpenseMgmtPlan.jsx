@@ -57,7 +57,7 @@ function ExpenseMgmtPlan() {
             ],
             require: true,
         },
-        { header: "내용", col: "pjbgDesc", cellWidth: "780", type: "desc" },
+        { header: "내용", col: "pjbgDesc", cellWidth: "774", type: "desc" },
         { header: "금액", col: "pjbgPrice", cellWidth: "300", type: "input", require: true },
         { header: "프로젝트ID", col: "poiId", notView: true, cellWidth: "0" },
         // { header: "영업타입", col: "modeCode", notView: true },
@@ -204,8 +204,6 @@ function ExpenseMgmtPlan() {
             acc[code] = groupedData[code];
             return acc;
         }, {});
-
-        console.log(resultObject, "경비수주 경비더한 토탈값");
     }, [saveNum]);
 
     const returnList = (originTableData, tableData) => {
@@ -294,29 +292,6 @@ function ExpenseMgmtPlan() {
         }
     };
 
-    //function transformData(inputData) {
-    //    // Iterate over each item in the array
-    //    for (let i = 0; i < inputData.length; i++) {
-    //        const item = inputData[i];
-
-    //        // Extract the pjbgId array and iterate over its values
-    //        const pjbgIdArray = item.pjbgId;
-    //        for (let j = 0; j < pjbgIdArray.length; j++) {
-    //            // Create new property with modified name and value
-    //            item[`pjbgId${j + 1}`] = pjbgIdArray[j];
-    //        }
-
-    //        // Rename the last property to pjbgId20
-    //        const lastIdx = pjbgIdArray.length;
-    //        item.pjbgId20 = item[`pjbgId${lastIdx}`];
-    //        delete item[`pjbgId${lastIdx}`];
-
-    //        // Remove the original pjbgId property
-    //        delete item.pjbgId;
-    //    }
-    //    return inputData;
-    //}
-
     const addItem = async (addData) => {
         console.log(addData, "추가되야함");
         const url = `/api/baseInfrm/product/pjbudgetExe/addArrayList.do`;
@@ -397,7 +372,6 @@ function ExpenseMgmtPlan() {
     };
 
     const fetchAllData = async (condition) => {
-        console.log("경비계획 조회 컨디션:", condition);
         const resultData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", condition);
         const viewData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", condition);
         const updatedViewData = updatePjbgType(viewData);
@@ -406,24 +380,42 @@ function ExpenseMgmtPlan() {
             console.log(resultData, "경비데이터에 직급불러오는지보자");
             const updatedData = processResultData(resultData, condition);
             setBudgetMgmt(updatedData);
-            console.log("✨✨경비계획 조회 updatedData:", updatedData);
-            let total = 0,
-                pjbgTypeCode1 = 0,
-                pjbgTypeCode2 = 0,
-                pjbgTypeCode3 = 0,
-                pjbgTypeCode4 = 0,
-                pjbgTypeCode5 = 0,
-                pjbgTypeCode20 = 0;
-            updatedData.map((data) => {
-                pjbgTypeCode1 += data.pjbgTypeCode1; //교통비
-                pjbgTypeCode2 += data.pjbgTypeCode2; //숙박비
-                pjbgTypeCode3 += data.pjbgTypeCode3; //일비/파견비
-                pjbgTypeCode4 += data.pjbgTypeCode4; //식비
-                pjbgTypeCode5 += data.pjbgTypeCode5; //자재/소모품외
-                pjbgTypeCode20 += data.pjbgTypeCode20; //기타
-            });
-            total = pjbgTypeCode1 + pjbgTypeCode2 + pjbgTypeCode3 + pjbgTypeCode4 + pjbgTypeCode5 + pjbgTypeCode20;
-            setCal([{ total, pjbgTypeCode1, pjbgTypeCode2, pjbgTypeCode3, pjbgTypeCode4, pjbgTypeCode5, pjbgTypeCode20 }]);
+            
+            
+            const calDatas = updatedData.reduce((result, current) => {
+                const existingGroup = result.find(item => item.pjbgDt === current.pjbgDt);
+                if(existingGroup) {
+                    existingGroup.pjbgDt = current.pjbgDt;
+                    existingGroup.total += current.pjbgTypeCode1 + current.pjbgTypeCode2 + current.pjbgTypeCode3 + current.pjbgTypeCode4 + current.pjbgTypeCode5 + current.pjbgTypeCode20;
+                    existingGroup.pjbgTypeCode1 += current.pjbgTypeCode1; //교통비
+                    existingGroup.pjbgTypeCode2 += current.pjbgTypeCode2; //숙박비
+                    existingGroup.pjbgTypeCode3 += current.pjbgTypeCode3; //일비/파견비
+                    existingGroup.pjbgTypeCode4 += current.pjbgTypeCode4; //식비
+                    existingGroup.pjbgTypeCode5 += current.pjbgTypeCode5; //자재/소모품외
+                    existingGroup.pjbgTypeCode20 += current.pjbgTypeCode20; //기타
+                } else {
+                    result.push({ ...current, total: current.pjbgTypeCode1 + current.pjbgTypeCode2 + current.pjbgTypeCode3 + current.pjbgTypeCode4 + current.pjbgTypeCode5 + current.pjbgTypeCode20 });
+                }
+
+                return result;
+            }, [])
+
+            const total = calDatas.reduce((acc, item) => {
+                acc.pjbgDt = "TOTAL";
+                acc.total += item.total;
+                acc.pjbgTypeCode1 += item.pjbgTypeCode1;
+                acc.pjbgTypeCode2 += item.pjbgTypeCode2;
+                acc.pjbgTypeCode3 += item.pjbgTypeCode3;
+                acc.pjbgTypeCode4 += item.pjbgTypeCode4;
+                acc.pjbgTypeCode5 += item.pjbgTypeCode5;
+                acc.pjbgTypeCode20 += item.pjbgTypeCode20;
+                return acc;
+            }, { pjbgDt: "", total: 0, pjbgTypeCode1: 0, pjbgTypeCode2: 0, pjbgTypeCode3: 0, pjbgTypeCode4: 0, pjbgTypeCode5: 0, pjbgTypeCode20: 0 });
+
+            calDatas.push({...total})
+
+            setCal(calDatas);
+
         } else {
             alert("no data");
             setBudgetMgmt([]);
@@ -434,11 +426,11 @@ function ExpenseMgmtPlan() {
         <>
             <Location pathList={locationPath.ExpenseMgmt} />
             <ApprovalFormExe returnData={conditionInfo} />
-            <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
+            <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
                 <ReactDataTable columns={columnExpensesView} customDatas={pjbudgetDatasView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
-            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                <ReactDataTable columns={columns.expenseMgmt.cal} customDatas={cal} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+            <HideCard title="합계" color="back-lightblue" className="mg-b-40">
+                <ReactDataTable columns={columns.expenseMgmt.cal} customDatas={cal} defaultPageSize={5} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">

@@ -111,7 +111,7 @@ function OrderMgmt() {
             <Location pathList={locationPath.OrderMgmt} />
             <SearchList conditionList={columns.orderMgmt.condition} onSearch={onSearch} />
             <HideCard title="프로젝트 목록" color="back-lightblue" className="mg-b-40">
-                <div className="table-buttons mg-b-m-30">
+                <div className="table-buttons mg-t-10 mg-b-10">
                     <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
                     <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
                     <DelButton label={"삭제"} onClick={() => setIsOpenDel(true)} />

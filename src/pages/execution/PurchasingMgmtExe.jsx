@@ -20,26 +20,102 @@ function PurchasingMgmtExe() {
     const [condition, setCondition] = useState({});
     const [runMgmt, setRunMgmt] = useState([]); // 구매 실행관리
     const [view, setView] = useState([]); // 계획 조회
-    const [buyCall, setBuyCall] = useState([]); //합계
+    const [buyCall, setBuyCall] = useState([]); //합계 - 품목그룹&판매사&모델명
+    const [buyCall2, setBuyCall2] = useState([]); //합계 - 품목그룹&판매사
 
     const fetchAllData = async (condition) => {
-        const data = await axiosFetch("/api/baseInfrm/product/receivingInfo/totalListAll.do", condition);
+        const datas = await axiosFetch("/api/baseInfrm/product/receivingInfo/totalListAll.do", condition);
         const viewData = await axiosFetch("/api/baseInfrm/product/buyIngInfoExe/totalListAll.do", { ...condition, modeCode: "BUDGET" });
-        // console.log(viewData, "뷰데이트");
+
         setView(viewData);
-        if (data && data.length > 0) {
-            const changes = changeData(data);
-            setRunMgmt(changes);
-            const groupedData = changes.reduce((result, current) => {
-                const existingGroup = result.find((group) => group.pdiMenufut === current.pdiMenufut && group.pgNm === current.pgNm);
+        if (datas && datas.length > 0) {
+            const calData = changeData(datas);
+
+            const groupedCalData = calData.reduce((result, current) => {
+                const existingGroup = result.find(group => group.pgNm === current.pgNm && group.pdiNum === current.pdiNum && group.pdiSeller === current.pdiSeller);
                 if (existingGroup) {
-                    existingGroup.rcvPrice += current.rcvPrice;
+                    existingGroup.byQunty = current.byQunty; //구매수량
+                    existingGroup.price = current.price; //구매금액
+                    existingGroup.rcvPrice += current.rcvPrice; //입고금액
+                    existingGroup.rcvQunty += current.rcvQunty; //입고수량
+                    existingGroup.rcvState =  setState(existingGroup.byQunty, existingGroup.rcvQunty);
                 } else {
-                    result.push({ pgNm: current.pgNm, pdiMenufut: current.pdiMenufut, rcvPrice: current.rcvPrice });
+                    result.push({ ...current, rcvState: setState(current.byQunty, current.rcvQunty) });
                 }
+
                 return result;
             }, []);
-            setBuyCall(groupedData);
+
+            //마지막 토탈 행 구하기
+            const totalSummary = groupedCalData.reduce((summary, item) => {
+                summary.byQunty += item.byQunty || 0;
+                summary.price += item.price || 0;
+                summary.rcvPrice += item.rcvPrice || 0;
+                summary.rcvQunty += item.rcvQunty || 0;
+                return summary;
+            }, { byQunty: 0, price: 0, rcvPrice: 0, rcvQunty: 0 });
+            
+            groupedCalData.push({
+                pgNm: "TOTAL",
+                pdiSeller: "",
+                byQunty: totalSummary.byQunty,
+                price: totalSummary.price,
+                rcvPrice: totalSummary.rcvPrice,
+                rcvQunty: totalSummary.rcvQunty,
+                rcvState: ""
+            });
+
+
+            //상태 업데이트
+            calData.forEach(item => {
+                const correspondingGroup = groupedCalData.find(group => group.pgNm === item.pgNm && group.pdiNum === item.pdiNum && group.pdiSeller === item.pdiSeller);
+                if (correspondingGroup) {
+                    item.rcvState = correspondingGroup.rcvState;
+                }
+            });
+
+
+            const groupedCalData2 = groupedCalData.reduce((result, current) => {
+                const existingGroup = result.find(group => group.pgNm === current.pgNm);
+            
+                if (existingGroup) {
+                    existingGroup.pdiSeller = existingGroup.pdiSeller + ", " + current.pdiSeller
+                    existingGroup.byQunty += current.byQunty;
+                    existingGroup.price += current.price;
+                } else {
+                    result.push({ ...current });
+                }
+            
+                return result;
+            }, []);
+
+            // const groupedCalData2 = calData.reduce((result, current) => {
+            //     const existingGroups = result.find(group => group.pgNm === current.pgNm);
+            
+            //     if (existingGroups) {
+            //         const existingItem = existingGroups.items.find(item => item.pdiSeller === current.pdiSeller);
+            
+            //         if (existingItem) {
+            //             existingItem.byQunty += current.byQunty;
+            //             existingItem.price += current.price;
+            //         } else {
+            //             existingGroups.items.push({ ...current });
+            //         }
+            //     } else {
+            //         result.push({
+            //             pgNm: current.pgNm,
+            //             items: [{ ...current }],
+            //         });
+            //     }
+            
+            //     return result;
+            // }, []).flatMap(group => group.items);
+            
+            console.log("groupedCalData2:", groupedCalData2);
+
+            setRunMgmt(calData);
+            setBuyCall(groupedCalData);
+            setBuyCall2(groupedCalData2)
         } else {
             alert("no data");
             setRunMgmt([]);
@@ -47,24 +123,30 @@ function PurchasingMgmtExe() {
         }
     };
 
-    const changeData = (data) => {
-        const updateData = data.map((data) => ({
+    const changeData = (datas) => {
+        const calData = datas.map((data) => ({
             ...data,
             price: data.byUnitPrice * data.byQunty,
             rcvPrice: data.rcvUnitPrice * data.rcvQunty,
-            rcvState:
-                data.byQunty < data.rcvQunty
-                    ? "초과입고"
-                    : data.byQunty - data.rcvQunty === 0
-                    ? "입고완료"
-                    : data.byQunty - data.rcvQunty === data.byQunty
-                    ? "미입고"
-                    : data.rcvQunty < data.byQunty
-                    ? "입고중"
-                    : "상태이상",
+            rcvState: setState(data.byQunty, data.rcvQunty)
         }));
-        return updateData;
+        
+        return calData;
     };
+
+    const setState = (byQunty, rcvQunty) => {
+        if(byQunty < rcvQunty) {
+            return "초과입고";
+        } else if(byQunty - rcvQunty === 0) {
+            return "입고완료";
+        } else if(byQunty - rcvQunty === byQunty) {
+            return "미입고";
+        } else if(byQunty > rcvQunty) {
+            return "입고중";
+        } else {
+            return "상태이상";
+        }
+    }
 
     const refresh = () => {
         if (condition.poiId) {
@@ -85,13 +167,16 @@ function PurchasingMgmtExe() {
 
     return (
         <>
-            <Location pathList={locationPath.PurchasingMgmt} />
+            <Location pathList={locationPath.PurchasingMgmtExe} />
             <ApprovalFormExe returnData={conditionInfo} />
-            <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
-                <ReactDataTable columns={columns.purchasingMgmt.view} customDatas={view} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+            <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
+                <ReactDataTable columns={columns.PurchasingMgmtExe.view} customDatas={view} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
-            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                <ReactDataTable columns={columns.purchasingMgmt.buyCal} customDatas={buyCall} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+            <HideCard title="합계" color="back-lightblue" className="mg-b-40">
+                <span style={{textAlign: "start", fontWeight: "bold", fontSize: "14px"}} className="darkblue">품목그룹별 합계</span>
+                <ReactDataTable columns={columns.PurchasingMgmtExe.buyCal2} customDatas={buyCall2} defaultPageSize={5} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
+                <span style={{textAlign: "start", fontWeight: "bold", fontSize: "14px"}} className="cherry">품목그룹별 입고현황</span>
+                <ReactDataTable columns={columns.PurchasingMgmtExe.buyCal} customDatas={buyCall} defaultPageSize={5} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">
@@ -104,7 +189,7 @@ function PurchasingMgmtExe() {
                 <ReactDataTablePdorder
                     suffixUrl="/baseInfrm/product/receivingInfo"
                     editing={true}
-                    columns={columns.purchasingMgmt.run}
+                    columns={columns.PurchasingMgmtExe.run}
                     viewLoadDatas={view}
                     customDatas={runMgmt}
                     viewPageName={{ name: "구매(재료비)", id: "PurchasingMgmtExe" }}

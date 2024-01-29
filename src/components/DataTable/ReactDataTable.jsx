@@ -36,6 +36,8 @@ const ReactDataTable = (props) => {
         addColumns, //팝업추가 목록
         deleteInfo, //팝업삭제 정보
         isPageNation,
+        isSpecialRow, //마지막 행에 CSS 추가
+        isPageNationCombo, //페이지네이션 콤보박스
     } = props;
     const {
         nameOfButton,
@@ -632,7 +634,7 @@ const ReactDataTable = (props) => {
 
     return (
         <>
-            {isPageNation && (
+            {isPageNationCombo && (
                 <div className="flex-between mg-b-10">
                     <div className="page-size">
                         {/* <span className="table-title mg-r-10">데이터 수</span> */}
@@ -648,6 +650,7 @@ const ReactDataTable = (props) => {
             )}
             <div className={isPageNation ? "x-scroll" : "table-scroll"}>
                 <table {...getTableProps()} className="table-custom table-styled" style={{ tableLayout: "auto" }}>
+                {/* <table {...getTableProps()} className="table-custom table-styled" > */}
                     <thead>
                         {headerGroups.map((headerGroup, headerGroupIndex) => (
                             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -676,9 +679,10 @@ const ReactDataTable = (props) => {
                         <tbody {...getTableBodyProps()}>
                             {page.map((row, rowIndex) => {
                                 prepareRow(row);
+                                const isLastRow = row.index === page.length - 1;
                                 return (
                                     // <tr {...row.getRowProps()} onDoubleClick={(e) => onCLickRow(row)}>
-                                    <tr {...row.getRowProps()}>
+                                    <tr {...row.getRowProps()} className={isSpecialRow && isLastRow ? 'special-row' : ''}>
                                         {row.cells.map((cell, cellIndex) => {
                                             if (cell.column.notView) {
                                                 // notView가 true인 경우, 셀을 출력하지 않음
@@ -820,8 +824,9 @@ const ReactDataTable = (props) => {
                             <tr>
                                 <td
                                     colSpan={visibleColumnCount + 1}
-                                    style={{ textAlign: "center", fontSize: "15px", height: "80px" }}
-                                    className="back-lightgray">
+                                    style={{ textAlign: "center", fontSize: "15px", height: "80px", border: 0 }}
+                                    className="back-lightgray"
+                                >
                                     조회된 데이터가 없습니다.
                                 </td>
                             </tr>
@@ -830,7 +835,7 @@ const ReactDataTable = (props) => {
                 </table>
             </div>
             {isPageNation && (
-                <div className="me-pagenation mg-t-10">
+                <div className="me-pagenation">
                     <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
                         {" "}
                         처음{" "}

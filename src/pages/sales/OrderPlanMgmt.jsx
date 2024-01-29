@@ -34,6 +34,7 @@ function OrderPlanMgmt() {
     const [pjbudgetCalDatas, setPjbudgetCalDatas] = useState([]); // 경비합계
     const [pdOrdrDatas, setPdOrdrDatas] = useState([]); // 구매(재료비)
     const [pdOrdrCalDatas, setPdOrdrCalDatas] = useState([]); // 구매합계
+    const [pdOrdrCalDatas2, setPdOrdrCalDatas2] = useState([]); // 구매합계
     const [outsourcingDatas, setOutsourcingDatas] = useState([]); // 개발외주비
     const [outCalDatas, setOutCalDatas] = useState([]); // 개발외주비합계
     const [generalExpensesDatas, setGeneralExpensesDatas] = useState([]); // 영업관리비
@@ -156,7 +157,6 @@ function OrderPlanMgmt() {
     };
 
     const addList = async (addNewData) => {
-        // console.log(addNewData, "추가");
         addNewData.forEach((data) => {
             data.poiId = condition.poiId || "";
         });
@@ -168,13 +168,11 @@ function OrderPlanMgmt() {
         toUpdate.forEach((data) => {
             data.poiId = condition.poiId || "";
         });
-        // console.log("❗updateList:", toUpdate);
         const updatedData = toUpdate.map((obj) => {
             const { pmpId, ...rest } = obj;
             return rest;
         });
 
-        // console.log("❗❗❗updateList:", updatedData);
         const url = `/api/baseInfrm/product/prmnPlan/editArrayList.do`;
         const resultData = await axiosUpdate(url, updatedData);
         refresh();
@@ -244,7 +242,6 @@ function OrderPlanMgmt() {
             });
             if (resultData && resultData.length > 0) {
                 setSearchDates(resultData);
-                console.log("😈영업-원가버전조회:", requestData, "resultData:", resultData);
             } else {
                 alert("no data");
                 setSearchDates([]);
@@ -260,7 +257,7 @@ function OrderPlanMgmt() {
                     mm11 = 0,
                     mm12 = 0,
                     mm13 = 0,
-                    mm14 = 0; //임원
+                    mm14 = 0; //mm합
                 const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === requestData.poiMonth);
                 if (matchingAItem) {
                     changeData.forEach((Item) => {
@@ -320,7 +317,6 @@ function OrderPlanMgmt() {
                         }
                     });
                     setPrmnPlanDatas(changeData);
-                    console.log("😈영업-인건비:", changeData);
                 }
             } else {
                 alert("no data");
@@ -336,43 +332,109 @@ function OrderPlanMgmt() {
                     pjbgPriceTotal += data.pjbgPrice;
                 });
                 setPjbudgetCalDatas([{ pjbgPriceTotal }]);
-                console.log("😈영업-경비:", resultData);
             } else {
                 alert("no data");
                 setPjbudgetDatas([]);
                 setPjbudgetCalDatas([]);
             }
         } else if (innerPageName.name === "구매(재료비)") {
-            console.log("😈구매조회!!", requestData);
             const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
+
             if (resultData && resultData.length > 0) {
                 const calData = buyIngInfoCalculation(resultData);
                 setPdOrdrDatas(calData);
 
-                let consumerAmountTotal = 0; // 소비자금액
-                let planAmountTotal = 0; // 금액
-                let estimatedCostTotal = 0; // 원가
-                let plannedProfitsTotal = 0; // 이익금
+                const groupedData = calData.reduce((result, current) => {
+                    const existingGroup = result.find((group) => group.pdiSeller === current.pdiSeller && group.pgNm === current.pgNm); //제조사, 품목그룹
+                    if (existingGroup) {
+                        existingGroup.estimatedCost += current.estimatedCost; //원가
+                        existingGroup.consumerAmount += current.consumerAmount; //소비자금액
+                        existingGroup.planAmount += current.planAmount; //공급금액
+                        existingGroup.byQunty += current.byQunty; //수량
+                    } else {
+                        result.push({ ...current });
+                    }
+                    return result;
+                }, []);
 
-                calData.forEach((data) => {
-                    consumerAmountTotal += data.consumerAmount; // 소비자금액
-                    planAmountTotal += data.planAmount; // 금액
-                    estimatedCostTotal += data.estimatedCost; // 원가
-                    plannedProfitsTotal += data.plannedProfits; // 이익금
+                //합산의 네고율, 이익금, 이익율 구하기
+                const groupedDataWithCalculations = groupedData.map((group) => {
+                    // 할인율: (1 - (소비자금액 / 공급금액)) * 100
+                    group.nego = group.planAmount !== 0 ? (group.consumerAmount / group.planAmount - 1) * 100 : 0;
+                    // 이익금: 공급금액 - 원가
+                    group.profits = group.planAmount - group.estimatedCost;
+                    // 이익율: (공급금액-원가)/원가*100
+                    group.margin = group.planAmount !== 0 ? ((group.planAmount - group.estimatedCost) / group.planAmount) * 100 + "%" : 0 + "%";
+                    return group;
                 });
-                const nego = division(consumerAmountTotal - planAmountTotal, consumerAmountTotal) * 100 + "%"; // 네고율
-                const plannedProfitMarginTotal = division(plannedProfitsTotal, planAmountTotal) * 100 + "%"; // 이익금/금액
-                setPdOrdrCalDatas([
-                    {
-                        consumerAmountTotal,
-                        planAmountTotal,
-                        nego,
-                        estimatedCostTotal,
-                        plannedProfitsTotal,
-                        plannedProfitMarginTotal,
+
+                //마지막 토탈 행 구하기
+                const totals = groupedDataWithCalculations.reduce(
+                    (sums, group) => {
+                        sums.estimatedCost += group.estimatedCost || 0;
+                        sums.consumerAmount += group.consumerAmount || 0;
+                        sums.planAmount += group.planAmount || 0;
+                        sums.profits += group.profits || 0;
+                        sums.byQunty += group.byQunty;
+                        sums.margin = sums.margin + "%";
+                        return sums;
                     },
-                ]);
-                console.log("😈영업-구매비:", requestData, "resultData:", resultData);
+                    {
+                        estimatedCost: 0,
+                        consumerAmount: 0,
+                        planAmount: 0,
+                        nego: 0,
+                        profits: 0,
+                        margin: 0,
+                        byQunty: 0,
+                    }
+                );
+
+                groupedDataWithCalculations.push({
+                    pgNm: "TOTAL",
+                    pdiSeller: "",
+                    consumerAmount: totals.consumerAmount, //소비자금액
+                    planAmount: totals.planAmount, //공급금액
+                    nego: totals.planAmount !== 0 ? (totals.consumerAmount / totals.planAmount - 1) * 100 : 0, //네고율
+                    estimatedCost: totals.estimatedCost, //원가
+                    profits: totals.profits, //이익금
+                    // (공급금액-원가)/원가*100
+                    margin: totals.planAmount !== 0 ? ((totals.planAmount - totals.estimatedCost) / totals.estimatedCost) * 100 + "%" : 0 + "%", //이익율
+                    byQunty: totals.byQunty,
+                });
+
+                // 품목그룹별 합계
+                const group2 = groupedDataWithCalculations.reduce((result, current) => {
+                    const extra = result.find((item) => item.pgNm === current.pgNm);
+                    if (extra) {
+                        extra.byQunty += current.byQunty;
+                        extra.planAmount += current.planAmount;
+                    } else {
+                        result.push({ ...current });
+                    }
+
+                    return result;
+                }, []);
+
+                const totals2 = group2.reduce(
+                    (sums, group) => {
+                        sums.consumerAmount += group.consumerAmount || 0;
+                        sums.planAmount += group.planAmount || 0;
+                        sums.byQunty += group.byQunty || 0;
+                        return sums;
+                    },
+                    {
+                        estimatedCost: 0,
+                        consumerAmount: 0,
+                        planAmount: 0,
+                        nego: 0,
+                        profits: 0,
+                        margin: 0,
+                    }
+                );
+
+                setPdOrdrCalDatas(groupedDataWithCalculations); //합계
+                setPdOrdrCalDatas2(group2); //합계2
             } else {
                 alert("no data");
                 setPdOrdrDatas([]);
@@ -381,13 +443,20 @@ function OrderPlanMgmt() {
         } else if (innerPageName.name === "개발외주비") {
             const resultData = await axiosFetch("/api/baseInfrm/product/devOutCost/totalListAll.do", requestData);
             if (resultData && resultData.length > 0) {
-                setOutsourcingDatas(resultData);
-                let devOutPriceTotal = 0;
                 resultData.forEach((data) => {
-                    devOutPriceTotal += data.devOutMm * data.devOutPrice;
+                    data.price = data.devOutMm * data.devOutPrice; // 계산된 값을 데이터에 추가
                 });
-                setOutCalDatas([{ devOutPriceTotal }]);
-                console.log("😈영업-개발외주비:", requestData, "resultData:", resultData);
+                setOutsourcingDatas(resultData);
+
+                const calTotal = resultData.reduce(
+                    (total, data) => {
+                        total.totalPrice += data.price;
+                        return total;
+                    },
+                    { totalPrice: 0 }
+                );
+
+                setOutCalDatas([calTotal]);
             } else {
                 alert("no data");
                 setOutsourcingDatas([]);
@@ -400,11 +469,13 @@ function OrderPlanMgmt() {
                 // slsmnEnterpriseProfit 기업이윤, slsmnAdmnsCost 일반관리비, slsmnNego 네고
                 let total = 0; //판관비
                 let negoTotal = 0; //네고
+                let price = 0; //네고
                 resultData.forEach((data) => {
                     total += data.slsmnEnterpriseProfit + data.slsmnAdmnsCost;
                     negoTotal += data.slsmnNego;
+                    price = total + negoTotal;
                 });
-                setGeneralCalDatas([{ total, negoTotal }]);
+                setGeneralCalDatas([{ total, negoTotal, price }]);
                 console.log("😈영업-영업관리비:", requestData, "resultData:", resultData);
             } else {
                 alert("no data");
@@ -535,7 +606,7 @@ function OrderPlanMgmt() {
                         <ul>
                             <SearchList conditionList={columns.orderPlanMgmt.versionCondition} onSearch={onSearch} />
                             <HideCard title="원가 버전 목록" color="back-lightblue" className="mg-b-40">
-                                <div className="table-buttons mg-b-m-30">
+                                <div className="table-buttons mg-t-10 mg-b-10">
                                     <PopupButton targetUrl={URL.PreCostDoc} data={{ label: "사전원가서", ...selectedRows[0] }} />
                                     <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
                                     <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
@@ -558,7 +629,7 @@ function OrderPlanMgmt() {
                     <div className="second">
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+                            <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable columns={columns.orderPlanMgmt.laborCal} customDatas={prmnCalDatas} hideCheckBox={true} isPageNation={true} />
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
@@ -583,12 +654,26 @@ function OrderPlanMgmt() {
                     <div className="third">
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+                            <HideCard title="합계" color="back-lightblue" className="mg-b-40">
+                                <span style={{ textAlign: "start", fontWeight: "bold", fontSize: "14px" }} className="darkblue">
+                                    품목그룹별 합계
+                                </span>
+                                <ReactDataTable
+                                    columns={columns.orderPlanMgmt.purchaseCal2}
+                                    customDatas={pdOrdrCalDatas2}
+                                    hideCheckBox={true}
+                                    isPageNation={true}
+                                    isSpecialRow={true}
+                                />
+                                <span style={{ textAlign: "start", fontWeight: "bold", fontSize: "14px" }} className="cherry">
+                                    품목그룹/판매사별 합계
+                                </span>
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.purchaseCal}
                                     customDatas={pdOrdrCalDatas}
                                     hideCheckBox={true}
                                     isPageNation={true}
+                                    isSpecialRow={true}
                                 />
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
@@ -614,7 +699,7 @@ function OrderPlanMgmt() {
                     <div className="fourth">
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+                            <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.outCal}
                                     customDatas={outCalDatas}
@@ -645,7 +730,7 @@ function OrderPlanMgmt() {
                     <div className="fifth">
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+                            <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.expensesCal}
                                     customDatas={pjbudgetCalDatas}
@@ -674,7 +759,7 @@ function OrderPlanMgmt() {
                     <div className="sixth">
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
+                            <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.generalCal}
                                     customDatas={generalCalDatas}

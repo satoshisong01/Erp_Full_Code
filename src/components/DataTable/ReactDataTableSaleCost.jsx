@@ -217,7 +217,6 @@ const ReactDataTableSaleCost = (props) => {
                     returnSelectRows && returnSelectRows(selects);
                     returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
                 }
-                console.log("444444444", selectedFlatRows.length);
                 setLengthSelectRow(selectedFlatRows.length);
             }
         }

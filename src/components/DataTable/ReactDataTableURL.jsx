@@ -549,29 +549,30 @@ const ReactDataTableURL = (props) => {
                                     return null;
                                 }
 
+                                    return (
+                                        <th {...column.getHeaderProps(column.getSortByToggleProps())} className={columnIndex === 0 ? "first-column" : ""}>
+                                            {column.render("Header")}
+                                            <div {...column.getResizerProps()} className={`resizer ${column.isResizing ? "isResizing" : ""}`} />
+                                            <span style={{ color: "red", margin: 0 }}>{column.require === true ? "*" : ""}</span>
+                                            <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
+                                        </th>
+                                    );
+                                })}
+                            </tr>
+                        ))}
+                    </thead>
+                    {tableData.length > 0 ? (
+                        <tbody {...getTableBodyProps()}>
+                            {page.map((row, rowIndex) => {
+                                prepareRow(row);
                                 return (
-                                    <th {...column.getHeaderProps(column.getSortByToggleProps())} className={columnIndex === 0 ? "first-column" : ""}>
-                                        {column.render("Header")}
-                                        <div {...column.getResizerProps()} className={`resizer ${column.isResizing ? "isResizing" : ""}`} />
-                                        <span style={{ color: "red", margin: 0 }}>{column.require === true ? "*" : ""}</span>
-                                        <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
-                                    </th>
-                                );
-                            })}
-                        </tr>
-                    ))}
-                </thead>
-                {tableData.length > 0 ? (
-                    <tbody {...getTableBodyProps()}>
-                        {page.map((row, rowIndex) => {
-                            prepareRow(row);
-                            return (
-                                <tr {...row.getRowProps()} onClick={(e) => onCLickRow(row)}>
-                                    {row.cells.map((cell, cellIndex) => {
-                                        if (cell.column.notView) {
-                                            // notView가 true인 경우, 셀을 출력하지 않음
-                                            return null;
-                                        }
+                                    // <tr {...row.getRowProps()} onClick={(e) => onCLickRow(row)}>
+                                    <tr {...row.getRowProps()}>
+                                        {row.cells.map((cell, cellIndex) => {
+                                            if (cell.column.notView) {
+                                                // notView가 true인 경우, 셀을 출력하지 않음
+                                                return null;
+                                            }
 
                                         return (
                                             <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"} id="otherCol">

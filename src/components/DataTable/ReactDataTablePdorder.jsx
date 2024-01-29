@@ -9,6 +9,7 @@ import DayPicker from "components/input/DayPicker";
 import MonthPicker from "components/input/MonthPicker";
 import ProductInfoModal from "components/modal/ProductInfoModal";
 import FileModal from "components/modal/FileModal";
+import Number from "components/input/Number";
 
 /* 구매 테이블 */
 const ReactDataTablePdorder = (props) => {
@@ -300,11 +301,21 @@ const ReactDataTablePdorder = (props) => {
         }
     };
 
-    const handleChange = (e, row, accessor) => {
+    const handleChange = (e, row, accessor, type) => {
         const { value } = e.target;
         const index = row.index;
         const updatedTableData = [...tableData];
-        updatedTableData[row.index][accessor] = value;
+
+        if(type === "number") {
+            const removedCommaValue = value.replaceAll(",", "");
+            if(removedCommaValue) {
+                const intValue = parseInt(removedCommaValue, 10);
+                updatedTableData[row.index][accessor] = intValue.toLocaleString();
+            }
+        } else {
+            updatedTableData[row.index][accessor] = value;
+        }
+        
 
         //실행
         if (currentPageName.name === "구매(재료비)") {
@@ -317,23 +328,20 @@ const ReactDataTablePdorder = (props) => {
         //영업
         if (innerPageName.name === "구매(재료비)") {
             // 원단가, 기준이익율, 소비자가산출률, 수량
-            if (accessor === "byUnitPrice" || accessor === "byStandardMargin" || accessor === "byConsumerOutputRate" || accessor === "byQunty") {
+            if (accessor === "byQunty" || accessor === "byUnitPrice" || accessor === "byStandardMargin" || accessor === "byConsumerOutputRate") {
                 if (row.original.byUnitPrice && row.original.byStandardMargin && row.original.byConsumerOutputRate && row.original.byQunty) {
                     // 1.원가 : 수량 * 원단가
                     const estimatedCost = row.original.byQunty * row.original.byUnitPrice;
-                    // 2.단가 : 원가 / (1 - 사전원가기준이익율)
-                    // estimatedCost / 1-byStandardMargin/100
-                    const unitPrice = division(estimatedCost, 100 - row.original.byStandardMargin) * 100;
-                    // 3.금액 : 수량 * 단가ㅔ
+                    // 2.공급단가 : 원가 / (1 - 이익율)
+                    const unitPrice = division(estimatedCost, 100-row.original.byStandardMargin) * 100;
+                    // 3.공급금액 : 수량 * 공급단가
                     const planAmount = row.original.byQunty * unitPrice;
-                    // 4.소비자단가 : 단가 / 소비자산출율
-                    const consumerPrice = division(unitPrice, row.original.byConsumerOutputRate) * 10;
+                    // 4.소비자단가 : 공급단가 / 소비자산출율
+                    const consumerPrice = division(unitPrice, row.original.byConsumerOutputRate);
                     // 5.소비자금액 : 수량 * 소비자단가
                     const consumerAmount = row.original.byQunty * consumerPrice;
-                    // 6.이익금 : 금액 - 원단가
+                    // 6.이익금 : 공급금액 - 원가
                     const plannedProfits = planAmount - estimatedCost;
-                    // 7.이익률 : 이익금 / 금액
-                    const plannedProfitMargin = division(plannedProfits, planAmount);
 
                     updatedTableData[index]["estimatedCost"] = Math.round(estimatedCost);
                     updatedTableData[index]["unitPrice"] = Math.round(unitPrice);
@@ -341,8 +349,22 @@ const ReactDataTablePdorder = (props) => {
                     updatedTableData[index]["consumerPrice"] = Math.round(consumerPrice * 100);
                     updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount * 100);
                     updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits);
-                    updatedTableData[index]["plannedProfitMargin"] = Math.round(plannedProfitMargin * 100);
                 }
+            }
+            //기준 이익율, 소비자가 산출률 역산 해야할지 문의
+            else if(accessor === "consumerPrice" || accessor === "unitPrice") { //소비자단가, 공급단가
+                const consumerAmount = row.original.byQunty * row.original.consumerPrice; //소비자금액
+                const planAmount = row.original.byQunty * row.original.unitPrice; //공급금액
+                // 이익금 : 공급금액 - 원가
+                const plannedProfits = planAmount - row.original.estimatedCost;
+                if(row.original.unitPrice && row.original.estimatedCost) { //이익율 
+                    const byStandardMargin = row.original.unitPrice !== 0 ? 100 - Math.round(100 / (row.original.unitPrice / row.original.estimatedCost)) : 0;
+                    updatedTableData[index]["byStandardMargin"] = byStandardMargin;
+                }
+
+                updatedTableData[index]["consumerAmount"] = consumerAmount;
+                updatedTableData[index]["planAmount"] = planAmount;
+                updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits);
             }
         }
         setTableData(updatedTableData);
@@ -358,7 +380,6 @@ const ReactDataTablePdorder = (props) => {
         if (!value1 || !value2) {
             return 0;
         }
-        // return Math.round(value1 / value2);
         return value1 / value2;
     };
 
@@ -633,6 +654,17 @@ const ReactDataTablePdorder = (props) => {
                                                                     value={tableData[row.index]?.[cell.column.id] || ""}
                                                                     onChange={(e) => handleChange(e, row, cell.column.id)}
                                                                     readOnly
+                                                                />
+                                                            </div>
+                                                        ) : cell.column.type === "number" ? (
+                                                            <div>
+                                                                <input
+                                                                    type="text"
+                                                                    id={cell.column.id}
+                                                                    className="basic-input"
+                                                                    name={cell.column.id}
+                                                                    onChange={(e) => handleChange(e, row, cell.column.id, "number")}
+                                                                    value={tableData[row.index]?.[cell.column.id] || cell.value || ""}
                                                                 />
                                                             </div>
                                                         ) : typeof cell.value === "number" ? (

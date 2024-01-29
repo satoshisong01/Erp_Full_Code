@@ -15,15 +15,15 @@ import DelButton from "components/button/DelButton";
 
 /** 실행관리-인건비-계획 */
 function LaborCostMgmtPlan() {
-    const { innerPageName, unitPriceList, currentPageName, unitPriceListRenew, setNameOfButton } = useContext(PageContext);
+    const { unitPriceList, currentPageName, unitPriceListRenew, setNameOfButton } = useContext(PageContext);
 
     const [condition, setCondition] = useState({});
 
     const columnlabor = [
         //인건비
-        { header: "연월", col: "pmpMonth", cellWidth: "240", type: "datePicker" },
-        { header: "M/M계", col: "total", cellWidth: "150" },
-        { header: "인건비계", col: "totalPrice", cellWidth: "150", type: "number" },
+        { header: "연월", col: "pmpMonth", cellWidth: "100", type: "datePicker" },
+        { header: "M/M", col: "total", cellWidth: "80" },
+        { header: "금액", col: "totalPrice", cellWidth: "174", type: "number" },
         { header: "임원", col: "pmpmmPositionCode1", notView: true },
         { header: "특급기술사", col: "pmpmmPositionCode2", notView: true },
         { header: "고급기술사", col: "pmpmmPositionCode3", notView: true },
@@ -32,12 +32,12 @@ function LaborCostMgmtPlan() {
         { header: "고급기능사", col: "pmpmmPositionCode6", notView: true },
         { header: "중급기능사", col: "pmpmmPositionCode7", notView: true },
         { header: "초급기능사", col: "pmpmmPositionCode8", notView: true },
-        { header: "부장", col: "pmpmmPositionCode9", cellWidth: "140", type: "input" },
-        { header: "차장", col: "pmpmmPositionCode10", cellWidth: "140", type: "input" },
-        { header: "과장", col: "pmpmmPositionCode11", cellWidth: "140", type: "input" },
-        { header: "대리", col: "pmpmmPositionCode12", cellWidth: "140", type: "input" },
-        { header: "주임", col: "pmpmmPositionCode13", cellWidth: "140", type: "input" },
-        { header: "사원", col: "pmpmmPositionCode14", cellWidth: "140", type: "input" },
+        { header: "부장", col: "pmpmmPositionCode9", cellWidth: "170", type: "input" },
+        { header: "차장", col: "pmpmmPositionCode10", cellWidth: "170", type: "input" },
+        { header: "과장", col: "pmpmmPositionCode11", cellWidth: "170", type: "input" },
+        { header: "대리", col: "pmpmmPositionCode12", cellWidth: "170", type: "input" },
+        { header: "주임", col: "pmpmmPositionCode13", cellWidth: "170", type: "input" },
+        { header: "사원", col: "pmpmmPositionCode14", cellWidth: "170", type: "input" },
     ];
 
     const conditionInfo = (value) => {
@@ -57,12 +57,6 @@ function LaborCostMgmtPlan() {
     const [budgetMgmtView, setBudgetMgmtView] = useState([]); // 영업인건비
     const [budgetCal, setBudgetCal] = useState([]); // 합계
 
-    // useEffect(() => {
-    //     if (condition.poiId === undefined || condition.poId === "") {
-    //         //테이블 초기화
-    //         setBudgetMgmt([]);
-    //     }
-    // }, [currentPageName, innerPageName, condition]);
 
     const refresh = () => {
         if (condition.poiId) {
@@ -74,6 +68,9 @@ function LaborCostMgmtPlan() {
         const resultData = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", condition);
         const viewResult = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", { poiId: condition.poiId, costAt: "Y" });
         const changeData = ChangePrmnPlanData(viewResult);
+        
+        console.log("0.changeData:", changeData);
+
         changeData.forEach((Item) => {
             const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
             const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
@@ -90,63 +87,115 @@ function LaborCostMgmtPlan() {
             }
         });
         setBudgetMgmtView(changeData);
+
         if (resultData && resultData.length > 0) {
             if (unitPriceList && unitPriceList.length > 0) {
-                const updatedDatas = resultData.map((data) => {
+                const updatedDatas = resultData.map((data) => { //데이터 돌면서 직급단가랑 계산..
+
                     const unit = unitPriceList.find((unit) => data.pecPosition === unit.guppName && unit.gupBaseDate === condition.poiMonth);
                     if (unit) {
-                        const price = unit ? data.pecMm * unit.gupPrice : 0; // 적절한 기본값 사용
+                        const price = unit ? data.pecMm * unit.gupPrice : 0;
                         return { ...data, price: price, positionPrice: unit.gupPrice };
                     } else {
                         return { ...data, price: 0, positionPrice: 0 };
                     }
                 });
-                setBudgetMgmt(updatedDatas);
-                let mmTotal = 0;
-                let priceTotal = 0;
-                let price9 = 0;
-                let price10 = 0;
-                let price11 = 0;
-                let price12 = 0;
-                let price13 = 0;
-                let price14 = 0;
-                let mm9 = 0,
-                    mm10 = 0,
-                    mm11 = 0,
-                    mm12 = 0,
-                    mm13 = 0,
-                    mm14 = 0;
-                updatedDatas.map((data) => {
-                    //합계 계산
-                    mmTotal += data.pecMm;
-                    priceTotal += data.price;
-                    if (data.pecPosition === "부장") {
-                        mm9 += data.pecMm;
-                        price9 += data.price;
-                    } else if (data.pecPosition === "차장") {
-                        mm10 += data.pecMm;
-                        price10 += data.price;
-                    } else if (data.pecPosition === "과장") {
-                        mm11 += data.pecMm;
-                        price11 += data.price;
-                    } else if (data.pecPosition === "대리") {
-                        mm12 += data.pecMm;
-                        price12 += data.price;
-                    } else if (data.pecPosition === "주임") {
-                        mm13 += data.pecMm;
-                        price13 += data.price;
-                    } else if (data.pecPosition === "사원") {
-                        mm14 += data.pecMm;
-                        price14 += data.price;
+                setBudgetMgmt(updatedDatas); //본문
+
+                // 월을 추출하는 함수
+                function extractMonth(dateString) {
+                    return dateString && dateString.substring(0, 7);
+                }
+
+                const groupedData = updatedDatas.reduce((result, current) => {
+                    const dateToGroup = extractMonth(current.pecStartdate); // 연월 부분 추출
+                    let existingGroup = result.find(group => extractMonth(group.month) === dateToGroup);
+                
+                    if (!existingGroup) {
+                        // 그룹이 없을 경우 초기값 설정
+                        existingGroup = {
+                            month: dateToGroup,
+                            totalMm: 0,
+                            totalPrice: 0,
+                            mm9: 0,
+                            price9: 0,
+                            mm10: 0,
+                            price10: 0,
+                            mm11: 0,
+                            price11: 0,
+                            mm12: 0,
+                            price12: 0,
+                            mm13: 0,
+                            price13: 0,
+                            mm14: 0,
+                            price14: 0,
+                        };
+                
+                        result.push(existingGroup);
                     }
-                });
-                setBudgetCal([
-                    { mmTotal: mmTotal.toLocaleString() + "(M/M)", price9, price10, price11, price12, price13, price14 },
-                    { mmTotal: priceTotal.toLocaleString() + "원", mm9, mm10, mm11, mm12, mm13, mm14 },
-                ]);
+                
+                    // 누적 값 할당
+                    existingGroup.totalMm +=  Number(current.pecMm);
+                    existingGroup.totalPrice +=  Number(current.price);
+                    if (current.pecPosition === "부장") {
+                        existingGroup.mm9 += Number(current.pecMm);
+                        existingGroup.price9 += Number(current.price);
+                    } else if (current.pecPosition === "차장") {
+                        existingGroup.mm10 += Number(current.pecMm);
+                        existingGroup.price10 += Number(current.price);
+                    } else if (current.pecPosition === "과장") {
+                        existingGroup.mm11 += Number(current.pecMm);
+                        existingGroup.price11 += Number(current.price);
+                    } else if (current.pecPosition === "대리") {
+                        existingGroup.mm12 += Number(current.pecMm);
+                        existingGroup.price12 += Number(current.price);
+                    } else if (current.pecPosition === "주임") {
+                        existingGroup.mm13 += Number(current.pecMm);
+                        existingGroup.price13 += Number(current.price);
+                    } else if (current.pecPosition === "사원") {
+                        existingGroup.mm14 += Number(current.pecMm);
+                        existingGroup.price14 += Number(current.price);
+                    }
+                
+                    return result;
+                }, []);
+                
+                let temp = {
+                    month: "TOTAL",
+                    totalMm: 0,
+                    totalPrice: 0,
+                    price9: 0,
+                    price10: 0,
+                    price11: 0,
+                    price12: 0,
+                    price13: 0,
+                    price14: 0,
+                };
+
+                groupedData.forEach(item => {
+                    temp.totalMm += item.totalMm;
+                    temp.totalPrice += item.totalPrice;
+                    temp.price9 += item.price9;
+                    temp.price10 += item.price10;
+                    temp.price11 += item.price11;
+                    temp.price12 += item.price12;
+                    temp.price13 += item.price13;
+                    temp.price14 += item.price14;
+                })
+
+                groupedData.forEach(item => {
+                    item.price9 = item.price9.toLocaleString() + " (" + item.mm9 + ")";
+                    item.price10 = item.price10.toLocaleString() + " (" + item.mm10 + ")";
+                    item.price11 = item.price11.toLocaleString() + " (" + item.mm11 + ")";
+                    item.price12 = item.price12.toLocaleString() + " (" + item.mm12 + ")";
+                    item.price13 = item.price13.toLocaleString() + " (" + item.mm13 + ")";
+                    item.price14 = item.price14.toLocaleString() + " (" + item.mm14 + ")";
+                })
+
+                groupedData.push({...temp});
+
+                setBudgetCal(groupedData);
             }
-            // console.log("get data success:)");
-            // return resultData;
         } else {
             alert("no data");
             setBudgetMgmt([]); // 빈 배열 보내주기
@@ -230,11 +279,11 @@ function LaborCostMgmtPlan() {
         <>
             <Location pathList={locationPath.LaborCostMgmt} />
             <ApprovalFormExe returnData={conditionInfo} />
-            <HideCard title="계획 조회" color="back-gray" className="mg-b-40">
+            <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
                 <ReactDataTable columns={columnlabor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
-            <HideCard title="합계" color="back-lightyellow" className="mg-b-40">
-                <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+            <HideCard title="합계" color="back-lightblue" className="mg-b-40">
+                <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">
