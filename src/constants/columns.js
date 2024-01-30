@@ -549,16 +549,16 @@ export const columns = {
         ],
         estimatePurchase: [
             //견적용 구매비
-            { header: "품목그룹", col: "pgNm", cellWidth: "120", require: true, type: "productGroup" },
-            { header: "품명", col: "pdiNm", cellWidth: "150", type: "productInfo", require: true },
-            { header: "품목 규격", col: "pdiDesc", cellWidth: "200", require: true },
-            { header: "수량", col: "unit", cellWidth: "100", type: "input" },
-            { header: "소비자 단가", col: "customersUnitPrice", cellWidth: "100" },
-            { header: "소비자 금액", col: "customersPrice", cellWidth: "100" },
-            { header: "단가", col: "unitPrice", cellWidth: "100" },
-            { header: "금액", col: "price", cellWidth: "100" },
-            { header: "D/C(%)", col: "dc", cellWidth: "100" },
-            { header: "비고", col: "desc", cellWidth: "271", type: "input" },
+            { header: "품목그룹", col: "pgNm", cellWidth: "120" },
+            { header: "모델명", col: "pdiNum", cellWidth: "150", type: "productInfo", require: true },
+            { header: "품목 규격", col: "pdiStnd", cellWidth: "200", require: true },
+            { header: "수량", col: "estBuyQunty", cellWidth: "100", type: "input" },
+            { header: "소비자 단가", col: "estConsumerUnitPrice", cellWidth: "100" },
+            { header: "소비자 금액", col: "estConsumerAmount", cellWidth: "100" },
+            { header: "단가", col: "estUnitPrice", cellWidth: "100" },
+            { header: "금액", col: "estAmount", cellWidth: "100" },
+            { header: "D/C(%)", col: "estDc", cellWidth: "100" },
+            { header: "비고", col: "estBuyDesc", cellWidth: "271", type: "input" },
         ],
     },
 
@@ -892,14 +892,14 @@ export const columns = {
                 col: "pecStartdate",
                 cellWidth: "150",
                 type: "dayPicker",
-                require: true
+                require: true,
             },
             {
                 header: "종료일",
                 col: "pecEnddate",
                 cellWidth: "150",
                 type: "dayPicker",
-                require: true
+                require: true,
             },
             {
                 header: "M/M",
