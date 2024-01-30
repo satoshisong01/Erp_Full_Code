@@ -114,10 +114,6 @@ const ReactDataTableURL = (props) => {
     }, [innerPageName, currentPageName, editing, nameOfButton]);
 
     useEffect(() => {
-        console.log(tableData, "테이블 데이터URL");
-    }, [tableData]);
-
-    useEffect(() => {
         if (isCurrentPage()) {
             //업무회원
             if (Object.keys(emUserInfo).length > 0) {
@@ -304,19 +300,8 @@ const ReactDataTableURL = (props) => {
         const { name, value } = e.target;
         const index = preRow.index;
         const updatedTableData = [...tableData];
-        updatedTableData[rowIndex][accessor] = value;
-        // 수정된 데이터로 tableData 업데이트
 
-        const newTableData = tableData.map((rowData, rowIndex) => {
-            if (rowIndex === preRow.index) {
-                return { ...rowData, [name]: value };
-            }
-            return rowData;
-        });
-        setTableData(newTableData);
-
-        if (innerPageName.id === "estimateLabor") {
-            console.log(updatedTableData, "updatedTableData");
+        if (innerPageName.id === "estimateLabor") { //견적용 인건비
             let price = 0;
             let total = 0;
 
@@ -343,15 +328,21 @@ const ReactDataTableURL = (props) => {
             updatedTableData[index]["price"] = price;
             updatedTableData[index]["total"] = total;
             updatedTableData[index]["estUnitPrice"] = positionCount;
-
-            console.log(updatedTableData, "비교해보자잇");
-            setTableData(updatedTableData);
+        } else {
+            if(accessor === "pjbgTypeCode") { //경비목록 중복 방지
+                const isDuplicate = updatedTableData.some(item => item.pjbgTypeCode === value);
+    
+                if(isDuplicate) {
+                    alert("해당 타입은 이미 존재합니다."); //이렇게해도 select는 선택되고 데이터는 들어감
+                    updatedTableData[index][accessor] = "";
+                } else  {
+                    updatedTableData[index][accessor] = value;
+                }
+            }
         }
-        // setChangeTable(newTableData);
+
+        setTableData(updatedTableData);
     };
-    // useEffect(() => {
-    //     calTotalPrice();
-    // }, [tableData]);
 
     const loadOnAddRow = (viewLoadDatas) => {
         setTableData(() => {
@@ -587,7 +578,7 @@ const ReactDataTableURL = (props) => {
                                                             value={
                                                                 tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
                                                                     ? tableData[row.index][cell.column.id]
-                                                                    : cell.value || ""
+                                                                    : ""
                                                             }
                                                             onChange={(e) => onChangeInput(e, row, cell.column.id)}
                                                         />
@@ -628,12 +619,9 @@ const ReactDataTableURL = (props) => {
                                                     ) : cell.column.type === "select" ? (
                                                         <select
                                                             name={cell.column.id}
-                                                            defaultValue={
-                                                                tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
-                                                                    ? tableData[row.index][cell.column.id]
-                                                                    : cell.column.options[row.index].value || "" // 기본값: 해당 행의 인덱스에 해당하는 옵션의 value 값 또는 빈 문자열
-                                                            }
-                                                            onChange={(e) => onChangeInput(e, row, cell.column.id)}>
+                                                            value={ tableData[row.index]?.[cell.column.id] || "" }
+                                                            onChange={(e) => onChangeInput(e, row, cell.column.id)}
+                                                        >
                                                             {cell.column.options.map((option, index) => (
                                                                 <option key={index} value={option.value || ""} selected={index === 0 ? true : false}>
                                                                     {option.label}

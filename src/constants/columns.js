@@ -152,7 +152,7 @@ export const columns = {
         project: [
             //프로젝트
             { header: "수주 아이디", col: "poiId", cellWidth: "0", notView: true },
-            { header: "프로젝트이름", col: "poiNm", cellWidth: "150" },
+            { header: "프로젝트이름", col: "poiNm", cellWidth: "200" },
             { header: "고객사", col: "cltNm", cellWidth: "150" },
             { header: "고객사ID", col: "cltId", cellWidth: "0", notView: true },
             { header: "수주부서", col: "poiGroupId", cellWidth: "70" },
@@ -164,9 +164,9 @@ export const columns = {
             { header: "계약일", col: "poiBeginDt", cellWidth: "100" },
             { header: "납기시작일", col: "poiDueBeginDt", cellWidth: "100" },
             { header: "납기종료일", col: "poiDueEndDt", cellWidth: "100" },
-            { header: "이익률(%)", col: "standardMargin", cellWidth: "50" },
+            { header: "이익률(%)", col: "standardMargin", cellWidth: "80" },
             { header: "상태", col: "poiStatus", cellWidth: "100" },
-            { header: "비고", col: "poiDesc", cellWidth: "168" },
+            { header: "비고", col: "poiDesc", cellWidth: "250" },
         ],
         condition: [
             { title: "프로젝트명", col: "poiNm", type: "input" },
@@ -356,9 +356,9 @@ export const columns = {
             { header: "고급기능사", col: "pmpmmPositionCode6", type: "input", cellWidth: "0", notView: true },
             { header: "중급기능사", col: "pmpmmPositionCode7", type: "input", cellWidth: "0", notView: true },
             { header: "초급기능사", col: "pmpmmPositionCode8", type: "input", cellWidth: "0", notView: true },
-            { header: "연월", col: "pmpMonth", cellWidth: "130", type: "datePicker" },
-            { header: "M/M계", col: "total", cellWidth: "80" },
-            { header: "인건비계", col: "totalPrice", cellWidth: "100", type: "number" },
+            { header: "연월", col: "pmpMonth", cellWidth: "130", type: "datePicker", require: true },
+            { header: "M/M", col: "total", cellWidth: "80", require: true },
+            { header: "인건비", col: "totalPrice", cellWidth: "100", type: "number" },
             { header: "부장", col: "pmpmmPositionCode9", cellWidth: "80", type: "input" },
             { header: "차장", col: "pmpmmPositionCode10", cellWidth: "80", type: "input" },
             { header: "과장", col: "pmpmmPositionCode11", cellWidth: "80", type: "input" },
@@ -369,8 +369,8 @@ export const columns = {
         ],
         laborCal: [
             //인건비합계
-            { header: "합계", col: "total", cellWidth: "184" },
-            { header: "임원", col: "pmpmmPositionCode1Total", cellWidth: "170" },
+            { header: "구분", col: "type", cellWidth: "184" },
+            { header: "합계", col: "total", cellWidth: "170" },
             { header: "부장", col: "pmpmmPositionCode9Total", cellWidth: "170" },
             { header: "차장", col: "pmpmmPositionCode10Total", cellWidth: "170" },
             { header: "과장", col: "pmpmmPositionCode11Total", cellWidth: "170" },
@@ -455,25 +455,25 @@ export const columns = {
         purchase: [
             // 구매비
             { header: "프로젝트아이디", col: "poiId", cellWidth: "0", notView: true },
-            { header: "품명", col: "pdiNm", cellWidth: "100", type: "productInfo" },
+            { header: "품명", col: "pdiNm", cellWidth: "100", type: "productInfo", require: true },
             { header: "품목그룹명", col: "pgNm", cellWidth: "100" },
             { header: "모델명", col: "pdiNum", cellWidth: "150" },
             { header: "판매사", col: "pdiSeller", cellWidth: "150" },
             { header: "제조사", col: "pdiMenufut", cellWidth: "150" },
             { header: "통화", col: "byCurrcy", cellWidth: "50" },
             { header: "규격", col: "pdiStnd", cellWidth: "180" },
-            { header: "수량", col: "byQunty", cellWidth: "50", type: "input" },
+            { header: "수량", col: "byQunty", cellWidth: "50", type: "input", require: true },
             { header: "단위", col: "pdiUnit", cellWidth: "50" },
             { header: "소비자 단가", col: "consumerPrice", cellWidth: "100", type: "input" },
             { header: "소비자 금액", col: "consumerAmount", cellWidth: "130" },
             { header: "공급단가", col: "unitPrice", cellWidth: "100", type: "input" },
             { header: "공급금액", col: "planAmount", cellWidth: "130" },
-            { header: "원단가", col: "byUnitPrice", cellWidth: "100", type: "input" },
+            { header: "원단가", col: "byUnitPrice", cellWidth: "100", type: "input", require: true },
             { header: "원가", col: "estimatedCost", cellWidth: "100" },
             { header: "이익금", col: "plannedProfits", cellWidth: "100" },
             // { header: "이익률", col: "plannedProfitMargin", cellWidth: "60" },
-            { header: "이익률", col: "byStandardMargin", cellWidth: "100", type: "input" },
-            { header: "소비자가 산출률", col: "byConsumerOutputRate", cellWidth: "130", type: "input" },
+            { header: "이익률", col: "byStandardMargin", cellWidth: "100", type: "input", require: true },
+            { header: "소비자가 산출률", col: "byConsumerOutputRate", cellWidth: "130", type: "input", require: true },
             { header: "첨부파일", col: "file", cellWidth: "70", type: "file" },
             { header: "비고", col: "byDesc", cellWidth: "300", type: "input" },
         ],
@@ -937,16 +937,16 @@ export const columns = {
             {
                 header: "품목그룹명",
                 col: "pgNm",
-                cellWidth: "150",
+                cellWidth: "200",
                 type: "productGroup",
                 require: true,
             },
-            { header: "담당자", col: "empNm", cellWidth: "150", type: "employerInfo", require: true },
+            { header: "담당자", col: "empNm", cellWidth: "100", type: "employerInfo", require: true },
             { header: "담당자ID", col: "esntlId", cellWidth: "0", notView: true },
             {
                 header: "직급",
                 col: "pecPosition",
-                cellWidth: "150",
+                cellWidth: "100",
                 //type: "select",
                 options: [
                     { value: "", label: "선택" },
@@ -961,19 +961,19 @@ export const columns = {
             {
                 header: "시작일",
                 col: "pecStartdate",
-                cellWidth: "150",
+                cellWidth: "100",
                 type: "dayPicker",
             },
             {
                 header: "종료일",
                 col: "pecEnddate",
-                cellWidth: "150",
+                cellWidth: "100",
                 type: "dayPicker",
             },
             {
-                header: "누계(M/M)",
+                header: "M/M",
                 col: "pecMm",
-                cellWidth: "150",
+                cellWidth: "80",
                 type: "input",
                 require: true,
             },
@@ -985,12 +985,18 @@ export const columns = {
             {
                 header: "투입률",
                 col: "pmpmmPositionCode1",
-                cellWidth: "150",
+                cellWidth: "100",
             },
             {
                 header: "누계율",
                 col: "pmpmmPositionCode2",
-                cellWidth: "150",
+                cellWidth: "100",
+            },
+            {
+                header: "비고",
+                col: "pmpDesc",
+                cellWidth: "309",
+                type: "input",
             },
         ],
     },
@@ -1240,6 +1246,7 @@ export const columns = {
                 col: "empNm",
                 cellWidth: "100",
                 type: "employerInfo",
+                require: true
             },
             {
                 header: "출장인ID",
@@ -1251,12 +1258,14 @@ export const columns = {
                 col: "pjbgBeginDt",
                 cellWidth: "100",
                 type: "dayPicker",
+                require: true,
             },
             {
                 header: "종료일",
                 col: "pjbgEndDt",
                 cellWidth: "100",
                 type: "dayPicker",
+                require: true
             },
             {
                 header: "교통비",
@@ -1437,7 +1446,7 @@ export const columns = {
         budget: [
             //구매 예산
             { header: "품목그룹명", col: "pgNm", cellWidth: "150", type: "productGroup" },
-            { header: "품명", col: "pdiNm", cellWidth: "150", type: "productInfo" },
+            { header: "품명", col: "pdiNm", cellWidth: "150", type: "productInfo", require: true },
             { header: "모델명", col: "pdiNum", cellWidth: "150" },
             { header: "판매사", col: "pdiSeller", cellWidth: "150" },
             { header: "규격", col: "pdiStnd", cellWidth: "150" },
@@ -1446,12 +1455,14 @@ export const columns = {
                 col: "byQunty",
                 cellWidth: "60",
                 type: "input",
+                require: true
             },
             {
                 header: "공급단가",
                 col: "byUnitPrice",
                 cellWidth: "100",
                 type: "input",
+                require: true
             },
             {
                 header: "공급금액",
@@ -1518,18 +1529,13 @@ export const columns = {
                 col: "pgNm",
                 cellWidth: "150",
             },
-            { header: "품명", col: "pdiNm", cellWidth: "150", type: "productInfo" },
+            { header: "품명", col: "pdiNm", cellWidth: "150", type: "productInfo", require: true },
             { header: "모델명", col: "pdiNum", cellWidth: "150" },
             {
                 header: "판매사",
                 col: "pdiSeller",
                 cellWidth: "150",
             },
-            // {
-            //     header: "제조사",
-            //     col: "pdiMenufut",
-            //     cellWidth: "130",
-            // },
             { header: "규격", col: "pdiStnd", cellWidth: "150" },
             {
                 header: "단위",
@@ -1541,12 +1547,14 @@ export const columns = {
                 col: "byQunty",
                 cellWidth: "100",
                 type: "input",
+                require: true
             },
             {
                 header: "공급단가",
                 col: "byUnitPrice",
                 cellWidth: "100",
                 type: "input",
+                require: true
             },
             {
                 header: "공급금액",
@@ -1581,12 +1589,14 @@ export const columns = {
                 col: "rcvQunty",
                 cellWidth: "80",
                 type: "input",
+                require: true
             },
             {
                 header: "입고단가",
                 col: "rcvUnitPrice",
                 cellWidth: "80",
                 type: "input",
+                require: true
             },
             { header: "입고상태", col: "rcvState", cellWidth: "80" },
             { header: "비고", col: "rcvDesc", cellWidth: "250", type: "input" },
