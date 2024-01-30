@@ -81,7 +81,19 @@ const ReactDataTable = (props) => {
 
     const handleDateClick = (date, colName, index) => {
         const updatedTableData = [...tableData];
-        updatedTableData[index][colName] = date;
+
+        if (current.id === "labor" && colName === "pmpMonth") { //영업인건비 연월 중복방지
+            const isDuplicate = updatedTableData.some(item => item.pmpMonth !== "" && item.pmpMonth?.substring(0, 7) === date.substring(0, 7));
+        
+            if (isDuplicate) {
+                alert("해당 연월은 이미 존재합니다.");
+            } else {
+                updatedTableData[index][colName] = date;
+            }
+        } else {
+            updatedTableData[index][colName] = date;
+        }
+        
         setTableData(updatedTableData);
     };
 
@@ -106,8 +118,6 @@ const ReactDataTable = (props) => {
         const month = (date.getMonth() + 1).toString().padStart(2, "0");
         const day = date.getDate().toString().padStart(2, "0");
         const formatted = `${year}-${month}-${day}`;
-        //setSaveDay(formatted);
-        console.log(formatted);
         return formatted;
     };
 
@@ -251,7 +261,6 @@ const ReactDataTable = (props) => {
     const fetchAllData = async (condition) => {
         if (!suffixUrl) return;
         const url = `/api${suffixUrl}/totalListAll.do`;
-        console.log("조건>>", url, condition);
         const resultData = await axiosFetch(url, { useAt: "Y", ...condition });
         // console.log(resultData, "resultData", "current:", current);
         if (resultData) {
@@ -336,7 +345,6 @@ const ReactDataTable = (props) => {
                 // poiDesc: addData.poiDesc || condition.poiVersion,
             };
 
-            console.log("dataToSend:", dataToSend);
             const resultData = await axiosPost(url, dataToSend);
             if (!resultData) {
                 alert("add error: table");
@@ -562,7 +570,7 @@ const ReactDataTable = (props) => {
         const updatedTableData = [...tableData];
         updatedTableData[row.index][accessor] = value;
 
-        if (innerPageName.id === "labor") {
+        if (innerPageName.id === "labor") { //영업인건비
             if (row.original.pecUnitPrice && row.original.pecMm) {
                 const price = row.original.pecUnitPrice * row.original.pecMm;
                 updatedTableData[index]["price"] = price;
@@ -577,35 +585,6 @@ const ReactDataTable = (props) => {
             }
         }
 
-        //구매
-        if (accessor === "byUnitPrice" || accessor === "standardMargin" || accessor === "consumerOpRate" || accessor === "byQunty") {
-            if (row.original.byUnitPrice && row.original.standardMargin && row.original.consumerOpRate && row.original.byQunty) {
-                // 1.원가(견적가) : 수량 * 원단가
-                const estimatedCost = row.original.byQunty * row.original.byUnitPrice;
-                // 2.단가 : 원가(견적가) / (1 - 사전원가기준이익율)
-                const unitPrice = division(estimatedCost, 1 - row.original.standardMargin / 100);
-                // 3.금액 : 수량 * 단가
-                const planAmount = row.original.byQunty * unitPrice;
-                // 4.소비자단가 : 단가 / 소비자산출율
-                const consumerPrice = division(unitPrice, row.original.consumerOpRate);
-                // 5.소비자금액 : 수량 * 소비자단가
-                const consumerAmount = row.original.byQunty * consumerPrice;
-                // 6.이익금 : 금액 - 원가(견적가)
-                const plannedProfits = planAmount - estimatedCost;
-                // 7.이익률 : 이익금 / 금액
-                const plannedProfitMargin = division(plannedProfits, planAmount);
-
-                updatedTableData[index]["estimatedCost"] = Math.round(estimatedCost);
-                updatedTableData[index]["unitPrice"] = Math.round(unitPrice);
-                updatedTableData[index]["planAmount"] = Math.round(planAmount);
-                updatedTableData[index]["consumerPrice"] = Math.round(consumerPrice * 100);
-                updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount * 100);
-                updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits);
-                updatedTableData[index]["plannedProfitMargin"] = Math.round(plannedProfitMargin * 100);
-            }
-        }
-        // 수정된 데이터로 tableData 업데이트
-        console.log(updatedTableData, "추가된거맞냐고");
         setTableData(updatedTableData);
     };
 
@@ -708,31 +687,10 @@ const ReactDataTable = (props) => {
                                                             />
                                                         ) : cell.column.type === "datePicker" ? (
                                                             <div className="box3-1 boxDate">
-                                                                <DatePicker
-                                                                    key={cell.column.id + row.index}
+                                                                <MonthPicker
                                                                     name={cell.column.id}
-                                                                    className="form-control flex-item"
-                                                                    type="text"
-                                                                    value={
-                                                                        tableData[row.index].pmpMonth2
-                                                                            ? tableData[row.index].pmpMonth2.substring(0, 7)
-                                                                            : tableData[row.index].pmpMonth
-                                                                            ? tableData[row.index].pmpMonth.substring(0, 7)
-                                                                            : ""
-                                                                    }
-                                                                    ref={inputRef}
-                                                                    dateFormat="yyyy-MM"
-                                                                    showMonthYearPicker
-                                                                    locale={ko} // 한국어로 설정
-                                                                    onClick={() => toggleCalendarVisible(row.index)}
-                                                                    onChange={(date) => {
-                                                                        const formatted = handleDateChange(date);
-                                                                        const updatedTableData = [...tableData];
-                                                                        updatedTableData[row.index].pmpMonth
-                                                                            ? (updatedTableData[row.index].pmpMonth2 = formatted)
-                                                                            : (updatedTableData[row.index].pmpMonth = formatted);
-                                                                        setTableData(updatedTableData);
-                                                                    }}
+                                                                    value={tableData[row.index]?.[cell.column.id]?.substring(0, 7) || ""}
+                                                                    onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                                 />
                                                             </div>
                                                         ) : cell.column.type === "employerInfo" ? (
