@@ -75,7 +75,7 @@ function ExecutionCost() {
             <Location pathList={locationPath.ExecutionCost} />
             <SearchList conditionList={columns.executionCost.condition} onSearch={onSearch} />
             <HideCard title="계획 등록/수정" color="back-lightblue">
-                <div className="table-buttons mg-b-m-30">
+                <div className="table-buttons mg-t-10 mg-b-10">
                     <PopupButton targetUrl={URL.ExecutionCostsDoc} data={{ label: "실행원가서", ...selectedRows[0] }} />
                     <PopupButton targetUrl={URL.PostCostsDoc} data={{ label: "정산서", ...selectedRows[0] }} />
                     <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
