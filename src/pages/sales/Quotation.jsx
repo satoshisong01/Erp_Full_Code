@@ -25,6 +25,7 @@ function Quotation() {
     const [isOpenSearch, setIsOpenSearch] = useState(false);
 
     const [estimate, setEstimate] = useState([]);
+    const [buyIngInfo, setBuyIngInfo] = useState([]);
 
     useEffect(() => {
         setInnerPageName({ name: "견적용 인건비", id: "estimateLabor" });
@@ -61,6 +62,7 @@ function Quotation() {
     };
 
     const refresh = () => {
+        console.log("리프래쉬 왜안함");
         if (condition.poiId && condition.versionId) {
             fetchAllData(condition);
         } else {
@@ -68,130 +70,242 @@ function Quotation() {
         }
     };
 
-    function combineEstMmAndEstMonthKeys(data) {
-        return data.map((item) => {
-            const estMonthWithoutLeadingZero = item.estMonth.replace(/^0+/, "");
-            const estMmKey = `estMm${estMonthWithoutLeadingZero}`;
-            const combinedValue = { ...item, [estMmKey]: item.estMm };
+    function mergeObjects(data) {
+        data.sort((a, b) => a.estId - b.estId);
+        // 객체의 키를 모아둘 Set
+        let keysSet = new Set();
 
-            // estMm 키를 삭제하려면 주석을 해제하세요.
-            delete combinedValue.estMm;
-            delete combinedValue.estMonth;
+        // 객체들의 키를 확인하면서 중복된 키는 저장하지 않음
+        data.forEach((obj) => {
+            Object.keys(obj).forEach((key) => {
+                if (key !== "estId") {
+                    keysSet.add(key);
+                }
 
-            return combinedValue;
+                // estMm1, estMm2, estMm3 값 중복 확인
+                if (key.startsWith("estMm") && !window["unique" + key]) {
+                    window["unique" + key] = obj[key];
+                }
+            });
         });
+
+        // 중복되지 않는 키들을 가진 객체를 생성
+        let result = {};
+        keysSet.forEach((key) => {
+            result[key] = data[0][key];
+        });
+
+        // 중복되지 않는 estMm 속성들을 저장
+        for (let i = 1; i <= 24; i++) {
+            let key = "estMm" + i;
+            if (window["unique" + key]) {
+                result[key] = window["unique" + key];
+            }
+        }
+
+        // estId 값을 배열로 저장
+        result["estIdList"] = data.map((obj) => obj["estId"]);
+
+        // 최종 결과를 배열로 감싸서 반환
+        return [result];
     }
 
-    //function mergeAndCollectEstIds(data) {
-    //    let mergedObjects = {};
+    //const processResultData = (resultData) => {
+    //    const newData = resultData.map((item, index) => {
+    //        // 새로운 객체를 만들어서 기존 객체의 속성들을 복사
+    //        const newItem = { ...item };
 
-    //    // 주어진 데이터 배열을 순회하면서 객체를 병합 및 estId 수집
-    //    data.forEach((obj) => {
-    //        // 객체의 todayTm, powerLv를 기준으로 중복 여부 확인
-    //        let key = `${obj.trashData}_${obj.trashData2}`;
+    //        // estMm 뒤에 index를 붙여서 새로운 속성을 추가
+    //        newItem[`estMm${index + 1}`] = item.estMm;
+    //        delete newItem.estMm;
+    //        delete newItem.estMonth;
 
-    //        // 중복된 key가 없으면 새로운 객체 생성
-    //        if (!mergedObjects[key]) {
-    //            mergedObjects[key] = { ...obj, estIdList: [obj.estId] };
-    //        } else {
-    //            // 중복된 key가 있으면 기존 객체와 현재 객체를 병합
-    //            mergedObjects[key] = {
-    //                ...mergedObjects[key],
-    //                ...obj,
-    //                estIdList: [...mergedObjects[key].estIdList, obj.estId],
-
-    //            };
-    //        }
+    //        return newItem;
     //    });
+    //    return newData;
+    //};
 
-    //    // 병합된 객체들을 배열로 변환
-    //    let result = Object.values(mergedObjects);
-
-    //    return result;
-    //}
-
-    function mergeAndCollectEstIds(data) {
-        let mergedObjects = {};
-
-        // 주어진 데이터 배열을 순회하면서 객체를 병합 및 estId 수집
-        data.forEach((obj) => {
-            // 객체의 키와 값을 문자열로 변환하여 중복 여부 확인
-            let key = `${obj.trashData}_${obj.trashData2}`;
-
-            // 중복된 key가 없으면 새로운 객체 생성
-            if (!mergedObjects[key]) {
-                // 객체에서 estId를 추출하고 해당 속성을 삭제
-                const { estId, ...newObj } = obj;
-                mergedObjects[key] = { ...newObj, estIdList: [estId] };
-            } else {
-                // 중복된 key가 있으면 기존 객체와 현재 객체를 병합
-                mergedObjects[key] = {
-                    ...mergedObjects[key],
-                    ...obj,
-                    estIdList: [...mergedObjects[key].estIdList, obj.estId],
-                };
-                delete mergedObjects[key].estId;
+    //estMonth(월 숫자를 잘라다가 새롭게 estMm을 만듦)
+    const updateEstMmProperty = (data) => {
+        data.forEach((item) => {
+            const estMonth = item.estMonth;
+            if (estMonth) {
+                //const paddedMonth = estMonth;
+                item[`estMm${estMonth}`] = item.estMm;
             }
         });
+        return data;
+    };
 
-        // 병합된 객체들을 배열로 변환
-        let result = Object.values(mergedObjects);
+    const processResultData = (resultData, condition) => {
+        console.log(resultData, "처음받는값인데");
+        const changeDD = updateEstMmProperty(resultData);
+        console.log(changeDD, "바뀔까?");
+        const transformedData = changeDD.reduce((accumulator, item) => {
+            const {
+                estId,
+                estMm,
+                estPosition,
+                estUnitPrice,
+                pgId,
+                pgNm,
+                poiNm,
+                estDesc,
+                estMm1,
+                estMm2,
+                estMm3,
+                estMm4,
+                estMm5,
+                estMm6,
+                estMm7,
+                estMm8,
+                estMm9,
+                estMm10,
+                estMm11,
+                estMm12,
+                estMm13,
+                estMm14,
+                estMm15,
+                estMm16,
+                estMm17,
+                estMm18,
+                estMm19,
+                estMm20,
+                estMm21,
+                estMm22,
+                estMm23,
+                estMm24,
+            } = item;
 
-        return result;
-    }
+            const key = `${pgNm}`;
+            if (!accumulator[key]) {
+                accumulator[key] = {
+                    estMm,
+                    estPosition,
+                    estUnitPrice,
+                    pgId,
+                    poiNm,
+                    pgNm,
+                    estDesc,
+                    estMm1,
+                    estMm2,
+                    estMm3,
+                    estMm4,
+                    estMm5,
+                    estMm6,
+                    estMm7,
+                    estMm8,
+                    estMm9,
+                    estMm10,
+                    estMm11,
+                    estMm12,
+                    estMm13,
+                    estMm14,
+                    estMm15,
+                    estMm16,
+                    estMm17,
+                    estMm18,
+                    estMm19,
+                    estMm20,
+                    estMm21,
+                    estMm22,
+                    estMm23,
+                    estMm24,
+                    estId: [],
+                };
+            }
 
-    //function mergeDuplicateObjects(data) {
-    //    let mergedObjects = {};
+            accumulator[key].estId.push(estId);
+            accumulator[key].estId.sort((a, b) => a - b);
 
-    //    // 주어진 데이터 배열을 순회하면서 객체를 병합
-    //    data.forEach((obj) => {
-    //        // 객체의 키와 값을 문자열로 변환하여 중복 여부 확인
-    //        let key = JSON.stringify(obj);
+            for (let i = 1; i <= 24; i++) {
+                const estMmKey = `estMm${i}`;
+                if (item[estMmKey] !== undefined) {
+                    accumulator[key][estMmKey] = item[estMmKey];
+                }
+            }
 
-    //        // 중복된 key가 없으면 새로운 객체 생성
-    //        if (!mergedObjects[key]) {
-    //            mergedObjects[key] = { ...obj };
-    //        } else {
-    //            // 중복된 key가 있으면 기존 객체와 현재 객체를 병합
-    //            mergedObjects[key] = { ...mergedObjects[key], ...obj };
-    //        }
-    //    });
+            return accumulator;
+        }, []);
+        console.log(transformedData, "transformedData");
+        //여기까지가통합
 
-    //    // 병합된 객체들을 배열로 변환
-    //    let result = Object.values(mergedObjects);
+        // mergedData 에서 다시 tableData에쓸 배열로 재정의
+        const mergedData = Object.values(transformedData).map((mergedItem, index) => {
+            const newObj = {};
+            console.log(mergedItem, "이거머더라");
+            newObj["estIdList"] = mergedItem.estId;
+            newObj["estMm"] = mergedItem.estMm;
+            newObj["estPosition"] = mergedItem.estPosition;
+            newObj["estUnitPrice"] = mergedItem.estUnitPrice;
+            newObj["pgId"] = mergedItem.pgId;
+            newObj["pjbgDt"] = mergedItem.pjbgBeginDt;
+            newObj["pgNm"] = mergedItem.pgNm;
+            newObj["poiNm"] = mergedItem.poiNm;
+            newObj["estDesc"] = mergedItem.estDesc;
+            newObj["estMm1"] = mergedItem.estMm1;
+            newObj["estMm2"] = mergedItem.estMm2;
+            newObj["estMm3"] = mergedItem.estMm3;
+            newObj["estMm4"] = mergedItem.estMm4;
+            newObj["estMm5"] = mergedItem.estMm5;
+            newObj["estMm6"] = mergedItem.estMm6;
+            newObj["estMm7"] = mergedItem.estMm7;
+            newObj["estMm8"] = mergedItem.estMm8;
+            newObj["estMm9"] = mergedItem.estMm9;
+            newObj["estMm10"] = mergedItem.estMm10;
+            newObj["estMm11"] = mergedItem.estMm11;
+            newObj["estMm12"] = mergedItem.estMm12;
+            newObj["estMm13"] = mergedItem.estMm13;
+            newObj["estMm14"] = mergedItem.estMm14;
+            newObj["estMm15"] = mergedItem.estMm15;
+            newObj["estMm16"] = mergedItem.estMm16;
+            newObj["estMm17"] = mergedItem.estMm17;
+            newObj["estMm18"] = mergedItem.estMm18;
+            newObj["estMm19"] = mergedItem.estMm19;
+            newObj["estMm20"] = mergedItem.estMm20;
+            newObj["estMm21"] = mergedItem.estMm21;
+            newObj["estMm22"] = mergedItem.estMm22;
+            newObj["estMm23"] = mergedItem.estMm23;
+            newObj["estMm24"] = mergedItem.estMm24;
+            newObj["poiId"] = condition.poiId;
+            newObj["versionId"] = condition.versionId;
 
-    //    return result;
-    //}
+            return newObj;
+        });
+        console.log(mergedData);
+        return mergedData;
+    };
 
-    const fetchAllData = async (requestData) => {
-        console.log(requestData, "???");
-
+    const fetchAllData = async (condition) => {
         //const requestSearch = {
         //    poiId: condition.poiId,
         //    useAt: "Y",
         //};
 
-        const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", {
-            // ...requestData,
-            searchCondition: "",
-            searchKeyword: "",
-        });
-        console.log(resultData, "시발ㅈ같네");
+        const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
 
-        const result = combineEstMmAndEstMonthKeys(resultData);
-        let uniqueArray = mergeAndCollectEstIds(result);
-        console.log(uniqueArray, "이거제대로나와야해");
-        setEstimate(uniqueArray);
+        if (resultData.length !== 0) {
+            const result = processResultData(resultData, condition);
+            console.log(result, "함수거치고 난거");
+            //const formatData = mergeObjects(result);
+
+            setEstimate(result);
+        }
         //const resultDa2 = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", requestSearch);
         //const filteredData = filterData(updatedData);
     };
 
     const returnList = (originTableData, tableData) => {
+        console.log(originTableData, "얘랑");
+        console.log(tableData, "얘랑 달라야함");
+
         compareData(originTableData, tableData);
     };
 
     const compareData = (originData, updatedData) => {
-        console.log("개발용 compare", originData, updatedData);
+        console.log("개발용 originData", originData);
+        console.log("개발용 updatedData", updatedData);
+
         const filterData = updatedData.filter((data) => data.poiId); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -206,26 +320,34 @@ function Quotation() {
                 // updatedData의 길이만큼 반복하여 originData 갱신
                 for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
                     const updatedItem = updatedData[i];
-                    updatedArray[i] = { ...updatedItem, estId: updatedArray[i].estId };
+                    updatedArray[i] = { ...updatedItem, estIdList: updatedArray[i].estIdList };
                 }
                 return updatedArray;
             };
 
             const firstRowUpdate = updateDataInOrigin(originData, updatedData);
-            console.log("여긴가?1");
             updateItem(firstRowUpdate); //수정
+
+            const originAValues = originData.map((item) => item.estIdList); //삭제할 id 추출
+            console.log(originAValues);
+            const extraOriginData = originAValues.slice(updatedDataLength);
+            console.log(extraOriginData);
+
+            const flatArray = extraOriginData.flat(); //중첩배열 고르게만듦
 
             const delList = [];
             const delListTest = [];
             for (let i = updatedDataLength; i < originDataLength; i++) {
-                delList.push(originData[i].estId);
+                delList.push(originData[i].estIdList);
                 delListTest.push(originData[i]);
             }
-            deleteItem(delList); //삭제
+            console.log(flatArray);
+            console.log(delList);
+            console.log(delListTest);
+
+            deleteItem(flatArray); //삭제
         } else if (originDataLength === updatedDataLength) {
-            console.log("여긴가?2");
-            console.log(originDataLength);
-            console.log(updatedDataLength);
+            console.log(filterData, "이걸로해야혀는디");
             updateItem(filterData); //수정
         } else if (originDataLength < updatedDataLength) {
             const updateList = [];
@@ -248,11 +370,60 @@ function Quotation() {
         }
     };
 
+    const compareData2 = (originData, updatedData) => {
+        console.log("🎄컴페어", originData, "mod:", updatedData);
+        const filterData = updatedData.filter((data) => data.pdiId); //필수값 체크
+
+        // console.log("🎄filterData:", filterData);
+
+        const originDataLength = originData ? originData.length : 0;
+        const updatedDataLength = filterData ? filterData.length : 0;
+
+        if (originDataLength > updatedDataLength) {
+            //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
+            const updateDataInOrigin = (originData, filterData) => {
+                // 복제하여 새로운 배열 생성
+                const updatedArray = [...originData];
+                // updatedData의 길이만큼 반복하여 originData 갱신
+                for (let i = 0; i < Math.min(filterData.length, originData.length); i++) {
+                    const updatedItem = filterData[i];
+                    updatedArray[i] = { ...updatedItem, estId: updatedArray[i].estId };
+                }
+                return updatedArray;
+            };
+
+            const firstRowUpdate = updateDataInOrigin(originData, filterData);
+            updateItem(firstRowUpdate);
+
+            const originAValues = originData.map((item) => item.estIdList); //삭제할 id 추출
+            const extraOriginData = originAValues.slice(updatedDataLength);
+
+            deleteItem(extraOriginData);
+        } else if (originDataLength === updatedDataLength) {
+            updateItem(filterData);
+        } else if (originDataLength < updatedDataLength) {
+            const toAdds = [];
+            const toUpdate = [];
+            for (let i = 0; i < originDataLength; i++) {
+                const temp = { ...filterData[i] };
+                toUpdate.push(temp);
+            }
+            updateItem(toUpdate);
+            for (let i = originDataLength; i < updatedDataLength; i++) {
+                const temp = { ...filterData[i] };
+                toAdds.push(temp);
+                toAdds.poiId = condition.poiId;
+                toAdds.versionId = condition.versionId;
+            }
+            addItem(toAdds);
+        }
+    };
+
     const addItem = async (addData) => {
-        console.log(addData, "견적 영업");
+        console.log(addData, "견적 영업 추가데이터");
         const url = `/api/estimate/personnel/estimateCostMM/addArrayList.do`;
         const resultData = await axiosPost(url, addData);
-        console.log(resultData, "💜addItem");
+        console.log(resultData, "💜추가된거 확인addItem");
         if (resultData) {
             refresh();
         }
@@ -271,6 +442,7 @@ function Quotation() {
     };
 
     const deleteItem = async (removeItem) => {
+        console.log(removeItem, "삭제할놈들");
         const url = `/api/estimate/personnel/estimateCostMM/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         console.log(resultData, "지워진거맞음?");
@@ -343,8 +515,8 @@ function Quotation() {
                                 <ReactDataTableURL
                                     editing={true}
                                     columns={columns.orderPlanMgmt.estimatePurchase}
-                                    suffixUrl="/baseInfrm/product/pjbudget"
                                     // customDatas={generalExpensesDatas}
+                                    returnList={returnList}
                                     viewPageName={{ name: "견적용 구매비", id: "orderBuying" }}
                                     customDatasRefresh={refresh}
                                     condition={condition}

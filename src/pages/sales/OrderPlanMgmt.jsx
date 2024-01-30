@@ -178,6 +178,7 @@ function OrderPlanMgmt() {
     };
 
     const deleteList = async (removeItem) => {
+        console.log(removeItem, "삭제할애들");
         const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         refresh();
@@ -247,7 +248,14 @@ function OrderPlanMgmt() {
             const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
             if (resultData && resultData.length > 0) {
                 const changeData = ChangePrmnPlanData(resultData, condition.poiId);
-                let total = 0, mm1 = 0, mm9 = 0, mm10 = 0, mm11 = 0, mm12 = 0, mm13 = 0, mm14 = 0; //mm합
+                let total = 0,
+                    mm1 = 0,
+                    mm9 = 0,
+                    mm10 = 0,
+                    mm11 = 0,
+                    mm12 = 0,
+                    mm13 = 0,
+                    mm14 = 0; //mm합
                 const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === requestData.poiMonth);
                 if (matchingAItem) {
                     changeData.forEach((Item) => {
@@ -342,52 +350,55 @@ function OrderPlanMgmt() {
                         existingGroup.planAmount += current.planAmount; //공급금액
                         existingGroup.byQunty += current.byQunty; //수량
                     } else {
-                        result.push({ ...current});
+                        result.push({ ...current });
                     }
                     return result;
                 }, []);
 
                 //합산의 네고율, 이익금, 이익율 구하기
-                const groupedDataWithCalculations = groupedData.map(group => {
+                const groupedDataWithCalculations = groupedData.map((group) => {
                     // 할인율: (1 - (소비자금액 / 공급금액)) * 100
-                    group.nego = group.planAmount !== 0 ? ((group.consumerAmount / group.planAmount) - 1) * 100 : 0;
+                    group.nego = group.planAmount !== 0 ? (group.consumerAmount / group.planAmount - 1) * 100 : 0;
                     // 이익금: 공급금액 - 원가
                     group.profits = group.planAmount - group.estimatedCost;
                     // 이익율: (공급금액-원가)/원가*100
-                    group.margin =  group.planAmount !== 0 ? (group.planAmount - group.estimatedCost) / group.planAmount * 100 + "%" : 0  + "%";
+                    group.margin = group.planAmount !== 0 ? ((group.planAmount - group.estimatedCost) / group.planAmount) * 100 + "%" : 0 + "%";
                     return group;
                 });
 
                 //마지막 토탈 행 구하기
-                const totals = groupedDataWithCalculations.reduce((sums, group) => {
-                    sums.estimatedCost += group.estimatedCost || 0; 
-                    sums.consumerAmount += group.consumerAmount || 0;
-                    sums.planAmount += group.planAmount || 0;
-                    sums.profits += group.profits || 0;
-                    sums.byQunty += group.byQunty
-                    sums.margin = sums.margin + "%"
-                    return sums;
-                }, {
-                    estimatedCost: 0,
-                    consumerAmount: 0,
-                    planAmount: 0,
-                    nego: 0,
-                    profits: 0,
-                    margin: 0,
-                    byQunty: 0,
-                });
+                const totals = groupedDataWithCalculations.reduce(
+                    (sums, group) => {
+                        sums.estimatedCost += group.estimatedCost || 0;
+                        sums.consumerAmount += group.consumerAmount || 0;
+                        sums.planAmount += group.planAmount || 0;
+                        sums.profits += group.profits || 0;
+                        sums.byQunty += group.byQunty;
+                        sums.margin = sums.margin + "%";
+                        return sums;
+                    },
+                    {
+                        estimatedCost: 0,
+                        consumerAmount: 0,
+                        planAmount: 0,
+                        nego: 0,
+                        profits: 0,
+                        margin: 0,
+                        byQunty: 0,
+                    }
+                );
 
                 groupedDataWithCalculations.push({
                     pgNm: "TOTAL",
                     pdiSeller: "",
                     consumerAmount: totals.consumerAmount, //소비자금액
                     planAmount: totals.planAmount, //공급금액
-                    nego: totals.planAmount !== 0 ? ((totals.consumerAmount / totals.planAmount) - 1) * 100 : 0, //네고율
+                    nego: totals.planAmount !== 0 ? (totals.consumerAmount / totals.planAmount - 1) * 100 : 0, //네고율
                     estimatedCost: totals.estimatedCost, //원가
                     profits: totals.profits, //이익금
                     // (공급금액-원가)/원가*100
-                    margin: totals.planAmount !== 0 ? (totals.planAmount-totals.estimatedCost)/totals.estimatedCost * 100 + "%" : 0 + "%", //이익율
-                    byQunty: totals.byQunty
+                    margin: totals.planAmount !== 0 ? ((totals.planAmount - totals.estimatedCost) / totals.estimatedCost) * 100 + "%" : 0 + "%", //이익율
+                    byQunty: totals.byQunty,
                 });
                 
                 setPdOrdrCalDatas(groupedDataWithCalculations); //합계
@@ -403,12 +414,15 @@ function OrderPlanMgmt() {
                     data.price = data.devOutMm * data.devOutPrice; // 계산된 값을 데이터에 추가
                 });
                 setOutsourcingDatas(resultData);
-                
-                const calTotal = resultData.reduce((total, data) => {
-                    total.totalPrice += data.price;
-                    return total;
-                }, { totalPrice: 0 });
-                
+
+                const calTotal = resultData.reduce(
+                    (total, data) => {
+                        total.totalPrice += data.price;
+                        return total;
+                    },
+                    { totalPrice: 0 }
+                );
+
                 setOutCalDatas([calTotal]);
             } else {
                 alert("no data");
@@ -426,7 +440,7 @@ function OrderPlanMgmt() {
                 resultData.forEach((data) => {
                     total += data.slsmnEnterpriseProfit + data.slsmnAdmnsCost;
                     negoTotal += data.slsmnNego;
-                    price = total+negoTotal;
+                    price = total + negoTotal;
                 });
                 setGeneralCalDatas([{ total, negoTotal, price }]);
                 console.log("😈영업-영업관리비:", requestData, "resultData:", resultData);
@@ -583,7 +597,7 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
-                                <ReactDataTable columns={columns.orderPlanMgmt.laborCal} customDatas={prmnCalDatas} hideCheckBox={true} />
+                                <ReactDataTable columns={columns.orderPlanMgmt.laborCal} customDatas={prmnCalDatas} hideCheckBox={true} isPageNation={true} />
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
@@ -634,7 +648,13 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
-                                <ReactDataTable columns={columns.orderPlanMgmt.outCal} customDatas={outCalDatas} hideCheckBox={true} condition={condition}  isPageNation={true}/>
+                                <ReactDataTable
+                                    columns={columns.orderPlanMgmt.outCal}
+                                    customDatas={outCalDatas}
+                                    hideCheckBox={true}
+                                    condition={condition}
+                                    isPageNation={true}
+                                />
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
@@ -659,7 +679,12 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
-                                <ReactDataTable columns={columns.orderPlanMgmt.expensesCal} customDatas={pjbudgetCalDatas} hideCheckBox={true} isPageNation={true} />
+                                <ReactDataTable
+                                    columns={columns.orderPlanMgmt.expensesCal}
+                                    customDatas={pjbudgetCalDatas}
+                                    hideCheckBox={true}
+                                    isPageNation={true}
+                                />
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
@@ -670,7 +695,6 @@ function OrderPlanMgmt() {
                                 </div>
                                 <ReactDataTableURL
                                     editing={true}
-                                    suffixUrl="/baseInfrm/product/pjbudget"
                                     columns={columns.orderPlanMgmt.expenses}
                                     customDatas={pjbudgetDatas}
                                     viewPageName={{ name: "경비", id: "budget" }}
