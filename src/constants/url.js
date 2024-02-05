@@ -68,7 +68,11 @@ const URL = {
     LaborCostMgmt: "/execution/labor", //실행관리>인건비
     PurchasingMgmt: "/execution/purchasing", //실행관리>구매비
     ExpenseMgmt: "/execution/expense", //실행관리>경비
-    Approval: "/execution/approval", //실행관리>전자결재
+
+    // 전자결재
+    PendingBox: "/mail/pendingBox", //전자결재>결재대기함
+    ProgressBox: "/mail/progressBox", //전자결재>결재진행함
+    CompletedBox: "/mail/completedBox", //전자결재>결재완료함
 
     //SYSTEM 시스템관리
     System: "/system", //시스템관리

@@ -49,7 +49,12 @@ import ExecutionCost from "pages/execution/ExecutionCost";
 import LaborCostMgmt from "pages/execution/LaborCostMgmtExe";
 import PurchasingMgmt from "pages/execution/PurchasingMgmtExe";
 import ExpenseMgmt from "pages/execution/ExpenseMgmtExe";
-import Approval from "pages/execution/Approval";
+import Approval from "pages/mail/PendingBox";
+
+//전자결재
+import PendingBox from "pages/mail/PendingBox";
+import ProgressBox from "pages/mail/ProgressBox";
+import CompletedBox from "pages/mail/CompletedBox";
 
 //시스템관리
 import AccessHistoryMgmt from "pages/system/AccessHistoryMgmt";
@@ -273,7 +278,7 @@ const RootRoutes = () => {
                 <Route path={URL.EstimatePopupContainer} element={<EstimatePopupContainer />} />
                 {/* 새창(팝업) : 사전원가서 */}
                 <Route path={URL.PreCostDoc} element={<PreCostDoc />} />
-                {/* 새창(팝업) : 실행원가서 */}
+                {/* 새창(팝업) : 실행예산서 */}
                 <Route path={URL.ExecutionCostsDoc} element={<ExecutionCostsDoc />} />
                 {/* 새창(팝업) : 사후정산서 */}
                 <Route path={URL.PostCostsDoc} element={<PostCostDoc />} />
@@ -345,8 +350,6 @@ const SecondRoutes = () => {
                 <Route path={URL.OrderMgmt} element={<OrderMgmt />} />
                 <Route path={URL.SalesExpenses} element={<SalesExpenses />} />
                 <Route path={URL.Quotation} element={<Quotation />} />
-                {/*<Route path={URL.InvoiceMgmt} element={<InvoiceMgmt />} />*/}
-                {/*<Route path={URL.ElectronicTaxInvoice} element={<ElectronicTaxInvoice />} />*/}
 
                 {/* 실행관리 */}
                 <Route path={URL.Execution} element={<Navigate to={URL.ExecutionCost} />} />
@@ -354,7 +357,11 @@ const SecondRoutes = () => {
                 <Route path={URL.LaborCostMgmt} element={<LaborCostMgmt />} />
                 <Route path={URL.PurchasingMgmt} element={<PurchasingMgmt />} />
                 <Route path={URL.ExpenseMgmt} element={<ExpenseMgmt />} />
-                <Route path={URL.Approval} element={<Approval />} />
+
+                {/* 전자결재 */}
+                <Route path={URL.PendingBox} element={<PendingBox />} />
+                <Route path={URL.ProgressBox} element={<ProgressBox />} />
+                <Route path={URL.CompletedBox} element={<CompletedBox />} />
 
                 {/* 시스템관리 */}
                 <Route path={URL.System} element={<Navigate to={URL.AuthorizationMgmt} />} />
