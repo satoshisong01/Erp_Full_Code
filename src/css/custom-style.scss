@@ -487,7 +487,7 @@ $disabled: gray;
 .flex-between {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    // align-items: center;
 }
 
 .flex-column {
@@ -624,7 +624,7 @@ $disabled: gray;
 /* 사전원가 계산서 */
 .precost-container {
     background-color: var(--background-white);
-    width: 85%;
+    width: 95%;
     margin: 0 auto;
     font-weight: 400;
     font-size: 15px;
@@ -1401,6 +1401,72 @@ td {
     }
     &::-moz-scrollbar-corner {
         background-color: transparent; /* 스크롤바 트랙 배경색 */
+    }
+
+}
+
+// 결재폼
+.form-style {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    width: 90%;
+}
+
+.form-buttons button:not(:last-child) {
+    margin-right: 10px;
+}
+
+.form-children {
+    width: 90%; 
+    border: 1px solid #ccc;
+    // border-radius: 5px;
+}
+
+.form-style {
+    .box-container {
+        display: flex;
+        flex-direction: row;
+    }
+    
+    .box-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .box-1 {
+            // background-color: #e74c3c;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            height: 30px;
+        }
+        
+        .box-2 {
+            // background-color: #2ecc71;
+            border: 1px solid #ccc;
+            height: 80px;
+        }
+    }
+    
+    .box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 100px;
+        // color: #fff;
+    }
+    
+    .box-3 {
+        border: 1px solid #ccc;
+        width: 30px;
+        height: 110px; /* box-1과 box-2의 높이 합침 (100px + 100px + 10px 여백) */
+        // background-color: #e74c3c;
+        // color: #fff;
     }
 
 }
