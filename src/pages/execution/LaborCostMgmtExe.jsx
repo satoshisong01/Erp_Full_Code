@@ -106,13 +106,6 @@ function LaborCostMgmtExe() {
     const [budgetMgmtView, setBudgetMgmtView] = useState([]); // 실행인건비실행
     const [budgetCal, setBudgetCal] = useState([]); // 합계
 
-    // useEffect(() => {
-    //     if (condition.poiId === undefined || condition.poId === "") {
-    //         //테이블 초기화
-    //         setBudgetMgmRun([]);
-    //     }
-    // }, [currentPageName, innerPageName, condition]);
-
     const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", condition);
         const viewResult = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", { ...condition, modeCode: "BUDGET" });
@@ -122,45 +115,6 @@ function LaborCostMgmtExe() {
             if (unitPriceList && unitPriceList.length > 0) {
                 const updatedDatas = calculation(unitPriceList, resultData, condition.poiMonth);
                 setBudgetMgmRun(updatedDatas);
-
-                // let mmTotal = 0;
-                // let priceTotal = 0;
-                // let price9 = 0;
-                // let price10 = 0;
-                // let price11 = 0;
-                // let price12 = 0;
-                // let price13 = 0;
-                // let price14 = 0;
-                // let mm9 = 0,
-                //     mm10 = 0,
-                //     mm11 = 0,
-                //     mm12 = 0,
-                //     mm13 = 0,
-                //     mm14 = 0;
-                // updatedDatas.map((data) => {
-                //     //합계 계산
-                //     mmTotal += data.pecMm;
-                //     priceTotal += data.price;
-                //     if (data.pecPosition === "부장") {
-                //         mm9 += data.pecMm;
-                //         price9 += data.price;
-                //     } else if (data.pecPosition === "차장") {
-                //         mm10 += data.pecMm;
-                //         price10 += data.price;
-                //     } else if (data.pecPosition === "과장") {
-                //         mm11 += data.pecMm;
-                //         price11 += data.price;
-                //     } else if (data.pecPosition === "대리") {
-                //         mm12 += data.pecMm;
-                //         price12 += data.price;
-                //     } else if (data.pecPosition === "주임") {
-                //         mm13 += data.pecMm;
-                //         price13 += data.price;
-                //     } else if (data.pecPosition === "사원") {
-                //         mm14 += data.pecMm;
-                //         price14 += data.price;
-                //     }
-                // });
 
                 // 월을 추출하는 함수
                 function extractMonth(dateString) {
@@ -257,8 +211,6 @@ function LaborCostMgmtExe() {
                 groupedData.push({...temp});
 
                 setBudgetCal(groupedData);
-
-                // setBudgetCal([{ mmTotal: mmTotal + "(M/M)", price9, price10, price11, price12, price13, price14 }]);
             }
         } else {
             alert("no data");
@@ -281,7 +233,6 @@ function LaborCostMgmtExe() {
 
     const compareData = (originData, updatedData) => {
         const filterData = updatedData.filter((data) => data.pgNm); //pgNm 없는 데이터 제외
-        console.log("filterData:", filterData);
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
 

@@ -36,7 +36,10 @@ import PurchasingMgmtExe from "pages/execution/PurchasingMgmtExe";
 import ExpenseMgmtExe from "pages/execution/ExpenseMgmtExe";
 import ExpenseMgmtPlan from "pages/execution/ExpenseMgmtPlan";
 import Quotation from "pages/sales/Quotation";
-import Approval from "pages/execution/Approval";
+import Approval from "pages/mail/PendingBox";
+import PendingBox from "pages/mail/PendingBox";
+import ProgressBox from "pages/mail/ProgressBox";
+import CompletedBox from "pages/mail/CompletedBox";
 
 export const reference = [
     //기준정보관리
@@ -228,10 +231,24 @@ export const execution = [
 export const mail = [
     //전자결재
     {
-        id: "Approval",
-        path: URL.Approval,
-        component: <Approval />,
-        label: "결재수신함",
+        id: "PendingBox",
+        path: URL.PendingBox,
+        component: <PendingBox />,
+        label: "결재대기함",
+        pLabel: "전자결재",
+     },
+    {
+        id: "ProgressBox",
+        path: URL.ProgressBox,
+        component: <ProgressBox />,
+        label: "결재진행함",
+        pLabel: "전자결재",
+     },
+    {
+        id: "CompletedBox",
+        path: URL.CompletedBox,
+        component: <CompletedBox />,
+        label: "결재완료함",
         pLabel: "전자결재",
      },
 ];

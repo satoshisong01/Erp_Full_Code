@@ -21,7 +21,6 @@ function PurchasingMgmtExe() {
     const [runMgmt, setRunMgmt] = useState([]); // 구매 실행관리
     const [view, setView] = useState([]); // 계획 조회
     const [buyCall, setBuyCall] = useState([]); //합계 - 품목그룹&판매사&모델명
-    const [buyCall2, setBuyCall2] = useState([]); //합계 - 품목그룹&판매사
 
     const fetchAllData = async (condition) => {
         const datas = await axiosFetch("/api/baseInfrm/product/receivingInfo/totalListAll.do", condition);
@@ -65,7 +64,6 @@ function PurchasingMgmtExe() {
                 rcvState: ""
             });
 
-
             //상태 업데이트
             calData.forEach(item => {
                 const correspondingGroup = groupedCalData.find(group => group.pgNm === item.pgNm && group.pdiNum === item.pdiNum && group.pdiSeller === item.pdiSeller);
@@ -74,48 +72,8 @@ function PurchasingMgmtExe() {
                 }
             });
 
-
-            const groupedCalData2 = groupedCalData.reduce((result, current) => {
-                const existingGroup = result.find(group => group.pgNm === current.pgNm);
-            
-                if (existingGroup) {
-                    existingGroup.pdiSeller = existingGroup.pdiSeller + ", " + current.pdiSeller
-                    existingGroup.byQunty += current.byQunty;
-                    existingGroup.price += current.price;
-                } else {
-                    result.push({ ...current });
-                }
-            
-                return result;
-            }, []);
-
-            // const groupedCalData2 = calData.reduce((result, current) => {
-            //     const existingGroups = result.find(group => group.pgNm === current.pgNm);
-            
-            //     if (existingGroups) {
-            //         const existingItem = existingGroups.items.find(item => item.pdiSeller === current.pdiSeller);
-            
-            //         if (existingItem) {
-            //             existingItem.byQunty += current.byQunty;
-            //             existingItem.price += current.price;
-            //         } else {
-            //             existingGroups.items.push({ ...current });
-            //         }
-            //     } else {
-            //         result.push({
-            //             pgNm: current.pgNm,
-            //             items: [{ ...current }],
-            //         });
-            //     }
-            
-            //     return result;
-            // }, []).flatMap(group => group.items);
-            
-            console.log("groupedCalData2:", groupedCalData2);
-
             setRunMgmt(calData);
             setBuyCall(groupedCalData);
-            setBuyCall2(groupedCalData2)
         } else {
             alert("no data");
             setRunMgmt([]);
@@ -173,9 +131,6 @@ function PurchasingMgmtExe() {
                 <ReactDataTable columns={columns.PurchasingMgmtExe.view} customDatas={view} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
             </HideCard>
             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
-                <span style={{textAlign: "start", fontWeight: "bold", fontSize: "14px"}} className="darkblue">품목그룹별 합계</span>
-                <ReactDataTable columns={columns.PurchasingMgmtExe.buyCal2} customDatas={buyCall2} defaultPageSize={5} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
-                <span style={{textAlign: "start", fontWeight: "bold", fontSize: "14px"}} className="cherry">품목그룹별 입고현황</span>
                 <ReactDataTable columns={columns.PurchasingMgmtExe.buyCal} customDatas={buyCall} defaultPageSize={5} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">

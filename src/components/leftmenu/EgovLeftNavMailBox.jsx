@@ -47,8 +47,18 @@ function EgovLeftNavMailBox(props) {
 
     const menuItems = [
         {
-            label: "결재수신함",
-            id: "Approval",
+            label: "결재대기함",
+            id: "PendingBox",
+            subMenus: []
+        },
+        {
+            label: "결재진행함",
+            id: "ProgressBox",
+            subMenus: []
+        },
+        {
+            label: "결재완료함",
+            id: "CompletedBox",
             subMenus: []
         },
     ];

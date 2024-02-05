@@ -5,6 +5,7 @@ import { axiosFetch } from "api/axiosFetch";
 import BasicDataTable from "components/DataTable/BasicDataTable";
 import FormDataTable from "components/DataTable/FormDataTable";
 import Title from "antd/es/skeleton/Title";
+import ApprovalFormCost from "components/form/ApprovalFormCost";
 
 /* 사전 원가 계산서 */
 const PreCostDoc = () => {
@@ -41,9 +42,10 @@ const PreCostDoc = () => {
         // URL에서 "data" 파라미터 읽기
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
-        const { label, poiId, poiNm, versionId, versionNum, versionDesc } = data;
+        // const { label, poiId, poiNm, versionId, versionNum, versionDesc } = data;
+        const { label, poiId, versionId } = data;
         setTitle(label);
-        setProjectInfoToServer({ versionId, versionNum, versionDesc });
+        setProjectInfoToServer({ poiId, versionId });
         if (poiId && versionId) {
             getInitData(poiId, versionId); //서버에서 데이터 호출
         }
@@ -166,10 +168,7 @@ const PreCostDoc = () => {
     const getInitData = async (poiId, versionId) => {
         const url = "/api/calculate/cost/totalListAll.do";
         // const requestData = { poiId };
-        console.log("조회하기~~~~~~~~~", poiId, versionId);
         const resultData = await axiosFetch(url, { poiId, versionId });
-        console.log("resultData::::", resultData);
-        console.log("💜 사전원가서 resultData:", resultData, "url:", url);
         const {
             projectInfoToServer, //수주정보
             salesBudgetIn, //수주액>자체용역
@@ -192,6 +191,7 @@ const PreCostDoc = () => {
             legalTotalPrice, //판관비 합
         } = resultData || {};
 
+        console.log("프로젝트정보:", projectInfoToServer);
         /* 프로젝트 정보 */
         setProjectInfoToServer((prev) => ({
             ...prev,
@@ -739,46 +739,48 @@ const PreCostDoc = () => {
 
     return (
         <>
-            <div className="precost-container">
-                <button onClick={handlePrintButtonClick} className="pdfBtn">
-                    PDF로 다운로드
-                </button>
-                <div className="flex-column mg-t-20 mg-b-20">
-                    <div className="precost-title" style={{ margin: "auto", marginBottom: "20px", fontSize: "23px" }}>
-                        {title}
-                    </div>
-                    <FormDataTable formTableColumns={infoColumns} useStatus={false} />
-                    <div className="precost-title">1.손익계산서</div>
-                    <BasicDataTable columns={coreColumns} data={coreTableData} datatableRef={coreTable} />
-
-                    <div className="empty" />
-
-                    <div className="precost-title">2.직접원가 내역</div>
-                    <div className="wrap">
-                        <div style={{ flex: 4 }}>
-                            <BasicDataTable
-                                columns={purchasingColumns}
-                                data={purchasingTableData}
-                                datatableRef={purchasingTable}
-                                tableSize={purStyle}
-                                subtitle="재료비"
-                            />
-                            <BasicDataTable
-                                columns={outsourcingColumns}
-                                data={outTableData}
-                                datatableRef={outsourcingTable}
-                                tableSize={purStyle}
-                                subtitle="개발외주비"
-                            />
-                            <BasicDataTable columns={laborColumns} data={laborTableData} datatableRef={laborTable} subtitle="인건비" />
+            <ApprovalFormCost>
+                <div className="precost-container">
+                    <button onClick={handlePrintButtonClick} className="pdfBtn">
+                        PDF로 다운로드
+                    </button>
+                    <div className="flex-column mg-b-20">
+                        <div className="precost-title" style={{ margin: "auto", marginBottom: "20px", fontSize: "23px" }}>
+                            {title}
                         </div>
-                        <div style={{ flex: 0.5 }} />
-                        <div style={{ flex: 5.5 }}>
-                            <BasicDataTable columns={chargeColumns} data={chargeTableData} datatableRef={chargeTable} tableSize={chargeStyle} subtitle="경비" />
+                        <FormDataTable formTableColumns={infoColumns} useStatus={false} />
+                        <div className="precost-title">1.손익계산서</div>
+                        <BasicDataTable columns={coreColumns} data={coreTableData} datatableRef={coreTable} />
+
+                        <div className="empty" />
+
+                        <div className="precost-title">2.직접원가 내역</div>
+                        <div className="wrap">
+                            <div style={{ flex: 4 }}>
+                                <BasicDataTable
+                                    columns={purchasingColumns}
+                                    data={purchasingTableData}
+                                    datatableRef={purchasingTable}
+                                    tableSize={purStyle}
+                                    subtitle="재료비"
+                                />
+                                <BasicDataTable
+                                    columns={outsourcingColumns}
+                                    data={outTableData}
+                                    datatableRef={outsourcingTable}
+                                    tableSize={purStyle}
+                                    subtitle="개발외주비"
+                                />
+                                <BasicDataTable columns={laborColumns} data={laborTableData} datatableRef={laborTable} subtitle="인건비" />
+                            </div>
+                            <div style={{ flex: 0.5 }} />
+                            <div style={{ flex: 5.5 }}>
+                                <BasicDataTable columns={chargeColumns} data={chargeTableData} datatableRef={chargeTable} tableSize={chargeStyle} subtitle="경비" />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </ApprovalFormCost>
         </>
     );
 };
