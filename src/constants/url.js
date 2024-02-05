@@ -21,6 +21,10 @@ const URL = {
     ExecutionCostsDoc: "/executionCostsDoc", //실행원가서 팝업
     PostCostsDoc: "/postCostsDoc", //사후정산서 팝업
 
+    LaborCostDoc: "/laborCostDoc",
+    LaborSummaryDoc: "/laborSummaryDoc",
+    OrderBuyDoc: "/orderBuyDoc",
+
     //REFERENCE 기준정보관리
     Reference: "/reference", //기준정보관리
 

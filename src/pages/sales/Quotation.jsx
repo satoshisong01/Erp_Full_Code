@@ -13,6 +13,9 @@ import DelButton from "components/button/DelButton";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 import SearchModal from "components/modal/SearchModal";
+import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
+import PopupButton from "components/button/PopupButton";
+import URL from "constants/url";
 
 /** 영업관리-견적서관리 */
 function Quotation() {
@@ -23,6 +26,7 @@ function Quotation() {
     ]);
     const [condition, setCondition] = useState({});
     const [isOpenSearch, setIsOpenSearch] = useState(false);
+    const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
 
     const [estimate, setEstimate] = useState([]);
     const [buyIngInfo, setBuyIngInfo] = useState([]);
@@ -41,7 +45,7 @@ function Quotation() {
                 const activeTabInfo = infoList.find((data) => data.name === activeTab.textContent);
                 setInnerPageName({ ...activeTabInfo });
                 setCurrentPageName({});
-                // fetchAllData();
+                fetchAllData();
             }
         }
     }, [currentPageName]);
@@ -281,25 +285,34 @@ function Quotation() {
         //    poiId: condition.poiId,
         //    useAt: "Y",
         //};
+        if (innerPageName.name === "견적용 인건비") {
+            const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
 
-        const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
-
-        if (resultData.length !== 0) {
-            const result = processResultData(resultData, condition);
-            console.log(result, "함수거치고 난거");
-            //const formatData = mergeObjects(result);
-
-            setEstimate(result);
+            if (resultData.length !== 0) {
+                const result = processResultData(resultData, condition);
+                console.log(result, "함수거치고 난거");
+                //const formatData = mergeObjects(result);
+                setEstimate(result);
+            }
+        } else if (innerPageName.name === "견적용 구매비") {
+            console.log("여기타는지 봐야해");
+            const resultData = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", condition || {});
+            if (resultData.length !== 0) {
+                console.log(resultData, "견적용 구매비");
+                setBuyIngInfo(resultData);
+            }
         }
         //const resultDa2 = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", requestSearch);
         //const filteredData = filterData(updatedData);
     };
 
     const returnList = (originTableData, tableData) => {
-        console.log(originTableData, "얘랑");
-        console.log(tableData, "얘랑 달라야함");
-
-        compareData(originTableData, tableData);
+        if (innerPageName.name === "견적용 인건비") {
+            compareData(originTableData, tableData);
+        } else if (innerPageName.name === "견적용 구매비") {
+            console.log("이거안타나바");
+            compareData2(originTableData, tableData);
+        }
     };
 
     const compareData = (originData, updatedData) => {
@@ -371,7 +384,7 @@ function Quotation() {
     };
 
     const compareData2 = (originData, updatedData) => {
-        console.log("🎄컴페어", originData, "mod:", updatedData);
+        console.log("🎄견적용 구매비", originData, "mod:", updatedData);
         const filterData = updatedData.filter((data) => data.pdiId); //필수값 체크
 
         // console.log("🎄filterData:", filterData);
@@ -387,35 +400,69 @@ function Quotation() {
                 // updatedData의 길이만큼 반복하여 originData 갱신
                 for (let i = 0; i < Math.min(filterData.length, originData.length); i++) {
                     const updatedItem = filterData[i];
-                    updatedArray[i] = { ...updatedItem, estId: updatedArray[i].estId };
+                    updatedArray[i] = { ...updatedItem, estBuyId: updatedArray[i].estBuyId };
                 }
                 return updatedArray;
             };
 
             const firstRowUpdate = updateDataInOrigin(originData, filterData);
-            updateItem(firstRowUpdate);
+            updateItem2(firstRowUpdate);
 
-            const originAValues = originData.map((item) => item.estIdList); //삭제할 id 추출
+            const originAValues = originData.map((item) => item.estBuyId); //삭제할 id 추출
             const extraOriginData = originAValues.slice(updatedDataLength);
 
-            deleteItem(extraOriginData);
+            deleteItem2(extraOriginData);
         } else if (originDataLength === updatedDataLength) {
-            updateItem(filterData);
+            updateItem2(filterData);
         } else if (originDataLength < updatedDataLength) {
-            const toAdds = [];
             const toUpdate = [];
             for (let i = 0; i < originDataLength; i++) {
                 const temp = { ...filterData[i] };
                 toUpdate.push(temp);
             }
-            updateItem(toUpdate);
+            updateItem2(toUpdate);
+            const addLists = [];
+
             for (let i = originDataLength; i < updatedDataLength; i++) {
-                const temp = { ...filterData[i] };
-                toAdds.push(temp);
-                toAdds.poiId = condition.poiId;
-                toAdds.versionId = condition.versionId;
+                const addList = { ...filterData[i] };
+                addList.poiId = condition.poiId;
+                addList.versionId = condition.versionId;
+                addLists.push(addList);
             }
-            addItem(toAdds);
+            addItem2(addLists); //추가
+        }
+    };
+
+    const addItem2 = async (addData) => {
+        console.log(addData, "견적 구매 추가데이터");
+        const url = `api/estimate/buy/estCostBuy/addList.do`;
+        const resultData = await axiosPost(url, addData);
+        console.log(resultData, "💜추가된거 확인addItem");
+        if (resultData) {
+            refresh();
+        }
+    };
+
+    const updateItem2 = async (toUpdate) => {
+        console.log(toUpdate, "업데이트 견적구매 데이터좀보자!");
+        const url = `/api/estimate/buy/estCostBuy/editList.do`;
+        console.log(toUpdate, "💜updateItem");
+        const resultData = await axiosUpdate(url, toUpdate);
+        console.log(resultData, "변경된거 맞음?");
+
+        if (resultData) {
+            refresh();
+        }
+    };
+
+    const deleteItem2 = async (removeItem) => {
+        console.log(removeItem, "견적 구매 삭제할놈들");
+        const url = `/api/estimate/buy/estCostBuy/removeAll.do`;
+        const resultData = await axiosDelete(url, removeItem);
+        console.log(resultData, "지워진거맞음?");
+
+        if (resultData) {
+            refresh();
         }
     };
 
@@ -487,6 +534,11 @@ function Quotation() {
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
+                                    <PopupButton targetUrl={URL.LaborCostDoc} data={{ label: "갑지", ...selectedRows[0] }} />
+                                    <PopupButton
+                                        targetUrl={URL.LaborSummaryDoc}
+                                        data={{ label: "상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
+                                    />
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
                                     <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
@@ -498,6 +550,9 @@ function Quotation() {
                                     returnList={returnList}
                                     customDatas={estimate}
                                     viewPageName={{ name: "견적용 인건비", id: "estimateLabor" }}
+                                    returnSelectRows={(data) => {
+                                        setSelectedRows(data);
+                                    }}
                                     customDatasRefresh={refresh}
                                     condition={condition}
                                 />
@@ -510,14 +565,20 @@ function Quotation() {
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
+                                    <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
+                                    <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
                                     <RefreshButton onClick={refresh} />
                                 </div>
-                                <ReactDataTableURL
+                                <ReactDataTablePdorder
                                     editing={true}
                                     columns={columns.orderPlanMgmt.estimatePurchase}
-                                    // customDatas={generalExpensesDatas}
+                                    customDatas={buyIngInfo}
                                     returnList={returnList}
                                     viewPageName={{ name: "견적용 구매비", id: "orderBuying" }}
+                                    returnSelectRows={(data) => {
+                                        setSelectedRows(data);
+                                    }}
                                     customDatasRefresh={refresh}
                                     condition={condition}
                                 />
