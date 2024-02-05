@@ -151,6 +151,15 @@ function OrderPlanMgmt() {
 
                 toAdds.push(toAdd);
             }
+            const addDayToPmpMonth = (data) => {
+                data.forEach((item) => {
+                    const pmpMonth = item.pmpMonth;
+                    if (pmpMonth) {
+                        item.pmpMonth = `${pmpMonth}-01`;
+                    }
+                });
+            };
+            console.log(addDayToPmpMonth(toAdds));
             addList(toAdds);
         }
     };
@@ -234,6 +243,7 @@ function OrderPlanMgmt() {
 
     const fetchAllData = async (requestData) => {
         if (innerPageName.name === "원가버전조회") {
+            console.log(innerPageName.name);
             const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", {
                 searchCondition: "",
                 searchKeyword: "",
@@ -289,7 +299,7 @@ function OrderPlanMgmt() {
                                 mm11 * matchingAItem.gupPrice11 +
                                 mm12 * matchingAItem.gupPrice12 +
                                 mm13 * matchingAItem.gupPrice13 +
-                                mm14 * matchingAItem.gupPrice14 ,
+                                mm14 * matchingAItem.gupPrice14,
                             pmpmmPositionCode1Total: mm1 * matchingAItem.gupPrice1,
                             pmpmmPositionCode9Total: mm9 * matchingAItem.gupPrice9,
                             pmpmmPositionCode10Total: mm10 * matchingAItem.gupPrice10,
@@ -337,6 +347,9 @@ function OrderPlanMgmt() {
             }
         } else if (innerPageName.name === "구매(재료비)") {
             const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
+
+            console.log(condition, "컨디션");
+            console.log(resultData, "이상하당깨");
 
             if (resultData && resultData.length > 0) {
                 const calData = buyIngInfoCalculation(resultData);
@@ -400,7 +413,7 @@ function OrderPlanMgmt() {
                     margin: totals.planAmount !== 0 ? ((totals.planAmount - totals.estimatedCost) / totals.estimatedCost) * 100 + "%" : 0 + "%", //이익율
                     byQunty: totals.byQunty,
                 });
-                
+
                 setPdOrdrCalDatas(groupedDataWithCalculations); //합계
             } else {
                 alert("no data");
@@ -616,13 +629,18 @@ function OrderPlanMgmt() {
                                     condition={condition}
                                 />
                             </HideCard>
-                        </ul> 
+                        </ul>
                     </div>
                     <div className="third">
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
-                                <ReactDataTable columns={columns.orderPlanMgmt.purchaseCal} customDatas={pdOrdrCalDatas} hideCheckBox={true} isSpecialRow={true}/>
+                                <ReactDataTable
+                                    columns={columns.orderPlanMgmt.purchaseCal}
+                                    customDatas={pdOrdrCalDatas}
+                                    hideCheckBox={true}
+                                    isSpecialRow={true}
+                                />
                             </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">

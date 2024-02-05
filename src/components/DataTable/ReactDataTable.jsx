@@ -82,9 +82,10 @@ const ReactDataTable = (props) => {
     const handleDateClick = (date, colName, index) => {
         const updatedTableData = [...tableData];
 
-        if (current.id === "labor" && colName === "pmpMonth") { //영업인건비 연월 중복방지
-            const isDuplicate = updatedTableData.some(item => item.pmpMonth !== "" && item.pmpMonth?.substring(0, 7) === date.substring(0, 7));
-        
+        if (current.id === "labor" && colName === "pmpMonth") {
+            //영업인건비 연월 중복방지
+            const isDuplicate = updatedTableData.some((item) => item.pmpMonth !== "" && item.pmpMonth?.substring(0, 9) === date.substring(0, 9));
+
             if (isDuplicate) {
                 alert("해당 연월은 이미 존재합니다.");
             } else {
@@ -93,7 +94,7 @@ const ReactDataTable = (props) => {
         } else {
             updatedTableData[index][colName] = date;
         }
-        
+
         setTableData(updatedTableData);
     };
 
@@ -225,7 +226,7 @@ const ReactDataTable = (props) => {
                     esntlId: emUserInfo.uniqId,
                 };
                 setTableData(updatedTableData);
-                setEmUserInfo({})
+                setEmUserInfo({});
             }
         }
     }, [emUserInfo]);
@@ -570,7 +571,8 @@ const ReactDataTable = (props) => {
         const updatedTableData = [...tableData];
         updatedTableData[row.index][accessor] = value;
 
-        if (innerPageName.id === "labor") { //영업인건비
+        if (innerPageName.id === "labor") {
+            //영업인건비
             if (row.original.pecUnitPrice && row.original.pecMm) {
                 const price = row.original.pecUnitPrice * row.original.pecMm;
                 updatedTableData[index]["price"] = price;
@@ -629,7 +631,7 @@ const ReactDataTable = (props) => {
             )}
             <div className={isPageNation ? "x-scroll" : "table-scroll"}>
                 <table {...getTableProps()} className="table-custom table-styled" style={{ tableLayout: "auto" }}>
-                {/* <table {...getTableProps()} className="table-custom table-styled" > */}
+                    {/* <table {...getTableProps()} className="table-custom table-styled" > */}
                     <thead>
                         {headerGroups.map((headerGroup, headerGroupIndex) => (
                             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -642,8 +644,7 @@ const ReactDataTable = (props) => {
                                         <th
                                             {...column.getHeaderProps(column.getSortByToggleProps())}
                                             id={`header-${column.id}`}
-                                            className={columnIndex === 0 ? "first-column" : ""}
-                                        >
+                                            className={columnIndex === 0 ? "first-column" : ""}>
                                             {column.render("Header")}
                                             <div {...column.getResizerProps()} className={`resizer ${column.isResizing ? "isResizing" : ""}`} />
                                             <span style={{ color: "red", margin: 0 }}>{column.require === true ? "*" : ""}</span>
@@ -661,7 +662,7 @@ const ReactDataTable = (props) => {
                                 const isLastRow = row.index === page.length - 1;
                                 return (
                                     // <tr {...row.getRowProps()} onDoubleClick={(e) => onCLickRow(row)}>
-                                    <tr {...row.getRowProps()} className={isSpecialRow && isLastRow ? 'special-row' : ''}>
+                                    <tr {...row.getRowProps()} className={isSpecialRow && isLastRow ? "special-row" : ""}>
                                         {row.cells.map((cell, cellIndex) => {
                                             if (cell.column.notView) {
                                                 // notView가 true인 경우, 셀을 출력하지 않음
@@ -783,8 +784,7 @@ const ReactDataTable = (props) => {
                                 <td
                                     colSpan={visibleColumnCount + 1}
                                     style={{ textAlign: "center", fontSize: "15px", height: "80px", border: 0 }}
-                                    className="back-lightgray"
-                                >
+                                    className="back-lightgray">
                                     조회된 데이터가 없습니다.
                                 </td>
                             </tr>
@@ -826,14 +826,7 @@ const ReactDataTable = (props) => {
                     title={current.name + " 수정"}
                 />
             )}
-            {openModalAdd && (
-                <AddModModal
-                    list={addColumns}
-                    resultData={addClick}
-                    onClose={() => setOpenModalAdd(false)}
-                    title={current.name + " 추가"}
-                />
-            )}
+            {openModalAdd && <AddModModal list={addColumns} resultData={addClick} onClose={() => setOpenModalAdd(false)} title={current.name + " 추가"} />}
             <DeleteModal initialData={deleteList} resultData={deleteClick} onClose={() => setOpenModalDel(false)} isOpen={openModalDel} />
             <ProductGroupModal
                 width={600}

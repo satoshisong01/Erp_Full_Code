@@ -7,9 +7,10 @@ import { v4 as uuidv4 } from "uuid";
 export default function DayPicker({ name, value, onClick }) {
     const [isCalendarVisible, setIsCalendarVisible] = useState(false);
     const datePickerRef = useRef(null);
+    const calendarRef = useRef(null);
 
     const handleOutsideClick = (event) => {
-        if (datePickerRef.current && !datePickerRef.current.contains(event.target) && event.target.classList.contains("react-calendar")) {
+        if (event.target.classList.contains("react-calendar") && !datePickerRef.current.contains(event.target)) {
             setIsCalendarVisible(false);
         }
     };
@@ -49,7 +50,7 @@ export default function DayPicker({ name, value, onClick }) {
             />
 
             {isCalendarVisible && (
-                <div id={uuidv4()}>
+                <div ref={calendarRef} id={uuidv4()}>
                     <Calendar onClickDay={(data) => onClickDay(data)} />
                 </div>
             )}

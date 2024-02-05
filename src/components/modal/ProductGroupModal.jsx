@@ -34,11 +34,13 @@ export default function ProductGroupModal(props) {
 
     const getProductInfoList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/productGroup/totalListAll.do", requestData || {});
+        console.log(resultData, "뭔가나오나");
         setProductInfoList(resultData);
     };
 
     const columns = [
         { header: "품목그룹아이디", col: "pgId", notView: true },
+        //{ header: "품목 규격", col: "pdiStnd", cellWidth: "0", notView: true },
         { header: "품목그룹명", col: "pgNm", cellWidth: "515" },
     ];
 

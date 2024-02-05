@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 import "../../components/modal/ModalCss.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { axiosFetch, axiosFileUpload } from "api/axiosFetch";
+import { faTimes, faFileLines } from "@fortawesome/free-solid-svg-icons";
+import { axiosDownLoad, axiosFetch, axiosFileUpload } from "api/axiosFetch";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import ModalSearchList from "components/ModalCondition";
 import { PageContext } from "components/PageProvider";
@@ -13,23 +13,49 @@ Modal.setAppElement("#root"); // Set the root element for accessibility
 
 /* 품목상세정보 목록 모달 */
 export default function FileModal(props) {
-    const { width, height, isOpen, title, onClose } = props;
-    const { setModalPageName, setIsModalTable, setPdiNmList, pdiNmList, projectPdiNm, setProjectPdiNm } = useContext(PageContext);
+    const { width, height, isOpen, title, onClose, fileIdData } = props;
+    const { setModalPageName, setIsModalTable, filePageName, setFilePageName, atchFileId, setAtchFileId, innerPageName } = useContext(PageContext);
     const [fileData, setFileData] = useState([]);
 
-    const [productInfoList, setProductInfoList] = useState([]);
+    const [fileList, setFileList] = useState([]);
+    const [filedown, setFileDown] = useState("");
+    const [fileLength, setFileLength] = useState([]);
+
     const bodyRef = useRef(null);
 
     useEffect(() => {
-        console.log("File Data Updated:", fileData);
-    }, [fileData]);
+        if (innerPageName.name !== "원가버전조회" && innerPageName.name !== undefined) {
+            console.log(innerPageName.name);
+            console.log(fileIdData, "값이있나??");
+            fetchAllData();
+        } else {
+            console.log("이건나오면 진짜안댐");
+        }
+    }, [isOpen]);
+
+    const fetchAllData = async () => {
+        if (fileIdData && fileIdData.length > 0) {
+            console.log(fileIdData, "??? 값이없을텐데");
+            const url = `/file/totalListAll.do`;
+            const resultData = await axiosFetch(url, { atchFileId: fileIdData });
+            if (resultData) {
+                console.log(resultData, "???리스트나와야하는디");
+                const originTitle = resultData.map((item) => item.originalFileNm);
+                const fileId = resultData.map((item) => item.fileId);
+                setFileList(originTitle);
+                setFileDown(fileId);
+                setFileLength(resultData.length);
+            } else if (!resultData) {
+                return;
+            }
+        }
+    };
 
     useEffect(() => {
         if (isOpen) {
-            setModalPageName("품목정보팝업");
+            setFilePageName("첨부파일팝업");
             setIsModalTable(true);
-            setPdiNmList([]); //초기화
-            setProjectPdiNm({}); //초기화
+            setAtchFileId([]); //초기화
         }
         return () => {
             setIsModalTable(false);
@@ -64,6 +90,7 @@ export default function FileModal(props) {
             if (result) {
                 // Handle success
                 console.log("File uploaded successfully:", result);
+                setAtchFileId(result[0].atchFileId);
             } else {
                 // Handle failure
                 console.error("File upload failed.");
@@ -72,6 +99,18 @@ export default function FileModal(props) {
             console.error("Error uploading file:", error);
         }
         onClose();
+    };
+
+    const clickDownLoad = async (item, index, filedown) => {
+        const url = `/file/download.do`;
+        try {
+            const result = await axiosDownLoad(url, { fileId: filedown[index] });
+            if (result) {
+                alert(`${item}파일이 다운로드 되었습니다`);
+            }
+        } catch (error) {
+            console.error("Error");
+        }
     };
 
     return (
@@ -93,7 +132,22 @@ export default function FileModal(props) {
 
                         <div className="me-modal-body" ref={bodyRef}>
                             <div className="body-area" style={{ gap: 0 }}>
-                                <FileUpload onFileSelect={onFileSelect} />
+                                <FileUpload fileList={fileList} onFileSelect={onFileSelect} />
+                            </div>
+                            <div>
+                                {fileList.map((item, index) => (
+                                    <div style={{ display: "flex" }}>
+                                        <button
+                                            className="fileBtn"
+                                            onClick={() => {
+                                                clickDownLoad(item, index, filedown);
+                                            }}
+                                            key={index}>
+                                            <FontAwesomeIcon icon={faFileLines} style={{ fontSize: "23px", marginRight: "20px" }} />
+                                            {item}
+                                        </button>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                         <div className="me-modal-footer mg-t-10 mg-b-20">

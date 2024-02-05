@@ -181,7 +181,7 @@ function Quotation() {
                 estMm24,
             } = item;
 
-            const key = `${pgNm}`;
+            const key = `${pgNm}_${estPosition}`;
             if (!accumulator[key]) {
                 accumulator[key] = {
                     estMm,
@@ -273,6 +273,16 @@ function Quotation() {
             newObj["estMm24"] = mergedItem.estMm24;
             newObj["poiId"] = condition.poiId;
             newObj["versionId"] = condition.versionId;
+            let total = 0;
+            for (let j = 1; j <= 24; j++) {
+                const propName = `estMm${j}`;
+                if (mergedItem[propName] !== null) {
+                    total += mergedItem[propName];
+                }
+            }
+
+            newObj["total"] = total;
+            newObj["price"] = total * mergedItem.estUnitPrice;
 
             return newObj;
         });
@@ -537,7 +547,7 @@ function Quotation() {
                                     <PopupButton targetUrl={URL.LaborCostDoc} data={{ label: "갑지", ...selectedRows[0] }} />
                                     <PopupButton
                                         targetUrl={URL.LaborSummaryDoc}
-                                        data={{ label: "상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
+                                        data={{ label: "영업상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
                                     />
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
@@ -565,6 +575,11 @@ function Quotation() {
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
+                                    <PopupButton targetUrl={URL.OrderBuyDoc} data={{ label: "갑지", ...selectedRows[0] }} />
+                                    <PopupButton
+                                        targetUrl={URL.OrderSummaryDoc}
+                                        data={{ label: "구매상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
+                                    />
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
                                     <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />

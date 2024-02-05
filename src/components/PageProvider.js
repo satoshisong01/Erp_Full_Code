@@ -74,6 +74,10 @@ export function PageProvider({ children }) {
     const [fileId, setFileId] = useState([]);
     const [fileName, setFileName] = useState([]);
 
+    const [filePageName, setFilePageName] = useState([]);
+
+    const [atchFileId, setAtchFileId] = useState([]); //파일 단체ID
+
     const contextValue = {
         isOpenModalPgNm,
         setIsOpenModalPgNm,
@@ -156,6 +160,10 @@ export function PageProvider({ children }) {
         setFileName,
         fileId,
         setFileId,
+        atchFileId,
+        setAtchFileId,
+        filePageName,
+        setFilePageName,
     };
 
     return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>;

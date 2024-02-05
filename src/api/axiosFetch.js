@@ -179,6 +179,40 @@ export async function axiosScan(url, requestData) {
     }
 }
 
+//다운로드
+
+export async function axiosDownLoad(downloadUrl, requestData) {
+    const headers = {
+        Authorization: process.env.REACT_APP_POST,
+        "Content-Type": "application/json",
+    };
+
+    try {
+        const response = await axios.post(downloadUrl, requestData, {
+            headers,
+            responseType: "blob", // 바이너리 데이터로 응답 받기
+        });
+
+        // 서버 응답 헤더에서 파일명 가져오기
+        const contentDisposition = response.headers["content-disposition"];
+        const fileName = contentDisposition.split("filename=")[1].trim();
+
+        // 파일 다운로드를 위한 코드
+        const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.setAttribute("download", fileName || "downloadedFile"); // 파일명이 없으면 'downloadedFile'으로 설정
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        return true;
+    } catch (error) {
+        console.error("❌axiosDownLoad 에러: ", error);
+        throw error;
+    }
+}
+
 /* get */
 export async function axiosGet(url) {
     const headers = {
