@@ -76,7 +76,7 @@ const ReactDataTableURL = (props) => {
             setTableData([]);
             setOriginTableData([]);
         }
-    }, [customDatas]);
+    }, [customDatas, innerPageName]);
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
@@ -98,10 +98,9 @@ const ReactDataTableURL = (props) => {
             if (nameOfButton === "save") {
                 if (returnList) {
                     returnList(originTableData, tableData);
+                } else {
+                    compareData(originTableData, tableData);
                 }
-                //else {
-                //    compareData(originTableData, tableData);
-                //}
             } else if (nameOfButton === "load" && viewLoadDatas) {
                 loadOnAddRow(viewLoadDatas);
             } else if (nameOfButton === "deleteRow") {
@@ -297,11 +296,15 @@ const ReactDataTableURL = (props) => {
     };
 
     const onChangeInput = (e, preRow, accessor) => {
-        const { name, value } = e.target;
+        const { value } = e.target;
         const index = preRow.index;
+        console.log(accessor);
+        console.log(index);
         const updatedTableData = [...tableData];
+        updatedTableData[index][accessor] = value;
 
-        if (innerPageName.id === "estimateLabor") { //견적용 인건비
+        if (innerPageName.id === "estimateLabor") {
+            //견적용 인건비
             let price = 0;
             let total = 0;
 
@@ -329,13 +332,14 @@ const ReactDataTableURL = (props) => {
             updatedTableData[index]["total"] = total;
             updatedTableData[index]["estUnitPrice"] = positionCount;
         } else {
-            if(accessor === "pjbgTypeCode") { //경비목록 중복 방지
-                const isDuplicate = updatedTableData.some(item => item.pjbgTypeCode === value);
-    
-                if(isDuplicate) {
+            if (accessor === "pjbgTypeCode") {
+                //경비목록 중복 방지
+                const isDuplicate = updatedTableData.some((item) => item.pjbgTypeCode === value);
+
+                if (isDuplicate) {
                     alert("해당 타입은 이미 존재합니다."); //이렇게해도 select는 선택되고 데이터는 들어감
                     updatedTableData[index][accessor] = "";
-                } else  {
+                } else {
                     updatedTableData[index][accessor] = value;
                 }
             }
@@ -540,30 +544,30 @@ const ReactDataTableURL = (props) => {
                                     return null;
                                 }
 
-                                    return (
-                                        <th {...column.getHeaderProps(column.getSortByToggleProps())} className={columnIndex === 0 ? "first-column" : ""}>
-                                            {column.render("Header")}
-                                            <div {...column.getResizerProps()} className={`resizer ${column.isResizing ? "isResizing" : ""}`} />
-                                            <span style={{ color: "red", margin: 0 }}>{column.require === true ? "*" : ""}</span>
-                                            <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
-                                        </th>
-                                    );
-                                })}
-                            </tr>
-                        ))}
-                    </thead>
-                    {tableData.length > 0 ? (
-                        <tbody {...getTableBodyProps()}>
-                            {page.map((row, rowIndex) => {
-                                prepareRow(row);
                                 return (
-                                    // <tr {...row.getRowProps()} onClick={(e) => onCLickRow(row)}>
-                                    <tr {...row.getRowProps()}>
-                                        {row.cells.map((cell, cellIndex) => {
-                                            if (cell.column.notView) {
-                                                // notView가 true인 경우, 셀을 출력하지 않음
-                                                return null;
-                                            }
+                                    <th {...column.getHeaderProps(column.getSortByToggleProps())} className={columnIndex === 0 ? "first-column" : ""}>
+                                        {column.render("Header")}
+                                        <div {...column.getResizerProps()} className={`resizer ${column.isResizing ? "isResizing" : ""}`} />
+                                        <span style={{ color: "red", margin: 0 }}>{column.require === true ? "*" : ""}</span>
+                                        <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
+                                    </th>
+                                );
+                            })}
+                        </tr>
+                    ))}
+                </thead>
+                {tableData.length > 0 ? (
+                    <tbody {...getTableBodyProps()}>
+                        {page.map((row, rowIndex) => {
+                            prepareRow(row);
+                            return (
+                                // <tr {...row.getRowProps()} onClick={(e) => onCLickRow(row)}>
+                                <tr {...row.getRowProps()}>
+                                    {row.cells.map((cell, cellIndex) => {
+                                        if (cell.column.notView) {
+                                            // notView가 true인 경우, 셀을 출력하지 않음
+                                            return null;
+                                        }
 
                                         return (
                                             <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"} id="otherCol">
@@ -619,9 +623,8 @@ const ReactDataTableURL = (props) => {
                                                     ) : cell.column.type === "select" ? (
                                                         <select
                                                             name={cell.column.id}
-                                                            value={ tableData[row.index]?.[cell.column.id] || "" }
-                                                            onChange={(e) => onChangeInput(e, row, cell.column.id)}
-                                                        >
+                                                            value={tableData[row.index]?.[cell.column.id] || ""}
+                                                            onChange={(e) => onChangeInput(e, row, cell.column.id)}>
                                                             {cell.column.options.map((option, index) => (
                                                                 <option key={index} value={option.value || ""} selected={index === 0 ? true : false}>
                                                                     {option.label}

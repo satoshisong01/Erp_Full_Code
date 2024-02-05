@@ -5,48 +5,19 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
 /* 영업상세내역 */
-const LaborSummaryDoc = () => {
+const OrderSummaryDoc = () => {
     const [tableData, setTableData] = useState([]);
     const [title, setTitle] = useState("");
     const [count, setCount] = useState(0);
 
     const pdfContentRef = useRef(null);
 
-    //const generatePDF = () => {
-    //    const input = pdfContentRef.current;
-    //    let element = document.getElementById("element-to-print");
-    //    if (input) {
-    //        const options = {
-    //            filename: "견적인건비_요약.pdf", // 출력 파일 이름
-    //            jsPDF: { unit: "in", format: "letter", orientation: "landscape" },
-    //        };
-
-    //        const pdfDoc = new jsPDF(options.jsPDF);
-
-    //        // 페이지 1
-    //        html2pdf(element).toPdf((pdf) => {
-    //            pdfDoc.addPage();
-    //            pdfDoc.addImage(pdf.output("datauristring"), 0, 0);
-    //        });
-
-    //        // 페이지 2
-    //        let element2 = document.getElementById("element-to-print-page2");
-    //        html2pdf(element2).toPdf((pdf2) => {
-    //            pdfDoc.addPage();
-    //            pdfDoc.addImage(pdf2.output("datauristring"), 0, 0);
-    //        });
-
-    //        // 최종적으로 저장
-    //        pdfDoc.save("견적인건비_요약_2페이지.pdf");
-    //    }
-    //};
-
     const generatePDF = () => {
         const input = pdfContentRef.current;
         let element = document.getElementById("element-to-print");
         if (input) {
             const options = {
-                filename: "견적인건비_요약.pdf", // 출력 파일 이름
+                filename: "견적구매비_요약.pdf", // 출력 파일 이름
                 jsPDF: { unit: "in", format: "letter", orientation: "landscape" },
             };
 
@@ -57,36 +28,16 @@ const LaborSummaryDoc = () => {
     };
 
     const Columns = [
-        { header: "Description", col: "pgNm" },
-        { header: "Position", col: "estPosition" },
-        { header: "M", col: "estMm1" },
-        { header: "M1", col: "estMm2" },
-        { header: "M2", col: "estMm3" },
-        { header: "M3", col: "estMm4" },
-        { header: "M4", col: "estMm5" },
-        { header: "M5", col: "estMm6" },
-        { header: "M6", col: "estMm7" },
-        { header: "M7", col: "estMm8" },
-        { header: "M8", col: "estMm9" },
-        { header: "M9", col: "estMm10" },
-        { header: "M10", col: "estMm11" },
-        { header: "M11", col: "estMm12" },
-        { header: "M12", col: "estMm13" },
-        { header: "M13", col: "estMm14" },
-        { header: "M14", col: "estMm15" },
-        { header: "M15", col: "estMm16" },
-        { header: "M16", col: "estMm17" },
-        { header: "M17", col: "estMm18" },
-        { header: "M18", col: "estMm19" },
-        { header: "M19", col: "estMm20" },
-        { header: "M20", col: "estMm21" },
-        { header: "M21", col: "estMm22" },
-        { header: "M22", col: "estMm23" },
-        { header: "M23", col: "estMm24" },
-        { header: "Total", col: "total" },
-        { header: "UnitPrice", col: "unitPrice" },
+        { header: "Item", col: "pgNm" },
+        { header: "Modal", col: "pdiNum" },
+        { header: "Description", col: "pdiStnd" },
+        { header: "Q'ty", col: "estBuyQunty" },
         { header: "Amount", col: "amount" },
-        { header: "Remarks", col: "estDesc" },
+        { header: "Amount2", col: "amount" },
+        { header: "Amount3", col: "amount" },
+        { header: "Amount4", col: "amount" },
+        { header: "Amount5", col: "amount" },
+        { header: "Remarks", col: "estBuyDesc" },
     ];
 
     // URL에서 쿼리 문자열 파라미터를 읽는 함수
@@ -106,24 +57,16 @@ const LaborSummaryDoc = () => {
         // URL에서 "data" 파라미터 읽기
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
+        console.log(data, "3333");
         const { label } = data;
         setTitle(label);
         const updatedTableData = data.tableData.map((rowData) => {
-            let total = 0;
-            let unitPrice = 0;
             let amount = 0;
             let estDesc = "";
-            for (let j = 1; j <= 24; j++) {
-                const propName = `estMm${j}`;
-                if (rowData[propName] !== null) {
-                    total += rowData[propName];
-                }
-            }
-            unitPrice = rowData.estUnitPrice;
             amount = rowData.price;
             estDesc = rowData.estDesc ? rowData.estDesc : "";
             console.log(rowData, "???");
-            return { ...rowData, total, unitPrice, amount, estDesc };
+            return { ...rowData, amount, estDesc };
         });
 
         setTableData(updatedTableData);
@@ -172,35 +115,43 @@ const LaborSummaryDoc = () => {
                     <table id="example" className="display">
                         <thead>
                             <tr>
-                                <th colSpan={2} rowSpan={2} style={{ textAlign: "center", width: "150px" }}>
+                                <th colSpan={2} style={{ textAlign: "center", width: "150px" }}>
+                                    Item
+                                </th>
+                                <th colSpan={1} style={{ textAlign: "center", width: "150px" }}>
                                     Description
                                 </th>
-                                <th colSpan={count} style={{ width: `${count * 40}px`, textAlign: "center" }}>
-                                    M/M
+                                <th colSpan={1} style={{ textAlign: "center", width: "40px" }}>
+                                    Q'ty
                                 </th>
-                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "40px" }}>
-                                    Total
+                                <th colSpan={1} style={{ textAlign: "center", width: "60px" }}>
+                                    Consumer Price
                                 </th>
-                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "60px" }}>
+                                <th colSpan={1} style={{ textAlign: "center", width: "90px" }}>
+                                    Consumer Amount
+                                </th>
+                                <th colSpan={1} style={{ textAlign: "center", width: "70px" }}>
                                     Unit Price
                                 </th>
-                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "90px" }}>
+                                <th colSpan={1} style={{ textAlign: "center", width: "70px" }}>
                                     Amount
                                 </th>
-                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "70px" }}>
-                                    Remarks
+                                <th colSpan={1} style={{ textAlign: "center", width: "70px" }}>
+                                    D/C(%)
+                                </th>
+                                <th colSpan={1} style={{ textAlign: "center", width: "70px" }}>
+                                    Remarks (Maker)
                                 </th>
                             </tr>
                             <tr>
                                 {Columns.map((column, index) => {
                                     if (
                                         column.col === "pgNm" ||
-                                        column.col === "estPosition" ||
-                                        column.col === "unitPrice" ||
+                                        column.col === "pdiNum" ||
+                                        column.col === "pdiStnd" ||
+                                        column.col === "estBuyQunty" ||
                                         column.col === "amount" ||
-                                        column.col === "estDesc" ||
-                                        column.col === "total" ||
-                                        (column.col.startsWith("estMm") && tableData.every((row) => row[column.col] === null || row[column.col] === 0))
+                                        column.col === "estBuyDesc"
                                     ) {
                                         return null;
                                     }
@@ -216,15 +167,11 @@ const LaborSummaryDoc = () => {
                             {tableData.map((rowData, rowIndex) => (
                                 <tr key={rowIndex}>
                                     {Columns.map((column, colIndex) => {
-                                        if (column.col.startsWith("estMm") && tableData.every((row) => row[column.col] === null || row[column.col] === 0)) {
-                                            return null;
-                                        }
-
                                         const cellValue = rowData[column.col];
-
+                                        const formattedValue = typeof cellValue === "number" ? cellValue.toLocaleString() : cellValue;
                                         return (
                                             <td key={colIndex} className={column.className}>
-                                                {cellValue !== null && cellValue !== 0 ? cellValue.toLocaleString() : null}
+                                                {formattedValue}
                                             </td>
                                         );
                                     })}
@@ -239,4 +186,4 @@ const LaborSummaryDoc = () => {
     );
 };
 
-export default LaborSummaryDoc;
+export default OrderSummaryDoc;

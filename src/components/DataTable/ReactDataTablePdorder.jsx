@@ -52,6 +52,7 @@ const ReactDataTablePdorder = (props) => {
         setProjectPdiNm,
         setIsOpenModalCompany,
         isOpenModalCompany,
+        atchFileId,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -62,6 +63,7 @@ const ReactDataTablePdorder = (props) => {
     const [rowIndex, setRowIndex] = useState(0);
     const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
     const [isOpenModalFile, setIsOpenModalFile] = useState(false); //첨부파일업로드
+    const [fileIdData, setFileIdData] = useState([]);
 
     //취소시에 오리지널 테이블로 돌아감
     useEffect(() => {
@@ -127,6 +129,10 @@ const ReactDataTablePdorder = (props) => {
             })),
         [columns]
     );
+
+    useEffect(() => {
+        console.log(tableData);
+    }, [tableData]);
 
     useEffect(() => {
         //newRowData 변동 시 새로운 행 추가
@@ -283,6 +289,10 @@ const ReactDataTablePdorder = (props) => {
         setCountIndex(rowIndex);
     };
 
+    const getFileData = (rowIndex) => {
+        setFileIdData(tableData[rowIndex].atchFileId);
+    };
+
     const setValueDataPdiNm = (rowIndex, selectedPdiNm) => {
         // 선택된 품명에 해당하는 데이터 찾기
         if (selectedPdiNm) {
@@ -304,6 +314,33 @@ const ReactDataTablePdorder = (props) => {
             console.log(`선택된 품명(${selectedPdiNm})에 대한 데이터를 찾을 수 없습니다.`);
         }
     };
+
+    const setFileList = (rowIndex, atchFileId) => {
+        // 선택된 품명에 해당하는 데이터 찾기
+        console.log(rowIndex, "ㅋㅋㅎㄷㄷ");
+        if (atchFileId) {
+            // 테이블 데이터를 복제
+            const updatedTableData = [...tableData];
+
+            // 선택된 품명의 데이터로 해당 행(row)의 데이터 업데이트
+            updatedTableData[rowIndex] = {
+                ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+                atchFileId, // projectPdiNm 객체의 데이터로 업데이트
+            };
+
+            console.log("1.rowIndex:", rowIndex);
+            console.log("2.updatedTableData:", updatedTableData);
+
+            // 업데이트된 데이터로 tableData 업데이트
+            setTableData(updatedTableData);
+        }
+    };
+
+    useEffect(() => {
+        if (isCurrentPage() && Object.keys(atchFileId).length > 0) {
+            setFileList(countIndex, atchFileId);
+        }
+    }, [atchFileId]);
 
     const handleChange = (e, row, accessor, type) => {
         const { value } = e.target;
@@ -348,6 +385,7 @@ const ReactDataTablePdorder = (props) => {
 
                     updatedTableData[index]["estimatedCost"] = Math.round(estimatedCost);
                     updatedTableData[index]["unitPrice"] = Math.round(unitPrice);
+                    updatedTableData[index]["atchFileId"] = atchFileId;
                     updatedTableData[index]["planAmount"] = Math.round(planAmount);
                     updatedTableData[index]["consumerPrice"] = Math.round(consumerPrice * 100);
                     updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount * 100);
@@ -389,6 +427,7 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const addList = async (addNewData) => {
+        console.log(addNewData, "➕➕➕➕??");
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(addNewData)) return;
         if (!condition || condition.poiId === undefined) {
             console.log("❗프로젝트 정보 없음", currentPageName);
@@ -417,6 +456,9 @@ const ReactDataTablePdorder = (props) => {
             });
         }
 
+        console.log(condition.versionId, "버전아이디도 넣어야지");
+        console.log(suffixUrl, "이거왜 주소안가져옴");
+
         const url = `/api${suffixUrl}/addList.do`;
         const resultData = await axiosPost(url, addNewData);
         customDatasRefresh();
@@ -424,7 +466,7 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const updateList = async (toUpdate) => {
-        console.log("❤️mod ", toUpdate, "con:", condition);
+        console.log("🛠️🛠️mod ", toUpdate, "con:", condition);
         console.log("currentPageName:", currentPageName);
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(toUpdate)) return;
         if (!condition || condition.poiId === undefined) {
@@ -460,7 +502,7 @@ const ReactDataTablePdorder = (props) => {
         setOriginTableData([]);
     };
     const deleteList = async (removeItem) => {
-        console.log("del ", removeItem, "con:", condition);
+        console.log("🗑️🗑️del ", removeItem, "con:", condition);
 
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(removeItem)) return;
         if (suffixUrl === "/baseInfrm/product/receivingInfo") {
@@ -478,6 +520,13 @@ const ReactDataTablePdorder = (props) => {
             setOriginTableData([]);
         }
     };
+
+    //삭제ID중복제거
+    function removeDuplicates(arr) {
+        return arr.filter((value, index, self) => {
+            return self.indexOf(value) === index;
+        });
+    }
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
     const compareData = (originData, updatedData) => {
@@ -508,7 +557,7 @@ const ReactDataTablePdorder = (props) => {
             const originAValues = originData.map((item) => item.byId); //삭제할 id 추출
             const extraOriginData = originAValues.slice(updatedDataLength);
 
-            deleteList(extraOriginData);
+            deleteList(removeDuplicates(extraOriginData));
         } else if (originDataLength === updatedDataLength) {
             updateList(filterData);
         } else if (originDataLength < updatedDataLength) {
@@ -642,6 +691,7 @@ const ReactDataTablePdorder = (props) => {
                                                                     className="basic-input"
                                                                     onClick={() => {
                                                                         goSetting(row.index);
+                                                                        getFileData(row.index);
                                                                         setIsOpenModalFile(true);
                                                                     }}>
                                                                     첨부파일
@@ -704,7 +754,7 @@ const ReactDataTablePdorder = (props) => {
             {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
             {isOpenModalCompany && <ModalPageCompany rowIndex={rowIndex} onClose={() => setIsOpenModalCompany(false)} />}
             <ProductInfoModal width={900} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
-            <FileModal width={600} height={330} title="첨부파일" isOpen={isOpenModalFile} onClose={() => setIsOpenModalFile(false)} />
+            <FileModal fileIdData={fileIdData} width={600} height={330} title="첨부파일" isOpen={isOpenModalFile} onClose={() => setIsOpenModalFile(false)} />
         </>
     );
 };

@@ -10,9 +10,9 @@ const FileUpload = ({ onFileSelect }) => {
 
     console.log(fileName, "나오긴하나");
 
-    useEffect(() => {
-        fetchAllData();
-    }, []);
+    //useEffect(() => {
+    //    fetchAllData();
+    //}, []);
 
     const onDrop = useCallback(
         (acceptedFiles) => {
@@ -27,18 +27,18 @@ const FileUpload = ({ onFileSelect }) => {
     );
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        accept: "image/*",
+        accept: "*/*",
         onDrop,
     });
-    const fetchAllData = async () => {
-        const url = `/file/totalListAll.do`;
-        const resultData = await axiosFetch(url, { useAt: "Y" });
-        if (resultData) {
-            console.log(resultData, "데이터나오나");
-        } else if (!resultData) {
-            console.log("에러코드나오나");
-        }
-    };
+    //const fetchAllData = async () => {
+    //    const url = `/file/totalListAll.do`;
+    //    const resultData = await axiosFetch(url, { useAt: "Y" });
+    //    if (resultData) {
+    //        //console.log(resultData, "데이터나오나");
+    //    } else if (!resultData) {
+    //        console.log("에러코드나오나");
+    //    }
+    //};
 
     const showDefaultMessage = uploadedFiles.length === 0;
 
