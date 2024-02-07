@@ -37,6 +37,22 @@ $disabled: gray;
     background-color: $darkblue;
 }
 
+.xBtn {
+    margin: 5px;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    color: $cherry;
+    font-size: 16px;
+    cursor: pointer;
+    //box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.xBtn:hover {
+    color: $burgundy;
+    scale: 1.2;
+}
+
 .default-gray {
     color: $default-gray;
 }
@@ -1444,7 +1460,7 @@ td {
 }
 
 .form-children {
-    width: 90%; 
+    width: 90%;
     border: 1px solid #ccc;
     // border-radius: 5px;
 }
@@ -1454,7 +1470,7 @@ td {
         display: flex;
         flex-direction: row;
     }
-    
+
     .box-group {
         display: flex;
         flex-direction: column;
@@ -1466,14 +1482,14 @@ td {
             border-bottom: none;
             height: 30px;
         }
-        
+
         .box-2 {
             // background-color: #2ecc71;
             border: 1px solid #ccc;
             height: 80px;
         }
     }
-    
+
     .box {
         display: flex;
         flex-direction: column;
@@ -1481,7 +1497,7 @@ td {
         width: 100px;
         // color: #fff;
     }
-    
+
     .box-3 {
         border: 1px solid #ccc;
         width: 30px;
@@ -1489,7 +1505,6 @@ td {
         // background-color: #e74c3c;
         // color: #fff;
     }
-
 }
 
 /* 반응형 스타일 */

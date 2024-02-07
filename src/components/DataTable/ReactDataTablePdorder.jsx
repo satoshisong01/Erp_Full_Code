@@ -111,7 +111,6 @@ const ReactDataTablePdorder = (props) => {
             }
             setNameOfButton(""); //초기화
         }
-        console.log(innerPageName.name, "innerPageName");
     }, [innerPageName, currentPageName, editing, nameOfButton]);
 
     const columnsConfig = useMemo(
@@ -129,10 +128,6 @@ const ReactDataTablePdorder = (props) => {
             })),
         [columns]
     );
-
-    useEffect(() => {
-        console.log(tableData);
-    }, [tableData]);
 
     useEffect(() => {
         //newRowData 변동 시 새로운 행 추가
@@ -218,7 +213,6 @@ const ReactDataTablePdorder = (props) => {
                     returnSelectRows && returnSelectRows(selects);
                     returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
                 }
-                // console.log("current:", current.id, "currentPageName:", currentPageName.id, "innerPageName:", innerPageName.id, "length:", selectedFlatRows.length);
                 setLengthSelectRow(selectedFlatRows.length);
             }
         }
@@ -317,7 +311,6 @@ const ReactDataTablePdorder = (props) => {
 
     const setFileList = (rowIndex, atchFileId) => {
         // 선택된 품명에 해당하는 데이터 찾기
-        console.log(rowIndex, "ㅋㅋㅎㄷㄷ");
         if (atchFileId) {
             // 테이블 데이터를 복제
             const updatedTableData = [...tableData];
@@ -455,9 +448,6 @@ const ReactDataTablePdorder = (props) => {
                 data.versionId = condition.versionId;
             });
         }
-
-        console.log(condition.versionId, "버전아이디도 넣어야지");
-        console.log(suffixUrl, "이거왜 주소안가져옴");
 
         const url = `/api${suffixUrl}/addList.do`;
         const resultData = await axiosPost(url, addNewData);
@@ -686,6 +676,7 @@ const ReactDataTablePdorder = (props) => {
                                                         ) : cell.column.type === "file" ? (
                                                             <div>
                                                                 <button
+                                                                    style={{ width: "50px" }}
                                                                     id={cell.column.id}
                                                                     name={cell.column.id}
                                                                     className="basic-input"
@@ -694,7 +685,7 @@ const ReactDataTablePdorder = (props) => {
                                                                         getFileData(row.index);
                                                                         setIsOpenModalFile(true);
                                                                     }}>
-                                                                    첨부파일
+                                                                    {tableData[row.index].countFileId || "0"}
                                                                 </button>
                                                             </div>
                                                         ) : cell.column.type === "company" ? (
