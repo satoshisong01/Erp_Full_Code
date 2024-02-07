@@ -38,7 +38,7 @@ import GradeWageExpense from "pages/reference/GradeWageExpense";
 import CostIndex from "pages/reference/CostIndex";
 
 //영업관리
-import OrderMgmt from "pages/sales/OrderMgmt";
+import ProjectMgmt from "pages/sales/ProjectMgmt";
 import SalesExpenses from "pages/sales/SalesExpenses";
 import Quotation from "pages/sales/Quotation";
 //import InvoiceMgmt from "pages/sales/InvoiceMgmt";
@@ -290,7 +290,7 @@ const RootRoutes = () => {
                 <Route path={URL.OrderBuyDoc} element={<OrderBuyDoc />} />
                 {/* 새창(팝업) : 구매비 상세내역 */}
                 <Route path={URL.OrderSummaryDoc} element={<OrderSummaryDoc />} />
-                {/* 회원가입 */}
+                {/* 새창(팝업) : 나의정보 */}
                 <Route path={URL.MyInfo} element={<MyInfo />} />
             </Routes>
         );
@@ -346,8 +346,8 @@ const SecondRoutes = () => {
                 <Route path={URL.CostIndex} element={<CostIndex />} />
 
                 {/* 영업관리 */}
-                <Route path={URL.Sales} element={<Navigate to={URL.OrderMgmt} />} />
-                <Route path={URL.OrderMgmt} element={<OrderMgmt />} />
+                <Route path={URL.Sales} element={<Navigate to={URL.ProjectMgmt} />} />
+                <Route path={URL.ProjectMgmt} element={<ProjectMgmt />} />
                 <Route path={URL.SalesExpenses} element={<SalesExpenses />} />
                 <Route path={URL.Quotation} element={<Quotation />} />
 

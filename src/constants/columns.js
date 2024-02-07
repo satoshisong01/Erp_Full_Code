@@ -148,7 +148,7 @@ export const columns = {
         ],
     },
     /* 영업관리 */
-    orderMgmt: {
+    projectMgmt: {
         project: [
             //프로젝트
             { header: "수주 아이디", col: "poiId", cellWidth: "0", notView: true },
@@ -1664,22 +1664,22 @@ export const columns = {
     user: {
         //유저
         employ: [
-            { header: "고유ID", col: "uniqId", notView: true },
-            { header: "업무회원ID", col: "empId", cellWidth: "100", require: true },
-            { header: "사용자명", col: "empNm", cellWidth: "100", require: true },
-            { header: "사원번호", col: "empNum", cellWidth: "100", require: true },
-            { header: "비밀번호", col: "password", notView: true },
-            { header: "나이", col: "birthday", cellWidth: "100" },
-            { header: "전화번호", col: "mbTelNm", cellWidth: "100" },
-            { header: "직위", col: "posNm", cellWidth: "100" },
-            { header: "소속기관", col: "aflOrgCd", cellWidth: "100" },
-            { header: "입사일", col: "joiningDt", cellWidth: "100" },
-            // { header: "잠금여부", col: "lockAt", cellWidth: "100" },
-            { header: "작성일", col: "createDate", cellWidth: "100" },
-            { header: "작성자", col: "createIdBy", cellWidth: "100" },
-            { header: "수정일", col: "lastModifyDate", cellWidth: "100" },
-            { header: "수정자", col: "lastModifiedUserName", cellWidth: "100" },
             { header: "그룹ID", col: "groupId", notView: true },
+            { header: "고유ID", col: "uniqId", notView: true },
+            { header: "권한코드", col: "authorCode", notView: true },
+            { header: "업무회원ID", col: "empId", cellWidth: "271", require: true },
+            { header: "사용자명", col: "empNm", cellWidth: "160", require: true },
+            { header: "나이", col: "birthday", cellWidth: "100" },
+            { header: "전화번호", col: "mbTelNm", cellWidth: "160" },
+            { header: "직위", col: "posNm", cellWidth: "160" },
+            { header: "소속기관", col: "aflOrgCd", cellWidth: "160" },
+            { header: "입사일", col: "joiningDt", cellWidth: "160" },
+            { header: "권한명", col: "authorNm", cellWidth: "160", },
+            // { header: "작성일", col: "createDate", cellWidth: "120" },
+            // { header: "작성자", col: "createIdBy", cellWidth: "120" },
+            // { header: "수정일", col: "lastModifyDate", cellWidth: "120" },
+            // { header: "수정자", col: "lastModifiedUserName", cellWidth: "120" },
+            
         ],
         employCondition: [
             { title: "업무회원ID", col: "empId", type: "input" },
@@ -1690,7 +1690,6 @@ export const columns = {
         add: [
             { items: [{ header: "업무회원ID", col: "empId", require: true, type: "input" }] },
             { items: [{ header: "사용자명", col: "empNm", require: true, type: "input" }] },
-            { items: [{ header: "비밀번호", col: "password", require: true, type: "password" }] },
             {
                 items: [
                     { header: "나이", col: "birthday", type: "input" },
@@ -1703,13 +1702,29 @@ export const columns = {
                     { header: "그룹명", col: "groupNm", type: "group" },
                 ],
             },
-            { items: [{ header: "입사일", col: "joiningDt", type: "dayPicker" }, {}] },
+            {
+                items: [
+                    { header: "입사일", col: "joiningDt", type: "dayPicker" },
+                    {
+                        header: "권한명",
+                        col: "authorCode",
+                        type: "select",
+                        option: [
+                            { label: "전체보기", value: "" },
+                            { label: "익명사용자", value: "ROLE_ANONYMOUS" },
+                            { label: "일반회원", value: "ROLE_USER" },
+                            { label: "팀매니저", value: "ROLE_TEAM_MANAGER" },
+                            { label: "PM", value: "ROLE_MANAGER" },
+                            { label: "슈퍼관리자", value: "ROLE_ADMIN" },
+                        ],
+                    },
+                ]
+            },
         ],
         mod: [
             { items: [{ header: "업무회원ID", col: "empId", require: true, disabled: true, type: "input" }] },
             { items: [{ header: "사용자명", col: "empNm", require: true, type: "input" }] },
-            { items: [{ header: "사원번호", col: "empNum", require: true, type: "input" }] },
-            { items: [{ header: "비밀번호", col: "password", require: true, type: "input" }] },
+            // { items: [{ header: "사원번호", col: "empNum", type: "input" }] },
             {
                 items: [
                     { header: "나이", col: "birthday", type: "input" },
@@ -1722,7 +1737,24 @@ export const columns = {
                     { header: "소속기관", col: "aflOrgCd", type: "input" },
                 ],
             },
-            { items: [{ header: "입사일", col: "joiningDt", type: "dayPicker" }, {}] },
+            {
+                items: [
+                    { header: "입사일", col: "joiningDt", type: "dayPicker" },
+                    {
+                        header: "권한명",
+                        col: "authorCode",
+                        type: "select",
+                        option: [
+                            { label: "전체보기", value: "" },
+                            { label: "익명사용자", value: "ROLE_ANONYMOUS" },
+                            { label: "일반회원", value: "ROLE_USER" },
+                            { label: "팀매니저", value: "ROLE_TEAM_MANAGER" },
+                            { label: "PM", value: "ROLE_MANAGER" },
+                            { label: "슈퍼관리자", value: "ROLE_ADMIN" },
+                        ],
+                    },
+                ]
+            },
         ],
     },
 };

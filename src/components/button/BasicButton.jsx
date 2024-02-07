@@ -1,9 +1,8 @@
 import React from "react";
-import styled from "styled-components";
 
-export default function BasicButton({ label, onClick }) {
+export default function BasicButton({ label, onClick, style }) {
     return (
-        <button onClick={onClick} className="table-btn table-btn-basic">
+        <button onClick={onClick} className={"table-btn table-btn-basic"} style={style}>
             {label}
         </button>
     );

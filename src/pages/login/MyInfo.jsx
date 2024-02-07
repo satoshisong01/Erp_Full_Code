@@ -1,17 +1,42 @@
 // SignUpForm.jsx
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./MyInfo.css";
-import { Radio } from "antd";
+import AddButton from "components/button/AddButton";
+import BasicButton from "components/button/BasicButton";
+import { axiosUpdate } from "api/axiosFetch";
 
 const MyInfo = () => {
     const [formData, setFormData] = useState({
-        username: "",
-        email: "",
-        password: "",
-        permissionGroup: "PS",
-        organization: "메카테크", // Default value
+        empId: "",
+        empNm: "",
+        uniqId: "",
     });
+    const [showChangePassword, setShowChangePassword] = useState(false);
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [passwordsMatch, setPasswordsMatch] = useState(true);
+
+    useEffect(() => {
+        const dataParameter = getQueryParameterByName("data");
+        const data = JSON.parse(dataParameter).data;
+        console.log("회원정보 파라미터:", data);
+        setFormData({
+            empId: data.id,
+            empNm: data.name,
+            uniqId: data.uniqId,
+        });
+    }, []);
+
+    function getQueryParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+        const results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return "";
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,62 +46,116 @@ const MyInfo = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // 여기에서 폼 데이터를 처리하거나 API 호출 등을 수행할 수 있습니다.
-        console.log("Form Data Submitted:", formData);
+        console.log("1.Form Data Submitted:", formData);
+        const resultData = await axiosUpdate("/api/baseInfrm/member/employMember/edit.do", formData);
+        console.log("2.resultData", resultData);
+        if (resultData) {
+            alert("값을 변경했습니다💚💚");
+        } else if (!resultData) {
+            alert("수정 실패");
+        }
+    };
+
+    const close = () => {
+        window.close();
+    };
+
+    const changePassword = () => {
+        setShowChangePassword(true);
+    };
+
+    const handlePasswordChange = (e) => {
+        const { name, value } = e.target;
+        if (name === "newPassword") {
+            setNewPassword(value);
+        } else if (name === "confirmPassword") {
+            setConfirmPassword(value);
+        }
+    };
+
+    const handlePasswordSubmit = () => {
+        // 비밀번호 일치 여부 확인
+        const match = newPassword !== "" && newPassword === confirmPassword;
+        setPasswordsMatch(match);
+
+        if (match) {
+            // 비밀번호 변경 로직 추가
+            setFormData((prevData) => ({
+                ...prevData,
+                password: newPassword,
+            }));
+            setShowChangePassword(false);
+            // 비밀번호 변경 후 newPassword와 confirmPassword 초기화
+            setNewPassword("");
+            setConfirmPassword("");
+        }
     };
 
     return (
         <div className="sign-up-form">
-            <h2>나의 회원정보</h2>
+            <h3 style={{ textAlign: "center" }}>나의 정보</h3>
             <form onSubmit={handleSubmit}>
-                <label htmlFor="username" id="infoLabel">
-                    사용자 이름:
-                </label>
-                <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} required />
-
-                <label htmlFor="username" id="infoLabel">
-                    조직부서:
-                </label>
-                <div>
-                    <input
-                        type="radio"
-                        id="organizationMecatech"
-                        name="organization"
-                        value="메카테크"
-                        checked={formData.organization === "메카테크"}
-                        onChange={handleChange}
-                    />
-                    <label htmlFor="organizationMecatech" id="infoLabel">
-                        메카테크
+                <div className="content">
+                    <label htmlFor="id">
+                        <span className="cherry">* </span>
+                        아이디:
                     </label>
+                    <input type="text" id="id" name="empId" value={formData.empId} onChange={handleChange} required disabled/>
+
+                    <label htmlFor="name">
+                        <span className="cherry">* </span>
+                        이름:
+                    </label>
+                    <input type="text" id="name" name="empNm" value={formData.empNm} onChange={handleChange} required/>
+                    {!showChangePassword && (
+                        <>
+                            <label>비밀번호:</label>
+                            <BasicButton label="비밀번호 변경" onClick={changePassword} />
+                        </>
+                    )}
+                    {showChangePassword && (
+                        <>
+                            <label htmlFor="newPassword">
+                                <span className="cherry">* </span>
+                                새로운 비밀번호:
+                            </label>
+                            <input
+                                type="password"
+                                id="newPassword"
+                                name="newPassword"
+                                value={newPassword}
+                                onChange={handlePasswordChange}
+                                required
+                            />
+
+                            <label htmlFor="confirmPassword">
+                                <span className="cherry">* </span>
+                                비밀번호 확인:
+                            </label>
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                value={confirmPassword}
+                                onChange={handlePasswordChange}
+                                required
+                            />
+                            {!passwordsMatch && (
+                                <p className="cherry">비밀번호가 일치하지 않습니다.</p>
+                            )}
+                            <button className="btn back-cherry"  onClick={handlePasswordSubmit} style={{marginTop: 10}}>
+                                비밀번호 일치
+                            </button>
+                        </>
+                    )}
                 </div>
-                <label htmlFor="permissionGroup" id="infoLabel">
-                    권한 그룹:
-                </label>
-                <select id="permissionGroup" name="permissionGroup" value={formData.permissionGroup} onChange={handleChange}>
-                    <option value="PS">PS</option>
-                    <option value="PA">PA</option>
-                </select>
-                <label htmlFor="email" id="infoLabel">
-                    이메일:
-                </label>
-                <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
 
-                <label htmlFor="password" id="infoLabel">
-                    비밀번호:
-                </label>
-                <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
-
-                <label htmlFor="password" id="infoLabel">
-                    비밀번호 확인:
-                </label>
-                <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
-
-                <button type="submit" className="myInfobutton">
-                    수정
-                </button>
+                <div className="table-buttons mg-t-20">
+                    <AddButton type="submit" label="수정"/>
+                    <BasicButton label="닫기" onClick={close} />
+                </div>
             </form>
         </div>
     );

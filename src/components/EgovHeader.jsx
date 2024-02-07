@@ -9,6 +9,9 @@ import NavLinkTabs from "./tabs/NavLinkTabs";
 import { axiosGet } from "../api/axiosFetch";
 import { PageContext } from "./PageProvider";
 import { v4 as uuidv4 } from "uuid";
+import PopupButton from "./button/PopupButton";
+import BasicButton from "./button/BasicButton";
+import AddButton from "./button/AddButton";
 
 /** 대,중,소 카데고리 Link가 걸려 있는 헤더 */
 function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId }) {
@@ -155,17 +158,19 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
                 <div className="user_info">
                     {/* 로그아웃 : 로그인 정보 있을때 */}
                     {sessionUserId && (
-                        <>
-                            <span className="person">{sessionUserName} </span>님이, 로그인하셨습니다.
-                            <button onClick={logOutHandler} className="btn" style={{ position: "relative", width: "100px" }}>
+                        <div className="table-buttons">
+                            <span className="person">{sessionUserName}</span>님이, 로그인하셨습니다.
+                            <AddButton label="로그아웃" onClick={logOutHandler}/>
+                            <PopupButton targetUrl={URL.MyInfo} data={{ label: "나의정보", data: JSON.parse(sessionUser) }} size={{width: 700, height:500}} />
+                            {/* <button onClick={logOutHandler} className="btn" style={{ position: "relative", width: "100px" }}>
                                 로그아웃
-                            </button>
-                            <button className="btn" style={{ position: "relative", width: "100px", height: "32px" }}>
+                            </button> */}
+                            {/* <button className="btn" style={{ position: "relative", width: "100px", height: "32px" }}>
                                 <Link id="MyInfoBtn" to={URL.MyInfo}>
-                                    나의 회원정보
+                                    나의 정보
                                 </Link>
-                            </button>
-                        </>
+                            </button> */}
+                        </div>
                     )}
                     {/* 로그인 : 로그인 정보 없을 때 */}
                     {!sessionUserId && (

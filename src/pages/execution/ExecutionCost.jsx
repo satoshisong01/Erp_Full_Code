@@ -83,7 +83,7 @@ function ExecutionCost() {
                     <RefreshButton onClick={() => setNameOfButton("refresh")} />
                 </div>
                 <ReactDataTable
-                    columns={columns.orderMgmt.project}
+                    columns={columns.projectMgmt.project}
                     customDatas={tableData}
                     suffixUrl="/baseInfrm/product/pjOrdrInfo"
                     viewPageName={{name: "원가조회", id:"ExecutionCost"}}

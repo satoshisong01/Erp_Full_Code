@@ -54,12 +54,13 @@ const URL = {
 
     //SALES 영업관리
     Sales: "/sales", //영업관리
-    OrderMgmt: "/sales/order", //영업관리>수주관리
+    ProjectMgmt: "/sales/projectMgmt", //영업관리>프로젝트관리
     OrderPlanMgmt: "/sales/orderPlan", //영업관리>수주관리
     SalesExpenses: "/sales/expenses", //영업관리>영업비용
     Quotation: "/sales/quotation", //영업관리>견적서관리
     InvoiceMgmt: "/sales/invoice", //영업관리>세금계산서발행관리
     ElectronicTaxInvoice: "/sales/tax", //영업관리>전자세금계산서
+    OrderMgmt: "/sales/order", //영업관리>수주관리
 
     //EXECUTION 실행관리
     Execution: "/execution", //실행관리

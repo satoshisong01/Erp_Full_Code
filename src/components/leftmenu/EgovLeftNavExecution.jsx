@@ -75,6 +75,12 @@ function EgovLeftNavExecution(props) {
             ],
             role: ["ROLE_USER", "ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"]
         },
+        {
+            label: "완료보고",
+            id: "CompletionReport",
+            subMenus: [],
+            role: ["ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"]
+        },
     ];
 
     return (

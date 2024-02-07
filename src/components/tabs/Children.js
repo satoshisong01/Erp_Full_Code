@@ -6,10 +6,7 @@ import ItemGroupMgmt from "pages/reference/ItemGroupMgmt";
 import ItemDetailMgmt from "pages/reference/ItemDetailMgmt";
 import CustomerMgmt from "pages/reference/CustomerMgmt";
 import PartnerMgmt from "pages/reference/PartnerMgmt";
-import BusinessMgmt from "pages/reference/BusinessMgmt";
 import WorkMemberMgmt from "pages/reference/WorkMemberMgmt";
-import RegularMemberMgmt from "pages/reference/RegularMemberMgmt";
-import EnterpriseMemberMgmt from "pages/reference/EnterpriseMemberMgmt";
 import PermissionGroupMgmt from "pages/reference/PermissionGroupMgmt";
 import OrganizationMgmt from "pages/reference/OrganizationMgmt";
 import LaborRate from "pages/reference/LaborRate";
@@ -17,18 +14,17 @@ import GradeWageLaborCost from "pages/reference/GradeWageLaborCost";
 import GradeWageExpense from "pages/reference/GradeWageExpense";
 import CostIndex from "pages/reference/CostIndex";
 //영업관리
-import OrderMgmt from "pages/sales/OrderMgmt";
+import ProjectMgmt from "pages/sales/ProjectMgmt";
 import OrderPlanMgmt from "pages/sales/OrderPlanMgmt";
 import SalesExpenses from "pages/sales/SalesExpenses";
+import OrderMgmt from "pages/sales/OrderMgmt";
 //실행관리
 import ExecutionCost from "pages/execution/ExecutionCost";
+import CompletionReport from "pages/execution/CompletionReport";
 //시스템관리
-import MenuInfo from "pages/system/menuMgmt/MenuInfo";
-import ProgramList from "pages/system/ProgramList";
 import CategoryCode from "pages/system/CategoryCode";
 import GroupCode from "pages/system/GroupCode";
 import DetailCode from "pages/system/DetailCode";
-import AuthorizationMgmt from "pages/system/AuthorizationMgmt";
 import LaborCostMgmtExe from "pages/execution/LaborCostMgmtExe";
 import LaborCostMgmtPlan from "pages/execution/LaborCostMgmtPlan";
 import PurchasingMgmtPlan from "pages/execution/PurchasingMgmtPlan";
@@ -36,10 +32,11 @@ import PurchasingMgmtExe from "pages/execution/PurchasingMgmtExe";
 import ExpenseMgmtExe from "pages/execution/ExpenseMgmtExe";
 import ExpenseMgmtPlan from "pages/execution/ExpenseMgmtPlan";
 import Quotation from "pages/sales/Quotation";
-import Approval from "pages/mail/PendingBox";
 import PendingBox from "pages/mail/PendingBox";
 import ProgressBox from "pages/mail/ProgressBox";
 import CompletedBox from "pages/mail/CompletedBox";
+
+
 
 export const reference = [
     //기준정보관리
@@ -125,9 +122,9 @@ export const reference = [
 export const sales = [
     //영업관리
     {
-        id: "OrderMgmt",
-        path: URL.OrderMgmt,
-        component: <OrderMgmt />,
+        id: "ProjectMgmt",
+        path: URL.ProjectMgmt,
+        component: <ProjectMgmt />,
         label: "프로젝트관리",
         pLabel: "영업관리",
     },
@@ -151,6 +148,13 @@ export const sales = [
         path: URL.Quotation,
         component: <Quotation />,
         label: "견적서관리",
+        pLabel: "영업관리",
+    },
+    {
+        id: "OrderMgmt",
+        path: URL.OrderMgmt,
+        component: <OrderMgmt />,
+        label: "수주관리",
         pLabel: "영업관리",
     },
     //{
@@ -223,6 +227,14 @@ export const execution = [
         path: URL.ExpenseMgmtExe,
         component: <ExpenseMgmtExe />,
         label: "경비",
+        etc: "실행 경비",
+        pLabel: "실행관리",
+    },
+    {
+        id: "CompletionReport", //실행경비
+        path: URL.CompletionReport,
+        component: <CompletionReport />,
+        label: "완료보고",
         etc: "실행 경비",
         pLabel: "실행관리",
     },
