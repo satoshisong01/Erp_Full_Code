@@ -49,6 +49,43 @@ export async function axiosFileUpload(url, files) {
     }
 }
 
+// 업로드(추가)하기
+export async function axiosFileAddUpload(url, files, fileIdData) {
+    try {
+        const formData = new FormData();
+
+        console.log(files);
+        console.log(fileIdData);
+
+        // 모든 파일을 FormData에 추가
+        files.forEach((file) => {
+            formData.append("attachFile", file);
+        });
+        formData.append("attachFileId", fileIdData);
+
+        // attachFileId를 FormData에 추가
+        //formData.append("attachFileId", fileIdData);
+
+        const headers = {
+            Authorization: process.env.REACT_APP_POST,
+            "Content-Type": "text/plain",
+        };
+
+        const response = await axios.post(url, formData, {
+            headers: headers,
+        });
+
+        if (Number(response.data.resultCode) === Number(CODE.RCV_SUCCESS)) {
+            return response.data.result.resultData;
+        } else {
+            console.error("❌axiosFileUpload error: ", response);
+            return false;
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
 /* axios 데이터 업데이트 */
 export async function axiosUpdate(url, requestData) {
     const headers = {

@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 import "../../components/modal/ModalCss.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faFileLines } from "@fortawesome/free-solid-svg-icons";
-import { axiosDownLoad, axiosFetch, axiosFileUpload } from "api/axiosFetch";
+import { faTimes, faFileLines, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { axiosDelete, axiosDownLoad, axiosFetch, axiosFileAddUpload, axiosFileUpload } from "api/axiosFetch";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import ModalSearchList from "components/ModalCondition";
 import { PageContext } from "components/PageProvider";
@@ -19,7 +19,6 @@ export default function FileModal(props) {
 
     const [fileList, setFileList] = useState([]);
     const [filedown, setFileDown] = useState("");
-    const [fileLength, setFileLength] = useState([]);
 
     const bodyRef = useRef(null);
 
@@ -27,27 +26,28 @@ export default function FileModal(props) {
         if (innerPageName.name !== "원가버전조회" && innerPageName.name !== undefined) {
             console.log(innerPageName.name);
             console.log(fileIdData, "값이있나??");
-            fetchAllData();
+            if (fileIdData && fileIdData.length > 0) {
+                fetchAllData();
+            } else {
+                setFileList([]);
+            }
         } else {
             console.log("이건나오면 진짜안댐");
         }
-    }, [isOpen]);
+    }, [isOpen, fileIdData]);
 
     const fetchAllData = async () => {
-        if (fileIdData && fileIdData.length > 0) {
-            console.log(fileIdData, "??? 값이없을텐데");
-            const url = `/file/totalListAll.do`;
-            const resultData = await axiosFetch(url, { atchFileId: fileIdData });
-            if (resultData) {
-                console.log(resultData, "???리스트나와야하는디");
-                const originTitle = resultData.map((item) => item.originalFileNm);
-                const fileId = resultData.map((item) => item.fileId);
-                setFileList(originTitle);
-                setFileDown(fileId);
-                setFileLength(resultData.length);
-            } else if (!resultData) {
-                return;
-            }
+        console.log(fileIdData, "??? 값이없을텐데");
+        const url = `/file/totalListAll.do`;
+        const resultData = await axiosFetch(url, { atchFileId: fileIdData });
+        if (resultData) {
+            console.log(resultData, "???리스트나와야하는디");
+            const originTitle = resultData.map((item) => item.originalFileNm);
+            const fileId = resultData.map((item) => item.fileId);
+            setFileList(originTitle);
+            setFileDown(fileId);
+        } else if (!resultData) {
+            return;
         }
     };
 
@@ -80,25 +80,47 @@ export default function FileModal(props) {
         console.log(typeof fileData, "타입좀보자");
     };
 
-    const onClick = async () => {
+    const onClickSubmit = async () => {
         // 확인 버튼을 눌렀을 때에만 서버에 요청
-        console.log(fileData, "배열로 들어와서 변경해줘야함");
-        console.log(typeof fileData, "타입좀보자");
-        const url = `/file/upload.do`;
-        try {
-            const result = await axiosFileUpload(url, fileData);
-            if (result) {
-                // Handle success
-                console.log("File uploaded successfully:", result);
-                setAtchFileId(result[0].atchFileId);
-            } else {
-                // Handle failure
-                console.error("File upload failed.");
+        if (fileIdData && fileIdData !== undefined) {
+            console.log(fileData, "배열로 들어와서 변경해줘야함");
+            console.log(fileIdData, "Id값들어오는걸보자");
+
+            const url = `/file/upload.do`;
+            try {
+                const result = await axiosFileAddUpload(url, fileData, fileIdData);
+                if (result) {
+                    // Handle success
+                    console.log("File uploaded successfully:", result);
+                    setAtchFileId(result[0].atchFileId);
+                } else {
+                    // Handle failure
+                    console.error("File upload failed.");
+                }
+            } catch (error) {
+                console.error("Error uploading file:", error);
             }
-        } catch (error) {
-            console.error("Error uploading file:", error);
+            setFileList([]);
+            onClose();
+        } else {
+            console.log("Id가없으면 이쪽으로 들어옴");
+            const url = `/file/upload.do`;
+            try {
+                const result = await axiosFileUpload(url, fileData);
+                if (result) {
+                    // Handle success
+                    console.log("File uploaded successfully:", result);
+                    setAtchFileId(result[0].atchFileId);
+                } else {
+                    // Handle failure
+                    console.error("File upload failed.");
+                }
+            } catch (error) {
+                console.error("Error uploading file:", error);
+            }
+            setFileList([]);
+            onClose();
         }
-        onClose();
     };
 
     const clickDownLoad = async (item, index, filedown) => {
@@ -107,6 +129,20 @@ export default function FileModal(props) {
             const result = await axiosDownLoad(url, { fileId: filedown[index] });
             if (result) {
                 alert(`${item}파일이 다운로드 되었습니다`);
+            }
+        } catch (error) {
+            console.error("Error");
+        }
+    };
+
+    const clickDelete = async (item, index, filedown) => {
+        const url = `/file/removeCompletely.do`;
+        console.log(filedown);
+        try {
+            const result = await axiosDelete(url, { fileId: filedown[index] });
+            if (result) {
+                alert(`${item}파일이 삭제 되었습니다`);
+                fetchAllData();
             }
         } catch (error) {
             console.error("Error");
@@ -146,6 +182,14 @@ export default function FileModal(props) {
                                             <FontAwesomeIcon icon={faFileLines} style={{ fontSize: "23px", marginRight: "20px" }} />
                                             {item}
                                         </button>
+                                        <button
+                                            className="xBtn"
+                                            onClick={() => {
+                                                clickDelete(item, index, filedown);
+                                            }}
+                                            key={index}>
+                                            <FontAwesomeIcon icon={faXmark} style={{ fontSize: "23px" }} />
+                                        </button>
                                     </div>
                                 ))}
                             </div>
@@ -153,10 +197,15 @@ export default function FileModal(props) {
                         <div className="me-modal-footer mg-t-10 mg-b-20">
                             <div className="table-buttons" style={{ justifyContent: "center" }}>
                                 <button className="table-btn table-btn-default" style={{ width: "100%" }} onClick={onClose}>
-                                    취소
-                                </button>
-                                <button className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onClick}>
                                     확인
+                                </button>
+                                <button
+                                    className="table-btn table-btn-primary"
+                                    style={{ width: "100%" }}
+                                    onClick={() => {
+                                        onClickSubmit();
+                                    }}>
+                                    추가
                                 </button>
                             </div>
                         </div>

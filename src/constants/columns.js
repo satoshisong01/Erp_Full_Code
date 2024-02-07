@@ -424,7 +424,6 @@ export const columns = {
             { header: "M/M", col: "devOutMm", cellWidth: "100", type: "input", require: true },
             { header: "단가", col: "devOutPrice", cellWidth: "100", type: "input", require: true },
             { header: "금액", col: "price", cellWidth: "150" },
-            { header: "첨부파일", col: "file", cellWidth: "100", type: "file" },
             { header: "비고", col: "devDesc", cellWidth: "639", type: "input" },
             { header: "아이디", col: "devOutId", notView: true },
             { header: "버전", col: "versionId", notView: true },
@@ -1246,7 +1245,7 @@ export const columns = {
                 col: "empNm",
                 cellWidth: "100",
                 type: "employerInfo",
-                require: true
+                require: true,
             },
             {
                 header: "출장인ID",
@@ -1265,7 +1264,7 @@ export const columns = {
                 col: "pjbgEndDt",
                 cellWidth: "100",
                 type: "dayPicker",
-                require: true
+                require: true,
             },
             {
                 header: "교통비",
@@ -1455,14 +1454,14 @@ export const columns = {
                 col: "byQunty",
                 cellWidth: "60",
                 type: "input",
-                require: true
+                require: true,
             },
             {
                 header: "공급단가",
                 col: "byUnitPrice",
                 cellWidth: "100",
                 type: "input",
-                require: true
+                require: true,
             },
             {
                 header: "공급금액",
@@ -1547,14 +1546,14 @@ export const columns = {
                 col: "byQunty",
                 cellWidth: "100",
                 type: "input",
-                require: true
+                require: true,
             },
             {
                 header: "공급단가",
                 col: "byUnitPrice",
                 cellWidth: "100",
                 type: "input",
-                require: true
+                require: true,
             },
             {
                 header: "공급금액",
@@ -1589,14 +1588,14 @@ export const columns = {
                 col: "rcvQunty",
                 cellWidth: "80",
                 type: "input",
-                require: true
+                require: true,
             },
             {
                 header: "입고단가",
                 col: "rcvUnitPrice",
                 cellWidth: "80",
                 type: "input",
-                require: true
+                require: true,
             },
             { header: "입고상태", col: "rcvState", cellWidth: "80" },
             { header: "비고", col: "rcvDesc", cellWidth: "250", type: "input" },
