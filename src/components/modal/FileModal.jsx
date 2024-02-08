@@ -197,7 +197,7 @@ export default function FileModal(props) {
                         <div className="me-modal-footer mg-t-10 mg-b-20">
                             <div className="table-buttons" style={{ justifyContent: "center" }}>
                                 <button className="table-btn table-btn-default" style={{ width: "100%" }} onClick={onClose}>
-                                    확인
+                                    취소
                                 </button>
                                 <button
                                     className="table-btn table-btn-primary"
@@ -205,7 +205,7 @@ export default function FileModal(props) {
                                     onClick={() => {
                                         onClickSubmit();
                                     }}>
-                                    추가
+                                    확인
                                 </button>
                             </div>
                         </div>
