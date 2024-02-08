@@ -55,7 +55,7 @@ export default function FileModal(props) {
         if (isOpen) {
             setFilePageName("첨부파일팝업");
             setIsModalTable(true);
-            setAtchFileId([]); //초기화
+            setAtchFileId(""); //초기화
         }
         return () => {
             setIsModalTable(false);
