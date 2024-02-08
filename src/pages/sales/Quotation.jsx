@@ -544,7 +544,7 @@ function Quotation() {
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
-                                    <PopupButton targetUrl={URL.LaborCostDoc} data={{ label: "갑지", ...selectedRows[0] }} />
+                                    <PopupButton targetUrl={URL.LaborCostDoc} data={{ label: "갑지", tableData: estimate }} />
                                     <PopupButton
                                         targetUrl={URL.LaborSummaryDoc}
                                         data={{ label: "영업상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
