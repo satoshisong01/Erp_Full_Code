@@ -216,6 +216,7 @@ function ExpenseMgmtPlan() {
                     pjbgEndDt: item.pjbgEndDt, //종료일
                     modeCode: item.modeCode, //경비타입
                     empNm: item.empNm, //출장인
+                    pjbgDesc: item.pjbgDesc, //비고
                 };
             }
     
