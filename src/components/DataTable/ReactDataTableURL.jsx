@@ -298,10 +298,7 @@ const ReactDataTableURL = (props) => {
     const onChangeInput = (e, preRow, accessor) => {
         const { value } = e.target;
         const index = preRow.index;
-        console.log(accessor);
-        console.log(index);
         const updatedTableData = [...tableData];
-        updatedTableData[index][accessor] = value;
 
         if (innerPageName.id === "estimateLabor") {
             //견적용 인건비
@@ -313,10 +310,6 @@ const ReactDataTableURL = (props) => {
 
             console.log(positionCount);
 
-            //price = row.original.pecPosition * row.original.estMm;
-            //total = parseInt(row.original.m, 10) ? parseInt(row.original.estMm, 10) : 0;
-
-            // m1부터 m24까지 루프를 돕니다.
             for (let i = 1; i <= 24; i++) {
                 let mKey = `estMm${i}`;
                 let mValue = preRow.original[mKey];
@@ -331,18 +324,17 @@ const ReactDataTableURL = (props) => {
             updatedTableData[index]["price"] = price;
             updatedTableData[index]["total"] = total;
             updatedTableData[index]["estUnitPrice"] = positionCount;
-        } else {
-            if (accessor === "pjbgTypeCode") {
-                //경비목록 중복 방지
-                const isDuplicate = updatedTableData.some((item) => item.pjbgTypeCode === value);
-
-                if (isDuplicate) {
-                    alert("해당 타입은 이미 존재합니다."); //이렇게해도 select는 선택되고 데이터는 들어감
-                    updatedTableData[index][accessor] = "";
-                } else {
-                    updatedTableData[index][accessor] = value;
-                }
+        } else if(accessor === "pjbgTypeCode") {
+            //경비목록 중복 방지
+            const isDuplicate = updatedTableData.some((item) => item.pjbgTypeCode === value);
+            if (isDuplicate) {
+                alert("해당 타입은 이미 존재합니다."); //이렇게해도 select는 선택되고 데이터는 들어감
+                updatedTableData[index][accessor] = "";
+            } else {
+                updatedTableData[index][accessor] = value;
             }
+        } else {
+            updatedTableData[index][accessor] = value;
         }
 
         setTableData(updatedTableData);

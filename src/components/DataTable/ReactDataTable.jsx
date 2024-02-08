@@ -84,7 +84,7 @@ const ReactDataTable = (props) => {
 
         if (current.id === "labor" && colName === "pmpMonth") {
             //영업인건비 연월 중복방지
-            const isDuplicate = updatedTableData.some((item) => item.pmpMonth !== "" && item.pmpMonth?.substring(0, 9) === date.substring(0, 9));
+            const isDuplicate = updatedTableData.some((item) => item.pmpMonth !== "" && item.pmpMonth?.substring(0, 7) === date.substring(0, 7));
 
             if (isDuplicate) {
                 alert("해당 연월은 이미 존재합니다.");
@@ -263,7 +263,6 @@ const ReactDataTable = (props) => {
         if (!suffixUrl) return;
         const url = `/api${suffixUrl}/totalListAll.do`;
         const resultData = await axiosFetch(url, { useAt: "Y", ...condition });
-        // console.log(resultData, "resultData", "current:", current);
         if (resultData) {
             setTableData([...resultData]);
         } else if (!resultData) {
@@ -484,6 +483,7 @@ const ReactDataTable = (props) => {
             } else if (!isModalTable) {
                 if (selectedFlatRows.length > 0) {
                     const selects = selectedFlatRows.map((row) => row.values);
+
                     returnSelectRows && returnSelectRows(selects);
                     returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
                     setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);

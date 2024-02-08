@@ -72,7 +72,6 @@ function OrderPlanMgmt() {
     }, [currentPageName]);
 
     useEffect(() => {
-        // console.log("🎄innerPageName:",innerPageName.id, ",", innerPageName.name);
         if (innerPageName.id === "OrderPlanMgmt") {
             fetchAllData();
         }
@@ -159,7 +158,6 @@ function OrderPlanMgmt() {
                     }
                 });
             };
-            console.log(addDayToPmpMonth(toAdds));
             addList(toAdds);
         }
     };
@@ -187,7 +185,6 @@ function OrderPlanMgmt() {
     };
 
     const deleteList = async (removeItem) => {
-        console.log(removeItem, "삭제할애들");
         const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         refresh();
@@ -237,13 +234,11 @@ function OrderPlanMgmt() {
             searchCondition: "",
             searchKeyword: "",
         });
-        console.log(resultData, "버전정보");
         setSearchDates(resultData);
     };
 
     const fetchAllData = async (requestData) => {
         if (innerPageName.name === "원가버전조회") {
-            console.log(innerPageName.name);
             const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", {
                 searchCondition: "",
                 searchKeyword: "",
@@ -347,10 +342,6 @@ function OrderPlanMgmt() {
             }
         } else if (innerPageName.name === "구매(재료비)") {
             const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
-
-            console.log(condition, "컨디션");
-            console.log(resultData, "이상하당깨");
-
             if (resultData && resultData.length > 0) {
                 const calData = buyIngInfoCalculation(resultData);
                 setPdOrdrDatas(calData);
@@ -456,7 +447,6 @@ function OrderPlanMgmt() {
                     price = total + negoTotal;
                 });
                 setGeneralCalDatas([{ total, negoTotal, price }]);
-                console.log("😈영업-영업관리비:", requestData, "resultData:", resultData);
             } else {
                 alert("no data");
                 setGeneralExpensesDatas([]);
@@ -468,7 +458,6 @@ function OrderPlanMgmt() {
     const [isOpenAdd, setIsOpenAdd] = useState(false);
 
     const addVersionToServer = async (addData) => {
-        console.log(">>>>>>>>>", addData);
         const url = `/api/baseInfrm/product/versionControl/add.do`;
         const dataToSend = {
             ...addData,
@@ -478,9 +467,7 @@ function OrderPlanMgmt() {
             //poiId: projectInfo.poiId,
         };
 
-        console.log(dataToSend, "나오는값");
         const resultData = await axiosPost(url, dataToSend);
-        console.log(resultData);
         if (resultData) {
             alert("추가되었습니다");
             fetchVersion();
@@ -538,7 +525,9 @@ function OrderPlanMgmt() {
     };
 
     const conditionInfo = (value) => {
-        // console.log("🎄컨디션:", value);
+        if(!value.poiId || !value.versionId) {
+            return;
+        }
         setCondition((prev) => {
             if (prev.poiId !== value.poiId) {
                 const newCondition = { ...value };

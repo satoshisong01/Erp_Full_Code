@@ -44,8 +44,6 @@ function SalesExpenses() {
 
     let totalPrice = 0;
 
-    console.log(salesCost, "나오는거함볼래");
-
     useEffect(() => {
         if (condition.poiId === undefined || condition.poId === "") {
             //테이블 초기화
@@ -182,17 +180,12 @@ function SalesExpenses() {
         const updatedData = processResultData(resultData, condition);
         const filteredData = filterData(updatedData);
         setSalesCost(filteredData);
-        console.log(filteredData, "이거 원하는거맞나");
         filteredData.forEach((item) => {
             totalPrice += item.pjbgTypeCode19;
         });
         console.log(totalPrice);
         setSalesCostTotal([{ totalPrice: totalPrice }]);
     };
-
-    useEffect(() => {
-        console.log(salesCostTotal, "합친거맞나");
-    }, [salesCostTotal]);
 
     useEffect(() => {
         setSalesCost([]);
@@ -239,7 +232,6 @@ function SalesExpenses() {
     }
 
     const processResultData = (resultData, condition) => {
-        console.log(resultData, "처음받는값인데");
         const transformedData = resultData.reduce((accumulator, item) => {
             const {
                 pjbgTypeCode,
@@ -327,7 +319,6 @@ function SalesExpenses() {
 
             return accumulator;
         }, {});
-        console.log(transformedData, "transformedData");
 
         const mergedData = Object.values(transformedData).map((mergedItem, index) => {
             const newObj = {};

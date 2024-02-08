@@ -231,48 +231,70 @@ function LaborCostMgmtExe() {
         return updatedDatas;
     };
 
+    /* 중복방지 */
+    const validate = (datas) => {
+        const seen = new Set();
+        
+        for (const data of datas) {
+            const key = `${data.pgNm}-${data.esntlId}-${data.pecStartdate.substring(0, 7)}`; //시작월이 같으면 중복
+
+            console.log("실행: ", key);
+            if (seen.has(key)) {
+                alert(`[${data.pgNm}, ${data.empNm}] 데이터가 중복입니다. 날짜를 변경해주세요.`);
+                return true;
+            }
+            seen.add(key);
+        }
+            
+        return false; // 중복 데이터 없음
+    }
+
     const compareData = (originData, updatedData) => {
-        const filterData = updatedData.filter((data) => data.pgNm); //pgNm 없는 데이터 제외
-        const originDataLength = originData ? originData.length : 0;
-        const updatedDataLength = filterData ? filterData.length : 0;
+        const isDuplicateData = validate(updatedData);
 
-        if (originDataLength > updatedDataLength) {
-            const updateDataInOrigin = (originData, filterData) => {
-                // 복제하여 새로운 배열 생성
-                const updatedArray = [...originData];
-                // updatedData의 길이만큼 반복하여 originData 갱신
-                for (let i = 0; i < Math.min(filterData.length, originData.length); i++) {
-                    const updatedItem = filterData[i];
-                    updatedArray[i] = { ...updatedItem, pecId: updatedArray[i].pecId };
+        if(!isDuplicateData) {
+            const filterData = updatedData.filter((data) => data.pgNm); //pgNm 없는 데이터 제외
+            const originDataLength = originData ? originData.length : 0;
+            const updatedDataLength = filterData ? filterData.length : 0;
+    
+            if (originDataLength > updatedDataLength) {
+                const updateDataInOrigin = (originData, filterData) => {
+                    // 복제하여 새로운 배열 생성
+                    const updatedArray = [...originData];
+                    // updatedData의 길이만큼 반복하여 originData 갱신
+                    for (let i = 0; i < Math.min(filterData.length, originData.length); i++) {
+                        const updatedItem = filterData[i];
+                        updatedArray[i] = { ...updatedItem, pecId: updatedArray[i].pecId };
+                    }
+                    return updatedArray;
+                };
+    
+                const firstRowUpdate = updateDataInOrigin(originData, filterData);
+                updateList(firstRowUpdate);
+    
+                const toDelete = [];
+                for (let i = updatedDataLength; i < originDataLength; i++) {
+                    toDelete.push(originData[i].pecId);
                 }
-                return updatedArray;
-            };
-
-            const firstRowUpdate = updateDataInOrigin(originData, filterData);
-            updateList(firstRowUpdate);
-
-            const toDelete = [];
-            for (let i = updatedDataLength; i < originDataLength; i++) {
-                toDelete.push(originData[i].pecId);
+                deleteList(toDelete);
+            } else if (originDataLength === updatedDataLength) {
+                updateList(filterData);
+            } else if (originDataLength < updatedDataLength) {
+                const toAdds = [];
+                const addUpdate = [];
+                for (let i = 0; i < originDataLength; i++) {
+                    addUpdate.push(filterData[i]);
+                }
+                updateList(addUpdate);
+    
+                for (let i = originDataLength; i < updatedDataLength; i++) {
+                    const add = { poiId: condition.poiId };
+                    const typeCode = { typeCode: "MM" };
+                    const modeCode = { modeCode: "EXECUTE" };
+                    toAdds.push({ ...filterData[i], ...add, ...typeCode, ...modeCode });
+                }
+                addList(toAdds);
             }
-            deleteList(toDelete);
-        } else if (originDataLength === updatedDataLength) {
-            updateList(filterData);
-        } else if (originDataLength < updatedDataLength) {
-            const toAdds = [];
-            const addUpdate = [];
-            for (let i = 0; i < originDataLength; i++) {
-                addUpdate.push(filterData[i]);
-            }
-            updateList(addUpdate);
-
-            for (let i = originDataLength; i < updatedDataLength; i++) {
-                const add = { poiId: condition.poiId };
-                const typeCode = { typeCode: "MM" };
-                const modeCode = { modeCode: "EXECUTE" };
-                toAdds.push({ ...filterData[i], ...add, ...typeCode, ...modeCode });
-            }
-            addList(toAdds);
         }
     };
 

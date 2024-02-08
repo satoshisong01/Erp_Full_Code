@@ -76,7 +76,7 @@ export function PageProvider({ children }) {
 
     const [filePageName, setFilePageName] = useState([]);
 
-    const [atchFileId, setAtchFileId] = useState([]); //파일 단체ID
+    const [atchFileId, setAtchFileId] = useState(""); //파일 단체ID
 
     const contextValue = {
         isOpenModalPgNm,

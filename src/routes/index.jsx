@@ -126,14 +126,6 @@ const RootRoutes = () => {
         //unitPriceRenew();
     }, []);
 
-    useEffect(() => {
-        console.log(unitPriceListRenew, "unitPriceListRenew");
-    }, [unitPriceListRenew]);
-
-    useEffect(() => {
-        console.log(unitPriceList, "unitPriceList");
-    }, [unitPriceList]);
-
     const basicFetchData = async () => {
         const url = `/api/baseInfrm/product/pjOrdrInfo/totalListAll.do`;
         const requestData = { useAt: "Y" };

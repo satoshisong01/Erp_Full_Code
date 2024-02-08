@@ -299,9 +299,6 @@ const ReactDataTablePdorder = (props) => {
                 ...selectedPdiNm, // projectPdiNm 객체의 데이터로 업데이트
             };
 
-            console.log("1.rowIndex:", rowIndex);
-            console.log("2.updatedTableData:", updatedTableData);
-
             // 업데이트된 데이터로 tableData 업데이트
             setTableData(updatedTableData);
         } else {
@@ -321,16 +318,14 @@ const ReactDataTablePdorder = (props) => {
                 atchFileId, // projectPdiNm 객체의 데이터로 업데이트
             };
 
-            console.log("1.rowIndex:", rowIndex);
-            console.log("2.updatedTableData:", updatedTableData);
-
             // 업데이트된 데이터로 tableData 업데이트
             setTableData(updatedTableData);
         }
     };
 
     useEffect(() => {
-        if (isCurrentPage() && Object.keys(atchFileId).length > 0) {
+        // if (isCurrentPage() && Object.keys(atchFileId).length > 0) {
+        if (isCurrentPage() && atchFileId) {
             setFileList(countIndex, atchFileId);
         }
     }, [atchFileId]);
@@ -420,10 +415,8 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const addList = async (addNewData) => {
-        console.log(addNewData, "➕➕➕➕??");
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(addNewData)) return;
         if (!condition || condition.poiId === undefined) {
-            console.log("❗프로젝트 정보 없음", currentPageName);
             return;
         }
         if (currentPageName.id === "PurchasingMgmtPlan") {
@@ -456,13 +449,7 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const updateList = async (toUpdate) => {
-        console.log("🛠️🛠️mod ", toUpdate, "con:", condition);
-        console.log("currentPageName:", currentPageName);
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(toUpdate)) return;
-        if (!condition || condition.poiId === undefined) {
-            console.log("❗프로젝트 정보 없음");
-            return;
-        }
         if (currentPageName.id === "PurchasingMgmtPlan") {
             //실행-계획구매
             toUpdate.forEach((data) => {
@@ -485,27 +472,21 @@ const ReactDataTablePdorder = (props) => {
         }
 
         const url = `/api${suffixUrl}/editList.do`;
-        // console.log(url + "업데이트데이터:", toUpdate);
         const resultData = await axiosUpdate(url, toUpdate);
-        console.log("✨2.", resultData, "toUpdate:", toUpdate);
         customDatasRefresh();
         setOriginTableData([]);
     };
     const deleteList = async (removeItem) => {
-        console.log("🗑️🗑️del ", removeItem, "con:", condition);
-
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(removeItem)) return;
         if (suffixUrl === "/baseInfrm/product/receivingInfo") {
             const changeUrl = "/baseInfrm/product/buyIngInfoExe";
             const url = `/api${changeUrl}/removeAll.do`;
             const resultData = await axiosDelete(url, removeItem);
-            console.log("✨3.", resultData, "removeItem:", removeItem);
             customDatasRefresh();
             setOriginTableData([]);
         } else {
             const url = `/api${suffixUrl}/removeAll.do`;
             const resultData = await axiosDelete(url, removeItem);
-            console.log("✨3.", resultData, "removeItem:", removeItem);
             customDatasRefresh();
             setOriginTableData([]);
         }
@@ -520,11 +501,7 @@ const ReactDataTablePdorder = (props) => {
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
     const compareData = (originData, updatedData) => {
-        console.log("🎄컴페어", originData, "mod:", updatedData);
         const filterData = updatedData.filter((data) => data.pdiId); //필수값 체크
-
-        // console.log("🎄filterData:", filterData);
-
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
 
@@ -557,7 +534,9 @@ const ReactDataTablePdorder = (props) => {
                 const temp = { ...filterData[i] };
                 toUpdate.push(temp);
             }
-            updateList(toUpdate);
+            if(toUpdate && toUpdate.length > 0) {
+                updateList(toUpdate);
+            }
             for (let i = originDataLength; i < updatedDataLength; i++) {
                 const temp = { ...filterData[i] };
                 toAdds.push(temp);
