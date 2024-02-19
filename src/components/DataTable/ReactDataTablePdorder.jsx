@@ -679,10 +679,10 @@ const ReactDataTablePdorder = (props) => {
                                                                 />
                                                             </div>
                                                         ) : cell.column.type === "number" ? (
-                                                            <Number
-                                                                value={tableData[row.index]?.[cell.column.id] || ""}
-                                                                onChange={(value) => handleChangeToNumber(value, row.index, cell.column.id)}
-                                                            />
+                                                                <Number
+                                                                    value={tableData[row.index]?.[cell.column.id] || ""}
+                                                                    onChange={(value) => handleChange({target: {value: value, name: cell.column.id}}, row)}
+                                                                />
                                                         ) : typeof cell.value === "number" ? (
                                                             cell.value && cell.value.toLocaleString()
                                                         ) : (

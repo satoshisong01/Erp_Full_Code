@@ -1486,7 +1486,7 @@ export const columns = {
                 header: "수량",
                 col: "byQunty",
                 cellWidth: "60",
-                type: "input",
+                type: "number",
                 require: true,
             },
             {
