@@ -1,37 +1,39 @@
-import React, { useEffect, useRef, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { useEffect, useState } from "react";
 
 /* 숫자 입력시 컴마 표현 */
-export default function Number({ item, onChange, onClick, value, readOnly }) {
+export default function Number({ onChange, value }) {
     /*
      *  부모 예시
-     *  const [inputValue, setInputValue] = useState("");
-     *  const onChange = (value) => {
-     *      setInputValue(value.toLocaleString());
-     *  };
+     *  <FormattedInput value={value} onChange={inputChange} />
      */
 
-    const changeType = (e, number) => {
-        const value = e.target.value;
-        const removedCommaValue = value.replaceAll(",", "");
-        if (removedCommaValue) {
-            const intValue = parseInt(removedCommaValue, 10);
-            onChange && onChange(intValue);
-        } else {
-            onChange && onChange(0);
-        }
+    const [viewValue, setViewValue] = useState("");
+
+    useEffect(() => {
+        const formattedValue = value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        setViewValue(formattedValue); // 콤마로 표시되는 값
+    }, [value]);
+
+    const inputChange = (e) => {
+        const { value } = e.target;
+        const formattedValue = value.replace(/,/g, ""); // 콤마를 제거한 숫자 값
+        onChange(formattedValue);
     };
+
     return (
-        <input
-            type="text"
-            id={uuidv4()}
-            className="basic-input"
-            name={(item && item.col) || ""}
-            // onChange={onChange}
-            onChange={changeType}
-            value={value || ""}
-            placeholder={(item && item.placeholder) || ""}
-            disabled={(item && item.disabled) || false}
-        />
+        <div className="formatted-input">
+            <input
+                type="text"
+                value={value} // 실제 입력된 숫자 값을 표시
+                onChange={() => {}} // 입력된 값이 변경되지 않도록 빈 함수를 사용
+                style={{ display: "none" }} // 화면 숨김
+            />
+            <input
+                type="text"
+                value={viewValue} // 콤마로 표시되는 값
+                onChange={inputChange} // 부모 컴포넌트로 전달
+                placeholder="숫자를 입력하세요"
+            />
+        </div>
     );
 }

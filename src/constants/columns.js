@@ -1485,14 +1485,14 @@ export const columns = {
                 header: "수량",
                 col: "byQunty",
                 cellWidth: "60",
-                type: "input",
+                type: "number",
                 require: true,
             },
             {
                 header: "공급단가",
                 col: "byUnitPrice",
                 cellWidth: "100",
-                type: "input",
+                type: "number",
                 require: true,
             },
             {

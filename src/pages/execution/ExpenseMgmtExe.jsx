@@ -21,8 +21,6 @@ function ExpenseMgmtExe() {
     const [cal, setCal] = useState([]);
     const [monthCal, setMonthCal] = useState([]);
 
-    console.log(monthCal, "잉?");
-
     const refresh = () => {
         if (condition.poiId) {
             fetchAllData(condition);
@@ -94,11 +92,9 @@ function ExpenseMgmtExe() {
 
             return accumulator;
         }, {});
-        console.log(transformedData, "transformedData");
 
         const mergedData = Object.values(transformedData).map((mergedItem, index) => {
             const newObj = {};
-            console.log(mergedItem, "이거머더라");
             newObj["modeCode"] = mergedItem.modeCode;
             newObj["pjbgBeginDt"] = mergedItem.pjbgBeginDt;
             newObj["pjbgEndDt"] = mergedItem.pjbgEndDt;
@@ -135,7 +131,6 @@ function ExpenseMgmtExe() {
 
             return newObj;
         });
-        console.log(mergedData);
         return mergedData;
     };
 
@@ -153,8 +148,6 @@ function ExpenseMgmtExe() {
     }
 
     const processResultData = (resultData, condition) => {
-        console.log(resultData, "처음받는값인데");
-        console.log(condition, "컨디션받나");
         const transformedData = resultData.reduce((accumulator, item) => {
             const {
                 pjbgTypeCode,
@@ -213,11 +206,9 @@ function ExpenseMgmtExe() {
             }
             return accumulator;
         }, {});
-        console.log(transformedData, "transformedData");
 
         const mergedData = Object.values(transformedData).map((mergedItem, index) => {
             const newObj = {};
-            console.log(mergedItem, "이거머더라");
             newObj["modeCode"] = mergedItem.modeCode;
             newObj["pjbgBeginDt"] = mergedItem.pjbgBeginDt;
             newObj["pjbgEndDt"] = mergedItem.pjbgEndDt;
@@ -252,95 +243,111 @@ function ExpenseMgmtExe() {
 
             return newObj;
         });
-        console.log(mergedData);
         return mergedData;
     };
 
     const returnList = (originTableData, tableData) => {
-        console.log(originTableData, tableData);
         compareData(originTableData, tableData);
     };
 
+    /* 중복방지 */
+    const validate = (datas) => {
+        const seen = new Set();
+        
+        for (const data of datas) {
+            //${data.pjbgBeginDt.substring(0, 7)}
+            const key = `${data.pjbgDt.substring(0, 7)}-${data.esntlId}`; //연월, 출장인이 같으면 중복
+
+            if (seen.has(key)) {
+                alert(`[${data.pjbgDt.substring(0, 7)}, ${data.empNm}] 데이터가 중복입니다. 날짜를 변경해주세요.`);
+                return true;
+            }
+            seen.add(key);
+        }
+            
+        return false; // 중복 데이터 없음
+    }
+
     const compareData = (originData, updatedData) => {
-        console.log("타나");
-        const filterData = updatedData.filter((data) => data.poiId); //pmpMonth가 없는 데이터 제외
-        const originDataLength = originData ? originData.length : 0;
-        const updatedDataLength = filterData ? filterData.length : 0;
 
-        if (originDataLength > updatedDataLength) {
-            console.log(originDataLength, "originDataLength");
-            console.log(updatedDataLength, "updatedDataLength");
+        const isDuplicateData = validate(updatedData); // 중복방지
 
-            //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
-            const updateDataInOrigin = (originData, updatedData) => {
-                const updatedArray = [...originData];
-
-                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
-                    const updatedItem = updatedData[i];
-                    console.log(updatedItem, "길이가궁금");
-                    updatedArray[i] = {
-                        ...updatedItem,
-                        pjbgId: updatedArray[i].pjbgId,
-                        pjbgId1: updatedArray[i].pjbgId1,
-                        pjbgId2: updatedArray[i].pjbgId2,
-                        pjbgId3: updatedArray[i].pjbgId3,
-                        pjbgId4: updatedArray[i].pjbgId4,
-                        pjbgId5: updatedArray[i].pjbgId5,
-                        pjbgId19: updatedArray[i].pjbgId19,
-                        pjbgId20: updatedArray[i].pjbgId20,
-                    };
-                }
-
-                return updatedArray;
-            };
-
-            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
-            updateItem(firstRowUpdate); //수정
-
-            const delList = [];
-            const delListTest = [];
-            for (let i = updatedDataLength; i < originDataLength; i++) {
-                delList.push(originData[i].pjbgId);
-                delListTest.push(originData[i]);
-            }
-            deleteItem(delList); //삭제
-        } else if (originDataLength === updatedDataLength) {
-            updateItem(filterData); //수정
-        } else if (originDataLength < updatedDataLength) {
-            const updateList = [];
-
-            for (let i = 0; i < originDataLength; i++) {
-                updateList.push(filterData[i]);
-            }
-            updateItem(updateList); //수정
-
-            const addList = [];
-            for (let i = originDataLength; i < updatedDataLength; i++) {
-                const newItem = filterData[i];
-
-                // Add default value for esntlId if it doesn't exist
-                if (!newItem.esntlId) {
-                    newItem.esntlId = "";
-                }
-                for (let j = 1; j <= 5; j++) {
-                    const propName = `pjbgTypeCode${j}`;
-                    if (newItem[propName] === null || newItem[propName] === undefined) {
-                        newItem[propName] = 0;
+        if(!isDuplicateData) {
+            const filterData = updatedData.filter((data) => data.poiId); //pmpMonth가 없는 데이터 제외
+            const originDataLength = originData ? originData.length : 0;
+            const updatedDataLength = filterData ? filterData.length : 0;
+    
+            if (originDataLength > updatedDataLength) {
+    
+                //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
+                const updateDataInOrigin = (originData, updatedData) => {
+                    const updatedArray = [...originData];
+    
+                    for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
+                        const updatedItem = updatedData[i];
+                        updatedArray[i] = {
+                            ...updatedItem,
+                            pjbgId: updatedArray[i].pjbgId,
+                            pjbgId1: updatedArray[i].pjbgId1,
+                            pjbgId2: updatedArray[i].pjbgId2,
+                            pjbgId3: updatedArray[i].pjbgId3,
+                            pjbgId4: updatedArray[i].pjbgId4,
+                            pjbgId5: updatedArray[i].pjbgId5,
+                            pjbgId19: updatedArray[i].pjbgId19,
+                            pjbgId20: updatedArray[i].pjbgId20,
+                        };
                     }
+    
+                    return updatedArray;
+                };
+    
+                const firstRowUpdate = updateDataInOrigin(originData, updatedData);
+                updateItem(firstRowUpdate); //수정
+    
+                const delList = [];
+                const delListTest = [];
+                for (let i = updatedDataLength; i < originDataLength; i++) {
+                    delList.push(originData[i].pjbgId);
+                    delListTest.push(originData[i]);
                 }
-
-                const propName19 = "pjbgTypeCode19";
-                if (newItem[propName19] === null || newItem[propName19] === undefined) {
-                    newItem[propName19] = 0;
+                deleteItem(delList); //삭제
+            } else if (originDataLength === updatedDataLength) {
+                updateItem(filterData); //수정
+            } else if (originDataLength < updatedDataLength) {
+                const updateList = [];
+    
+                for (let i = 0; i < originDataLength; i++) {
+                    updateList.push(filterData[i]);
                 }
-                const propName20 = "pjbgTypeCode20";
-                if (newItem[propName20] === null || newItem[propName20] === undefined) {
-                    newItem[propName20] = 0;
+                updateItem(updateList); //수정
+    
+                const addList = [];
+                for (let i = originDataLength; i < updatedDataLength; i++) {
+                    const newItem = filterData[i];
+    
+                    // Add default value for esntlId if it doesn't exist
+                    if (!newItem.esntlId) {
+                        newItem.esntlId = "";
+                    }
+                    for (let j = 1; j <= 5; j++) {
+                        const propName = `pjbgTypeCode${j}`;
+                        if (newItem[propName] === null || newItem[propName] === undefined) {
+                            newItem[propName] = 0;
+                        }
+                    }
+    
+                    const propName19 = "pjbgTypeCode19";
+                    if (newItem[propName19] === null || newItem[propName19] === undefined) {
+                        newItem[propName19] = 0;
+                    }
+                    const propName20 = "pjbgTypeCode20";
+                    if (newItem[propName20] === null || newItem[propName20] === undefined) {
+                        newItem[propName20] = 0;
+                    }
+                    addList.push(newItem);
                 }
-                addList.push(newItem);
+                addItem(addList); //추가
             }
-            console.log(addList, "이거나오는거보자");
-            addItem(addList); //추가
         }
     };
 
@@ -363,7 +370,6 @@ function ExpenseMgmtExe() {
     };
 
     const addItem = async (addData) => {
-        console.log(addData, "추가되야함");
         addData.forEach((data) => {
             data.modeCode = "EXECUTE";
             data.poiId = condition.poiId;
@@ -383,12 +389,10 @@ function ExpenseMgmtExe() {
     };
 
     const updateItem = async (toUpdate) => {
-        console.log(toUpdate, "업데이트 값은?");
         toUpdate.forEach((data) => {
             data.modeCode = "EXECUTE";
             data.poiId = condition.poiId;
         });
-        console.log(toUpdate, "업데이트 변경후");
 
         const url = `/api/baseInfrm/product/pjbudgetExe/editArrayList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
@@ -400,7 +404,6 @@ function ExpenseMgmtExe() {
 
     const deleteItem = async (removeItem) => {
         const mergedArray = [].concat(...removeItem);
-        console.log(mergedArray, "삭제될놈들");
         const url = `/api/baseInfrm/product/pjbudgetExe/removeAll.do`;
         const resultData = await axiosDelete(url, mergedArray);
 
@@ -531,8 +534,11 @@ function ExpenseMgmtExe() {
     const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", condition);
         const viewData = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", { poiId: condition.poiId, modeCode: "BUDGET" });
+
         const updatedViewData = processResultDataView(viewData, condition);
         setRunMgmtView(updatedViewData);
+
+
         if (resultData && resultData.length > 0) {
             const updatedData = processResultData(resultData, condition);
             const filteredData = filterArray(updatedData);
