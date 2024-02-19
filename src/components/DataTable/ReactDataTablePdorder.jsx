@@ -10,6 +10,7 @@ import MonthPicker from "components/input/MonthPicker";
 import ProductInfoModal from "components/modal/ProductInfoModal";
 import FileModal from "components/modal/FileModal";
 import Number from "components/input/Number";
+import reportWebVitals from "reportWebVitals";
 
 /* 구매 테이블 */
 const ReactDataTablePdorder = (props) => {
@@ -330,20 +331,16 @@ const ReactDataTablePdorder = (props) => {
         }
     }, [atchFileId]);
 
-    const handleChange = (e, row, accessor, type) => {
-        const { value } = e.target;
+    const handleChangeToNumber = (value, index, name) => {
+        const updatedTableData = [...tableData];
+        updatedTableData[index][name] = value;
+        setTableData(updatedTableData);
+    }
+    const handleChange = (e, row) => {
+        const { value, name } = e.target;
         const index = row.index;
         const updatedTableData = [...tableData];
-
-        if (type === "number") {
-            const removedCommaValue = value.replaceAll(",", "");
-            if (removedCommaValue) {
-                const intValue = parseInt(removedCommaValue, 10);
-                updatedTableData[row.index][accessor] = intValue.toLocaleString();
-            }
-        } else {
-            updatedTableData[row.index][accessor] = value;
-        }
+        updatedTableData[row.index][name] = value;
 
         //실행
         if (currentPageName.name === "구매(재료비)") {
@@ -356,7 +353,7 @@ const ReactDataTablePdorder = (props) => {
         //영업
         if (innerPageName.name === "구매(재료비)") {
             // 원단가, 기준이익율, 소비자가산출률, 수량
-            if (accessor === "byQunty" || accessor === "byUnitPrice" || accessor === "byStandardMargin" || accessor === "byConsumerOutputRate") {
+            if (name === "byQunty" || name === "byUnitPrice" || name === "byStandardMargin" || name === "byConsumerOutputRate") {
                 if (row.original.byUnitPrice && row.original.byStandardMargin && row.original.byConsumerOutputRate && row.original.byQunty) {
                     // 1.원가 : 수량 * 원단가
                     const estimatedCost = row.original.byQunty * row.original.byUnitPrice;
@@ -381,7 +378,7 @@ const ReactDataTablePdorder = (props) => {
                 }
             }
             //기준 이익율, 소비자가 산출률 역산 해야할지 문의
-            else if (accessor === "consumerPrice" || accessor === "unitPrice") {
+            else if (name === "consumerPrice" || name === "unitPrice") {
                 //소비자단가, 공급단가
                 const consumerAmount = row.original.byQunty * row.original.consumerPrice; //소비자금액
                 const planAmount = row.original.byQunty * row.original.unitPrice; //공급금액
@@ -607,14 +604,14 @@ const ReactDataTablePdorder = (props) => {
                                                                 type="text"
                                                                 value={tableData[row.index]?.[cell.column.id] || cell.value || ""}
                                                                 name={cell.column.id}
-                                                                onChange={(e) => handleChange(e, row, cell.column.id)}
+                                                                onChange={(e) => handleChange(e, row)}
                                                                 disabled={cell.column.disabled}
                                                             />
                                                         ) : cell.column.type === "select" ? (
                                                             <select
                                                                 name={cell.column.id}
                                                                 value={tableData[row.index]?.[cell.column.id] || cell.column.options[row.index].value || ""}
-                                                                onChange={(e) => handleChange(e, row, cell.column.id)}>
+                                                                onChange={(e) => handleChange(e, reportWebVitals)}>
                                                                 {cell.column.options.map((option, index) => (
                                                                     <option key={index} value={option.value || ""}>
                                                                         {option.label}
@@ -677,21 +674,15 @@ const ReactDataTablePdorder = (props) => {
                                                                     type="text"
                                                                     placeholder={`거래처명을 선택해 주세요.`}
                                                                     value={tableData[row.index]?.[cell.column.id] || ""}
-                                                                    onChange={(e) => handleChange(e, row, cell.column.id)}
+                                                                    onChange={(e) => handleChange(e, row)}
                                                                     readOnly
                                                                 />
                                                             </div>
                                                         ) : cell.column.type === "number" ? (
-                                                            <div>
-                                                                <input
-                                                                    type="text"
-                                                                    id={cell.column.id}
-                                                                    className="basic-input"
-                                                                    name={cell.column.id}
-                                                                    onChange={(e) => handleChange(e, row, cell.column.id, "number")}
-                                                                    value={tableData[row.index]?.[cell.column.id] || cell.value || ""}
-                                                                />
-                                                            </div>
+                                                            <Number
+                                                                value={tableData[row.index]?.[cell.column.id] || ""}
+                                                                onChange={(value) => handleChangeToNumber(value, row.index, cell.column.id)}
+                                                            />
                                                         ) : typeof cell.value === "number" ? (
                                                             cell.value && cell.value.toLocaleString()
                                                         ) : (

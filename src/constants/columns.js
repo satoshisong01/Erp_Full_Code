@@ -1493,7 +1493,7 @@ export const columns = {
                 header: "공급단가",
                 col: "byUnitPrice",
                 cellWidth: "100",
-                type: "input",
+                type: "number",
                 require: true,
             },
             {
