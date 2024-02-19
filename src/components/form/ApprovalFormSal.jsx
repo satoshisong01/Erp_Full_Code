@@ -46,6 +46,7 @@ function ApprovalFormSal({ returnData, initial }) {
     };
 
     const onClick = () => {
+        console.log(data, "이게제대로넘어와야함 버전아이디");
         returnData({ ...data });
     };
 

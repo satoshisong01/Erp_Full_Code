@@ -39,6 +39,8 @@ const ReactDataTableURL = (props) => {
         newRowData,
         currentPageName,
         projectPgNm,
+        projectPdiNm,
+        setProjectPdiNm,
         setProjectPgNm,
         nameOfButton,
         isModalTable,
@@ -160,7 +162,8 @@ const ReactDataTableURL = (props) => {
     };
 
     const setValueData = (rowIndex) => {
-        setIsOpenModalProductGroup(true);
+        //setIsOpenModalProductGroup(true);
+        setIsOpenModalProductInfo(true);
         setRowIndex(rowIndex);
     };
 
@@ -170,11 +173,11 @@ const ReactDataTableURL = (props) => {
     };
 
     useEffect(() => {
-        if (isCurrentPage() && Object.keys(projectPgNm).length > 0) {
-            setValueDataPgInfo(rowIndex, projectPgNm);
-            setProjectPgNm({});
+        if (isCurrentPage() && Object.keys(projectPdiNm).length > 0) {
+            setValueDataPgInfo(rowIndex, projectPdiNm);
+            setProjectPdiNm({});
         }
-    }, [projectPgNm]);
+    }, [projectPdiNm]);
 
     const setValueDataPgInfo = (rowIndex, pgInfo) => {
         const updatedTableData = [...tableData];
@@ -183,7 +186,7 @@ const ReactDataTableURL = (props) => {
             ...pgInfo,
         };
         setTableData(updatedTableData);
-        setProjectPgNm({});
+        setProjectPdiNm({});
     };
 
     const handleChange = (e, rowIndex, accessor) => {
@@ -324,7 +327,8 @@ const ReactDataTableURL = (props) => {
             updatedTableData[index]["price"] = price;
             updatedTableData[index]["total"] = total;
             updatedTableData[index]["estUnitPrice"] = positionCount;
-        } else if(accessor === "pjbgTypeCode") {
+            updatedTableData[index][accessor] = value;
+        } else if (accessor === "pjbgTypeCode") {
             //경비목록 중복 방지
             const isDuplicate = updatedTableData.some((item) => item.pjbgTypeCode === value);
             if (isDuplicate) {
@@ -606,8 +610,8 @@ const ReactDataTableURL = (props) => {
                                                                 key={cell.column.id + row.index}
                                                                 onClick={() => setValueData(row.index)}
                                                                 type="text"
-                                                                placeholder={`품목그룹명을 선택해 주세요.`}
-                                                                value={tableData[row.index].pgNm || ""}
+                                                                placeholder={`품명을 선택해 주세요.`}
+                                                                value={tableData[row.index].pdiNm || ""}
                                                                 onChange={(e) => handleChange(e, row, cell.column.id)}
                                                                 readOnly
                                                             />
@@ -709,7 +713,7 @@ const ReactDataTableURL = (props) => {
                 </button>
             </div>
             <CompanyModal width={600} height={720} title="거래처 목록" isOpen={isOpenModalCompany} onClose={() => setIsOpenModalCompany(false)} />
-            <ProductInfoModal width={600} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
+            <ProductInfoModal width={910} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
             <ProductGroupModal
                 width={600}
                 height={720}

@@ -172,22 +172,22 @@ const LaborSummaryDoc = () => {
                     <table id="example" className="display">
                         <thead>
                             <tr>
-                                <th colSpan={2} rowSpan={2} style={{ textAlign: "center", width: "150px" }}>
+                                <th colSpan={2} rowSpan={2} style={{ textAlign: "center", width: "150px", border: "solid 1px gray" }}>
                                     Description
                                 </th>
-                                <th colSpan={count} style={{ width: `${count * 40}px`, textAlign: "center" }}>
+                                <th colSpan={count} style={{ width: `${count * 40}px`, textAlign: "center", border: "solid 1px gray" }}>
                                     M/M
                                 </th>
-                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "40px" }}>
+                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "40px", border: "solid 1px gray" }}>
                                     Total
                                 </th>
-                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "60px" }}>
+                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "60px", border: "solid 1px gray" }}>
                                     Unit Price
                                 </th>
-                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "90px" }}>
+                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "90px", border: "solid 1px gray" }}>
                                     Amount
                                 </th>
-                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "70px" }}>
+                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "70px", border: "solid 1px gray" }}>
                                     Remarks
                                 </th>
                             </tr>
@@ -205,7 +205,7 @@ const LaborSummaryDoc = () => {
                                         return null;
                                     }
                                     return (
-                                        <th key={index} className={column.className} style={{ textAlign: "center" }}>
+                                        <th key={index} className={column.className} style={{ textAlign: "center", border: "solid 1px gray" }}>
                                             {column.header}
                                         </th>
                                     );
@@ -223,7 +223,7 @@ const LaborSummaryDoc = () => {
                                         const cellValue = rowData[column.col];
 
                                         return (
-                                            <td key={colIndex} className={column.className}>
+                                            <td key={colIndex} className={column.className} style={{ border: "solid 1px gray" }}>
                                                 {cellValue !== null && cellValue !== 0 ? cellValue.toLocaleString() : null}
                                             </td>
                                         );

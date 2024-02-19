@@ -60,10 +60,7 @@ const ProductPrices = () => {
         console.log(urlName);
         setSearchKeyword("");
         setSearchCondition("");
-        if (
-            dataTableRef.current &&
-            $.fn.DataTable.isDataTable(dataTableRef.current)
-        ) {
+        if (dataTableRef.current && $.fn.DataTable.isDataTable(dataTableRef.current)) {
             $(dataTableRef.current).DataTable().destroy();
         }
         setIsSearching(!isSearching); // 로딩 상태 활성화
@@ -71,7 +68,7 @@ const ProductPrices = () => {
     };
 
     const headers = {
-        Authorization: process.env.REACT_APP_POST,
+        Authorization: localStorage.jToken,
     };
 
     const fetchAllData = async () => {
@@ -174,29 +171,21 @@ const ProductPrices = () => {
         setSelectedData((prevSelectedData) => {
             if (isChecked) {
                 // 이미 선택된 데이터인지 확인 후 중복 추가 방지
-                if (
-                    !prevSelectedData.find(
-                        (selectedItem) => selectedItem.uniqId === item.uniqId
-                    )
-                ) {
-                    const sortedData = [...prevSelectedData, item].sort(
-                        (a, b) => {
-                            // uniqId 속성을 기준으로 데이터 정렬
-                            if (a.uniqId < b.uniqId) {
-                                return -1;
-                            }
-                            if (a.uniqId > b.uniqId) {
-                                return 1;
-                            }
-                            return 0;
+                if (!prevSelectedData.find((selectedItem) => selectedItem.uniqId === item.uniqId)) {
+                    const sortedData = [...prevSelectedData, item].sort((a, b) => {
+                        // uniqId 속성을 기준으로 데이터 정렬
+                        if (a.uniqId < b.uniqId) {
+                            return -1;
                         }
-                    );
+                        if (a.uniqId > b.uniqId) {
+                            return 1;
+                        }
+                        return 0;
+                    });
                     return sortedData;
                 }
             } else {
-                return prevSelectedData.filter(
-                    (selectedItem) => selectedItem.uniqId !== item.uniqId
-                );
+                return prevSelectedData.filter((selectedItem) => selectedItem.uniqId !== item.uniqId);
             }
             return prevSelectedData; // 체크가 풀리지 않았거나 중복 데이터인 경우 이전 상태 그대로 반환
         });
@@ -214,11 +203,7 @@ const ProductPrices = () => {
         <>
             <div id="content">
                 <div className="row">
-                    <BigBreadcrumbs
-                        items={["품목 관리", "품목 단가 관리"]}
-                        icon="fa fa-fw fa-table"
-                        className="col-xs-12 col-sm-7 col-md-7 col-lg-4"
-                    />
+                    <BigBreadcrumbs items={["품목 관리", "품목 단가 관리"]} icon="fa fa-fw fa-table" className="col-xs-12 col-sm-7 col-md-7 col-lg-4" />
                 </div>
                 <div className="SearchDiv">
                     <Search searchTitle="사용자 검색" />
@@ -235,10 +220,7 @@ const ProductPrices = () => {
                 <WidgetGrid>
                     <div className="row">
                         <article className="col-sm-12">
-                            <JarvisWidget
-                                id="wid-id-0"
-                                editbutton={true}
-                                color="blueDark">
+                            <JarvisWidget id="wid-id-0" editbutton={true} color="blueDark">
                                 <header>
                                     <span className="widget-icon">
                                         <i className="fa fa-table" />
@@ -263,25 +245,12 @@ const ProductPrices = () => {
                                                         className="table table-bordered"
                                                         id="dataTable"
                                                         style={{
-                                                            backgroundColor:
-                                                                "#fff",
+                                                            backgroundColor: "#fff",
                                                         }}>
                                                         <thead>
                                                             <tr>
                                                                 <th className="tableHeaderTh">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={
-                                                                            check
-                                                                        }
-                                                                        onChange={(
-                                                                            e
-                                                                        ) =>
-                                                                            handleClick(
-                                                                                e
-                                                                            )
-                                                                        }
-                                                                    />
+                                                                    <input type="checkbox" checked={check} onChange={(e) => handleClick(e)} />
                                                                     <p
                                                                         style={{
                                                                             margin: 0,
@@ -289,106 +258,45 @@ const ProductPrices = () => {
                                                                         All
                                                                     </p>
                                                                 </th>
-                                                                {[
-                                                                    "ID",
-                                                                    "조직이름",
-                                                                    "조직코드",
-                                                                    "설명",
-                                                                    "작성일",
-                                                                    "작성자",
-                                                                    "수정일",
-                                                                    "수정자",
-                                                                ].map(
-                                                                    (
-                                                                        item,
-                                                                        index
-                                                                    ) => (
-                                                                        <th
-                                                                            key={
-                                                                                index
-                                                                            }>
-                                                                            {
-                                                                                item
-                                                                            }
-                                                                        </th>
+                                                                {["ID", "조직이름", "조직코드", "설명", "작성일", "작성자", "수정일", "수정자"].map(
+                                                                    (item, index) => (
+                                                                        <th key={index}>{item}</th>
                                                                     )
                                                                 )}
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {searchedData.map(
-                                                                (
-                                                                    item,
-                                                                    index
-                                                                ) => (
-                                                                    <tr
-                                                                        key={
-                                                                            index
-                                                                        }>
-                                                                        <td>
-                                                                            <input
-                                                                                type="checkbox"
-                                                                                checked={selectedData.some(
-                                                                                    (
-                                                                                        selectedItem
-                                                                                    ) =>
-                                                                                        selectedItem.uniqId ===
-                                                                                        item.uniqId
-                                                                                )}
-                                                                                onChange={(
-                                                                                    e
-                                                                                ) =>
-                                                                                    handleItemCheck(
-                                                                                        item,
-                                                                                        e
-                                                                                    )
-                                                                                }
-                                                                            />
-                                                                        </td>
-                                                                        {[
-                                                                            "orgId",
-                                                                            "orgNm",
-                                                                            "orgCd",
-                                                                            "orgDc",
-                                                                            "createDate",
-                                                                            "createIdBy",
-                                                                            "lastModifyDate",
-                                                                            "lastModifiedUserName",
-                                                                        ].map(
-                                                                            (
-                                                                                key
-                                                                            ) => (
-                                                                                <td
-                                                                                    onMouseEnter={
-                                                                                        handleMouseEnter
-                                                                                    }
-                                                                                    onMouseLeave={
-                                                                                        handleMouseLeave
-                                                                                    }
-                                                                                    className="tableWidth
+                                                            {searchedData.map((item, index) => (
+                                                                <tr key={index}>
+                                                                    <td>
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            checked={selectedData.some((selectedItem) => selectedItem.uniqId === item.uniqId)}
+                                                                            onChange={(e) => handleItemCheck(item, e)}
+                                                                        />
+                                                                    </td>
+                                                                    {[
+                                                                        "orgId",
+                                                                        "orgNm",
+                                                                        "orgCd",
+                                                                        "orgDc",
+                                                                        "createDate",
+                                                                        "createIdBy",
+                                                                        "lastModifyDate",
+                                                                        "lastModifiedUserName",
+                                                                    ].map((key) => (
+                                                                        <td
+                                                                            onMouseEnter={handleMouseEnter}
+                                                                            onMouseLeave={handleMouseLeave}
+                                                                            className="tableWidth
                                                                         tdStyle mouseText"
-                                                                                    onDoubleClick={(
-                                                                                        e
-                                                                                    ) =>
-                                                                                        handleModalClick(
-                                                                                            e,
-                                                                                            item
-                                                                                        )
-                                                                                    }
-                                                                                    key={
-                                                                                        key
-                                                                                    }>
-                                                                                    {
-                                                                                        item[
-                                                                                            key
-                                                                                        ]
-                                                                                    }
-                                                                                </td>
-                                                                            )
-                                                                        )}
-                                                                    </tr>
-                                                                )
-                                                            )}
+                                                                            onDoubleClick={(e) => handleModalClick(e, item)}
+                                                                            key={key}>
+                                                                            {item[key]}
+                                                                        </td>
+                                                                    ))}
+                                                                </tr>
+                                                            ))}
                                                         </tbody>
                                                     </table>
                                                 </div>

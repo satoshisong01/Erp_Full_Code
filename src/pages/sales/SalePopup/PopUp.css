@@ -19,3 +19,11 @@
 .break-page {
     page-break-before: always;
 }
+
+.display {
+    /*border: 2px solid gray;*/
+}
+
+.display > thead > tr > th {
+    border: 2px solid gray;
+}

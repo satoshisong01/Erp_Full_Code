@@ -358,7 +358,7 @@ const ReactDataTableDevCost = (props) => {
     };
 
     const compareData = (originData, updatedData) => {
-        console.log("개발외주비 compare");
+        console.log("개발외주비 compare", originData, updatedData);
         const filterData = updatedData.filter((data) => data.poiId); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;

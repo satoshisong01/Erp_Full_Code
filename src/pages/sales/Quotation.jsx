@@ -153,7 +153,10 @@ function Quotation() {
                 estUnitPrice,
                 pgId,
                 pgNm,
+                pdiId,
                 poiNm,
+                pdiNm,
+                pdiUnit,
                 estDesc,
                 estMm1,
                 estMm2,
@@ -181,15 +184,18 @@ function Quotation() {
                 estMm24,
             } = item;
 
-            const key = `${pgNm}_${estPosition}`;
+            const key = `${pdiNm}_${estPosition}`;
             if (!accumulator[key]) {
                 accumulator[key] = {
                     estMm,
                     estPosition,
                     estUnitPrice,
                     pgId,
+                    pdiId,
                     poiNm,
+                    pdiNm,
                     pgNm,
+                    pdiUnit,
                     estDesc,
                     estMm1,
                     estMm2,
@@ -243,8 +249,11 @@ function Quotation() {
             newObj["estPosition"] = mergedItem.estPosition;
             newObj["estUnitPrice"] = mergedItem.estUnitPrice;
             newObj["pgId"] = mergedItem.pgId;
+            newObj["pdiId"] = mergedItem.pdiId;
+            newObj["pdiNm"] = mergedItem.pdiNm;
             newObj["pjbgDt"] = mergedItem.pjbgBeginDt;
             newObj["pgNm"] = mergedItem.pgNm;
+            newObj["pdiUnit"] = mergedItem.pdiUnit;
             newObj["poiNm"] = mergedItem.poiNm;
             newObj["estDesc"] = mergedItem.estDesc;
             newObj["estMm1"] = mergedItem.estMm1;
@@ -297,7 +306,7 @@ function Quotation() {
         //};
         if (innerPageName.name === "견적용 인건비") {
             const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
-
+            console.log(resultData, "퓨어 데이터");
             if (resultData.length !== 0) {
                 const result = processResultData(resultData, condition);
                 console.log(result, "함수거치고 난거");
@@ -544,7 +553,7 @@ function Quotation() {
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
-                                    <PopupButton targetUrl={URL.LaborCostDoc} data={{ label: "갑지", tableData: estimate }} />
+                                    <PopupButton targetUrl={URL.LaborCostDoc} data={{ label: "견 적 서", tableData: estimate }} />
                                     <PopupButton
                                         targetUrl={URL.LaborSummaryDoc}
                                         data={{ label: "영업상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
@@ -575,7 +584,10 @@ function Quotation() {
                             <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
-                                    <PopupButton targetUrl={URL.OrderBuyDoc} data={{ label: "갑지", ...selectedRows[0] }} />
+                                    <PopupButton
+                                        targetUrl={URL.OrderBuyDoc}
+                                        data={{ label: "갑지", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
+                                    />
                                     <PopupButton
                                         targetUrl={URL.OrderSummaryDoc}
                                         data={{ label: "구매상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}

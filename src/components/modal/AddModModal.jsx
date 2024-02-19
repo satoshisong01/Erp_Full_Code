@@ -35,7 +35,7 @@ export default function AddModModal(props) {
         authorGroupInfo,
         setAuthorGroupInfo,
     } = useContext(PageContext);
-    
+
     const [data, setData] = useState(initialData?.[0] || {});
     const bodyRef = useRef(null);
     const [errorList, setErrorList] = useState({}); // 필수값 에러 메시지
@@ -60,18 +60,18 @@ export default function AddModModal(props) {
     useEffect(() => {
         //거래처
         if (Object.keys(companyInfo).length > 0) {
-            setData(prevData => {
-                return { ...prevData, ...companyInfo};
+            setData((prevData) => {
+                return { ...prevData, ...companyInfo };
             });
-            setCompanyInfo({})
+            setCompanyInfo({});
         }
     }, [companyInfo]);
 
     useEffect(() => {
         //품목
         if (Object.keys(projectPdiNm).length > 0) {
-            setData(prevData => {
-                return { ...prevData, ...projectPdiNm};
+            setData((prevData) => {
+                return { ...prevData, ...projectPdiNm };
             });
             setProjectPdiNm({});
         }
@@ -80,8 +80,8 @@ export default function AddModModal(props) {
     useEffect(() => {
         // 품목그룹
         if (Object.keys(projectPgNm).length > 0) {
-            setData(prevData => {
-                return { ...prevData, ...projectPgNm};
+            setData((prevData) => {
+                return { ...prevData, ...projectPgNm };
             });
             setProjectPgNm({});
         }
@@ -90,8 +90,8 @@ export default function AddModModal(props) {
     useEffect(() => {
         //업무회원
         if (Object.keys(emUserInfo).length > 0) {
-            setData(prevData => {
-                return { ...prevData, ...emUserInfo};
+            setData((prevData) => {
+                return { ...prevData, ...emUserInfo };
             });
             setEmUserInfo({});
         }
@@ -101,8 +101,8 @@ export default function AddModModal(props) {
         //권한그룹
         if (Object.keys(authorGroupInfo).length > 0) {
             console.log("authorGroupInfo:", authorGroupInfo);
-            setData(prevData => {
-                return { ...prevData, ...authorGroupInfo};
+            setData((prevData) => {
+                return { ...prevData, ...authorGroupInfo };
             });
             setAuthorGroupInfo({});
         }
@@ -112,13 +112,9 @@ export default function AddModModal(props) {
     const onClick = async (e) => {
         e.preventDefault();
         // 필수 필드가 비어있는지 확인
-        const requiredColumns = list
-            ? list.flatMap((column) =>
-                    column.items.filter((item) => item.require).map((item) => ({ ...item }))
-                )
-            : [];
+        const requiredColumns = list ? list.flatMap((column) => column.items.filter((item) => item.require).map((item) => ({ ...item }))) : [];
         const hasEmptyRequiredFields = requiredColumns.some((column) => !data[column.col]);
-        
+
         if (hasEmptyRequiredFields) {
             setErrorList((prevErrors) => {
                 const newErrors = { ...prevErrors };
@@ -136,9 +132,10 @@ export default function AddModModal(props) {
     };
 
     const inputChange = (e, type) => {
+        console.log(e.target.value);
         const { value, name } = e.target;
-        setData(prevData => {
-            return { ...prevData, [name]: value};
+        setData((prevData) => {
+            return { ...prevData, [name]: value };
         });
 
         // 에러 메시지 상태 업데이트
@@ -149,16 +146,15 @@ export default function AddModModal(props) {
     };
 
     const dateClick = (date, col) => {
-        setData(prevData => {
-            return { ...prevData, [col]: date};
+        setData((prevData) => {
+            return { ...prevData, [col]: date };
         });
-        
     };
 
     const changeEmployerInfo = (colName) => {
         setIsOpenModalEmployerInfo(true);
         setColName(colName);
-    }
+    };
 
     const renderField = (item, index, data) => (
         <div className="row-group" key={index}>
@@ -207,11 +203,7 @@ export default function AddModModal(props) {
                 ) : item.type === "percent" ? (
                     <Percentage item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
                 ) : item.type === "number" ? (
-                    <Number
-                        item={item}
-                        onChange={(e) => inputChange(e, "number")}
-                        value={data?.[item.col] ? data[item.col].toLocaleString() : ""}
-                    />
+                    <Number item={item} onChange={(e) => inputChange(e, "number")} value={data?.[item.col] ? data[item.col].toLocaleString() : ""} />
                 ) : item.type === "select" ? (
                     <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
                 ) : item.type === "radio" ? (
@@ -220,13 +212,7 @@ export default function AddModModal(props) {
                         <div className="radio-container">
                             {item.option.map((op) => (
                                 <div key={index} className="radio-group">
-                                    <input
-                                        type="radio"
-                                        name={item.col}
-                                        value={op.value}
-                                        checked={data?.[item.col] === op.value}
-                                        onChange={inputChange}
-                                    />
+                                    <input type="radio" name={item.col} value={op.value} checked={data?.[item.col] === op.value} onChange={inputChange} />
                                     <label htmlFor={op.value}>{op.label}</label>
                                 </div>
                             ))}
@@ -255,11 +241,11 @@ export default function AddModModal(props) {
     );
 
     const setProjectInfo = (value) => {
-        if(value.poiId === "" || !value) return;
-        setData(prevData => {
-            return { ...prevData, ...value};
+        if (value.poiId === "" || !value) return;
+        setData((prevData) => {
+            return { ...prevData, ...value };
         });
-    }
+    };
 
     return (
         <article className="me-modal">
@@ -277,7 +263,7 @@ export default function AddModModal(props) {
                             {list &&
                                 list.map((column, index) => (
                                     <div className="body-row" key={index}>
-                                         {column.items.map((item, itemIndex) => renderField(item, itemIndex, data))}
+                                        {column.items.map((item, itemIndex) => renderField(item, itemIndex, data))}
                                     </div>
                                 ))}
                         </div>
@@ -300,11 +286,32 @@ export default function AddModModal(props) {
                         </div>
                     </div>
 
-                    {isOpenModalProject && <ProjectModal width={550} height={770} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} returnInfo={setProjectInfo}/>}
+                    {isOpenModalProject && (
+                        <ProjectModal width={550} height={770} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} returnInfo={setProjectInfo} />
+                    )}
                     <CompanyModal width={500} height={550} title="거래처 목록" isOpen={isOpenModalCompany} onClose={() => setIsOpenModalCompany(false)} />
-                    <ProductInfoModal width={600} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
-                    <ProductGroupModal width={600} height={720} title="품목그룹 목록" isOpen={isOpenModalProductGroup} onClose={() => setIsOpenModalProductGroup(false)} />
-                    <EmployerInfoModal width={600} height={770} title="업무회원 목록" isOpen={isOpenModalEmployerInfo} onClose={() => setIsOpenModalEmployerInfo(false)} colName={colName}/>
+                    <ProductInfoModal
+                        width={600}
+                        height={770}
+                        title="품목정보 목록"
+                        isOpen={isOpenModalProductInfo}
+                        onClose={() => setIsOpenModalProductInfo(false)}
+                    />
+                    <ProductGroupModal
+                        width={600}
+                        height={720}
+                        title="품목그룹 목록"
+                        isOpen={isOpenModalProductGroup}
+                        onClose={() => setIsOpenModalProductGroup(false)}
+                    />
+                    <EmployerInfoModal
+                        width={600}
+                        height={770}
+                        title="업무회원 목록"
+                        isOpen={isOpenModalEmployerInfo}
+                        onClose={() => setIsOpenModalEmployerInfo(false)}
+                        colName={colName}
+                    />
                     <AuthorGroupModal width={600} height={500} title="권한그룹 목록" isOpen={isOpenModalGroup} onClose={() => setIsOpenModalGroup(false)} />
                 </div>
             </div>

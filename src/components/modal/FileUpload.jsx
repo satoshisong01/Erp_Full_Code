@@ -8,8 +8,6 @@ const FileUpload = ({ onFileSelect }) => {
 
     const { fileName } = useContext(PageContext);
 
-    console.log(fileName, "나오긴하나");
-
     //useEffect(() => {
     //    fetchAllData();
     //}, []);

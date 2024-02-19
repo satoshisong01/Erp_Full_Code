@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import URL from "constants/url";
 import CODE from "constants/code";
+import ReferenceInfo from "components/DataTable/function/ReferenceInfo";
 
 function EgovLoginContent(props) {
     console.group("EgovLoginContent");
@@ -121,7 +122,7 @@ function EgovLoginContent(props) {
                     로그인을 하시면 모든 서비스를 제한없이 이용하실 수 있습니다.
                 </p> */}
 
-                <div className="login_box" style={{backgroundColor: "white"}}>
+                <div className="login_box" style={{ backgroundColor: "white" }}>
                     <form name="" method="" action="">
                         <fieldset>
                             <legend>로그인</legend>

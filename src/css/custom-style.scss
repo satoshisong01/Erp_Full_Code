@@ -1511,6 +1511,11 @@ td {
     }
 }
 
+table > thead {
+    position: sticky;
+    top: 0px;
+}
+
 /* 반응형 스타일 */
 @media (max-width: 768px) {
     .flex-group {

@@ -122,7 +122,7 @@ const RootRoutes = () => {
         // pgNmItem();
         // pdiNmItem();
         // companyItem();
-        unitPriceItem();
+        //unitPriceItem();
         //unitPriceRenew();
     }, []);
 

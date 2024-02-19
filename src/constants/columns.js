@@ -225,7 +225,7 @@ export const columns = {
             {
                 items: [
                     { header: "계약일", col: "poiBeginDt", type: "dayPicker" },
-                    { header: "이익률", col: "standardMargin", type: "number" },
+                    { header: "이익률", col: "standardMargin", type: "input" },
                 ],
             },
             {
@@ -500,7 +500,7 @@ export const columns = {
             { header: "프로젝트ID", col: "poiId", cellWidth: "0", notView: true },
 
             { header: "품목그룹아이디", col: "pgId", cellWidth: "0", require: true, type: "input", notView: true },
-            { header: "품목그룹", col: "pgNm", cellWidth: "120", require: true, type: "productGroup" },
+            { header: "품명", col: "pdiNm", cellWidth: "120", require: true, type: "productGroup" },
             {
                 header: "직급",
                 col: "estPosition",
@@ -1003,10 +1003,10 @@ export const columns = {
     expenseMgmt: {
         //경비관리
         planView: [
-            { header: "프로젝트ID", col: "poiId", notView: true, },
-            { header: "사용여부", col: "deleteAt", notView: true, },
-            { header: "삭제여부", col: "useAt", notView: true, },
-            { header: "버전", col: "versionId", notView: true, },
+            { header: "프로젝트ID", col: "poiId", notView: true },
+            { header: "사용여부", col: "deleteAt", notView: true },
+            { header: "삭제여부", col: "useAt", notView: true },
+            { header: "버전", col: "versionId", notView: true },
             {
                 header: "경비목록",
                 col: "pjbgTypeCode",
@@ -1039,7 +1039,6 @@ export const columns = {
             },
             { header: "내용", col: "pjbgDesc", cellWidth: "774", type: "desc" },
             { header: "금액", col: "pjbgPrice", cellWidth: "300", type: "input", require: true },
-
         ],
         condition: [
             { title: "프로젝트명", col: "clCode", type: "input", value: "", searchLevel: "1" },
@@ -1706,12 +1705,11 @@ export const columns = {
             { header: "직위", col: "posNm", cellWidth: "160" },
             { header: "소속기관", col: "aflOrgCd", cellWidth: "160" },
             { header: "입사일", col: "joiningDt", cellWidth: "160" },
-            { header: "권한명", col: "authorNm", cellWidth: "160", },
+            { header: "권한명", col: "authorNm", cellWidth: "160" },
             // { header: "작성일", col: "createDate", cellWidth: "120" },
             // { header: "작성자", col: "createIdBy", cellWidth: "120" },
             // { header: "수정일", col: "lastModifyDate", cellWidth: "120" },
             // { header: "수정자", col: "lastModifiedUserName", cellWidth: "120" },
-            
         ],
         employCondition: [
             { title: "업무회원ID", col: "empId", type: "input" },
@@ -1750,7 +1748,7 @@ export const columns = {
                             { label: "슈퍼관리자", value: "ROLE_ADMIN" },
                         ],
                     },
-                ]
+                ],
             },
         ],
         mod: [
@@ -1785,7 +1783,7 @@ export const columns = {
                             { label: "슈퍼관리자", value: "ROLE_ADMIN" },
                         ],
                     },
-                ]
+                ],
             },
         ],
     },

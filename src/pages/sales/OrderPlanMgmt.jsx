@@ -158,11 +158,13 @@ function OrderPlanMgmt() {
                     }
                 });
             };
+            addDayToPmpMonth(toAdds);
             addList(toAdds);
         }
     };
 
     const addList = async (addNewData) => {
+        console.log(addNewData, "인건비 추가시 배열");
         addNewData.forEach((data) => {
             data.poiId = condition.poiId || "";
         });
@@ -413,6 +415,7 @@ function OrderPlanMgmt() {
             }
         } else if (innerPageName.name === "개발외주비") {
             const resultData = await axiosFetch("/api/baseInfrm/product/devOutCost/totalListAll.do", requestData);
+            console.log(requestData, "??");
             if (resultData && resultData.length > 0) {
                 resultData.forEach((data) => {
                     data.price = data.devOutMm * data.devOutPrice; // 계산된 값을 데이터에 추가
@@ -525,7 +528,7 @@ function OrderPlanMgmt() {
     };
 
     const conditionInfo = (value) => {
-        if(!value.poiId || !value.versionId) {
+        if (!value.poiId || !value.versionId) {
             return;
         }
         setCondition((prev) => {

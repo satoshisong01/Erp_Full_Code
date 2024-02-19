@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 import PopupButton from "./button/PopupButton";
 import BasicButton from "./button/BasicButton";
 import AddButton from "./button/AddButton";
+import ReferenceInfo from "./DataTable/function/ReferenceInfo";
 
 /** 대,중,소 카데고리 Link가 걸려 있는 헤더 */
 function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId }) {
@@ -160,8 +161,13 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
                     {sessionUserId && (
                         <div className="table-buttons">
                             <span className="person">{sessionUserName}</span>님이, 로그인하셨습니다.
-                            <AddButton label="로그아웃" onClick={logOutHandler}/>
-                            <PopupButton targetUrl={URL.MyInfo} data={{ label: "나의정보", data: JSON.parse(sessionUser) }} size={{width: 700, height:500}} />
+                            <AddButton label="로그아웃" onClick={logOutHandler} />
+                            <PopupButton
+                                targetUrl={URL.MyInfo}
+                                data={{ label: "나의정보", data: JSON.parse(sessionUser) }}
+                                size={{ width: 700, height: 500 }}
+                            />
+                            <ReferenceInfo />
                             {/* <button onClick={logOutHandler} className="btn" style={{ position: "relative", width: "100px" }}>
                                 로그아웃
                             </button> */}

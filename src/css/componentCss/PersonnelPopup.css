@@ -162,6 +162,30 @@
     background-color: #e3ecf8;
 }
 
+.tableItem {
+    flex: 4;
+    display: flex;
+    /*padding-left: 20px;*/
+    font-size: large;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid gray;
+    background-color: #e3ecf8;
+}
+
+.tableWhiteItem {
+    flex: 4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*width: 150px;*/
+    /*height: 50px;*/
+    font-size: large;
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid gray;
+}
+
 .table4-3,
 .table4-3F {
     /*flex: 1;*/

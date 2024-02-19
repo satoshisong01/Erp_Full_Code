@@ -5,7 +5,7 @@ import CODE from "constants/code";
 /* axios 데이터 통신 */
 export async function axiosFetch(url, requestData) {
     const headers = {
-        Authorization: process.env.REACT_APP_POST,
+        Authorization: localStorage.jToken,
         "Content-Type": "application/json",
     };
 
@@ -25,7 +25,7 @@ export async function axiosFetch(url, requestData) {
 // 업로드하기
 export async function axiosFileUpload(url, files) {
     const headers = {
-        Authorization: process.env.REACT_APP_POST,
+        Authorization: localStorage.jToken,
     };
 
     try {
@@ -67,7 +67,7 @@ export async function axiosFileAddUpload(url, files, fileIdData) {
         //formData.append("attachFileId", fileIdData);
 
         const headers = {
-            Authorization: process.env.REACT_APP_POST,
+            Authorization: localStorage.jToken,
             "Content-Type": "text/plain",
         };
 
@@ -89,7 +89,7 @@ export async function axiosFileAddUpload(url, files, fileIdData) {
 /* axios 데이터 업데이트 */
 export async function axiosUpdate(url, requestData) {
     const headers = {
-        Authorization: process.env.REACT_APP_POST,
+        Authorization: localStorage.jToken,
         "Content-Type": "application/json",
     };
 
@@ -109,7 +109,7 @@ export async function axiosUpdate(url, requestData) {
 /* axios 데이터 삭제 */
 export async function axiosDelete(url, requestData) {
     const headers = {
-        Authorization: process.env.REACT_APP_POST,
+        Authorization: localStorage.jToken,
         "Content-Type": "application/json",
     };
 
@@ -132,7 +132,7 @@ export async function axiosDelete(url, requestData) {
 /* axios 데이터 추가하기 */
 export async function axiosPost(url, requestData) {
     const headers = {
-        Authorization: process.env.REACT_APP_POST,
+        Authorization: localStorage.jToken,
         "Content-Type": "application/json",
     };
 
@@ -152,7 +152,7 @@ export async function axiosPost(url, requestData) {
 
 export async function axiosPostPersonel(url, requestData) {
     const headers = {
-        Authorization: process.env.REACT_APP_POST,
+        Authorization: localStorage.jToken,
         "Content-Type": "application/json",
     };
 
@@ -199,7 +199,7 @@ export async function axiosPostPersonel(url, requestData) {
 /* axios 데이터 검색하기 */
 export async function axiosScan(url, requestData) {
     const headers = {
-        Authorization: process.env.REACT_APP_POST,
+        Authorization: localStorage.jToken,
         "Content-Type": "application/json",
     };
 
@@ -220,7 +220,7 @@ export async function axiosScan(url, requestData) {
 
 export async function axiosDownLoad(downloadUrl, requestData) {
     const headers = {
-        Authorization: process.env.REACT_APP_POST,
+        Authorization: localStorage.jToken,
         "Content-Type": "application/json",
     };
 
@@ -253,7 +253,7 @@ export async function axiosDownLoad(downloadUrl, requestData) {
 /* get */
 export async function axiosGet(url) {
     const headers = {
-        Authorization: process.env.REACT_APP_POST,
+        Authorization: localStorage.jToken,
         "Content-Type": "application/json",
     };
 

@@ -59,10 +59,7 @@ const GeneralMembers = () => {
         console.log(urlName);
         setSearchKeyword("");
         setSearchCondition("");
-        if (
-            dataTableRef.current &&
-            $.fn.DataTable.isDataTable(dataTableRef.current)
-        ) {
+        if (dataTableRef.current && $.fn.DataTable.isDataTable(dataTableRef.current)) {
             $(dataTableRef.current).DataTable().destroy();
         }
         setIsSearching(!isSearching); // 로딩 상태 활성화
@@ -70,7 +67,7 @@ const GeneralMembers = () => {
     };
 
     const headers = {
-        Authorization: process.env.REACT_APP_POST,
+        Authorization: localStorage.jToken,
     };
 
     const fetchAllData = async () => {
@@ -173,29 +170,21 @@ const GeneralMembers = () => {
         setSelectedData((prevSelectedData) => {
             if (isChecked) {
                 // 이미 선택된 데이터인지 확인 후 중복 추가 방지
-                if (
-                    !prevSelectedData.find(
-                        (selectedItem) => selectedItem.uniqId === item.uniqId
-                    )
-                ) {
-                    const sortedData = [...prevSelectedData, item].sort(
-                        (a, b) => {
-                            // uniqId 속성을 기준으로 데이터 정렬
-                            if (a.uniqId < b.uniqId) {
-                                return -1;
-                            }
-                            if (a.uniqId > b.uniqId) {
-                                return 1;
-                            }
-                            return 0;
+                if (!prevSelectedData.find((selectedItem) => selectedItem.uniqId === item.uniqId)) {
+                    const sortedData = [...prevSelectedData, item].sort((a, b) => {
+                        // uniqId 속성을 기준으로 데이터 정렬
+                        if (a.uniqId < b.uniqId) {
+                            return -1;
                         }
-                    );
+                        if (a.uniqId > b.uniqId) {
+                            return 1;
+                        }
+                        return 0;
+                    });
                     return sortedData;
                 }
             } else {
-                return prevSelectedData.filter(
-                    (selectedItem) => selectedItem.uniqId !== item.uniqId
-                );
+                return prevSelectedData.filter((selectedItem) => selectedItem.uniqId !== item.uniqId);
             }
             return prevSelectedData; // 체크가 풀리지 않았거나 중복 데이터인 경우 이전 상태 그대로 반환
         });
@@ -236,20 +225,11 @@ const GeneralMembers = () => {
                             {!isSearching && (
                                 <>
                                     <div className="tableBox">
-                                        <table
-                                            ref={dataTableRef}
-                                            className="table table-bordered"
-                                            id="dataTable">
+                                        <table ref={dataTableRef} className="table table-bordered" id="dataTable">
                                             <thead>
                                                 <tr>
                                                     <th className="tableHeaderTh">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={check}
-                                                            onChange={(e) =>
-                                                                handleClick(e)
-                                                            }
-                                                        />
+                                                        <input type="checkbox" checked={check} onChange={(e) => handleClick(e)} />
                                                     </th>
                                                     {[
                                                         "ID",
@@ -265,79 +245,47 @@ const GeneralMembers = () => {
                                                         "수정일",
                                                         "수정자",
                                                     ].map((item, index) => (
-                                                        <th key={index}>
-                                                            {item}
-                                                        </th>
+                                                        <th key={index}>{item}</th>
                                                     ))}
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {searchedData.map(
-                                                    (item, index) => (
-                                                        <tr key={index}>
-                                                            <td>
-                                                                <input
-                                                                    type="checkbox"
-                                                                    checked={selectedData.some(
-                                                                        (
-                                                                            selectedItem
-                                                                        ) =>
-                                                                            selectedItem.uniqId ===
-                                                                            item.uniqId
-                                                                    )}
-                                                                    onChange={(
-                                                                        e
-                                                                    ) =>
-                                                                        handleItemCheck(
-                                                                            item,
-                                                                            e
-                                                                        )
-                                                                    }
-                                                                />
-                                                            </td>
-                                                            {[
-                                                                "mbId",
-                                                                "mbNm",
-                                                                "password",
-                                                                "address",
-                                                                "mbTelNm",
-                                                                "mbEmAdr",
-                                                                "sbsDt",
-                                                                "createDate",
-                                                                "createIdBy",
-                                                                "lastModifyDate",
-                                                                "lastModifiedUserName",
-                                                            ].map((key) => (
-                                                                <td
-                                                                    onMouseEnter={
-                                                                        handleMouseEnter
-                                                                    }
-                                                                    onMouseLeave={
-                                                                        handleMouseLeave
-                                                                    }
-                                                                    className="tableWidth
+                                                {searchedData.map((item, index) => (
+                                                    <tr key={index}>
+                                                        <td>
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={selectedData.some((selectedItem) => selectedItem.uniqId === item.uniqId)}
+                                                                onChange={(e) => handleItemCheck(item, e)}
+                                                            />
+                                                        </td>
+                                                        {[
+                                                            "mbId",
+                                                            "mbNm",
+                                                            "password",
+                                                            "address",
+                                                            "mbTelNm",
+                                                            "mbEmAdr",
+                                                            "sbsDt",
+                                                            "createDate",
+                                                            "createIdBy",
+                                                            "lastModifyDate",
+                                                            "lastModifiedUserName",
+                                                        ].map((key) => (
+                                                            <td
+                                                                onMouseEnter={handleMouseEnter}
+                                                                onMouseLeave={handleMouseLeave}
+                                                                className="tableWidth
                                                                         tdStyle mouseText"
-                                                                    onDoubleClick={(
-                                                                        e
-                                                                    ) =>
-                                                                        handleModalClick(
-                                                                            e,
-                                                                            item
-                                                                        )
-                                                                    }
-                                                                    key={key}>
-                                                                    <MouseDc
-                                                                        showTooltip={
-                                                                            showTooltip
-                                                                        }
-                                                                    />
-                                                                    <Tooltip />
-                                                                    {item[key]}
-                                                                </td>
-                                                            ))}
-                                                        </tr>
-                                                    )
-                                                )}
+                                                                onDoubleClick={(e) => handleModalClick(e, item)}
+                                                                key={key}>
+                                                                <MouseDc showTooltip={showTooltip} />
+                                                                <Tooltip />
+                                                                {item[key]}
+                                                            </td>
+                                                        ))}
+                                                    </tr>
+                                                ))}
                                             </tbody>
                                         </table>
                                     </div>

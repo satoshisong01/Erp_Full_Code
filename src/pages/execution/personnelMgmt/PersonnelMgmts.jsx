@@ -60,10 +60,7 @@ const PersonnelMgmts = () => {
         console.log(urlName);
         setSearchKeyword("");
         setSearchCondition("");
-        if (
-            dataTableRef.current &&
-            $.fn.DataTable.isDataTable(dataTableRef.current)
-        ) {
+        if (dataTableRef.current && $.fn.DataTable.isDataTable(dataTableRef.current)) {
             $(dataTableRef.current).DataTable().destroy();
         }
         setIsSearching(!isSearching); // 로딩 상태 활성화
@@ -71,7 +68,7 @@ const PersonnelMgmts = () => {
     };
 
     const headers = {
-        Authorization: process.env.REACT_APP_POST,
+        Authorization: localStorage.jToken,
     };
 
     const fetchAllData = async () => {
@@ -174,29 +171,21 @@ const PersonnelMgmts = () => {
         setSelectedData((prevSelectedData) => {
             if (isChecked) {
                 // 이미 선택된 데이터인지 확인 후 중복 추가 방지
-                if (
-                    !prevSelectedData.find(
-                        (selectedItem) => selectedItem.uniqId === item.uniqId
-                    )
-                ) {
-                    const sortedData = [...prevSelectedData, item].sort(
-                        (a, b) => {
-                            // uniqId 속성을 기준으로 데이터 정렬
-                            if (a.uniqId < b.uniqId) {
-                                return -1;
-                            }
-                            if (a.uniqId > b.uniqId) {
-                                return 1;
-                            }
-                            return 0;
+                if (!prevSelectedData.find((selectedItem) => selectedItem.uniqId === item.uniqId)) {
+                    const sortedData = [...prevSelectedData, item].sort((a, b) => {
+                        // uniqId 속성을 기준으로 데이터 정렬
+                        if (a.uniqId < b.uniqId) {
+                            return -1;
                         }
-                    );
+                        if (a.uniqId > b.uniqId) {
+                            return 1;
+                        }
+                        return 0;
+                    });
                     return sortedData;
                 }
             } else {
-                return prevSelectedData.filter(
-                    (selectedItem) => selectedItem.uniqId !== item.uniqId
-                );
+                return prevSelectedData.filter((selectedItem) => selectedItem.uniqId !== item.uniqId);
             }
             return prevSelectedData; // 체크가 풀리지 않았거나 중복 데이터인 경우 이전 상태 그대로 반환
         });
@@ -233,9 +222,7 @@ const PersonnelMgmts = () => {
                         />
                     </div>*/}
                     <div className="TableBoxs">
-                        <div
-                            id="content"
-                            style={{ padding: "0", marginTop: "20px" }}>
+                        <div id="content" style={{ padding: "0", marginTop: "20px" }}>
                             <div className="table-responsive">
                                 <table
                                     border="1"
@@ -245,57 +232,33 @@ const PersonnelMgmts = () => {
                                     }}>
                                     <thead>
                                         <tr className="tableTr3">
-                                            <th
-                                                className="thTitle1"
-                                                rowSpan={"2"}>
+                                            <th className="thTitle1" rowSpan={"2"}>
                                                 품목그룹명
                                             </th>
-                                            <th
-                                                className="thTitle1"
-                                                rowSpan={"2"}>
+                                            <th className="thTitle1" rowSpan={"2"}>
                                                 연월
                                             </th>
-                                            <th
-                                                className="thTitle1"
-                                                rowSpan={"2"}>
+                                            <th className="thTitle1" rowSpan={"2"}>
                                                 M/M계
                                             </th>
-                                            <th
-                                                className="thTitle1"
-                                                rowSpan={"2"}>
+                                            <th className="thTitle1" rowSpan={"2"}>
                                                 인건비계
                                             </th>
-                                            <th
-                                                className="thTitle1"
-                                                colSpan={"7"}>
+                                            <th className="thTitle1" colSpan={"7"}>
                                                 일반
                                             </th>
-                                            <th
-                                                className="thTitle1"
-                                                colSpan={"6"}>
+                                            <th className="thTitle1" colSpan={"6"}>
                                                 프로젝트팀원
                                             </th>
                                         </tr>
                                         <tr className="tableTr3">
                                             <th className="thTitle2">임원</th>
-                                            <th className="thTitle2">
-                                                특급기술사
-                                            </th>
-                                            <th className="thTitle2">
-                                                고급기술사
-                                            </th>
-                                            <th className="thTitle2">
-                                                중급기술사
-                                            </th>
-                                            <th className="thTitle2">
-                                                초급기술사
-                                            </th>
-                                            <th className="thTitle2">
-                                                중급기능사
-                                            </th>
-                                            <th className="thTitle2">
-                                                고급기능사
-                                            </th>
+                                            <th className="thTitle2">특급기술사</th>
+                                            <th className="thTitle2">고급기술사</th>
+                                            <th className="thTitle2">중급기술사</th>
+                                            <th className="thTitle2">초급기술사</th>
+                                            <th className="thTitle2">중급기능사</th>
+                                            <th className="thTitle2">고급기능사</th>
                                             <th className="thTitle2">부장</th>
                                             <th className="thTitle2">차장</th>
                                             <th className="thTitle2">과장</th>
@@ -318,12 +281,8 @@ const PersonnelMgmts = () => {
                                                     //}
                                                 >
                                                     <option>선택</option>
-                                                    <option value="PANEL">
-                                                        PANEL
-                                                    </option>
-                                                    <option value="개발외주비">
-                                                        개발외주비
-                                                    </option>
+                                                    <option value="PANEL">PANEL</option>
+                                                    <option value="개발외주비">개발외주비</option>
                                                 </select>
                                             </td>
                                             <td>2023/05</td>
@@ -356,12 +315,8 @@ const PersonnelMgmts = () => {
                                                     //}
                                                 >
                                                     <option>선택</option>
-                                                    <option value="PANEL">
-                                                        PANEL
-                                                    </option>
-                                                    <option value="개발외주비">
-                                                        개발외주비
-                                                    </option>
+                                                    <option value="PANEL">PANEL</option>
+                                                    <option value="개발외주비">개발외주비</option>
                                                 </select>
                                             </td>
                                             <td>2023/06</td>
@@ -394,12 +349,8 @@ const PersonnelMgmts = () => {
                                                     //}
                                                 >
                                                     <option>선택</option>
-                                                    <option value="PANEL">
-                                                        PANEL
-                                                    </option>
-                                                    <option value="개발외주비">
-                                                        개발외주비
-                                                    </option>
+                                                    <option value="PANEL">PANEL</option>
+                                                    <option value="개발외주비">개발외주비</option>
                                                 </select>
                                             </td>
                                             <td>2023/07</td>
