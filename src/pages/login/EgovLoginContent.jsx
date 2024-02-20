@@ -108,6 +108,12 @@ function EgovLoginContent(props) {
             });
     };
 
+    const handleKeyPress = (e) => {
+        if (e.key === "Enter") {
+            submitFormHandler(e);
+        }
+    };
+
     console.log("------------------------------EgovLoginContent [End]");
     console.groupEnd("EgovLoginContent");
 
@@ -134,6 +140,7 @@ function EgovLoginContent(props) {
                                     placeholder="아이디"
                                     value={userInfo?.id}
                                     onChange={(e) => setUserInfo({ ...userInfo, id: e.target.value })}
+                                    onKeyDown={handleKeyPress}
                                 />
                                 <input
                                     type="password"
@@ -141,6 +148,7 @@ function EgovLoginContent(props) {
                                     title="비밀번호"
                                     placeholder="비밀번호"
                                     onChange={(e) => setUserInfo({ ...userInfo, pw: e.target.value })}
+                                    onKeyDown={handleKeyPress}
                                 />
                             </span>
                             <div className="chk">
