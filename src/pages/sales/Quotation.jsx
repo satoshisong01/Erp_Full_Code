@@ -550,11 +550,16 @@ function Quotation() {
                     <div className="first">
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
+                            {/*<HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>*/}
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
-                                    <PopupButton targetUrl={URL.LaborCostDoc} data={{ label: "견 적 서", tableData: estimate }} />
                                     <PopupButton
+                                        clickBtn={true}
+                                        targetUrl={URL.LaborCostDoc}
+                                        data={{ label: "견 적 서", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
+                                    />
+                                    <PopupButton
+                                        clickBtn={true}
                                         targetUrl={URL.LaborSummaryDoc}
                                         data={{ label: "영업상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
                                     />
@@ -581,14 +586,16 @@ function Quotation() {
                     <div className="second">
                         <ul>
                             <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            <HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>
+                            {/*<HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>*/}
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <PopupButton
+                                        clickBtn={true}
                                         targetUrl={URL.OrderBuyDoc}
-                                        data={{ label: "갑지", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
+                                        data={{ label: "견 적 서", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
                                     />
                                     <PopupButton
+                                        clickBtn={true}
                                         targetUrl={URL.OrderSummaryDoc}
                                         data={{ label: "구매상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
                                     />

@@ -5,7 +5,7 @@ import meccaImg from "../EstimateMgmt/img/meccaImg.png";
 import sign from "../EstimateMgmt/img/CEOsign.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf, faPrint } from "@fortawesome/free-solid-svg-icons";
-import { axiosFetch } from "api/axiosFetch";
+import { axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 /* 갑지 */
 const LaborCostDoc = () => {
     /* ⭐ 데이터 없을 시 초기화 필요 */
@@ -14,17 +14,7 @@ const LaborCostDoc = () => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [tableDatas, setTableDatas] = useState([]);
 
-    const [managementNumber, setManagementNumber] = useState("QT20221020 - 32 천안 SEC"); // 추가: 관리번호 상태
-    const [writingDate, setWritingDate] = useState("2024.10.01"); // 추가: 작성일자 상태
-    const [recipient, setRecipient] = useState("삼성 SDS"); // 추가: 수신 상태
-    const [reference, setReference] = useState("C"); // 추가: 참조 상태
-    const [sender, setSender] = useState("이 주 현"); // 추가: 발신 상태
-    const [contact, setContact] = useState("010-4227-2370"); // 추가: 연락처 상태
-    const [condition, setCondition] = useState("고객사 지급기준에 준함"); // 추가: 연락처 상태
-    const [deadline, setDeadline] = useState("계약 후 5개월"); // 추가: 연락처 상태
-    const [none, setNone] = useState("none");
-    const [textDec, setTextDec] = useState(`1. 견적유효기간 : 2024년 7월31일
-2. 견적 범위 : 자재 납품 / 시험조건 중 시험조건 (설치장소 : 세메스 화성 사업장)`); // 추가: 연락처 상태
+    const [tableData, setTableData] = useState([]);
 
     console.log(tableDatas, "tableDatas");
 
@@ -33,23 +23,88 @@ const LaborCostDoc = () => {
         const data = JSON.parse(dataParameter);
         setProjectTitle(data.tableData[0].poiNm);
         setTableDatas(restructureData(data.tableData));
-        const { label, poiId, versionId, managementNumber, writingDate, recipient, reference, sender, contact } = data;
+        const { label, poiId, versionId } = data;
         setTitle(label);
-        setManagementNumber(managementNumber);
-        setWritingDate(writingDate);
-        setRecipient(recipient);
-        setReference(reference);
-        setSender(sender);
-        setContact(contact);
-        setCondition(condition);
-        setDeadline(deadline);
-        setTextDec(textDec);
+        console.log(poiId, versionId, "이거안받?");
         if (poiId && versionId) {
             getInitData(poiId, versionId);
+            fetchAllData(poiId, versionId);
         }
     }, []);
 
+    const fetchAllData = async (poiId, versionId) => {
+        const resultData = await axiosFetch("/api/cost/contract/totalListAll.do", {
+            poiId: poiId,
+            versionId: versionId,
+            ctcType: "T",
+        });
+        console.log(resultData, "이게 불러온거");
+        if (resultData.length === 0) {
+            addData(poiId, versionId);
+        }
+        setTableData(resultData);
+    };
+
+    const addData = async (poiId, versionId) => {
+        const resultData = await axiosPost("/api/cost/contract/add.do", {
+            poiId: poiId,
+            versionId: versionId,
+            ctcNum: "",
+            ctcReception: "",
+            ctcReference: "",
+            ctcSent: "",
+            ctcType: "T",
+            ctcContact: "",
+            ctcDateCreated: "",
+            ctcPaymentCondition: "",
+            ctcDelivery: "",
+            ctcDesc: "",
+        });
+        setTableData(resultData);
+        fetchAllData(poiId, versionId);
+        console.log(resultData, "초기에 빈값추가해주기");
+    };
+
+    const updatedData = async (ctcId, poiId, versionId) => {
+        const resultData = await axiosUpdate("/api/cost/contract/edit.do", {
+            ctcId: ctcId,
+            poiId: poiId,
+            versionId: versionId,
+            ctcNum: tableData[0].ctcNum,
+            ctcReception: tableData[0].ctcReception,
+            ctcReference: tableData[0].ctcReference,
+            ctcSent: tableData[0].ctcSent,
+            ctcDateCreated: tableData[0].ctcDateCreated,
+            ctcContact: tableData[0].ctcContact,
+            ctcPaymentCondition: tableData[0].ctcPaymentCondition,
+            ctcDelivery: tableData[0].ctcDelivery,
+            ctcDesc: tableData[0].ctcDesc,
+        });
+        console.log(resultData, "업데이트한건데");
+        setTableData(resultData);
+        fetchAllData(poiId, versionId);
+    };
+
+    const handleChange = (e, fieldName, dataIndex) => {
+        const { value } = e.target;
+        console.log(value);
+        console.log(fieldName, dataIndex);
+
+        // tableData 배열에 요소가 있는지 확인
+        if (tableData.length > 0) {
+            // tableData 배열에 요소가 있는 경우에만 값을 변경
+            const updatedTableData = [...tableData];
+            updatedTableData[dataIndex][fieldName] = value;
+
+            // 상태 업데이트 함수를 사용하여 상태를 업데이트하고 화면을 다시 렌더링
+            setTableData(updatedTableData);
+        }
+    };
+
     const printFn = () => {
+        updatedData(tableData[0].ctcId, tableData[0].poiId, tableData[0].versionId, tableData);
+        alert("출력합니다");
+
         // titleInput 클래스명을 가진 input 요소들의 border 값을 변경
         const inputs = document.querySelectorAll(".titleInput");
         inputs.forEach((input) => {
@@ -165,6 +220,10 @@ const LaborCostDoc = () => {
         return result;
     }
 
+    useEffect(() => {
+        console.log(tableData);
+    }, [tableData]);
+
     const firstItemChineseTotal = convertToChinese(firstItemTotal);
 
     return (
@@ -183,7 +242,12 @@ const LaborCostDoc = () => {
                                     <span className="boxTitle">번</span>
                                     <span className="boxTitle lastTitle">호:</span>
                                 </div>
-                                <input className="titleInput" type="text" value={managementNumber} onChange={(e) => setManagementNumber(e.target.value)} />
+                                <input
+                                    className="titleInput"
+                                    type="text"
+                                    value={tableData.length ? tableData[0].ctcNum : ""}
+                                    onChange={(e) => handleChange(e, "ctcNum", 0)}
+                                />
                             </div>
                             <div className="leftBox">
                                 <div className="boxHome">
@@ -192,28 +256,48 @@ const LaborCostDoc = () => {
                                     <span className="boxTitle">일</span>
                                     <span className="boxTitle lastTitle">자:</span>
                                 </div>
-                                <input className="titleInput" type="text" value={writingDate} onChange={(e) => setWritingDate(e.target.value)} />
+                                <input
+                                    className="titleInput"
+                                    type="text"
+                                    value={tableData.length ? tableData[0].ctcDateCreated : ""}
+                                    onChange={(e) => handleChange(e, "ctcDateCreated", 0)}
+                                />
                             </div>
                             <div className="leftBox">
                                 <div className="boxHome">
                                     <span className="boxTitle">수</span>
                                     <span className="boxTitle lastTitle">신:</span>
                                 </div>
-                                <input className="titleInput" type="text" value={recipient} onChange={(e) => setRecipient(e.target.value)} />
+                                <input
+                                    className="titleInput"
+                                    type="text"
+                                    value={tableData.length ? tableData[0].ctcReception : ""}
+                                    onChange={(e) => handleChange(e, "ctcReception", 0)}
+                                />
                             </div>
                             <div className="leftBox">
                                 <div className="boxHome">
                                     <span className="boxTitle">참</span>
                                     <span className="boxTitle lastTitle">조:</span>
                                 </div>
-                                <input className="titleInput" type="text" value={reference} onChange={(e) => setReference(e.target.value)} />
+                                <input
+                                    className="titleInput"
+                                    type="text"
+                                    value={tableData.length ? tableData[0].ctcReference : ""}
+                                    onChange={(e) => handleChange(e, "ctcReference", 0)}
+                                />
                             </div>
                             <div className="leftBox">
                                 <div className="boxHome">
                                     <span className="boxTitle">발</span>
                                     <span className="boxTitle lastTitle">신:</span>
                                 </div>
-                                <input className="titleInput" type="text" value={sender} onChange={(e) => setSender(e.target.value)} />
+                                <input
+                                    className="titleInput"
+                                    type="text"
+                                    value={tableData.length ? tableData[0].ctcSent : ""}
+                                    onChange={(e) => handleChange(e, "ctcSent", 0)}
+                                />
                             </div>
                             <div className="leftBox">
                                 <div className="boxHome">
@@ -221,7 +305,12 @@ const LaborCostDoc = () => {
                                     <span className="boxTitle">락</span>
                                     <span className="boxTitle lastTitle">처:</span>
                                 </div>
-                                <input className="titleInput" type="text" value={contact} onChange={(e) => setContact(e.target.value)} />
+                                <input
+                                    className="titleInput"
+                                    type="text"
+                                    value={tableData.length ? tableData[0].ctcContact : ""}
+                                    onChange={(e) => handleChange(e, "ctcContact", 0)}
+                                />
                             </div>
                             <p style={{ fontSize: "16px", fontWeight: "700" }}>아래와 같이 견적합니다</p>
                         </div>
@@ -254,6 +343,7 @@ const LaborCostDoc = () => {
                             </div>
                         </div>
                     </div>
+
                     <h1 className="SumCount">
                         一金 : {firstItemChineseTotal}원整(₩{firstItemTotal.toLocaleString()} - VAT 별도)
                     </h1>
@@ -268,14 +358,24 @@ const LaborCostDoc = () => {
                                     <span className="boxTitle">조</span>
                                     <span className="boxTitle lastTitle">건:</span>
                                 </div>
-                                <input className="titleInput" type="text" value={condition} onChange={(e) => setCondition(e.target.value)} />
+                                <input
+                                    className="titleInput"
+                                    type="text"
+                                    value={tableData.length ? tableData[0].ctcPaymentCondition : ""}
+                                    onChange={(e) => handleChange(e, "ctcPaymentCondition", 0)}
+                                />
                             </div>
                             <div className="rightBox">
                                 <div className="boxHome2">
                                     <span className="boxTitle">납</span>
                                     <span className="boxTitle lastTitle">기:</span>
                                 </div>
-                                <input className="titleInput" type="text" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
+                                <input
+                                    className="titleInput"
+                                    type="text"
+                                    value={tableData.length ? tableData[0].ctcDelivery : ""}
+                                    onChange={(e) => handleChange(e, "ctcDelivery", 0)}
+                                />
                             </div>
                         </div>
                     </div>
@@ -322,13 +422,19 @@ const LaborCostDoc = () => {
                     <h3 className="projectName">특이사항</h3>
                     <div className="etcBox">
                         <div className="etcItems">
-                            <textarea className="textareaStyle" type="text" value={textDec} onChange={(e) => setTextDec(e.target.value)} />
+                            <textarea
+                                style={{ caretColor: "black", fontSize: "15px" }}
+                                className="textareaStyle"
+                                type="text"
+                                value={tableData.length ? tableData[0].ctcDesc : ""}
+                                onChange={(e) => handleChange(e, "ctcDesc", 0)}
+                            />
                         </div>
                     </div>
                 </body>
                 <button id="printButton" onClick={() => printFn()} style={{ position: "fixed", top: "10px", right: "10px" }}>
                     <FontAwesomeIcon icon={faPrint} style={{ color: "red" }} />
-                    PDF출력
+                    (저장)출력
                 </button>
             </div>
         </>
