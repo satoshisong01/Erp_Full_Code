@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import "./PopUp.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilePdf, faPrint } from "@fortawesome/free-solid-svg-icons";
+
 import html2pdf from "html2pdf.js";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -54,6 +57,18 @@ const LaborSummaryDoc = () => {
 
             html2pdf(input, options).save();
         }
+    };
+
+    const printFn = () => {
+        alert("출력합니다");
+
+        const inputs = document.querySelectorAll(".titleInput");
+        inputs.forEach((input) => {
+            input.style.border = "none";
+        });
+        const printButton = document.getElementById("printButton");
+        printButton.style.display = "none"; // 프린트 버튼 숨기기
+        window.print();
     };
 
     const Columns = [
@@ -234,7 +249,10 @@ const LaborSummaryDoc = () => {
                     </table>
                 </div>
             </div>
-            <button onClick={generatePDF}>라이브러리PDF</button>
+            <button id="printButton" onClick={() => printFn()} style={{ position: "fixed", top: "10px", right: "10px" }}>
+                <FontAwesomeIcon icon={faPrint} style={{ color: "red" }} />
+                (저장)출력
+            </button>
         </div>
     );
 };

@@ -599,6 +599,37 @@ const ReactDataTable = (props) => {
 
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
+    const cellWidthCount = columns.filter((column) => column.cellWidth).length; //컬럼 width있는 객체 갯수
+    let colWidth = 35 / cellWidthCount; //35픽셀 나누기
+
+    const totalWidth = columns.reduce((acc, column) => {
+        if (column.cellWidth) {
+            return acc + Number(column.cellWidth) + colWidth;
+        } else {
+            return acc;
+        }
+    }, 0);
+
+    const tdStyle =
+        current.id === "결재선팝업"
+            ? {
+                  textAlign: "center",
+                  fontSize: "15px",
+                  height: "80px",
+                  border: 0,
+                  width: `${totalWidth}px`,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: 0,
+              }
+            : {
+                  textAlign: "center",
+                  fontSize: "15px",
+                  height: "80px",
+                  border: 0,
+              };
+
     return (
         <>
             {isPageNationCombo && (
@@ -767,10 +798,7 @@ const ReactDataTable = (props) => {
                     ) : (
                         <tbody>
                             <tr>
-                                <td
-                                    colSpan={visibleColumnCount + 1}
-                                    style={{ textAlign: "center", fontSize: "15px", height: "80px", border: 0 }}
-                                    className="back-lightgray">
+                                <td colSpan={visibleColumnCount + 1} style={tdStyle} className="back-lightgray">
                                     조회된 데이터가 없습니다.
                                 </td>
                             </tr>

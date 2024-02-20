@@ -31,6 +31,11 @@ function Quotation() {
     const [estimate, setEstimate] = useState([]);
     const [buyIngInfo, setBuyIngInfo] = useState([]);
 
+    const [estimateBool, setestimateBool] = useState(false);
+    const [buyIngBool, setBuyIngBool] = useState(false);
+
+    console.log(estimateBool, buyIngBool);
+
     useEffect(() => {
         setInnerPageName({ name: "견적용 인건비", id: "estimateLabor" });
         setCurrentPageName({}); //inner와 pageName은 동시에 사용 X
@@ -312,6 +317,7 @@ function Quotation() {
                 console.log(result, "함수거치고 난거");
                 //const formatData = mergeObjects(result);
                 setEstimate(result);
+                setestimateBool(true);
             }
         } else if (innerPageName.name === "견적용 구매비") {
             console.log("여기타는지 봐야해");
@@ -319,6 +325,7 @@ function Quotation() {
             if (resultData.length !== 0) {
                 console.log(resultData, "견적용 구매비");
                 setBuyIngInfo(resultData);
+                setBuyIngBool(true);
             }
         }
         //const resultDa2 = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", requestSearch);
@@ -554,12 +561,12 @@ function Quotation() {
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <PopupButton
-                                        clickBtn={true}
+                                        clickBtn={estimateBool}
                                         targetUrl={URL.LaborCostDoc}
                                         data={{ label: "견 적 서", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
                                     />
                                     <PopupButton
-                                        clickBtn={true}
+                                        clickBtn={estimateBool}
                                         targetUrl={URL.LaborSummaryDoc}
                                         data={{ label: "영업상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
                                     />
@@ -590,12 +597,12 @@ function Quotation() {
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <PopupButton
-                                        clickBtn={true}
+                                        clickBtn={buyIngBool}
                                         targetUrl={URL.OrderBuyDoc}
                                         data={{ label: "견 적 서", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
                                     />
                                     <PopupButton
-                                        clickBtn={true}
+                                        clickBtn={buyIngBool}
                                         targetUrl={URL.OrderSummaryDoc}
                                         data={{ label: "구매상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
                                     />

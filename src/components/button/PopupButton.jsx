@@ -35,7 +35,7 @@ function PopupButton({ targetUrl, data, size, clickBtn }) {
                 }
             }
         }
-    }, [lengthSelectRow]);
+    }, [lengthSelectRow, clickBtn]);
 
     const buttonClassName = `table-btn table-btn-primary${disabled ? " disabled" : ""}`;
 
