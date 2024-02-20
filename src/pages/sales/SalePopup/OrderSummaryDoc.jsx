@@ -14,6 +14,7 @@ const OrderSummaryDoc = () => {
 
     const pdfContentRef = useRef(null);
 
+    //pdf다운로드(라이브러리)
     const generatePDF = () => {
         const input = pdfContentRef.current;
         let element = document.getElementById("element-to-print");

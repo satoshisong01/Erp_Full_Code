@@ -312,6 +312,8 @@ function Quotation() {
         if (innerPageName.name === "견적용 인건비") {
             const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
             console.log(resultData, "퓨어 데이터");
+            setEstimate([]);
+            setestimateBool(false);
             if (resultData.length !== 0) {
                 const result = processResultData(resultData, condition);
                 console.log(result, "함수거치고 난거");
@@ -321,6 +323,8 @@ function Quotation() {
             }
         } else if (innerPageName.name === "견적용 구매비") {
             console.log("여기타는지 봐야해");
+            setBuyIngInfo([]);
+            setBuyIngBool(false);
             const resultData = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", condition || {});
             if (resultData.length !== 0) {
                 console.log(resultData, "견적용 구매비");
