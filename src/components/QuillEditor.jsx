@@ -33,9 +33,7 @@ const QuillEditor = ({ tableData }) => {
 
     return (
         <div>
-            {/* ReactQuill 컴포넌트 */}
             <ReactQuill value={content} onChange={handleContentChange} modules={quillOptions.modules} formats={quillOptions.formats} />
-            <button onClick={() => console.log(content)}>확인</button>
         </div>
     );
 };

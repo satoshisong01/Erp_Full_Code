@@ -4,12 +4,16 @@ import HideCard from "components/HideCard";
 import QuillEditor from "components/QuillEditor";
 import ApprovalFormSal from "components/form/ApprovalFormSal";
 import { axiosFetch } from "api/axiosFetch";
+import AddButton from "components/button/AddButton";
+import BasicButton from "components/button/BasicButton";
+import ApprovalLineModal from "components/modal/ApprovalLineModal";
 
 /** 영업관리-수주관리 */
 function OrderMgmt() {
     const { currentPageName } = useContext(PageContext);
     const [tableData, setTableData] = useState([]);
     const [condition, setCondition] = useState({});
+    const [isOpenModalApproval, setIsOpenModalApproval] = useState(false);
 
     useEffect(() => {
         if (currentPageName.id === "ProjectMgmt") {
@@ -37,13 +41,23 @@ function OrderMgmt() {
         setTableData(resultData);
     };
 
+    const onClick = () => {
+
+    }
+
     return (
         <>
+            <div className="form-buttons mg-b-20">
+                    <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)}/>
+                    <AddButton label="결재요청" />
+                    <BasicButton label="닫기" />
+            </div>
             <ApprovalFormSal returnData={conditionInfo} />
             {/* <ApprovalFormSal /> */}
             <HideCard title="수주보고서 작성" color="back-lightblue" className="mg-b-40">
                 <QuillEditor tableData={tableData} />
             </HideCard>
+            <ApprovalLineModal width={650} height={500} title="결재선" isOpen={isOpenModalApproval} onClose={() => setIsOpenModalApproval(false)}/>
         </>
     );
 }

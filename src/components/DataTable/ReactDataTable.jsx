@@ -101,7 +101,6 @@ const ReactDataTable = (props) => {
     const [isEditing, setIsEditing] = useState(false);
 
     //------------------------------------------------ 달력부분
-    const inputRef = useRef(null); //날짜
     const calendarRef = useRef(null);
 
     // useEffect(() => {
@@ -113,20 +112,6 @@ const ReactDataTable = (props) => {
         if (isCancelTable === true) setTableData(originTableData);
         setIsCancelTable(false); //초기화
     }, [isCancelTable]);
-
-    const handleDateChange = (date) => {
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const day = date.getDate().toString().padStart(2, "0");
-        const formatted = `${year}-${month}-${day}`;
-        return formatted;
-    };
-
-    const toggleCalendarVisible = (index) => {
-        const updatedTableData = [...tableData];
-        updatedTableData[index].calendarVisible = !tableData[index].calendarVisible;
-        setTableData(updatedTableData);
-    };
 
     useEffect(() => {
         if (suffixUrl) {
@@ -479,6 +464,7 @@ const ReactDataTable = (props) => {
                     returnSelectRows && returnSelectRows(selects);
                     setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
                     returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
+                    returnList && returnList(selectedFlatRows);
                 }
             } else if (!isModalTable) {
                 if (selectedFlatRows.length > 0) {
