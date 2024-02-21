@@ -14,7 +14,7 @@ Modal.setAppElement("#root"); // Set the root element for accessibility
 
 /* 결재선 목록 모달 */
 export default function ApprovalLineModal(props) {
-    const { width, height, isOpen, title, onClose } = props;
+    const { width, height, isOpen, title, onClose, returnData } = props;
     const { setModalPageName, setIsModalTable } = useContext(PageContext);
 
     const [approvalList, setApprovalList] = useState([]);
@@ -32,9 +32,10 @@ export default function ApprovalLineModal(props) {
             setModalPageName("결재선팝업");
             setIsModalTable(true);
         }
-        return () => {
+        return () => { //초기화
             setIsModalTable(false);
             setModalPageName("");
+            setNodes([]);
         };
     }, [isOpen]);
 
@@ -106,6 +107,8 @@ export default function ApprovalLineModal(props) {
     /* 결재선 저장 */
     const onClick = () => {
         //결재선 리스트 저장 구현 필요
+        returnData && returnData(nodes);
+        setNodes([]); //초기화
         onClose();
     };
 
@@ -127,8 +130,19 @@ export default function ApprovalLineModal(props) {
     const columns = [
         { header: "고유ID", col: "uniqId", notView: true },
         { header: "업무회원ID", col: "empId", notView: true },
+        {
+            header: "타입",
+            col: "sttState",
+            cellWidth: "83",
+            type: "select",
+            options: [
+                { label: "선택", value: "" },
+                { label: "결재", value: "" },
+                { label: "통보", value: "통보" },
+            ],
+        },
         { header: "사용자명", col: "empNm", cellWidth: "120" },
-        { header: "직위", col: "posNm", cellWidth: "80" },
+        { header: "직급", col: "posNm", cellWidth: "80" },
     ]
 
     const isEqual = (arr1, arr2) => {
@@ -213,7 +227,7 @@ export default function ApprovalLineModal(props) {
                                             position: "relative",
                                             flex: "1",
                                             minWidth: 0,
-                                            padding: "0px 20px",
+                                            paddingLeft: "10px",
                                             borderLeft: "1px solid #ccc",
                                             width: rightWidth,
                                         }}>
@@ -224,6 +238,7 @@ export default function ApprovalLineModal(props) {
                                                 columns={columns}
                                                 customDatas={nodes}
                                                 returnList={returnList}
+                                                editing={true}
                                                 viewPageName={{ name: "결재선팝업", id: "결재선팝업" }}
                                             />
                                     </div>

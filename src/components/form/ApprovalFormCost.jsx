@@ -3,47 +3,40 @@ import BasicButton from "components/button/BasicButton";
 import React, { useContext, useEffect, useState } from "react";
 
 /** 원가서 결재 폼 */
-function ApprovalFormCost({ children }) {
-    const receiveInfo = [
-        {name: "손영훈", state: "진행", position: "PM"},
-    ]
-    const sendInfo = [
-        {name: "유지수", state: "승인", position: "팀원"},
-        {name: "손영훈", state: "진행", position: "PM"},
-    ]
+function ApprovalFormCost(props) {
+    const {
+        children, //자식
+        receiveInfo, //주관부서(승인자)
+        sendInfo //발신부서(결재선)
+    } = props;
+
     return (
         <>
             <div className="form-style mg-t-20">
-                <div className="form-buttons mg-b-20">
-                    <AddButton label="결재선" />
-                    <AddButton label="결재요청" />
-                    <BasicButton label="닫기" />
-                </div>
-
-                <div class="flex-between mg-b-20" style={{width: "90%"}}>
-                    <div class="box-container">
-                        <div class="box box-3">주<br/>관<br/>부<br/>서</div>
-                        {receiveInfo.map((rec) => (
+                <div className="flex-between mg-b-20" style={{width: "100%"}}>
+                    <div className="box-container">
+                        {receiveInfo && receiveInfo.length > 0 && <div class="box box-3">주<br/>관<br/>부<br/>서</div>}
+                        {receiveInfo && receiveInfo.map((rec) => (
                             <div class="box-group">
                                 <div class="box box-1">
-                                    {rec.position}
+                                    {rec.posNm}
                                 </div>
                                 <div class="box box-2">
-                                    <p>{rec.name}</p>
+                                    <p>{rec.empNm}</p>
                                     <p>{rec.state}</p>
                                 </div>
                             </div>
                         ))}
                     </div>
-                        <div class="box-container">
-                            <div class="box box-3">발<br/>신<br/>부<br/>서</div>
-                            {sendInfo.map((send) => (
+                        <div className="box-container">
+                            {sendInfo && sendInfo.length > 0 && <div className="box box-3">발<br/>신<br/>부<br/>서</div>}
+                            {sendInfo && sendInfo.map((send) => (
                                 <div class="box-group">
                                     <div class="box box-1">
-                                        {send.position}
+                                        {send.posNm}
                                     </div>
                                     <div class="box box-2">
-                                        <p>{send.name}</p>
+                                        <p>{send.empNm}</p>
                                         <p>{send.state}</p>
                                     </div>
                                 </div>
@@ -59,21 +52,3 @@ function ApprovalFormCost({ children }) {
 }
 
 export default ApprovalFormCost;
-
-
-                {/* <div className="dome-structure">
-                    <div className="box">
-                        <h2>발신부서</h2>
-                    </div>
-
-
-                    {sendInfo.map((send, idx) => (
-                        <div className="box">
-                            <h2>{send.position}</h2>
-                            <ul>
-                                <li key={idx}>{send.name}</li>
-                                <li key={idx}>{send.state}</li>
-                            </ul>
-                        </div>
-                    ))}
-                </div> */}

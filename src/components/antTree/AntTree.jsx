@@ -14,6 +14,7 @@ const AntTree = ({ treeData, selectData }) => {
 
 	const selectHandle = (e, treeNode) => {
         const { node } = treeNode;
+        if (typeof node.key === "number") return;
 		const nodeMap = {
             //사용자 관련
             ...node

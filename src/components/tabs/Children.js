@@ -35,6 +35,7 @@ import Quotation from "pages/sales/Quotation";
 import PendingBox from "pages/mail/PendingBox";
 import ProgressBox from "pages/mail/ProgressBox";
 import CompletedBox from "pages/mail/CompletedBox";
+import MenuInfo from "pages/system/menuMgmt/MenuInfo";
 
 
 
@@ -154,7 +155,7 @@ export const sales = [
         id: "OrderMgmt",
         path: URL.OrderMgmt,
         component: <OrderMgmt />,
-        label: "수주관리",
+        label: "수주보고서",
         pLabel: "영업관리",
     },
     //{
@@ -266,13 +267,13 @@ export const mail = [
 ];
 export const system = [
     //시스템관리
-    // {
-    //     id: "MenuInfo",
-    //     path: URL.MenuInfo,
-    //     component: <MenuInfo />,
-    //     label: "메뉴정보관리",
-    //     pLabel: "시스템관리",
-    // },
+    {
+        id: "MenuInfo",
+        path: URL.MenuInfo,
+        component: <MenuInfo />,
+        label: "메뉴정보관리",
+        pLabel: "시스템관리",
+    },
     // {
     //     id: "ProgramList",
     //     path: URL.ProgramList,

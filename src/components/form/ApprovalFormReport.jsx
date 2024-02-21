@@ -4,15 +4,19 @@ import ProjectModal from "components/modal/ProjectModal";
 import { axiosFetch } from "api/axiosFetch";
 import { v4 as uuidv4 } from "uuid";
 
-/** 영업 폼 */
-function ApprovalFormSal({ returnData, initial }) {
+/** 조회 보고서용 */
+function ApprovalFormReport({ isSave, returnData }) {
     const { innerPageName } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
     useEffect(() => {
-        setData({ ...initial }); //초기화
-    }, [initial]);
+        if(isSave) {
+            returnData && returnData({ ...data });
+        } else {
+            setData({}); //초기화
+        }
+    }, [isSave])
 
     useEffect(() => {
         // if (data.poiId && !data.versionId) {
@@ -43,11 +47,6 @@ function ApprovalFormSal({ returnData, initial }) {
 
     const onChange = (value) => {
         setData({ poiId: value.poiId, poiNm: value.poiNm, versionId: value.versionId, poiMonth: value.poiMonth, option: value.option });
-    };
-
-    const onClick = () => {
-        returnData({ ...data });
-        // alert("데이터를 불러옵니다");
     };
 
     return (
@@ -101,11 +100,6 @@ function ApprovalFormSal({ returnData, initial }) {
                             <td>{data.poiMonth}</td>
                             <th>최종 수정일</th>
                             <td>{data.lastModifyDate}</td>
-                            <td width={80} style={{ textAlign: "center" }}>
-                                <button type="button" className="table-btn table-btn-default" onClick={onClick}>
-                                    조회
-                                </button>
-                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -114,4 +108,4 @@ function ApprovalFormSal({ returnData, initial }) {
     );
 }
 
-export default ApprovalFormSal;
+export default ApprovalFormReport;

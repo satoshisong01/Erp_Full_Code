@@ -738,7 +738,7 @@ const PreCostDoc = () => {
     };
 
     return (
-        <>
+        <div style={{width: '90%', margin: 'auto'}}>
             <ApprovalFormCost>
                 <div className="precost-container">
                     <button onClick={handlePrintButtonClick} className="pdfBtn">
@@ -781,7 +781,7 @@ const PreCostDoc = () => {
                     </div>
                 </div>
             </ApprovalFormCost>
-        </>
+        </div>
     );
 };
 

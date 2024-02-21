@@ -152,6 +152,13 @@ const ReactDataTable = (props) => {
         }
     }, [customDatas]);
 
+    // useEffect(() => {
+    //     console.log("isEditing:", isEditing);
+    // }, [isEditing]);
+    // useEffect(() => {
+    //     console.log("editing:", editing);
+    // }, [editing]);
+
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
         if (currentPageName.id !== prevCurrentPageName.id || innerPageName.id !== prevInnerPageName.id) {
@@ -176,7 +183,7 @@ const ReactDataTable = (props) => {
             }
             setNameOfButton(""); //초기화
         }
-    }, [innerPageName, editing, nameOfButton, currentPageName]);
+    }, [innerPageName, editing, nameOfButton, currentPageName, customDatas]);
 
     /* table의 button 클릭 시 해당하는 함수 실행 */
     useEffect(() => {
@@ -758,7 +765,7 @@ const ReactDataTable = (props) => {
                                                                 defaultValue={
                                                                     tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
                                                                         ? tableData[row.index][cell.column.id]
-                                                                        : cell.column.options[row.index].value || "" // 기본값: 해당 행의 인덱스에 해당하는 옵션의 value 값 또는 빈 문자열
+                                                                        : ""
                                                                 }
                                                                 onChange={(e) => handleChange(e, row, cell.column.id)}>
                                                                 {cell.column.options.map((option, index) => (
