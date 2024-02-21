@@ -85,8 +85,12 @@ function EgovLoginContent(props) {
                 console.log("⭕ login 응답 : ", resp);
                 let resultVO = resp.userInfo;
                 let jToken = resp?.jToken;
+                let uniqId = resp.userInfo.uniqId;
+                let id = resp.userInfo.id;
 
                 localStorage.setItem("jToken", jToken);
+                localStorage.setItem("uniqId", uniqId);
+                localStorage.setItem("id", id);
 
                 if (Number(resp.resultCode) === Number(CODE.RCV_SUCCESS)) {
                     setLoginVO(resultVO);

@@ -30,10 +30,10 @@ function PendingBox() {
         { header: "결재아이디", col: "sgnId", notView: true },
         { header: "발신자아이디", col: "sgnSenderId", notView: true }, // == empId
         { header: "수신자아이디", col: "sgnReceiverId", notView: true }, // == empId2
-        { header: "프로젝트명", col: "poiNm", cellWidth: "350", },
-        { header: "결재종류", col: "sgnType", cellWidth: "200", },
-        { header: "기안자", col: "empNm", cellWidth: "100", }, 
-        { header: "기안일", col: "sgnSigndate", cellWidth: "100", },
+        { header: "프로젝트명", col: "poiNm", cellWidth: "350" },
+        { header: "결재종류", col: "sgnType", cellWidth: "200" },
+        { header: "기안자", col: "empNm", cellWidth: "100" },
+        { header: "기안일", col: "sgnSigndate", cellWidth: "100" },
         // { header: "수신자", col: "empNm2", cellWidth: "100" },
         // { header: "수신일", col: "sgnReceivedate", cellWidth: "100" },
         // { header: "결재단계", col: "sgnStep", cellWidth: "100" },
@@ -43,7 +43,7 @@ function PendingBox() {
     ];
 
     const conditionList = [
-        { title: "프로젝트명", colName: "clCode", type: "input", },
+        { title: "프로젝트명", colName: "clCode", type: "input" },
         {
             title: "결재종류",
             colName: "empNm",
@@ -70,12 +70,13 @@ function PendingBox() {
                 { value: "회수", label: "회수" },
             ],
         },
-        { title: "기안자", colName: "empNm", type: "input", },
-        { title: "기안일", colName: "sgnSigndate", type: "dayPicker", },
+        { title: "기안자", colName: "empNm", type: "input" },
+        { title: "기안일", colName: "sgnSigndate", type: "dayPicker" },
     ];
+    console.log(localStorage.uniqId);
 
     useEffect(() => {
-        fetchAllData({sgnAllId: sessionUserId});
+        fetchAllData({ sttApproverId: localStorage.uniqId, sttApproverAt: "진행" });
         // fetchAllData({});
     }, [currentPageName]);
 
@@ -83,11 +84,12 @@ function PendingBox() {
         console.log(selectedRows);
     }, [selectedRows]);
 
-
     const fetchAllData = async (condition) => {
+        console.log(condition, "???");
         // const resultData = await axiosFetch("/api/system/sign/detail.do", condition || {});
         //http://192.168.0.113:8080/api/system/sign/totalListAll.do
-        const resultData = await axiosFetch("/api/system/sign/totalListAll.do", condition || {});
+        const resultData = await axiosFetch("/api/system/signState/totalListAll.do", condition || {});
+        console.log(resultData, "안나오는게 맞음");
         if (resultData) {
             setTableData(resultData);
             console.log("⭐결재", resultData);
@@ -95,37 +97,32 @@ function PendingBox() {
     };
 
     const refresh = () => {
-        fetchAllData({sgnAllId: sessionUserId});
+        fetchAllData({ sgnAllId: sessionUserId });
     };
 
     const onClick = () => {
         if (selectedRows.sgnType === "사전원가서") {
-            openPopup(URL.PreCostDoc, {...selectedRows, label: "사전원가서", id: "PendingBox"});
-
+            openPopup(URL.PreCostDoc, { ...selectedRows, label: "사전원가서", id: "PendingBox" });
         } else if (selectedRows.sgnType === "실행예산서") {
-            
         } else if (selectedRows.sgnType === "사후정산서") {
-            
         }
     };
 
     const openPopup = (targetUrl, data) => {
-        const url = `${targetUrl}?data=${encodeURIComponent(
-            JSON.stringify(data)
-        )}`;
+        const url = `${targetUrl}?data=${encodeURIComponent(JSON.stringify(data))}`;
         const width = 1400;
         const height = 700;
         const left = window.screen.width / 2 - width / 2;
         const top = window.screen.height / 2 - height / 2;
         const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
         window.open(url, "newWindow", windowFeatures);
-    }
+    };
 
     const returnData = (row) => {
         if (row[0].sgnId && selectedRows.sgnId !== row[0].sgnId) {
             setSelectedRows(row[0]);
         }
-    }
+    };
 
     return (
         <>
@@ -136,12 +133,7 @@ function PendingBox() {
                     <ModButton label={"보기"} onClick={onClick} />
                     <RefreshButton onClick={refresh} />
                 </div>
-                <ReactDataTable
-                    columns={columns}
-                    customDatas={tableData}
-                    viewPageName={{ name: "결재수신함", id: "Approval" }}
-                    returnSelectRows={returnData}
-                />
+                <ReactDataTable columns={columns} customDatas={tableData} viewPageName={{ name: "결재수신함", id: "Approval" }} returnSelectRows={returnData} />
             </HideCard>
         </>
     );
