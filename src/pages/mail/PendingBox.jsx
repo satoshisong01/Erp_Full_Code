@@ -38,7 +38,7 @@ function PendingBox() {
         // { header: "수신일", col: "sgnReceivedate", cellWidth: "100" },
         // { header: "결재단계", col: "sgnStep", cellWidth: "100" },
         // { header: "결재결과", col: "sgnResult", cellWidth: "100" },
-        { header: "코멘트", col: "sgnComent", cellWidth: "470" },
+        { header: "코멘트", col: "sgnComent", cellWidth: "589" },
         // { header: "비고", col: "sgnDesc", cellWidth: "170" },
     ];
 

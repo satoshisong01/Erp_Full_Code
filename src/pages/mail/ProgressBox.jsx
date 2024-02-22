@@ -34,7 +34,7 @@ function ProgressBox() {
         { header: "결재종류", col: "sgnType", cellWidth: "200" },
         { header: "기안자", col: "empNm", cellWidth: "100" },
         { header: "기안일", col: "sgnSigndate", cellWidth: "100" },
-        { header: "코멘트", col: "sgnComent", cellWidth: "470" },
+        { header: "코멘트", col: "sgnComent", cellWidth: "589" },
     ];
 
     const conditionList = [
