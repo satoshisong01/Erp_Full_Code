@@ -5,26 +5,20 @@ import { axiosFetch } from "api/axiosFetch";
 import { v4 as uuidv4 } from "uuid";
 
 /** 조회 보고서용 */
-function ApprovalFormReport({ isSave, returnData }) {
+function ApprovalFormReport({ returnData }) {
     const { innerPageName } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
-
-    useEffect(() => {
-        if(isSave) {
-            returnData && returnData({ ...data });
-        } else {
-            setData({}); //초기화
-        }
-    }, [isSave])
 
     useEffect(() => {
         // if (data.poiId && !data.versionId) {
         if (data.poiId && !data.versionId) {
             //선택된 버전정보가 없다면
             getVersionList({ poiId: data.poiId });
+        } else if (data.versionId) {
+            returnData(data); //부모로 보내기
         }
-    }, [data.poiId, innerPageName]);
+    }, [data, innerPageName]);
 
     const getVersionList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});

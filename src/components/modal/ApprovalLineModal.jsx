@@ -14,17 +14,37 @@ Modal.setAppElement("#root"); // Set the root element for accessibility
 
 /* 결재선 목록 모달 */
 export default function ApprovalLineModal(props) {
-    const { width, height, isOpen, title, onClose, returnData } = props;
+    const columns = [
+        { header: "고유ID", col: "uniqId", notView: true },
+        { header: "업무회원ID", col: "empId", notView: true },
+        {
+            header: "상태",
+            col: "sttState",
+            cellWidth: "91",
+            type: "select",
+            options: [
+                { label: "결재", value: "" },
+                { label: "통보", value: "통보" }, //통보일때만 전달
+            ],
+        },
+        { header: "사용자명", col: "empNm", cellWidth: "120" },
+        { header: "직급", col: "posNm", cellWidth: "80" },
+    ]
+
+    const { width, height, isOpen, title, onClose, returnData, type } = props;
     const { setModalPageName, setIsModalTable } = useContext(PageContext);
 
-    const [approvalList, setApprovalList] = useState([]);
-    const [nodes, setNodes] = useState([]); //트리에서 선택한 값
-    const [selectList, setSelectList] = useState([]); //테이블에서 선택한 값
     const bodyRef = useRef(null);
     const containerRef = useRef(null);
     const resizableRef = useRef(null);
     const [leftWidth, setLeftWidth] = useState("50%");
     const [rightWidth, setRightWidth] = useState("50%");
+
+    const [employList, setEmployList] = useState([]); //트리 목록(업무회원)
+    const [nodes, setNodes] = useState([]); //트리에서 선택한 값
+    const [selectList, setSelectList] = useState([]); //테이블에서 선택한 값
+    const [approvalLine, setApprovalLine] = useState([]); //최종데이터
+    const [sgnType, setSgnType] = useState(type); //결재종류
 
     useEffect(() => {
         if (isOpen) {
@@ -101,24 +121,29 @@ export default function ApprovalLineModal(props) {
             return result;
         }, []);
 
-        setApprovalList(groupData);
+        setEmployList(groupData);
     };
 
     /* 결재선 저장 */
     const onClick = () => {
-        //결재선 리스트 저장 구현 필요
-        returnData && returnData(nodes);
-        setNodes([]); //초기화
-        onClose();
+        if(!approvalLine || approvalLine.length === 0) {
+            alert("결재선을 선택해 주세요.")
+        } else {
+            const newInfo = {sgnType, approvalLine}
+            returnData && returnData(newInfo);
+            setNodes([]); //초기화
+            onClose();
+        }
     };
 
+    /* 트리에서 선택한 데이터 검증 */
     const selectData = (data) => {
         if(nodes && nodes.length >= 3) {
             alert("결재선은 최대 세 명까지 입니다.")
             return;
         }
         setNodes(prev => {
-            const existingNode = prev.find(item => item.empId === data.empId);
+            const existingNode = prev.find(item => item.uniqId === data.uniqId);
             if (existingNode) {
                 return prev;
             }
@@ -127,55 +152,53 @@ export default function ApprovalLineModal(props) {
         });
     };
 
-    const columns = [
-        { header: "고유ID", col: "uniqId", notView: true },
-        { header: "업무회원ID", col: "empId", notView: true },
-        {
-            header: "타입",
-            col: "sttState",
-            cellWidth: "83",
-            type: "select",
-            options: [
-                { label: "선택", value: "" },
-                { label: "결재", value: "" },
-                { label: "통보", value: "통보" },
-            ],
-        },
-        { header: "사용자명", col: "empNm", cellWidth: "120" },
-        { header: "직급", col: "posNm", cellWidth: "80" },
-    ]
-
+    /* 그리드 선택 데이터 SET 중복 방지 */
     const isEqual = (arr1, arr2) => {
         if (arr1.length !== arr2.length) {
             return false;
         }
     
         for (let i = 0; i < arr1.length; i++) {
-            const empId1 = arr1[i].empId;
-            const matchFound = arr2.some(item => item.empId === empId1);
+            const uniqId = arr1[i].uniqId;
+            const matchFound = arr2.some(item => item.uniqId === uniqId);
             if (!matchFound) {
                 return false; // 일치하는 것을 찾지 못했을 때 false 반환
             }
         }
-
          // 모든 요소가 일치하면 true 반환
         return true;
     }
 
-    const returnList = (list) => {
-        const values = list.map(item => item.values); //신규선택
-        const flag = isEqual(values, selectList);
+    /* 그리드 선택 데이터 저장 */
+    const returnSelect = (list) => {
+        const flag = isEqual(list, selectList);
         if(!flag) {
-            setSelectList(values);
+            setSelectList(list);
         }
     };
 
-    // 선택된 데이터 nods에서 삭제
-    const deleteData = () => {
-        const remainder = nodes.filter(item => !selectList.map(selectItem => selectItem.empId).includes(item.empId));
-        setNodes(remainder);
+    /* 확인 시 그리드 데이터 저장 */
+    const returnList = (list) => {
+        if(list && list.length > 0) {
+            const flag = isEqual(list, approvalLine);
+            if(!flag) {
+                list.forEach(item => item.sttApproverId= item.uniqId) //승인자 추가
+                setApprovalLine(list);
+            }
+        }
     }
 
+    /* 그리드에서 선택된 데이터 nods에서 삭제 */
+    const deleteData = () => {
+        const remainder = nodes.filter(item => !selectList.map(selectItem => selectItem.empId).includes(item.empId));
+        setNodes(remainder); //트리메뉴에서도 삭제
+    }
+
+    /* 결재 종류 선택 */
+    const selectChange = (e) => {
+        const {name, value} = e.target;
+        setSgnType(value);
+    }
 
     return (
         <Modal
@@ -216,7 +239,7 @@ export default function ApprovalLineModal(props) {
                                         onResize={handleResize}
                                         minWidth={280}
                                     >
-                                        <AntTree treeData={approvalList} selectData={selectData} />
+                                        <AntTree treeData={employList} selectData={selectData} />
                                     </Resizable>
 
                                     {/* 오른쪽 영역 */}
@@ -232,12 +255,27 @@ export default function ApprovalLineModal(props) {
                                             width: rightWidth,
                                         }}>
                                             <div className="table-buttons mg-t-10 mg-b-10">
-                                                <DelButton label={"결재선 제외"} onClick={deleteData} />
+                                                <span>결재종류:</span>
+                                                <select
+                                                    className="basic-input"
+                                                    name="sgnType"
+                                                    style={{height: 32}}
+                                                    onChange={selectChange}
+                                                    defaultValue={type}
+                                                >
+                                                    <option key="사전원가서" value="사전원가서"> 사전원가서 </option>
+                                                    <option key="실행예산서" value="실행예산서"> 실행예산서 </option>
+                                                    <option key="사후정산서" value="사후정산서"> 사후정산서 </option>
+                                                    <option key="수주보고서" value="수주보고서"> 수주보고서 </option>
+                                                    <option key="완료보고서" value="완료보고서"> 완료보고서 </option>
+                                                </select>
+                                                <DelButton label={"견재선 제외"} onClick={deleteData} />
                                             </div>
                                             <ReactDataTable
                                                 columns={columns}
                                                 customDatas={nodes}
-                                                returnList={returnList}
+                                                returnSelectRows={returnSelect}
+                                                realTime={returnList}
                                                 editing={true}
                                                 viewPageName={{ name: "결재선팝업", id: "결재선팝업" }}
                                             />
