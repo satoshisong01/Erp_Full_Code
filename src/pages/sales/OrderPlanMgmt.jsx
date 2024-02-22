@@ -25,6 +25,8 @@ import SearchModal from "components/modal/SearchModal";
 
 /** 영업관리-계획관리 */
 function OrderPlanMgmt() {
+    const sessionUser = sessionStorage.getItem("loginUser");
+    
     const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, unitPriceListRenew, setNameOfButton } =
         useContext(PageContext);
     const [searchDates, setSearchDates] = useState([]); // 원가
@@ -579,7 +581,7 @@ function OrderPlanMgmt() {
                             <SearchList conditionList={columns.orderPlanMgmt.versionCondition} onSearch={onSearch} />
                             <HideCard title="원가 버전 목록" color="back-lightblue" className="mg-b-40">
                                 <div className="table-buttons mg-t-10 mg-b-10">
-                                    <PopupButton targetUrl={URL.PreCostDoc} data={{ label: "사전원가서", ...selectedRows[0] }} />
+                                    <PopupButton targetUrl={URL.PreCostDoc} data={{ label: "사전원가서", ...selectedRows[0], sessionUserInfo: JSON.parse(sessionUser) }} />
                                     <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
                                     <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
                                     <DelButton label={"삭제"} onClick={() => setIsOpenDel(true)} />

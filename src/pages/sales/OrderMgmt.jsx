@@ -12,6 +12,7 @@ function OrderMgmt() {
     const sessionUser = sessionStorage.getItem("loginUser");
     const sessionUserName = JSON.parse(sessionUser)?.name;
     const uniqId = JSON.parse(sessionUser)?.uniqId;
+    const posNm = JSON.parse(sessionUser)?.posNm;
     //posNm도 있어야함.. 직급정보
 
     const [condition, setCondition] = useState({});
@@ -24,7 +25,7 @@ function OrderMgmt() {
     
     const returnData = (value, type) => {
         if(type === "결재선") {
-            const updated = [{uniqId: uniqId, empNm: sessionUserName}, ...value.approvalLine]
+            const updated = [{uniqId: uniqId, empNm: sessionUserName, posNm}, ...value.approvalLine]
             setApprovalLine(updated);
         } else if(type === "비고") {
             setContent(value);

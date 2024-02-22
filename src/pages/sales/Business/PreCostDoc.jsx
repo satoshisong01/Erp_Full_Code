@@ -4,8 +4,9 @@ import "datatables.net-dt/js/dataTables.dataTables";
 import { axiosFetch } from "api/axiosFetch";
 import BasicDataTable from "components/DataTable/BasicDataTable";
 import FormDataTable from "components/DataTable/FormDataTable";
-import Title from "antd/es/skeleton/Title";
 import ApprovalFormCost from "components/form/ApprovalFormCost";
+import AddButton from "components/button/AddButton";
+import ApprovalLineModal from "components/modal/ApprovalLineModal";
 
 /* 사전 원가 계산서 */
 const PreCostDoc = () => {
@@ -15,6 +16,8 @@ const PreCostDoc = () => {
     const outsourcingTable = useRef(null); // 외주 테이블
     const laborTable = useRef(null); // 인건비 테이블
 
+    const [isOpenModalApproval, setIsOpenModalApproval] = useState(false); //결재선 팝업
+
     /* ⭐ 데이터 없을 시 초기화 필요 */
     const [coreTableData, setCoreTableData] = useState([{ data: [""], className: [""] }]); //손익계산서 데이터
     const [purchasingTableData, setPurchasingTableData] = useState([{ data: ["", "", ""], className: [] }]); //구매재료비
@@ -23,6 +26,9 @@ const PreCostDoc = () => {
     const [laborTableData, setLaborTableData] = useState([{ data: [""], className: [""] }]); //인건비
     const [projectInfoToServer, setProjectInfoToServer] = useState({});
     const [title, setTitle] = useState("");
+
+    const [approvalLine, setApprovalLine] = useState([]) //결재선
+    const [userInfo, setUserInfo] = useState({}) //로그인 유저 정보
 
     /* 스타일 */
     const purStyle = { marginBottom: 20, maxHeight: 250 };
@@ -38,14 +44,21 @@ const PreCostDoc = () => {
         }
     };
 
+    
+    /* 결재선 저장 */
+    const returnData = (value) => {
+        const updated = [{uniqId: userInfo.uniqId, empNm: userInfo.name, posNm: userInfo.posNm}, ...value.approvalLine]
+        setApprovalLine(updated);
+    }
+
     useEffect(() => {
         // URL에서 "data" 파라미터 읽기
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
-        // const { label, poiId, poiNm, versionId, versionNum, versionDesc } = data;
-        const { label, poiId, versionId } = data;
+        const { label, poiId, versionId, sessionUserInfo } = data;
         setTitle(label);
         setProjectInfoToServer({ poiId, versionId });
+        setUserInfo({ ...sessionUserInfo });
         if (poiId && versionId) {
             getInitData(poiId, versionId); //서버에서 데이터 호출
         }
@@ -739,7 +752,11 @@ const PreCostDoc = () => {
 
     return (
         <div style={{width: '90%', margin: 'auto'}}>
-            <ApprovalFormCost>
+            <div className="form-buttons mg-t-10" style={{maxWidth: 1400}}>
+                <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)}/>
+                <AddButton label="결재요청"/>
+            </div>
+            <ApprovalFormCost sendInfo={approvalLine}>
                 <div className="precost-container">
                     <button onClick={handlePrintButtonClick} className="pdfBtn">
                         PDF로 다운로드
@@ -781,6 +798,7 @@ const PreCostDoc = () => {
                     </div>
                 </div>
             </ApprovalFormCost>
+            <ApprovalLineModal width={670} height={500} title="결재선" type={title} isOpen={isOpenModalApproval} onClose={() => setIsOpenModalApproval(false)} returnData={returnData}/>
         </div>
     );
 };

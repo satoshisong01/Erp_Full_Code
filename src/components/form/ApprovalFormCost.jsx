@@ -1,6 +1,6 @@
 import React from "react";
 
-/** 원가서 결재 폼 */
+/** 결재선 목록 */
 function ApprovalFormCost(props) {
     const {
         children, //자식
@@ -10,7 +10,7 @@ function ApprovalFormCost(props) {
 
     return (
         <>
-            <div className="form-style mg-t-20">
+            <div className="form-style mg-t-10">
                 <div className="flex-between mg-b-20" style={{width: "100%"}}>
                     <div className="box-container">
                         {receiveInfo && receiveInfo.length > 0 && <div className="box box-3">주<br/>관<br/>부<br/>서</div>}
