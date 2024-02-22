@@ -102,6 +102,9 @@ function OrderMgmt() {
                 <AddButton label="결재요청" onClick={() => setIsSubmit(true)} disabled={!isSave}/>
             </div>
             <ApprovalFormCost  sendInfo={approvalLine}>
+                <div style={{marginTop: "-85px", marginBottom: 55}}>
+                    <h2>수주보고서</h2>
+                </div>
                 <ApprovalFormReport returnData={(value) => returnData(value, "조회")} />
                 <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing}/>
                 <ApprovalLineModal width={670} height={500} title="결재선" type="수주보고서" isOpen={isOpenModalApproval} onClose={() => setIsOpenModalApproval(false)} returnData={(value) => returnData(value, "결재선")}/>
