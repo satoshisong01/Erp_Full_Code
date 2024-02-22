@@ -104,7 +104,7 @@ const ReactDataTable = (props) => {
     const calendarRef = useRef(null);
 
     // useEffect(() => {
-    //     console.log(tableData, "리액트테이블 데이터");
+    //     console.log("⭐리액트테이블 데이터", tableData);
     // }, [tableData]);
 
     //취소시에 오리지널 테이블로 돌아감
@@ -143,21 +143,32 @@ const ReactDataTable = (props) => {
     //------------------------------------------------
 
     useEffect(() => {
-        if (customDatas && customDatas.length > 0) {
-            setTableData([...customDatas]);
-            setOriginTableData([...customDatas]);
-        } else {
-            setTableData([]);
-            setOriginTableData([]);
+        if(isCurrentPage()) {
+            const updatedTableData = initializeTableData(customDatas, columns);
+            setTableData(updatedTableData);
+            setOriginTableData(updatedTableData);
         }
-    }, [customDatas]);
+    }, [customDatas, columns]);
 
-    // useEffect(() => {
-    //     console.log("isEditing:", isEditing);
-    // }, [isEditing]);
-    // useEffect(() => {
-    //     console.log("editing:", editing);
-    // }, [editing]);
+    /* columns에는 있지만 넣어줄 데이터가 없을 때 조기값 설정 */
+    const initializeTableData = (datas, cols) => {
+        if (datas && datas.length > 0) {
+            const updatedData = datas.map(dataItem => {
+                const newData = { ...dataItem };
+                cols.forEach(column => {
+                    if (!newData.hasOwnProperty(column.col)) {
+                        newData[column.col] = ''; // 해당 변수가 없으면 빈 값으로 초기화
+                    }
+                    if (column.type === "select") {
+                        newData[column.col] = column.options[0].value; // 옵션의 첫 번째 값으로 초기화
+                    }
+                });
+                return newData;
+            });
+            return updatedData;
+        }
+        return [];
+    };
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
@@ -180,6 +191,8 @@ const ReactDataTable = (props) => {
                 returnList && returnList(originTableData, tableData);
             } else if (nameOfButton === "load" && viewLoadDatas) {
                 setTableData([...viewLoadDatas]);
+            } else if (nameOfButton === "getData") {
+                returnList && returnList(tableData);
             }
             setNameOfButton(""); //초기화
         }
@@ -470,8 +483,7 @@ const ReactDataTable = (props) => {
                     const selects = selectedFlatRows.map((row) => row.values);
                     returnSelectRows && returnSelectRows(selects);
                     setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values);
-                    returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
-                    returnList && returnList(selectedFlatRows);
+                    returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values); //마지막 선택데이터
                 }
             } else if (!isModalTable) {
                 if (selectedFlatRows.length > 0) {
@@ -532,6 +544,9 @@ const ReactDataTable = (props) => {
             } else {
                 newRow[column.accessor] = null; // 다른 열은 초기화
             }
+            if (column.type === "select") {
+                newRow[column.accessor] = column.options[0].value //콤보박스 초기화
+            }
         });
 
         setTableData((prevData) => {
@@ -560,7 +575,6 @@ const ReactDataTable = (props) => {
     const handleChange = (e, row, accessor) => {
         const { value } = e.target;
         const index = row.index;
-        console.log(value);
         const updatedTableData = [...tableData];
         updatedTableData[row.index][accessor] = value;
 

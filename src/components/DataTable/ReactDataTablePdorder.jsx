@@ -228,8 +228,10 @@ const ReactDataTablePdorder = (props) => {
             } else {
                 newRow[column.accessor] = null; // 다른 열은 초기화
             }
+            if (column.type === "select") {
+                newRow[column.accessor] = column.options[0].value //콤보박스 초기화
+            }
         });
-
         setTableData((prevData) => {
             const newData = [...prevData, { ...newRow }];
             return newData;
