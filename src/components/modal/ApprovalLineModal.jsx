@@ -269,7 +269,7 @@ export default function ApprovalLineModal(props) {
                                                     <option key="수주보고서" value="수주보고서"> 수주보고서 </option>
                                                     <option key="완료보고서" value="완료보고서"> 완료보고서 </option>
                                                 </select>
-                                                <DelButton label={"견재선 제외"} onClick={deleteData} />
+                                                <DelButton label={"결재선 제외"} onClick={deleteData} />
                                             </div>
                                             <ReactDataTable
                                                 columns={columns}
