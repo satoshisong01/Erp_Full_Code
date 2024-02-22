@@ -70,7 +70,7 @@ function CompletedBox() {
     ];
 
     useEffect(() => {
-        fetchAllData({ sgnAllId: sessionUserId });
+        fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "Y" });
         // fetchAllData({});
     }, [currentPageName]);
 

@@ -97,7 +97,7 @@ function PendingBox() {
     };
 
     const refresh = () => {
-        fetchAllData({ sgnAllId: sessionUserId });
+        fetchAllData({ sttApproverId: localStorage.uniqId, sttApproverAt: "진행" });
     };
 
     const onClick = () => {
