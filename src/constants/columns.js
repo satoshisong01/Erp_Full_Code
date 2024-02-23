@@ -1787,4 +1787,24 @@ export const columns = {
             },
         ],
     },
+    approval: {
+        views: [
+            {
+                items: [
+                    {
+                        header: "결재처리",
+                        col: "sttState",
+                        require: true,
+                        type: "radio",
+                        option: [
+                            { label: "승인", value: "승인" },
+                            { label: "반려", value: "반려" },
+                        ],
+                    },
+                ],
+            },
+            { items: [{ header: "코멘트", col: "sgnComent", type: "desc" }] },
+            { items: [{ header: "참조문서", type: "alink" }] },
+        ],
+    },
 };
