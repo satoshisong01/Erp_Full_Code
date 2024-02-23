@@ -74,10 +74,6 @@ function CompletedBox() {
         // fetchAllData({});
     }, [currentPageName]);
 
-    useEffect(() => {
-        console.log(selectedRows);
-    }, [selectedRows]);
-
     const fetchAllData = async (condition) => {
         // const resultData = await axiosFetch("/api/system/sign/detail.do", condition || {});
         //http://192.168.0.113:8080/api/system/sign/totalListAll.do
@@ -93,8 +89,8 @@ function CompletedBox() {
     };
 
     const onClick = () => {
-        if (selectedRows.sgnType === "사전원가서") {
-            openPopup(URL.PreCostDoc, { ...selectedRows, label: "사전원가서" });
+        if (selectedRows.sgnType === "수주보고서") {
+            openPopup(URL.PreCostDoc, { ...selectedRows[0], label: "수주보고서" });
         } else if (selectedRows.sgnType === "실행예산서") {
         } else if (selectedRows.sgnType === "사후정산서") {
         }
@@ -120,12 +116,17 @@ function CompletedBox() {
         <>
             <Location pathList={locationPath.Approval} />
             <SearchList conditionList={conditionList} />
-            <HideCard title="프로젝트 목록" color="back-lightblue" className="mg-b-40">
+            <HideCard title="결재완료 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
                     <ModButton label={"보기"} onClick={onClick} />
                     <RefreshButton onClick={refresh} />
                 </div>
-                <ReactDataTable columns={columns} customDatas={tableData} viewPageName={{ name: "결재수신함", id: "Approval" }} returnSelectRows={returnData} />
+                <ReactDataTable
+                    columns={columns}
+                    customDatas={tableData}
+                    viewPageName={{ name: "결재완료함", id: "CompletedBox" }}
+                    returnSelectRows={returnData}
+                />
             </HideCard>
         </>
     );

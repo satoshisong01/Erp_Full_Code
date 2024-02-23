@@ -9,10 +9,11 @@ import { PageContext } from "components/PageProvider";
 import RefreshButton from "components/button/RefreshButton";
 import ModButton from "components/button/ModButton";
 import URL from "constants/url";
+import ViewButton from "components/button/ViewButton";
 
 /** 전자결재-결재대기함(승인자기준) */
 function PendingBox() {
-    const { currentPageName } = useContext(PageContext);
+    const { currentPageName, setInnerPageName } = useContext(PageContext);
 
     const sessionUser = sessionStorage.getItem("loginUser");
     const sessionUserId = JSON.parse(sessionUser)?.id;
@@ -22,6 +23,7 @@ function PendingBox() {
 
     const [tableData, setTableData] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
+    const [isOpenView, setIsOpenView] = useState(false);
 
     const columns = [
         { header: "프로젝트아이디", col: "poiId", notView: true },
@@ -32,7 +34,7 @@ function PendingBox() {
         { header: "수신자아이디", col: "sgnReceiverId", notView: true }, // == empId2
         { header: "프로젝트명", col: "poiNm", cellWidth: "350" },
         { header: "결재종류", col: "sgnType", cellWidth: "200" },
-        { header: "기안자", col: "empNm", cellWidth: "100" },
+        { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
         { header: "기안일", col: "sgnSigndate", cellWidth: "100" },
         // { header: "수신자", col: "empNm2", cellWidth: "100" },
         // { header: "수신일", col: "sgnReceivedate", cellWidth: "100" },
@@ -73,16 +75,11 @@ function PendingBox() {
         { title: "기안자", colName: "empNm", type: "input" },
         { title: "기안일", colName: "sgnSigndate", type: "dayPicker" },
     ];
-    console.log(localStorage.uniqId);
 
     useEffect(() => {
         fetchAllData({ sttApproverId: localStorage.uniqId, sttApproverAt: "진행" });
         // fetchAllData({});
     }, [currentPageName]);
-
-    useEffect(() => {
-        console.log(selectedRows);
-    }, [selectedRows]);
 
     const fetchAllData = async (condition) => {
         console.log(condition, "???");
@@ -101,14 +98,15 @@ function PendingBox() {
     };
 
     const onClick = () => {
-        if (selectedRows.sgnType === "사전원가서") {
-            openPopup(URL.PreCostDoc, { ...selectedRows, label: "사전원가서", id: "PendingBox" });
+        if (selectedRows.sgnType === "수주보고서") {
+            openPopup(URL.PreCostDoc, { ...selectedRows, label: "수주보고서" });
         } else if (selectedRows.sgnType === "실행예산서") {
         } else if (selectedRows.sgnType === "사후정산서") {
         }
     };
 
     const openPopup = (targetUrl, data) => {
+        console.log(data);
         const url = `${targetUrl}?data=${encodeURIComponent(JSON.stringify(data))}`;
         const width = 1400;
         const height = 700;
@@ -119,6 +117,7 @@ function PendingBox() {
     };
 
     const returnData = (row) => {
+        console.log(row);
         if (row[0].sgnId && selectedRows.sgnId !== row[0].sgnId) {
             setSelectedRows(row[0]);
         }
@@ -128,13 +127,22 @@ function PendingBox() {
         <>
             <Location pathList={locationPath.Approval} />
             <SearchList conditionList={conditionList} />
-            <HideCard title="프로젝트 목록" color="back-lightblue" className="mg-b-40">
+            <HideCard title="결재대기 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
+                    <ViewButton label={"보기2"} onClick={() => setIsOpenView(true)} />
                     <ModButton label={"보기"} onClick={onClick} />
                     <RefreshButton onClick={refresh} />
                 </div>
-                <ReactDataTable columns={columns} customDatas={tableData} viewPageName={{ name: "결재수신함", id: "Approval" }} returnSelectRows={returnData} />
+                <ReactDataTable
+                    columns={columns}
+                    customDatas={tableData}
+                    viewPageName={{ name: "결재대기함", id: "PendingBox" }}
+                    returnSelectRows={returnData}
+                />
             </HideCard>
+            {/*{isOpenView && (
+                <
+            )}*/}
         </>
     );
 }

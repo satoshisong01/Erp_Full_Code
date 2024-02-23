@@ -32,7 +32,7 @@ function ProgressBox() {
         { header: "수신자아이디", col: "sgnReceiverId", notView: true }, // == empId2
         { header: "프로젝트명", col: "poiNm", cellWidth: "350" },
         { header: "결재종류", col: "sgnType", cellWidth: "200" },
-        { header: "기안자", col: "empNm", cellWidth: "100" },
+        { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
         { header: "기안일", col: "sgnSigndate", cellWidth: "100" },
         { header: "코멘트", col: "sgnComent", cellWidth: "589" },
     ];
@@ -74,10 +74,6 @@ function ProgressBox() {
         // fetchAllData({});
     }, [currentPageName]);
 
-    useEffect(() => {
-        console.log(selectedRows);
-    }, [selectedRows]);
-
     const fetchAllData = async (condition) => {
         // const resultData = await axiosFetch("/api/system/sign/detail.do", condition || {});
         //http://192.168.0.113:8080/api/system/sign/totalListAll.do
@@ -89,12 +85,12 @@ function ProgressBox() {
     };
 
     const refresh = () => {
-        fetchAllData({ sgnAllId: sessionUserId });
+        fetchAllData({ sgnSenderId: localStorage.uniqId, sgnAt: "N" });
     };
 
     const onClick = () => {
-        if (selectedRows.sgnType === "사전원가서") {
-            openPopup(URL.PreCostDoc, { ...selectedRows, label: "사전원가서" });
+        if (selectedRows.sgnType === "수주보고서") {
+            openPopup(URL.PreCostDoc, { ...selectedRows, label: "수주보고서" });
         } else if (selectedRows.sgnType === "실행예산서") {
         } else if (selectedRows.sgnType === "사후정산서") {
         }
@@ -120,12 +116,17 @@ function ProgressBox() {
         <>
             <Location pathList={locationPath.Approval} />
             <SearchList conditionList={conditionList} />
-            <HideCard title="프로젝트 목록" color="back-lightblue" className="mg-b-40">
+            <HideCard title="결재진행 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
                     <ModButton label={"보기"} onClick={onClick} />
                     <RefreshButton onClick={refresh} />
                 </div>
-                <ReactDataTable columns={columns} customDatas={tableData} viewPageName={{ name: "결재수신함", id: "Approval" }} returnSelectRows={returnData} />
+                <ReactDataTable
+                    columns={columns}
+                    customDatas={tableData}
+                    viewPageName={{ name: "결재진행함", id: "ProgressBox" }}
+                    returnSelectRows={returnData}
+                />
             </HideCard>
         </>
     );
