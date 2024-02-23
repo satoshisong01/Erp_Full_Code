@@ -235,7 +235,7 @@ export const execution = [
         id: "CompletionReport", //실행경비
         path: URL.CompletionReport,
         component: <CompletionReport />,
-        label: "완료보고",
+        label: "완료보고서",
         etc: "실행 경비",
         pLabel: "실행관리",
     },

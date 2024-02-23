@@ -399,8 +399,8 @@ const ReactDataTable = (props) => {
         setPageSize,
         pageCount,
         selectedFlatRows, // 선택된 행 데이터
-        toggleRowSelected, // 선택된 체크 박스
         toggleAllRowsSelected, // 전체선택 on off
+        toggleRowSelected,
     } = useTable(
         {
             columns: columnsConfig,
@@ -423,23 +423,23 @@ const ReactDataTable = (props) => {
                               Header: ({ getToggleAllPageRowsSelectedProps }) => (
                                   <div>
                                       <input
-                                          id={uuidv4()}
-                                          type="checkbox"
-                                          {...getToggleAllPageRowsSelectedProps()}
-                                          className="table-checkbox"
-                                          indeterminate="false"
+                                            id={uuidv4()}
+                                            type="checkbox"
+                                            {...getToggleAllPageRowsSelectedProps()}
+                                            className="table-checkbox"
+                                            indeterminate="false"
                                       />
                                   </div>
                               ),
                               Cell: ({ row }) => (
                                   <div>
                                       <input
-                                          id={uuidv4()}
-                                          type="checkbox"
-                                          {...row.getToggleRowSelectedProps()}
-                                          className="table-checkbox"
-                                          indeterminate="false"
-                                          onClick={(e) => e.stopPropagation()}
+                                            id={uuidv4()}
+                                            type="checkbox"
+                                            {...row.getToggleRowSelectedProps()}
+                                            className="table-checkbox"
+                                            indeterminate="false"
+                                            onClick={(e) => checkBoxClick(e, row)}
                                       />
                                   </div>
                               ),
@@ -454,49 +454,49 @@ const ReactDataTable = (props) => {
     const prevPoiIdArray = useRef([]);
     const prevPoiNmArray = useRef([]);
 
-    useEffect(() => {
-        if (saveIdNm) {
-            const poiIdArray = selectedFlatRows.map((item) => item.values.poiId);
-            const poiNmArray = selectedFlatRows.map((item) => item.values.poiNm);
-
-            // 이전 값과 현재 값이 다를 때만 saveIdNm 함수 호출
-            if (!arraysAreEqual(prevPoiIdArray.current, poiIdArray) || !arraysAreEqual(prevPoiNmArray.current, poiNmArray)) {
-                saveIdNm(poiIdArray, poiNmArray);
-            }
-            // 이전 값 갱신
-            prevPoiIdArray.current = poiIdArray;
-            prevPoiNmArray.current = poiNmArray;
-        }
-    }, [selectedFlatRows]);
-
     // 배열 비교 함수
     function arraysAreEqual(arr1, arr2) {
         return arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index]);
     }
 
-    /* current- 현재 보는페이지, table button 활성화 on off */
+    const checkBoxClick = (e, row) => {
+        e.stopPropagation();
+        const values = row.values;
+        const id = row.id;
+        setSelectRow(values);
+        returnSelect && returnSelect(values);
+        if(isSingleSelect) { //단일 선택 시
+            toggleAllRowsSelected(false, false);
+            toggleRowSelected(id, true); //다시선택
+        }
+    }
+
     useEffect(() => {
         // console.log("modal:", modalPageName, "current:", current.name);
         if (isCurrentPage()) {
+            const selects = selectedFlatRows.map((row) => row.values);
+            returnSelectRows && returnSelectRows(selects); //부모로 모든 선택 데이터 리턴
+
             if (isModalTable) { //모달화면일때
                 setModalLengthSelectRow(selectedFlatRows.length);
             } else if (!isModalTable) { //모달아닐때
                 setLengthSelectRow(selectedFlatRows.length);
             }
-            if (selectedFlatRows.length > 0) {
-                const selects = selectedFlatRows.map((row) => row.values);
-                returnSelectRows && returnSelectRows(selects); //선택된데이터
-                setSelectRow(selectedFlatRows[selectedFlatRows.length - 1].values); //마지막데이터 저장
-                returnSelect && returnSelect(selectedFlatRows[selectedFlatRows.length - 1].values);
 
-                if(isSingleSelect && selectedFlatRows.length > 1) { //단일 선택 해야하고, 길이가 2이상일때
-                    const idx = selectedFlatRows[selectedFlatRows.length - 1].index;
-                    toggleAllRowsSelected(false, false); // 모든 행의 체크박스를 해제
-                    toggleRowSelected(idx, true); //선택한 행만 체크
+            if (saveIdNm) {
+                const poiIdArray = selectedFlatRows.map((item) => item.values.poiId);
+                const poiNmArray = selectedFlatRows.map((item) => item.values.poiNm);
+    
+                // 이전 값과 현재 값이 다를 때만 saveIdNm 함수 호출
+                if (!arraysAreEqual(prevPoiIdArray.current, poiIdArray) || !arraysAreEqual(prevPoiNmArray.current, poiNmArray)) {
+                    saveIdNm(poiIdArray, poiNmArray);
                 }
+                // 이전 값 갱신
+                prevPoiIdArray.current = poiIdArray;
+                prevPoiNmArray.current = poiNmArray;
             }
         }
-    }, [selectedFlatRows, isSingleSelect]);
+    }, [selectedFlatRows]);
 
 
     //품목그룹 선택
@@ -700,7 +700,6 @@ const ReactDataTable = (props) => {
                                 prepareRow(row);
                                 const isLastRow = row.index === page.length - 1;
                                 return (
-                                    // <tr {...row.getRowProps()} onDoubleClick={(e) => onCLickRow(row)}>
                                     <tr {...row.getRowProps()} className={isSpecialRow && isLastRow ? "special-row" : ""}>
                                         {row.cells.map((cell, cellIndex) => {
                                             if (cell.column.notView) {
@@ -787,7 +786,6 @@ const ReactDataTable = (props) => {
                                                                     <option
                                                                         key={cell.column.id + index}
                                                                         value={option.value}
-                                                                        // selected={index === 0} //첫 번째 옵션 선택
                                                                     >
                                                                         {option.label}
                                                                     </option>
