@@ -71,14 +71,32 @@ const ReactDataTableURL = (props) => {
     }, []);
 
     useEffect(() => {
-        if (customDatas && customDatas.length > 0) {
-            setTableData([...customDatas]);
-            setOriginTableData([...customDatas]);
-        } else {
-            setTableData([]);
-            setOriginTableData([]);
+        if(isCurrentPage()) {
+            const updatedTableData = initializeTableData(customDatas, columns);
+            setTableData(updatedTableData);
+            setOriginTableData(updatedTableData);
         }
-    }, [customDatas, innerPageName]);
+    }, [customDatas, columns, innerPageName]);
+
+    /* columns에는 있지만 넣어줄 데이터가 없을 때 조기값 설정 */
+    const initializeTableData = (datas, cols) => {
+        if (datas && datas.length > 0) {
+            const updatedData = datas.map(dataItem => {
+                const newData = { ...dataItem };
+                cols.forEach(column => {
+                    if (!newData.hasOwnProperty(column.col)) {
+                        newData[column.col] = ''; // 해당 변수가 없으면 빈 값으로 초기화
+                    }
+                    if (column.type === "select") {
+                        newData[column.col] = column.options[0].value; // 옵션의 첫 번째 값으로 초기화
+                    }
+                });
+                return newData;
+            });
+            return updatedData;
+        }
+        return [];
+    };
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
@@ -402,6 +420,11 @@ const ReactDataTableURL = (props) => {
                 if (column.accessor === "estPosition") {
                     newRow[column.accessor] = "특1"; // useAt 항상 "Y"로 설정
                 }
+            }
+
+            //경비영업-경비목록 콤보박스 처리
+            if (column.type === "select") {
+                newRow[column.accessor] = column.options[tableData.length]?.value ? column.options[tableData.length].value : "";
             }
         });
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Quill 스타일 시트 임포트
 
-const QuillEditor = ({ isSave, returnData }) => {
+const QuillEditor = ({ isSave, returnData, writing }) => {
     const defaultContent = `
             <p>✔️ 변경계약인 경우</p>
             <ul>
@@ -42,9 +42,10 @@ const QuillEditor = ({ isSave, returnData }) => {
             setContent(defaultContent) //초기화
         }
     }, [isSave])
-    // useEffect(() => {
-    //     returnData && returnData(content);
-    // }, [content])
+
+    useEffect(() => {
+        writing && writing(content);
+    }, [content])
 
     const contentChange = (value) => { //실시간
         setContent(value);
