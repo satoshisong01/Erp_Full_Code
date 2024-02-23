@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { PageContext } from "components/PageProvider";
+import React, { useEffect, useState } from "react";
 import QuillEditor from "components/QuillEditor";
 import { axiosPost } from "api/axiosFetch";
 import AddButton from "components/button/AddButton";
@@ -53,7 +52,6 @@ function OrderMgmt() {
     }, [isSubmit])
 
     const submit = async () => {
-        // const ids = approvalLine.slice(1).map(item => item.uniqId); //첫번째는 요청자라 제외
         const list = approvalLine.slice(1); //첫번째는 요청자라 제외
 
         if(!condition || !condition.poiId) {
@@ -102,7 +100,7 @@ function OrderMgmt() {
                 <AddButton label="결재요청" onClick={() => setIsSubmit(true)} disabled={!isSave}/>
             </div>
             <ApprovalFormCost  sendInfo={approvalLine}>
-                <div style={{marginTop: "-85px", marginBottom: 55}}>
+                <div style={{marginTop: "-55px", marginBottom: 55}}>
                     <h2>수주보고서</h2>
                 </div>
                 <ApprovalFormReport returnData={(value) => returnData(value, "조회")} />
