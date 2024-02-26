@@ -5,18 +5,21 @@ import { axiosFetch } from "api/axiosFetch";
 import { v4 as uuidv4 } from "uuid";
 
 /** 조회 보고서용 */
-function ApprovalFormReport({ returnData }) {
+function ApprovalFormReport({ returnData, type }) {
     const { innerPageName } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
     useEffect(() => {
-        // if (data.poiId && !data.versionId) {
-        if (data.poiId && !data.versionId) {
-            //선택된 버전정보가 없다면
-            getVersionList({ poiId: data.poiId });
-        } else if (data.versionId) {
-            returnData(data); //부모로 보내기
+        if(type === "수주보고서") {
+            if (data.poiId && !data.versionId) {
+                //선택된 버전정보가 없다면
+                getVersionList({ poiId: data.poiId });
+            } else if (data.versionId) {
+                returnData(data); //부모로 보내기
+            }
+        } else {
+            returnData(data);
         }
     }, [data, innerPageName]);
 
@@ -72,24 +75,30 @@ function ApprovalFormReport({ returnData }) {
                                     />
                                 )}
                             </td>
-                            <th>
-                                <span className="cherry">*</span> 사전원가 버전
-                            </th>
-                            <td>
-                                <select
-                                    id={uuidv4()}
-                                    className="basic-input select"
-                                    name="versionId"
-                                    onChange={onSelectChange}
-                                    value={data.option?.length > 0 ? data.versionId : "default"}>
-                                    {data.option?.map((info, index) => (
-                                        <option key={index} value={info.versionId}>
-                                            {info.versionNum}
-                                        </option>
-                                    ))}
-                                    {!data.option && <option value="default">버전을 생성하세요.</option>}
-                                </select>
-                            </td>
+                            {
+                                type && type === "수주보고서" && (
+                                    <>
+                                        <th>
+                                            <span className="cherry">*</span> 사전원가 버전
+                                        </th>
+                                        <td>
+                                            <select
+                                                id={uuidv4()}
+                                                className="basic-input select"
+                                                name="versionId"
+                                                onChange={onSelectChange}
+                                                value={data.option?.length > 0 ? data.versionId : "default"}>
+                                                {data.option?.map((info, index) => (
+                                                    <option key={index} value={info.versionId}>
+                                                        {info.versionNum}
+                                                    </option>
+                                                ))}
+                                                {!data.option && <option value="default">버전을 생성하세요.</option>}
+                                            </select>
+                                        </td>
+                                    </>
+                                )
+                            }
                             <th>기준연도</th>
                             <td>{data.poiMonth}</td>
                             <th>최종 수정일</th>

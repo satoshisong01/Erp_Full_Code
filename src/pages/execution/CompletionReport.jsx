@@ -96,11 +96,11 @@ function CompletionReport() {
                 <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave}/>
                 <AddButton label="결재요청" onClick={() => setIsSubmit(true)} disabled={!isSave}/>
             </div>
-            <ApprovalFormCost  sendInfo={approvalLine}>
+            <ApprovalFormCost sendInfo={approvalLine}>
                 <div style={{marginTop: "-55px", marginBottom: 55}}>
                     <h2>완료보고서</h2>
                 </div>
-                <ApprovalFormReport returnData={(value) => returnData(value, "조회")} />
+                <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="완료보고서"/>
                 <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing}/>
                 <ApprovalLineModal width={670} height={500} title="결재선" type="완료보고서" isOpen={isOpenModalApproval} onClose={() => setIsOpenModalApproval(false)} returnData={(value) => returnData(value, "결재선")}/>
             </ApprovalFormCost>
