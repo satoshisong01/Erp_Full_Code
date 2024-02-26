@@ -55,7 +55,6 @@ export default function ViewModal(props) {
     };
 
     const openPopup = (targetUrl, data) => {
-        console.log(data);
         const url = `${targetUrl}?data=${encodeURIComponent(JSON.stringify(data))}`;
         const width = 1400;
         const height = 700;
@@ -118,15 +117,12 @@ export default function ViewModal(props) {
     useEffect(() => {
         //권한그룹
         if (Object.keys(authorGroupInfo).length > 0) {
-            console.log("authorGroupInfo:", authorGroupInfo);
             setData((prevData) => {
                 return { ...prevData, ...authorGroupInfo };
             });
             setAuthorGroupInfo({});
         }
     }, [authorGroupInfo]);
-
-    console.log(initialData);
 
     // 데이터 추가 버튼을 눌렀을 때 실행되는 함수
     const onClick = async (e) => {
@@ -147,14 +143,12 @@ export default function ViewModal(props) {
             });
         } else {
             const mergedData = { ...initialData, ...data };
-            console.log(mergedData, "부모에게 넘겨주는 데이터");
             resultData(mergedData); //데이터 부모로 전송
             onClose();
         }
     };
 
     const inputChange = (e, type) => {
-        console.log(e.target.value);
         const { value, name } = e.target;
         setData((prevData) => {
             return { ...prevData, [name]: value };
