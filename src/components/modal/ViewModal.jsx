@@ -47,9 +47,12 @@ export default function ViewModal(props) {
     console.log(list);
 
     const onClickLink = (e) => {
+        console.log(initialData);
         e.preventDefault(); // 기본 동작 방지
         if (initialData.sgnType === "수주보고서") {
             openPopup(URL.PreCostDoc, { ...initialData, label: "수주보고서" });
+        } else if (initialData.sgnType === "사전원가서") {
+            openPopup(URL.PreCostDoc, { ...initialData, label: "사전원가서" });
         } else if (initialData.sgnType === "실행예산서") {
         } else if (initialData.sgnType === "사후정산서") {
         }

@@ -127,8 +127,8 @@ function PendingBox() {
     //};
 
     const returnData = (row) => {
-        if (row[0].sttId && selectedRows.sttId !== row[0].sttId) {
-            setSelectedRows(row[0]);
+        if (row.sttId && selectedRows.sttId !== row.sttId) {
+            setSelectedRows(row);
         }
     };
 
@@ -146,7 +146,7 @@ function PendingBox() {
                     columns={columnsList}
                     customDatas={tableData}
                     viewPageName={{ name: "결재대기함", id: "PendingBox" }}
-                    returnSelectRows={returnData}
+                    returnSelect={returnData}
                 />
             </HideCard>
             {isOpenView && (

@@ -2,13 +2,16 @@ import React, { useContext, useEffect, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import { locationPath } from "constants/locationPath";
-import { axiosFetch } from "api/axiosFetch";
+import { axiosFetch, axiosUpdate } from "api/axiosFetch";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import HideCard from "components/HideCard";
 import { PageContext } from "components/PageProvider";
 import RefreshButton from "components/button/RefreshButton";
 import ModButton from "components/button/ModButton";
 import URL from "constants/url";
+import { columns } from "constants/columns";
+import ViewModal from "components/modal/ViewModal";
+import ViewButton from "components/button/ViewButton";
 
 /** 전자결재-결재완료함 */
 function CompletedBox() {
@@ -22,8 +25,9 @@ function CompletedBox() {
 
     const [tableData, setTableData] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
+    const [isOpenView, setIsOpenView] = useState(false);
 
-    const columns = [
+    const columnsList = [
         { header: "프로젝트아이디", col: "poiId", notView: true },
         { header: "버전아이디", col: "versionId", notView: true },
         { header: "수주아이디", col: "poId", notView: true },
@@ -88,27 +92,17 @@ function CompletedBox() {
         fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "Y" });
     };
 
-    const onClick = () => {
-        if (selectedRows.sgnType === "수주보고서") {
-            openPopup(URL.PreCostDoc, { ...selectedRows[0], label: "수주보고서" });
-        } else if (selectedRows.sgnType === "실행예산서") {
-        } else if (selectedRows.sgnType === "사후정산서") {
+    const returnData = (row) => {
+        if (row.sgnId && selectedRows.sgnId !== row.sgnId) {
+            setSelectedRows(row);
         }
     };
 
-    const openPopup = (targetUrl, data) => {
-        const url = `${targetUrl}?data=${encodeURIComponent(JSON.stringify(data))}`;
-        const width = 1400;
-        const height = 700;
-        const left = window.screen.width / 2 - width / 2;
-        const top = window.screen.height / 2 - height / 2;
-        const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
-        window.open(url, "newWindow", windowFeatures);
-    };
-
-    const returnData = (row) => {
-        if (row[0].sgnId && selectedRows.sgnId !== row[0].sgnId) {
-            setSelectedRows(row[0]);
+    const approvalToServer = async (data) => {
+        console.log(data);
+        const resultData = await axiosUpdate("/api/system/signState/edit.do", data);
+        if (resultData) {
+            alert("변경되었습니다.");
         }
     };
 
@@ -118,16 +112,27 @@ function CompletedBox() {
             <SearchList conditionList={conditionList} />
             <HideCard title="결재완료 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
-                    <ModButton label={"보기"} onClick={onClick} />
+                    <ViewButton label={"보기"} onClick={() => setIsOpenView(true)} />
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTable
-                    columns={columns}
+                    columns={columnsList}
                     customDatas={tableData}
                     viewPageName={{ name: "결재완료함", id: "CompletedBox" }}
-                    returnSelectRows={returnData}
+                    returnSelect={returnData}
                 />
             </HideCard>
+            {isOpenView && (
+                <ViewModal
+                    width={500}
+                    height={250}
+                    list={columns.approval.views}
+                    initialData={selectedRows}
+                    resultData={approvalToServer}
+                    onClose={() => setIsOpenView(false)}
+                    title="접수자 승인"
+                />
+            )}
         </>
     );
 }
