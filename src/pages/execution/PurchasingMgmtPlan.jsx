@@ -13,6 +13,7 @@ import ReactDataTable from "components/DataTable/ReactDataTable";
 import BasicButton from "components/button/BasicButton";
 import DelButton from "components/button/DelButton";
 import AddButton from "components/button/AddButton";
+import SearchModal from "components/modal/SearchModal";
 
 /** 실행관리-구매-계획 */
 function PurchasingMgmtPlan() {
@@ -21,7 +22,8 @@ function PurchasingMgmtPlan() {
     const [budgetMgmt, setBudgetMgmt] = useState([]);
     const [buyCall, setBuyCall] = useState([]);
     const [view, setView] = useState([]);
-    const [totalSummary, setTotalSummary] = useState({byQunty: 0, price: 0})
+    const [totalSummary, setTotalSummary] = useState({byQunty: 0, price: 0});
+    const [isOpenSearch, setIsOpenSearch] = useState(false);
 
     const fetchAllData = async (condition) => {
         const data = await axiosFetch("/api/baseInfrm/product/buyIngInfoExe/totalListAll.do", condition);
@@ -98,8 +100,9 @@ function PurchasingMgmtPlan() {
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">
-                    <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                    <BasicButton label="검색하기" onClick={() => setIsOpenSearch(true)} />
                     <BasicButton label={"가져오기"} onClick={() => setNameOfButton("load")} />
+                    <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
                     <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
                     <RefreshButton onClick={refresh} />
@@ -115,6 +118,7 @@ function PurchasingMgmtPlan() {
                     condition={condition}
                 />
             </HideCard>
+            <SearchModal returnData={(condition) => fetchAllData(condition)} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} width={350} height={210} title="구매내역 검색"/>
         </>
     );
 }

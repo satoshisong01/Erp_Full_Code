@@ -4,82 +4,162 @@ import "../../components/modal/ModalCss.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { PageContext } from "components/PageProvider";
-import SearchList from "components/SearchList";
-import MakeItemField from "utils/MakeItemField";
+import BasicInput from "components/input/BasicInput";
+import CompanyModal from "./CompanyModal";
+import ProductGroupModal from "./ProductGroupModal";
 
 Modal.setAppElement("#root"); // Set the root element for accessibility
 
-/* 검색 모달 */
+/* 구매 검색 모달 */
 export default function SearchModal(props) {
     const { width, height, isOpen, title, onClose, returnData } = props;
-    const { setModalPageName, setIsModalTable } = useContext(PageContext);
-    const { condition, setCondition } = useState({});
-    const [searchData, setSearchData] = useState({});
+    const { setModalPageName, setIsModalTable, companyInfo, setCompanyInfo, projectPgNm, setProjectPgNm } = useContext(PageContext);
+    const [isOpenModalCompany, setIsOpenModalCompany] = useState(false); //거래처목록
+    const [isOpenModalProductGroup, setIsOpenModalProductGroup] = useState(false); //품목그룹목록
+    const [errorList, setErrorList] = useState({}); // 필수값 에러 메시지
     const bodyRef = useRef(null);
+    const [data, setData] = useState({});
 
     useEffect(() => {
         if (isOpen) {
-            setModalPageName("검색팝업");
+            setModalPageName("구매검색팝업");
             setIsModalTable(true);
         }
         return () => {
             setIsModalTable(false);
             setModalPageName("");
+            setData({})
         };
     }, [isOpen]);
 
+    useEffect(() => {
+        //거래처
+        if (Object.keys(companyInfo).length > 0) {
+            setData((prevData) => {
+                return { ...prevData, ...companyInfo };
+            });
+            setCompanyInfo({});
+        }
+    }, [companyInfo]);
+
+    useEffect(() => {
+        // 품목그룹
+        if (Object.keys(projectPgNm).length > 0) {
+            setData((prevData) => {
+                return { ...prevData, ...projectPgNm };
+            });
+            setProjectPgNm({});
+        }
+    }, [projectPgNm]);
+
     const conditionList = [
-        {
-            title: "회사타입",
-            col: "cltType",
-            type: "radio",
-            option: [
-                { label: "협력사", value: "P" },
-                { label: "고객사", value: "C" },
-            ],
-        },
-        { title: "거래처명", col: "cltNm", type: "input" },
-        { title: "픔목그룹명", col: "pgNm", type: "input" },
+        // {
+        //     items: [
+        //         {
+        //             header: "회사타입",
+        //             col: "cltType",
+        //             type: "radio",
+        //             option: [
+        //                 { label: "미선택", value: "" },
+        //                 { label: "협력사", value: "P" },
+        //                 { label: "고객사", value: "C" },
+        //             ],
+        //         },
+        //     ],
+        // },
+        { items: [{ header: "판매사", col: "pdiSeller", type: "input" }] },
+        { items: [{ header: "제조사", col: "pdiMenufut", type: "input" }] },
+        // { items: [{ header: "회사명", col: "cltNm", type: "company" }] },
+        { items: [{ header: "픔목그룹명", col: "pgNm", type: "productGroup" }] },
     ];
 
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
         if (bodyRef.current) {
             const headerHeight = document.querySelector(".me-modal-header")?.clientHeight || 0;
-            // const footerHeight = document.querySelector(".me-modal-footer")?.clientHeight || 0;
-            // const calculatedHeight = height - headerHeight - footerHeight;
-            const calculatedHeight = height - headerHeight;
+            const footerHeight = document.querySelector(".me-modal-footer")?.clientHeight || 0;
+            const calculatedHeight = height - headerHeight - footerHeight;
             bodyRef.current.style.height = `${calculatedHeight}px`;
         }
     }, [height]);
 
-    const onChange = (value) => {
-        setSearchData((prevData) => {
-            return { ...prevData, ...value };
-        });
-    };
-
     const searchClick = () => {
-        Object.keys(searchData).forEach((key) => {
-            if (searchData[key] === "") {
-                delete searchData[key]; //빈값 제외
+        Object.keys(data).forEach((key) => {
+            if (data[key] === "") {
+                delete data[key]; //빈값 제외
             }
         });
-        returnData && returnData(searchData);
+        console.log("data:", data);
+        returnData && returnData(data);
+        onClose();
     };
 
-    // const onClick = (e) => {
-    //     e.preventDefault();
-    //     Object.keys(condition).length > 0 && returnData(condition)
-    //     onClose();
-    // }
+    const inputChange = (e, type) => {
+        const { value, name } = e.target;
+        setData((prevData) => {
+            return { ...prevData, [name]: value };
+        });
 
-    // const onSearch = (value) => {
-    //     setCondition({...value});
-    // }
+        // 에러 메시지 상태 업데이트
+        setErrorList((prevErrors) => ({
+            ...prevErrors,
+            [name]: false,
+        }));
+    };
+
+    const renderField = (item, index, data) => (
+        <div className="row-group" key={index}>
+            <div className="left">
+                {item.require && <span className="burgundy">*</span>}
+                <span>{item.header}</span>
+            </div>
+            <div className="right">
+                {item.type === "input" ? (
+                    <BasicInput item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
+                ) : item.type === "radio" ? (
+                    item.option &&
+                    item.option.length > 0 && (
+                        <div className="radio-container" style={{margin: "0 auto"}}>
+                            {item.option.map((op, idx) => (
+                                <div key={idx} className="radio-group">
+                                    <input type="radio" name={item.col} value={op.value} checked={data?.[item.col] === op.value} onChange={inputChange} />
+                                    <label htmlFor={op.value}>{op.label}</label>
+                                </div>
+                            ))}
+                        </div>
+                    )
+                ) : item.type === "company" ? (
+                    <BasicInput
+                        item={item}
+                        onClick={() => {
+                            setIsOpenModalCompany(true);
+                        }}
+                        value={data?.[item.col] ?? ""}
+                        readOnly
+                    />
+                ) : item.type === "productGroup" ? (
+                        <BasicInput
+                            item={item}
+                            onClick={() => {
+                                setIsOpenModalProductGroup(true);
+                            }}
+                            value={data?.[item.col] ?? ""}
+                            readOnly
+                        />
+                ) : null}
+                {errorList[item.col] && <span className="error">* 필수값을 입력하세요.</span>}
+            </div>
+        </div>
+    );
 
     return (
-        <Modal appElement={document.getElementById("root")} isOpen={isOpen} onRequestClose={onClose} contentLabel={title}>
+        <Modal
+            appElement={document.getElementById("root")}
+            isOpen={isOpen}
+            onRequestClose={onClose}
+            contentLabel={title}
+            style={{ content: { width, height } }}
+        >
             <div className="me-modal">
                 <div className="me-modal-container" style={{ width, height }}>
                     <div className="me-modal-inner">
@@ -91,40 +171,45 @@ export default function SearchModal(props) {
                         </div>
 
                         <div className="me-modal-body" ref={bodyRef}>
-                            <div className="body-area" style={{ gap: 0 }}>
-                                <div className="flex-container" style={{ justifyContent: "center" }}>
-                                    {conditionList.map((param, idx) => (
-                                        <div key={idx} className="flex-group mg-b-10">
-                                            <div className="flex-label">
-                                                <label>{param.title}</label>
-                                            </div>
-                                            <div className="flex-input">
-                                                <MakeItemField item={param} resultData={onChange} />
-                                            </div>
+                            <div className="body-area" style={{ gap: 10 }}>
+                                {/* <div className="flex-container"> */}
+                                {conditionList &&
+                                    conditionList.map((column, index) => (
+                                        <div className="body-row" key={index} style={{textAlign: "left"}}>
+                                            {column.items.map((item, itemIndex) => renderField(item, itemIndex, data))}
                                         </div>
                                     ))}
-                                </div>
-                                <div style={{ textAlign: "right" }}>
-                                    <button className="table-btn search-btn" onClick={searchClick}>
-                                        검색
-                                    </button>
-                                </div>
+                                {/* </div> */}
                             </div>
                         </div>
 
-                        {/* <div className="me-modal-footer mg-t-10 mg-b-20">
+                        <div className="me-modal-footer mg-t-10 mg-b-20">
                             <div className="table-buttons" style={{ justifyContent: "center" }}>
-                                <button className="table-btn table-btn-default" style={{ width: "100%" }} onClick={onClose}>
+                                <button className="table-btn back-white" onClick={onClose} style={{ width: "100%" }}>
                                     취소
                                 </button>
-                                <button className="table-btn table-btn-primary" style={{ width: "100%" }} onClick={onClick}>
-                                    확인
+                                <button className="table-btn search-btn" onClick={searchClick} style={{ width: "100%" }}>
+                                    검색
                                 </button>
                             </div>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
             </div>
+            <CompanyModal
+                width={500}
+                height={550}
+                title="거래처 목록"
+                isOpen={isOpenModalCompany}
+                onClose={() => setIsOpenModalCompany(false)}
+            />
+            <ProductGroupModal
+                width={600}
+                height={720}
+                title="품목그룹 목록"
+                isOpen={isOpenModalProductGroup}
+                onClose={() => setIsOpenModalProductGroup(false)}
+            />
         </Modal>
     );
 }

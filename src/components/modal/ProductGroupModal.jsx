@@ -17,6 +17,7 @@ export default function ProductGroupModal(props) {
 
     const [productInfoList, setProductInfoList] = useState([]);
     const bodyRef = useRef(null);
+    const [groupInfo, setGroupInfo] = useState({});
 
     useEffect(() => {
         if (isOpen) {
@@ -34,13 +35,11 @@ export default function ProductGroupModal(props) {
 
     const getProductInfoList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/productGroup/totalListAll.do", requestData || {});
-        console.log(resultData, "뭔가나오나");
         setProductInfoList(resultData);
     };
 
     const columns = [
         { header: "품목그룹아이디", col: "pgId", notView: true },
-        //{ header: "품목 규격", col: "pdiStnd", cellWidth: "0", notView: true },
         { header: "품목그룹명", col: "pgNm", cellWidth: "515" },
     ];
 
@@ -61,20 +60,12 @@ export default function ProductGroupModal(props) {
     };
 
     const onClick = () => {
-        if (selectedRows && selectedRows.length === 1) {
-            //객체로 저장
-            setProjectPgNm(selectedRows[0]);
-        } else if (selectedRows && selectedRows.length > 1) {
-            setPgNmList([...selectedRows]);
-        }
+        setProjectPgNm({...groupInfo})
         onClose();
     };
 
-    let selectedRows = [];
-
-    const returnSelectRows = (rows) => {
-        const newArr = rows.filter((row) => !selectedRows.some((pre) => pre.pdiId === row.pdiId));
-        selectedRows.push(...newArr);
+    const returnSelect = (value) => {
+        setGroupInfo((prev) => (prev.pgId !== value.pgId ? value : prev));
     };
 
     return (
@@ -100,8 +91,9 @@ export default function ProductGroupModal(props) {
                                 <ReactDataTable
                                     columns={columns}
                                     customDatas={productInfoList}
-                                    returnSelectRows={(rows) => returnSelectRows(rows)}
+                                    returnSelect={returnSelect}
                                     viewPageName={{ name: "품목그룹팝업", id: "품목그룹팝업" }}
+                                    isSingleSelect={true}
                                 />
                             </div>
                         </div>
