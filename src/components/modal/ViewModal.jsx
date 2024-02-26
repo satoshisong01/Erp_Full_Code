@@ -2,17 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import "../../components/modal/ModalCss.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import MakeModalField from "utils/MakeModalField";
 import { PageContext } from "components/PageProvider";
-import ProjectModal from "./ProjectModal";
-import CompanyModal from "./CompanyModal";
-import ProductInfoModal from "./ProductInfoModal";
-import ProductGroupModal from "./ProductGroupModal";
-import EmployerInfoModal from "./EmployerInfoModal";
 import BasicInput from "components/input/BasicInput";
-import DayPicker from "components/input/DayPicker";
-import MonthPicker from "components/input/MonthPicker";
-import YearPicker from "components/input/YearPicker";
 import BasicTextarea from "components/input/BasicTextarea";
 import Percentage from "components/input/Percentage";
 import BasicSelect from "components/input/BasicSelect";
@@ -25,12 +16,10 @@ export default function ViewModal(props) {
     const { width, height, list, onClose, resultData, title, initialData } = props;
     const {
         companyInfo,
-        pdiNmList,
         projectPdiNm,
         projectPgNm,
         emUserInfo,
         setCompanyInfo,
-        setPdiNmList,
         setProjectPdiNm,
         setProjectPgNm,
         setEmUserInfo,
@@ -42,19 +31,26 @@ export default function ViewModal(props) {
     const bodyRef = useRef(null);
     const [errorList, setErrorList] = useState({}); // 필수값 에러 메시지
     const [isOpenModalGroup, setIsOpenModalGroup] = useState(false); //권한그룹
-    const [colName, setColName] = useState("");
 
-    console.log(list);
+    const sessionUser = sessionStorage.getItem("loginUser");
 
     const onClickLink = (e) => {
-        console.log(initialData);
         e.preventDefault(); // 기본 동작 방지
-        if (initialData.sgnType === "수주보고서") {
-            openPopup(URL.PreCostDoc, { ...initialData, label: "수주보고서" });
-        } else if (initialData.sgnType === "사전원가서") {
-            openPopup(URL.PreCostDoc, { ...initialData, label: "사전원가서" });
+        if (initialData.sgnType === "사전원가서") {
+            openPopup(URL.PreCostDoc, { ...initialData, label: "사전원가서", sessionUserInfo: JSON.parse(sessionUser) });
+
+        } else if (initialData.sgnType === "수주보고서") {
+            openPopup(URL.PreCostDoc, { ...initialData, label: "수주보고서", sessionUserInfo: JSON.parse(sessionUser) });
+
         } else if (initialData.sgnType === "실행예산서") {
+            openPopup(URL.ExecutionCostsDoc, { ...initialData, label: "실행예산서", sessionUserInfo: JSON.parse(sessionUser) });
+
         } else if (initialData.sgnType === "사후정산서") {
+            openPopup(URL.PostCostsDoc, { ...initialData, label: "사후정산서", sessionUserInfo: JSON.parse(sessionUser) });
+
+        } else if (initialData.sgnType === "완료보고서") {
+            openPopup(URL.PostCostsDoc, { ...initialData, label: "완료보고서", sessionUserInfo: JSON.parse(sessionUser) });
+            
         }
     };
 
@@ -171,16 +167,6 @@ export default function ViewModal(props) {
         }));
     };
 
-    const dateClick = (date, col) => {
-        setData((prevData) => {
-            return { ...prevData, [col]: date };
-        });
-    };
-
-    const changeEmployerInfo = (colName) => {
-        setColName(colName);
-    };
-
     const renderField = (item, index, data) => (
         <div className="row-group" key={index}>
             <div className="left">
@@ -199,13 +185,13 @@ export default function ViewModal(props) {
                 ) : item.type === "select" ? (
                     <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
                 ) : item.type === "alink" ? (
-                    <ModButton label={"수주보고서(클릭)"} onClick={onClickLink} report={true} />
+                    <ModButton label={initialData.sgnType+"(클릭)"} onClick={onClickLink} report={true} />
                 ) : item.type === "radio" ? (
                     item.option &&
                     item.option.length > 0 && (
                         <div className="radio-container">
-                            {item.option.map((op) => (
-                                <div key={index} className="radio-group">
+                            {item.option.map((op, idx) => (
+                                <div key={idx} className="radio-group">
                                     <input type="radio" name={item.col} value={op.value} checked={data?.[item.col] === op.value} onChange={inputChange} />
                                     <label htmlFor={op.value}>{op.label}</label>
                                 </div>
@@ -217,13 +203,6 @@ export default function ViewModal(props) {
             </div>
         </div>
     );
-
-    const setProjectInfo = (value) => {
-        if (value.poiId === "" || !value) return;
-        setData((prevData) => {
-            return { ...prevData, ...value };
-        });
-    };
 
     return (
         <article className="me-modal">
