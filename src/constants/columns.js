@@ -292,8 +292,8 @@ export const columns = {
         ],
         version: [
             //원가버전조회
-            { header: "프로젝트ID", col: "poiId", notView: true, cellWidth: "0" },
-            { header: "버전ID", col: "versionId", notView: true, cellWidth: "0" },
+            { header: "프로젝트ID", col: "poiId", notView: true },
+            { header: "버전ID", col: "versionId", notView: true },
             { header: "프로젝트명", col: "poiNm", cellWidth: "200" },
             { header: "원가버전", col: "versionNum", cellWidth: "100" },
             { header: "등록일", col: "createDate", cellWidth: "130" },
@@ -305,17 +305,7 @@ export const columns = {
             { header: "외주비", col: "totalDevOutCost", cellWidth: "80", type: "input" },
             { header: "경비", col: "totalPjbudget", cellWidth: "80", type: "input" },
             { header: "영업관리비", col: "totalSlsmnExpns", cellWidth: "100", type: "input" },
-            {
-                header: "확정여부",
-                col: "costAt",
-                cellWidth: "70",
-                type: "select",
-                options: [
-                    { value: "", label: "선택" },
-                    { value: "Y", label: "Y" },
-                    { value: "N", label: "N" },
-                ],
-            },
+            { header: "확정여부", col: "costAt", cellWidth: "70", type: "input" },
             { header: "버전비고", col: "versionDesc", cellWidth: "100" },
         ],
         versionCondition: [
@@ -331,20 +321,20 @@ export const columns = {
         versionMod: [
             { items: [{ header: "버전", col: "versionNum", require: true, type: "input" }] },
             { items: [{ header: "비고", col: "versionDesc", type: "desc" }] },
-            {
-                items: [
-                    {
-                        header: "확정여부",
-                        col: "costAt",
-                        type: "select",
-                        option: [
-                            { label: "선택", value: "" },
-                            { label: "N", value: "N" },
-                            { label: "Y", value: "Y" },
-                        ],
-                    },
-                ],
-            },
+            // {
+            //     items: [
+            //         {
+            //             header: "확정여부",
+            //             col: "costAt",
+            //             type: "select",
+            //             option: [
+            //                 { label: "선택", value: "" },
+            //                 { label: "N", value: "N" },
+            //                 { label: "Y", value: "Y" },
+            //             ],
+            //         },
+            //     ],
+            // },
         ],
         labor: [
             //인건비
@@ -357,7 +347,7 @@ export const columns = {
             { header: "중급기능사", col: "pmpmmPositionCode7", type: "input", cellWidth: "0", notView: true },
             { header: "초급기능사", col: "pmpmmPositionCode8", type: "input", cellWidth: "0", notView: true },
             { header: "연월", col: "pmpMonth", cellWidth: "130", type: "datePicker", require: true },
-            { header: "M/M", col: "total", cellWidth: "80", require: true },
+            { header: "M/M", col: "total", cellWidth: "80" },
             { header: "인건비", col: "totalPrice", cellWidth: "100", type: "number" },
             { header: "부장", col: "pmpmmPositionCode9", cellWidth: "80", type: "input" },
             { header: "차장", col: "pmpmmPositionCode10", cellWidth: "80", type: "input" },
@@ -390,7 +380,7 @@ export const columns = {
                 cellWidth: "300",
                 type: "select",
                 options: [
-                    { value: "", label: "선택" },
+                    // { value: "", label: "선택" },
                     { value: "EXPNS01", label: "교통비" },
                     { value: "EXPNS02", label: "숙박비" },
                     { value: "EXPNS03", label: "일비/파견비" },
@@ -424,7 +414,7 @@ export const columns = {
             { header: "M/M", col: "devOutMm", cellWidth: "100", type: "input", require: true },
             { header: "단가", col: "devOutPrice", cellWidth: "100", type: "input", require: true },
             { header: "금액", col: "price", cellWidth: "150" },
-            { header: "비고", col: "devDesc", cellWidth: "639", type: "input" },
+            { header: "비고", col: "devDesc", cellWidth: "741", type: "input" },
             { header: "아이디", col: "devOutId", notView: true },
             { header: "버전", col: "versionId", notView: true },
             { header: "프로젝트ID", col: "poiId", notView: true },
