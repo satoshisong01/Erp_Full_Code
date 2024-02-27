@@ -345,6 +345,7 @@ function OrderPlanMgmt() {
                 setPjbudgetCalDatas([]);
             }
         } else if (innerPageName.name === "구매(재료비)") {
+            // console.log("구매 조회 조건: ", requestData);
             const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
             if (resultData && resultData.length > 0) {
                 const calData = buyIngInfoCalculation(resultData);
@@ -771,7 +772,7 @@ function OrderPlanMgmt() {
                 />
             )}
             <DeleteModal initialData={deleteNames} resultData={deleteToServer} onClose={() => setIsOpenDel(false)} isOpen={isOpenDel} />
-            <SearchModal returnData={(condition) => fetchAllData(condition)} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} />
+            <SearchModal returnData={(condition) => fetchAllData(condition)} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} width={350} height={210} title="구매내역 검색"/>
         </>
     );
 }

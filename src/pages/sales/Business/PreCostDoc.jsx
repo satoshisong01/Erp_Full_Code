@@ -51,13 +51,32 @@ const PreCostDoc = () => {
         setApprovalLine(updated);
     }
 
+    /* 결재요청 */
+    const submit = async () => {
+        const list = approvalLine.slice(1); //첫번째는 요청자라 제외
+        if(!projectInfoToServer.poiId || !projectInfoToServer.versionId) {
+            console.log("❌정보없음:", projectInfoToServer);
+            return;
+        } else if (!list || list.length === 0) {
+            console.log("❌결재선없음:", projectInfoToServer);
+            return;
+        }
+        const dataToSend = {
+            "poiId": projectInfoToServer.poiId,
+            "versionId": projectInfoToServer.versionId,
+            "sgnType": "사전원가서",
+            "sttApproverList": list
+        }
+            
+    }
+
     useEffect(() => {
         // URL에서 "data" 파라미터 읽기
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
-        const { label, poiId, versionId, sessionUserInfo } = data;
+        const { label, poiId, poiNm, versionId, versionNum, sessionUserInfo, versionDesc } = data;
         setTitle(label);
-        setProjectInfoToServer({ poiId, versionId });
+        setProjectInfoToServer({ poiId, poiNm, versionId, versionNum, versionDesc });
         setUserInfo({ ...sessionUserInfo });
         if (poiId && versionId) {
             getInitData(poiId, versionId); //서버에서 데이터 호출
@@ -754,7 +773,8 @@ const PreCostDoc = () => {
         <div style={{width: '90%', margin: 'auto'}}>
             <div className="form-buttons mg-t-10" style={{maxWidth: 1400}}>
                 <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)}/>
-                <AddButton label="결재요청"/>
+                <AddButton label="결재요청" onClick={submit}/>
+
             </div>
             <ApprovalFormCost sendInfo={approvalLine}>
                 <div className="precost-container">

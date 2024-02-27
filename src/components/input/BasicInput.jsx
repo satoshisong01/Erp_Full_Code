@@ -12,7 +12,7 @@ export default function BasicInput({ item, onChange, onClick, value, readOnly })
             onClick={onClick && ((e) => onClick(e))}
             value={value || ""}
             placeholder={item.placeholder || ""}
-            //readOnly={readOnly || false}
+            readOnly={readOnly || false}
             //disabled={item.disabled || false}
         />
     );

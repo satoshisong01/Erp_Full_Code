@@ -122,6 +122,7 @@ export default function CompanyModal(props) {
                                     customDatas={companyList}
                                     returnSelect={returnSelect}
                                     viewPageName={{ name: "거래처팝업", id: "거래처팝업" }}
+                                    isSingleSelect={true}
                                 />
                             </div>
                         </div>

@@ -13,6 +13,7 @@ import ReactDataTable from "components/DataTable/ReactDataTable";
 import BasicButton from "components/button/BasicButton";
 import AddButton from "components/button/AddButton";
 import DelButton from "components/button/DelButton";
+import SearchModal from "components/modal/SearchModal";
 
 /** 실행관리-구매관리 */
 function PurchasingMgmtExe() {
@@ -21,6 +22,7 @@ function PurchasingMgmtExe() {
     const [runMgmt, setRunMgmt] = useState([]); // 구매 실행관리
     const [view, setView] = useState([]); // 계획 조회
     const [buyCall, setBuyCall] = useState([]); //합계 - 품목그룹&판매사&모델명
+    const [isOpenSearch, setIsOpenSearch] = useState(false);
 
     const fetchAllData = async (condition) => {
         const datas = await axiosFetch("/api/baseInfrm/product/receivingInfo/totalListAll.do", condition);
@@ -135,6 +137,7 @@ function PurchasingMgmtExe() {
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">
+                    <BasicButton label="검색하기" onClick={() => setIsOpenSearch(true)} />
                     <BasicButton label={"가져오기"} onClick={() => setNameOfButton("load")} />
                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
@@ -152,6 +155,8 @@ function PurchasingMgmtExe() {
                     condition={condition}
                 />
             </HideCard>
+            <SearchModal returnData={(condition) => fetchAllData(condition)} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} width={350} height={210} title="구매내역 검색"/>
+
         </>
     );
 }

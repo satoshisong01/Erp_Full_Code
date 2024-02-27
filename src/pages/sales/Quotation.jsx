@@ -34,8 +34,6 @@ function Quotation() {
     const [estimateBool, setestimateBool] = useState(false);
     const [buyIngBool, setBuyIngBool] = useState(false);
 
-    console.log(estimateBool, buyIngBool);
-
     useEffect(() => {
         setInnerPageName({ name: "견적용 인건비", id: "estimateLabor" });
         setCurrentPageName({}); //inner와 pageName은 동시에 사용 X

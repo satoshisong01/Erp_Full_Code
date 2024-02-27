@@ -17,12 +17,6 @@ import ViewButton from "components/button/ViewButton";
 function CompletedBox() {
     const { currentPageName } = useContext(PageContext);
 
-    const sessionUser = sessionStorage.getItem("loginUser");
-    const sessionUserId = JSON.parse(sessionUser)?.id;
-    const sessionUserName = JSON.parse(sessionUser)?.name;
-    const sessionUserSe = JSON.parse(sessionUser)?.userSe;
-    const authorCode = JSON.parse(sessionUser)?.authorCode;
-
     const [tableData, setTableData] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
     const [isOpenView, setIsOpenView] = useState(false);
@@ -32,11 +26,11 @@ function CompletedBox() {
         { header: "버전아이디", col: "versionId", notView: true },
         { header: "수주아이디", col: "poId", notView: true },
         { header: "결재아이디", col: "sgnId", notView: true },
-        { header: "발신자아이디", col: "sgnSenderId", notView: true }, // == empId
-        { header: "수신자아이디", col: "sgnReceiverId", notView: true }, // == empId2
+        { header: "발신자아이디", col: "sgnSenderId", notView: true },
+        { header: "수신자아이디", col: "sgnReceiverId", notView: true }, 
         { header: "프로젝트명", col: "poiNm", cellWidth: "350" },
         { header: "결재종류", col: "sgnType", cellWidth: "200" },
-        { header: "기안자", col: "empNm", cellWidth: "100" },
+        { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
         { header: "기안일", col: "sgnSigndate", cellWidth: "100" },
         { header: "코멘트", col: "sgnComent", cellWidth: "589" },
     ];
@@ -75,16 +69,12 @@ function CompletedBox() {
 
     useEffect(() => {
         fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "Y" });
-        // fetchAllData({});
     }, [currentPageName]);
 
     const fetchAllData = async (condition) => {
-        // const resultData = await axiosFetch("/api/system/sign/detail.do", condition || {});
-        //http://192.168.0.113:8080/api/system/sign/totalListAll.do
         const resultData = await axiosFetch("/api/system/signState/totalListAll.do", condition || {});
         if (resultData) {
             setTableData(resultData);
-            console.log("⭐결재", resultData);
         }
     };
 

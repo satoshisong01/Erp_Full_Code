@@ -7,21 +7,13 @@ import ReactDataTable from "components/DataTable/ReactDataTable";
 import HideCard from "components/HideCard";
 import { PageContext } from "components/PageProvider";
 import RefreshButton from "components/button/RefreshButton";
-import ModButton from "components/button/ModButton";
 import { columns } from "constants/columns";
-import URL from "constants/url";
 import ViewModal from "components/modal/ViewModal";
 import ViewButton from "components/button/ViewButton";
 
 /** 전자결재-결재진행함 */
 function ProgressBox() {
     const { currentPageName } = useContext(PageContext);
-
-    const sessionUser = sessionStorage.getItem("loginUser");
-    const sessionUserId = JSON.parse(sessionUser)?.id;
-    const sessionUserName = JSON.parse(sessionUser)?.name;
-    const sessionUserSe = JSON.parse(sessionUser)?.userSe;
-    const authorCode = JSON.parse(sessionUser)?.authorCode;
 
     const [tableData, setTableData] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
@@ -75,39 +67,17 @@ function ProgressBox() {
 
     useEffect(() => {
         fetchAllData({ sgnSenderId: localStorage.uniqId, sgnAt: "N" });
-        // fetchAllData({});
     }, [currentPageName]);
 
     const fetchAllData = async (condition) => {
-        // const resultData = await axiosFetch("/api/system/sign/detail.do", condition || {});
-        //http://192.168.0.113:8080/api/system/sign/totalListAll.do
         const resultData = await axiosFetch("/api/system/signState/totalListAll.do", condition || {});
         if (resultData) {
             setTableData(resultData);
-            console.log("⭐결재", resultData);
         }
     };
 
     const refresh = () => {
         fetchAllData({ sgnSenderId: localStorage.uniqId, sgnAt: "N" });
-    };
-
-    const onClick = () => {
-        if (selectedRows.sgnType === "수주보고서") {
-            openPopup(URL.PreCostDoc, { ...selectedRows, label: "수주보고서" });
-        } else if (selectedRows.sgnType === "실행예산서") {
-        } else if (selectedRows.sgnType === "사후정산서") {
-        }
-    };
-
-    const openPopup = (targetUrl, data) => {
-        const url = `${targetUrl}?data=${encodeURIComponent(JSON.stringify(data))}`;
-        const width = 1400;
-        const height = 700;
-        const left = window.screen.width / 2 - width / 2;
-        const top = window.screen.height / 2 - height / 2;
-        const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
-        window.open(url, "newWindow", windowFeatures);
     };
 
     const returnData = (row) => {
