@@ -35,6 +35,12 @@ export const columns = {
             { header: "수정일", col: "lastModifyDate", cellWidth: "150" },
             { header: "수정자", col: "lastModifiedIdBy", cellWidth: "150" },
         ],
+        groupAddMod: [{ items: [{ header: "품목그룹명", col: "pgNm", require: true, type: "input" }] }],
+        groupModifyMod: [
+            {
+                items: [{ header: "품목그룹명", col: "pgNm", require: true, type: "input" }],
+            },
+        ],
         itemDetailMgmt: [
             {
                 header: "품목ID",
@@ -99,6 +105,13 @@ export const columns = {
                 add: true,
             },
             {
+                header: "제조사",
+                col: "pdiMenufut",
+                cellWidth: "150",
+                modify: true,
+                add: true,
+            },
+            {
                 header: "내외자구분",
                 col: "pdiIotype",
                 cellWidth: "90",
@@ -144,6 +157,53 @@ export const columns = {
                 add: true,
                 require: true,
                 notView: true,
+            },
+        ],
+        groupDetailAddMod: [
+            {
+                items: [{ header: "품목그룹명", col: "pgNm", require: true, type: "productGroup" }],
+            },
+            { items: [{ header: "품목명", col: "pdiNm", require: true, type: "input" }] },
+            { items: [{ header: "규격", col: "pdiStnd", require: true, type: "input" }] },
+            {
+                items: [
+                    { header: "단위", col: "pdiUnit", require: true, type: "input" },
+                    {
+                        header: "구분",
+                        col: "pdiIotype",
+                        require: true,
+                        type: "select",
+                        placeholder: "구분을 선택하세요.",
+                        option: [
+                            { label: "---구분 선택---", value: "---구분 선택---" },
+                            { label: "내자", value: "내자" },
+                            { label: "외자", value: "외자" },
+                        ],
+                    },
+                ],
+            },
+            {
+                items: [
+                    { header: "원단가", col: "pupUnitPrice", require: true, type: "input" },
+                    { header: "기준이익률", col: "pupPfmgrate", require: true, type: "input" },
+                ],
+            },
+            {
+                items: [
+                    { header: "소비산출율", col: "pupCalrate", require: true, type: "input" },
+                    { header: "단위중량(g)", col: "pdiWght", require: true, type: "input" },
+                ],
+            },
+            {
+                items: [{ header: "제조사", col: "pdiMenufut", require: true, type: "company" }],
+            },
+            {
+                items: [{ header: "판매사", col: "pdiSeller", require: true, type: "company" }],
+            },
+        ],
+        groupDetailModifyMod: [
+            {
+                items: [{ header: "품목그룹명", col: "pgNm", require: true, type: "input" }],
             },
         ],
     },

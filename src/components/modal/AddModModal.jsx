@@ -156,6 +156,11 @@ export default function AddModModal(props) {
         setColName(colName);
     };
 
+    const changeCompany = (colName) => {
+        setIsOpenModalCompany(true);
+        setColName(colName);
+    };
+
     const renderField = (item, index, data) => (
         <div className="row-group" key={index}>
             <div className="left">
@@ -172,14 +177,16 @@ export default function AddModModal(props) {
                 ) : item.type === "yearPicker" ? (
                     <YearPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
                 ) : item.type === "company" ? (
-                    <BasicInput
-                        item={item}
-                        onClick={() => {
-                            setIsOpenModalCompany(true);
-                        }}
-                        value={data?.[item.col] ?? ""}
-                        readOnly
-                    />
+                    <>
+                        <BasicInput
+                            item={item}
+                            onClick={() => {
+                                changeCompany(item.col);
+                            }}
+                            value={data?.[item.col] ?? ""}
+                            readOnly
+                        />
+                    </>
                 ) : item.type === "group" ? (
                     <BasicInput
                         item={item}
@@ -230,7 +237,9 @@ export default function AddModModal(props) {
                         disabled={data?.[item.col].disabled}
                     />
                 ) : item.type === "productGroup" ? (
-                    <BasicInput item={item} onClick={() => setIsOpenModalProductGroup(true)} value={data?.[item.col] ?? ""} readOnly />
+                    <>
+                        <BasicInput item={item} onClick={() => setIsOpenModalProductGroup(true)} value={data?.[item.col] ?? ""} readOnly />
+                    </>
                 ) : item.type === "employerInfo" ? (
                     // <BasicInput item={item} onClick={() => setIsOpenModalEmployerInfo(true)} value={data?.[item.col] ?? ""} readOnly />
                     <BasicInput item={item} onClick={() => changeEmployerInfo(item.col)} value={data?.[item.col] ?? ""} readOnly />
@@ -289,7 +298,14 @@ export default function AddModModal(props) {
                     {isOpenModalProject && (
                         <ProjectModal width={550} height={770} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} returnInfo={setProjectInfo} />
                     )}
-                    <CompanyModal width={500} height={550} title="거래처 목록" isOpen={isOpenModalCompany} onClose={() => setIsOpenModalCompany(false)} />
+                    <CompanyModal
+                        width={500}
+                        height={550}
+                        title="거래처 목록"
+                        isOpen={isOpenModalCompany}
+                        onClose={() => setIsOpenModalCompany(false)}
+                        colName={colName}
+                    />
                     <ProductInfoModal
                         width={600}
                         height={770}
