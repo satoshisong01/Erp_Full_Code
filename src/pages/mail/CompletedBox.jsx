@@ -120,6 +120,7 @@ function CompletedBox() {
                     customDatas={tableData}
                     viewPageName={{ name: "결재완료함", id: "CompletedBox" }}
                     returnSelect={returnData}
+                    isSingleSelect={true}
                 />
             </HideCard>
             {isOpenView && (

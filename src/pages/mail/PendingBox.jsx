@@ -147,6 +147,7 @@ function PendingBox() {
                     customDatas={tableData}
                     viewPageName={{ name: "결재대기함", id: "PendingBox" }}
                     returnSelect={returnData}
+                    isSingleSelect={true}
                 />
             </HideCard>
             {isOpenView && (

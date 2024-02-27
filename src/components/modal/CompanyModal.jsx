@@ -12,8 +12,8 @@ Modal.setAppElement("#root"); // Set the root element for accessibility
 
 /* 회사목록 목록 모달 */
 export default function CompanyModal(props) {
-    const { width, height, isOpen, title, onClose } = props;
-    const { setCompanyInfo, setModalPageName, setIsModalTable } = useContext(PageContext);
+    const { width, height, isOpen, title, onClose, colName } = props;
+    const { setCompanyInfo, setProjectPdiNm, setModalPageName, setIsModalTable } = useContext(PageContext);
 
     const [companyList, setCompanyList] = useState([]);
     const [selectInfo, setSelectInfo] = useState({});
@@ -42,17 +42,17 @@ export default function CompanyModal(props) {
             return {
                 cltId: item.cltId,
                 cltNm: item.cltNm,
+                [colName]: item.cltNm,
                 pgNms: pgNms.join(", "), // 배열을 문자열로 변환
                 cltBusstype: item.cltBusstype,
             };
         });
-
         setCompanyList(changeData);
     };
 
     const columns = [
         { header: "거래처아이디", col: "cltId", cellWidth: "0", notView: true },
-        { header: "거래처명", col: "cltNm", cellWidth: "150" },
+        { header: "거래처명", col: colName || "cltNm", cellWidth: "150" },
         { header: "품목그룹명", col: "pgNms", cellWidth: "170" },
         { header: "업체유형", col: "cltBusstype", cellWidth: "180" },
     ];
@@ -67,7 +67,7 @@ export default function CompanyModal(props) {
                 { label: "고객사", value: "C" },
             ],
         },
-        { title: "거래처명", col: "cltNm", type: "input" },
+        { title: "거래처명", col: colName || "cltNm", type: "input" },
         { title: "픔목그룹명", col: "pgNm", type: "input" },
     ];
 
@@ -87,6 +87,7 @@ export default function CompanyModal(props) {
 
     const onClick = (e) => {
         e.preventDefault();
+        console.log(selectInfo, "선택된값?");
         setCompanyInfo({ ...selectInfo });
         onClose();
     };

@@ -139,6 +139,7 @@ function ProgressBox() {
                     customDatas={tableData}
                     viewPageName={{ name: "결재진행함", id: "ProgressBox" }}
                     returnSelect={returnData}
+                    isSingleSelect={true}
                 />
             </HideCard>
             {isOpenView && (
