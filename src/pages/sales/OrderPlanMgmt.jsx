@@ -40,7 +40,8 @@ function OrderPlanMgmt() {
     const [outCalDatas, setOutCalDatas] = useState([]); // 개발외주비합계
     const [generalExpensesDatas, setGeneralExpensesDatas] = useState([]); // 영업관리비
     const [generalCalDatas, setGeneralCalDatas] = useState([]); // 영업관리비합계
-    const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 rows
+    // const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 rows
+    const [selectedRow, setSelectedRow] = useState([]); //그리드에서 선택된 단일행
     const [isOpenMod, setIsOpenMod] = useState(false);
     const [isOpenDel, setIsOpenDel] = useState(false);
     const [isOpenSearch, setIsOpenSearch] = useState(false);
@@ -163,6 +164,7 @@ function OrderPlanMgmt() {
             addDayToPmpMonth(toAdds);
             addList(toAdds);
         }
+        fetchAllData(); //리프레쉬
     };
 
     const addList = async (addNewData) => {
@@ -345,7 +347,6 @@ function OrderPlanMgmt() {
                 setPjbudgetCalDatas([]);
             }
         } else if (innerPageName.name === "구매(재료비)") {
-            // console.log("구매 조회 조건: ", requestData);
             const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
             if (resultData && resultData.length > 0) {
                 const calData = buyIngInfoCalculation(resultData);
@@ -370,8 +371,9 @@ function OrderPlanMgmt() {
                     group.nego = group.planAmount !== 0 ? (group.consumerAmount / group.planAmount - 1) * 100 : 0;
                     // 이익금: 공급금액 - 원가
                     group.profits = group.planAmount - group.estimatedCost;
-                    // 이익율: (공급금액-원가)/원가*100
-                    group.margin = group.planAmount !== 0 ? ((group.planAmount - group.estimatedCost) / group.planAmount) * 100 + "%" : 0 + "%";
+                    // 이익률: (공급금액-원가)/원가*100
+                    const temp = group.planAmount !== 0 ? ((group.planAmount - group.estimatedCost) / group.planAmount) * 100 : 0;
+                    group.margin = Math.round(temp) + "%";
                     return group;
                 });
 
@@ -383,7 +385,7 @@ function OrderPlanMgmt() {
                         sums.planAmount += group.planAmount || 0;
                         sums.profits += group.profits || 0;
                         sums.byQunty += group.byQunty;
-                        sums.margin = sums.margin + "%";
+                        sums.margin = 0;
                         return sums;
                     },
                     {
@@ -406,7 +408,9 @@ function OrderPlanMgmt() {
                     estimatedCost: totals.estimatedCost, //원가
                     profits: totals.profits, //이익금
                     // (공급금액-원가)/원가*100
-                    margin: totals.planAmount !== 0 ? ((totals.planAmount - totals.estimatedCost) / totals.estimatedCost) * 100 + "%" : 0 + "%", //이익율
+                    // margin: totals.planAmount !== 0 ? Math.round(((totals.planAmount - totals.estimatedCost) / totals.estimatedCost) * 100) + "%" : 0 + "%", //이익율
+                    // 마진 = (이익금/공급금액)*100
+                    margin: totals.planAmount !== 0 ? Math.round((totals.profits/totals.planAmount)*100) + "%" : 0 + "%", //이익율
                     byQunty: totals.byQunty,
                 });
 
@@ -484,17 +488,24 @@ function OrderPlanMgmt() {
 
     const [deleteNames, setDeleteNames] = useState([]); //삭제할 Name 목록
 
+    // useEffect(() => {
+    //     if (innerPageName.name === "원가버전조회") {
+    //         selectedRows && setDeleteNames(selectedRows.map((row) => row.versionNum));
+    //     }
+    // }, [selectedRows, innerPageName]);
     useEffect(() => {
         if (innerPageName.name === "원가버전조회") {
-            selectedRows && setDeleteNames(selectedRows.map((row) => row.versionNum));
+            // selectedRow && setDeleteNames(selectedRows.map((row) => row.versionNum));
+            selectedRow && setDeleteNames([selectedRow.versionNum]);
         }
-    }, [selectedRows, innerPageName]);
+    }, [selectedRow, innerPageName]);
 
     const deleteToServer = async (value) => {
         if (value === "임시삭제") {
             /* 임시삭제 코드 구현 */
         } else if (value === "영구삭제") {
-            const poiNms = selectedRows.map((row) => row.versionId);
+            // const poiNms = selectedRows.map((row) => row.versionId);
+            const poiNms = selectedRow.versionId;
             const url = `/api/baseInfrm/product/versionControl/removeAll.do`;
             const resultData = await axiosDelete(url, poiNms);
             if (resultData) {
@@ -582,7 +593,8 @@ function OrderPlanMgmt() {
                             <SearchList conditionList={columns.orderPlanMgmt.versionCondition} onSearch={onSearch} />
                             <HideCard title="원가 버전 목록" color="back-lightblue" className="mg-b-40">
                                 <div className="table-buttons mg-t-10 mg-b-10">
-                                    <PopupButton targetUrl={URL.PreCostDoc} data={{ label: "사전원가서", ...selectedRows[0], sessionUserInfo: JSON.parse(sessionUser) }} />
+                                    {/* <PopupButton targetUrl={URL.PreCostDoc} data={{ label: "사전원가서", ...selectedRows[0], sessionUserInfo: JSON.parse(sessionUser) }} /> */}
+                                    <PopupButton targetUrl={URL.PreCostDoc} data={{ label: "사전원가서", ...selectedRow, sessionUserInfo: JSON.parse(sessionUser) }} />
                                     <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
                                     <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
                                     <DelButton label={"삭제"} onClick={() => setIsOpenDel(true)} />
@@ -593,10 +605,12 @@ function OrderPlanMgmt() {
                                     customDatas={searchDates}
                                     viewPageName={{ name: "원가버전조회", id: "OrderPlanMgmt" }}
                                     customDatasRefresh={refresh}
-                                    returnSelectRows={(data) => {
-                                        setSelectedRows(data);
-                                    }}
+                                    // returnSelectRows={(data) => {
+                                    //     setSelectedRows(data);
+                                    // }}
+                                    returnSelect={(data) => setSelectedRow(data)}
                                     isPageNation={true}
+                                    isSingleSelect={true}
                                 />
                             </HideCard>
                         </ul>
@@ -763,9 +777,9 @@ function OrderPlanMgmt() {
             {isOpenMod && (
                 <AddModModal
                     width={500}
-                    height={280}
+                    height={200}
                     list={columns.orderPlanMgmt.versionMod}
-                    initialData={selectedRows}
+                    initialData={[{...selectedRow}]}
                     resultData={modifyToServer}
                     onClose={() => setIsOpenMod(false)}
                     title="버전 수정"

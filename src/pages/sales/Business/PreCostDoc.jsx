@@ -29,6 +29,7 @@ const PreCostDoc = () => {
 
     const [approvalLine, setApprovalLine] = useState([]) //결재선
     const [userInfo, setUserInfo] = useState({}) //로그인 유저 정보
+    const [isApproval, setIsApproval] = useState(false); //이미 결재정보가 있는지 확인
 
     /* 스타일 */
     const purStyle = { marginBottom: 20, maxHeight: 250 };
@@ -75,6 +76,10 @@ const PreCostDoc = () => {
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
         const { label, poiId, poiNm, versionId, versionNum, sessionUserInfo, versionDesc } = data;
+        console.log("data:", data);
+        if(poiId && versionId) {
+            getSignData(poiId, versionId);
+        }
         setTitle(label);
         setProjectInfoToServer({ poiId, poiNm, versionId, versionNum, versionDesc });
         setUserInfo({ ...sessionUserInfo });
@@ -82,6 +87,29 @@ const PreCostDoc = () => {
             getInitData(poiId, versionId); //서버에서 데이터 호출
         }
     }, []);
+
+    const getSignData = async (poiId, versionId) => {
+        console.log("poiId:", poiId);
+        console.log("versionId:", versionId);
+        const signData = await axiosFetch("/api/system/signState/totalListAll.do", { poiId, versionId });
+        console.log("1.signData:", signData);
+        if(signData && signData.length > 0) {
+            const receiveInfo = signData.map(item => {
+                return {
+                    // versionId: item.versionId, // 버전정보
+                    posNm: item.posNm, // 직급
+                    // sgnSenderId: item.sgnSenderId, // 요청자
+                    // sgnSenderNm: item.sgnSenderNm, // 요청자 이름
+                    empNm: item.sttApproverNm, // 진행자
+                    sttApproverId: item.sttApproverId, // 진행자
+                    state: item.sttApproverAt // 진행자 상태
+                };
+            });
+            console.log("2.newArr:", receiveInfo);
+            setApprovalLine(receiveInfo);
+            setIsApproval(true);
+        }
+    }
 
     // URL에서 쿼리 문자열 파라미터를 읽는 함수
     function getQueryParameterByName(name, url) {
@@ -94,9 +122,9 @@ const PreCostDoc = () => {
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
-    useEffect(() => {
-        console.log("projectInfoToServer:", projectInfoToServer);
-    });
+    // useEffect(() => {
+    //     console.log("projectInfoToServer:", projectInfoToServer);
+    // }, [projectInfoToServer]);
 
     const infoColumns = [
         [
@@ -198,9 +226,7 @@ const PreCostDoc = () => {
     };
 
     const getInitData = async (poiId, versionId) => {
-        const url = "/api/calculate/cost/totalListAll.do";
-        // const requestData = { poiId };
-        const resultData = await axiosFetch(url, { poiId, versionId });
+        const resultData = await axiosFetch("/api/calculate/cost/totalListAll.do", { poiId, versionId });
         const {
             projectInfoToServer, //수주정보
             salesBudgetIn, //수주액>자체용역
@@ -772,9 +798,12 @@ const PreCostDoc = () => {
     return (
         <div style={{width: '90%', margin: 'auto'}}>
             <div className="form-buttons mg-t-10" style={{maxWidth: 1400}}>
-                <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)}/>
-                <AddButton label="결재요청" onClick={submit}/>
-
+                {!isApproval && 
+                    <>
+                        <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)}/>
+                        <AddButton label="결재요청" onClick={submit}/>
+                    </>
+                }
             </div>
             <ApprovalFormCost sendInfo={approvalLine}>
                 <div className="precost-container">

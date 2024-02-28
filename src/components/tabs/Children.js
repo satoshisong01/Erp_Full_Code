@@ -95,7 +95,7 @@ export const reference = [
         id: "LaborRate",
         path: URL.LaborRate,
         component: <LaborRate />,
-        label: "인건비단가",
+        label: "외주사인건비",
         pLabel: "기준정보관리",
     },
     {
