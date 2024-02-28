@@ -179,12 +179,15 @@ function SalesExpenses() {
         setSalesCostView(viewUpdated);
         const updatedData = processResultData(resultData, condition);
         const filteredData = filterData(updatedData);
-        setSalesCost(filteredData);
-        filteredData.forEach((item) => {
-            totalPrice += item.pjbgTypeCode19;
-        });
-        console.log(totalPrice);
-        setSalesCostTotal([{ totalPrice: totalPrice }]);
+        if(filteredData && filteredData.length > 0) {
+            setSalesCost(filteredData);
+            filteredData.forEach((item) => {
+                totalPrice += item.pjbgTypeCode19;
+            });
+            setSalesCostTotal([{ totalPrice: totalPrice }]);
+        } else {
+            alert("no data")
+        }
     };
 
     useEffect(() => {

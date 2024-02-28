@@ -9,7 +9,7 @@ import DelButton from "components/button/DelButton";
 import RefreshButton from "components/button/RefreshButton";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 
-/** 기준정보관리-원가기준관리-인건비단가 */
+/** 기준정보관리-원가기준관리-외주사인건비 */
 function LaborRate() {
     const { setNameOfButton } = useContext(PageContext);
     const LaborRateTable = useRef(null);
@@ -24,53 +24,68 @@ function LaborRate() {
             notView: true,
         },
         {
+            header: "기준연도",
+            col: "peBaseDate",
+            cellWidth: "130",
+        },
+        {
+            header: "회사이름",
+            col: "cltNm",
+            cellWidth: "208",
+        },
+        {
             header: "특2",
             col: "peLv7",
-            cellWidth: "195",
+            cellWidth: "130",
             modify: true,
             add: true,
         },
         {
             header: "특1",
             col: "peLv6",
-            cellWidth: "195",
+            cellWidth: "130",
             modify: true,
             add: true,
         },
         {
             header: "고2",
             col: "peLv5",
-            cellWidth: "195",
+            cellWidth: "130",
             modify: true,
             add: true,
         },
         {
             header: "고1",
             col: "peLv4",
-            cellWidth: "195",
+            cellWidth: "130",
             modify: true,
             add: true,
         },
         {
             header: "중",
             col: "peLv3",
-            cellWidth: "195",
+            cellWidth: "130",
             modify: true,
             add: true,
         },
         {
             header: "초2",
             col: "peLv2",
-            cellWidth: "195",
+            cellWidth: "130",
             modify: true,
             add: true,
         },
         {
             header: "초1",
             col: "peLv1",
-            cellWidth: "190",
+            cellWidth: "130",
             modify: true,
             add: true,
+        },
+        {
+            header: "제경비",
+            col: "peDesc",
+            cellWidth: "130",
         },
     ];
 

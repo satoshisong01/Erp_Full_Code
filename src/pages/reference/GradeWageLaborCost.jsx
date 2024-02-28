@@ -20,13 +20,9 @@ function GradeWageLaborCost() {
 
     const columns = [
         { header: "단가ID", col: "gupId", cellWidth: "0", type: "input", notView: true },
-        { header: "특급기술사", col: "gupPrice2", cellWidth: "100", type: "input" },
-        { header: "고급기술사", col: "gupPrice3", cellWidth: "100", type: "input" },
-        { header: "중급기술사", col: "gupPrice4", cellWidth: "100", type: "input" },
-        { header: "초급기술사", col: "gupPrice5", cellWidth: "100", type: "input" },
-        { header: "고급기능사", col: "gupPrice6", cellWidth: "100", type: "input" },
-        { header: "중급기능사", col: "gupPrice7", cellWidth: "100", type: "input" },
-        { header: "초급기능사", col: "gupPrice8", cellWidth: "100", type: "input" },
+        { header: "기준연도", col: "year", cellWidth: "104", type: "input" },
+        // { header: "단위", col: "gupUnit", cellWidth: "100", type: "input" },
+        // { header: "기준명", col: "gupDesc", cellWidth: "100", type: "input" },
         { header: "임원", col: "gupPrice1", cellWidth: "100", type: "input" },
         { header: "부장", col: "gupPrice9", cellWidth: "100", type: "input" },
         { header: "차장", col: "gupPrice10", cellWidth: "100", type: "input" },
@@ -34,9 +30,13 @@ function GradeWageLaborCost() {
         { header: "대리", col: "gupPrice12", cellWidth: "100", type: "input" },
         { header: "주임", col: "gupPrice13", cellWidth: "100", type: "input" },
         { header: "사원", col: "gupPrice14", cellWidth: "100", type: "input" },
-        { header: "기준연도", col: "year", cellWidth: "100", type: "input" },
-        { header: "단위", col: "gupUnit", cellWidth: "100", type: "input" },
-        { header: "기준명", col: "gupDesc", cellWidth: "100", type: "input" },
+        { header: "특급기술사", col: "gupPrice2", cellWidth: "82", type: "input" },
+        { header: "고급기술사", col: "gupPrice3", cellWidth: "82", type: "input" },
+        { header: "중급기술사", col: "gupPrice4", cellWidth: "82", type: "input" },
+        { header: "초급기술사", col: "gupPrice5", cellWidth: "82", type: "input" },
+        { header: "고급기능사", col: "gupPrice6", cellWidth: "82", type: "input" },
+        { header: "중급기능사", col: "gupPrice7", cellWidth: "82", type: "input" },
+        { header: "초급기능사", col: "gupPrice8", cellWidth: "82", type: "input" },
     ];
 
     const fetchAllData = async () => {

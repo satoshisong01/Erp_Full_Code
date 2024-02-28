@@ -147,11 +147,10 @@ const ReactDataTable = (props) => {
     //------------------------------------------------
 
     useEffect(() => {
-        if(isCurrentPage()) {
-            const updatedTableData = initializeTableData(customDatas, columns);
-            setTableData(updatedTableData);
-            setOriginTableData(updatedTableData);
-        }
+        // if(isCurrentPage()) {}
+        const updatedTableData = initializeTableData(customDatas, columns);
+        setTableData(updatedTableData);
+        setOriginTableData(updatedTableData);
     }, [customDatas]);
 
     /* columns에는 있지만 넣어줄 데이터가 없을 때 조기값 설정 */

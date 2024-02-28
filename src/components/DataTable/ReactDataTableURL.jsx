@@ -70,13 +70,18 @@ const ReactDataTableURL = (props) => {
         }
     }, []);
 
+    // useEffect(() => {
+    //     console.log("tableData:", tableData);
+    // }, [tableData]);
+
     useEffect(() => {
         if(isCurrentPage()) {
             const updatedTableData = initializeTableData(customDatas, columns);
             setTableData(updatedTableData);
             setOriginTableData(updatedTableData);
         }
-    }, [customDatas, columns, innerPageName]);
+    // }, [customDatas, columns, innerPageName]);
+    }, [customDatas, innerPageName]);
 
     /* columns에는 있지만 넣어줄 데이터가 없을 때 조기값 설정 */
     const initializeTableData = (datas, cols) => {
@@ -396,8 +401,7 @@ const ReactDataTableURL = (props) => {
                 } else if (column.accessor === "pjbgTypeCode19") {
                     newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
                 }
-            }
-            if (viewPageName === "영업비(정산)") {
+            } else if (viewPageName === "영업비(정산)") {
                 if (column.accessor === "modeCode") {
                     newRow[column.accessor] = "EXECUTE"; // useAt 항상 "Y"로 설정
                 } else if (column.accessor === "pjbgTypeCode1") {
@@ -415,8 +419,7 @@ const ReactDataTableURL = (props) => {
                 } else if (column.accessor === "pjbgTypeCode20") {
                     newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
                 }
-            }
-            if (viewPageName === "견적용 인건비") {
+            } else if (viewPageName === "견적용 인건비") {
                 if (column.accessor === "estPosition") {
                     newRow[column.accessor] = "특1"; // useAt 항상 "Y"로 설정
                 }
