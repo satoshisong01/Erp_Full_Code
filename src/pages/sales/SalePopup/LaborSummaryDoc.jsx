@@ -74,6 +74,7 @@ const LaborSummaryDoc = () => {
 
     const Columns = [
         { header: "Description", col: "pgNm" },
+        { header: "Remarks", col: "estDesc" },
         { header: "Position", col: "estPosition" },
         { header: "M", col: "estMm1" },
         { header: "M1", col: "estMm2" },
@@ -102,7 +103,6 @@ const LaborSummaryDoc = () => {
         { header: "Total", col: "total" },
         { header: "UnitPrice", col: "unitPrice" },
         { header: "Amount", col: "amount" },
-        { header: "Remarks", col: "estDesc" },
     ];
 
     // URL에서 쿼리 문자열 파라미터를 읽는 함수
@@ -178,6 +178,53 @@ const LaborSummaryDoc = () => {
         setCount(maxCount);
         return maxCount;
     }
+
+    const processRowSpanData = (tableData, columns) => {
+        return tableData.map((row, rowIndex) => {
+            const newRow = { ...row, _rowSpans: {} }; // 새로운 row 객체를 생성하고, 여기에 rowSpan 정보를 추가합니다.
+            columns.forEach((column, colIndex) => {
+                // 'pgNm' 열에만 이 로직을 적용합니다.
+                if (column.col === "pgNm") {
+                    // 첫 번째 행이거나 이전 행의 'pgNm' 값과 현재 행의 'pgNm' 값이 다른 경우
+                    if (rowIndex === 0 || tableData[rowIndex - 1][column.col] !== row[column.col]) {
+                        let rowSpan = 1;
+                        for (let nextRowIdx = rowIndex + 1; nextRowIdx < tableData.length; nextRowIdx++) {
+                            if (tableData[nextRowIdx][column.col] === row[column.col]) {
+                                rowSpan++; // 다음 행의 'pgNm' 값이 현재 행의 'pgNm' 값과 동일한 경우, rowSpan을 증가시킵니다.
+                            } else {
+                                break; // 연속되지 않으면 중단합니다.
+                            }
+                        }
+                        newRow._rowSpans[column.col] = rowSpan; // 'pgNm' 열의 rowSpan 값을 설정합니다.
+                    } else {
+                        newRow._rowSpans[column.col] = 0; // 이전 행의 'pgNm' 값과 동일한 경우, rowSpan을 0으로 설정하여 병합될 행을 표시합니다.
+                    }
+                } else if (column.col === "estDesc") {
+                    // 'estDesc' 열의 rowSpan 값을 설정합니다.
+                    if (rowIndex === 0 || tableData[rowIndex - 1]["pgNm"] !== row["pgNm"]) {
+                        let rowSpan = 1;
+                        let accumulatedValue = row[column.col]; // 누적값 초기화
+                        for (let nextRowIdx = rowIndex + 1; nextRowIdx < tableData.length; nextRowIdx++) {
+                            if (tableData[nextRowIdx]["pgNm"] === row["pgNm"]) {
+                                rowSpan++; // 다음 행의 'pgNm' 값이 현재 행의 'pgNm' 값과 동일한 경우, rowSpan을 증가시킵니다.
+                                accumulatedValue += "<br>" + tableData[nextRowIdx][column.col]; // 줄바꿈 추가하여 누적값 증가
+                            } else {
+                                break; // 연속되지 않으면 중단합니다.
+                            }
+                        }
+                        newRow._rowSpans[column.col] = rowSpan; // 'estDesc' 열의 rowSpan 값을 설정합니다.
+                        newRow[column.col] = accumulatedValue; // 누적값으로 열 값 설정
+                    } else {
+                        newRow._rowSpans[column.col] = 0; // 이전 행의 'pgNm' 값과 동일한 경우, rowSpan을 0으로 설정하여 병합될 행을 표시합니다.
+                    }
+                }
+            });
+            return newRow;
+        });
+    };
+
+    const processedTableData = processRowSpanData(tableData, Columns);
+
     return (
         <div className="precost-container">
             <div className="precost-title" style={{ margin: "auto", marginBottom: "20px", fontSize: "25px", textAlign: "center" }}>
@@ -188,10 +235,13 @@ const LaborSummaryDoc = () => {
                     <table id="example" className="display">
                         <thead>
                             <tr>
-                                <th colSpan={2} rowSpan={2} style={{ textAlign: "center", width: "150px", border: "solid 1px gray" }}>
+                                <th colSpan={2} rowSpan={2} style={{ textAlign: "center", width: "250px", border: "solid 1px gray" }}>
                                     Description
                                 </th>
-                                <th colSpan={count} style={{ width: `${count * 40}px`, textAlign: "center", border: "solid 1px gray" }}>
+                                <th colSpan={1} rowSpan={0} style={{ textAlign: "center", width: "10px", border: "solid 1px gray" }}>
+                                    Position
+                                </th>
+                                <th colSpan={count} style={{ width: `${count * 35}px`, textAlign: "center", border: "solid 1px gray" }}>
                                     M/M
                                 </th>
                                 <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "40px", border: "solid 1px gray" }}>
@@ -202,9 +252,6 @@ const LaborSummaryDoc = () => {
                                 </th>
                                 <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "90px", border: "solid 1px gray" }}>
                                     Amount
-                                </th>
-                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "70px", border: "solid 1px gray" }}>
-                                    Remarks
                                 </th>
                             </tr>
                             <tr>
@@ -221,7 +268,14 @@ const LaborSummaryDoc = () => {
                                         return null;
                                     }
                                     return (
-                                        <th key={index} className={column.className} style={{ textAlign: "center", border: "solid 1px gray" }}>
+                                        <th
+                                            key={index}
+                                            className={column.className}
+                                            style={{
+                                                textAlign: "center",
+                                                border: "solid 1px gray",
+                                                width: column.col === "estPosition" ? "40px" : column.width, // estPosition에 해당하는 열의 넓이를 40px로 설정
+                                            }}>
                                             {column.header}
                                         </th>
                                     );
@@ -229,18 +283,27 @@ const LaborSummaryDoc = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {tableData.map((rowData, rowIndex) => (
+                            {processedTableData.map((rowData, rowIndex) => (
                                 <tr key={rowIndex}>
                                     {Columns.map((column, colIndex) => {
+                                        if (rowData._rowSpans[column.col] === 0) return null; // rowSpan이 0인 경우, 즉 이전 행과 병합되어야 하는 경우 렌더링하지 않습니다.
                                         if (column.col.startsWith("estMm") && tableData.every((row) => row[column.col] === null || row[column.col] === 0)) {
                                             return null;
                                         }
-
-                                        const cellValue = rowData[column.col];
-
                                         return (
-                                            <td key={colIndex} className={column.className} style={{ border: "solid 1px gray" }}>
-                                                {cellValue !== null && cellValue !== 0 ? cellValue.toLocaleString() : null}
+                                            <td
+                                                key={colIndex}
+                                                rowSpan={rowData._rowSpans[column.col]} // 계산된 rowSpan 값 적용
+                                                style={{ border: "solid 1px gray" }}>
+                                                {column.col === "estDesc" ? (
+                                                    <div
+                                                        dangerouslySetInnerHTML={{
+                                                            __html: rowData[column.col] !== null && rowData[column.col] !== 0 ? rowData[column.col] : null,
+                                                        }}
+                                                    />
+                                                ) : rowData[column.col] !== null && rowData[column.col] !== 0 ? (
+                                                    rowData[column.col].toLocaleString()
+                                                ) : null}
                                             </td>
                                         );
                                     })}

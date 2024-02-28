@@ -25,6 +25,8 @@ function Quotation() {
         { name: "견적용 구매비", id: "orderBuying" },
     ]);
     const [condition, setCondition] = useState({});
+    const [isLoading, setIsLoading] = useState(true); //로딩화면(true 일때 로딩화면)
+
     const [isOpenSearch, setIsOpenSearch] = useState(false);
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
 
@@ -308,6 +310,7 @@ function Quotation() {
         //    useAt: "Y",
         //};
         if (innerPageName.name === "견적용 인건비") {
+            setIsLoading(true);
             const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
             console.log(resultData, "퓨어 데이터");
             setEstimate([]);
@@ -320,6 +323,8 @@ function Quotation() {
                 setestimateBool(true);
             }
         } else if (innerPageName.name === "견적용 구매비") {
+            setIsLoading(true);
+
             console.log("여기타는지 봐야해");
             setBuyIngInfo([]);
             setBuyIngBool(false);
@@ -332,6 +337,7 @@ function Quotation() {
         }
         //const resultDa2 = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", requestSearch);
         //const filteredData = filterData(updatedData);
+        setIsLoading(false);
     };
 
     const returnList = (originTableData, tableData) => {
@@ -543,94 +549,104 @@ function Quotation() {
 
     return (
         <>
-            <Location pathList={locationPath.Quotation} />
-            <div className="common_board_style mini_board_3">
-                <ul className="tab">
-                    <li onClick={() => changeTabs("견적용 인건비", "estimateLabor")}>
-                        <a href="#견적용 인건비" className="on">
-                            견적용 인건비
-                        </a>
-                    </li>
-                    <li onClick={() => changeTabs("견적용 구매비", "orderBuying")}>
-                        <a href="#견적용 구매비">견적용 구매비</a>
-                    </li>
-                </ul>
-                <div className="list">
-                    <div className="first">
-                        <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            {/*<HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>*/}
-                            <HideCard title="계획 등록/수정" color="back-lightblue">
-                                <div className="table-buttons mg-t-10 mg-b-10">
-                                    <PopupButton
-                                        clickBtn={estimateBool}
-                                        targetUrl={URL.LaborCostDoc}
-                                        data={{ label: "견 적 서", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
-                                    />
-                                    <PopupButton
-                                        clickBtn={estimateBool}
-                                        targetUrl={URL.LaborSummaryDoc}
-                                        data={{ label: "영업상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
-                                    />
-                                    <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
-                                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
-                                    <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
-                                    <RefreshButton onClick={refresh} />
-                                </div>
-                                <ReactDataTableURL
-                                    editing={true}
-                                    columns={columns.orderPlanMgmt.estimateLabor}
-                                    returnList={returnList}
-                                    customDatas={estimate}
-                                    viewPageName={{ name: "견적용 인건비", id: "estimateLabor" }}
-                                    returnSelectRows={(data) => {
-                                        setSelectedRows(data);
-                                    }}
-                                    customDatasRefresh={refresh}
-                                    condition={condition}
-                                />
-                            </HideCard>
-                        </ul>
-                    </div>
-                    <div className="second">
-                        <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            {/*<HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>*/}
-                            <HideCard title="계획 등록/수정" color="back-lightblue">
-                                <div className="table-buttons mg-t-10 mg-b-10">
-                                    <PopupButton
-                                        clickBtn={buyIngBool}
-                                        targetUrl={URL.OrderBuyDoc}
-                                        data={{ label: "견 적 서", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
-                                    />
-                                    <PopupButton
-                                        clickBtn={buyIngBool}
-                                        targetUrl={URL.OrderSummaryDoc}
-                                        data={{ label: "구매상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
-                                    />
-                                    <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
-                                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
-                                    <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
-                                    <RefreshButton onClick={refresh} />
-                                </div>
-                                <ReactDataTablePdorder
-                                    editing={true}
-                                    columns={columns.orderPlanMgmt.estimatePurchase}
-                                    customDatas={buyIngInfo}
-                                    returnList={returnList}
-                                    viewPageName={{ name: "견적용 구매비", id: "orderBuying" }}
-                                    returnSelectRows={(data) => {
-                                        setSelectedRows(data);
-                                    }}
-                                    customDatasRefresh={refresh}
-                                    condition={condition}
-                                />
-                            </HideCard>
-                        </ul>
-                    </div>
+            {isLoading ? (
+                // 로딩 화면을 보여줄 JSX
+                <div className="Loading">
+                    <div className="spinner"></div>
+                    <div> Loading... </div>
                 </div>
-            </div>
-            <SearchModal returnData={(condition) => fetchAllData(condition)} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} />
+            ) : (
+                <div>
+                    <Location pathList={locationPath.Quotation} />
+                    <div className="common_board_style mini_board_3">
+                        <ul className="tab">
+                            <li onClick={() => changeTabs("견적용 인건비", "estimateLabor")}>
+                                <a href="#견적용 인건비" className="on">
+                                    견적용 인건비
+                                </a>
+                            </li>
+                            <li onClick={() => changeTabs("견적용 구매비", "orderBuying")}>
+                                <a href="#견적용 구매비">견적용 구매비</a>
+                            </li>
+                        </ul>
+                        <div className="list">
+                            <div className="first">
+                                <ul>
+                                    <ApprovalFormSal returnData={conditionInfo} initial={condition} />
+                                    {/*<HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>*/}
+                                    <HideCard title="계획 등록/수정" color="back-lightblue">
+                                        <div className="table-buttons mg-t-10 mg-b-10">
+                                            <PopupButton
+                                                clickBtn={estimateBool}
+                                                targetUrl={URL.LaborCostDoc}
+                                                data={{ label: "견 적 서", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
+                                            />
+                                            <PopupButton
+                                                clickBtn={estimateBool}
+                                                targetUrl={URL.LaborSummaryDoc}
+                                                data={{ label: "인건비상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
+                                            />
+                                            <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                                            <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
+                                            <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
+                                            <RefreshButton onClick={refresh} />
+                                        </div>
+                                        <ReactDataTableURL
+                                            editing={true}
+                                            columns={columns.orderPlanMgmt.estimateLabor}
+                                            returnList={returnList}
+                                            customDatas={estimate}
+                                            viewPageName={{ name: "견적용 인건비", id: "estimateLabor" }}
+                                            returnSelectRows={(data) => {
+                                                setSelectedRows(data);
+                                            }}
+                                            customDatasRefresh={refresh}
+                                            condition={condition}
+                                        />
+                                    </HideCard>
+                                </ul>
+                            </div>
+                            <div className="second">
+                                <ul>
+                                    <ApprovalFormSal returnData={conditionInfo} initial={condition} />
+                                    {/*<HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>*/}
+                                    <HideCard title="계획 등록/수정" color="back-lightblue">
+                                        <div className="table-buttons mg-t-10 mg-b-10">
+                                            <PopupButton
+                                                clickBtn={buyIngBool}
+                                                targetUrl={URL.OrderBuyDoc}
+                                                data={{ label: "견 적 서", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
+                                            />
+                                            <PopupButton
+                                                clickBtn={buyIngBool}
+                                                targetUrl={URL.OrderSummaryDoc}
+                                                data={{ label: "구매상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
+                                            />
+                                            <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
+                                            <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
+                                            <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
+                                            <RefreshButton onClick={refresh} />
+                                        </div>
+                                        <ReactDataTablePdorder
+                                            editing={true}
+                                            columns={columns.orderPlanMgmt.estimatePurchase}
+                                            customDatas={buyIngInfo}
+                                            returnList={returnList}
+                                            viewPageName={{ name: "견적용 구매비", id: "orderBuying" }}
+                                            returnSelectRows={(data) => {
+                                                setSelectedRows(data);
+                                            }}
+                                            customDatasRefresh={refresh}
+                                            condition={condition}
+                                        />
+                                    </HideCard>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <SearchModal returnData={(condition) => fetchAllData(condition)} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} />
+                </div>
+            )}
         </>
     );
 }

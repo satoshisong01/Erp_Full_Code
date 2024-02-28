@@ -145,15 +145,15 @@ const LaborCostDoc = () => {
         // 데이터를 순회하면서 pdiNm을 기준으로 객체들을 그룹화
         const groupedData = {};
         data.forEach((item) => {
-            if (!groupedData[item.pdiNm]) {
-                groupedData[item.pdiNm] = [];
+            if (!groupedData[item.pgNm]) {
+                groupedData[item.pgNm] = [];
             }
-            groupedData[item.pdiNm].push(item);
+            groupedData[item.pgNm].push(item);
         });
 
         // 그룹화된 데이터를 원하는 형태로 재구성
-        for (const pdiNm in groupedData) {
-            const estItem = groupedData[pdiNm].map((item) => ({
+        for (const pgNm in groupedData) {
+            const estItem = groupedData[pgNm].map((item) => ({
                 estMmTotal: item.total,
                 estPosition: item.estPosition,
                 price: item.estUnitPrice,
@@ -163,7 +163,7 @@ const LaborCostDoc = () => {
             }));
 
             result.push({
-                pdiNm: pdiNm,
+                pgNm: pgNm,
                 estItem: estItem,
             });
         }
@@ -396,8 +396,8 @@ const LaborCostDoc = () => {
                                     <React.Fragment key={index}>
                                         <tr className="tableTr">
                                             <td className="tableRedPercentW">{index + 1}</td>
-                                            <td className="tableWhiteItem">{data.pdiNm}</td>
-                                            <td className="tableRedPercentW">{data.estItem.reduce((acc, curr) => acc + curr.total, 0)}</td>
+                                            <td className="tableWhiteItem">{data.pgNm}</td>
+                                            <td className="tableRedPercentW">{/*{data.estItem.reduce((acc, curr) => acc + curr.total, 0)}*/}1</td>
                                             <td className="tableRedPercentW">Lot</td>
                                             <td className="table4-3White"></td>
                                             <td className="table4-3White">

@@ -15,7 +15,7 @@ export const columns = {
             {
                 header: "품목그룹명",
                 col: "pgNm",
-                cellWidth: "360",
+                cellWidth: "680",
                 type: "button",
                 modify: true,
                 add: true,
@@ -24,16 +24,16 @@ export const columns = {
             {
                 header: "품목그룹코드",
                 col: "pgCode",
-                cellWidth: "400",
+                cellWidth: "680",
                 modify: true,
                 add: true,
                 require: true,
             },
 
-            { header: "작성일", col: "createDate", cellWidth: "150" },
-            { header: "작성자", col: "createIdBy", cellWidth: "150" },
-            { header: "수정일", col: "lastModifyDate", cellWidth: "150" },
-            { header: "수정자", col: "lastModifiedIdBy", cellWidth: "150" },
+            //{ header: "작성일", col: "createDate", cellWidth: "150" },
+            //{ header: "작성자", col: "createIdBy", cellWidth: "150" },
+            //{ header: "수정일", col: "lastModifyDate", cellWidth: "150" },
+            //{ header: "수정자", col: "lastModifiedIdBy", cellWidth: "150" },
         ],
         groupAddMod: [{ items: [{ header: "품목그룹명", col: "pgNm", require: true, type: "input" }] }],
         groupModifyMod: [
@@ -560,7 +560,7 @@ export const columns = {
             { header: "프로젝트ID", col: "poiId", cellWidth: "0", notView: true },
 
             { header: "품목그룹아이디", col: "pgId", cellWidth: "0", require: true, type: "input", notView: true },
-            { header: "품명", col: "pdiNm", cellWidth: "120", require: true, type: "productGroup" },
+            { header: "품목그룹명", col: "pgNm", cellWidth: "120", require: true, type: "pgNm" },
             {
                 header: "직급",
                 col: "estPosition",

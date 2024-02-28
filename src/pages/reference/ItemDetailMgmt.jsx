@@ -23,6 +23,7 @@ function ItemDetailMgmt() {
     const [isOpenDel, setIsOpenDel] = useState(false);
     const [deleteNames, setDeleteNames] = useState([]); //삭제할 Name 목록
     const [tableData, setTableData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true); //로딩화면(true 일때 로딩화면)
 
     const itemDetailMgmtTable = useRef(null);
 
@@ -95,9 +96,11 @@ function ItemDetailMgmt() {
     };
 
     const fetchAllData = async () => {
+        setIsLoading(true);
         const url = `/api/baseInfrm/product/productInfo/totalListAll.do`;
         const resultData = await axiosFetch(url, {});
         setTableData(resultData);
+        setIsLoading(false);
     };
 
     const conditionList = [
@@ -137,47 +140,57 @@ function ItemDetailMgmt() {
     };
     return (
         <>
-            <Location pathList={locationPath.ItemDetailMgmt} />
-            <SearchList conditionList={conditionList} />
-            <div className="table-buttons">
-                <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
-                <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
-                <DelButton label={"삭제"} onClick={() => setIsOpenDel(true)} />
-                <RefreshButton onClick={() => setNameOfButton("refresh")} />
-            </div>
-            <ReactDataTable
-                //beforeItem={pdIdArray}
-                columns={columns.reference.itemDetailMgmt}
-                customDatas={tableData}
-                tableRef={itemDetailMgmtTable}
-                //setLengthSelectRow={setLengthSelectRow}
-                returnSelectRows={(data) => {
-                    setSelectedRows(data);
-                }}
-                viewPageName={{ name: "품목상세관리", id: "ItemDetailMgmt" }}
-            />
-            {isOpenAdd && (
-                <AddModModal
-                    width={500}
-                    height={380}
-                    list={columns.reference.groupDetailAddMod}
-                    resultData={addToServer}
-                    onClose={() => setIsOpenAdd(false)}
-                    title="품목상세 추가"
-                />
+            {isLoading ? (
+                // 로딩 화면을 보여줄 JSX
+                <div className="Loading">
+                    <div className="spinner"></div>
+                    <div> Loading... </div>
+                </div>
+            ) : (
+                <div>
+                    <Location pathList={locationPath.ItemDetailMgmt} />
+                    <SearchList conditionList={conditionList} />
+                    <div className="table-buttons">
+                        <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
+                        <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
+                        <DelButton label={"삭제"} onClick={() => setIsOpenDel(true)} />
+                        <RefreshButton onClick={() => setNameOfButton("refresh")} />
+                    </div>
+                    <ReactDataTable
+                        //beforeItem={pdIdArray}
+                        columns={columns.reference.itemDetailMgmt}
+                        customDatas={tableData}
+                        tableRef={itemDetailMgmtTable}
+                        //setLengthSelectRow={setLengthSelectRow}
+                        returnSelectRows={(data) => {
+                            setSelectedRows(data);
+                        }}
+                        viewPageName={{ name: "품목상세관리", id: "ItemDetailMgmt" }}
+                    />
+                    {isOpenAdd && (
+                        <AddModModal
+                            width={500}
+                            height={380}
+                            list={columns.reference.groupDetailAddMod}
+                            resultData={addToServer}
+                            onClose={() => setIsOpenAdd(false)}
+                            title="품목상세 추가"
+                        />
+                    )}
+                    {isOpenMod && (
+                        <AddModModal
+                            width={500}
+                            height={120}
+                            list={columns.reference.groupDetailModifyMod}
+                            initialData={selectedRows}
+                            resultData={modifyToServer}
+                            onClose={() => setIsOpenMod(false)}
+                            title="품목상세 수정"
+                        />
+                    )}
+                    {isOpenDel && <DeleteModal initialData={deleteNames} resultData={deleteToServer} onClose={() => setIsOpenDel(false)} isOpen={isOpenDel} />}
+                </div>
             )}
-            {isOpenMod && (
-                <AddModModal
-                    width={500}
-                    height={120}
-                    list={columns.reference.groupDetailModifyMod}
-                    initialData={selectedRows}
-                    resultData={modifyToServer}
-                    onClose={() => setIsOpenMod(false)}
-                    title="품목상세 수정"
-                />
-            )}
-            {isOpenDel && <DeleteModal initialData={deleteNames} resultData={deleteToServer} onClose={() => setIsOpenDel(false)} isOpen={isOpenDel} />}
         </>
     );
 }
