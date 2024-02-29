@@ -10,6 +10,7 @@ import { ReorganizeManCost } from "components/DataTable/function/ReorganizeData"
 function GradeWageLaborCost() {
     const [tableData, setTableData] = useState([]);
     const gradeWageExpenseTable = useRef(null);
+    const [isLoading, setIsLoading] = useState(true); //로딩화면(true 일때 로딩화면)
 
     const { innerPageName, setInnerPageName } = useContext(PageContext);
     useEffect(() => {
@@ -40,11 +41,13 @@ function GradeWageLaborCost() {
     ];
 
     const fetchAllData = async () => {
+        setIsLoading(true);
         const url = `/api/baseInfrm/product/gradeunitPrice/type/p/listAll.do`;
         const requestData = { useAt: "Y" };
         const resultData = await axiosFetch(url, requestData);
         console.log(resultData, "resultData");
         setTableData(ReorganizeManCost(resultData));
+        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -183,16 +186,26 @@ function GradeWageLaborCost() {
 
     return (
         <>
-            <Location pathList={locationPath.GradeWageLaborCost} />
-            <ReactDataTable
-                columns={columns}
-                customDatas={tableData}
-                sendToParentGrade={compareData}
-                //suffixUrl="/api/baseInfrm/product/gradeunitPrice/type/p"
-                tableRef={gradeWageExpenseTable}
-                //setLengthSelectRow={setLengthSelectRow}
-                viewPageName={{ name: "급별단가(인건비)", id: "GradeWageLaborCost" }}
-            />
+            {isLoading ? (
+                // 로딩 화면을 보여줄 JSX
+                <div className="Loading">
+                    <div className="spinner"></div>
+                    <div> Loading... </div>
+                </div>
+            ) : (
+                <div>
+                    <Location pathList={locationPath.GradeWageLaborCost} />
+                    <ReactDataTable
+                        columns={columns}
+                        customDatas={tableData}
+                        sendToParentGrade={compareData}
+                        //suffixUrl="/api/baseInfrm/product/gradeunitPrice/type/p"
+                        tableRef={gradeWageExpenseTable}
+                        //setLengthSelectRow={setLengthSelectRow}
+                        viewPageName={{ name: "급별단가(인건비)", id: "GradeWageLaborCost" }}
+                    />
+                </div>
+            )}
         </>
     );
 }

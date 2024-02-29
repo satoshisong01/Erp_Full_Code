@@ -9,6 +9,7 @@ import { ReorganizeData } from "components/DataTable/function/ReorganizeData";
 function GradeWageExpense() {
     const [tableData, setTableData] = useState([]);
     const gradeWageExpenseTable = useRef(null);
+    const [isLoading, setIsLoading] = useState(true); //로딩화면(true 일때 로딩화면)
 
     const columns = [
         { header: "단가ID", col: "gupId", cellWidth: "0", type: "input", notView: true },
@@ -36,11 +37,13 @@ function GradeWageExpense() {
     }, []);
 
     const fetchAllData = async () => {
+        setIsLoading(true);
         const url = `/api/baseInfrm/product/gradeunitPrice/type/g/listAll.do`;
         const requestData = { useAt: "Y" };
         const resultData = await axiosFetch(url, requestData);
         console.log(resultData, "resultData");
         setTableData(ReorganizeData(resultData));
+        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -49,15 +52,25 @@ function GradeWageExpense() {
 
     return (
         <>
-            <Location pathList={locationPath.GradeWageExpense} />
-            <ReactDataTable
-                columns={columns}
-                customDatas={tableData}
-                //suffixUrl="/api/baseInfrm/product/gradeunitPrice/type/g"
-                tableRef={gradeWageExpenseTable}
-                //setLengthSelectRow={setLengthSelectRow}
-                viewPageName={{ name: "급별단가(경비)", id: "GradeWageExpense" }}
-            />
+            {isLoading ? (
+                // 로딩 화면을 보여줄 JSX
+                <div className="Loading">
+                    <div className="spinner"></div>
+                    <div> Loading... </div>
+                </div>
+            ) : (
+                <div>
+                    <Location pathList={locationPath.GradeWageExpense} />
+                    <ReactDataTable
+                        columns={columns}
+                        customDatas={tableData}
+                        //suffixUrl="/api/baseInfrm/product/gradeunitPrice/type/g"
+                        tableRef={gradeWageExpenseTable}
+                        //setLengthSelectRow={setLengthSelectRow}
+                        viewPageName={{ name: "급별단가(경비)", id: "GradeWageExpense" }}
+                    />
+                </div>
+            )}
         </>
     );
 }

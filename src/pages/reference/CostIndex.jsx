@@ -9,6 +9,7 @@ import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch"
 function CostIndex() {
     const [tableData, setTableData] = useState([]);
     const costIndexMgmtTable = useRef(null);
+    const [isLoading, setIsLoading] = useState(true); //로딩화면(true 일때 로딩화면)
 
     const { setNameOfButton, innerPageName, setInnerPageName } = useContext(PageContext);
 
@@ -29,11 +30,13 @@ function CostIndex() {
     }, []);
 
     const fetchAllData = async () => {
+        setIsLoading(true);
         const url = `/api/baseInfrm/product/costBase/totalListAll.do`;
         const requestData = { useAt: "Y" };
         const resultData = await axiosFetch(url, requestData);
         console.log(resultData, "이게원본데이터");
         setTableData(reorganizeData(resultData));
+        setIsLoading(false);
     };
 
     const roleMapping = {
@@ -227,16 +230,26 @@ function CostIndex() {
 
     return (
         <>
-            <Location pathList={locationPath.CostIndex} />
-            <ReactDataTable
-                columns={columns}
-                customDatas={tableData}
-                sendToParentCostIndex={compareData}
-                //suffixUrl="/baseInfrm/product/costBase"
-                tableRef={costIndexMgmtTable}
-                viewPageName={{ name: "사전원가지표", id: "CostIndex" }}
-                perSent="%"
-            />
+            {isLoading ? (
+                // 로딩 화면을 보여줄 JSX
+                <div className="Loading">
+                    <div className="spinner"></div>
+                    <div> Loading... </div>
+                </div>
+            ) : (
+                <div>
+                    <Location pathList={locationPath.CostIndex} />
+                    <ReactDataTable
+                        columns={columns}
+                        customDatas={tableData}
+                        sendToParentCostIndex={compareData}
+                        //suffixUrl="/baseInfrm/product/costBase"
+                        tableRef={costIndexMgmtTable}
+                        viewPageName={{ name: "사전원가지표", id: "CostIndex" }}
+                        perSent="%"
+                    />
+                </div>
+            )}
         </>
     );
 }
