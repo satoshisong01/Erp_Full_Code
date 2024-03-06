@@ -127,7 +127,6 @@ const ReactDataTableDevCost = (props) => {
     useEffect(() => {
         //newRowData 변동 시 새로운 행 추가
         if (newRowData && Object.keys(newRowData).length !== 0) {
-            console.log("❗❗❗❗❗ newRowData");
             onAddRow(newRowData);
         }
     }, [newRowData]);
@@ -168,7 +167,6 @@ const ReactDataTableDevCost = (props) => {
     }, [companyInfo]);
 
     const setValueDataCmInfo = (rowIndex, cmInfo) => {
-        console.log(cmInfo, "cmInfocmInfo");
         let updatedTableData = [];
         if (current === "개발외주비") {
             updatedTableData = [...tableData];
@@ -327,43 +325,39 @@ const ReactDataTableDevCost = (props) => {
     };
 
     const addItem = async (addData) => {
-        console.log(addData, "개발외주비");
         const url = `/api/baseInfrm/product/devOutCost/addList.do`;
         const resultData = await axiosPost(url, addData);
-        console.log(resultData, "💜addItem");
-        if (resultData) {
-            customDatasRefresh && customDatasRefresh();
+        if(resultData) {
+            return true;
+        } else {
+            return false;
         }
     };
 
     const updateItem = async (toUpdate) => {
         const url = `/api/baseInfrm/product/devOutCost/editList.do`;
-        console.log(toUpdate, "💜updateItem");
         const resultData = await axiosUpdate(url, toUpdate);
-        console.log(resultData, "변경된거 맞음?");
-
-        if (resultData) {
-            customDatasRefresh && customDatasRefresh();
+        if(resultData) {
+            return true;
+        } else {
+            return false;
         }
     };
 
     const deleteItem = async (removeItem) => {
         const url = `/api/baseInfrm/product/devOutCost/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        console.log(resultData, "지워진거맞음?");
-
-        if (resultData) {
-            customDatasRefresh && customDatasRefresh();
+        if(resultData) {
+            return true;
+        } else {
+            return false;
         }
     };
 
     const compareData = (originData, updatedData) => {
-        console.log("개발외주비 compare", originData, updatedData);
         const filterData = updatedData.filter((data) => data.poiId); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
-        console.log("여기탐 개발외주 수정?", updatedData);
-        console.log("updatedDataLength?", updatedDataLength);
 
         if (originDataLength > updatedDataLength) {
             //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
@@ -379,7 +373,7 @@ const ReactDataTableDevCost = (props) => {
             };
 
             const firstRowUpdate = updateDataInOrigin(originData, updatedData);
-            updateItem(firstRowUpdate); //수정
+            const isMod = updateItem(firstRowUpdate); //수정
 
             const delList = [];
             const delListTest = [];
@@ -387,23 +381,36 @@ const ReactDataTableDevCost = (props) => {
                 delList.push(originData[i].devOutId);
                 delListTest.push(originData[i]);
             }
-            deleteItem(delList); //삭제
+            const isDel = deleteItem(delList); //삭제
+
+            if(isMod && isDel) {
+                alert("저장완료");
+            }
         } else if (originDataLength === updatedDataLength) {
-            updateItem(filterData); //수정
+            const isMod = updateItem(filterData); //수정
+            if(isMod) {
+                alert("저장완료");
+            }
         } else if (originDataLength < updatedDataLength) {
             const updateList = [];
 
             for (let i = 0; i < originDataLength; i++) {
                 updateList.push(filterData[i]);
             }
-            updateItem(updateList); //수정
+            const isMod = updateItem(updateList); //수정
 
             const addList = [];
             for (let i = originDataLength; i < updatedDataLength; i++) {
                 addList.push(filterData[i]);
             }
-            addItem(addList); //추가
+            const isAdd = addItem(addList); //추가
+            if(isMod && isAdd) {
+                alert("저장완료");
+            }
         }
+
+        customDatasRefresh && customDatasRefresh();
+        setOriginTableData([]);
     };
 
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
