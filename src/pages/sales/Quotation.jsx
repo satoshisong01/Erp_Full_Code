@@ -16,13 +16,17 @@ import SearchModal from "components/modal/SearchModal";
 import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 import PopupButton from "components/button/PopupButton";
 import URL from "constants/url";
+import ApprovalFormReport from "components/form/ApprovalFormReport";
+import QuillEditor from "components/QuillEditor";
+import ApprovalLineModal from "components/modal/ApprovalLineModal";
+import ApprovalFormCost from "components/form/ApprovalFormCost";
 
-/** 영업관리-견적서관리 */
+/** 영업관리-견적관리 */
 function Quotation() {
     const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, setNameOfButton } = useContext(PageContext);
     const [infoList, setInfoList] = useState([
-        { name: "견적용 인건비", id: "estimateLabor" },
-        { name: "견적용 구매비", id: "orderBuying" },
+        { name: "인건비", id: "estimateLabor" },
+        { name: "구매비", id: "orderBuying" },
     ]);
     const [condition, setCondition] = useState({});
     const [isLoading, setIsLoading] = useState(true); //로딩화면(true 일때 로딩화면)
@@ -37,7 +41,7 @@ function Quotation() {
     const [buyIngBool, setBuyIngBool] = useState(false);
 
     useEffect(() => {
-        setInnerPageName({ name: "견적용 인건비", id: "estimateLabor" });
+        setInnerPageName({ name: "인건비", id: "estimateLabor" });
         setCurrentPageName({}); //inner와 pageName은 동시에 사용 X
         fetchAllData();
         return () => {};
@@ -309,7 +313,7 @@ function Quotation() {
         //    poiId: condition.poiId,
         //    useAt: "Y",
         //};
-        if (innerPageName.name === "견적용 인건비") {
+        if (innerPageName.id === "estimateLabor") { //인건비
             setIsLoading(true);
             const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
             console.log(resultData, "퓨어 데이터");
@@ -322,7 +326,7 @@ function Quotation() {
                 setEstimate(result);
                 setestimateBool(true);
             }
-        } else if (innerPageName.name === "견적용 구매비") {
+        } else if (innerPageName.id === "orderBuying") { //구매비
             setIsLoading(true);
 
             console.log("여기타는지 봐야해");
@@ -330,7 +334,7 @@ function Quotation() {
             setBuyIngBool(false);
             const resultData = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", condition || {});
             if (resultData.length !== 0) {
-                console.log(resultData, "견적용 구매비");
+                console.log(resultData, "구매비");
                 setBuyIngInfo(resultData);
                 setBuyIngBool(true);
             }
@@ -341,9 +345,9 @@ function Quotation() {
     };
 
     const returnList = (originTableData, tableData) => {
-        if (innerPageName.name === "견적용 인건비") {
+        if (innerPageName.id === "estimateLabor") { //인건비
             compareData(originTableData, tableData);
-        } else if (innerPageName.name === "견적용 구매비") {
+        } else if (innerPageName.id === "orderBuying") { //구매비
             console.log("이거안타나바");
             compareData2(originTableData, tableData);
         }
@@ -547,6 +551,93 @@ function Quotation() {
         });
     };
 
+    /* 품의서 */
+    const sessionUser = sessionStorage.getItem("loginUser");
+    const sessionUserName = JSON.parse(sessionUser)?.name;
+    const uniqId = JSON.parse(sessionUser)?.uniqId;
+    const posNm = JSON.parse(sessionUser)?.posNm;
+
+    const [isOpenModalApproval, setIsOpenModalApproval] = useState(false);
+    const [approvalLine, setApprovalLine] = useState([]); //결재선
+    const [isSave, setIsSave] = useState(false); //저장
+    const [isSubmit, setIsSubmit] = useState(false); //결재요청
+    const [content, setContent] = useState(""); //결재 비고내용
+
+    const writing = () => {
+        if(isSave) {
+            setIsSave(false); //내용 변경 중, 저장 버튼 활성화
+        }
+    }
+
+    /* 견적품의서 프로젝트 정보 */
+    const returnData = (value, type) => {
+        if(type === "결재선") {
+            const updated = [{uniqId: uniqId, empNm: sessionUserName, posNm}, ...value.approvalLine]
+            setApprovalLine(updated);
+        } else if(type === "비고") {
+            setContent(value);
+        } else if(type === "조회") {
+            console.log("1>>> ", value, type);
+            setCondition((prev) => {
+                if (prev.poiId !== value.poiId) {
+                    const newCondition = { ...value };
+                    // fetchAllData(newCondition);
+                    return newCondition;
+                } else {
+                    // fetchAllData({ ...prev });
+                    return prev;
+                }
+            });
+        }
+    }
+
+    useEffect(() => {
+        if(isSubmit) {
+            const willApprove = window.confirm("결재 요청 하시겠습니까?");
+            if(willApprove) {
+                submit();
+            }
+        }
+    }, [isSubmit])
+
+    const submit = async () => {
+        const list = approvalLine.slice(1); //첫번째는 요청자라 제외
+
+        if(!condition || !condition.poiId) {
+            alert("프로젝트를 선택하세요.");
+            setIsSubmit(false);
+            return;
+        }
+        if(!condition || !condition.versionId) {
+            alert("버전을 선택하세요.");
+            setIsSubmit(false);
+            return;
+        }
+        if(!list || list.length === 0) {
+            alert("결재선을 선택하세요.");
+            setIsSubmit(false);
+            return;
+        }
+
+        const dataTosend = {
+            "poiId": condition.poiId,
+            "versionId": condition.versionId,
+            "sgnDesc": content,
+            "sgnType": "견적품의서",
+            "sttApproverList": list
+        }
+
+        console.log("localStorage.jToken:", localStorage.jToken);
+        const resultData = await axiosPost("/api/system/signState/add.do", dataTosend);
+        if(resultData) {
+            alert("요청 완료되었습니다.");
+            setIsSave(false); //결재요청 버튼 비활성화
+            setApprovalLine([]);
+        }
+        setIsSubmit(false);
+    }
+    
+
     return (
         <>
             {isLoading ? (
@@ -560,13 +651,14 @@ function Quotation() {
                     <Location pathList={locationPath.Quotation} />
                     <div className="common_board_style mini_board_3">
                         <ul className="tab">
-                            <li onClick={() => changeTabs("견적용 인건비", "estimateLabor")}>
-                                <a href="#견적용 인건비" className="on">
-                                    견적용 인건비
-                                </a>
+                            <li onClick={() => changeTabs("인건비", "estimateLabor")}>
+                                <a href="#인건비" className="on"> 인건비 </a>
                             </li>
-                            <li onClick={() => changeTabs("견적용 구매비", "orderBuying")}>
-                                <a href="#견적용 구매비">견적용 구매비</a>
+                            <li onClick={() => changeTabs("구매비", "orderBuying")}>
+                                <a href="#구매비"> 구매비 </a>
+                            </li>
+                            <li onClick={() => changeTabs("품의서", "proposal")}>
+                                <a href="#품의서"> 품의서 </a>
                             </li>
                         </ul>
                         <div className="list">
@@ -596,7 +688,7 @@ function Quotation() {
                                             columns={columns.orderPlanMgmt.estimateLabor}
                                             returnList={returnList}
                                             customDatas={estimate}
-                                            viewPageName={{ name: "견적용 인건비", id: "estimateLabor" }}
+                                            viewPageName={{ name: "인건비", id: "estimateLabor" }}
                                             returnSelectRows={(data) => {
                                                 setSelectedRows(data);
                                             }}
@@ -632,7 +724,7 @@ function Quotation() {
                                             columns={columns.orderPlanMgmt.estimatePurchase}
                                             customDatas={buyIngInfo}
                                             returnList={returnList}
-                                            viewPageName={{ name: "견적용 구매비", id: "orderBuying" }}
+                                            viewPageName={{ name: "구매비", id: "orderBuying" }}
                                             returnSelectRows={(data) => {
                                                 setSelectedRows(data);
                                             }}
@@ -640,6 +732,23 @@ function Quotation() {
                                             condition={condition}
                                         />
                                     </HideCard>
+                                </ul>
+                            </div>
+                            <div className="third">
+                                <ul>
+                                    <div className="form-buttons mg-b-20" style={{maxWidth: 1400}}>
+                                        <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)}/>
+                                        <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave}/>
+                                        <AddButton label="결재요청" onClick={() => setIsSubmit(true)} disabled={!isSave}/>
+                                    </div>
+                                    <ApprovalFormCost     sendInfo={approvalLine}>
+                                        <div style={{marginTop: "-55px", marginBottom: 55}}>
+                                            <h2>견적품의서</h2>
+                                        </div>
+                                        <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="견적품의서"/>
+                                        <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing}/>
+                                        <ApprovalLineModal width={670} height={500} title="결재선" type="견적품의서" isOpen={isOpenModalApproval} onClose={() => setIsOpenModalApproval(false)} returnData={(value) => returnData(value, "결재선")}/>
+                                    </ApprovalFormCost>
                                 </ul>
                             </div>
                         </div>
