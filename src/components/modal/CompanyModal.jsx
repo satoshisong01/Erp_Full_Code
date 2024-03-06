@@ -42,7 +42,8 @@ export default function CompanyModal(props) {
             return {
                 cltId: item.cltId,
                 cltNm: item.cltNm,
-                [colName]: item.cltNm,
+                [colName?.id]: item.cltId,
+                [colName?.name]: item.cltNm,
                 pgNms: pgNms.join(", "), // 배열을 문자열로 변환
                 cltBusstype: item.cltBusstype,
             };
@@ -52,7 +53,8 @@ export default function CompanyModal(props) {
 
     const columns = [
         { header: "거래처아이디", col: "cltId", cellWidth: "0", notView: true },
-        { header: "거래처명", col: colName || "cltNm", cellWidth: "150" },
+        { header: "거래처아이디", col: colName?.id, cellWidth: "0", notView: true },
+        { header: "거래처명", col: colName?.name || "cltNm", cellWidth: "150" },
         { header: "품목그룹명", col: "pgNms", cellWidth: "170" },
         { header: "업체유형", col: "cltBusstype", cellWidth: "180" },
     ];
@@ -67,7 +69,7 @@ export default function CompanyModal(props) {
                 { label: "고객사", value: "C" },
             ],
         },
-        { title: "거래처명", col: colName || "cltNm", type: "input" },
+        { title: "거래처명", col: colName?.name || "cltNm", type: "input" },
         { title: "픔목그룹명", col: "pgNm", type: "input" },
     ];
 
@@ -93,6 +95,7 @@ export default function CompanyModal(props) {
     };
 
     const returnSelect = (value) => {
+        console.log(value);
         setSelectInfo((prev) => (prev.cltId !== value.cltId ? value : prev));
     };
 
@@ -122,7 +125,6 @@ export default function CompanyModal(props) {
                                     customDatas={companyList}
                                     returnSelect={returnSelect}
                                     viewPageName={{ name: "거래처팝업", id: "거래처팝업" }}
-                                    isSingleSelect={true}
                                 />
                             </div>
                         </div>
