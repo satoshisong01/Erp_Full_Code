@@ -175,7 +175,7 @@
 
 .tableWhiteItem {
     flex: 4;
-    display: flex;
+    /*display: flex;*/
     justify-content: center;
     align-items: center;
     /*width: 150px;*/
@@ -233,7 +233,7 @@
 .table4-3WhiteF,
 .table4-3WhiteF2 {
     flex: 2;
-    display: flex;
+    /*display: flex;*/
     justify-content: center;
     align-items: center;
     /*width: 150px;*/

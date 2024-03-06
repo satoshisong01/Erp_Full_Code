@@ -11,7 +11,7 @@ import FileUpload from "./FileUpload";
 
 Modal.setAppElement("#root"); // Set the root element for accessibility
 
-/* 품목상세정보 목록 모달 */
+/* 파일업로드 모달 */
 export default function FileModal(props) {
     const { width, height, isOpen, title, onClose, fileIdData } = props;
     const { setModalPageName, setIsModalTable, filePageName, setFilePageName, atchFileId, setAtchFileId, innerPageName } = useContext(PageContext);
@@ -24,7 +24,6 @@ export default function FileModal(props) {
 
     useEffect(() => {
         if (innerPageName.name !== "원가버전조회" && innerPageName.name !== undefined) {
-            console.log(innerPageName.name);
             console.log(fileIdData, "값이있나??");
             if (fileIdData && fileIdData.length > 0) {
                 fetchAllData();

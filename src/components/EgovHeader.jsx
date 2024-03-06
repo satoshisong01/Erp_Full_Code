@@ -113,6 +113,11 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
                         <img src="/assets/images/mecca_logo.png" alt="원가관리시스템" />
                     </Link>
                 </h1>
+                <p
+                    className="logoutTitle"
+                    style={{ top: sessionUserId ? "19px" : undefined, left: sessionUserId ? "-570px" : undefined, fontSize: sessionUserId ? "24px" : "32px" }}>
+                    원 가 관 리 시 스 템
+                </p>
 
                 <div className="gnb">
                     <h2 className="blind">주메뉴</h2>

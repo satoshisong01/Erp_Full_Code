@@ -253,6 +253,8 @@ $disabled: gray;
 
 /* react-table button */
 .table-buttons {
+    position: relative;
+    top: 1px;
     display: flex;
     justify-content: right;
     align-items: center;
