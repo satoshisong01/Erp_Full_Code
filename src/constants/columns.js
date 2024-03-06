@@ -161,6 +161,9 @@ export const columns = {
         ],
         groupDetailAddMod: [
             {
+                items: [{ header: "모델명", col: "pdiNum", require: true, type: "input" }],
+            },
+            {
                 items: [{ header: "품목그룹명", col: "pgNm", require: true, type: "productGroup" }],
             },
             { items: [{ header: "품목명", col: "pdiNm", require: true, type: "input" }] },
