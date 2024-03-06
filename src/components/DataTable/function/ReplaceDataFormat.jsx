@@ -47,6 +47,7 @@ export const ChangePrmnPlanData = (data, poiId) => {
                 pmpMonth: `${item.pmpMonth}`,
                 total: 0,
                 versionId: item.versionId,
+                pmpDesc: item.pmpDesc
             };
         }
 
@@ -77,7 +78,7 @@ export const buyIngInfoCalculation = (list) => {
     const updatedData = list.map((row) => {
         const {
             byQunty, // 수량
-            consumerPrice, // 소비자단가
+            byConsumerUnitPrice, // 소비자단가
             consumerAmount, // 소비자금액
             unitPrice, // 단가
             planAmount, // 금액
@@ -89,7 +90,7 @@ export const buyIngInfoCalculation = (list) => {
             byConsumerOutputRate, // 구매-소비자가산출률
         } = {
             ...row,
-            consumerPrice: row.consumerPrice ? row.consumerPrice : 0,
+            byConsumerUnitPrice: row.byConsumerUnitPrice ? row.byConsumerUnitPrice : 0,
             byStandardMargin: row.byStandardMargin ? row.byStandardMargin : 0,
             byConsumerOutputRate: row.byConsumerOutputRate ? row.byConsumerOutputRate : 0,
         };
@@ -100,9 +101,9 @@ export const buyIngInfoCalculation = (list) => {
         // 3.공급금액 : 수량 * 공급단가
         const updatedPlanAmount = planAmount ? planAmount : byQunty * updatedUnitPrice;
         // 4.소비자단가 : 공급단가 / 소비자산출율
-        const updatedConsumerPrice = consumerPrice ? consumerPrice : division(updatedUnitPrice, byConsumerOutputRate);
+        const updatedbyConsumerUnitPrice = byConsumerUnitPrice ? byConsumerUnitPrice : division(updatedUnitPrice, byConsumerOutputRate);
         // 5.소비자금액 : 수량 * 소비자단가
-        const updatedConsumerAmount = consumerAmount ? consumerAmount : byQunty * updatedConsumerPrice;
+        const updatedConsumerAmount = consumerAmount ? consumerAmount : byQunty * updatedbyConsumerUnitPrice;
         // 6.이익금 : 공급금액 - 원가
         const updatedPlannedProfits = plannedProfits ? plannedProfits : updatedPlanAmount - updatedEstimatedCost;
         // 7.이익률 : 이익금 / 공급금액
@@ -113,7 +114,7 @@ export const buyIngInfoCalculation = (list) => {
             estimatedCost: Math.round(updatedEstimatedCost),
             unitPrice: Math.round(updatedUnitPrice),
             planAmount: Math.round(updatedPlanAmount),
-            consumerPrice: Math.round(updatedConsumerPrice * 100) ,
+            byConsumerUnitPrice: Math.round(updatedbyConsumerUnitPrice * 100) ,
             consumerAmount: Math.round(updatedConsumerAmount * 100) ,
             plannedProfits: Math.round(updatedPlannedProfits),
             plannedProfitMargin: Math.round(updatedPlannedProfitMargin * 100),

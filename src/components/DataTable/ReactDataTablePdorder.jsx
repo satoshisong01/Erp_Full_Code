@@ -99,7 +99,7 @@ const ReactDataTablePdorder = (props) => {
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
 
-            if (nameOfButton === "save" && innerPageName.name === "견적용 구매비") {
+            if (nameOfButton === "save" && innerPageName.id === "orderBuying") { //견적>구매비
                 returnList(originTableData, tableData);
             } else if (nameOfButton === "save") {
                 compareData(originTableData, tableData);
@@ -225,8 +225,6 @@ const ReactDataTablePdorder = (props) => {
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
                 newRow[column.accessor] = condition.poiId || ""; // poiId를 항상 SLSP로 설정
-            } else {
-                newRow[column.accessor] = null; // 다른 열은 초기화
             }
             if (column.type === "select") {
                 newRow[column.accessor] = column.options[0].value //콤보박스 초기화
@@ -298,8 +296,9 @@ const ReactDataTablePdorder = (props) => {
 
             // 선택된 품명의 데이터로 해당 행(row)의 데이터 업데이트
             updatedTableData[rowIndex] = {
-                ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+                // ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
                 ...selectedPdiNm, // projectPdiNm 객체의 데이터로 업데이트
+                byUnitPrice: selectedPdiNm.pupUnitPrice //품목단가
             };
 
             // 업데이트된 데이터로 tableData 업데이트
@@ -364,9 +363,9 @@ const ReactDataTablePdorder = (props) => {
                     // 3.공급금액 : 수량 * 공급단가
                     const planAmount = row.original.byQunty * unitPrice;
                     // 4.소비자단가 : 공급단가 / 소비자산출율
-                    const consumerPrice = division(unitPrice, row.original.byConsumerOutputRate);
+                    const byConsumerUnitPrice = division(unitPrice, row.original.byConsumerOutputRate);
                     // 5.소비자금액 : 수량 * 소비자단가
-                    const consumerAmount = row.original.byQunty * consumerPrice;
+                    const consumerAmount = row.original.byQunty * byConsumerUnitPrice;
                     // 6.이익금 : 공급금액 - 원가
                     const plannedProfits = planAmount - estimatedCost;
 
@@ -374,15 +373,15 @@ const ReactDataTablePdorder = (props) => {
                     updatedTableData[index]["unitPrice"] = Math.round(unitPrice);
                     updatedTableData[index]["atchFileId"] = atchFileId;
                     updatedTableData[index]["planAmount"] = Math.round(planAmount);
-                    updatedTableData[index]["consumerPrice"] = Math.round(consumerPrice * 100);
+                    updatedTableData[index]["byConsumerUnitPrice"] = Math.round(byConsumerUnitPrice * 100);
                     updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount * 100);
                     updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits);
                 }
             }
             //기준 이익율, 소비자가 산출률 역산 해야할지 문의
-            else if (name === "consumerPrice" || name === "unitPrice") {
+            else if (name === "byConsumerUnitPrice" || name === "unitPrice") {
                 //소비자단가, 공급단가
-                const consumerAmount = row.original.byQunty * row.original.consumerPrice; //소비자금액
+                const consumerAmount = row.original.byQunty * row.original.byConsumerUnitPrice; //소비자금액
                 const planAmount = row.original.byQunty * row.original.unitPrice; //공급금액
                 // 이익금 : 공급금액 - 원가
                 const plannedProfits = planAmount - row.original.estimatedCost;
@@ -444,8 +443,11 @@ const ReactDataTablePdorder = (props) => {
 
         const url = `/api${suffixUrl}/addList.do`;
         const resultData = await axiosPost(url, addNewData);
-        customDatasRefresh();
-        setOriginTableData([]);
+        if(resultData) {
+            return true;
+        } else {
+            return false;
+        }
     };
 
     const updateList = async (toUpdate) => {
@@ -463,8 +465,7 @@ const ReactDataTablePdorder = (props) => {
                 data.modeCode = "EXECUTE";
             });
         } else if (innerPageName.id === "buying") {
-            //영업-구메
-            //영업
+            //영업-구매
             toUpdate.forEach((data) => {
                 data.poiId = condition.poiId || "";
                 data.versionId = condition.versionId;
@@ -473,8 +474,11 @@ const ReactDataTablePdorder = (props) => {
 
         const url = `/api${suffixUrl}/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
-        customDatasRefresh();
-        setOriginTableData([]);
+        if(resultData) {
+            return true;
+        } else {
+            return false;
+        }
     };
     const deleteList = async (removeItem) => {
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(removeItem)) return;
@@ -482,13 +486,19 @@ const ReactDataTablePdorder = (props) => {
             const changeUrl = "/baseInfrm/product/buyIngInfoExe";
             const url = `/api${changeUrl}/removeAll.do`;
             const resultData = await axiosDelete(url, removeItem);
-            customDatasRefresh();
-            setOriginTableData([]);
+            if(resultData) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
             const url = `/api${suffixUrl}/removeAll.do`;
             const resultData = await axiosDelete(url, removeItem);
-            customDatasRefresh();
-            setOriginTableData([]);
+            if(resultData) {
+                return true;
+            } else {
+                return false;
+            }
         }
     };
 
@@ -519,14 +529,21 @@ const ReactDataTablePdorder = (props) => {
             };
 
             const firstRowUpdate = updateDataInOrigin(originData, filterData);
-            updateList(firstRowUpdate);
+            const isMod = updateList(firstRowUpdate);
 
             const originAValues = originData.map((item) => item.byId); //삭제할 id 추출
             const extraOriginData = originAValues.slice(updatedDataLength);
 
-            deleteList(removeDuplicates(extraOriginData));
+            const isDel = deleteList(removeDuplicates(extraOriginData));
+
+            if(isMod && isDel) {
+                alert("저장완료");
+            }
         } else if (originDataLength === updatedDataLength) {
-            updateList(filterData);
+            const isMod = updateList(filterData);
+            if(isMod) {
+                alert("저장완료");
+            }
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
             const toUpdate = [];
@@ -534,15 +551,19 @@ const ReactDataTablePdorder = (props) => {
                 const temp = { ...filterData[i] };
                 toUpdate.push(temp);
             }
-            if (toUpdate && toUpdate.length > 0) {
-                updateList(toUpdate);
-            }
+            const isMod = toUpdate.length > 0 && updateList(toUpdate);
             for (let i = originDataLength; i < updatedDataLength; i++) {
                 const temp = { ...filterData[i] };
                 toAdds.push(temp);
             }
-            addList(toAdds);
+            const isAdd = addList(toAdds);
+            if(isMod && isAdd) {
+                alert("저장완료");
+            }
         }
+
+        customDatasRefresh && customDatasRefresh();
+        setOriginTableData([]);
     };
 
     const isCurrentPage = () => {
