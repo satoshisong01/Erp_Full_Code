@@ -81,24 +81,25 @@ const ReactDataTableURL = (props) => {
         if (isCurrentPage()) {
             setIsLoading(false);
             const updatedTableData = initializeTableData(customDatas, columns);
-            console.log(customDatas, "받는값");
-            console.log(updatedTableData, "여기서빠지나");
             setTableData(updatedTableData);
             setOriginTableData(updatedTableData);
         }
         // }, [customDatas, columns, innerPageName]);
     }, [customDatas, innerPageName]);
 
-    /* columns에는 있지만 넣어줄 데이터가 없을 때 조기값 설정 */
+    /* columns에는 있지만 넣어줄 데이터가 없을 때 초기값 설정 */
     const initializeTableData = (datas, cols) => {
         if (datas && datas.length > 0) {
             const updatedData = datas.map((dataItem) => {
                 const newData = { ...dataItem };
                 cols.forEach((column) => {
-                    // 데이터 객체에 해당 컬럼의 속성이 없을 때만 초기화 로직 적용
+                    // customDatas에 columns에 있는 변수가 없다면
                     if (!newData.hasOwnProperty(column.col)) {
                         // select 타입의 컬럼이면 첫 번째 옵션 값으로 설정, 아니면 빈 문자열로 초기화
                         newData[column.col] = column.type === "select" ? column.options[0].value : "";
+                    }
+                    if (newData[column.col] === null) {
+                        newData[column.col] = ""; //null이 아니게 초기화
                     }
                 });
                 return newData;
@@ -383,7 +384,7 @@ const ReactDataTableURL = (props) => {
             //경비목록 중복 방지
             const isDuplicate = updatedTableData.some((item) => item.pjbgTypeCode === value);
             if (isDuplicate) {
-                alert("해당 타입은 이미 존재합니다."); //이렇게해도 select는 선택되고 데이터는 들어감
+                alert("해당 타입은 이미 존재합니다.");
                 updatedTableData[index][accessor] = "";
             } else {
                 updatedTableData[index][accessor] = value;
@@ -403,7 +404,6 @@ const ReactDataTableURL = (props) => {
 
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {
-        console.log("여기안타나봄");
         const newRow = {};
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
@@ -480,26 +480,30 @@ const ReactDataTableURL = (props) => {
     const addItem = async (addData) => {
         const url = `/api/baseInfrm/product/pjbudget/addList.do`;
         const resultData = await axiosPost(url, addData);
-        if (resultData) {
-            customDatasRefresh && customDatasRefresh();
+        if(resultData) {
+            return true;
+        } else {
+            return false;
         }
     };
 
     const updateItem = async (toUpdate) => {
         const url = `/api/baseInfrm/product/pjbudget/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
-
-        if (resultData) {
-            customDatasRefresh && customDatasRefresh();
+        if(resultData) {
+            return true;
+        } else {
+            return false;
         }
     };
 
     const deleteItem = async (removeItem) => {
         const url = `/api/baseInfrm/product/pjbudget/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-
-        if (resultData) {
-            customDatasRefresh && customDatasRefresh();
+        if(resultData) {
+            return true;
+        } else {
+            return false;
         }
     };
 
@@ -511,26 +515,26 @@ const ReactDataTableURL = (props) => {
         setTableData(updatedTableData);
     };
 
+    //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
+    const updateDataInOrigin = (originData, updatedData) => {
+        // 복제하여 새로운 배열 생성
+        const updatedArray = [...originData];
+        // updatedData의 길이만큼 반복하여 originData 갱신
+        for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
+            const updatedItem = updatedData[i];
+            updatedArray[i] = { ...updatedItem, pjbgId: updatedArray[i].pjbgId };
+        }
+        return updatedArray;
+    };
+
     const compareData = (originData, updatedData) => {
         const filterData = updatedData.filter((data) => data.pjbgTypeCode); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
 
         if (originDataLength > updatedDataLength) {
-            //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
-            const updateDataInOrigin = (originData, updatedData) => {
-                // 복제하여 새로운 배열 생성
-                const updatedArray = [...originData];
-                // updatedData의 길이만큼 반복하여 originData 갱신
-                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
-                    const updatedItem = updatedData[i];
-                    updatedArray[i] = { ...updatedItem, pjbgId: updatedArray[i].pjbgId };
-                }
-                return updatedArray;
-            };
-
-            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
-            updateItem(firstRowUpdate); //수정
+            const firstRowUpdate = updateDataInOrigin(originData, filterData);
+            const isMod = updateItem(firstRowUpdate); //수정
 
             const delList = [];
             const delListTest = [];
@@ -538,23 +542,36 @@ const ReactDataTableURL = (props) => {
                 delList.push(originData[i].pjbgId);
                 delListTest.push(originData[i]);
             }
-            deleteItem(delList); //삭제
+            const isDel = deleteItem(delList); //삭제
+            if(isMod && isDel) {
+                alert("저장완료");
+            }
         } else if (originDataLength === updatedDataLength) {
-            updateItem(filterData); //수정
+            const firstRowUpdate = updateDataInOrigin(originData, filterData);
+            const isMod = updateItem(firstRowUpdate); //수정
+            if(isMod) {
+                alert("저장완료");
+            }
         } else if (originDataLength < updatedDataLength) {
             const updateList = [];
 
             for (let i = 0; i < originDataLength; i++) {
                 updateList.push(filterData[i]);
             }
-            updateItem(updateList); //수정
+            const isMod = updateItem(updateList); //수정
 
             const addList = [];
             for (let i = originDataLength; i < updatedDataLength; i++) {
                 addList.push(filterData[i]);
             }
-            addItem(addList); //추가
+            const isAdd = addItem(addList); //추가
+            if(isMod && isAdd) {
+                alert("저장완료");
+            }
         }
+
+        setOriginTableData([]);
+        customDatasRefresh && customDatasRefresh();
     };
 
     // const [totalPrice, setTotalPrice] = useState(0);
@@ -632,7 +649,7 @@ const ReactDataTableURL = (props) => {
                                                                 name={cell.column.col}
                                                                 type="text"
                                                                 value={
-                                                                    tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
+                                                                    tableData[row.index]?.[cell.column.id] !== undefined
                                                                         ? tableData[row.index][cell.column.id]
                                                                         : ""
                                                                 }
@@ -642,7 +659,7 @@ const ReactDataTableURL = (props) => {
                                                             <input
                                                                 type="text"
                                                                 value={
-                                                                    tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
+                                                                    tableData[row.index]?.[cell.column.id] !== undefined
                                                                         ? tableData[row.index][cell.column.id]
                                                                         : ""
                                                                 }
@@ -693,7 +710,7 @@ const ReactDataTableURL = (props) => {
                                                                 value={tableData[row.index]?.[cell.column.id] || ""}
                                                                 onChange={(e) => onChangeInput(e, row, cell.column.id)}>
                                                                 {cell.column.options.map((option, index) => (
-                                                                    <option key={index} value={option.value || ""} selected={index === 0 ? true : false}>
+                                                                    <option key={index} value={option.value || ""}>
                                                                         {option.label}
                                                                     </option>
                                                                 ))}
