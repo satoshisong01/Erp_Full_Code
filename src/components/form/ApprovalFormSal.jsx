@@ -32,6 +32,9 @@ function ApprovalFormSal({ returnData, initial }) {
                 option: emptyArr,
             }));
         }
+        if (!resultData || resultData.length === 0) {
+            alert("버전 정보가 없습니다.")
+        }
     };
 
     const onSelectChange = (e) => {

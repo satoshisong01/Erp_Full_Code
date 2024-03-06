@@ -7,14 +7,12 @@ import ReactDataTable from "components/DataTable/ReactDataTable";
 import HideCard from "components/HideCard";
 import { PageContext } from "components/PageProvider";
 import RefreshButton from "components/button/RefreshButton";
-import ModButton from "components/button/ModButton";
-import URL from "constants/url";
 import { columns } from "constants/columns";
 import ViewModal from "components/modal/ViewModal";
 import ViewButton from "components/button/ViewButton";
 
-/** 전자결재-결재완료함 */
-function CompletedBox() {
+/** 전자결재-결재반려함 */
+function ReturnBox() {
     const { currentPageName } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -68,7 +66,7 @@ function CompletedBox() {
     ];
 
     useEffect(() => {
-        fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "완료" });
+        fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "반려" });
     }, [currentPageName]);
 
     const fetchAllData = async (condition) => {
@@ -79,7 +77,7 @@ function CompletedBox() {
     };
 
     const refresh = () => {
-        fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "완료" });
+        fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "반려" });
     };
 
     const returnData = (row) => {
@@ -100,7 +98,7 @@ function CompletedBox() {
         <>
             <Location pathList={locationPath.Approval} />
             <SearchList conditionList={conditionList} />
-            <HideCard title="결재완료 목록" color="back-lightblue" className="mg-b-40">
+            <HideCard title="결재반려 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
                     <ViewButton label={"보기"} onClick={() => setIsOpenView(true)} />
                     <RefreshButton onClick={refresh} />
@@ -108,7 +106,7 @@ function CompletedBox() {
                 <ReactDataTable
                     columns={columnsList}
                     customDatas={tableData}
-                    viewPageName={{ name: "결재완료함", id: "CompletedBox" }}
+                    viewPageName={{ name: "결재반려함", id: "ReturnBox" }}
                     returnSelect={returnData}
                     isSingleSelect={true}
                 />
@@ -128,4 +126,4 @@ function CompletedBox() {
     );
 }
 
-export default CompletedBox;
+export default ReturnBox;

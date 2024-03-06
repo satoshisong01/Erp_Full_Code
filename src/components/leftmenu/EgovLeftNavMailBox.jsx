@@ -61,6 +61,11 @@ function EgovLeftNavMailBox(props) {
             id: "CompletedBox",
             subMenus: []
         },
+        {
+            label: "결재반려함",
+            id: "ReturnBox",
+            subMenus: []
+        },
     ];
 
     return (

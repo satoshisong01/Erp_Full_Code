@@ -54,7 +54,7 @@ const ReactDataTableURL = (props) => {
     const [tableData, setTableData] = useState([]);
     const [originTableData, setOriginTableData] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
-    const [current, setCurrent] = useState(viewPageName); //==viewPageName
+    const [current, setCurrent] = useState(viewPageName); //name, id로 이루어진 객체
 
     const [rowIndex, setRowIndex] = useState(0);
     const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
@@ -424,13 +424,13 @@ const ReactDataTableURL = (props) => {
             } else {
                 newRow[column.accessor] = null; // 다른 열은 초기화
             }
-            if (viewPageName === "경비실행") {
+            if (current.name === "경비실행") {
                 if (column.accessor === "modeCode") {
                     newRow[column.accessor] = "EXECUTE"; // useAt 항상 "Y"로 설정
                 } else if (column.accessor === "pjbgTypeCode19") {
                     newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
                 }
-            } else if (viewPageName === "영업비(정산)") {
+            } else if (current.name === "영업비(정산)") {
                 if (column.accessor === "modeCode") {
                     newRow[column.accessor] = "EXECUTE"; // useAt 항상 "Y"로 설정
                 } else if (column.accessor === "pjbgTypeCode1") {
@@ -448,7 +448,7 @@ const ReactDataTableURL = (props) => {
                 } else if (column.accessor === "pjbgTypeCode20") {
                     newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
                 }
-            } else if (viewPageName === "견적용 인건비") {
+            } else if (current.id === "estimateLabor") { //견적>인건비
                 if (column.accessor === "estPosition") {
                     newRow[column.accessor] = "특1"; // useAt 항상 "Y"로 설정
                 }
