@@ -118,23 +118,29 @@ function OrderPlanMgmt() {
 
             const firstRowUpdate = updateDataInOrigin(originData, updatedData);
             upDateChange(firstRowUpdate);
-            updateList(firstRowUpdate);
+            const isMod = updateList(firstRowUpdate);
 
             const originAValues = originData.map((item) => item.pmpId);
             const extraOriginData = originAValues.slice(updatedDataLength);
             const combinedAValues = extraOriginData.reduce((acc, current) => acc.concat(current), []);
 
-            deleteList(combinedAValues);
+            const isDel = deleteList(combinedAValues);
+            if(isMod && isDel) {
+                alert("저장완료");
+            }
         } else if (originDataLength === updatedDataLength) {
             upDateChange(filterData);
-            updateList(filterData);
+            const isMod = updateList(filterData);
+            if(isMod) {
+                alert("저장완료");
+            }
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
             const addUpdate = [];
             for (let i = 0; i < originDataLength; i++) {
                 addUpdate.push(filterData[i]);
             }
-            updateList(addUpdate);
+            const isMod = updateList(addUpdate);
 
             for (let i = originDataLength; i < updatedDataLength; i++) {
                 const toAdd = { ...filterData[i] };
@@ -162,19 +168,26 @@ function OrderPlanMgmt() {
                 });
             };
             addDayToPmpMonth(toAdds);
-            addList(toAdds);
+            const isAdd = addList(toAdds);
+            if(isMod && isAdd) {
+                alert("저장완료");
+            }
         }
-        fetchAllData(); //리프레쉬
+        refresh(); //리프레쉬
     };
 
     const addList = async (addNewData) => {
-        console.log(addNewData, "인건비 추가시 배열");
         addNewData.forEach((data) => {
             data.poiId = condition.poiId || "";
         });
         const url = `/api/baseInfrm/product/prmnPlan/addList.do`;
         const resultData = await axiosPost(url, addNewData);
-        refresh();
+        if(resultData) {
+            refresh();
+            return true;
+        } else {
+            refresh();
+        }
     };
     const updateList = async (toUpdate) => {
         toUpdate.forEach((data) => {
@@ -187,13 +200,23 @@ function OrderPlanMgmt() {
 
         const url = `/api/baseInfrm/product/prmnPlan/editArrayList.do`;
         const resultData = await axiosUpdate(url, updatedData);
-        refresh();
+        if(resultData) {
+            refresh();
+            return true;
+        } else {
+            refresh();
+        }
     };
 
     const deleteList = async (removeItem) => {
         const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        refresh();
+        if(resultData) {
+            refresh();
+            return true;
+        } else {
+            refresh();
+        }
     };
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
@@ -367,13 +390,14 @@ function OrderPlanMgmt() {
 
                 //합산의 네고율, 이익금, 이익율 구하기
                 const groupedDataWithCalculations = groupedData.map((group) => {
-                    // 할인율: (1 - (소비자금액 / 공급금액)) * 100
-                    group.nego = group.planAmount !== 0 ? (group.consumerAmount / group.planAmount - 1) * 100 : 0;
+                    // 할인율: (1 - (공급금액 / 소비자금액)) * 100
+                    const temp1 = group.planAmount !== 0 ? (group.planAmount / group.consumerAmount-1) * -100 : 0;
+                    group.nego = Math.round(temp1) + " %";
                     // 이익금: 공급금액 - 원가
                     group.profits = group.planAmount - group.estimatedCost;
                     // 이익률: (공급금액-원가)/원가*100
-                    const temp = group.planAmount !== 0 ? ((group.planAmount - group.estimatedCost) / group.planAmount) * 100 : 0;
-                    group.margin = Math.round(temp) + "%";
+                    const temp2 = group.planAmount !== 0 ? ((group.planAmount - group.estimatedCost) / group.planAmount) * 100 : 0;
+                    group.margin = Math.round(temp2) + " %";
                     return group;
                 });
 
@@ -404,13 +428,11 @@ function OrderPlanMgmt() {
                     pdiSeller: "",
                     consumerAmount: totals.consumerAmount, //소비자금액
                     planAmount: totals.planAmount, //공급금액
-                    nego: totals.planAmount !== 0 ? (totals.consumerAmount / totals.planAmount - 1) * 100 : 0, //네고율
+                    nego: totals.planAmount !== 0 ?  Math.round((totals.planAmount / totals.consumerAmount-1) * -100) + " %" : 0 + " %", //네고율
                     estimatedCost: totals.estimatedCost, //원가
                     profits: totals.profits, //이익금
-                    // (공급금액-원가)/원가*100
-                    // margin: totals.planAmount !== 0 ? Math.round(((totals.planAmount - totals.estimatedCost) / totals.estimatedCost) * 100) + "%" : 0 + "%", //이익율
                     // 마진 = (이익금/공급금액)*100
-                    margin: totals.planAmount !== 0 ? Math.round((totals.profits/totals.planAmount)*100) + "%" : 0 + "%", //이익율
+                    margin: totals.planAmount !== 0 ? Math.round((totals.profits/totals.planAmount)*100) + " %" : 0 + " %", //이익율
                     byQunty: totals.byQunty,
                 });
 
@@ -422,7 +444,6 @@ function OrderPlanMgmt() {
             }
         } else if (innerPageName.name === "개발외주비") {
             const resultData = await axiosFetch("/api/baseInfrm/product/devOutCost/totalListAll.do", requestData);
-            console.log(requestData, "??");
             if (resultData && resultData.length > 0) {
                 resultData.forEach((data) => {
                     data.price = data.devOutMm * data.devOutPrice; // 계산된 값을 데이터에 추가
@@ -507,7 +528,7 @@ function OrderPlanMgmt() {
             // const poiNms = selectedRows.map((row) => row.versionId);
             const poiNms = selectedRow.versionId;
             const url = `/api/baseInfrm/product/versionControl/removeAll.do`;
-            const resultData = await axiosDelete(url, poiNms);
+            const resultData = await axiosDelete(url, [poiNms]);
             if (resultData) {
                 alert(`선택한 항목들이 삭제되었습니다.`);
                 fetchVersion();
@@ -621,7 +642,7 @@ function OrderPlanMgmt() {
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable columns={columns.orderPlanMgmt.laborCal} customDatas={prmnCalDatas} hideCheckBox={true} isPageNation={true} />
                             </HideCard>
-                            <HideCard title="계획 등록/수정" color="back-lightblue">
+                            <HideCard title="등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
@@ -651,7 +672,7 @@ function OrderPlanMgmt() {
                                     isSpecialRow={true}
                                 />
                             </HideCard>
-                            <HideCard title="계획 등록/수정" color="back-lightblue">
+                            <HideCard title="등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <BasicButton label="검색하기" onClick={() => setIsOpenSearch(true)} />
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
@@ -683,7 +704,7 @@ function OrderPlanMgmt() {
                                     isPageNation={true}
                                 />
                             </HideCard>
-                            <HideCard title="계획 등록/수정" color="back-lightblue">
+                            <HideCard title="등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
@@ -713,7 +734,7 @@ function OrderPlanMgmt() {
                                     isPageNation={true}
                                 />
                             </HideCard>
-                            <HideCard title="계획 등록/수정" color="back-lightblue">
+                            <HideCard title="등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
@@ -743,7 +764,7 @@ function OrderPlanMgmt() {
                                     isPageNation={true}
                                 />
                             </HideCard>
-                            <HideCard title="계획 등록/수정" color="back-lightblue">
+                            <HideCard title="등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
