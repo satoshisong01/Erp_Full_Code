@@ -238,19 +238,19 @@ const LaborSummaryDoc = () => {
                                 <th colSpan={2} rowSpan={2} style={{ textAlign: "center", width: "250px", border: "solid 1px gray" }}>
                                     Description
                                 </th>
-                                <th colSpan={1} rowSpan={0} style={{ textAlign: "center", width: "10px", border: "solid 1px gray" }}>
+                                <th colSpan={1} rowSpan={0} style={{ textAlign: "center", width: "20px", border: "solid 1px gray" }}>
                                     Position
                                 </th>
                                 <th colSpan={count} style={{ width: `${count * 35}px`, textAlign: "center", border: "solid 1px gray" }}>
                                     M/M
                                 </th>
-                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "40px", border: "solid 1px gray" }}>
+                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "20px", border: "solid 1px gray" }}>
                                     Total
                                 </th>
-                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "60px", border: "solid 1px gray" }}>
+                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "35px", border: "solid 1px gray" }}>
                                     Unit Price
                                 </th>
-                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "90px", border: "solid 1px gray" }}>
+                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "65px", border: "solid 1px gray" }}>
                                     Amount
                                 </th>
                             </tr>
