@@ -86,7 +86,7 @@ const ReactDataTableURL = (props) => {
             setTableData(updatedTableData);
             setOriginTableData(updatedTableData);
         }
-    // }, [customDatas, columns, innerPageName]);
+        // }, [customDatas, columns, innerPageName]);
     }, [customDatas, innerPageName]);
 
     /* columns에는 있지만 넣어줄 데이터가 없을 때 조기값 설정 */
@@ -206,6 +206,23 @@ const ReactDataTableURL = (props) => {
     };
 
     useEffect(() => {
+        if (isCurrentPage() && Object.keys(projectPgNm).length > 0) {
+            setValueDataPgNm2(rowIndex, projectPgNm);
+            setProjectPgNm({});
+        }
+    }, [projectPgNm]);
+
+    const setValueDataPgNm2 = (rowIndex, pgNm) => {
+        const updatedTableData = [...tableData];
+        updatedTableData[rowIndex] = {
+            ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+            ...pgNm,
+        };
+        setTableData(updatedTableData);
+        setProjectPgNm({});
+    };
+
+    useEffect(() => {
         if (isCurrentPage() && Object.keys(projectPdiNm).length > 0) {
             setValueDataPgInfo(rowIndex, projectPdiNm);
             setProjectPdiNm({});
@@ -228,7 +245,8 @@ const ReactDataTableURL = (props) => {
         const updatedTableData = [...tableData];
         updatedTableData[rowIndex][accessor] = value;
         // 수정된 데이터로 tableData 업데이트
-
+        console.log(value);
+        console.log(updatedTableData, "1111");
         setTableData(updatedTableData);
     };
 
@@ -385,6 +403,7 @@ const ReactDataTableURL = (props) => {
 
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {
+        console.log("여기안타나봄");
         const newRow = {};
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {

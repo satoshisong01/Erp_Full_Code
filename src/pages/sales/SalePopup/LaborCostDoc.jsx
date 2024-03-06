@@ -343,10 +343,11 @@ const LaborCostDoc = () => {
                             </div>
                         </div>
                     </div>
-
-                    <h1 className="SumCount">
-                        一金 : {firstItemChineseTotal}원整(₩{firstItemTotal.toLocaleString()} - VAT 별도)
-                    </h1>
+                    <div style={{ width: "100%", textAlign: "center", marginTop: "20px" }}>
+                        <span className="SumCount">
+                            一金 : {firstItemChineseTotal}원整(₩{firstItemTotal.toLocaleString()} - VAT 별도)
+                        </span>
+                    </div>
                     <div className="condition">
                         <div className="conditionSpan">
                             <div className="rightBox">
@@ -396,22 +397,30 @@ const LaborCostDoc = () => {
                                     <React.Fragment key={index}>
                                         <tr className="tableTr">
                                             <td className="tableRedPercentW">{index + 1}</td>
-                                            <td className="tableWhiteItem">{data.pgNm}</td>
+                                            <td className="tableWhiteItem" style={{ textAlign: "left" }}>
+                                                {data.pgNm}
+                                            </td>
                                             <td className="tableRedPercentW">{/*{data.estItem.reduce((acc, curr) => acc + curr.total, 0)}*/}1</td>
                                             <td className="tableRedPercentW">Lot</td>
                                             <td className="table4-3White"></td>
-                                            <td className="table4-3White">
+                                            <td className="table4-3White" style={{ textAlign: "right" }}>
                                                 {data.estItem.reduce((acc, curr) => acc + curr.price * curr.total, 0).toLocaleString()}
                                             </td>
                                         </tr>
                                         {data.estItem.map((item, itemIndex) => (
                                             <tr key={itemIndex} className="tableTr">
                                                 <td className="tableRedPercentW"></td>
-                                                <td className="tableWhiteItem">{item.estPosition}</td>
+                                                <td className="tableWhiteItem" style={{ textAlign: "left" }}>
+                                                    {item.estPosition}
+                                                </td>
                                                 <td className="tableRedPercentW">{item.total}</td>
                                                 <td className="tableRedPercentW">M/M</td>
-                                                <td className="table4-3White">{item.price.toLocaleString()}</td>
-                                                <td className="table4-3White">{(item.total * item.price).toLocaleString()}</td>
+                                                <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                    {item.price.toLocaleString()}
+                                                </td>
+                                                <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                    {(item.total * item.price).toLocaleString()}
+                                                </td>
                                             </tr>
                                         ))}
                                     </React.Fragment>

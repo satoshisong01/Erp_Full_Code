@@ -45,7 +45,7 @@ export default function AddModModal(props) {
     const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
     const [isOpenModalProductGroup, setIsOpenModalProductGroup] = useState(false); //품목그룹목록
     const [isOpenModalEmployerInfo, setIsOpenModalEmployerInfo] = useState(false); //업무회원목록
-    const [colName, setColName] = useState("");
+    const [colName, setColName] = useState({ name: "", id: "" });
 
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
@@ -58,6 +58,7 @@ export default function AddModModal(props) {
     }, [height]);
 
     useEffect(() => {
+        //console.log(companyInfo, "두개받나");
         //거래처
         if (Object.keys(companyInfo).length > 0) {
             setData((prevData) => {
@@ -66,6 +67,10 @@ export default function AddModModal(props) {
             setCompanyInfo({});
         }
     }, [companyInfo]);
+
+    //useEffect(() => {
+    //    console.log(data, "data222");
+    //}, [data]);
 
     useEffect(() => {
         //품목
@@ -156,9 +161,15 @@ export default function AddModModal(props) {
         setColName(colName);
     };
 
-    const changeCompany = (colName) => {
+    //useEffect(() => {
+    //    console.log(colName, "컬");
+    //}, [colName]);
+
+    const changeCompany = (id, name) => {
+        //id=setver로 보내는값, name=테이블에띄어지는값
+        //console.log(id, name, "후후");
         setIsOpenModalCompany(true);
-        setColName(colName);
+        setColName({ id: id, name: name });
     };
 
     const renderField = (item, index, data) => (
@@ -181,9 +192,9 @@ export default function AddModModal(props) {
                         <BasicInput
                             item={item}
                             onClick={() => {
-                                changeCompany(item.col);
+                                changeCompany(item.col, `${item.col}_name`);
                             }}
-                            value={data?.[item.col] ?? ""}
+                            value={data?.[`${item.col}_name`] ? data[`${item.col}_name`] : data?.[item.col]}
                             readOnly
                         />
                     </>

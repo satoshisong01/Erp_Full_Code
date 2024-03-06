@@ -48,6 +48,7 @@ function Quotation() {
     }, []);
 
     useEffect(() => {
+        console.log(currentPageName);
         if (currentPageName.id === "Quotation") {
             const activeTab = document.querySelector(".mini_board_3 .tab li a.on"); //마지막으로 활성화 된 탭
             if (activeTab) {
@@ -326,9 +327,9 @@ function Quotation() {
                 setEstimate(result);
                 setestimateBool(true);
             }
+            setIsLoading(false);
         } else if (innerPageName.id === "orderBuying") { //구매비
             setIsLoading(true);
-
             console.log("여기타는지 봐야해");
             setBuyIngInfo([]);
             setBuyIngBool(false);
@@ -338,10 +339,10 @@ function Quotation() {
                 setBuyIngInfo(resultData);
                 setBuyIngBool(true);
             }
+            setIsLoading(false);
         }
         //const resultDa2 = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", requestSearch);
         //const filteredData = filterData(updatedData);
-        setIsLoading(false);
     };
 
     const returnList = (originTableData, tableData) => {
@@ -538,7 +539,6 @@ function Quotation() {
     };
 
     const conditionInfo = (value) => {
-        // console.log("🎄컨디션:", value);
         setCondition((prev) => {
             if (prev.poiId !== value.poiId) {
                 const newCondition = { ...value };
