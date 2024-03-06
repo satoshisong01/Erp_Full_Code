@@ -34,20 +34,21 @@ export default function ProductInfoModal(props) {
 
     const getProductInfoList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/productInfo/totalListAll.do", requestData || {});
-        console.log("임시품명 컬럼보기", resultData);
         setProductInfoList(resultData);
     };
 
     const columns = [
         { header: "품목아이디", col: "pdiId", notView: true },
-        { header: "품명", col: "pdiNm", cellWidth: "120", type: "buttonPdiNm" },
+        { header: "품명", col: "pdiNm", cellWidth: "180", type: "buttonPdiNm" },
         { header: "모델명", col: "pdiNum", cellWidth: "180" },
         { header: "품목그룹명", col: "pgNm", cellWidth: "120" },
-        { header: "규격", col: "pdiStnd", cellWidth: "140" },
+        { header: "규격", col: "pdiStnd", cellWidth: "180" },
         { header: "단위", col: "pdiUnit", notView: true },
-        { header: "제조사", col: "pdiMenufut", cellWidth: "100" },
-        { header: "판매사", col: "pdiSeller", cellWidth: "130" },
-        { header: "원가", col: "pupUnitPrice", notView: true },
+        { header: "제조사아이디", col: "pdiMenufut", notView: true },
+        { header: "판매사아이디", col: "pdiSeller", notView: true },
+        { header: "제조사", col: "pdiMenufut_name", cellWidth: "120" },
+        { header: "판매사", col: "pdiSeller_name", cellWidth: "120" },
+        { header: "단가", col: "pupUnitPrice", cellWidth: "100" },
     ];
 
     const conditionList = [
@@ -86,7 +87,6 @@ export default function ProductInfoModal(props) {
     let selectedRows = [];
 
     const returnSelectRows = (rows) => {
-        console.log(rows, "💥💥💥💥");
         const newArr = rows.filter((row) => !selectedRows.some((pre) => pre.pdiId === row.pdiId));
         selectedRows.push(...newArr);
     };

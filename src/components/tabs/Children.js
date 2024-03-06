@@ -36,6 +36,7 @@ import PendingBox from "pages/mail/PendingBox";
 import ProgressBox from "pages/mail/ProgressBox";
 import CompletedBox from "pages/mail/CompletedBox";
 import MenuInfo from "pages/system/menuMgmt/MenuInfo";
+import ReturnBox from "pages/mail/ReturnBox";
 
 
 
@@ -148,7 +149,7 @@ export const sales = [
         id: "Quotation",
         path: URL.Quotation,
         component: <Quotation />,
-        label: "견적서관리",
+        label: "견적관리",
         pLabel: "영업관리",
     },
     {
@@ -262,6 +263,13 @@ export const mail = [
         path: URL.CompletedBox,
         component: <CompletedBox />,
         label: "결재완료함",
+        pLabel: "전자결재",
+     },
+    {
+        id: "ReturnBox",
+        path: URL.ReturnBox,
+        component: <ReturnBox />,
+        label: "결재반려함",
         pLabel: "전자결재",
      },
 ];

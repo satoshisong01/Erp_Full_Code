@@ -264,9 +264,10 @@ export default function ApprovalLineModal(props) {
                                                     defaultValue={type}
                                                 >
                                                     <option key="사전원가서" value="사전원가서"> 사전원가서 </option>
+                                                    <option key="견적품의서" value="견적품의서"> 견적품의서 </option>
+                                                    <option key="수주보고서" value="수주보고서"> 수주보고서 </option>
                                                     <option key="실행예산서" value="실행예산서"> 실행예산서 </option>
                                                     <option key="사후정산서" value="사후정산서"> 사후정산서 </option>
-                                                    <option key="수주보고서" value="수주보고서"> 수주보고서 </option>
                                                     <option key="완료보고서" value="완료보고서"> 완료보고서 </option>
                                                 </select>
                                                 <DelButton label={"결재선 제외"} onClick={deleteData} />

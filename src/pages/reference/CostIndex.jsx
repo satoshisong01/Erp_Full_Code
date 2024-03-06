@@ -246,7 +246,7 @@ function CostIndex() {
                         //suffixUrl="/baseInfrm/product/costBase"
                         tableRef={costIndexMgmtTable}
                         viewPageName={{ name: "사전원가지표", id: "CostIndex" }}
-                        perSent="%"
+                        perSent=" %"
                     />
                 </div>
             )}

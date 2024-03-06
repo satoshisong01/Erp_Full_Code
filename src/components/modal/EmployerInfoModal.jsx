@@ -50,7 +50,8 @@ export default function EmployerInfoModal(props) {
         { header: "고유아이디", col: "uniqId", notView: true },
         { header: "사용자명", col: colName || "empNm", cellWidth: "180" },
         { header: "직급", col: "posNm", cellWidth: "180" },
-        { header: "부서", col: "orgNm", cellWidth: "150" },
+        // { header: "부서", col: "orgNm", cellWidth: "150" },
+        { header: "부서", col: "groupNm", cellWidth: "150" },
     ];
 
     const conditionList = [

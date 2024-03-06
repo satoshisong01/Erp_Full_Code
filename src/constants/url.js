@@ -57,7 +57,7 @@ const URL = {
     ProjectMgmt: "/sales/projectMgmt", //영업관리>프로젝트관리
     OrderPlanMgmt: "/sales/orderPlan", //영업관리>수주관리
     SalesExpenses: "/sales/expenses", //영업관리>영업비용
-    Quotation: "/sales/quotation", //영업관리>견적서관리
+    Quotation: "/sales/quotation", //영업관리>견적관리
     InvoiceMgmt: "/sales/invoice", //영업관리>세금계산서발행관리
     ElectronicTaxInvoice: "/sales/tax", //영업관리>전자세금계산서
     OrderMgmt: "/sales/order", //영업관리>수주관리
@@ -74,6 +74,7 @@ const URL = {
     PendingBox: "/mail/pendingBox", //전자결재>결재대기함
     ProgressBox: "/mail/progressBox", //전자결재>결재진행함
     CompletedBox: "/mail/completedBox", //전자결재>결재완료함
+    ReturnBox: "/mail/returnBox", //전자결재>결재반려함
 
     //SYSTEM 시스템관리
     System: "/system", //시스템관리

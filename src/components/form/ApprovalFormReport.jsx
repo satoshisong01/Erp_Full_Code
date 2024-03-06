@@ -11,7 +11,7 @@ function ApprovalFormReport({ returnData, type }) {
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
     useEffect(() => {
-        if(type === "수주보고서") {
+        if(type === "수주보고서" || type === "견적품의서") {
             if (data.poiId && !data.versionId) {
                 //선택된 버전정보가 없다면
                 getVersionList({ poiId: data.poiId });
@@ -76,7 +76,7 @@ function ApprovalFormReport({ returnData, type }) {
                                 )}
                             </td>
                             {
-                                type && type === "수주보고서" && (
+                                type && type === "수주보고서" || type === "견적품의서" && (
                                     <>
                                         <th>
                                             <span className="cherry">*</span> 사전원가 버전

@@ -68,7 +68,7 @@ function CompletedBox() {
     ];
 
     useEffect(() => {
-        fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "Y" });
+        fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "완료" });
     }, [currentPageName]);
 
     const fetchAllData = async (condition) => {
@@ -79,7 +79,7 @@ function CompletedBox() {
     };
 
     const refresh = () => {
-        fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "Y" });
+        fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "완료" });
     };
 
     const returnData = (row) => {

@@ -82,6 +82,7 @@ function OrderMgmt() {
         if(resultData) {
             alert("요청 완료되었습니다.");
             setIsSave(false); //결재요청 버튼 비활성화
+            setApprovalLine([]);
         }
         setIsSubmit(false);
     }

@@ -66,7 +66,7 @@ function EgovLeftNavReference(props) {
             label: "원가기준관리",
             id: "LaborRate",
             subMenus: [
-                { label: "회사별인건비", id: "LaborRate" },
+                { label: "외주사인건비", id: "LaborRate" },
                 { label: "급별단가(인건비)", id: "GradeWageLaborCost" },
                 { label: "급별단가(경비)", id: "GradeWageExpense" },
                 { label: "사전원가지표", id: "CostIndex" },

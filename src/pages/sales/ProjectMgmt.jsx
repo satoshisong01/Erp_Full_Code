@@ -82,7 +82,7 @@ function ProjectMgmt() {
             const url = `/api/baseInfrm/product/pjOrdrInfo/removeAll.do`;
             const resultData = await axiosDelete(url, poiNms);
             if (resultData) {
-                alert(`선택한 항목들이 삭제되었습니다.`);
+                alert(`선택한 프로젝트가 삭제되었습니다.`);
                 refresh();
             } else {
                 alert("삭제 중 에러가 발생했습니다.");
