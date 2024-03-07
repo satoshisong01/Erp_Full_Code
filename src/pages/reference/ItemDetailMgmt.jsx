@@ -99,6 +99,7 @@ function ItemDetailMgmt() {
         setIsLoading(true);
         const url = `/api/baseInfrm/product/productInfo/totalListAll.do`;
         const resultData = await axiosFetch(url, {});
+        console.log(resultData, "받아오나연");
         setTableData(resultData);
         setIsLoading(false);
     };
@@ -170,7 +171,7 @@ function ItemDetailMgmt() {
                     {isOpenAdd && (
                         <AddModModal
                             width={500}
-                            height={380}
+                            height={410}
                             list={columns.reference.groupDetailAddMod}
                             resultData={addToServer}
                             onClose={() => setIsOpenAdd(false)}
