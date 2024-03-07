@@ -408,22 +408,18 @@ const ReactDataTableURL = (props) => {
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
                 newRow[column.accessor] = condition.poiId || ""; // poiId를 항상 선택한놈으로 설정
+
             } else if (column.accessor === "versionId") {
-                newRow[column.accessor] = condition.versionId; // pjbgTypeCode 항상 "EXPNS10"로 설정
+                newRow[column.accessor] = condition.versionId || "";
+
             } else if (column.accessor === "esntlId") {
                 //임시 업무회원 삭제해야함
-                newRow[column.accessor] = emUserInfo.uniqId; // pjbgTypeCode 항상 "EXPNS10"로 설정
-            } else if (column.accessor === "pjbgTypeCode19") {
-                newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
-            } else if (column.accessor === "useAt") {
-                newRow[column.accessor] = "Y"; // useAt 항상 "Y"로 설정
-            } else if (column.accessor === "modeCode") {
-                newRow[column.accessor] = "BUDGET"; // useAt 항상 "Y"로 설정
-            } else if (column.accessor === "deleteAt") {
-                newRow[column.accessor] = "N"; // deleteAt 항상 "N"로 설정
-            } else {
-                newRow[column.accessor] = null; // 다른 열은 초기화
+                newRow[column.accessor] = emUserInfo.uniqId;
             }
+            // else if (column.accessor === "pjbgTypeCode19") {
+            //     newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
+            // }
+
             if (current.name === "경비실행") {
                 if (column.accessor === "modeCode") {
                     newRow[column.accessor] = "EXECUTE"; // useAt 항상 "Y"로 설정

@@ -413,7 +413,6 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const addList = async (addNewData) => {
-        console.log(addNewData, "구매추가할때");
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(addNewData)) return;
         if (!condition || condition.poiId === undefined) {
             return;
