@@ -53,22 +53,8 @@ export default function SearchModal(props) {
     }, [projectPgNm]);
 
     const conditionList = [
-        // {
-        //     items: [
-        //         {
-        //             header: "회사타입",
-        //             col: "cltType",
-        //             type: "radio",
-        //             option: [
-        //                 { label: "미선택", value: "" },
-        //                 { label: "협력사", value: "P" },
-        //                 { label: "고객사", value: "C" },
-        //             ],
-        //         },
-        //     ],
-        // },
-        { items: [{ header: "판매사", col: "pdiSeller", type: "input" }] },
-        { items: [{ header: "제조사", col: "pdiMenufut", type: "input" }] },
+        { items: [{ header: "판매사", col: "pdiSeller", type: "company" }] },
+        { items: [{ header: "제조사", col: "pdiMenufut", type: "company" }] },
         // { items: [{ header: "회사명", col: "cltNm", type: "company" }] },
         { items: [{ header: "픔목그룹명", col: "pgNm", type: "productGroup" }] },
     ];
@@ -107,6 +93,13 @@ export default function SearchModal(props) {
         }));
     };
 
+    const [colName, setColName] = useState({});
+
+    const openCompanyModal = (id, name) => {
+        setIsOpenModalCompany(true);
+        setColName({id, name});
+    }
+
     const renderField = (item, index, data) => (
         <div className="row-group" key={index}>
             <div className="left">
@@ -132,9 +125,9 @@ export default function SearchModal(props) {
                     <BasicInput
                         item={item}
                         onClick={() => {
-                            setIsOpenModalCompany(true);
+                            openCompanyModal(item.col, item.col+"_name")
                         }}
-                        value={data?.[item.col] ?? ""}
+                        value={data?.[item.col+"_name"] ?? ""}
                         readOnly
                     />
                 ) : item.type === "productGroup" ? (
@@ -202,6 +195,7 @@ export default function SearchModal(props) {
                 title="거래처 목록"
                 isOpen={isOpenModalCompany}
                 onClose={() => setIsOpenModalCompany(false)}
+                colName={colName}
             />
             <ProductGroupModal
                 width={600}

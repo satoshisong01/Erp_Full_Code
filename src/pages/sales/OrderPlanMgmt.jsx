@@ -267,6 +267,7 @@ function OrderPlanMgmt() {
     };
 
     const fetchAllData = async (requestData) => {
+        console.log("컨디션:", requestData);
         if (innerPageName.name === "원가버전조회") {
             const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", {
                 searchCondition: "",
@@ -363,6 +364,7 @@ function OrderPlanMgmt() {
                 resultData.forEach((data) => {
                     pjbgPriceTotal += data.pjbgPrice;
                 });
+                console.log("조회 데이터:", resultData);
                 setPjbudgetCalDatas([{ pjbgPriceTotal }]);
             } else {
                 alert("no data");
@@ -807,7 +809,7 @@ function OrderPlanMgmt() {
                 />
             )}
             <DeleteModal initialData={deleteNames} resultData={deleteToServer} onClose={() => setIsOpenDel(false)} isOpen={isOpenDel} />
-            <SearchModal returnData={(condition) => fetchAllData(condition)} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} width={350} height={210} title="구매내역 검색"/>
+            <SearchModal returnData={(condition) => fetchAllData(condition)} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} width={400} height={210} title="구매내역 검색"/>
         </>
     );
 }

@@ -437,6 +437,7 @@ export const columns = {
             { header: "사용여부", col: "deleteAt", notView: true },
             { header: "삭제여부", col: "useAt", notView: true },
             { header: "버전", col: "versionId", notView: true },
+            { header: "경비아이디", col: "pjbgId", notView: true },
             {
                 header: "경비목록",
                 col: "pjbgTypeCode",
@@ -468,7 +469,7 @@ export const columns = {
                 require: true,
             },
             { header: "금액", col: "pjbgPrice", cellWidth: "300", type: "input", require: true },
-            { header: "비고", col: "pjbgDesc", cellWidth: "740", type: "desc" },
+            { header: "비고", col: "pjbgDesc", cellWidth: "740", type: "input" },
         ],
         expensesCal: [{ header: "금액", col: "pjbgPriceTotal", cellWidth: "1374" }],
         outsourcing: [
