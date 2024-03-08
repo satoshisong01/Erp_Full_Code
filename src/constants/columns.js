@@ -100,16 +100,26 @@ export const columns = {
             {
                 header: "판매사",
                 col: "pdiSeller",
-                cellWidth: "150",
                 modify: true,
                 add: true,
+                notView: true,
             },
             {
                 header: "제조사",
                 col: "pdiMenufut",
-                cellWidth: "150",
                 modify: true,
                 add: true,
+                notView: true,
+            },
+            {
+                header: "판매사명",
+                col: "pdiSeller_name",
+                cellWidth: "150",
+            },
+            {
+                header: "제조사명",
+                col: "pdiMenufut_name",
+                cellWidth: "150",
             },
             {
                 header: "내외자구분",

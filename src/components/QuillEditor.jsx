@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Quill 스타일 시트 임포트
+import "../css/custom-style.scss";
 
 const QuillEditor = ({ isSave, returnData, writing }) => {
     const defaultContent = `
@@ -36,18 +37,19 @@ const QuillEditor = ({ isSave, returnData, writing }) => {
     const [content, setContent] = useState(defaultContent);
 
     useEffect(() => {
-        if(isSave) {
+        if (isSave) {
             returnData && returnData(content);
         } else {
-            setContent(defaultContent) //초기화
+            setContent(defaultContent); //초기화
         }
-    }, [isSave])
+    }, [isSave]);
 
     useEffect(() => {
         writing && writing(content);
-    }, [content])
+    }, [content]);
 
-    const contentChange = (value) => { //실시간
+    const contentChange = (value) => {
+        //실시간
         setContent(value);
     };
 
@@ -67,15 +69,7 @@ const QuillEditor = ({ isSave, returnData, writing }) => {
         formats: ["header", "font", "size", "bold", "italic", "underline", "strike", "blockquote", "list", "bullet", "indent", "link", "image", "video"],
     };
 
-    return (
-        <ReactQuill
-            value={content}
-            onChange={contentChange}
-            modules={quillOptions.modules}
-            formats={quillOptions.formats}
-            style={{ height: "100%" }}
-        />
-    );
+    return <ReactQuill value={content} onChange={contentChange} modules={quillOptions.modules} formats={quillOptions.formats} style={{ height: "100%" }} />;
 };
 
 export default QuillEditor;

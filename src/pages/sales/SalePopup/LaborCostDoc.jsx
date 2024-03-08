@@ -11,7 +11,6 @@ const LaborCostDoc = () => {
     /* ⭐ 데이터 없을 시 초기화 필요 */
     const [title, setTitle] = useState("");
     const [projectTitle, setProjectTitle] = useState("");
-    const [totalAmount, setTotalAmount] = useState(0);
     const [tableDatas, setTableDatas] = useState([]);
 
     const [tableData, setTableData] = useState([]);
@@ -27,7 +26,6 @@ const LaborCostDoc = () => {
         setTitle(label);
         console.log(poiId, versionId, "이거안받?");
         if (poiId && versionId) {
-            getInitData(poiId, versionId);
             fetchAllData(poiId, versionId);
         }
     }, []);
@@ -181,13 +179,6 @@ const LaborCostDoc = () => {
         if (!results[2]) return "";
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
-
-    const getInitData = async (poiId, versionId) => {
-        const url = "/api/calculate/cost/totalListAll.do";
-        const resultData = await axiosFetch(url, { poiId, versionId });
-        const { laborTotalPrice } = resultData || {};
-        setTotalAmount(laborTotalPrice);
-    };
 
     const firstItemTotal =
         tableDatas.length > 0

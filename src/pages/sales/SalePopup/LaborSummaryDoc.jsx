@@ -247,10 +247,10 @@ const LaborSummaryDoc = () => {
                                 <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "20px", border: "solid 1px gray" }}>
                                     Total
                                 </th>
-                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "35px", border: "solid 1px gray" }}>
+                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "50px", border: "solid 1px gray" }}>
                                     Unit Price
                                 </th>
-                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "65px", border: "solid 1px gray" }}>
+                                <th colSpan={1} rowSpan={2} style={{ textAlign: "center", width: "80px", border: "solid 1px gray" }}>
                                     Amount
                                 </th>
                             </tr>
