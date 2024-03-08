@@ -75,7 +75,7 @@ export default function SearchModal(props) {
                 delete data[key]; //빈값 제외
             }
         });
-        console.log("data:", data);
+        console.log("11111111111111111:", data);
         returnData && returnData(data);
         onClose();
     };
