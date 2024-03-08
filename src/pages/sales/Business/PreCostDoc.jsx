@@ -797,14 +797,14 @@ const PreCostDoc = () => {
 
     return (
         <div style={{width: '90%', margin: 'auto'}}>
-            <div className="form-buttons mg-t-10" style={{maxWidth: 1400}}>
+            {/* <div className="form-buttons mg-t-10" style={{maxWidth: 1400}}>
                 {!isApproval && 
                     <>
                         <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)}/>
                         <AddButton label="결재요청" onClick={submit}/>
                     </>
                 }
-            </div>
+            </div> */}
             <ApprovalFormCost sendInfo={approvalLine}>
                 <div className="precost-container">
                     <button onClick={handlePrintButtonClick} className="pdfBtn">

@@ -809,7 +809,7 @@ function OrderPlanMgmt() {
                 />
             )}
             <DeleteModal initialData={deleteNames} resultData={deleteToServer} onClose={() => setIsOpenDel(false)} isOpen={isOpenDel} />
-            <SearchModal returnData={(condition) => fetchAllData(condition)} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} width={400} height={210} title="구매내역 검색"/>
+            <SearchModal returnData={(companyInfo) => fetchAllData({...companyInfo, ...condition})} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} width={350} height={210} title="구매내역 검색"/>
         </>
     );
 }

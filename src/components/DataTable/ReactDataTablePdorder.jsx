@@ -126,6 +126,7 @@ const ReactDataTablePdorder = (props) => {
                 notView: column.notView,
                 disabled: column.disabled,
                 require: column.require,
+                textAlign: column.textAlign,
             })),
         [columns]
     );
@@ -358,8 +359,9 @@ const ReactDataTablePdorder = (props) => {
                 if (row.original.byUnitPrice && row.original.byStandardMargin && row.original.byConsumerOutputRate && row.original.byQunty) {
                     // 1.원가 : 수량 * 원단가
                     const estimatedCost = row.original.byQunty * row.original.byUnitPrice;
-                    // 2.공급단가 : 원가 / (1 - 이익율)
-                    const unitPrice = division(estimatedCost, 100 - row.original.byStandardMargin) * 100;
+                    // 2.공급단가 : 원가 / (1 - 이익율) -- 틀림!!!
+                    // 2.공급단가 : 원단가 / (1 - 이익율)
+                    const unitPrice = division(row.original.byUnitPrice, 100 - row.original.byStandardMargin) * 100;
                     // 3.공급금액 : 수량 * 공급단가
                     const planAmount = row.original.byQunty * unitPrice;
                     // 4.소비자단가 : 공급단가 / 소비자산출율
@@ -575,6 +577,17 @@ const ReactDataTablePdorder = (props) => {
 
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
+    const textAlignStyle = (column) => {
+        switch (column.textAlign) {
+            case 'left':
+                return 'txt-left';
+            case 'right':
+                return 'txt-right';
+            default:
+                return 'txt-center';
+        }
+    }
+
     return (
         <>
             <div className={isPageNation ? "x-scroll" : "table-scroll"}>
@@ -615,7 +628,7 @@ const ReactDataTablePdorder = (props) => {
                                             return (
                                                 <td
                                                     {...cell.getCellProps()}
-                                                    className={cellIndex === 0 ? "first-column" : "other-column"}
+                                                    className={textAlignStyle(cell.column)}
                                                     id="otherCol"
                                                     // onClick={(e) => onClickCell(e, cell)}
                                                 >
@@ -629,6 +642,7 @@ const ReactDataTablePdorder = (props) => {
                                                                 name={cell.column.id}
                                                                 onChange={(e) => handleChange(e, row)}
                                                                 disabled={cell.column.disabled}
+                                                                style={{ textAlign: cell.column.textAlign || 'left' }}
                                                             />
                                                         ) : cell.column.type === "select" ? (
                                                             <select

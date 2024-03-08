@@ -96,8 +96,8 @@ export const buyIngInfoCalculation = (list) => {
         };
         // 1.원가 : 수량 * 원단가
         const updatedEstimatedCost = estimatedCost ? estimatedCost : byQunty * byUnitPrice;
-        // 2.공급단가 : 원가 / (1 - 사전원가기준이익율)
-        const updatedUnitPrice = unitPrice ? unitPrice : division(updatedEstimatedCost, 1 - byStandardMargin / 100);
+        // 2.공급단가 : 원단가 / (1 - 사전원가기준이익율)
+        const updatedUnitPrice = unitPrice ? unitPrice : division(byUnitPrice, 1 - byStandardMargin / 100);
         // 3.공급금액 : 수량 * 공급단가
         const updatedPlanAmount = planAmount ? planAmount : byQunty * updatedUnitPrice;
         // 4.소비자단가 : 공급단가 / 소비자산출율
@@ -109,19 +109,22 @@ export const buyIngInfoCalculation = (list) => {
         // 7.이익률 : 이익금 / 공급금액
         const updatedPlannedProfitMargin = plannedProfitMargin ? plannedProfitMargin : division(updatedPlannedProfits, updatedPlanAmount);
 
-        return {
+        const result = {
             ...row,
             estimatedCost: Math.round(updatedEstimatedCost),
             unitPrice: Math.round(updatedUnitPrice),
             planAmount: Math.round(updatedPlanAmount),
-            byConsumerUnitPrice: Math.round(updatedbyConsumerUnitPrice * 100) ,
-            consumerAmount: Math.round(updatedConsumerAmount * 100) ,
+            byConsumerUnitPrice: Math.round(updatedbyConsumerUnitPrice) ,
+            consumerAmount: Math.round(updatedConsumerAmount) ,
             plannedProfits: Math.round(updatedPlannedProfits),
             plannedProfitMargin: Math.round(updatedPlannedProfitMargin * 100),
             // plannedProfitMargin: updatedPlannedProfitMargin,
             byStandardMargin: Math.round(byStandardMargin),
             byConsumerOutputRate: Math.round(byConsumerOutputRate),
-        };
+        }
+
+        console.log("result::", result);
+        return result;
     });
 
     return updatedData;

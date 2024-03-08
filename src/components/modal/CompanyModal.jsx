@@ -35,16 +35,13 @@ export default function CompanyModal(props) {
     const getCompanyList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/client/client/totalListAll.do", requestData || {});
         const changeData = resultData.map((item) => {
-            const pgNms = Object.keys(item)
-                .filter((key) => key.startsWith("pgNm") && item[key] !== null && item[key] !== "")
-                .map((key) => item[key]);
-
+            const pgNms = Object.keys(item).filter((key) =>  key.startsWith("pgNm") && item[key].trim() !== "").map((key) => item[key])
             return {
                 cltId: item.cltId,
                 cltNm: item.cltNm,
                 [colName?.id]: item.cltId,
                 [colName?.name]: item.cltNm,
-                pgNms: pgNms.join(", "), // 배열을 문자열로 변환
+                pgNms: pgNms.join(","), // 배열을 문자열로 변환
                 cltBusstype: item.cltBusstype,
             };
         });
@@ -69,7 +66,7 @@ export default function CompanyModal(props) {
                 { label: "고객사", value: "C" },
             ],
         },
-        { title: "거래처명", col: colName?.name || "cltNm", type: "input" },
+        { title: "거래처명", col: "cltNm", type: "input" },
         { title: "픔목그룹명", col: "pgNm", type: "input" },
     ];
 
@@ -89,8 +86,17 @@ export default function CompanyModal(props) {
 
     const onClick = (e) => {
         e.preventDefault();
-        console.log(selectInfo, "선택된값?");
-        setCompanyInfo({ ...selectInfo });
+        if (colName?.id && colName?.name) {
+            setCompanyInfo({
+                [colName.id]: selectInfo[colName.id],
+                [colName.name]: selectInfo[colName.name]
+            });
+        } else {
+            setCompanyInfo({
+                cltId: selectInfo.cltId,
+                cltNm: selectInfo.cltNm,
+            });
+        }
         onClose();
     };
 

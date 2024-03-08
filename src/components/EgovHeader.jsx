@@ -6,7 +6,7 @@ import { selectLnb } from "./tabs/TabsActions";
 import { connect } from "react-redux";
 import { execution, reference, sales, mail, system } from "./tabs/Children";
 import NavLinkTabs from "./tabs/NavLinkTabs";
-import { axiosGet } from "../api/axiosFetch";
+import { axiosFetch, axiosGet } from "../api/axiosFetch";
 import { PageContext } from "./PageProvider";
 import { v4 as uuidv4 } from "uuid";
 import PopupButton from "./button/PopupButton";
@@ -16,17 +16,11 @@ import ReferenceInfo from "./DataTable/function/ReferenceInfo";
 
 /** 대,중,소 카데고리 Link가 걸려 있는 헤더 */
 function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId }) {
-    // console.group("EgovHeader");
-    // console.log("[Start] EgovHeader ------------------------------");
-    // console.log("EgovHeader >>> onChangeLogin :", onChangeLogin);
-
     const sessionUser = sessionStorage.getItem("loginUser");
     const sessionUserId = JSON.parse(sessionUser)?.id;
     const sessionUserName = JSON.parse(sessionUser)?.name;
     const sessionUserSe = JSON.parse(sessionUser)?.userSe;
     const authorCode = JSON.parse(sessionUser)?.authorCode;
-
-    // console.log("🎄로그인🎄", authorCode);
 
     const { gnbLabel, setGnbLabel } = useContext(PageContext);
     const [activeGnb, setActiveGnb] = useState("");
@@ -36,6 +30,7 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
     const accessRoleExecution = ["ROLE_USER", "ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"];
     const accessRoleSales = ["ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"];
     const accessRoleReference = ["ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"];
+    const [signNumber, setSignNumber] = useState("")
 
     /** 라벨 선택 시 CSS 활성화 */
     useEffect(() => {
@@ -50,6 +45,29 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
             setActiveGnb(tabLabel);
         }
     }, [lnbId, snbId]);
+
+    useEffect(() => {
+        console.log("props loginUser:", loginUser);
+        const fetchData = async (loginUser) => {
+            if(!loginUser.id) return;
+            try {
+                // axios를 사용하여 서버에 GET 요청을 보냅니다.
+                const response = await axiosFetch("/api/system/signState/totalListAll.do", {sttApproverId: loginUser.uniqId, sttApproverAt: "진행"} || {});
+                if(response && response.length > 0) {
+                    setSignNumber(response.length);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+    
+        fetchData(loginUser);
+        const intervalId = setInterval(fetchData, 3600000); // 1시간
+    
+        // 컴포넌트가 언마운트될 때 interval을 정리합니다.
+        return () => clearInterval(intervalId);
+    }, [loginUser]);
+
 
     useEffect(() => {
         setActiveGnb(gnbLabel); //헤더 4중류 active
@@ -101,23 +119,15 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
         setActiveLnb("");
     };
 
-    // console.log("------------------------------EgovHeader [End]");
-    // console.groupEnd("EgovHeader");
-
     return (
         // <!-- header -->
         <div className="header">
             <div className="inner">
                 <h1 className="logo">
                     <Link to={URL.MAIN} className="w" onClick={mainClick}>
-                        <img src="/assets/images/mecca_logo.png" alt="원가관리시스템" />
+                        <img src="/assets/images/mecca_erp_logo.svg" alt="원가관리시스템" />
                     </Link>
                 </h1>
-                <p
-                    className="logoutTitle"
-                    style={{ top: sessionUserId ? "19px" : undefined, left: sessionUserId ? "-570px" : undefined, fontSize: sessionUserId ? "24px" : "32px" }}>
-                    원 가 관 리 시 스 템
-                </p>
 
                 <div className="gnb">
                     <h2 className="blind">주메뉴</h2>
@@ -165,7 +175,7 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
                     {/* 로그아웃 : 로그인 정보 있을때 */}
                     {sessionUserId && (
                         <div className="table-buttons">
-                            <span className="person">{sessionUserName}</span>님이, 로그인하셨습니다.
+                            <span className="person">{sessionUserName}({" "+signNumber+" "})</span>님이, 로그인하셨습니다.
                             <AddButton label="로그아웃" onClick={logOutHandler} />
                             <PopupButton
                                 targetUrl={URL.MyInfo}
