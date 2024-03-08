@@ -136,6 +136,7 @@ const ReactDataTable = (props) => {
         // 이벤트 핸들러 등록
         document.addEventListener("mousedown", handleDocumentClick);
 
+        test(); 
         return () => {
             // 컴포넌트 언마운트 시에 이벤트 핸들러 제거
             document.removeEventListener("mousedown", handleDocumentClick);
@@ -253,9 +254,16 @@ const ReactDataTable = (props) => {
                 notView: column.notView,
                 disabled: column.disabled,
                 require: column.require,
+                textAlign: column.textAlign,
             })),
         [columns]
     );
+
+    const test = () => {
+        // columns.map((col) => (
+        //     console.log("⭐textAlign:", col.textAlign)
+        // ))
+    }
 
     useEffect(() => {
         //newRowData 변동 시 새로운 행 추가
@@ -659,6 +667,17 @@ const ReactDataTable = (props) => {
                   border: 0,
               };
 
+    const textAlignStyle = (column) => {
+        switch (column.textAlign) {
+            case 'left':
+                return 'txt-left';
+            case 'right':
+                return 'txt-right';
+            default:
+                return 'txt-center';
+        }
+    }
+
     return (
         <>
             {isLoading ? (
@@ -725,8 +744,9 @@ const ReactDataTable = (props) => {
                                                     return (
                                                         <td
                                                             {...cell.getCellProps()}
-                                                            className={cellIndex === 0 ? "first-column" : "other-column"}
-                                                            id="otherCol">
+                                                            className={textAlignStyle(cell.column)}
+                                                            id="otherCol"
+                                                        >
                                                             {cell.column.id === "selection" ? (
                                                                 cell.render("Cell")
                                                             ) : isEditing ? (

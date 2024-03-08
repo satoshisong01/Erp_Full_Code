@@ -725,9 +725,12 @@ $disabled: gray;
 .table-styled td {
     padding: 7px;
     // text-align: left;
-    text-align: center;
     border: 1px solid #ddd;
     vertical-align: middle;
+}
+
+.table-styled th {
+    text-align: center;
 }
 
 .table-styled th {
@@ -1521,6 +1524,18 @@ table > thead {
     position: sticky;
     top: 0px;
 }
+
+/* 텍스트 정렬 */
+.txt-left {
+    text-align: left;
+}
+.txt-right {
+    text-align: right;
+}
+.txt-center {
+    text-align: center;
+}
+
 
 /* 반응형 스타일 */
 @media (max-width: 768px) {
