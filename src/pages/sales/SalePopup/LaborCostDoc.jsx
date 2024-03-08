@@ -13,7 +13,27 @@ const LaborCostDoc = () => {
     const [projectTitle, setProjectTitle] = useState("");
     const [tableDatas, setTableDatas] = useState([]);
 
-    const [tableData, setTableData] = useState([]);
+    const [negoVisible, setNegoVisible] = useState(true);
+
+    // "네고" 행의 표시 상태를 토글하는 함수
+    const toggleNego = () => {
+        setNegoVisible(!negoVisible);
+    };
+
+    const [tableData, setTableData] = useState([
+        {
+            ctcNum: "", // 이 필드에 초기값을 지정합니다. 예: '1234'
+            ctcDateCreated: "", // 이 필드에 초기값을 지정합니다. 예: '2021-01-01'
+            ctcReception: "", // 이 필드에 초기값을 지정합니다.
+            ctcReference: "", // 이 필드에 초기값을 지정합니다.
+            ctcSent: "", // 이 필드에 초기값을 지정합니다.
+            ctcContact: "", // 이 필드에 초기값을 지정합니다.
+            ctcPaymentCondition: "", // 이 필드에 초기값을 지정합니다.
+            ctcDelivery: "", // 이 필드에 초기값을 지정합니다.
+            ctcDesc: "", // 이 필드에 초기값을 지정합니다.
+            // 추가적인 필드와 초기값을 여기에 설정할 수 있습니다.
+        },
+    ]);
 
     console.log(tableDatas, "tableDatas");
 
@@ -39,8 +59,23 @@ const LaborCostDoc = () => {
         console.log(resultData, "이게 불러온거");
         if (resultData.length === 0) {
             addData(poiId, versionId);
+        } else {
+            // 각 항목의 ctcDateCreated와 ctcSent를 수정합니다.
+            const updatedData = resultData.map((item) => ({
+                ...item,
+                ctcDateCreated: item.ctcDateCreated ? item.ctcDateCreated : item.poiBeginDt || "", // ctcDateCreated가 유효한 값이면 사용, 그렇지 않으면 poiBeginDt 사용
+                ctcSent: item.ctcSent ? item.ctcSent : item.lastModifiedIdBy || "", // ctcSent가 유효한 값이면 사용, 그렇지 않으면 lastModifiedIdBy 사용
+                ctcPaymentCondition: item.ctcPaymentCondition ? item.ctcPaymentCondition : "고객사 지급기준에 준함",
+                ctcDelivery: item.ctcDelivery ? item.ctcDelivery : "계약 후 5 개월",
+                ctcReference: item.ctcReference ? item.ctcReference : "이주현", // ctcReference가 유효한 값이면 사용, 그렇지 않으면 "이주현" 사용
+                ctcDesc: item.ctcDesc
+                    ? item.ctcDesc
+                    : `1. 견적유효기간: 2024/04/01\n2. 견적 범위 : 자재 납품 / 시험조건 중 시험조건 ( 설치장소 : 세메스 화성 사업장 )`,
+                // 필요하다면 여기에 추가적인 필드를 설정할 수 있습니다.
+            }));
+
+            setTableData(updatedData);
         }
-        setTableData(resultData);
     };
 
     const addData = async (poiId, versionId) => {
@@ -55,6 +90,7 @@ const LaborCostDoc = () => {
             ctcContact: "",
             ctcDateCreated: "",
             ctcPaymentCondition: "",
+            ctcExpenses: "",
             ctcDelivery: "",
             ctcDesc: "",
         });
@@ -75,6 +111,7 @@ const LaborCostDoc = () => {
             ctcDateCreated: tableData[0].ctcDateCreated,
             ctcContact: tableData[0].ctcContact,
             ctcPaymentCondition: tableData[0].ctcPaymentCondition,
+            ctcExpenses: tableData[0].ctcExpenses,
             ctcDelivery: tableData[0].ctcDelivery,
             ctcDesc: tableData[0].ctcDesc,
         });
@@ -90,9 +127,13 @@ const LaborCostDoc = () => {
 
         // tableData 배열에 요소가 있는지 확인
         if (tableData.length > 0) {
+            // 숫자로 변환된 값 저장
+            let parsedValue = value.replace(/,/g, ""); // 쉼표 제거
+            parsedValue = parseFloat(parsedValue); // 문자열을 숫자로 변환
+
             // tableData 배열에 요소가 있는 경우에만 값을 변경
             const updatedTableData = [...tableData];
-            updatedTableData[dataIndex][fieldName] = value;
+            updatedTableData[dataIndex][fieldName] = parsedValue;
 
             // 상태 업데이트 함수를 사용하여 상태를 업데이트하고 화면을 다시 렌더링
             setTableData(updatedTableData);
@@ -109,13 +150,18 @@ const LaborCostDoc = () => {
             input.style.border = "none";
         });
         const printButton = document.getElementById("printButton");
+        const negoBtn = document.getElementById("negoBtn");
         printButton.style.display = "none"; // 프린트 버튼 숨기기
+        negoBtn.style.display = "none"; // 네고 버튼 숨기기
         window.print();
     };
 
     useEffect(() => {
         const printButton = document.getElementById("printButton");
+        const negoBtn = document.getElementById("negoBtn");
+
         printButton.style.display = "block"; // 컴포넌트가 마운트될 때 프린트 버튼 보이기
+        negoBtn.style.display = "block";
 
         // 프린트가 완료된 후 실행될 함수
         const afterPrint = () => {
@@ -126,6 +172,7 @@ const LaborCostDoc = () => {
             });
             // 프린트 버튼 다시 보이기
             printButton.style.display = "block";
+            negoBtn.style.display = "block";
         };
 
         // 프린트 이벤트 리스너 등록
@@ -184,7 +231,7 @@ const LaborCostDoc = () => {
         tableDatas.length > 0
             ? tableDatas.reduce((acc, data) => {
                   return acc + data.estItem.reduce((total, item) => total + item.price * item.total, 0);
-              }, 0)
+              }, 0) + (tableData.length > 0 ? parseFloat(tableData[0].ctcExpenses) || 0 : 0)
             : 0;
 
     // 숫자를 한자로 변환하는 함수
@@ -209,6 +256,12 @@ const LaborCostDoc = () => {
         }
 
         return result;
+    }
+
+    function numberWithCommas(x) {
+        if (!x) return ""; // 값이 없을 경우 빈 문자열 반환
+        const number = typeof x === "string" ? parseFloat(x.replace(/,/g, "")) : parseFloat(x);
+        return number.toLocaleString(); // 3자리마다 쉼표 추가하여 반환
     }
 
     useEffect(() => {
@@ -391,7 +444,7 @@ const LaborCostDoc = () => {
                                             <td className="tableWhiteItem" style={{ textAlign: "left" }}>
                                                 {data.pgNm}
                                             </td>
-                                            <td className="tableRedPercentW">{/*{data.estItem.reduce((acc, curr) => acc + curr.total, 0)}*/}1</td>
+                                            <td className="tableRedPercentW">1</td>
                                             <td className="tableRedPercentW">Lot</td>
                                             <td className="table4-3White"></td>
                                             <td className="table4-3White" style={{ textAlign: "right" }}>
@@ -416,9 +469,86 @@ const LaborCostDoc = () => {
                                         ))}
                                     </React.Fragment>
                                 ))}
+                                {tableDatas.length > 0 && (
+                                    <React.Fragment>
+                                        {/* 추가되는 제경비 항목 */}
+                                        <tr className="tableTr">
+                                            <td className="tableRedPercentW">{tableDatas[tableDatas.length - 1].estItem.length + 1}</td>
+                                            <td className="tableWhiteItem" style={{ textAlign: "left" }}>
+                                                제경비
+                                            </td>
+                                            <td className="tableRedPercentW">-</td>
+                                            <td className="tableRedPercentW">-</td>
+                                            <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                <input
+                                                    className="titleInput2"
+                                                    type="text"
+                                                    value={tableData.length ? numberWithCommas(tableData[0].ctcExpenses) : ""}
+                                                    onChange={(e) => handleChange(e, "ctcExpenses", 0)}
+                                                />
+                                            </td>
+                                            <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                {tableData.length && tableData[0].ctcExpenses !== undefined ? tableData[0].ctcExpenses.toLocaleString() : ""}
+                                            </td>
+                                        </tr>
+                                        <tr className="tableTr">
+                                            <td className="tableRedPercentW">-</td>
+                                            <td className="tableWhiteItem" style={{ textAlign: "left" }}>
+                                                기업이윤(판관비)
+                                            </td>
+                                            <td className="tableRedPercentW">-</td>
+                                            <td className="tableRedPercentW">-</td>
+                                            <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                -
+                                            </td>
+                                            <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                {tableData.length ? tableData[0].slsmnEnterpriseProfit : ""}
+                                            </td>
+                                        </tr>
+                                        <tr className="tableTr">
+                                            <td className="tableRedPercentW">-</td>
+                                            <td className="tableWhiteItem" style={{ textAlign: "left" }}>
+                                                일반관리비(판관비)
+                                            </td>
+                                            <td className="tableRedPercentW">-</td>
+                                            <td className="tableRedPercentW">-</td>
+                                            <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                -
+                                            </td>
+                                            <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                {tableData.length ? tableData[0].slsmnAdmnsCost : ""}
+                                            </td>
+                                        </tr>
+                                        {negoVisible && (
+                                            <tr className="tableTr negoTable">
+                                                <td className="tableRedPercentW">-</td>
+                                                <td className="tableWhiteItem" style={{ textAlign: "left" }}>
+                                                    네고
+                                                </td>
+                                                <td className="tableRedPercentW">-</td>
+                                                <td className="tableRedPercentW">-</td>
+                                                <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                    -
+                                                </td>
+                                                <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                    {tableData.length ? tableData[0].slsmnNego : ""}
+                                                </td>
+                                            </tr>
+                                        )}
+                                        {/* "네고 닫기" 버튼 */}
+                                        <tr>
+                                            <td colSpan={6} style={{ textAlign: "right" }}>
+                                                <button id="negoBtn" onClick={toggleNego}>
+                                                    {negoVisible ? "네고 닫기" : "네고 열기"}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </React.Fragment>
+                                )}
                             </tbody>
                         </table>
                     </div>
+
                     <h3 className="projectName">특이사항</h3>
                     <div className="etcBox">
                         <div className="etcItems">

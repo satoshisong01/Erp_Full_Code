@@ -678,7 +678,7 @@ function Quotation() {
                                     <PopupButton
                                         clickBtn={estimateBool}
                                         targetUrl={URL.LaborSummaryDoc}
-                                        data={{ label: "인건비상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
+                                        data={{ label: "상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
                                     />
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
@@ -714,7 +714,7 @@ function Quotation() {
                                     <PopupButton
                                         clickBtn={buyIngBool}
                                         targetUrl={URL.OrderSummaryDoc}
-                                        data={{ label: "구매상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
+                                        data={{ label: "상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
                                     />
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />

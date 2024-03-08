@@ -16,7 +16,7 @@ import DelButton from "components/button/DelButton";
 function SalesExpenses() {
     const { currentPageName, setNameOfButton } = useContext(PageContext);
 
-    const [condition, setCondition] = useState({poiId: "", pjbgTypeCode: "EXPNS19", modeCode: "EXECUTE"});
+    const [condition, setCondition] = useState({ poiId: "", pjbgTypeCode: "EXPNS19", modeCode: "EXECUTE" });
 
     const conditionInfo = (value) => {
         setCondition((prev) => {
@@ -41,6 +41,8 @@ function SalesExpenses() {
     const [salesCostView, setSalesCostView] = useState([]); //영업 영업비
     const [salesCostTotal, setSalesCostTotal] = useState([{ totalPrice: 0 }]); // 구매합계
 
+    console.log(salesCostTotal);
+
     let totalPrice = 0;
 
     useEffect(() => {
@@ -51,18 +53,18 @@ function SalesExpenses() {
     }, [currentPageName, condition]);
 
     const costListCol = [
-        { header: "프로젝트ID", col: "poiId", notView: true, },
-        { header: "사용여부", col: "deleteAt", notView: true, },
-        { header: "삭제여부", col: "useAt", notView: true, },
-        { header: "타입코드", col: "pjbgTypeCode", notView: true, },
-        { header: "내용", col: "pjbgDesc", cellWidth: "740",},
-        { header: "금액", col: "pjbgPrice", cellWidth: "300", },
+        { header: "프로젝트ID", col: "poiId", notView: true },
+        { header: "사용여부", col: "deleteAt", notView: true },
+        { header: "삭제여부", col: "useAt", notView: true },
+        { header: "타입코드", col: "pjbgTypeCode", notView: true },
+        { header: "내용", col: "pjbgDesc", cellWidth: "740" },
+        { header: "금액", col: "pjbgPrice", cellWidth: "300" },
     ];
     const columnsData = [
-        { header: "프로젝트ID", col: "poiId", notView: true, },
-        { header: "사용여부", col: "deleteAt", notView: true, },
-        { header: "삭제여부", col: "useAt", notView: true, },
-        { header: "타입코드", col: "pjbgTypeCode", notView: true, },
+        { header: "프로젝트ID", col: "poiId", notView: true },
+        { header: "사용여부", col: "deleteAt", notView: true },
+        { header: "삭제여부", col: "useAt", notView: true },
+        { header: "타입코드", col: "pjbgTypeCode", notView: true },
         { header: "내용", col: "pjbgDesc", cellWidth: "740", type: "input" },
         { header: "금액", col: "pjbgPrice", cellWidth: "300", type: "input", require: true },
     ];
@@ -75,12 +77,23 @@ function SalesExpenses() {
         },
     ];
 
+    const choiceData = {
+        poiId: condition.poiId,
+        pjbgTypeCode: "EXPNS19",
+    };
+
     const fetchAllData = async (condition) => {
         const exeDatas = await axiosFetch("/api/baseInfrm/product/pjbudgetExe/totalListAll.do", condition);
-        const salesDatas = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", condition);
+        const salesDatas = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", choiceData);
         console.log("영업조회:", salesDatas);
         setSalesCost(exeDatas);
+        console.log("실행조회:", exeDatas);
         setSalesCostView(salesDatas);
+        let countTotal = 0;
+        exeDatas.map((item) => {
+            countTotal += item.pjbgPrice;
+        });
+        setSalesCostTotal([{ totalPrice: countTotal }]);
     };
 
     useEffect(() => {
@@ -99,13 +112,10 @@ function SalesExpenses() {
 
     const compareData = (originData, updatedData) => {
         const filterData = updatedData.filter((data) => data.pjbgPrice); //pjbgPrice 없는 데이터 제외
-        filterData.forEach(el => {
+        filterData.forEach((el) => {
             return (
-                el.poiId = condition.poiId,
-                el.modeCode = condition.modeCode,
-                el.pjbgTypeCode = condition.pjbgTypeCode,
-                el.esntlId = "USR_0000000003" //이수형 고정(필수값)
-            )
+                (el.poiId = condition.poiId), (el.modeCode = condition.modeCode), (el.pjbgTypeCode = condition.pjbgTypeCode), (el.esntlId = "USR_0000000003") //이수형 고정(필수값)
+            );
         });
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -121,13 +131,13 @@ function SalesExpenses() {
                 delListTest.push(originData[i]);
             }
             const isDel = deleteItem(delList); //삭제
-            if(isMod && isDel) {
+            if (isMod && isDel) {
                 alert("저장완료");
             }
         } else if (originDataLength === updatedDataLength) {
             const firstRowUpdate = updateDataInOrigin(originData, filterData);
             const isMod = updateItem(firstRowUpdate); //수정
-            if(isMod) {
+            if (isMod) {
                 alert("저장완료");
             }
         } else if (originDataLength < updatedDataLength) {
@@ -144,7 +154,7 @@ function SalesExpenses() {
                 addList.push(filterData[i]);
             }
             const isAdd = addItem(addList); //추가
-            if(isMod && isAdd) {
+            if (isMod && isAdd) {
                 alert("저장완료");
             }
         }
@@ -152,9 +162,9 @@ function SalesExpenses() {
     };
 
     const addItem = async (addData) => {
-        if(!addData || addData?.length === 0) return;
-        const resultData = await axiosPost("/api/baseInfrm/product/pjbudgetExe/addList.do", addData); //---> pjbgcode1이렇게하는게 아닌거? 
-        if(resultData) {
+        if (!addData || addData?.length === 0) return;
+        const resultData = await axiosPost("/api/baseInfrm/product/pjbudgetExe/addList.do", addData); //---> pjbgcode1이렇게하는게 아닌거?
+        if (resultData) {
             return true;
         } else {
             return false;
@@ -162,9 +172,9 @@ function SalesExpenses() {
     };
 
     const updateItem = async (toUpdate) => {
-        if(!toUpdate || toUpdate?.length === 0) return;
+        if (!toUpdate || toUpdate?.length === 0) return;
         const resultData = await axiosUpdate("/api/baseInfrm/product/pjbudgetExe/editList.do", toUpdate);
-        if(resultData) {
+        if (resultData) {
             return true;
         } else {
             return false;
@@ -174,7 +184,7 @@ function SalesExpenses() {
     const deleteItem = async (removeItem) => {
         const mergedArray = [].concat(...removeItem);
         const resultData = await axiosDelete("/api/baseInfrm/product/pjbudgetExe/removeAll.do", mergedArray);
-        if(resultData) {
+        if (resultData) {
             return true;
         } else {
             return false;
@@ -186,7 +196,7 @@ function SalesExpenses() {
             <Location pathList={locationPath.SalesExpenses} />
             <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
-                <ReactDataTable columns={costListCol} customDatas={salesCostView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+                <ReactDataTable columns={costListCol} customDatas={salesCostView} defaultPageSize={5} hideCheckBox={true} isPageNation={true} />
             </HideCard>
             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                 <ReactDataTable columns={totalColumns} customDatas={salesCostTotal} defaultPageSize={5} hideCheckBox={true} />

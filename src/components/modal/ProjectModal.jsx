@@ -49,6 +49,8 @@ export default function ProjectModal(props) {
         { header: "프로젝트명", col: "poiNm", cellWidth: "213" },
         { header: "계약일", col: "poiBeginDt", cellWidth: "100" },
         { header: "상태", col: "poiStatus", cellWidth: "100" },
+        { header: "담당자", col: "poiManagerId", cellWidth: "100" },
+        { header: "영업대표", col: "poiSalmanagerId", cellWidth: "100" },
     ];
 
     const conditionList = [
@@ -86,7 +88,14 @@ export default function ProjectModal(props) {
                     <div className="me-modal-body" ref={bodyRef}>
                         <div className="body-area" style={{ gap: 0 }}>
                             <ModalCondition conditionList={conditionList} onSearch={onSearch} refresh={() => getProjectList()} />
-                            <ReactDataTable columns={columns} customDatas={projectList} returnSelect={returnSelect} viewPageName={{ name: "프로젝트팝업", id: "프로젝트팝업" }} isPageNation={true} isSingleSelect={true}/>
+                            <ReactDataTable
+                                columns={columns}
+                                customDatas={projectList}
+                                returnSelect={returnSelect}
+                                viewPageName={{ name: "프로젝트팝업", id: "프로젝트팝업" }}
+                                isPageNation={true}
+                                isSingleSelect={true}
+                            />
                         </div>
                     </div>
 
