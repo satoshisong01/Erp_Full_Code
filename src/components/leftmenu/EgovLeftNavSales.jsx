@@ -47,8 +47,8 @@ function EgovLeftNavSales(props) {
 
     const menuItems = [
         { label: '프로젝트관리', id: "ProjectMgmt", subMenus: [] },
-        { label: '견적관리', id: "Quotation", subMenus: [] },
         { label: '계획관리', id: "OrderPlanMgmt", subMenus: [] },
+        { label: '견적관리', id: "Quotation", subMenus: [] },
         { label: '영업비(정산)', id: "SalesExpenses", subMenus: [] },
         { label: '수주관리', id: "OrderMgmt", subMenus: [] },
     ];
