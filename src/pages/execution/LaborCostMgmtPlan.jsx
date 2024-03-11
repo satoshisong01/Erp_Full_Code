@@ -57,7 +57,6 @@ function LaborCostMgmtPlan() {
     const [budgetMgmtView, setBudgetMgmtView] = useState([]); // 영업인건비
     const [budgetCal, setBudgetCal] = useState([]); // 합계
 
-
     const refresh = () => {
         if (condition.poiId) {
             fetchAllData(condition);
@@ -68,7 +67,7 @@ function LaborCostMgmtPlan() {
         const resultData = await axiosFetch("/api/baseInfrm/product/prstmCost/totalListAll.do", condition);
         const viewResult = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", { poiId: condition.poiId, costAt: "Y" });
         const changeData = ChangePrmnPlanData(viewResult);
-        
+
         changeData.forEach((Item) => {
             const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
             const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
@@ -98,24 +97,24 @@ function LaborCostMgmtPlan() {
 
                 // pgNm 추출
                 const extractPgNm = (dateString) => {
-                    if(dateString) {
+                    if (dateString) {
                         const extraDatas = dateString.split("_");
                         return extraDatas[0]; //0번째 배열 리턴
                     }
                 };
 
                 // 새로운 배열로 복사하여 pgNm 변경
-                const changeDatas = updatedDatas.map(item => ({ ...item, pgNm: extractPgNm(item.pgNm) }));
+                const changeDatas = updatedDatas.map((item) => ({ ...item, pgNm: extractPgNm(item.pgNm) }));
 
                 const groupedByPgnm = changeDatas.reduce((result, current) => {
                     const { pgNm } = current;
-                    
+
                     if (!result[pgNm]) {
-                      result[pgNm] = [];
+                        result[pgNm] = [];
                     }
-                  
+
                     result[pgNm].push(current);
-                  
+
                     return result;
                 }, {});
 
@@ -123,11 +122,11 @@ function LaborCostMgmtPlan() {
                 const extractMonth = (dateString) => dateString && dateString.substring(0, 7);
 
                 const mergeArr = [];
-                Object.keys(groupedByPgnm).forEach(pgNm => {
+                Object.keys(groupedByPgnm).forEach((pgNm) => {
                     const groupedData = groupedByPgnm[pgNm].reduce((result, current) => {
                         const dateToGroup = extractMonth(current.pecStartdate); // 연월 부분 추출
-                        let existingGroup = result.find(group => extractMonth(group.month) === dateToGroup);
-                    
+                        let existingGroup = result.find((group) => extractMonth(group.month) === dateToGroup);
+
                         if (!existingGroup) {
                             // 그룹이 없을 경우 초기값 설정
                             existingGroup = {
@@ -148,14 +147,14 @@ function LaborCostMgmtPlan() {
                                 mm14: 0,
                                 price14: 0,
                             };
-                    
+
                             result.push(existingGroup);
                         }
-                    
+
                         // 누적 값 할당
                         existingGroup.pgNm = current.pgNm;
-                        existingGroup.totalMm +=  Number(current.pecMm);
-                        existingGroup.totalPrice +=  Number(current.price);
+                        existingGroup.totalMm += Number(current.pecMm);
+                        existingGroup.totalPrice += Number(current.price);
                         if (current.pecPosition === "부장") {
                             existingGroup.mm9 += Number(current.pecMm);
                             existingGroup.price9 += Number(current.price);
@@ -175,19 +174,33 @@ function LaborCostMgmtPlan() {
                             existingGroup.mm14 += Number(current.pecMm);
                             existingGroup.price14 += Number(current.price);
                         }
-                    
+
                         return result;
                     }, []);
 
-                    mergeArr.push(...groupedData)
-                })
+                    mergeArr.push(...groupedData);
+                });
 
                 let temp = {
-                    pgNm: "TOTAL", month: "", totalMm: 0, totalPrice: 0, price9: 0, price10: 0, price11: 0, price12: 0, price13: 0,
-                    price14: 0, mm9: 0, mm10: 0, mm11: 0, mm12: 0, mm13: 0, mm14: 0,
+                    pgNm: "TOTAL",
+                    month: "",
+                    totalMm: 0,
+                    totalPrice: 0,
+                    price9: 0,
+                    price10: 0,
+                    price11: 0,
+                    price12: 0,
+                    price13: 0,
+                    price14: 0,
+                    mm9: 0,
+                    mm10: 0,
+                    mm11: 0,
+                    mm12: 0,
+                    mm13: 0,
+                    mm14: 0,
                 };
 
-                mergeArr.forEach(item => {
+                mergeArr.forEach((item) => {
                     temp.totalMm += item.totalMm;
                     temp.totalPrice += item.totalPrice;
                     temp.price9 += item.price9;
@@ -202,16 +215,16 @@ function LaborCostMgmtPlan() {
                     temp.mm12 += item.mm12;
                     temp.mm13 += item.mm13;
                     temp.mm14 += item.mm14;
-                })
+                });
 
-                mergeArr.forEach(item => {
+                mergeArr.forEach((item) => {
                     item.price9 = item.price9.toLocaleString() + " (" + item.mm9 + ")";
                     item.price10 = item.price10.toLocaleString() + " (" + item.mm10 + ")";
                     item.price11 = item.price11.toLocaleString() + " (" + item.mm11 + ")";
                     item.price12 = item.price12.toLocaleString() + " (" + item.mm12 + ")";
                     item.price13 = item.price13.toLocaleString() + " (" + item.mm13 + ")";
                     item.price14 = item.price14.toLocaleString() + " (" + item.mm14 + ")";
-                })
+                });
 
                 mergeArr.push({
                     ...temp,
@@ -226,7 +239,7 @@ function LaborCostMgmtPlan() {
                 setBudgetCal(mergeArr);
             }
         } else {
-            alert("no data");
+            alert("데이터를 찾습니다...");
             setBudgetMgmt([]); // 빈 배열 보내주기
         }
     };
@@ -234,7 +247,7 @@ function LaborCostMgmtPlan() {
     /* 중복방지 */
     const validate = (datas) => {
         const seen = new Set();
-        
+
         for (const data of datas) {
             const key = `${data.pgNm}-${data.esntlId}-${data.pecStartdate.substring(0, 7)}`; //시작월이 같으면 중복
 
@@ -244,19 +257,19 @@ function LaborCostMgmtPlan() {
             }
             seen.add(key);
         }
-          
+
         return false; // 중복 데이터 없음
-    }
-    
+    };
+
     const compareData = (originData, updatedData) => {
         const isDuplicateData = validate(updatedData);
 
-        if(!isDuplicateData) {
+        if (!isDuplicateData) {
             if (currentPageName.id !== "LaborCostMgmtPlan") return;
             const filterData = updatedData.filter((data) => data.pgNm); //pgNm 없는 데이터 제외
             const originDataLength = originData ? originData.length : 0;
             const updatedDataLength = filterData ? filterData.length : 0;
-    
+
             if (originDataLength > updatedDataLength) {
                 const updateDataInOrigin = (originData, filterData) => {
                     // 복제하여 새로운 배열 생성
@@ -268,10 +281,10 @@ function LaborCostMgmtPlan() {
                     }
                     return updatedArray;
                 };
-    
+
                 const firstRowUpdate = updateDataInOrigin(originData, filterData);
                 updateList(firstRowUpdate);
-    
+
                 const toDelete = [];
                 for (let i = updatedDataLength; i < originDataLength; i++) {
                     toDelete.push(originData[i].pecId);
@@ -286,7 +299,7 @@ function LaborCostMgmtPlan() {
                     addUpdate.push(filterData[i]);
                 }
                 updateList(addUpdate);
-    
+
                 for (let i = originDataLength; i < updatedDataLength; i++) {
                     // const add = { poiId: condition.poiId };
                     // const typeCode = { typeCode: "MM" };
@@ -331,7 +344,13 @@ function LaborCostMgmtPlan() {
                 <ReactDataTable columns={columnlabor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
             </HideCard>
             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
-                <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} isSpecialRow={true}/>
+                <ReactDataTable
+                    columns={columns.laborCostMgmt.budgetView}
+                    customDatas={budgetCal}
+                    defaultPageSize={5}
+                    hideCheckBox={true}
+                    isSpecialRow={true}
+                />
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">

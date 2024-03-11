@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 /** 영업 폼 */
 function ApprovalFormSal({ returnData, initial }) {
-    const { innerPageName } = useContext(PageContext);
+    const { innerPageName, setProjectList, projectList } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
@@ -33,7 +33,7 @@ function ApprovalFormSal({ returnData, initial }) {
             }));
         }
         if (!resultData || resultData.length === 0) {
-            alert("버전 정보가 없습니다.")
+            alert("버전 정보가 없습니다.");
         }
     };
 
@@ -45,10 +45,21 @@ function ApprovalFormSal({ returnData, initial }) {
     };
 
     const onChange = (value) => {
-        setData({ poiId: value.poiId, poiNm: value.poiNm, versionId: value.versionId, poiMonth: value.poiMonth, option: value.option });
+        console.log(value);
+        setData({
+            poiId: value.poiId,
+            poiNm: value.poiNm,
+            versionId: value.versionId,
+            poiMonth: value.poiMonth,
+            poiBeginDt: value.poiBeginDt,
+            poiManagerId: value.poiManagerId,
+            poiSalmanagerId: value.poiSalmanagerId,
+            option: value.option,
+        });
     };
 
     const onClick = () => {
+        setProjectList({ ...data });
         returnData({ ...data });
         // alert("데이터를 불러옵니다");
     };

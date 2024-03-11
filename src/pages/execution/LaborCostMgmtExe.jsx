@@ -123,8 +123,8 @@ function LaborCostMgmtExe() {
 
                 const groupedData = updatedDatas.reduce((result, current) => {
                     const dateToGroup = extractMonth(current.pecStartdate); // 연월 부분 추출
-                    let existingGroup = result.find(group => extractMonth(group.month) === dateToGroup);
-                
+                    let existingGroup = result.find((group) => extractMonth(group.month) === dateToGroup);
+
                     console.log("current:", current.pecPosition);
 
                     if (!existingGroup) {
@@ -146,13 +146,13 @@ function LaborCostMgmtExe() {
                             mm14: 0,
                             price14: 0,
                         };
-                
+
                         result.push(existingGroup);
                     }
-                
+
                     // 누적 값 할당
-                    existingGroup.totalMm +=  Number(current.pecMm);
-                    existingGroup.totalPrice +=  Number(current.price);
+                    existingGroup.totalMm += Number(current.pecMm);
+                    existingGroup.totalPrice += Number(current.price);
                     if (current.pecPosition === "부장") {
                         existingGroup.mm9 += Number(current.pecMm);
                         existingGroup.price9 += Number(current.price);
@@ -172,10 +172,10 @@ function LaborCostMgmtExe() {
                         existingGroup.mm14 += Number(current.pecMm);
                         existingGroup.price14 += Number(current.price);
                     }
-                
+
                     return result;
                 }, []);
-                
+
                 let temp = {
                     month: "TOTAL",
                     totalMm: 0,
@@ -188,7 +188,7 @@ function LaborCostMgmtExe() {
                     price14: 0,
                 };
 
-                groupedData.forEach(item => {
+                groupedData.forEach((item) => {
                     temp.totalMm += item.totalMm;
                     temp.totalPrice += item.totalPrice;
                     temp.price9 += item.price9;
@@ -197,23 +197,23 @@ function LaborCostMgmtExe() {
                     temp.price12 += item.price12;
                     temp.price13 += item.price13;
                     temp.price14 += item.price14;
-                })
+                });
 
-                groupedData.forEach(item => {
+                groupedData.forEach((item) => {
                     item.price9 = item.price9.toLocaleString() + " (" + item.mm9 + ")";
                     item.price10 = item.price10.toLocaleString() + " (" + item.mm10 + ")";
                     item.price11 = item.price11.toLocaleString() + " (" + item.mm11 + ")";
                     item.price12 = item.price12.toLocaleString() + " (" + item.mm12 + ")";
                     item.price13 = item.price13.toLocaleString() + " (" + item.mm13 + ")";
                     item.price14 = item.price14.toLocaleString() + " (" + item.mm14 + ")";
-                })
+                });
 
-                groupedData.push({...temp});
+                groupedData.push({ ...temp });
 
                 setBudgetCal(groupedData);
             }
         } else {
-            alert("no data");
+            alert("데이터를 찾습니다...");
             setBudgetMgmRun([]);
         }
     };
@@ -234,7 +234,7 @@ function LaborCostMgmtExe() {
     /* 중복방지 */
     const validate = (datas) => {
         const seen = new Set();
-        
+
         for (const data of datas) {
             const key = `${data.pgNm}-${data.esntlId}-${data.pecStartdate.substring(0, 7)}`; //시작월이 같으면 중복
 
@@ -245,18 +245,18 @@ function LaborCostMgmtExe() {
             }
             seen.add(key);
         }
-            
+
         return false; // 중복 데이터 없음
-    }
+    };
 
     const compareData = (originData, updatedData) => {
         const isDuplicateData = validate(updatedData);
 
-        if(!isDuplicateData) {
+        if (!isDuplicateData) {
             const filterData = updatedData.filter((data) => data.pgNm); //pgNm 없는 데이터 제외
             const originDataLength = originData ? originData.length : 0;
             const updatedDataLength = filterData ? filterData.length : 0;
-    
+
             if (originDataLength > updatedDataLength) {
                 const updateDataInOrigin = (originData, filterData) => {
                     // 복제하여 새로운 배열 생성
@@ -268,10 +268,10 @@ function LaborCostMgmtExe() {
                     }
                     return updatedArray;
                 };
-    
+
                 const firstRowUpdate = updateDataInOrigin(originData, filterData);
                 updateList(firstRowUpdate);
-    
+
                 const toDelete = [];
                 for (let i = updatedDataLength; i < originDataLength; i++) {
                     toDelete.push(originData[i].pecId);
@@ -286,7 +286,7 @@ function LaborCostMgmtExe() {
                     addUpdate.push(filterData[i]);
                 }
                 updateList(addUpdate);
-    
+
                 for (let i = originDataLength; i < updatedDataLength; i++) {
                     const add = { poiId: condition.poiId };
                     const typeCode = { typeCode: "MM" };
@@ -327,10 +327,17 @@ function LaborCostMgmtExe() {
             <Location pathList={locationPath.LaborCostMgmt} />
             <ApprovalFormExe viewPageName="인건비실행" returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
-                <ReactDataTable columns={columnBugetView} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+                <ReactDataTable columns={columnBugetView} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} isPageNation={true} />
             </HideCard>
             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
-                <ReactDataTable columns={columns.laborCostMgmt.budgetView} customDatas={budgetCal} defaultPageSize={5} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
+                <ReactDataTable
+                    columns={columns.laborCostMgmt.budgetView}
+                    customDatas={budgetCal}
+                    defaultPageSize={5}
+                    hideCheckBox={true}
+                    isPageNation={true}
+                    isSpecialRow={true}
+                />
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">

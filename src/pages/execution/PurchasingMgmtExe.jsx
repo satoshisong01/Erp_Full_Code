@@ -33,13 +33,15 @@ function PurchasingMgmtExe() {
             const calData = changeData(datas);
 
             const groupedCalData = calData.reduce((result, current) => {
-                const existingGroup = result.find(group => group.pgNm === current.pgNm && group.pdiNum === current.pdiNum && group.pdiSeller === current.pdiSeller);
+                const existingGroup = result.find(
+                    (group) => group.pgNm === current.pgNm && group.pdiNum === current.pdiNum && group.pdiSeller === current.pdiSeller
+                );
                 if (existingGroup) {
                     existingGroup.byQunty = current.byQunty; //구매수량
                     existingGroup.price = current.price; //구매금액
                     existingGroup.rcvPrice += current.rcvPrice; //입고금액
                     existingGroup.rcvQunty += current.rcvQunty; //입고수량
-                    existingGroup.rcvState =  setState(existingGroup.byQunty, existingGroup.rcvQunty);
+                    existingGroup.rcvState = setState(existingGroup.byQunty, existingGroup.rcvQunty);
                 } else {
                     result.push({ ...current, rcvState: setState(current.byQunty, current.rcvQunty) });
                 }
@@ -48,14 +50,17 @@ function PurchasingMgmtExe() {
             }, []);
 
             //마지막 토탈 행 구하기
-            const totalSummary = groupedCalData.reduce((summary, item) => {
-                summary.byQunty += item.byQunty || 0;
-                summary.price += item.price || 0;
-                summary.rcvPrice += item.rcvPrice || 0;
-                summary.rcvQunty += item.rcvQunty || 0;
-                return summary;
-            }, { byQunty: 0, price: 0, rcvPrice: 0, rcvQunty: 0 });
-            
+            const totalSummary = groupedCalData.reduce(
+                (summary, item) => {
+                    summary.byQunty += item.byQunty || 0;
+                    summary.price += item.price || 0;
+                    summary.rcvPrice += item.rcvPrice || 0;
+                    summary.rcvQunty += item.rcvQunty || 0;
+                    return summary;
+                },
+                { byQunty: 0, price: 0, rcvPrice: 0, rcvQunty: 0 }
+            );
+
             groupedCalData.push({
                 pgNm: "TOTAL",
                 pdiSeller: "",
@@ -63,12 +68,14 @@ function PurchasingMgmtExe() {
                 price: totalSummary.price,
                 rcvPrice: totalSummary.rcvPrice,
                 rcvQunty: totalSummary.rcvQunty,
-                rcvState: ""
+                rcvState: "",
             });
 
             //상태 업데이트
-            calData.forEach(item => {
-                const correspondingGroup = groupedCalData.find(group => group.pgNm === item.pgNm && group.pdiNum === item.pdiNum && group.pdiSeller === item.pdiSeller);
+            calData.forEach((item) => {
+                const correspondingGroup = groupedCalData.find(
+                    (group) => group.pgNm === item.pgNm && group.pdiNum === item.pdiNum && group.pdiSeller === item.pdiSeller
+                );
                 if (correspondingGroup) {
                     item.rcvState = correspondingGroup.rcvState;
                 }
@@ -77,7 +84,7 @@ function PurchasingMgmtExe() {
             setRunMgmt(calData);
             setBuyCall(groupedCalData);
         } else {
-            alert("no data");
+            alert("데이터를 찾습니다...");
             setRunMgmt([]);
             setBuyCall([]);
         }
@@ -88,25 +95,25 @@ function PurchasingMgmtExe() {
             ...data,
             price: data.byUnitPrice * data.byQunty,
             rcvPrice: data.rcvUnitPrice * data.rcvQunty,
-            rcvState: setState(data.byQunty, data.rcvQunty)
+            rcvState: setState(data.byQunty, data.rcvQunty),
         }));
-        
+
         return calData;
     };
 
     const setState = (byQunty, rcvQunty) => {
-        if(byQunty < rcvQunty) {
+        if (byQunty < rcvQunty) {
             return "초과입고";
-        } else if(byQunty - rcvQunty === 0) {
+        } else if (byQunty - rcvQunty === 0) {
             return "입고완료";
-        } else if(byQunty - rcvQunty === byQunty) {
+        } else if (byQunty - rcvQunty === byQunty) {
             return "미입고";
-        } else if(byQunty > rcvQunty) {
+        } else if (byQunty > rcvQunty) {
             return "입고중";
         } else {
             return "상태이상";
         }
-    }
+    };
 
     const refresh = () => {
         if (condition.poiId) {
@@ -130,10 +137,17 @@ function PurchasingMgmtExe() {
             <Location pathList={locationPath.PurchasingMgmtExe} />
             <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
-                <ReactDataTable columns={columns.PurchasingMgmtExe.view} customDatas={view} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+                <ReactDataTable columns={columns.PurchasingMgmtExe.view} customDatas={view} defaultPageSize={5} hideCheckBox={true} isPageNation={true} />
             </HideCard>
             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
-                <ReactDataTable columns={columns.PurchasingMgmtExe.buyCal} customDatas={buyCall} defaultPageSize={5} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
+                <ReactDataTable
+                    columns={columns.PurchasingMgmtExe.buyCal}
+                    customDatas={buyCall}
+                    defaultPageSize={5}
+                    hideCheckBox={true}
+                    isPageNation={true}
+                    isSpecialRow={true}
+                />
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">
@@ -155,8 +169,14 @@ function PurchasingMgmtExe() {
                     condition={condition}
                 />
             </HideCard>
-            <SearchModal returnData={(companyInfo) => fetchAllData({...companyInfo, ...condition})} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} width={350} height={210} title="구매내역 검색"/>
-
+            <SearchModal
+                returnData={(companyInfo) => fetchAllData({ ...companyInfo, ...condition })}
+                onClose={() => setIsOpenSearch(false)}
+                isOpen={isOpenSearch}
+                width={350}
+                height={210}
+                title="구매내역 검색"
+            />
         </>
     );
 }

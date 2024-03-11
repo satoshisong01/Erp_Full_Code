@@ -15,6 +15,17 @@ const LaborCostDoc = () => {
 
     const [negoVisible, setNegoVisible] = useState(true);
 
+    let baseRows = 1 + (negoVisible ? 4 : 3) + 1;
+
+    // tableDatas 배열을 이용한 row 수 계산
+    let dataRows = tableDatas.reduce((acc, data) => {
+        // 각 data 항목에 대한 기본 row(1) + data.estItem 배열의 길이
+        return acc + 1 + data.estItem.length;
+    }, 0);
+    let totalRows = baseRows + dataRows;
+
+    console.log(totalRows); // 이것이 총 row 수입니다.
+
     // "네고" 행의 표시 상태를 토글하는 함수
     const toggleNego = () => {
         setNegoVisible(!negoVisible);
@@ -31,13 +42,13 @@ const LaborCostDoc = () => {
             ctcPaymentCondition: "", // 이 필드에 초기값을 지정합니다.
             ctcDelivery: "", // 이 필드에 초기값을 지정합니다.
             ctcDesc: "", // 이 필드에 초기값을 지정합니다.
+            ctcExpenses: "",
             // 추가적인 필드와 초기값을 여기에 설정할 수 있습니다.
         },
     ]);
 
-    console.log(tableDatas, "tableDatas");
-
     useEffect(() => {
+        console.log("이거왜 계속 불러올까 🌠🌠🌠🌠");
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
         setProjectTitle(data.tableData[0].poiNm);
@@ -47,7 +58,9 @@ const LaborCostDoc = () => {
         console.log(poiId, versionId, "이거안받?");
         if (poiId && versionId) {
             fetchAllData(poiId, versionId);
+            console.log("이거왜 계속 불러올까 💥💥💥💥💥");
         }
+        // 총 row 수
     }, []);
 
     const fetchAllData = async (poiId, versionId) => {
@@ -56,7 +69,6 @@ const LaborCostDoc = () => {
             versionId: versionId,
             ctcType: "T",
         });
-        console.log(resultData, "이게 불러온거");
         if (resultData.length === 0) {
             addData(poiId, versionId);
         } else {
@@ -68,6 +80,7 @@ const LaborCostDoc = () => {
                 ctcPaymentCondition: item.ctcPaymentCondition ? item.ctcPaymentCondition : "고객사 지급기준에 준함",
                 ctcDelivery: item.ctcDelivery ? item.ctcDelivery : "계약 후 5 개월",
                 ctcReference: item.ctcReference ? item.ctcReference : "이주현", // ctcReference가 유효한 값이면 사용, 그렇지 않으면 "이주현" 사용
+                ctcExpenses: item.ctcExpenses ? item.ctcExpenses : 0,
                 ctcDesc: item.ctcDesc
                     ? item.ctcDesc
                     : `1. 견적유효기간: 2024/04/01\n2. 견적 범위 : 자재 납품 / 시험조건 중 시험조건 ( 설치장소 : 세메스 화성 사업장 )`,
@@ -127,6 +140,22 @@ const LaborCostDoc = () => {
 
         // tableData 배열에 요소가 있는지 확인
         if (tableData.length > 0) {
+            // tableData 배열에 요소가 있는 경우에만 값을 변경
+            const updatedTableData = [...tableData];
+            updatedTableData[dataIndex][fieldName] = value;
+
+            // 상태 업데이트 함수를 사용하여 상태를 업데이트하고 화면을 다시 렌더링
+            setTableData(updatedTableData);
+        }
+    };
+
+    const handleChange2 = (e, fieldName, dataIndex) => {
+        const { value } = e.target;
+        console.log(value);
+        console.log(fieldName, dataIndex);
+
+        // tableData 배열에 요소가 있는지 확인
+        if (tableData.length > 0) {
             // 숫자로 변환된 값 저장
             let parsedValue = value.replace(/,/g, ""); // 쉼표 제거
             parsedValue = parseFloat(parsedValue); // 문자열을 숫자로 변환
@@ -151,17 +180,18 @@ const LaborCostDoc = () => {
         });
         const printButton = document.getElementById("printButton");
         const negoBtn = document.getElementById("negoBtn");
-        printButton.style.display = "none"; // 프린트 버튼 숨기기
-        negoBtn.style.display = "none"; // 네고 버튼 숨기기
+        if (negoBtn) negoBtn.style.display = "none";
+        if (printButton) printButton.style.display = "none";
         window.print();
+        if (negoBtn) negoBtn.style.display = "block";
+        if (printButton) printButton.style.display = "block";
     };
 
     useEffect(() => {
         const printButton = document.getElementById("printButton");
         const negoBtn = document.getElementById("negoBtn");
-
-        printButton.style.display = "block"; // 컴포넌트가 마운트될 때 프린트 버튼 보이기
-        negoBtn.style.display = "block";
+        if (negoBtn) negoBtn.style.display = "block";
+        if (printButton) printButton.style.display = "block"; // 컴포넌트가 마운트될 때 프린트 버튼 보이기
 
         // 프린트가 완료된 후 실행될 함수
         const afterPrint = () => {
@@ -171,8 +201,8 @@ const LaborCostDoc = () => {
                 input.style.border = ""; // 빈 문자열로 설정하여 기본 스타일로 돌아감
             });
             // 프린트 버튼 다시 보이기
-            printButton.style.display = "block";
-            negoBtn.style.display = "block";
+            if (negoBtn) negoBtn.style.display = "block";
+            if (printButton) printButton.style.display = "block";
         };
 
         // 프린트 이벤트 리스너 등록
@@ -484,7 +514,8 @@ const LaborCostDoc = () => {
                                                     className="titleInput2"
                                                     type="text"
                                                     value={tableData.length ? numberWithCommas(tableData[0].ctcExpenses) : ""}
-                                                    onChange={(e) => handleChange(e, "ctcExpenses", 0)}
+                                                    placeholder="제경비를 입력해 주세요"
+                                                    onChange={(e) => handleChange2(e, "ctcExpenses", 0)}
                                                 />
                                             </td>
                                             <td className="table4-3White" style={{ textAlign: "right" }}>
@@ -502,7 +533,9 @@ const LaborCostDoc = () => {
                                                 -
                                             </td>
                                             <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                {tableData.length ? tableData[0].slsmnEnterpriseProfit : ""}
+                                                {tableData.length && tableData[0].slsmnEnterpriseProfit
+                                                    ? tableData[0].slsmnEnterpriseProfit.toLocaleString()
+                                                    : ""}
                                             </td>
                                         </tr>
                                         <tr className="tableTr">
@@ -516,7 +549,7 @@ const LaborCostDoc = () => {
                                                 -
                                             </td>
                                             <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                {tableData.length ? tableData[0].slsmnAdmnsCost : ""}
+                                                {tableData.length && tableData[0].slsmnAdmnsCost ? tableData[0].slsmnAdmnsCost.toLocaleString() : ""}
                                             </td>
                                         </tr>
                                         {negoVisible && (
@@ -531,7 +564,7 @@ const LaborCostDoc = () => {
                                                     -
                                                 </td>
                                                 <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                    {tableData.length ? tableData[0].slsmnNego : ""}
+                                                    {tableData.length && tableData[0].slsmnNego ? tableData[0].slsmnNego.toLocaleString() : ""}
                                                 </td>
                                             </tr>
                                         )}
@@ -548,6 +581,8 @@ const LaborCostDoc = () => {
                             </tbody>
                         </table>
                     </div>
+
+                    {typeof totalRows !== "undefined" && totalRows >= 10 && <div style={{ height: `${Math.max(200 - (totalRows - 10) * 20, 0)}px` }}></div>}
 
                     <h3 className="projectName">특이사항</h3>
                     <div className="etcBox">

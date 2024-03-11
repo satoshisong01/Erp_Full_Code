@@ -26,7 +26,7 @@ import SearchModal from "components/modal/SearchModal";
 /** 영업관리-계획관리 */
 function OrderPlanMgmt() {
     const sessionUser = sessionStorage.getItem("loginUser");
-    
+
     const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, unitPriceListRenew, setNameOfButton } =
         useContext(PageContext);
     const [searchDates, setSearchDates] = useState([]); // 원가
@@ -125,13 +125,13 @@ function OrderPlanMgmt() {
             const combinedAValues = extraOriginData.reduce((acc, current) => acc.concat(current), []);
 
             const isDel = deleteList(combinedAValues);
-            if(isMod && isDel) {
+            if (isMod && isDel) {
                 alert("저장완료");
             }
         } else if (originDataLength === updatedDataLength) {
             upDateChange(filterData);
             const isMod = updateList(filterData);
-            if(isMod) {
+            if (isMod) {
                 alert("저장완료");
             }
         } else if (originDataLength < updatedDataLength) {
@@ -169,7 +169,7 @@ function OrderPlanMgmt() {
             };
             addDayToPmpMonth(toAdds);
             const isAdd = addList(toAdds);
-            if(isMod && isAdd) {
+            if (isMod && isAdd) {
                 alert("저장완료");
             }
         }
@@ -182,7 +182,7 @@ function OrderPlanMgmt() {
         });
         const url = `/api/baseInfrm/product/prmnPlan/addList.do`;
         const resultData = await axiosPost(url, addNewData);
-        if(resultData) {
+        if (resultData) {
             refresh();
             return true;
         } else {
@@ -200,7 +200,7 @@ function OrderPlanMgmt() {
 
         const url = `/api/baseInfrm/product/prmnPlan/editArrayList.do`;
         const resultData = await axiosUpdate(url, updatedData);
-        if(resultData) {
+        if (resultData) {
             refresh();
             return true;
         } else {
@@ -211,7 +211,7 @@ function OrderPlanMgmt() {
     const deleteList = async (removeItem) => {
         const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        if(resultData) {
+        if (resultData) {
             refresh();
             return true;
         } else {
@@ -276,7 +276,7 @@ function OrderPlanMgmt() {
             if (resultData && resultData.length > 0) {
                 setSearchDates(resultData);
             } else {
-                alert("no data");
+                alert("데이터를 찾습니다...");
                 setSearchDates([]);
             }
         } else if (innerPageName.name === "인건비") {
@@ -352,7 +352,7 @@ function OrderPlanMgmt() {
                     setPrmnPlanDatas(changeData);
                 }
             } else {
-                alert("no data");
+                alert("데이터를 찾습니다...");
                 setPrmnPlanDatas([]);
                 setPrmnCalDatas([]);
             }
@@ -367,7 +367,7 @@ function OrderPlanMgmt() {
                 console.log("조회 데이터:", resultData);
                 setPjbudgetCalDatas([{ pjbgPriceTotal }]);
             } else {
-                alert("no data");
+                alert("데이터를 찾습니다...");
                 setPjbudgetDatas([]);
                 setPjbudgetCalDatas([]);
             }
@@ -393,7 +393,7 @@ function OrderPlanMgmt() {
                 //합산의 네고율, 이익금, 이익율 구하기
                 const groupedDataWithCalculations = groupedData.map((group) => {
                     // 할인율: (1 - (공급금액 / 소비자금액)) * 100
-                    const temp1 = group.planAmount !== 0 ? (group.planAmount / group.consumerAmount-1) * -100 : 0;
+                    const temp1 = group.planAmount !== 0 ? (group.planAmount / group.consumerAmount - 1) * -100 : 0;
                     group.nego = Math.round(temp1) + " %";
                     // 이익금: 공급금액 - 원가
                     group.profits = group.planAmount - group.estimatedCost;
@@ -430,17 +430,17 @@ function OrderPlanMgmt() {
                     pdiSeller: "",
                     consumerAmount: totals.consumerAmount, //소비자금액
                     planAmount: totals.planAmount, //공급금액
-                    nego: totals.planAmount !== 0 ?  Math.round((totals.planAmount / totals.consumerAmount-1) * -100) + " %" : 0 + " %", //네고율
+                    nego: totals.planAmount !== 0 ? Math.round((totals.planAmount / totals.consumerAmount - 1) * -100) + " %" : 0 + " %", //네고율
                     estimatedCost: totals.estimatedCost, //원가
                     profits: totals.profits, //이익금
                     // 마진 = (이익금/공급금액)*100
-                    margin: totals.planAmount !== 0 ? Math.round((totals.profits/totals.planAmount)*100) + " %" : 0 + " %", //이익율
+                    margin: totals.planAmount !== 0 ? Math.round((totals.profits / totals.planAmount) * 100) + " %" : 0 + " %", //이익율
                     byQunty: totals.byQunty,
                 });
 
                 setPdOrdrCalDatas(groupedDataWithCalculations); //합계
             } else {
-                alert("no data");
+                alert("데이터를 찾습니다...");
                 setPdOrdrDatas([]);
                 setPdOrdrCalDatas([]);
             }
@@ -462,7 +462,7 @@ function OrderPlanMgmt() {
 
                 setOutCalDatas([calTotal]);
             } else {
-                alert("no data");
+                alert("데이터를 찾습니다...");
                 setOutsourcingDatas([]);
                 setOutCalDatas([]);
             }
@@ -481,7 +481,7 @@ function OrderPlanMgmt() {
                 });
                 setGeneralCalDatas([{ total, negoTotal, price }]);
             } else {
-                alert("no data");
+                alert("데이터를 찾습니다...");
                 setGeneralExpensesDatas([]);
                 setGeneralCalDatas([]);
             }
@@ -617,7 +617,10 @@ function OrderPlanMgmt() {
                             <HideCard title="원가 버전 목록" color="back-lightblue" className="mg-b-40">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     {/* <PopupButton targetUrl={URL.PreCostDoc} data={{ label: "사전원가서", ...selectedRows[0], sessionUserInfo: JSON.parse(sessionUser) }} /> */}
-                                    <PopupButton targetUrl={URL.PreCostDoc} data={{ label: "사전원가서", ...selectedRow, sessionUserInfo: JSON.parse(sessionUser) }} />
+                                    <PopupButton
+                                        targetUrl={URL.PreCostDoc}
+                                        data={{ label: "사전원가서", ...selectedRow, sessionUserInfo: JSON.parse(sessionUser) }}
+                                    />
                                     <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
                                     <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
                                     <DelButton label={"삭제"} onClick={() => setIsOpenDel(true)} />
@@ -802,14 +805,21 @@ function OrderPlanMgmt() {
                     width={500}
                     height={200}
                     list={columns.orderPlanMgmt.versionMod}
-                    initialData={[{...selectedRow}]}
+                    initialData={[{ ...selectedRow }]}
                     resultData={modifyToServer}
                     onClose={() => setIsOpenMod(false)}
                     title="버전 수정"
                 />
             )}
             <DeleteModal initialData={deleteNames} resultData={deleteToServer} onClose={() => setIsOpenDel(false)} isOpen={isOpenDel} />
-            <SearchModal returnData={(companyInfo) => fetchAllData({...companyInfo, ...condition})} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} width={350} height={210} title="구매내역 검색"/>
+            <SearchModal
+                returnData={(companyInfo) => fetchAllData({ ...companyInfo, ...condition })}
+                onClose={() => setIsOpenSearch(false)}
+                isOpen={isOpenSearch}
+                width={350}
+                height={210}
+                title="구매내역 검색"
+            />
         </>
     );
 }

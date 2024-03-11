@@ -30,7 +30,7 @@ function ExpenseMgmtPlan() {
     /* 중복방지 */
     const validate = (datas) => {
         const seen = new Set();
-        
+
         for (const data of datas) {
             const key = `${data.pjbgDt.substring(0, 7)}-${data.esntlId}`; //연월, 출장인이 같으면 중복
 
@@ -41,36 +41,37 @@ function ExpenseMgmtPlan() {
             seen.add(key);
         }
         return false; // 중복 데이터 없음
-    }
+    };
 
     const transformDataToServer = (datas) => {
-        datas.forEach(item => {
+        datas.forEach((item) => {
             item.modeCode = "BUDGET";
-    
+
             for (let i = 1; i <= 20; i++) {
-                const expnsKey = `EXPNS${i.toString().padStart(2, '0')}`;
+                const expnsKey = `EXPNS${i.toString().padStart(2, "0")}`;
                 const pjbgTypeKey = `pjbgTypeCode${i}`;
                 if (item.hasOwnProperty(expnsKey)) {
-                    if(item[expnsKey]) { //값이 있다면
-                        item[pjbgTypeKey] = item[expnsKey]; 
+                    if (item[expnsKey]) {
+                        //값이 있다면
+                        item[pjbgTypeKey] = item[expnsKey];
                     }
                     delete item[expnsKey];
                 }
             }
         });
         return datas;
-    }
+    };
 
     const compareData = (originData, updatedData) => {
         // console.log("updatedData:", updatedData);
-        if(!originData) return;
+        if (!originData) return;
         const isDuplicateData = validate(transformDataToServer(updatedData)); // 중복방지
 
-        if(!isDuplicateData) {
+        if (!isDuplicateData) {
             const filterData = updatedData.filter((data) => data.poiId && data.empNm && data.pjbgBeginDt && data.pjbgEndDt); //pmpMonth가 없는 데이터 제외
             const originDataLength = originData ? originData.length : 0;
             const updatedDataLength = filterData ? filterData.length : 0;
-    
+
             if (originDataLength > updatedDataLength) {
                 //수정
                 const updateDataInOrigin = (originData, filterData) => {
@@ -85,7 +86,7 @@ function ExpenseMgmtPlan() {
                 const firstRowUpdate = updateDataInOrigin(originData, filterData);
 
                 // console.log("1번 수정.", firstRowUpdate);
-                updateItem(firstRowUpdate); 
+                updateItem(firstRowUpdate);
 
                 //삭제
                 const delList = [];
@@ -94,34 +95,32 @@ function ExpenseMgmtPlan() {
                 for (let i = updatedDataLength; i < originDataLength; i++) {
                     const dataObj = originData[i];
                     for (const [key, value] of Object.entries(dataObj)) {
-                        if (key.includes('pjbgId') && value !== 0) {
+                        if (key.includes("pjbgId") && value !== 0) {
                             delList.push(value);
                         }
                     }
                 }
                 // console.log("1번 삭제.", delList);
                 deleteItem(delList);
-
             } else if (originDataLength === updatedDataLength) {
                 //수정
                 // console.log("2번 수정.", filterData);
-                updateItem(filterData); 
-
+                updateItem(filterData);
             } else if (originDataLength < updatedDataLength) {
                 //수정
                 const updateList = [];
-    
+
                 for (let i = 0; i < originDataLength; i++) {
                     updateList.push(filterData[i]);
-                }   
+                }
                 // console.log("3번 수정.", updateList);
-                updateItem(updateList); 
+                updateItem(updateList);
 
                 //추가
                 const addList = [];
                 for (let i = originDataLength; i < updatedDataLength; i++) {
                     const newItem = filterData[i];
-    
+
                     addList.push(newItem);
                 }
                 // console.log("3번 추가.", addList);
@@ -204,12 +203,12 @@ function ExpenseMgmtPlan() {
     const transformData = (originalData) => {
         const transformedData = {};
 
-        originalData.forEach(item => {
+        originalData.forEach((item) => {
             const key = `${item.pjbgDt}_${item.esntlId}_${item.pjbgBeginDt}`;
-    
+
             if (!transformedData[key]) {
                 transformedData[key] = {
-                    poiId: item.poiId,  //프로젝트ID
+                    poiId: item.poiId, //프로젝트ID
                     pjbgDt: item.pjbgDt, //연월
                     esntlId: item.esntlId, //출장인ID
                     pjbgBeginDt: item.pjbgBeginDt, //시작일
@@ -219,21 +218,22 @@ function ExpenseMgmtPlan() {
                     pjbgDesc: item.pjbgDesc, //비고
                 };
             }
-    
-            const typeCodeKey = `EXPNS${item.pjbgTypeCode.substring(5).padStart(2, '0')}`;
+
+            const typeCodeKey = `EXPNS${item.pjbgTypeCode.substring(5).padStart(2, "0")}`;
             transformedData[key][typeCodeKey] = item.pjbgPrice; //금액
-    
+
             const pjbgIdKey = `pjbgId${parseInt(item.pjbgTypeCode.substring(5))}`;
             transformedData[key][pjbgIdKey] = item.pjbgId; //각각의 경비 아이디
         });
 
         const changData = Object.values(transformedData);
 
-        changData.forEach(row => {
+        changData.forEach((row) => {
             row.pjbgTotal = 0; //초기화
-        
-            Object.keys(row).forEach(key => {
-                if (key.startsWith('EXPNS') && key !== 'EXPNS19') { // 'EXPNS'로 시작하고 영업비가 아닌 키
+
+            Object.keys(row).forEach((key) => {
+                if (key.startsWith("EXPNS") && key !== "EXPNS19") {
+                    // 'EXPNS'로 시작하고 영업비가 아닌 키
                     row.pjbgTotal += row[key];
                 }
             });
@@ -246,8 +246,8 @@ function ExpenseMgmtPlan() {
             if (result.length === 0) {
                 result.push({ ...current, total: current.EXPNS01 + current.EXPNS02 + current.EXPNS03 + current.EXPNS04 + current.EXPNS05 + current.EXPNS20 });
             } else {
-                const existingGroup = result.find(item => item.pjbgDt.substring(0, 7) === current.pjbgDt.substring(0, 7));
-                if(existingGroup) {
+                const existingGroup = result.find((item) => item.pjbgDt.substring(0, 7) === current.pjbgDt.substring(0, 7));
+                if (existingGroup) {
                     existingGroup.pjbgDt = current.pjbgDt;
                     existingGroup.total += current.EXPNS01 + current.EXPNS02 + current.EXPNS03 + current.EXPNS04 + current.EXPNS05 + current.EXPNS20;
                     existingGroup.EXPNS01 += current.EXPNS01; //교통비
@@ -257,28 +257,34 @@ function ExpenseMgmtPlan() {
                     existingGroup.EXPNS05 += current.EXPNS05; //자재/소모품외
                     existingGroup.EXPNS20 += current.EXPNS20; //기타
                 } else {
-                    result.push({ ...current, total: current.EXPNS01 + current.EXPNS02 + current.EXPNS03 + current.EXPNS04 + current.EXPNS05 + current.EXPNS20 });
+                    result.push({
+                        ...current,
+                        total: current.EXPNS01 + current.EXPNS02 + current.EXPNS03 + current.EXPNS04 + current.EXPNS05 + current.EXPNS20,
+                    });
                 }
             }
             return result;
         }, []);
 
-        const total = calculation.reduce((acc, item) => {
-            acc.pjbgDt = "TOTAL";
-            acc.total += item.total;
-            acc.EXPNS01 += item.EXPNS01;
-            acc.EXPNS02 += item.EXPNS02;
-            acc.EXPNS03 += item.EXPNS03;
-            acc.EXPNS04 += item.EXPNS04;
-            acc.EXPNS05 += item.EXPNS05;
-            acc.EXPNS20 += item.EXPNS20;
-            return acc;
-        }, { pjbgDt: "", total: 0, EXPNS01: 0, EXPNS02: 0, EXPNS03: 0, EXPNS04: 0, EXPNS05: 0, EXPNS20: 0 });
+        const total = calculation.reduce(
+            (acc, item) => {
+                acc.pjbgDt = "TOTAL";
+                acc.total += item.total;
+                acc.EXPNS01 += item.EXPNS01;
+                acc.EXPNS02 += item.EXPNS02;
+                acc.EXPNS03 += item.EXPNS03;
+                acc.EXPNS04 += item.EXPNS04;
+                acc.EXPNS05 += item.EXPNS05;
+                acc.EXPNS20 += item.EXPNS20;
+                return acc;
+            },
+            { pjbgDt: "", total: 0, EXPNS01: 0, EXPNS02: 0, EXPNS03: 0, EXPNS04: 0, EXPNS05: 0, EXPNS20: 0 }
+        );
 
-        calculation.push({...total})
+        calculation.push({ ...total });
 
         return calculation;
-    }
+    };
 
     /* 데이터 조회 */
     const fetchAllData = async (condition) => {
@@ -290,9 +296,8 @@ function ExpenseMgmtPlan() {
         if (resultData && resultData.length > 0) {
             setBudgetMgmt(transformData(resultData, condition)); //데이터 형태 변환
             setCal(totalCalculation(transformData(resultData, condition))); //합계
-
         } else {
-            alert("no data");
+            alert("데이터를 찾습니다...");
             setBudgetMgmt([]);
         }
     };
@@ -302,10 +307,23 @@ function ExpenseMgmtPlan() {
             <Location pathList={locationPath.ExpenseMgmt} />
             <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
-                <ReactDataTable columns={columns.expenseMgmt.planView} customDatas={pjbudgetDatasView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+                <ReactDataTable
+                    columns={columns.expenseMgmt.planView}
+                    customDatas={pjbudgetDatasView}
+                    defaultPageSize={5}
+                    hideCheckBox={true}
+                    isPageNation={true}
+                />
             </HideCard>
             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
-                <ReactDataTable columns={columns.expenseMgmt.cal} customDatas={cal} defaultPageSize={5} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
+                <ReactDataTable
+                    columns={columns.expenseMgmt.cal}
+                    customDatas={cal}
+                    defaultPageSize={5}
+                    hideCheckBox={true}
+                    isPageNation={true}
+                    isSpecialRow={true}
+                />
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">
