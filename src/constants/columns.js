@@ -59,6 +59,7 @@ export const columns = {
                 cellWidth: "250",
                 modify: true,
                 add: true,
+                textAlign: "left",
             },
             {
                 header: "품목그룹명",
@@ -68,6 +69,7 @@ export const columns = {
                 modify: true,
                 add: true,
                 require: true,
+                textAlign: "left",
             },
             {
                 header: "품명",
@@ -75,6 +77,7 @@ export const columns = {
                 cellWidth: "200",
                 modify: true,
                 add: true,
+                textAlign: "left",
             },
             {
                 header: "품목규격",
@@ -82,6 +85,7 @@ export const columns = {
                 cellWidth: "250",
                 modify: true,
                 add: true,
+                textAlign: "left",
             },
             {
                 header: "품목단위",
@@ -96,6 +100,7 @@ export const columns = {
                 cellWidth: "100",
                 modify: true,
                 add: true,
+                textAlign: "left",
             },
             {
                 header: "판매사",
@@ -115,11 +120,13 @@ export const columns = {
                 header: "판매사명",
                 col: "pdiSeller_name",
                 cellWidth: "150",
+                textAlign: "left",
             },
             {
                 header: "제조사명",
                 col: "pdiMenufut_name",
                 cellWidth: "150",
+                textAlign: "left",
             },
             {
                 header: "내외자구분",
@@ -134,6 +141,7 @@ export const columns = {
                 cellWidth: "90",
                 modify: true,
                 add: true,
+                textAlign: "left",
             },
             {
                 header: "기준소비자가산출율",
@@ -141,6 +149,7 @@ export const columns = {
                 cellWidth: "90",
                 modify: true,
                 add: true,
+                textAlign: "left",
             },
             {
                 header: "제품구분",
@@ -148,6 +157,7 @@ export const columns = {
                 cellWidth: "100",
                 modify: true,
                 add: true,
+                textAlign: "left",
             },
             { header: "단위중량", col: "pdiWght", cellWidth: "100", modify: true, add: true },
             //{
@@ -157,7 +167,7 @@ export const columns = {
             //    modify: true,
             //    add: true,
             //},
-            { header: "비고", col: "pdiDesc", cellWidth: "200", modify: true, add: true },
+            { header: "비고", col: "pdiDesc", cellWidth: "200", modify: true, add: true, textAlign: "left" },
             {
                 header: "품목그룹ID",
                 col: "pgId",

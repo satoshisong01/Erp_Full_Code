@@ -32,6 +32,7 @@ function PartnerMgmt() {
             modify: true,
             add: true,
             require: true,
+            textAlign: "left",
         },
         {
             header: "대표자",
@@ -58,6 +59,7 @@ function PartnerMgmt() {
             cellWidth: "200",
             modify: true,
             add: true,
+            textAlign: "left",
         },
         {
             header: "사업자번호",
@@ -86,6 +88,7 @@ function PartnerMgmt() {
             cellWidth: "300",
             modify: true,
             add: true,
+            textAlign: "left",
         },
         // {
         //     header: "상세주소",
@@ -114,6 +117,7 @@ function PartnerMgmt() {
             cellWidth: "200",
             modify: true,
             add: true,
+            textAlign: "left",
         },
         // {
         //     header: "계산서 담당자",
@@ -158,6 +162,7 @@ function PartnerMgmt() {
             modify: true,
             add: true,
             require: true,
+            textAlign: "left",
         },
         {
             header: "품목그룹명2",
@@ -166,6 +171,7 @@ function PartnerMgmt() {
             modify: true,
             add: true,
             require: true,
+            textAlign: "left",
         },
         {
             header: "품목그룹명3",
@@ -174,6 +180,7 @@ function PartnerMgmt() {
             modify: true,
             add: true,
             require: true,
+            textAlign: "left",
         },
         {
             header: "품목그룹명4",
@@ -182,6 +189,7 @@ function PartnerMgmt() {
             modify: true,
             add: true,
             require: true,
+            textAlign: "left",
         },
         {
             header: "품목그룹명5",
@@ -190,6 +198,7 @@ function PartnerMgmt() {
             modify: true,
             add: true,
             require: true,
+            textAlign: "left",
         },
 
         {
@@ -210,6 +219,7 @@ function PartnerMgmt() {
             cellWidth: "200",
             modify: true,
             add: true,
+            textAlign: "left",
         },
     ];
 

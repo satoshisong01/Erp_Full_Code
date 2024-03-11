@@ -32,6 +32,7 @@ function CustomerMgmt() {
             modify: true,
             add: true,
             require: true,
+            textAlign: "left",
         },
         {
             header: "대표자",
@@ -58,6 +59,7 @@ function CustomerMgmt() {
             cellWidth: "200",
             modify: true,
             add: true,
+            textAlign: "left",
         },
         {
             header: "사업자번호",
@@ -86,6 +88,7 @@ function CustomerMgmt() {
             cellWidth: "300",
             modify: true,
             add: true,
+            textAlign: "left",
         },
         // {
         //     header: "상세주소",
@@ -114,6 +117,7 @@ function CustomerMgmt() {
             cellWidth: "200",
             modify: true,
             add: true,
+            textAlign: "left",
         },
         // {
         //     header: "계산서 담당자",
@@ -159,6 +163,7 @@ function CustomerMgmt() {
             modify: true,
             add: true,
             require: true,
+            textAlign: "left",
         },
         {
             header: "품목그룹명2",
@@ -167,6 +172,7 @@ function CustomerMgmt() {
             modify: true,
             add: true,
             require: true,
+            textAlign: "left",
         },
         {
             header: "품목그룹명3",
@@ -175,6 +181,7 @@ function CustomerMgmt() {
             modify: true,
             add: true,
             require: true,
+            textAlign: "left",
         },
         {
             header: "품목그룹명4",
@@ -183,6 +190,7 @@ function CustomerMgmt() {
             modify: true,
             add: true,
             require: true,
+            textAlign: "left",
         },
         {
             header: "품목그룹명5",
@@ -191,6 +199,7 @@ function CustomerMgmt() {
             modify: true,
             add: true,
             require: true,
+            textAlign: "left",
         },
 
         {
@@ -212,6 +221,7 @@ function CustomerMgmt() {
             modify: true,
             add: true,
             require: true,
+            textAlign: "left",
         },
     ];
 
