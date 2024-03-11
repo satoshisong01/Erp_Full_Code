@@ -105,22 +105,21 @@ export default function CompanyModal(props) {
 
     const onClick = (e) => {
         e.preventDefault();
-        if (colName?.id && colName?.name) {
-            setCompanyInfo({
-                [colName.id]: selectInfo[colName.id],
-                [colName.name]: selectInfo[colName.name]
-            });
-        } else {
+        if(colName && colName.id === "cltNm") {
             setCompanyInfo({
                 cltId: selectInfo.cltId,
                 cltNm: selectInfo.cltNm,
+            });
+        } else if(colName && colName.id !== "cltNm") {
+            setCompanyInfo({
+                [colName.id]: selectInfo[colName.id],
+                [colName.name]: selectInfo[colName.name]
             });
         }
         onClose();
     };
 
     const returnSelect = (value) => {
-        console.log(value);
         setSelectInfo((prev) => (prev.cltId !== value.cltId ? value : prev));
     };
 
@@ -130,7 +129,6 @@ export default function CompanyModal(props) {
             isOpen={isOpen}
             onRequestClose={onClose}
             contentLabel={title}
-            // style={{ content: { width, height, },}}
         >
             <div className="me-modal">
                 <div className="me-modal-container" style={{ width, height }}>
