@@ -30,7 +30,7 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
     const accessRoleExecution = ["ROLE_USER", "ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"];
     const accessRoleSales = ["ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"];
     const accessRoleReference = ["ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"];
-    const [signNumber, setSignNumber] = useState("")
+    const [signNumber, setSignNumber] = useState("0")
 
     /** 라벨 선택 시 CSS 활성화 */
     useEffect(() => {
