@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 /** 영업 폼 */
 function ApprovalFormSal({ returnData, initial }) {
-    const { innerPageName, setProjectList, projectList } = useContext(PageContext);
+    const { innerPageName } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
@@ -33,6 +33,7 @@ function ApprovalFormSal({ returnData, initial }) {
             }));
         }
         if (!resultData || resultData.length === 0) {
+            returnData({})
             alert("버전 정보가 없습니다.");
         }
     };
@@ -59,9 +60,7 @@ function ApprovalFormSal({ returnData, initial }) {
     };
 
     const onClick = () => {
-        setProjectList({ ...data });
         returnData({ ...data });
-        // alert("데이터를 불러옵니다");
     };
 
     return (
