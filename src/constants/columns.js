@@ -488,7 +488,7 @@ export const columns = {
                 ],
                 require: true,
             },
-            { header: "금액", col: "pjbgPrice", cellWidth: "300", type: "input", require: true },
+            { header: "금액", col: "pjbgPrice", cellWidth: "300", type: "number", require: true, textAlign: "right" },
             { header: "비고", col: "pjbgDesc", cellWidth: "740", type: "input", textAlign: "right" },
         ],
         expensesCal: [{ header: "금액", col: "pjbgPriceTotal", cellWidth: "1374" }],
@@ -512,9 +512,9 @@ export const columns = {
         generalExpenses: [
             // 영업관리비
             { header: "아이디", col: "slsmnExpnsId", notView: true },
-            { header: "기업이윤", col: "slsmnEnterpriseProfit", cellWidth: "200", type: "input", textAlign: "right"},
-            { header: "일반관리비", col: "slsmnAdmnsCost", cellWidth: "200", type: "input", textAlign: "right"},
-            { header: "네고", col: "slsmnNego", cellWidth: "200", type: "input", textAlign: "right"},
+            { header: "기업이윤", col: "slsmnEnterpriseProfit", cellWidth: "200", type: "number", textAlign: "right"},
+            { header: "일반관리비", col: "slsmnAdmnsCost", cellWidth: "200", type: "number", textAlign: "right"},
+            { header: "네고", col: "slsmnNego", cellWidth: "200", type: "number", textAlign: "right"},
             { header: "비고", col: "slsmnDesc", cellWidth: "740", type: "input" },
             { header: "버전", col: "versionId", notView: true },
             { header: "프로젝트ID", col: "poiId", notView: true },

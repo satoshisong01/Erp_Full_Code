@@ -333,11 +333,6 @@ const ReactDataTablePdorder = (props) => {
         }
     }, [atchFileId]);
 
-    const handleChangeToNumber = (value, index, name) => {
-        const updatedTableData = [...tableData];
-        updatedTableData[index][name] = value;
-        setTableData(updatedTableData);
-    }
     const handleChange = (e, row) => {
         const { value, name } = e.target;
         const index = row.index;
@@ -735,7 +730,9 @@ const ReactDataTablePdorder = (props) => {
                                                                 <Number
                                                                     value={tableData[row.index]?.[cell.column.id] || ""}
                                                                     onChange={(value) => handleChange({target: {value: value, name: cell.column.id}}, row)}
+                                                                    style={{ textAlign: cell.column.textAlign || 'left' }}
                                                                 />
+
                                                         ) : typeof cell.value === "number" ? (
                                                             cell.value && cell.value.toLocaleString()
                                                         ) : (
