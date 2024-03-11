@@ -479,15 +479,15 @@ export const columns = {
                 require: true,
             },
             { header: "금액", col: "pjbgPrice", cellWidth: "300", type: "input", require: true },
-            { header: "비고", col: "pjbgDesc", cellWidth: "740", type: "input" },
+            { header: "비고", col: "pjbgDesc", cellWidth: "740", type: "input", textAlign: "right" },
         ],
         expensesCal: [{ header: "금액", col: "pjbgPriceTotal", cellWidth: "1374" }],
         outsourcing: [
             // 개발외주비
             { header: "회사목록", col: "cltNm", cellWidth: "250", type: "company", require: true },
             { header: "M/M", col: "devOutMm", cellWidth: "100", type: "input", require: true },
-            { header: "단가", col: "devOutPrice", cellWidth: "100", type: "input", require: true },
-            { header: "금액", col: "price", cellWidth: "150" },
+            { header: "단가", col: "devOutPrice", cellWidth: "100", type: "number", require: true, textAlign: "right" },
+            { header: "금액", col: "price", cellWidth: "150", textAlign: "right"},
             { header: "비고", col: "devDesc", cellWidth: "741", type: "input" },
             { header: "아이디", col: "devOutId", notView: true },
             { header: "버전", col: "versionId", notView: true },
@@ -502,18 +502,18 @@ export const columns = {
         generalExpenses: [
             // 영업관리비
             { header: "아이디", col: "slsmnExpnsId", notView: true },
-            { header: "기업이윤", col: "slsmnEnterpriseProfit", cellWidth: "200", type: "input" },
-            { header: "일반관리비", col: "slsmnAdmnsCost", cellWidth: "200", type: "input" },
-            { header: "네고", col: "slsmnNego", cellWidth: "200", type: "input" },
+            { header: "기업이윤", col: "slsmnEnterpriseProfit", cellWidth: "200", type: "input", textAlign: "right"},
+            { header: "일반관리비", col: "slsmnAdmnsCost", cellWidth: "200", type: "input", textAlign: "right"},
+            { header: "네고", col: "slsmnNego", cellWidth: "200", type: "input", textAlign: "right"},
             { header: "비고", col: "slsmnDesc", cellWidth: "740", type: "input" },
             { header: "버전", col: "versionId", notView: true },
             { header: "프로젝트ID", col: "poiId", notView: true },
         ],
         generalCal: [
             // 영업관리비합계
-            { header: "금액", col: "price", cellWidth: "458" },
-            { header: "판관비", col: "total", cellWidth: "458" },
-            { header: "네고", col: "negoTotal", cellWidth: "458" },
+            // { header: "금액", col: "price", cellWidth: "458" },
+            { header: "판관비", col: "total", cellWidth: "687" },
+            { header: "네고", col: "negoTotal", cellWidth: "687" },
         ],
         purchase: [
             // 구매비
@@ -530,11 +530,11 @@ export const columns = {
             { header: "수량", col: "byQunty", cellWidth: "50", type: "input", require: true, textAlign: "center" },
             { header: "단위", col: "pdiUnit", cellWidth: "50" },
             // { header: "소비자 단가", col: "consumerPrice", cellWidth: "100", type: "input" },
-            { header: "소비자 단가", col: "byConsumerUnitPrice", cellWidth: "100", type: "input", textAlign: "right" },
+            { header: "소비자 단가", col: "byConsumerUnitPrice", cellWidth: "100", type: "number", textAlign: "right" },
             { header: "소비자 금액", col: "consumerAmount", cellWidth: "130", textAlign: "right" },
-            { header: "공급단가", col: "unitPrice", cellWidth: "100", type: "input", textAlign: "right" },
+            { header: "공급단가", col: "unitPrice", cellWidth: "100", type: "number", textAlign: "right" },
             { header: "공급금액", col: "planAmount", cellWidth: "130", textAlign: "right" },
-            { header: "원단가", col: "byUnitPrice", cellWidth: "100", type: "input", require: true, textAlign: "right" },
+            { header: "원단가", col: "byUnitPrice", cellWidth: "100", type: "number", require: true, textAlign: "right" },
             { header: "원가", col: "estimatedCost", cellWidth: "100", textAlign: "right" },
             { header: "이익금", col: "plannedProfits", cellWidth: "100", textAlign: "right" },
             // { header: "이익률", col: "plannedProfitMargin", cellWidth: "60" },
@@ -1560,6 +1560,7 @@ export const columns = {
                 cellWidth: "100",
                 type: "number",
                 require: true,
+                textAlign: "right"
             },
             {
                 header: "공급금액",
