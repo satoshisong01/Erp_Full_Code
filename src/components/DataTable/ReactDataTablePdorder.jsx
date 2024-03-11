@@ -375,27 +375,43 @@ const ReactDataTablePdorder = (props) => {
                     updatedTableData[index]["unitPrice"] = Math.round(unitPrice);
                     updatedTableData[index]["atchFileId"] = atchFileId;
                     updatedTableData[index]["planAmount"] = Math.round(planAmount);
-                    updatedTableData[index]["byConsumerUnitPrice"] = Math.round(byConsumerUnitPrice * 100);
-                    updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount * 100);
+                    updatedTableData[index]["byConsumerUnitPrice"] = Math.round(byConsumerUnitPrice *100);
+                    updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount*100);
                     updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits);
                 }
             }
-            //기준 이익율, 소비자가 산출률 역산 해야할지 문의
-            else if (name === "byConsumerUnitPrice" || name === "unitPrice") {
-                //소비자단가, 공급단가
+            //공급단가 수정 시 - 이익률, 이익금, 공급금액, 소비자단가, 소비자금액, 소비자가산출률 변동
+            else if (name === "unitPrice") { //공급단가
+                const planAmount = row.original.byQunty * row.original.unitPrice; //공급금액
+                // 이익금 : 공급금액 - 원가
+                if (row.original.unitPrice && row.original.byUnitPrice) { 
+                    const byStandardMargin = row.original.unitPrice !== 0 ? 100 - Math.round(100 / (row.original.unitPrice / row.original.byUnitPrice)) : 0;
+                    const plannedProfits = planAmount - row.original.estimatedCost;
+                    const byConsumerUnitPrice = division(row.original.unitPrice, row.original.byConsumerOutputRate);
+                    const consumerAmount = row.original.byQunty * byConsumerUnitPrice;
+                    updatedTableData[index]["byStandardMargin"] = byStandardMargin; //이익률
+                    updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits); //이익금
+                    updatedTableData[index]["planAmount"] = planAmount; //공급금액
+                    updatedTableData[index]["byConsumerUnitPrice"] = Math.round(byConsumerUnitPrice*100); //소비자단가
+                    updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount*100); //소비자금액
+                }
+
+            }
+            //소비자단가 수정 시 - 소비자금액, 소비자가산출률, 이익금, 이익률 변동
+            else if (name === "byConsumerUnitPrice") { //소비자단가
                 const consumerAmount = row.original.byQunty * row.original.byConsumerUnitPrice; //소비자금액
                 const planAmount = row.original.byQunty * row.original.unitPrice; //공급금액
                 // 이익금 : 공급금액 - 원가
                 const plannedProfits = planAmount - row.original.estimatedCost;
-                if (row.original.unitPrice && row.original.estimatedCost) {
+                if (row.original.unitPrice && row.original.byUnitPrice) {
                     //이익율
-                    const byStandardMargin = row.original.unitPrice !== 0 ? 100 - Math.round(100 / (row.original.unitPrice / row.original.estimatedCost)) : 0;
-                    updatedTableData[index]["byStandardMargin"] = byStandardMargin;
+                    const byStandardMargin = row.original.unitPrice !== 0 ? 100 - Math.round(100 / (row.original.unitPrice / row.original.byUnitPrice)) : 0;
+                    updatedTableData[index]["consumerAmount"] = consumerAmount; //소비자금액
+                    // 소비자가산출률 = (공급단가/소비자단가) * 100
+                    updatedTableData[index]["byConsumerOutputRate"] = Math.round((row.original.unitPrice/row.original.byConsumerUnitPrice)*100); //소비자가산출률
+                    updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits); //이익금
+                    updatedTableData[index]["byStandardMargin"] = byStandardMargin; //이익률
                 }
-
-                updatedTableData[index]["consumerAmount"] = consumerAmount;
-                updatedTableData[index]["planAmount"] = planAmount;
-                updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits);
             }
         }
         setTableData(updatedTableData);

@@ -27,6 +27,7 @@ function Quotation() {
     const [infoList, setInfoList] = useState([
         { name: "인건비", id: "estimateLabor" },
         { name: "구매비", id: "orderBuying" },
+        { name: "품의서", id: "proposal" },
     ]);
     const [condition, setCondition] = useState({});
     //const [isLoading, setIsLoading] = useState(true); //로딩화면(true 일때 로딩화면)
@@ -43,7 +44,6 @@ function Quotation() {
     useEffect(() => {
         setInnerPageName({ name: "인건비", id: "estimateLabor" });
         setCurrentPageName({}); //inner와 pageName은 동시에 사용 X
-        fetchAllData();
         return () => {};
     }, []);
 
@@ -51,19 +51,13 @@ function Quotation() {
         if (currentPageName.id === "Quotation") {
             const activeTab = document.querySelector(".mini_board_3 .tab li a.on"); //마지막으로 활성화 된 탭
             if (activeTab) {
-                const activeTabInfo = infoList.find((data) => data.name === activeTab.textContent);
+                const activeTabInfo = infoList.find((data) => data.name === activeTab.textContent.trim());
                 setInnerPageName({ ...activeTabInfo });
                 setCurrentPageName({});
                 fetchAllData();
             }
         }
     }, [currentPageName]);
-
-    useEffect(() => {
-        if (innerPageName.id === "estimateLabor") {
-            fetchAllData();
-        }
-    }, [innerPageName]);
 
     const changeTabs = (name, id) => {
         setInnerPageName((prev) => {
@@ -539,28 +533,17 @@ function Quotation() {
 
     return (
         <>
-            {/*{isLoading ? (
-                // 로딩 화면을 보여줄 JSX
-                <div className="Loading">
-                    <div className="spinner"></div>
-                    <div> Loading... </div>
-                </div>
-            ) : (
-                <div>*/}
             <Location pathList={locationPath.Quotation} />
             <div className="common_board_style mini_board_3">
                 <ul className="tab">
                     <li onClick={() => changeTabs("인건비", "estimateLabor")}>
-                        <a href="#인건비" className="on">
-                            {" "}
-                            인건비{" "}
-                        </a>
+                        <a href="#인건비" className="on">인건비</a>
                     </li>
                     <li onClick={() => changeTabs("구매비", "orderBuying")}>
-                        <a href="#구매비"> 구매비 </a>
+                        <a href="#구매비">구매비</a>
                     </li>
                     <li onClick={() => changeTabs("품의서", "proposal")}>
-                        <a href="#품의서"> 품의서 </a>
+                        <a href="#품의서">품의서</a>
                     </li>
                 </ul>
                 <div className="list">
