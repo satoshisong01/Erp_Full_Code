@@ -48,7 +48,6 @@ function Quotation() {
     }, []);
 
     useEffect(() => {
-        console.log(currentPageName);
         if (currentPageName.id === "Quotation") {
             const activeTab = document.querySelector(".mini_board_3 .tab li a.on"); //마지막으로 활성화 된 탭
             if (activeTab) {
@@ -61,7 +60,6 @@ function Quotation() {
     }, [currentPageName]);
 
     useEffect(() => {
-        // console.log("🎄innerPageName:",innerPageName.id, ",", innerPageName.name);
         if (innerPageName.id === "estimateLabor") {
             fetchAllData();
         }
@@ -76,68 +74,12 @@ function Quotation() {
     };
 
     const refresh = () => {
-        console.log("리프래쉬 왜안함");
         if (condition.poiId && condition.versionId) {
             fetchAllData(condition);
         } else {
             fetchAllData();
         }
     };
-
-    function mergeObjects(data) {
-        data.sort((a, b) => a.estId - b.estId);
-        // 객체의 키를 모아둘 Set
-        let keysSet = new Set();
-
-        // 객체들의 키를 확인하면서 중복된 키는 저장하지 않음
-        data.forEach((obj) => {
-            Object.keys(obj).forEach((key) => {
-                if (key !== "estId") {
-                    keysSet.add(key);
-                }
-
-                // estMm1, estMm2, estMm3 값 중복 확인
-                if (key.startsWith("estMm") && !window["unique" + key]) {
-                    window["unique" + key] = obj[key];
-                }
-            });
-        });
-
-        // 중복되지 않는 키들을 가진 객체를 생성
-        let result = {};
-        keysSet.forEach((key) => {
-            result[key] = data[0][key];
-        });
-
-        // 중복되지 않는 estMm 속성들을 저장
-        for (let i = 1; i <= 24; i++) {
-            let key = "estMm" + i;
-            if (window["unique" + key]) {
-                result[key] = window["unique" + key];
-            }
-        }
-
-        // estId 값을 배열로 저장
-        result["estIdList"] = data.map((obj) => obj["estId"]);
-
-        // 최종 결과를 배열로 감싸서 반환
-        return [result];
-    }
-
-    //const processResultData = (resultData) => {
-    //    const newData = resultData.map((item, index) => {
-    //        // 새로운 객체를 만들어서 기존 객체의 속성들을 복사
-    //        const newItem = { ...item };
-
-    //        // estMm 뒤에 index를 붙여서 새로운 속성을 추가
-    //        newItem[`estMm${index + 1}`] = item.estMm;
-    //        delete newItem.estMm;
-    //        delete newItem.estMonth;
-
-    //        return newItem;
-    //    });
-    //    return newData;
-    //};
 
     //estMonth(월 숫자를 잘라다가 새롭게 estMm을 만듦)
     const updateEstMmProperty = (data) => {
@@ -152,9 +94,7 @@ function Quotation() {
     };
 
     const processResultData = (resultData, condition) => {
-        console.log(resultData, "처음받는값인데");
         const changeDD = updateEstMmProperty(resultData);
-        console.log(changeDD, "바뀔까?");
         const transformedData = changeDD.reduce((accumulator, item) => {
             const {
                 estId,
@@ -247,13 +187,11 @@ function Quotation() {
 
             return accumulator;
         }, []);
-        console.log(transformedData, "transformedData");
         //여기까지가통합
 
         // mergedData 에서 다시 tableData에쓸 배열로 재정의
         const mergedData = Object.values(transformedData).map((mergedItem, index) => {
             const newObj = {};
-            console.log(mergedItem, "이거머더라");
             newObj["estIdList"] = mergedItem.estId;
             newObj["estMm"] = mergedItem.estMm;
             newObj["estPosition"] = mergedItem.estPosition;
@@ -305,7 +243,6 @@ function Quotation() {
 
             return newObj;
         });
-        console.log(mergedData);
         return mergedData;
     };
 
@@ -317,24 +254,19 @@ function Quotation() {
         if (innerPageName.id === "estimateLabor") {
             //인건비
             const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
-            console.log(resultData, "퓨어 데이터");
             setEstimate([]);
             setestimateBool(false);
             if (resultData.length !== 0) {
                 const result = processResultData(resultData, condition);
-                console.log(result, "함수거치고 난거");
-                //const formatData = mergeObjects(result);
                 setEstimate(result);
                 setestimateBool(true);
             }
         } else if (innerPageName.id === "orderBuying") {
             //구매비
-            console.log("여기타는지 봐야해");
             setBuyIngInfo([]);
             setBuyIngBool(false);
             const resultData = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", condition || {});
             if (resultData.length !== 0) {
-                console.log(resultData, "구매비");
                 setBuyIngInfo(resultData);
                 setBuyIngBool(true);
             }
@@ -349,20 +281,14 @@ function Quotation() {
             compareData(originTableData, tableData);
         } else if (innerPageName.id === "orderBuying") {
             //구매비
-            console.log("이거안타나바");
             compareData2(originTableData, tableData);
         }
     };
 
     const compareData = (originData, updatedData) => {
-        console.log("개발용 originData", originData);
-        console.log("개발용 updatedData", updatedData);
-
         const filterData = updatedData.filter((data) => data.poiId); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
-        console.log("여기탐 개발외주 수정?", updatedData);
-        console.log("updatedDataLength?", updatedDataLength);
 
         if (originDataLength > updatedDataLength) {
             //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
@@ -381,9 +307,7 @@ function Quotation() {
             updateItem(firstRowUpdate); //수정
 
             const originAValues = originData.map((item) => item.estIdList); //삭제할 id 추출
-            console.log(originAValues);
             const extraOriginData = originAValues.slice(updatedDataLength);
-            console.log(extraOriginData);
 
             const flatArray = extraOriginData.flat(); //중첩배열 고르게만듦
 
@@ -393,13 +317,9 @@ function Quotation() {
                 delList.push(originData[i].estIdList);
                 delListTest.push(originData[i]);
             }
-            console.log(flatArray);
-            console.log(delList);
-            console.log(delListTest);
 
             deleteItem(flatArray); //삭제
         } else if (originDataLength === updatedDataLength) {
-            console.log(filterData, "이걸로해야혀는디");
             updateItem(filterData); //수정
         } else if (originDataLength < updatedDataLength) {
             const updateList = [];
@@ -407,7 +327,6 @@ function Quotation() {
             for (let i = 0; i < originDataLength; i++) {
                 updateList.push(filterData[i]);
             }
-            console.log("여긴가?3");
             updateItem(updateList); //수정
 
             const addLists = [];
@@ -423,10 +342,7 @@ function Quotation() {
     };
 
     const compareData2 = (originData, updatedData) => {
-        console.log("🎄견적용 구매비", originData, "mod:", updatedData);
         const filterData = updatedData.filter((data) => data.pdiId); //필수값 체크
-
-        // console.log("🎄filterData:", filterData);
 
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -473,21 +389,16 @@ function Quotation() {
     };
 
     const addItem2 = async (addData) => {
-        console.log(addData, "견적 구매 추가데이터");
         const url = `api/estimate/buy/estCostBuy/addList.do`;
         const resultData = await axiosPost(url, addData);
-        console.log(resultData, "💜추가된거 확인addItem");
         if (resultData) {
             refresh();
         }
     };
 
     const updateItem2 = async (toUpdate) => {
-        console.log(toUpdate, "업데이트 견적구매 데이터좀보자!");
         const url = `/api/estimate/buy/estCostBuy/editList.do`;
-        console.log(toUpdate, "💜updateItem");
         const resultData = await axiosUpdate(url, toUpdate);
-        console.log(resultData, "변경된거 맞음?");
 
         if (resultData) {
             refresh();
@@ -495,10 +406,8 @@ function Quotation() {
     };
 
     const deleteItem2 = async (removeItem) => {
-        console.log(removeItem, "견적 구매 삭제할놈들");
         const url = `/api/estimate/buy/estCostBuy/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        console.log(resultData, "지워진거맞음?");
 
         if (resultData) {
             refresh();
@@ -506,21 +415,16 @@ function Quotation() {
     };
 
     const addItem = async (addData) => {
-        console.log(addData, "견적 영업 추가데이터");
         const url = `/api/estimate/personnel/estimateCostMM/addArrayList.do`;
         const resultData = await axiosPost(url, addData);
-        console.log(resultData, "💜추가된거 확인addItem");
         if (resultData) {
             refresh();
         }
     };
 
     const updateItem = async (toUpdate) => {
-        console.log(toUpdate, "업데이트 데이터좀보자!");
         const url = `/api/estimate/personnel/estimateCostMM/editArrayList.do`;
-        console.log(toUpdate, "💜updateItem");
         const resultData = await axiosUpdate(url, toUpdate);
-        console.log(resultData, "변경된거 맞음?");
 
         if (resultData) {
             refresh();
@@ -528,10 +432,8 @@ function Quotation() {
     };
 
     const deleteItem = async (removeItem) => {
-        console.log(removeItem, "삭제할놈들");
         const url = `/api/estimate/personnel/estimateCostMM/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        console.log(resultData, "지워진거맞음?");
 
         if (resultData) {
             refresh();
@@ -577,7 +479,6 @@ function Quotation() {
         } else if (type === "비고") {
             setContent(value);
         } else if (type === "조회") {
-            console.log("1>>> ", value, type);
             setCondition((prev) => {
                 if (prev.poiId !== value.poiId) {
                     const newCondition = { ...value };
@@ -627,7 +528,6 @@ function Quotation() {
             sttApproverList: list,
         };
 
-        console.log("localStorage.jToken:", localStorage.jToken);
         const resultData = await axiosPost("/api/system/signState/add.do", dataTosend);
         if (resultData) {
             alert("요청 완료되었습니다.");
