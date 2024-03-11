@@ -137,21 +137,15 @@ const ReactDataTableRowEdit = ({ columns }) => {
                 setSelectDatas((prevSelectDatas) => [...prevSelectDatas, data]);
             }
         } else {
-            setSelectDatas((prevSelectDatas) =>
-                prevSelectDatas.filter((item) => item !== data)
-            );
+            setSelectDatas((prevSelectDatas) => prevSelectDatas.filter((item) => item !== data));
         }
     };
 
     const onDeleteRow = (row) => {
         const rowToDelete = row.original;
 
-        setTableData((prevData) =>
-            prevData.filter((rowData) => rowData !== rowToDelete)
-        );
-        setSelectDatas((prevSelectDatas) =>
-            prevSelectDatas.filter((data) => data !== rowToDelete)
-        );
+        setTableData((prevData) => prevData.filter((rowData) => rowData !== rowToDelete));
+        setSelectDatas((prevSelectDatas) => prevSelectDatas.filter((data) => data !== rowToDelete));
 
         setPage(0);
     };
@@ -161,29 +155,15 @@ const ReactDataTableRowEdit = ({ columns }) => {
             <button className="btn btn-primary" onClick={onAddRow}>
                 Add Row
             </button>
-            <table
-                {...getTableProps()}
-                className="table table-bordered table-styled"
-                id="dataTableReactTable">
+            <table {...getTableProps()} className="table table-bordered table-styled" id="dataTableReactTable">
                 <thead>
                     {headerGroups.map((headerGroup) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map((column) => (
-                                <th
-                                    {...column.getHeaderProps(
-                                        column.getSortByToggleProps()
-                                    )}
-                                    className="tableHeaderTh"
-                                    style={{ width: column.width }}>
+                                <th {...column.getHeaderProps(column.getSortByToggleProps())} className="tableHeaderTh" style={{ width: column.width }}>
                                     <div className="icon-container">
                                         <span>{column.render("Header")}</span>
-                                        <span className="sort-icon">
-                                            {column.isSorted
-                                                ? column.isSortedDesc
-                                                    ? " ▼"
-                                                    : " ▲"
-                                                : ""}
-                                        </span>
+                                        <span className="sort-icon">{column.isSorted ? (column.isSortedDesc ? " ▼" : " ▲") : ""}</span>
                                     </div>
                                 </th>
                             ))}
@@ -192,7 +172,7 @@ const ReactDataTableRowEdit = ({ columns }) => {
                 </thead>
                 {tableData.length <= 0 && (
                     <div style={{ display: "flex", width: "1200px", margin: "auto", alignItems: "center", justifyContent: "center" }}>
-                        <div style={{ fontSize: 15 }}>no data</div>
+                        <div style={{ fontSize: 15 }}>데이터를 찾습니다...</div>
                     </div>
                 )}
                 <tbody {...getTableBodyProps()}>
@@ -206,51 +186,23 @@ const ReactDataTableRowEdit = ({ columns }) => {
                                         <td {...cell.getCellProps()}>
                                             {cell.column.id === "selection"
                                                 ? cell.render("Cell")
-                                                : cell.column.type ===
-                                                      "input" && (
-                                                      <input
-                                                          type="text"
-                                                          defaultValue={
-                                                              cell.value
-                                                          }
-                                                          onChange={(e) =>
-                                                              onChange(
-                                                                  e,
-                                                                  row,
-                                                                  column
-                                                              )
-                                                          }
-                                                      />
+                                                : cell.column.type === "input" && (
+                                                      <input type="text" defaultValue={cell.value} onChange={(e) => onChange(e, row, column)} />
                                                   )}
-                                            {column.type === "select" &&
-                                            column.options ? (
-                                                <select
-                                                    value={cell.value}
-                                                    onChange={(e) =>
-                                                        onChange(e, row, column)
-                                                    }>
-                                                    {cell.column.options.map(
-                                                        (option) => (
-                                                            <option
-                                                                key={
-                                                                    option.value
-                                                                }
-                                                                defaultValue={
-                                                                    option.value
-                                                                }>
-                                                                {option.label}
-                                                            </option>
-                                                        )
-                                                    )}
+                                            {column.type === "select" && column.options ? (
+                                                <select value={cell.value} onChange={(e) => onChange(e, row, column)}>
+                                                    {cell.column.options.map((option) => (
+                                                        <option key={option.value} defaultValue={option.value}>
+                                                            {option.label}
+                                                        </option>
+                                                    ))}
                                                 </select>
                                             ) : null}
                                         </td>
                                     );
                                 })}
                                 <td>
-                                    <button
-                                        className="btnR btn-primary redDelete"
-                                        onClick={() => onDeleteRow(row)}>
+                                    <button className="btnR btn-primary redDelete" onClick={() => onDeleteRow(row)}>
                                         삭제
                                     </button>
                                 </td>
@@ -260,9 +212,7 @@ const ReactDataTableRowEdit = ({ columns }) => {
                 </tbody>
             </table>
             <div className="pagination">
-                <button
-                    onClick={() => previousPage()}
-                    disabled={!canPreviousPage}>
+                <button onClick={() => previousPage()} disabled={!canPreviousPage}>
                     ◀
                 </button>
                 <span>

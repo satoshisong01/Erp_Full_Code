@@ -22,7 +22,7 @@ function PurchasingMgmtPlan() {
     const [budgetMgmt, setBudgetMgmt] = useState([]);
     const [buyCall, setBuyCall] = useState([]);
     const [view, setView] = useState([]);
-    const [totalSummary, setTotalSummary] = useState({byQunty: 0, price: 0});
+    const [totalSummary, setTotalSummary] = useState({ byQunty: 0, price: 0 });
     const [isOpenSearch, setIsOpenSearch] = useState(false);
 
     const fetchAllData = async (condition) => {
@@ -38,18 +38,21 @@ function PurchasingMgmtPlan() {
                     existingGroup.byQunty += current.byQunty;
                     existingGroup.price += current.price;
                 } else {
-                    result.push({ ...current});
+                    result.push({ ...current });
                 }
                 return result;
             }, []);
 
             //마지막 토탈 행 구하기
-            const temp = groupedData.reduce((summary, item) => {
-                summary.byQunty += item.byQunty || 0;
-                summary.price += item.price || 0;
-                return summary;
-            }, { byQunty: 0, price: 0 });
-            
+            const temp = groupedData.reduce(
+                (summary, item) => {
+                    summary.byQunty += item.byQunty || 0;
+                    summary.price += item.price || 0;
+                    return summary;
+                },
+                { byQunty: 0, price: 0 }
+            );
+
             groupedData.push({
                 pgNm: "TOTAL",
                 pdiSeller: "",
@@ -57,10 +60,10 @@ function PurchasingMgmtPlan() {
                 price: temp.price,
             });
 
-            setTotalSummary({byQunty: temp.byQunty.toLocaleString() || 0, price: temp.price.toLocaleString() || 0});
+            setTotalSummary({ byQunty: temp.byQunty.toLocaleString() || 0, price: temp.price.toLocaleString() || 0 });
             setBuyCall(groupedData); //합계
         } else {
-            alert("no data");
+            alert("데이터를 찾습니다...");
             setBuyCall([]);
             setBudgetMgmt([]);
         }
@@ -87,16 +90,23 @@ function PurchasingMgmtPlan() {
             return prev;
         });
     };
-    
+
     return (
         <>
             <Location pathList={locationPath.PurchasingMgmt} />
             <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
-                <ReactDataTable columns={columns.PurchasingMgmtExe.planView} customDatas={view} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+                <ReactDataTable columns={columns.PurchasingMgmtExe.planView} customDatas={view} defaultPageSize={5} hideCheckBox={true} isPageNation={true} />
             </HideCard>
-            <HideCard title={"합계 [수량:" + totalSummary.byQunty + " 금액:" + totalSummary.price + "]" } color="back-lightblue" className="mg-b-40">
-                <ReactDataTable columns={columns.PurchasingMgmtPlan.total} customDatas={buyCall} defaultPageSize={5} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
+            <HideCard title={"합계 [수량:" + totalSummary.byQunty + " 금액:" + totalSummary.price + "]"} color="back-lightblue" className="mg-b-40">
+                <ReactDataTable
+                    columns={columns.PurchasingMgmtPlan.total}
+                    customDatas={buyCall}
+                    defaultPageSize={5}
+                    hideCheckBox={true}
+                    isPageNation={true}
+                    isSpecialRow={true}
+                />
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">
@@ -118,7 +128,14 @@ function PurchasingMgmtPlan() {
                     condition={condition}
                 />
             </HideCard>
-            <SearchModal returnData={(condition) => fetchAllData(condition)} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} width={350} height={210} title="구매내역 검색"/>
+            <SearchModal
+                returnData={(condition) => fetchAllData(condition)}
+                onClose={() => setIsOpenSearch(false)}
+                isOpen={isOpenSearch}
+                width={350}
+                height={210}
+                title="구매내역 검색"
+            />
         </>
     );
 }
