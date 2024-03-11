@@ -181,8 +181,8 @@ function ItemDetailMgmt() {
                     {isOpenMod && (
                         <AddModModal
                             width={500}
-                            height={120}
-                            list={columns.reference.groupDetailModifyMod}
+                            height={410}
+                            list={columns.reference.groupDetailAddMod}
                             initialData={selectedRows}
                             resultData={modifyToServer}
                             onClose={() => setIsOpenMod(false)}
