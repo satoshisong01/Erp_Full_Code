@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 /** 조회 보고서용 */
 function ApprovalFormReport({ returnData, type }) {
-    const { innerPageName } = useContext(PageContext);
+    const { innerPageName, inquiryConditions } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
@@ -22,6 +22,10 @@ function ApprovalFormReport({ returnData, type }) {
             returnData(data);
         }
     }, [data, innerPageName]);
+
+    useEffect(() => {
+        setData({...inquiryConditions});
+    }, [inquiryConditions])
 
     const getVersionList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});

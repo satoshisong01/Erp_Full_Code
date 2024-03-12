@@ -63,7 +63,7 @@ function PurchasingMgmtPlan() {
             setTotalSummary({ byQunty: temp.byQunty.toLocaleString() || 0, price: temp.price.toLocaleString() || 0 });
             setBuyCall(groupedData); //합계
         } else {
-            alert("데이터를 찾습니다...");
+            alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
             setBuyCall([]);
             setBudgetMgmt([]);
         }

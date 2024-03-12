@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 /** 영업 폼 */
 function ApprovalFormSal({ returnData, initial }) {
-    const { innerPageName } = useContext(PageContext);
+    const { innerPageName, setInquiryConditions, inquiryConditions } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
@@ -15,7 +15,6 @@ function ApprovalFormSal({ returnData, initial }) {
     }, [initial]);
 
     useEffect(() => {
-        // if (data.poiId && !data.versionId) {
         if (data.poiId && !data.versionId) {
             //선택된 버전정보가 없다면
             getVersionList({ poiId: data.poiId });
@@ -33,7 +32,7 @@ function ApprovalFormSal({ returnData, initial }) {
             }));
         }
         if (!resultData || resultData.length === 0) {
-            returnData({})
+            returnData && returnData({})
             alert("버전 정보가 없습니다.");
         }
     };
@@ -46,7 +45,6 @@ function ApprovalFormSal({ returnData, initial }) {
     };
 
     const onChange = (value) => {
-        console.log(value);
         setData({
             poiId: value.poiId,
             poiNm: value.poiNm,
@@ -60,7 +58,12 @@ function ApprovalFormSal({ returnData, initial }) {
     };
 
     const onClick = () => {
-        returnData({ ...data });
+        if(!data.versionId) {
+            alert("버전을 생성하세요.");
+            return;
+        }
+        setInquiryConditions({ ...data })
+        returnData && returnData({ ...data });
     };
 
     return (

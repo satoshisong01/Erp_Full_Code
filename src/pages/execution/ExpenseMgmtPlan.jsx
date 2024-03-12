@@ -297,7 +297,7 @@ function ExpenseMgmtPlan() {
             setBudgetMgmt(transformData(resultData, condition)); //데이터 형태 변환
             setCal(totalCalculation(transformData(resultData, condition))); //합계
         } else {
-            alert("데이터를 찾습니다...");
+            alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
             setBudgetMgmt([]);
         }
     };

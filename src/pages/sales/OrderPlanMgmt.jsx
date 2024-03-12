@@ -27,7 +27,7 @@ import SearchModal from "components/modal/SearchModal";
 function OrderPlanMgmt() {
     const sessionUser = sessionStorage.getItem("loginUser");
 
-    const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, unitPriceListRenew, setNameOfButton } =
+    const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, unitPriceListRenew, setNameOfButton, inquiryConditions } =
         useContext(PageContext);
     const [searchDates, setSearchDates] = useState([]); // 원가
     const [prmnPlanDatas, setPrmnPlanDatas] = useState([]); // 인건비
@@ -58,7 +58,6 @@ function OrderPlanMgmt() {
     useEffect(() => {
         setInnerPageName({ name: "원가버전조회", id: "OrderPlanMgmt" });
         setCurrentPageName({}); //inner와 pageName은 동시에 사용 X
-        fetchAllData();
         return () => {};
     }, []);
 
@@ -77,6 +76,8 @@ function OrderPlanMgmt() {
     useEffect(() => {
         if (innerPageName.id === "OrderPlanMgmt") {
             fetchAllData();
+        } else if(inquiryConditions.poiId && inquiryConditions.poiId !== "") {
+            fetchAllData(inquiryConditions);
         }
     }, [innerPageName]);
 
@@ -267,7 +268,6 @@ function OrderPlanMgmt() {
     };
 
     const fetchAllData = async (requestData) => {
-        console.log("컨디션:", requestData);
         if (innerPageName.name === "원가버전조회") {
             const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", {
                 searchCondition: "",
@@ -276,7 +276,7 @@ function OrderPlanMgmt() {
             if (resultData && resultData.length > 0) {
                 setSearchDates(resultData);
             } else {
-                alert("데이터를 찾습니다...");
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setSearchDates([]);
             }
         } else if (innerPageName.name === "인건비") {
@@ -352,7 +352,7 @@ function OrderPlanMgmt() {
                     setPrmnPlanDatas(changeData);
                 }
             } else {
-                alert("데이터를 찾습니다...");
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setPrmnPlanDatas([]);
                 setPrmnCalDatas([]);
             }
@@ -367,7 +367,7 @@ function OrderPlanMgmt() {
                 console.log("조회 데이터:", resultData);
                 setPjbudgetCalDatas([{ pjbgPriceTotal }]);
             } else {
-                alert("데이터를 찾습니다...");
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setPjbudgetDatas([]);
                 setPjbudgetCalDatas([]);
             }
@@ -440,7 +440,7 @@ function OrderPlanMgmt() {
 
                 setPdOrdrCalDatas(groupedDataWithCalculations); //합계
             } else {
-                alert("데이터를 찾습니다...");
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setPdOrdrDatas([]);
                 setPdOrdrCalDatas([]);
             }
@@ -462,7 +462,7 @@ function OrderPlanMgmt() {
 
                 setOutCalDatas([calTotal]);
             } else {
-                alert("데이터를 찾습니다...");
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setOutsourcingDatas([]);
                 setOutCalDatas([]);
             }
@@ -481,7 +481,7 @@ function OrderPlanMgmt() {
                 });
                 setGeneralCalDatas([{ total, negoTotal, price }]);
             } else {
-                alert("데이터를 찾습니다...");
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setGeneralExpensesDatas([]);
                 setGeneralCalDatas([]);
             }
@@ -564,13 +564,13 @@ function OrderPlanMgmt() {
         fetchAllData(condition);
     };
 
-    const conditionInfo = (value) => {
-        if (!value.poiId || !value.versionId) {
+    useEffect(() => {
+        if (!inquiryConditions.poiId || !inquiryConditions.versionId) {
             return;
         }
         setCondition((prev) => {
-            if (prev.poiId !== value.poiId) {
-                const newCondition = { ...value };
+            if (prev.poiId !== inquiryConditions.poiId) {
+                const newCondition = { ...inquiryConditions };
                 fetchAllData(newCondition);
                 return newCondition;
             } else {
@@ -578,7 +578,23 @@ function OrderPlanMgmt() {
                 return prev;
             }
         });
-    };
+    }, [inquiryConditions])
+
+    // const conditionInfo = (value) => {
+    //     if (!value.poiId || !value.versionId) {
+    //         return;
+    //     }
+    //     setCondition((prev) => {
+    //         if (prev.poiId !== value.poiId) {
+    //             const newCondition = { ...value };
+    //             fetchAllData(newCondition);
+    //             return newCondition;
+    //         } else {
+    //             fetchAllData({ ...prev });
+    //             return prev;
+    //         }
+    //     });
+    // };
 
     return (
         <>
@@ -643,7 +659,8 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
+                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
+                            <ApprovalFormSal initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable columns={columns.orderPlanMgmt.laborCal} customDatas={prmnCalDatas} hideCheckBox={true} isPageNation={true} />
                             </HideCard>
@@ -668,7 +685,8 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="third">
                         <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
+                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
+                            <ApprovalFormSal initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.purchaseCal}
@@ -699,7 +717,8 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="fourth">
                         <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
+                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
+                            <ApprovalFormSal initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.outCal}
@@ -730,7 +749,8 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="fifth">
                         <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
+                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
+                            <ApprovalFormSal initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.expensesCal}
@@ -759,7 +779,8 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="sixth">
                         <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
+                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
+                            <ApprovalFormSal initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.generalCal}

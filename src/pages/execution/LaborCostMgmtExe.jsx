@@ -213,7 +213,7 @@ function LaborCostMgmtExe() {
                 setBudgetCal(groupedData);
             }
         } else {
-            alert("데이터를 찾습니다...");
+            alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
             setBudgetMgmRun([]);
         }
     };

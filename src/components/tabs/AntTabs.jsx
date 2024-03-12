@@ -9,7 +9,7 @@ import { PageContext } from "components/PageProvider.js";
 /* nav, header 클릭 시  label props로 전달 & 해당하는 화면(컴포넌트) children 으로 보여줌 */
 const AntTabs = (props) => {
     const { snbId, lnbId } = props;
-    const  { setCurrentPageName, setPrevCurrentPageName, setInnerPageName, setGnbLabel } = useContext(PageContext);
+    const  { setCurrentPageName, setPrevCurrentPageName, setInnerPageName, setGnbLabel, setInquiryConditions } = useContext(PageContext);
     const [activeKey, setActiveKey] = useState(""); // 프로젝트 등록 키 0번(활성화)
     const [items, setItems] = useState([]);
 
@@ -87,6 +87,7 @@ const AntTabs = (props) => {
         store.dispatch(selectSnb("", ""));
         store.dispatch(selectLnb("", ""));
         // setGnbLabel("");
+        setInquiryConditions({});// 프로젝트 조회 조건 초기화
     };
 
     return (

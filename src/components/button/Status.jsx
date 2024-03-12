@@ -9,11 +9,11 @@ export default function Status ({ status }) {
                     <span>작성중</span>
                 </div>
             );
-        } else if (stateTitle === "작성완료") {
+        } else if (stateTitle === "견적완료") {
             return (
                 <div className="state-area b-green">
                     <span className="dot">●</span>
-                    <span>작성완료</span>
+                    <span>견적완료</span>
                 </div>
             );
         } else if (stateTitle === "사업진행중") {
