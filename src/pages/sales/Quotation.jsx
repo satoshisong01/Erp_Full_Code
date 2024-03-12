@@ -10,20 +10,19 @@ import { columns } from "constants/columns";
 import SaveButton from "components/button/SaveButton";
 import AddButton from "components/button/AddButton";
 import DelButton from "components/button/DelButton";
-import ReactDataTable from "components/DataTable/ReactDataTable";
 import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 import SearchModal from "components/modal/SearchModal";
 import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 import PopupButton from "components/button/PopupButton";
 import URL from "constants/url";
 import ApprovalFormReport from "components/form/ApprovalFormReport";
-import QuillEditor from "components/QuillEditor";
 import ApprovalLineModal from "components/modal/ApprovalLineModal";
 import ApprovalFormCost from "components/form/ApprovalFormCost";
+import CKEditorComponent from "components/CKEditorComponent";
 
 /** 영업관리-견적관리 */
 function Quotation() {
-    const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, setNameOfButton } = useContext(PageContext);
+    const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, setNameOfButton, inquiryConditions } = useContext(PageContext);
     const [infoList, setInfoList] = useState([
         { name: "인건비", id: "estimateLabor" },
         { name: "구매비", id: "orderBuying" },
@@ -46,6 +45,12 @@ function Quotation() {
         setCurrentPageName({}); //inner와 pageName은 동시에 사용 X
         return () => {};
     }, []);
+
+    useEffect(() => {
+        if(inquiryConditions.poiId) {
+            fetchAllData(inquiryConditions);
+        }
+    }, [innerPageName]);
 
     useEffect(() => {
         if (currentPageName.id === "Quotation") {
@@ -128,7 +133,8 @@ function Quotation() {
                 estMm24,
             } = item;
 
-            const key = `${pdiNm}_${estPosition}`;
+            
+            const key = `${pgNm}_${estPosition}`;
             if (!accumulator[key]) {
                 accumulator[key] = {
                     estMm,
@@ -434,10 +440,13 @@ function Quotation() {
         }
     };
 
-    const conditionInfo = (value) => {
+    useEffect(() => {
+        if (!inquiryConditions.poiId || !inquiryConditions.versionId) {
+            return;
+        }
         setCondition((prev) => {
-            if (prev.poiId !== value.poiId) {
-                const newCondition = { ...value };
+            if (prev.poiId !== inquiryConditions.poiId) {
+                const newCondition = { ...inquiryConditions };
                 fetchAllData(newCondition);
                 return newCondition;
             } else {
@@ -445,7 +454,7 @@ function Quotation() {
                 return prev;
             }
         });
-    };
+    }, [inquiryConditions])
 
     /* 품의서 */
     const sessionUser = sessionStorage.getItem("loginUser");
@@ -476,10 +485,8 @@ function Quotation() {
             setCondition((prev) => {
                 if (prev.poiId !== value.poiId) {
                     const newCondition = { ...value };
-                    // fetchAllData(newCondition);
                     return newCondition;
                 } else {
-                    // fetchAllData({ ...prev });
                     return prev;
                 }
             });
@@ -549,8 +556,7 @@ function Quotation() {
                 <div className="list">
                     <div className="first">
                         <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            {/*<HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>*/}
+                            <ApprovalFormSal  initial={condition} />
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <PopupButton
@@ -585,8 +591,7 @@ function Quotation() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            {/*<HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>*/}
+                            <ApprovalFormSal initial={condition} />
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <PopupButton
@@ -631,7 +636,8 @@ function Quotation() {
                                     <h2>견적품의서</h2>
                                 </div>
                                 <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="견적품의서" />
-                                <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing} />
+                                <CKEditorComponent />
+                                {/* <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing} /> */}
                                 <ApprovalLineModal
                                     width={670}
                                     height={500}
