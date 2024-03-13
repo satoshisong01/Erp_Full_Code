@@ -33,6 +33,7 @@ export function PageProvider({ children }) {
         pdiMenufut: "",
         pupUnitPrice: "",
         byUnitPrice: "",
+        pdiSeller: "",
     }); // 선택한 id 저장
 
     const [emUserInfo, setEmUserInfo] = useState({ uniqId: "", empNm: "", posNm: "" }); // 업무회원 정보 - 고유아이디, 사용자명, 직급
@@ -46,7 +47,7 @@ export function PageProvider({ children }) {
     const [returnKeyWord, setReturnKeyWord] = useState(""); //pmNm검색어 저장
 
     const [companyList, setCompanyList] = useState([]); // 회사명 선택
-    const [companyInfo, setCompanyInfo] = useState({ cltNm: "", cltId: "" }); // 선택한 id 저장
+    const [companyInfo, setCompanyInfo] = useState({}); // 선택한 id 저장
     const [isOpenModalCompany, setIsOpenModalCompany] = useState(false);
     const [authorGroupInfo, setAuthorGroupInfo] = useState({}); //권한그룹 정보
 
@@ -77,6 +78,8 @@ export function PageProvider({ children }) {
     const [filePageName, setFilePageName] = useState([]);
 
     const [atchFileId, setAtchFileId] = useState(""); //파일 단체ID
+
+    const [projectList, setProjectList] = useState({});
 
     const contextValue = {
         isOpenModalPgNm,
@@ -164,6 +167,8 @@ export function PageProvider({ children }) {
         setAtchFileId,
         filePageName,
         setFilePageName,
+        projectList,
+        setProjectList,
     };
 
     return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>;
