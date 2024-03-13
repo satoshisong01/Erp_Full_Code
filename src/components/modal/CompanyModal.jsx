@@ -60,8 +60,8 @@ export default function CompanyModal(props) {
         if(colName && colName.id === "cltNm") {
             setColumns([
                 { header: "거래처아이디", col: "cltId", cellWidth: "0", notView: true },
-                { header: "거래처명", col: "cltNm", cellWidth: "150" },
-                { header: "품목그룹명", col: "pgNms", cellWidth: "170" },
+                { header: "거래처명", col: "cltNm", cellWidth: "230" },
+                { header: "품목그룹명", col: "pgNms", cellWidth: "200" },
                 { header: "업체유형", col: "cltBusstype", cellWidth: "180" },
             ])
         } else if(colName && colName.id !== "cltNm") {
@@ -148,6 +148,9 @@ export default function CompanyModal(props) {
                                     customDatas={companyList}
                                     returnSelect={returnSelect}
                                     viewPageName={{ name: "거래처팝업", id: "거래처팝업" }}
+                                    isPageNation={true}
+                                    isSingleSelect={true}
+                                    isPageNationCombo={true}
                                 />
                             </div>
                         </div>

@@ -113,6 +113,9 @@ export default function EmployerInfoModal(props) {
                                     customDatas={employerInfoList}
                                     returnSelectRows={(rows) => returnSelectRows(rows)}
                                     viewPageName={{ name: "회원목록팝업", id: "회원목록팝업"}}
+                                    isPageNation={true}
+                                    isPageNationCombo={true}
+                                    isSingleSelect={true}
                                 />
                             </div>
                         </div>
