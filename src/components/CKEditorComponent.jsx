@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {CKEditor} from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import List from "@ckeditor/ckeditor5-list/src/list";
 
 const CKEditorComponent = ({ isSave, returnData, writing }) => {
     const defaultContent = `
@@ -61,9 +60,6 @@ const [content, setContent] = useState(defaultContent);
                 data={content}
                 onChange={contentChange}
                 className="custom-editor"
-                config={{
-                    plugins: [List],
-                }}
             />
         </div>
     );
