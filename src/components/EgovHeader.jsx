@@ -47,26 +47,40 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
     }, [lnbId, snbId]);
 
     useEffect(() => {
-        console.log("props loginUser:", loginUser);
-        const fetchData = async (loginUser) => {
-            if(!loginUser.id) return;
-            try {
-                // axios를 사용하여 서버에 GET 요청을 보냅니다.
-                const response = await axiosFetch("/api/system/signState/totalListAll.do", {sttApproverId: loginUser.uniqId, sttApproverAt: "진행"} || {});
-                if(response && response.length > 0) {
-                    setSignNumber(response.length);
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-    
-        fetchData(loginUser);
-        const intervalId = setInterval(fetchData, 3600000); // 1시간
+        
+        if(loginUser && loginUser.id) {
+            fetchData(loginUser);
+        }
+        // const intervalId = setInterval(fetchData, 3600000); // 1시간
+        // const intervalId = setInterval(fetchData, 10000); // 10ch
+        const intervalId = setInterval(fetchData, 10 * 60 * 1000); // 10분
     
         // 컴포넌트가 언마운트될 때 interval을 정리합니다.
         return () => clearInterval(intervalId);
-    }, [loginUser]);
+    }, []);
+
+    useEffect(() => {
+        if(loginUser && loginUser.id) {
+            fetchData(loginUser);
+        }
+    }, [loginUser])
+
+    const fetchData = async (loginUser) => {
+        try {
+            console.log(`📢${loginUser.uniqId}, ${sessionUserName}의 결재정보 10분 간격으로 요청중...`);
+            // axios를 사용하여 서버에 GET 요청을 보냅니다.
+            const response = await axiosFetch("/api/system/signState/totalListAll.do", {sttApproverId: loginUser.uniqId, sttApproverAt: "진행"} || {});
+            if(response && response.length > 0) {
+                console.log(`📢결재개수 ${response.length}`);
+                setSignNumber(response.length);
+            } else {
+                console.log(`${loginUser.uniqId}, ${sessionUserName}의 결재정보를 불러오지 못함.`);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+    
 
 
     useEffect(() => {
