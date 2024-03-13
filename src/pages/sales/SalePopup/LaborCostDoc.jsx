@@ -13,7 +13,16 @@ const LaborCostDoc = () => {
     const [projectTitle, setProjectTitle] = useState("");
     const [tableDatas, setTableDatas] = useState([]);
 
+    const [devVisible, setDevVisible] = useState(true);
+    const [buyVisible, setBuyVisible] = useState(true);
+    const [expensesVisible, setExpensesVisible] = useState(true);
     const [negoVisible, setNegoVisible] = useState(true);
+    const [profitVisible, setProfitVisible] = useState(true);
+    const [costVisible, setCostVisible] = useState(true);
+    const [indexNum, setIndexNum] = useState(0);
+
+    const [etcCost, setEtcCost] = useState(0);
+    const [devCost, setDevCost] = useState(0);
 
     let baseRows = 1 + (negoVisible ? 4 : 3) + 1;
 
@@ -24,11 +33,27 @@ const LaborCostDoc = () => {
     }, 0);
     let totalRows = baseRows + dataRows;
 
-    console.log(totalRows); // 이것이 총 row 수입니다.
-
     // "네고" 행의 표시 상태를 토글하는 함수
+    const toggleDev = () => {
+        setDevVisible(!devVisible);
+    };
+
+    const toggleBuy = () => {
+        setBuyVisible(!buyVisible);
+    };
+
+    const toggleExpenses = () => {
+        setExpensesVisible(!expensesVisible);
+    };
+
     const toggleNego = () => {
         setNegoVisible(!negoVisible);
+    };
+    const toggleProfit = () => {
+        setProfitVisible(!profitVisible);
+    };
+    const toggleCost = () => {
+        setCostVisible(!costVisible);
     };
 
     const [tableData, setTableData] = useState([
@@ -47,12 +72,48 @@ const LaborCostDoc = () => {
         },
     ]);
 
+    const [buyTable, setBuyTable] = useState([]);
+
+    useEffect(() => {
+        let calculatedCost = 0;
+        if (tableData[0]) {
+            if (costVisible) {
+                calculatedCost += tableData[0]?.slsmnAdmnsCost;
+            }
+
+            if (profitVisible) {
+                calculatedCost += tableData[0]?.slsmnEnterpriseProfit;
+            }
+
+            if (negoVisible) {
+                calculatedCost -= tableData[0]?.slsmnNego;
+            }
+
+            if (expensesVisible) {
+                calculatedCost += tableData[0]?.ctcExpenses;
+            }
+        }
+        if (tableDatas.length > 0) {
+            if (devVisible) {
+                calculatedCost += devCost ? devCost : 0;
+            }
+        }
+        if (buyTable[0]) {
+            if (buyVisible) {
+                calculatedCost += buyTable[0]?.estAmount;
+            }
+        }
+
+        setEtcCost(calculatedCost);
+    }, [negoVisible, profitVisible, costVisible, tableData, tableDatas, buyTable, expensesVisible]);
+
     useEffect(() => {
         console.log("이거왜 계속 불러올까 🌠🌠🌠🌠");
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
         setProjectTitle(data.tableData[0].poiNm);
         setTableDatas(restructureData(data.tableData));
+        setDevCost(calculateTotal(restructureData(data.tableData)));
         const { label, poiId, versionId } = data;
         setTitle(label);
         console.log(poiId, versionId, "이거안받?");
@@ -63,7 +124,28 @@ const LaborCostDoc = () => {
         // 총 row 수
     }, []);
 
+    console.log(devCost);
+
+    function calculateTotal(dataArray) {
+        // 전체 합계를 저장할 변수를 초기화합니다.
+        let totalSum = 0;
+
+        // 주어진 데이터 배열을 순회합니다.
+        dataArray.forEach((data) => {
+            // 각 항목의 estItem 배열을 순회합니다.
+            data.estItem.forEach((item) => {
+                // price와 estMmTotal의 곱을 합계에 더합니다.
+                totalSum += item.price * item.estMmTotal;
+            });
+        });
+
+        // 계산된 전체 합계를 반환합니다.
+        return totalSum;
+    }
+
     const fetchAllData = async (poiId, versionId) => {
+        let resultDataCount = 0;
+        let resultData2Count = 0;
         const resultData = await axiosFetch("/api/cost/contract/totalListAll.do", {
             poiId: poiId,
             versionId: versionId,
@@ -88,7 +170,18 @@ const LaborCostDoc = () => {
             }));
 
             setTableData(updatedData);
+            resultDataCount++;
         }
+        const resultData2 = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", {
+            poiId: poiId,
+            versionId: versionId,
+        });
+        if (resultData2.length > 0) {
+            setBuyTable(resultData2);
+            console.log(resultData2, "구매견적불러오기");
+            resultData2Count++;
+        }
+        setIndexNum(resultDataCount + resultData2Count);
     };
 
     const addData = async (poiId, versionId) => {
@@ -103,7 +196,7 @@ const LaborCostDoc = () => {
             ctcContact: "",
             ctcDateCreated: "",
             ctcPaymentCondition: "",
-            ctcExpenses: "",
+            ctcExpenses: 0,
             ctcDelivery: "",
             ctcDesc: "",
         });
@@ -113,6 +206,11 @@ const LaborCostDoc = () => {
     };
 
     const updatedData = async (ctcId, poiId, versionId) => {
+        if (!tableData || tableData.length === 0) {
+            console.error("tableData is empty or undefined");
+            return;
+        }
+
         const resultData = await axiosUpdate("/api/cost/contract/edit.do", {
             ctcId: ctcId,
             poiId: poiId,
@@ -129,7 +227,7 @@ const LaborCostDoc = () => {
             ctcDesc: tableData[0].ctcDesc,
         });
         console.log(resultData, "업데이트한건데");
-        setTableData(resultData);
+        setTableData([resultData]);
         fetchAllData(poiId, versionId);
     };
 
@@ -180,17 +278,44 @@ const LaborCostDoc = () => {
         });
         const printButton = document.getElementById("printButton");
         const negoBtn = document.getElementById("negoBtn");
+        const expensesBtn = document.getElementById("expensesBtn");
+        const devBtn = document.getElementById("devBtn");
+        const buyBtn = document.getElementById("buyBtn");
+        const profitBtn = document.getElementById("profitBtn");
+        const costBtn = document.getElementById("costBtn");
+
+        if (expensesBtn) expensesBtn.style.display = "none";
         if (negoBtn) negoBtn.style.display = "none";
+        if (buyBtn) buyBtn.style.display = "none";
+        if (devBtn) devBtn.style.display = "none";
+        if (profitBtn) profitBtn.style.display = "none";
+        if (costBtn) costBtn.style.display = "none";
+
         if (printButton) printButton.style.display = "none";
         window.print();
+        if (expensesBtn) expensesBtn.style.display = "block";
         if (negoBtn) negoBtn.style.display = "block";
+        if (buyBtn) buyBtn.style.display = "block";
+        if (devBtn) devBtn.style.display = "block";
+        if (profitBtn) profitBtn.style.display = "block";
+        if (costBtn) costBtn.style.display = "block";
         if (printButton) printButton.style.display = "block";
     };
 
     useEffect(() => {
         const printButton = document.getElementById("printButton");
+        const expensesBtn = document.getElementById("expensesBtn");
         const negoBtn = document.getElementById("negoBtn");
+        const devBtn = document.getElementById("devBtn");
+        const buyBtn = document.getElementById("buyBtn");
+        const profitBtn = document.getElementById("profitBtn");
+        const costBtn = document.getElementById("costBtn");
+        if (expensesBtn) expensesBtn.style.display = "block";
         if (negoBtn) negoBtn.style.display = "block";
+        if (devBtn) devBtn.style.display = "block";
+        if (buyBtn) buyBtn.style.display = "block";
+        if (profitBtn) profitBtn.style.display = "block";
+        if (costBtn) costBtn.style.display = "block";
         if (printButton) printButton.style.display = "block"; // 컴포넌트가 마운트될 때 프린트 버튼 보이기
 
         // 프린트가 완료된 후 실행될 함수
@@ -201,7 +326,12 @@ const LaborCostDoc = () => {
                 input.style.border = ""; // 빈 문자열로 설정하여 기본 스타일로 돌아감
             });
             // 프린트 버튼 다시 보이기
+            if (expensesBtn) expensesBtn.style.display = "block";
             if (negoBtn) negoBtn.style.display = "block";
+            if (devBtn) devBtn.style.display = "block";
+            if (buyBtn) buyBtn.style.display = "block";
+            if (profitBtn) profitBtn.style.display = "block";
+            if (costBtn) costBtn.style.display = "block";
             if (printButton) printButton.style.display = "block";
         };
 
@@ -257,12 +387,11 @@ const LaborCostDoc = () => {
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
-    const firstItemTotal =
-        tableDatas.length > 0
-            ? tableDatas.reduce((acc, data) => {
-                  return acc + data.estItem.reduce((total, item) => total + item.price * item.total, 0);
-              }, 0) + (tableData.length > 0 ? parseFloat(tableData[0].ctcExpenses) || 0 : 0)
-            : 0;
+    useEffect(() => {
+        console.log(tableDatas, "데이터 변환한것");
+    }, [tableDatas]);
+
+    const firstItemTotal = tableDatas.length > 0 ? etcCost : 0;
 
     // 숫자를 한자로 변환하는 함수
     function convertToChinese(number) {
@@ -293,10 +422,6 @@ const LaborCostDoc = () => {
         const number = typeof x === "string" ? parseFloat(x.replace(/,/g, "")) : parseFloat(x);
         return number.toLocaleString(); // 3자리마다 쉼표 추가하여 반환
     }
-
-    useEffect(() => {
-        console.log(tableData);
-    }, [tableData]);
 
     const firstItemChineseTotal = convertToChinese(firstItemTotal);
 
@@ -419,7 +544,7 @@ const LaborCostDoc = () => {
                     </div>
                     <div style={{ width: "100%", textAlign: "center", marginTop: "20px" }}>
                         <span className="SumCount">
-                            一金 : {firstItemChineseTotal}원整(₩{firstItemTotal.toLocaleString()} - VAT 별도)
+                            一金 : {firstItemChineseTotal ? firstItemChineseTotal : ""}원整(₩{firstItemTotal ? firstItemTotal.toLocaleString() : ""} - VAT 별도)
                         </span>
                     </div>
                     <div className="condition">
@@ -467,112 +592,262 @@ const LaborCostDoc = () => {
                                     <td className="table4-3">Unit Price</td>
                                     <td className="table4-3">Amount</td>
                                 </tr>
-                                {tableDatas.map((data, index) => (
-                                    <React.Fragment key={index}>
+                                {devVisible &&
+                                    tableDatas.map((data, index) => (
+                                        <React.Fragment key={index}>
+                                            {index === 0 && (
+                                                <tr className="tableTr">
+                                                    <td className="tableRedPercentW" style={{ borderBottom: "none" }}>
+                                                        {1}
+                                                    </td>
+                                                    <td className="tableWhiteItem" style={{ textAlign: "left", borderBottom: "none" }}>
+                                                        {"　개발인건비"}
+                                                    </td>
+                                                    <td className="tableRedPercentW" style={{ borderBottom: "none" }}>
+                                                        {"1"}
+                                                    </td>
+                                                    <td className="tableRedPercentW" style={{ borderBottom: "none" }}>
+                                                        {"Lot"}
+                                                    </td>
+                                                    <td className="table4-3White" style={{ borderBottom: "none" }}></td>
+                                                    <td className="table4-3White" style={{ textAlign: "right", borderBottom: "none" }}>
+                                                        {`${devCost.toLocaleString()}　`}
+                                                    </td>
+                                                </tr>
+                                            )}
+                                            {data.estItem.map((item, itemIndex) => (
+                                                <tr key={itemIndex} className="tableTr">
+                                                    <td className="tableRedPercentW" style={{ borderBottom: "none", borderTop: "none" }}></td>
+                                                    <td className="tableWhiteItem" style={{ textAlign: "left", borderBottom: "none", borderTop: "none" }}>
+                                                        {`　　- ${item.estPosition}`}
+                                                    </td>
+                                                    <td className="tableRedPercentW" style={{ borderBottom: "none", borderTop: "none" }}>
+                                                        {item.total}
+                                                    </td>
+                                                    <td className="tableRedPercentW" style={{ borderBottom: "none", borderTop: "none" }}>
+                                                        M/M
+                                                    </td>
+                                                    <td className="table4-3White" style={{ textAlign: "right", borderBottom: "none", borderTop: "none" }}>
+                                                        {`${item.price.toLocaleString()}　`}
+                                                    </td>
+                                                    <td className="table4-3White" style={{ textAlign: "right", borderBottom: "none", borderTop: "none" }}>
+                                                        {`${(item.total * item.price).toLocaleString()}　`}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </React.Fragment>
+                                    ))}
+                                <React.Fragment>
+                                    {devVisible && (
                                         <tr className="tableTr">
-                                            <td className="tableRedPercentW">{index + 1}</td>
-                                            <td className="tableWhiteItem" style={{ textAlign: "left" }}>
-                                                {data.pgNm}
-                                            </td>
-                                            <td className="tableRedPercentW">1</td>
-                                            <td className="tableRedPercentW">Lot</td>
-                                            <td className="table4-3White"></td>
-                                            <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                {data.estItem.reduce((acc, curr) => acc + curr.price * curr.total, 0).toLocaleString()}
-                                            </td>
+                                            <td className="tableRedPercent" style={{ backgroundColor: "white", borderTop: "none", borderBottom: "none" }}></td>
+                                            <td className="tableItem" style={{ backgroundColor: "white", borderTop: "none", borderBottom: "none" }}></td>
+                                            <td className="tableRedPercent" style={{ backgroundColor: "white", borderTop: "none", borderBottom: "none" }}></td>
+                                            <td className="tableRedPercent" style={{ backgroundColor: "white", borderTop: "none", borderBottom: "none" }}></td>
+                                            <td className="table4-3" style={{ backgroundColor: "white", borderTop: "none", borderBottom: "none" }}></td>
+                                            <td className="table4-3" style={{ backgroundColor: "white", borderTop: "none", borderBottom: "none" }}></td>
                                         </tr>
-                                        {data.estItem.map((item, itemIndex) => (
-                                            <tr key={itemIndex} className="tableTr">
-                                                <td className="tableRedPercentW"></td>
-                                                <td className="tableWhiteItem" style={{ textAlign: "left" }}>
-                                                    {item.estPosition}
-                                                </td>
-                                                <td className="tableRedPercentW">{item.total}</td>
-                                                <td className="tableRedPercentW">M/M</td>
-                                                <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                    {item.price.toLocaleString()}
-                                                </td>
-                                                <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                    {(item.total * item.price).toLocaleString()}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </React.Fragment>
-                                ))}
+                                    )}
+                                </React.Fragment>
                                 {tableDatas.length > 0 && (
                                     <React.Fragment>
                                         {/* 추가되는 제경비 항목 */}
-                                        <tr className="tableTr">
-                                            <td className="tableRedPercentW">{tableDatas[tableDatas.length - 1].estItem.length + 1}</td>
-                                            <td className="tableWhiteItem" style={{ textAlign: "left" }}>
-                                                제경비
-                                            </td>
-                                            <td className="tableRedPercentW">-</td>
-                                            <td className="tableRedPercentW">-</td>
-                                            <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                <input
-                                                    className="titleInput2"
-                                                    type="text"
-                                                    value={tableData.length ? numberWithCommas(tableData[0].ctcExpenses) : ""}
-                                                    placeholder="제경비를 입력해 주세요"
-                                                    onChange={(e) => handleChange2(e, "ctcExpenses", 0)}
-                                                />
-                                            </td>
-                                            <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                {tableData.length && tableData[0].ctcExpenses !== undefined ? tableData[0].ctcExpenses.toLocaleString() : ""}
-                                            </td>
-                                        </tr>
-                                        <tr className="tableTr">
-                                            <td className="tableRedPercentW">-</td>
-                                            <td className="tableWhiteItem" style={{ textAlign: "left" }}>
-                                                기업이윤(판관비)
-                                            </td>
-                                            <td className="tableRedPercentW">-</td>
-                                            <td className="tableRedPercentW">-</td>
-                                            <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                -
-                                            </td>
-                                            <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                {tableData.length && tableData[0].slsmnEnterpriseProfit
-                                                    ? tableData[0].slsmnEnterpriseProfit.toLocaleString()
-                                                    : ""}
-                                            </td>
-                                        </tr>
-                                        <tr className="tableTr">
-                                            <td className="tableRedPercentW">-</td>
-                                            <td className="tableWhiteItem" style={{ textAlign: "left" }}>
-                                                일반관리비(판관비)
-                                            </td>
-                                            <td className="tableRedPercentW">-</td>
-                                            <td className="tableRedPercentW">-</td>
-                                            <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                -
-                                            </td>
-                                            <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                {tableData.length && tableData[0].slsmnAdmnsCost ? tableData[0].slsmnAdmnsCost.toLocaleString() : ""}
-                                            </td>
-                                        </tr>
-                                        {negoVisible && (
-                                            <tr className="tableTr negoTable">
-                                                <td className="tableRedPercentW">-</td>
+                                        {buyVisible && (
+                                            <tr className="tableTr">
+                                                <td className="tableRedPercentW">{indexNum}</td>
                                                 <td className="tableWhiteItem" style={{ textAlign: "left" }}>
-                                                    네고
+                                                    　자재비
                                                 </td>
-                                                <td className="tableRedPercentW">-</td>
-                                                <td className="tableRedPercentW">-</td>
+                                                <td className="tableRedPercentW">1</td>
+                                                <td className="tableRedPercentW">lot</td>
                                                 <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                    　
+                                                </td>
+                                                <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                    {`${buyTable[0]?.estAmount ? buyTable[0].estAmount.toLocaleString() : ""}　`}
+                                                </td>
+                                            </tr>
+                                        )}
+                                        {expensesVisible && (
+                                            <tr className="tableTr">
+                                                <td className="tableRedPercentW" style={{ borderTop: "none", borderBottom: "none" }}>
+                                                    {indexNum + 1}
+                                                </td>
+                                                <td className="tableWhiteItem" style={{ textAlign: "left", borderTop: "none", borderBottom: "none" }}>
+                                                    　제경비
+                                                </td>
+                                                <td className="tableRedPercentW" style={{ borderTop: "none", borderBottom: "none" }}>
                                                     -
                                                 </td>
+                                                <td className="tableRedPercentW" style={{ borderTop: "none", borderBottom: "none" }}>
+                                                    -
+                                                </td>
+                                                <td className="table4-3White" style={{ textAlign: "right", borderTop: "none", borderBottom: "none" }}>
+                                                    <input
+                                                        style={{ paddingRight: "15px" }}
+                                                        className="titleInput2"
+                                                        type="text"
+                                                        value={tableData.length ? numberWithCommas(tableData[0].ctcExpenses) : ""}
+                                                        placeholder="제경비를 입력해 주세요"
+                                                        onChange={(e) => handleChange2(e, "ctcExpenses", 0)}
+                                                    />
+                                                </td>
+                                                <td className="table4-3White" style={{ textAlign: "right", borderTop: "none", borderBottom: "none" }}>
+                                                    {`${
+                                                        tableData.length > 0 && tableData[0].ctcExpenses !== undefined
+                                                            ? tableData[0].ctcExpenses.toLocaleString()
+                                                            : ""
+                                                    }　`}
+                                                </td>
+                                            </tr>
+                                        )}
+                                        {profitVisible && (
+                                            <tr className="tableTr">
+                                                <td className="tableRedPercentW">{indexNum + 2}</td>
+                                                <td className="tableWhiteItem" style={{ textAlign: "left" }}>
+                                                    　기업이윤
+                                                </td>
+                                                <td className="tableRedPercentW">-</td>
+                                                <td className="tableRedPercentW">-</td>
                                                 <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                    {tableData.length && tableData[0].slsmnNego ? tableData[0].slsmnNego.toLocaleString() : ""}
+                                                    -　
+                                                </td>
+                                                <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                    {`${
+                                                        tableData.length && tableData[0].slsmnEnterpriseProfit
+                                                            ? tableData[0].slsmnEnterpriseProfit.toLocaleString()
+                                                            : ""
+                                                    }　`}
+                                                </td>
+                                            </tr>
+                                        )}
+                                        {costVisible && (
+                                            <tr className="tableTr">
+                                                <td className="tableRedPercentW">{indexNum + 3}</td>
+                                                <td className="tableWhiteItem" style={{ textAlign: "left" }}>
+                                                    　일반관리비
+                                                </td>
+                                                <td className="tableRedPercentW">-</td>
+                                                <td className="tableRedPercentW">-</td>
+                                                <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                    -　
+                                                </td>
+                                                <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                    {`${tableData.length && tableData[0].slsmnAdmnsCost ? tableData[0].slsmnAdmnsCost.toLocaleString() : ""}　`}
+                                                </td>
+                                            </tr>
+                                        )}
+                                        {negoVisible && (
+                                            <tr className="tableTr negoTable">
+                                                <td className="tableRedPercentW">{indexNum + 4}</td>
+                                                <td className="tableWhiteItem" style={{ textAlign: "left" }}>
+                                                    　네고
+                                                </td>
+                                                <td className="tableRedPercentW">-</td>
+                                                <td className="tableRedPercentW">-</td>
+                                                <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                    -　
+                                                </td>
+                                                <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                    {`${tableData.length && tableData[0].slsmnNego ? tableData[0].slsmnNego.toLocaleString() : ""}　`}
                                                 </td>
                                             </tr>
                                         )}
                                         {/* "네고 닫기" 버튼 */}
+                                        <tr className="tableTr negoTable">
+                                            <td
+                                                className="tableRedPercent"
+                                                style={{
+                                                    backgroundColor: "white",
+                                                    borderRight: "none",
+                                                    width: "52px",
+                                                    borderTop: "1px solid black",
+                                                    borderBottom: "1px solid black",
+                                                }}></td>
+                                            <td
+                                                className="tableWhiteItem"
+                                                style={{
+                                                    textAlign: "center",
+                                                    borderLeft: "none",
+                                                    borderTop: "1px solid black",
+                                                    borderBottom: "1px solid black",
+                                                }}>
+                                                견적가 / 부가세 별도
+                                            </td>
+                                            <td
+                                                className="tableRedPercent"
+                                                style={{
+                                                    backgroundColor: "white",
+                                                    borderRight: "none",
+                                                    width: "52px",
+                                                    borderTop: "1px solid black",
+                                                    borderBottom: "1px solid black",
+                                                }}></td>
+                                            <td
+                                                className="tableRedPercent"
+                                                style={{
+                                                    backgroundColor: "white",
+                                                    borderRight: "none",
+                                                    borderLeft: "none",
+                                                    width: "52px",
+                                                    borderTop: "1px solid black",
+                                                    borderBottom: "1px solid black",
+                                                }}></td>
+                                            <td
+                                                className="table4-3White"
+                                                style={{
+                                                    textAlign: "center",
+                                                    borderLeft: "none",
+                                                    borderTop: "1px solid black",
+                                                    borderBottom: "1px solid black",
+                                                }}>
+                                                만단위 절사
+                                            </td>
+                                            <td
+                                                className="table4-3White"
+                                                style={{ textAlign: "right", borderTop: "1px solid black", borderBottom: "1px solid black" }}>
+                                                {`${etcCost ? etcCost.toLocaleString() : ""}　`}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colSpan={6} style={{ textAlign: "right" }}>
+                                                <button id="devBtn" onClick={toggleDev}>
+                                                    {devVisible ? "인건비 닫기" : "인건비 열기"}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colSpan={6} style={{ textAlign: "right" }}>
+                                                <button id="buyBtn" onClick={toggleBuy}>
+                                                    {buyVisible ? "자재비 닫기" : "자재비 열기"}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colSpan={6} style={{ textAlign: "right" }}>
+                                                <button id="expensesBtn" onClick={toggleExpenses}>
+                                                    {expensesVisible ? "제경비 닫기" : "제경비 열기"}
+                                                </button>
+                                            </td>
+                                        </tr>
                                         <tr>
                                             <td colSpan={6} style={{ textAlign: "right" }}>
                                                 <button id="negoBtn" onClick={toggleNego}>
                                                     {negoVisible ? "네고 닫기" : "네고 열기"}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colSpan={6} style={{ textAlign: "right" }}>
+                                                <button id="profitBtn" onClick={toggleProfit}>
+                                                    {profitVisible ? "기업이윤 닫기" : "기업이윤 열기"}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colSpan={6} style={{ textAlign: "right" }}>
+                                                <button id="costBtn" onClick={toggleCost}>
+                                                    {costVisible ? "관리비 닫기" : "관리비 열기"}
                                                 </button>
                                             </td>
                                         </tr>
@@ -581,9 +856,7 @@ const LaborCostDoc = () => {
                             </tbody>
                         </table>
                     </div>
-
                     {typeof totalRows !== "undefined" && totalRows >= 10 && <div style={{ height: `${Math.max(200 - (totalRows - 10) * 20, 0)}px` }}></div>}
-
                     <h3 className="projectName">특이사항</h3>
                     <div className="etcBox">
                         <div className="etcItems">

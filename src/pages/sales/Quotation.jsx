@@ -41,6 +41,8 @@ function Quotation() {
     const [estimateBool, setestimateBool] = useState(false);
     const [buyIngBool, setBuyIngBool] = useState(false);
 
+    //const [checkUpdate, setCheckUpdate] = useState(false);
+
     useEffect(() => {
         setInnerPageName({ name: "인건비", id: "estimateLabor" });
         setCurrentPageName({}); //inner와 pageName은 동시에 사용 X
@@ -128,7 +130,7 @@ function Quotation() {
                 estMm24,
             } = item;
 
-            const key = `${pdiNm}_${estPosition}`;
+            const key = `${pgNm}_${estPosition}`;
             if (!accumulator[key]) {
                 accumulator[key] = {
                     estMm,
@@ -248,6 +250,7 @@ function Quotation() {
         if (innerPageName.id === "estimateLabor") {
             //인건비
             const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
+            console.log(condition.versionId);
             setEstimate([]);
             setestimateBool(false);
             if (resultData.length !== 0) {
@@ -257,11 +260,24 @@ function Quotation() {
             }
         } else if (innerPageName.id === "orderBuying") {
             //구매비
-            setBuyIngInfo([]);
             setBuyIngBool(false);
             const resultData = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", condition || {});
+            console.log("조회안되느듯");
+            console.log(resultData);
+            console.log(condition.versionId);
+
             if (resultData.length !== 0) {
-                setBuyIngInfo(resultData);
+                console.log(resultData, "상수로");
+                const updatedData = { ...resultData[0] }; // 첫 번째 객체만 수정한다고 가정합니다.
+                // estBuyQunty 값 변경
+                updatedData.estBuyQunty = 1;
+
+                // 수정된 데이터를 새 배열에 저장
+                const updatedArray = [...resultData];
+                updatedArray[0] = updatedData;
+
+                // 상태 업데이트
+                setBuyIngInfo(updatedArray);
                 setBuyIngBool(true);
             }
         }
@@ -270,12 +286,25 @@ function Quotation() {
     };
 
     const returnList = (originTableData, tableData) => {
+        console.log("타라고");
         if (innerPageName.id === "estimateLabor") {
             //인건비
             compareData(originTableData, tableData);
         } else if (innerPageName.id === "orderBuying") {
             //구매비
-            compareData2(originTableData, tableData);
+
+            console.log("??11111");
+
+            if (tableData[0].estBuyId === null) {
+                addItem2(tableData);
+                console.log("????????");
+            } else {
+                console.log("??");
+                compareData2(originTableData, tableData);
+                console.log(originTableData, "originTableData");
+                console.log(tableData, "tableData");
+                //setCheckUpdate(false);
+            }
         }
     };
 
@@ -341,6 +370,9 @@ function Quotation() {
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
 
+        console.log(originDataLength);
+        console.log(updatedDataLength);
+
         if (originDataLength > updatedDataLength) {
             //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
             const updateDataInOrigin = (originData, filterData) => {
@@ -383,14 +415,17 @@ function Quotation() {
     };
 
     const addItem2 = async (addData) => {
+        console.log(addData, "추가해주나?");
         const url = `api/estimate/buy/estCostBuy/addList.do`;
         const resultData = await axiosPost(url, addData);
         if (resultData) {
             refresh();
+            //setCheckUpdate(true);
         }
     };
 
     const updateItem2 = async (toUpdate) => {
+        console.log(toUpdate, "업데이트 데이터");
         const url = `/api/estimate/buy/estCostBuy/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
 
@@ -400,6 +435,7 @@ function Quotation() {
     };
 
     const deleteItem2 = async (removeItem) => {
+        console.log("삭제를왜타지", removeItem);
         const url = `/api/estimate/buy/estCostBuy/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
 
@@ -531,13 +567,19 @@ function Quotation() {
         setIsSubmit(false);
     };
 
+    useEffect(() => {
+        console.log(buyIngInfo);
+    }, [buyIngInfo]);
+
     return (
         <>
             <Location pathList={locationPath.Quotation} />
             <div className="common_board_style mini_board_3">
                 <ul className="tab">
                     <li onClick={() => changeTabs("인건비", "estimateLabor")}>
-                        <a href="#인건비" className="on">인건비</a>
+                        <a href="#인건비" className="on">
+                            인건비
+                        </a>
                     </li>
                     <li onClick={() => changeTabs("구매비", "orderBuying")}>
                         <a href="#구매비">구매비</a>

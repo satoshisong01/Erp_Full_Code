@@ -99,7 +99,8 @@ const ReactDataTablePdorder = (props) => {
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
 
-            if (nameOfButton === "save" && innerPageName.id === "orderBuying") { //견적>구매비
+            if (nameOfButton === "save" && innerPageName.id === "orderBuying") {
+                //견적>구매비
                 returnList(originTableData, tableData);
             } else if (nameOfButton === "save") {
                 compareData(originTableData, tableData);
@@ -139,6 +140,10 @@ const ReactDataTablePdorder = (props) => {
             }
         }
     }, [newRowData]);
+
+    useEffect(() => {
+        console.log(tableData);
+    }, [tableData]);
 
     const {
         getTableProps,
@@ -228,7 +233,7 @@ const ReactDataTablePdorder = (props) => {
                 newRow[column.accessor] = condition.poiId || ""; // poiId를 항상 SLSP로 설정
             }
             if (column.type === "select") {
-                newRow[column.accessor] = column.options[0].value //콤보박스 초기화
+                newRow[column.accessor] = column.options[0].value; //콤보박스 초기화
             }
         });
         setTableData((prevData) => {
@@ -289,23 +294,41 @@ const ReactDataTablePdorder = (props) => {
         setFileIdData(tableData[rowIndex].atchFileId);
     };
 
+    useEffect(() => {
+        console.log(tableData, "@@@@@");
+    }, [tableData]);
+
     const setValueDataPdiNm = (rowIndex, selectedPdiNm) => {
         // 선택된 품명에 해당하는 데이터 찾기
         if (selectedPdiNm) {
             // 테이블 데이터를 복제
             const updatedTableData = [...tableData];
 
+            console.log(updatedTableData);
             // 선택된 품명의 데이터로 해당 행(row)의 데이터 업데이트
             updatedTableData[rowIndex] = {
                 // ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
                 ...selectedPdiNm, // projectPdiNm 객체의 데이터로 업데이트
-                byUnitPrice: selectedPdiNm.pupUnitPrice //품목단가
+                byUnitPrice: selectedPdiNm.pupUnitPrice, //품목단가
             };
 
             // 업데이트된 데이터로 tableData 업데이트
             setTableData(updatedTableData);
         } else {
             console.log(`선택된 품명(${selectedPdiNm})에 대한 데이터를 찾을 수 없습니다.`);
+        }
+        if (innerPageName.id === "orderBuying") {
+            const updatedTableData = [...originTableData];
+            updatedTableData[rowIndex] = {
+                ...updatedTableData[rowIndex],
+                estBuyId: tableData[0].estBuyId,
+                pdiId: selectedPdiNm.pdiId,
+                pdiNum: selectedPdiNm.pdiNum,
+                pdiNm: selectedPdiNm.pdiNm,
+                pgNm: selectedPdiNm.pgNm,
+                pdiStnd: selectedPdiNm.pdiStnd,
+            };
+            setTableData(updatedTableData);
         }
     };
 
@@ -337,7 +360,7 @@ const ReactDataTablePdorder = (props) => {
         const updatedTableData = [...tableData];
         updatedTableData[index][name] = value;
         setTableData(updatedTableData);
-    }
+    };
     const handleChange = (e, row) => {
         const { value, name } = e.target;
         const index = row.index;
@@ -375,16 +398,17 @@ const ReactDataTablePdorder = (props) => {
                     updatedTableData[index]["unitPrice"] = Math.round(unitPrice);
                     updatedTableData[index]["atchFileId"] = atchFileId;
                     updatedTableData[index]["planAmount"] = Math.round(planAmount);
-                    updatedTableData[index]["byConsumerUnitPrice"] = Math.round(byConsumerUnitPrice *100);
-                    updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount*100);
+                    updatedTableData[index]["byConsumerUnitPrice"] = Math.round(byConsumerUnitPrice * 100);
+                    updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount * 100);
                     updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits);
                 }
             }
             //공급단가 수정 시 - 이익률, 이익금, 공급금액, 소비자단가, 소비자금액, 소비자가산출률 변동
-            else if (name === "unitPrice") { //공급단가
+            else if (name === "unitPrice") {
+                //공급단가
                 const planAmount = row.original.byQunty * row.original.unitPrice; //공급금액
                 // 이익금 : 공급금액 - 원가
-                if (row.original.unitPrice && row.original.byUnitPrice) { 
+                if (row.original.unitPrice && row.original.byUnitPrice) {
                     const byStandardMargin = row.original.unitPrice !== 0 ? 100 - Math.round(100 / (row.original.unitPrice / row.original.byUnitPrice)) : 0;
                     const plannedProfits = planAmount - row.original.estimatedCost;
                     const byConsumerUnitPrice = division(row.original.unitPrice, row.original.byConsumerOutputRate);
@@ -392,13 +416,13 @@ const ReactDataTablePdorder = (props) => {
                     updatedTableData[index]["byStandardMargin"] = byStandardMargin; //이익률
                     updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits); //이익금
                     updatedTableData[index]["planAmount"] = planAmount; //공급금액
-                    updatedTableData[index]["byConsumerUnitPrice"] = Math.round(byConsumerUnitPrice*100); //소비자단가
-                    updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount*100); //소비자금액
+                    updatedTableData[index]["byConsumerUnitPrice"] = Math.round(byConsumerUnitPrice * 100); //소비자단가
+                    updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount * 100); //소비자금액
                 }
-
             }
             //소비자단가 수정 시 - 소비자금액, 소비자가산출률, 이익금, 이익률 변동
-            else if (name === "byConsumerUnitPrice") { //소비자단가
+            else if (name === "byConsumerUnitPrice") {
+                //소비자단가
                 const consumerAmount = row.original.byQunty * row.original.byConsumerUnitPrice; //소비자금액
                 const planAmount = row.original.byQunty * row.original.unitPrice; //공급금액
                 // 이익금 : 공급금액 - 원가
@@ -408,7 +432,7 @@ const ReactDataTablePdorder = (props) => {
                     const byStandardMargin = row.original.unitPrice !== 0 ? 100 - Math.round(100 / (row.original.unitPrice / row.original.byUnitPrice)) : 0;
                     updatedTableData[index]["consumerAmount"] = consumerAmount; //소비자금액
                     // 소비자가산출률 = (공급단가/소비자단가) * 100
-                    updatedTableData[index]["byConsumerOutputRate"] = Math.round((row.original.unitPrice/row.original.byConsumerUnitPrice)*100); //소비자가산출률
+                    updatedTableData[index]["byConsumerOutputRate"] = Math.round((row.original.unitPrice / row.original.byConsumerUnitPrice) * 100); //소비자가산출률
                     updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits); //이익금
                     updatedTableData[index]["byStandardMargin"] = byStandardMargin; //이익률
                 }
@@ -460,7 +484,7 @@ const ReactDataTablePdorder = (props) => {
 
         const url = `/api${suffixUrl}/addList.do`;
         const resultData = await axiosPost(url, addNewData);
-        if(resultData) {
+        if (resultData) {
             return true;
         } else {
             return false;
@@ -491,7 +515,7 @@ const ReactDataTablePdorder = (props) => {
 
         const url = `/api${suffixUrl}/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
-        if(resultData) {
+        if (resultData) {
             return true;
         } else {
             return false;
@@ -503,7 +527,7 @@ const ReactDataTablePdorder = (props) => {
             const changeUrl = "/baseInfrm/product/buyIngInfoExe";
             const url = `/api${changeUrl}/removeAll.do`;
             const resultData = await axiosDelete(url, removeItem);
-            if(resultData) {
+            if (resultData) {
                 return true;
             } else {
                 return false;
@@ -511,7 +535,7 @@ const ReactDataTablePdorder = (props) => {
         } else {
             const url = `/api${suffixUrl}/removeAll.do`;
             const resultData = await axiosDelete(url, removeItem);
-            if(resultData) {
+            if (resultData) {
                 return true;
             } else {
                 return false;
@@ -553,12 +577,12 @@ const ReactDataTablePdorder = (props) => {
 
             const isDel = deleteList(removeDuplicates(extraOriginData));
 
-            if(isMod && isDel) {
+            if (isMod && isDel) {
                 alert("저장완료");
             }
         } else if (originDataLength === updatedDataLength) {
             const isMod = updateList(filterData);
-            if(isMod) {
+            if (isMod) {
                 alert("저장완료");
             }
         } else if (originDataLength < updatedDataLength) {
@@ -574,7 +598,7 @@ const ReactDataTablePdorder = (props) => {
                 toAdds.push(temp);
             }
             const isAdd = addList(toAdds);
-            if(isMod && isAdd) {
+            if (isMod && isAdd) {
                 alert("저장완료");
             }
         }
@@ -595,14 +619,14 @@ const ReactDataTablePdorder = (props) => {
 
     const textAlignStyle = (column) => {
         switch (column.textAlign) {
-            case 'left':
-                return 'txt-left';
-            case 'right':
-                return 'txt-right';
+            case "left":
+                return "txt-left";
+            case "right":
+                return "txt-right";
             default:
-                return 'txt-center';
+                return "txt-center";
         }
-    }
+    };
 
     return (
         <>
@@ -651,14 +675,24 @@ const ReactDataTablePdorder = (props) => {
                                                     {cell.column.id === "selection" ? (
                                                         cell.render("Cell")
                                                     ) : isEditing ? (
-                                                        cell.column.type === "input" ? (
+                                                        cell.column.valueFix === true ? (
+                                                            <input
+                                                                type="text"
+                                                                value={1}
+                                                                name={cell.column.id}
+                                                                //onChange={(e) => handleChange(e, row)}
+                                                                //disabled={cell.column.disabled}
+                                                                style={{ textAlign: cell.column.textAlign || "left" }}
+                                                                readOnly
+                                                            />
+                                                        ) : cell.column.type === "input" ? (
                                                             <input
                                                                 type="text"
                                                                 value={tableData[row.index]?.[cell.column.id] || cell.value || ""}
                                                                 name={cell.column.id}
                                                                 onChange={(e) => handleChange(e, row)}
                                                                 disabled={cell.column.disabled}
-                                                                style={{ textAlign: cell.column.textAlign || 'left' }}
+                                                                style={{ textAlign: cell.column.textAlign || "left" }}
                                                             />
                                                         ) : cell.column.type === "select" ? (
                                                             <select
@@ -732,10 +766,10 @@ const ReactDataTablePdorder = (props) => {
                                                                 />
                                                             </div>
                                                         ) : cell.column.type === "number" ? (
-                                                                <Number
-                                                                    value={tableData[row.index]?.[cell.column.id] || ""}
-                                                                    onChange={(value) => handleChange({target: {value: value, name: cell.column.id}}, row)}
-                                                                />
+                                                            <Number
+                                                                value={tableData[row.index]?.[cell.column.id] || ""}
+                                                                onChange={(value) => handleChange({ target: { value: value, name: cell.column.id } }, row)}
+                                                            />
                                                         ) : typeof cell.value === "number" ? (
                                                             cell.value && cell.value.toLocaleString()
                                                         ) : (

@@ -5,8 +5,9 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf, faPrint } from "@fortawesome/free-solid-svg-icons";
+import DetailDoc from "./DetailDoc";
 
-/* 영업상세내역 */
+/* 구매상세내역 */
 const OrderSummaryDoc = () => {
     const [tableData, setTableData] = useState([]);
     const [title, setTitle] = useState("");
@@ -117,7 +118,7 @@ const OrderSummaryDoc = () => {
             }
         }
 
-        console.log(maxCount);
+        console.log(maxCount, "?");
         setCount(maxCount);
         return maxCount;
     }
@@ -197,6 +198,7 @@ const OrderSummaryDoc = () => {
                     </table>
                 </div>
             </div>
+            <DetailDoc />
             <button id="printButton" onClick={() => printFn()} style={{ position: "fixed", top: "10px", right: "10px" }}>
                 <FontAwesomeIcon icon={faPrint} style={{ color: "red" }} />
                 (저장)출력
