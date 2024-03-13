@@ -158,15 +158,16 @@ function ItemDetailMgmt() {
                         <RefreshButton onClick={() => setNameOfButton("refresh")} />
                     </div>
                     <ReactDataTable
-                        //beforeItem={pdIdArray}
                         columns={columns.reference.itemDetailMgmt}
                         customDatas={tableData}
                         tableRef={itemDetailMgmtTable}
-                        //setLengthSelectRow={setLengthSelectRow}
                         returnSelectRows={(data) => {
                             setSelectedRows(data);
                         }}
                         viewPageName={{ name: "품목상세관리", id: "ItemDetailMgmt" }}
+                        isPageNation={true}
+                        isPageNationCombo={true}
+                        defaultPageSize={20}
                     />
                     {isOpenAdd && (
                         <AddModModal

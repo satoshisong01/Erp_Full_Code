@@ -136,7 +136,7 @@ const ReactDataTableView = (props) => {
                 </thead>
                 {tableData.length <= 0 && (
                     <div>
-                        <div style={{ fontSize: 15 }}>데이터를 찾습니다...</div>
+                        <div style={{ fontSize: 15 }}>데이터가 없습니다. <br/> 데이터를 입력해 주세요.</div>
                     </div>
                 )}
                 <tbody {...getTableBodyProps()}>

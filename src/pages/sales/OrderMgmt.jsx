@@ -5,6 +5,9 @@ import AddButton from "components/button/AddButton";
 import ApprovalLineModal from "components/modal/ApprovalLineModal";
 import ApprovalFormCost from "components/form/ApprovalFormCost";
 import ApprovalFormReport from "components/form/ApprovalFormReport";
+import PopupButtonNL from "components/button/PopupButtonReport";
+import URL from "constants/url";
+import ApprovalFormSal from "components/form/ApprovalFormSal";
 
 /** 영업관리-수주관리-수주보고서 */
 function OrderMgmt() {
@@ -96,6 +99,7 @@ function OrderMgmt() {
     return (
         <>
             <div className="form-buttons mg-b-20" style={{ maxWidth: 1400 }}>
+                <PopupButtonNL targetUrl={URL.PreCostDoc} data={{ label: "수주보고서", type: "document", ...condition }} />
                 <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)} />
                 <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave} />
                 <AddButton label="결재요청" onClick={() => setIsSubmit(true)} disabled={!isSave} />
@@ -104,6 +108,7 @@ function OrderMgmt() {
                 <div style={{ marginTop: "-55px", marginBottom: 55 }}>
                     <h2 style={{ zIndex: "1" }}>수주보고서</h2>
                 </div>
+                {/* <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="수주보고서"/> */}
                 <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="수주보고서" />
                 <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing} />
                 <ApprovalLineModal

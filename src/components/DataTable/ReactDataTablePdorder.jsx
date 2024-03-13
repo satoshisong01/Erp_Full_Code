@@ -356,11 +356,6 @@ const ReactDataTablePdorder = (props) => {
         }
     }, [atchFileId]);
 
-    const handleChangeToNumber = (value, index, name) => {
-        const updatedTableData = [...tableData];
-        updatedTableData[index][name] = value;
-        setTableData(updatedTableData);
-    };
     const handleChange = (e, row) => {
         const { value, name } = e.target;
         const index = row.index;
@@ -552,7 +547,12 @@ const ReactDataTablePdorder = (props) => {
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
     const compareData = (originData, updatedData) => {
-        const filterData = updatedData.filter((data) => data.pdiId); //필수값 체크
+        // const not = updatedData.filter((data) => !data.pdiId); //필수값 체크
+        // if(not) {
+        //     alert("품목을 선택하세요.("+not.length+")")
+        //     return;
+        // }
+        const filterData = updatedData.filter((data) => data.pdiId);
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
 
@@ -579,11 +579,19 @@ const ReactDataTablePdorder = (props) => {
 
             if (isMod && isDel) {
                 alert("저장완료");
+                customDatasRefresh && customDatasRefresh();
+                setOriginTableData([]);
+            } else {
+                setOriginTableData(tableData);
             }
         } else if (originDataLength === updatedDataLength) {
             const isMod = updateList(filterData);
             if (isMod) {
                 alert("저장완료");
+                customDatasRefresh && customDatasRefresh();
+                setOriginTableData([]);
+            } else {
+                setOriginTableData(tableData);
             }
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
@@ -600,11 +608,12 @@ const ReactDataTablePdorder = (props) => {
             const isAdd = addList(toAdds);
             if (isMod && isAdd) {
                 alert("저장완료");
+                customDatasRefresh && customDatasRefresh();
+                setOriginTableData([]);
+            } else {
+                setOriginTableData(tableData);
             }
         }
-
-        customDatasRefresh && customDatasRefresh();
-        setOriginTableData([]);
     };
 
     const isCurrentPage = () => {
@@ -769,6 +778,7 @@ const ReactDataTablePdorder = (props) => {
                                                             <Number
                                                                 value={tableData[row.index]?.[cell.column.id] || ""}
                                                                 onChange={(value) => handleChange({ target: { value: value, name: cell.column.id } }, row)}
+                                                                style={{ textAlign: cell.column.textAlign || "left" }}
                                                             />
                                                         ) : typeof cell.value === "number" ? (
                                                             cell.value && cell.value.toLocaleString()

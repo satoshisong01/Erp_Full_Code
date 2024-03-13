@@ -262,9 +262,10 @@ export default function ExcutionCostTableSearchBar({
                                     수주상태
                                 </label>
                                 <select id="searchKeyword">
-                                    <option>사업진행중</option>
-                                    <option>사업완료</option>
-                                    <option>작성완료</option>
+                                    <option>인벤토리접수</option>
+                                    <option>원가작성중</option>
+                                    <option>견적완료</option>
+                                    <option>계약완료</option>
                                 </select>
                             </div>
                             <div className="box3-0"></div>

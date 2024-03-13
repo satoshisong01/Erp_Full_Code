@@ -26,11 +26,11 @@ function PendingBox() {
         { header: "결재아이디", col: "sttId", notView: true },
         { header: "발신자아이디", col: "sgnSenderId", notView: true }, // == empId
         { header: "수신자아이디", col: "sgnReceiverId", notView: true }, // == empId2
-        { header: "프로젝트명", col: "poiNm", cellWidth: "350" },
+        { header: "프로젝트명", col: "poiNm", cellWidth: "350", textAlign: "left" },
         { header: "결재종류", col: "sgnType", cellWidth: "200" },
         { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
-        { header: "기안일", col: "sgnSigndate", cellWidth: "100" },
-        { header: "코멘트", col: "sgnComent", cellWidth: "589" },
+        { header: "기안일", col: "sgnSigndate", cellWidth: "130" },
+        { header: "비고", col: "sgnDesc", cellWidth: "559", textAlign: "left" },
     ];
 
     const conditionList = [
@@ -71,10 +71,7 @@ function PendingBox() {
 
     const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/system/signState/totalListAll.do", condition || {});
-        console.log(resultData, "안나오는게 맞음");
-        if (resultData) {
             setTableData(resultData);
-        }
     };
 
     const refresh = () => {

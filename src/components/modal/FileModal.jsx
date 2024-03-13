@@ -24,14 +24,12 @@ export default function FileModal(props) {
 
     useEffect(() => {
         if (innerPageName.name !== "원가버전조회" && innerPageName.name !== undefined) {
-            console.log(fileIdData, "값이있나??");
             if (fileIdData && fileIdData.length > 0) {
                 fetchAllData();
             } else {
                 setFileList([]);
             }
         } else {
-            console.log("이건나오면 진짜안댐");
         }
     }, [isOpen, fileIdData]);
 

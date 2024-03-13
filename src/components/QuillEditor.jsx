@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Quill 스타일 시트 임포트
 import "../css/custom-style.scss";
+// import * as QuillTableUI from 'quill-table-ui'
+import "quill-table-ui/dist/index.css"; // quill-table-ui의 스타일 시트 임포트
+import Table from 'quill-table-module'; // Quill Table 모듈 임포트
+import Quill from 'quill'; // Quill 라이브러리 임포트
+
+Quill.register('modules/table', Table);
 
 const QuillEditor = ({ isSave, returnData, writing }) => {
     const defaultContent = `
@@ -59,17 +65,51 @@ const QuillEditor = ({ isSave, returnData, writing }) => {
             toolbar: [
                 ["bold", "italic", "underline", "strike"],
                 [{ list: "ordered" }, { list: "bullet" }],
+                [{ table: true }]
                 // ['link', 'image', 'video'],
                 ["clean"],
             ],
+            // tableUI: true,
+            // table: true,
             clipboard: {
                 matchVisual: false,
             },
         },
-        formats: ["header", "font", "size", "bold", "italic", "underline", "strike", "blockquote", "list", "bullet", "indent", "link", "image", "video"],
+        formats: ["header", "font", "size", "bold", "italic", "underline", "strike", "blockquote", "list", "bullet", "indent", "link", "image", "video", 'table'],
     };
 
-    return <ReactQuill value={content} onChange={contentChange} modules={quillOptions.modules} formats={quillOptions.formats} style={{ height: "100%" }} />;
+    // const modules = {
+    //     toolbar: [
+    //       ["bold", "italic", "underline", "strike"],
+    //       [{ list: "ordered" }, { list: "bullet" }],
+    //       [{ table: true }],
+    //       ["clean"],
+    //     ],
+    //   };
+
+    //   const formats = [
+    //     "bold",
+    //     "italic",
+    //     "underline",
+    //     "strike",
+    //     "list",
+    //     "bullet",
+    //     "table",
+    //   ];
+    
+
+    return (
+        <ReactQuill
+            theme="snow"
+            value={content}
+            onChange={contentChange}
+            modules={quillOptions.modules}
+            formats={quillOptions.formats}
+            // modules={modules}
+            // formats={formats}
+            style={{ height: "100%" }}
+        />
+    );
 };
 
 export default QuillEditor;

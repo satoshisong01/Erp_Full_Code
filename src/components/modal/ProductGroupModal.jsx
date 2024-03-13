@@ -94,6 +94,8 @@ export default function ProductGroupModal(props) {
                                     returnSelect={returnSelect}
                                     viewPageName={{ name: "품목그룹팝업", id: "품목그룹팝업" }}
                                     isSingleSelect={true}
+                                    isPageNationCombo={true}
+                                    isPageNation={true}
                                 />
                             </div>
                         </div>

@@ -10,20 +10,33 @@ import { columns } from "constants/columns";
 import SaveButton from "components/button/SaveButton";
 import AddButton from "components/button/AddButton";
 import DelButton from "components/button/DelButton";
-import ReactDataTable from "components/DataTable/ReactDataTable";
 import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 import SearchModal from "components/modal/SearchModal";
 import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 import PopupButton from "components/button/PopupButton";
 import URL from "constants/url";
 import ApprovalFormReport from "components/form/ApprovalFormReport";
-import QuillEditor from "components/QuillEditor";
 import ApprovalLineModal from "components/modal/ApprovalLineModal";
 import ApprovalFormCost from "components/form/ApprovalFormCost";
+import CKEditorComponent from "components/CKEditorComponent";
+import ToastUiEditor from "components/ToastUiEditor";
+import QuillEditor from "components/QuillEditor";
+import PopupButtonReport from "components/button/PopupButtonReport";
+import ReactDataTable from "components/DataTable/ReactDataTable";
+import { ChangePrmnPlanData, buyIngInfoCalculation, division } from "components/DataTable/function/ReplaceDataFormat";
 
 /** 영업관리-견적관리 */
 function Quotation() {
-    const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, setNameOfButton } = useContext(PageContext);
+    const {
+        currentPageName,
+        innerPageName,
+        setPrevInnerPageName,
+        setInnerPageName,
+        setCurrentPageName,
+        setNameOfButton,
+        inquiryConditions,
+        unitPriceListRenew,
+    } = useContext(PageContext);
     const [infoList, setInfoList] = useState([
         { name: "인건비", id: "estimateLabor" },
         { name: "구매비", id: "orderBuying" },
@@ -37,6 +50,8 @@ function Quotation() {
 
     const [estimate, setEstimate] = useState([]);
     const [buyIngInfo, setBuyIngInfo] = useState([]);
+    const [budgetMgmtView, setBudgetMgmtView] = useState([]); // 영업인건비
+    const [buyView, setBuyView] = useState([]); // 영업구매비
 
     const [estimateBool, setestimateBool] = useState(false);
     const [buyIngBool, setBuyIngBool] = useState(false);
@@ -50,6 +65,12 @@ function Quotation() {
     }, []);
 
     useEffect(() => {
+        if (inquiryConditions.poiId) {
+            fetchAllData(inquiryConditions);
+        }
+    }, [innerPageName]);
+
+    useEffect(() => {
         if (currentPageName.id === "Quotation") {
             const activeTab = document.querySelector(".mini_board_3 .tab li a.on"); //마지막으로 활성화 된 탭
             if (activeTab) {
@@ -60,6 +81,56 @@ function Quotation() {
             }
         }
     }, [currentPageName]);
+
+    const columnlabor = [
+        //인건비
+        { header: "연월", col: "pmpMonth", cellWidth: "100", type: "datePicker" },
+        { header: "M/M", col: "total", cellWidth: "80" },
+        { header: "금액", col: "totalPrice", cellWidth: "174", type: "number" },
+        { header: "임원", col: "pmpmmPositionCode1", notView: true },
+        { header: "특급기술사", col: "pmpmmPositionCode2", notView: true },
+        { header: "고급기술사", col: "pmpmmPositionCode3", notView: true },
+        { header: "중급기술사", col: "pmpmmPositionCode4", notView: true },
+        { header: "초급기술사", col: "pmpmmPositionCode5", notView: true },
+        { header: "고급기능사", col: "pmpmmPositionCode6", notView: true },
+        { header: "중급기능사", col: "pmpmmPositionCode7", notView: true },
+        { header: "초급기능사", col: "pmpmmPositionCode8", notView: true },
+        { header: "부장", col: "pmpmmPositionCode9", cellWidth: "170", type: "input" },
+        { header: "차장", col: "pmpmmPositionCode10", cellWidth: "170", type: "input" },
+        { header: "과장", col: "pmpmmPositionCode11", cellWidth: "170", type: "input" },
+        { header: "대리", col: "pmpmmPositionCode12", cellWidth: "170", type: "input" },
+        { header: "주임", col: "pmpmmPositionCode13", cellWidth: "170", type: "input" },
+        { header: "사원", col: "pmpmmPositionCode14", cellWidth: "170", type: "input" },
+    ];
+
+    const columnBuy = [
+        // 구매비
+        { header: "구매아이디", col: "byId", notView: true },
+        { header: "프로젝트아이디", col: "poiId", notView: true },
+        { header: "판매사아이디", col: "pdiSeller", notView: true },
+        { header: "제조사아이디", col: "pdiMenufut", notView: true },
+        { header: "품명", col: "pdiNm", cellWidth: "200", type: "productInfo", require: true, textAlign: "left" },
+        { header: "품목그룹명", col: "pgNm", cellWidth: "150", textAlign: "left" },
+        { header: "모델명", col: "pdiNum", cellWidth: "150", textAlign: "left" },
+        { header: "판매사", col: "pdiSeller_name", cellWidth: "150", textAlign: "left" },
+        { header: "제조사", col: "pdiMenufut_name", cellWidth: "150", textAlign: "left" },
+        { header: "규격", col: "pdiStnd", cellWidth: "200", textAlign: "left" },
+        { header: "수량", col: "byQunty", cellWidth: "50", type: "input", require: true, textAlign: "center" },
+        { header: "단위", col: "pdiUnit", cellWidth: "50" },
+        // { header: "소비자 단가", col: "consumerPrice", cellWidth: "100", type: "input" },
+        { header: "소비자 단가", col: "byConsumerUnitPrice", cellWidth: "100", type: "number", textAlign: "right" },
+        { header: "소비자 금액", col: "consumerAmount", cellWidth: "130", textAlign: "right" },
+        { header: "공급단가", col: "unitPrice", cellWidth: "100", type: "number", textAlign: "right" },
+        { header: "공급금액", col: "planAmount", cellWidth: "130", textAlign: "right" },
+        { header: "원단가", col: "byUnitPrice", cellWidth: "100", type: "number", require: true, textAlign: "right" },
+        { header: "원가", col: "estimatedCost", cellWidth: "100", textAlign: "right" },
+        { header: "이익금", col: "plannedProfits", cellWidth: "100", textAlign: "right" },
+        // { header: "이익률", col: "plannedProfitMargin", cellWidth: "60" },
+        { header: "이익률", col: "byStandardMargin", cellWidth: "100", type: "input", require: true, textAlign: "center" },
+        { header: "소비자가 산출률", col: "byConsumerOutputRate", cellWidth: "130", type: "input", require: true, textAlign: "center" },
+        { header: "첨부파일", col: "file", cellWidth: "70", type: "file" },
+        { header: "비고", col: "byDesc", cellWidth: "300", type: "input", textAlign: "left" },
+    ];
 
     const changeTabs = (name, id) => {
         setInnerPageName((prev) => {
@@ -250,7 +321,27 @@ function Quotation() {
         if (innerPageName.id === "estimateLabor") {
             //인건비
             const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
-            console.log(condition.versionId);
+            const viewResult = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", { poiId: condition.poiId }); //계획조회
+            if (viewResult && viewResult.length > 0) {
+                const changeData = ChangePrmnPlanData(viewResult);
+                changeData.forEach((Item) => {
+                    const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
+                    const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
+                    if (matchingAItem) {
+                        let totalPrice = 0;
+                        for (let i = 1; i <= 14; i++) {
+                            const gupPriceKey = `gupPrice${i}`;
+                            const pmpmmPositionCodeKey = `pmpmmPositionCode${i}`;
+                            if (matchingAItem[gupPriceKey]) {
+                                totalPrice += matchingAItem[gupPriceKey] * Item[pmpmmPositionCodeKey];
+                            }
+                        }
+                        Item.totalPrice = totalPrice;
+                    }
+                });
+                setBudgetMgmtView(changeData);
+            }
+
             setEstimate([]);
             setestimateBool(false);
             if (resultData.length !== 0) {
@@ -260,6 +351,15 @@ function Quotation() {
             }
         } else if (innerPageName.id === "orderBuying") {
             //구매비
+            const viewResult = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", condition);
+            console.log("영업원가 구매 조회:", viewResult);
+            if (viewResult && viewResult.length > 0) {
+                const calData = buyIngInfoCalculation(viewResult);
+                console.log("영업원가 구매 폼변화:", calData);
+                setBuyView(calData);
+            }
+
+            setBuyIngInfo([]);
             setBuyIngBool(false);
             const resultData = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", condition || {});
             console.log("조회안되느듯");
@@ -470,10 +570,14 @@ function Quotation() {
         }
     };
 
-    const conditionInfo = (value) => {
+    useEffect(() => {
+        console.log("inquiryConditions:", inquiryConditions);
+        if (!inquiryConditions.poiId || !inquiryConditions.versionId) {
+            return;
+        }
         setCondition((prev) => {
-            if (prev.poiId !== value.poiId) {
-                const newCondition = { ...value };
+            if (prev.poiId !== inquiryConditions.poiId) {
+                const newCondition = { ...inquiryConditions };
                 fetchAllData(newCondition);
                 return newCondition;
             } else {
@@ -481,7 +585,7 @@ function Quotation() {
                 return prev;
             }
         });
-    };
+    }, [inquiryConditions]);
 
     /* 품의서 */
     const sessionUser = sessionStorage.getItem("loginUser");
@@ -512,10 +616,8 @@ function Quotation() {
             setCondition((prev) => {
                 if (prev.poiId !== value.poiId) {
                     const newCondition = { ...value };
-                    // fetchAllData(newCondition);
                     return newCondition;
                 } else {
-                    // fetchAllData({ ...prev });
                     return prev;
                 }
             });
@@ -591,8 +693,10 @@ function Quotation() {
                 <div className="list">
                     <div className="first">
                         <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            {/*<HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>*/}
+                            <ApprovalFormSal initial={condition} />
+                            <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
+                                <ReactDataTable columns={columnlabor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
+                            </HideCard>
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <PopupButton
@@ -627,8 +731,10 @@ function Quotation() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
-                            {/*<HideCard title="합계" color="back-lightyellow" className="mg-b-40"></HideCard>*/}
+                            <ApprovalFormSal initial={condition} />
+                            {/* <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
+                                <ReactDataTable columns={columnBuy} customDatas={buyView} defaultPageSize={5} hideCheckBox={true} />
+                            </HideCard> */}
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <PopupButton
@@ -664,6 +770,7 @@ function Quotation() {
                     <div className="third">
                         <ul>
                             <div className="form-buttons mg-b-20" style={{ maxWidth: 1400 }}>
+                                <PopupButtonReport targetUrl={URL.PreCostDoc} data={{ label: "견적품의서", type: "document", ...condition }} />
                                 <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)} />
                                 <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave} />
                                 <AddButton label="결재요청" onClick={() => setIsSubmit(true)} disabled={!isSave} />
@@ -673,6 +780,8 @@ function Quotation() {
                                     <h2>견적품의서</h2>
                                 </div>
                                 <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="견적품의서" />
+                                {/* <ToastUiEditor /> */}
+                                {/* <CKEditorComponent /> */}
                                 <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing} />
                                 <ApprovalLineModal
                                     width={670}

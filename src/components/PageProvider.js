@@ -9,6 +9,8 @@ export const PageContext = createContext();
 export function PageProvider({ children }) {
     //const [loadButton, setLoadButton] = useState(""); // 클릭된 데이터 테이블의 CRUD 버튼 이름
 
+    const [inquiryConditions, setInquiryConditions] = useState({}); // 클릭된 데이터 테이블의 CRUD 버튼 이름
+
     const [nameOfButton, setNameOfButton] = useState(""); // 클릭된 데이터 테이블의 CRUD 버튼 이름
     const [isSaveFormTable, setIsSaveFormTable] = useState(true); // 버튼 on/off, false일때 저장 실행
     const [newRowData, setNewRowData] = useState({}); // 외부에서 추가된 table row data (수주등록, 팝업으로 추가)
@@ -167,8 +169,9 @@ export function PageProvider({ children }) {
         setAtchFileId,
         filePageName,
         setFilePageName,
-        projectList,
-        setProjectList,
+
+        inquiryConditions,
+        setInquiryConditions,
     };
 
     return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>;

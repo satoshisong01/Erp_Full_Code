@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 /** 영업 폼 */
 function ApprovalFormSal({ returnData, initial }) {
-    const { innerPageName, setProjectList, projectList } = useContext(PageContext);
+    const { innerPageName, setInquiryConditions, inquiryConditions } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
@@ -15,7 +15,6 @@ function ApprovalFormSal({ returnData, initial }) {
     }, [initial]);
 
     useEffect(() => {
-        // if (data.poiId && !data.versionId) {
         if (data.poiId && !data.versionId) {
             //선택된 버전정보가 없다면
             getVersionList({ poiId: data.poiId });
@@ -29,27 +28,36 @@ function ApprovalFormSal({ returnData, initial }) {
             setData((prev) => ({
                 ...prev,
                 versionId: emptyArr.find((info) => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
+                versionNum: emptyArr.find((info) => info.costAt === "Y")?.versionNum || emptyArr[0]?.versionNum,
                 option: emptyArr,
             }));
         }
         if (!resultData || resultData.length === 0) {
+            returnData && returnData({})
             alert("버전 정보가 없습니다.");
         }
     };
 
     const onSelectChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, innerText } = e.target;
+        const versionNum = innerText.split('\n')[0];
         if (value !== "default") {
-            setData((prev) => ({ ...prev, [name]: value }));
+            setData((prev) => ({
+                ...prev,
+                [name]: value,
+                ["versionNum"]: versionNum
+                
+            }));
         }
     };
 
     const onChange = (value) => {
-        console.log(value);
         setData({
             poiId: value.poiId,
             poiNm: value.poiNm,
+            poiDesc: value.poiDesc,
             versionId: value.versionId,
+            versionNum: value.versionNum,
             poiMonth: value.poiMonth,
             poiBeginDt: value.poiBeginDt,
             poiManagerId: value.poiManagerId,
@@ -59,9 +67,14 @@ function ApprovalFormSal({ returnData, initial }) {
     };
 
     const onClick = () => {
-        setProjectList({ ...data });
-        returnData({ ...data });
-        // alert("데이터를 불러옵니다");
+        if(!data.versionId) {
+            alert("버전을 생성하세요.");
+            return;
+        }
+        returnData && returnData({ ...data });
+        if(inquiryConditions.poiId !== data.poiId) {
+            setInquiryConditions({...data})
+        }
     };
 
     return (

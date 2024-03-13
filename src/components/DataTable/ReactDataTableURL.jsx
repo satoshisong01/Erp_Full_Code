@@ -11,6 +11,7 @@ import DayPicker from "components/input/DayPicker";
 import EmployerInfoModal from "components/modal/EmployerInfoModal";
 import BasicInput from "components/input/BasicInput";
 import "../../../src/css/componentCss/Code.css";
+import Number from "components/input/Number";
 
 /* 경비 테이블 */
 const ReactDataTableURL = (props) => {
@@ -172,6 +173,7 @@ const ReactDataTableURL = (props) => {
                 options: column.options,
                 notView: column.notView,
                 require: column.require,
+                textAlign: column.textAlign,
             })),
         [columns]
     );
@@ -240,14 +242,13 @@ const ReactDataTableURL = (props) => {
         setProjectPdiNm({});
     };
 
-    const handleChange = (e, rowIndex, accessor) => {
-        const { value } = e.target;
+    const handleChange = (e, row) => {
+        const { value, name } = e.target;
         // tableData를 복제하여 수정
         const updatedTableData = [...tableData];
-        updatedTableData[rowIndex][accessor] = value;
+        updatedTableData[row.index][name] = value;
         // 수정된 데이터로 tableData 업데이트
         console.log(value);
-        console.log(updatedTableData, "1111");
         setTableData(updatedTableData);
     };
 
@@ -595,6 +596,18 @@ const ReactDataTableURL = (props) => {
     //------------------------------- 초기값과 비교하는 코드
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
+    const textAlignStyle = (column) => {
+        console.log("⭐경비:", column.textAlign);
+        switch (column.textAlign) {
+            case 'left':
+                return 'txt-left';
+            case 'right':
+                return 'txt-right';
+            default:
+                return 'txt-center';
+        }
+    }
+
     return (
         <>
             <div className={isPageNation ? "x-scroll" : "table-scroll"}>
@@ -635,7 +648,11 @@ const ReactDataTableURL = (props) => {
                                             }
 
                                             return (
-                                                <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"} id="otherCol">
+                                                <td
+                                                    {...cell.getCellProps()}
+                                                    className={textAlignStyle(cell.column)}
+                                                    // className={cellIndex === 0 ? "first-column" : "other-column"} id="otherCol"
+                                                >
                                                     {cell.column.id === "selection" ? (
                                                         cell.render("Cell")
                                                     ) : isEditing ? (
@@ -681,7 +698,7 @@ const ReactDataTableURL = (props) => {
                                                                     type="text"
                                                                     placeholder={`품명을 선택해 주세요.`}
                                                                     value={tableData[row.index].pdiNm || ""}
-                                                                    onChange={(e) => handleChange(e, row, cell.column.id)}
+                                                                    onChange={(e) => handleChange(e, row)}
                                                                     readOnly
                                                                 />
                                                             </div>
@@ -696,7 +713,7 @@ const ReactDataTableURL = (props) => {
                                                                     type="text"
                                                                     placeholder={`품목그룹을 선택해 주세요.`}
                                                                     value={tableData[row.index].pgNm || ""}
-                                                                    onChange={(e) => handleChange(e, row, cell.column.id)}
+                                                                    onChange={(e) => handleChange(e, row)}
                                                                     readOnly
                                                                 />
                                                             </div>
@@ -721,7 +738,7 @@ const ReactDataTableURL = (props) => {
                                                                     type="text"
                                                                     placeholder={`거래처명을 선택해 주세요.`}
                                                                     value={tableData[row.index][cell.column.id] || ""}
-                                                                    onChange={(e) => handleChange(e, row.index, cell.column.id)}
+                                                                    onChange={(e) => handleChange(e, row)}
                                                                     readOnly
                                                                 />
                                                             </div>
@@ -738,6 +755,13 @@ const ReactDataTableURL = (props) => {
                                                                 value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id] : ""}
                                                                 onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                             />
+                                                        ) : cell.column.type === "number" ? (
+                                                            <Number
+                                                                value={tableData[row.index]?.[cell.column.id] || ""}
+                                                                onChange={(value) => handleChange({target: {value: value, name: cell.column.id}}, row)}
+                                                                style={{ textAlign: cell.column.textAlign || 'left' }}
+                                                            />
+
                                                         ) : cell.column.Header === "연월" && cell.value ? (
                                                             cell.value.substring(0, 7)
                                                         ) : cell.column.col === "pjbgDt" ? (

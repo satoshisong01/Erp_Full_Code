@@ -12,6 +12,7 @@ import CompanyModal from "components/modal/CompanyModal";
 import ProductInfoModal from "components/modal/ProductInfoModal";
 import ProductGroupModal from "components/modal/ProductGroupModal";
 import EmployerInfoModal from "components/modal/EmployerInfoModal";
+import Number from "components/input/Number";
 
 const ReactDataTableSaleCost = (props) => {
     const {
@@ -120,6 +121,7 @@ const ReactDataTableSaleCost = (props) => {
                 options: column.options,
                 notView: column.notView,
                 require: column.require,
+                textAlign: column.textAlign,
             })),
         [columns]
     );
@@ -357,6 +359,18 @@ const ReactDataTableSaleCost = (props) => {
     //------------------------------- 초기값과 비교하는 코드
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
+
+    const textAlignStyle = (column) => {
+        switch (column.textAlign) {
+            case 'left':
+                return 'txt-left';
+            case 'right':
+                return 'txt-right';
+            default:
+                return 'txt-center';
+        }
+    }
+
     return (
         <div className={isPageNation ? "x-scroll" : "table-scroll"}>
             <table {...getTableProps()} className="table-styled" ref={tableRef} style={{ tableLayout: "auto", marginBottom: 20 }}>
@@ -394,7 +408,11 @@ const ReactDataTableSaleCost = (props) => {
                                         }
 
                                         return (
-                                            <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"} id="otherCol">
+                                            <td
+                                                {...cell.getCellProps()}
+                                                className={textAlignStyle(cell.column)}
+                                                // className={cellIndex === 0 ? "first-column" : "other-column"} id="otherCol"
+                                            >
                                                 {cell.column.id === "selection" ? (
                                                     cell.render("Cell")
                                                 ) : isEditing ? (
@@ -409,6 +427,13 @@ const ReactDataTableSaleCost = (props) => {
                                                             name={cell.column.id}
                                                             onChange={(e) => onChangeInput(e, row)}
                                                         />
+                                                    ) : cell.column.type === "number" ? (
+                                                        <Number
+                                                            value={tableData[row.index]?.[cell.column.id] || ""}
+                                                            onChange={(value) => onChangeInput({target: {value: value, name: cell.column.id}}, row)}
+                                                            style={{ textAlign: cell.column.textAlign || 'left' }}
+                                                        />
+
                                                     ) : (
                                                         cell.render("Cell")
                                                     )

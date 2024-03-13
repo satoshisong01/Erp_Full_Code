@@ -136,7 +136,6 @@ const ReactDataTable = (props) => {
         // 이벤트 핸들러 등록
         document.addEventListener("mousedown", handleDocumentClick);
 
-        test(); 
         return () => {
             // 컴포넌트 언마운트 시에 이벤트 핸들러 제거
             document.removeEventListener("mousedown", handleDocumentClick);
@@ -258,12 +257,6 @@ const ReactDataTable = (props) => {
             })),
         [columns]
     );
-
-    const test = () => {
-        // columns.map((col) => (
-        //     console.log("⭐textAlign:", col.textAlign)
-        // ))
-    }
 
     useEffect(() => {
         //newRowData 변동 시 새로운 행 추가
@@ -690,7 +683,7 @@ const ReactDataTable = (props) => {
                 <div>
                     {isPageNationCombo && (
                         <div className="flex-between mg-b-10">
-                            <div className="page-size">
+                            <div className="page-size" style={{width: 80}}>
                                 {/* <span className="table-title mg-r-10">데이터 수</span> */}
                                 <select className="select" id={uuidv4()} value={pageSize} onChange={(e) => pageSizeChange(e.target.value)}>
                                     {pageSizeOptions.map((size, index) => (
@@ -840,6 +833,8 @@ const ReactDataTable = (props) => {
                                                                 </div>
                                                             ) : typeof cell.value === "number" ? (
                                                                 cell.value && cell.value.toLocaleString()
+                                                            ) : cell.column.id === "sgnDesc" ? (
+                                                                <div dangerouslySetInnerHTML={{ __html: tableData[cell.row.index]?.[cell.column.id] || "" }}></div>
                                                             ) : (
                                                                 cell.render("Cell") || ""
                                                             )}

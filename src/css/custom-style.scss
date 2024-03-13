@@ -1537,8 +1537,32 @@ table > thead {
 }
 
 
+/* quill-table.css */
 .ql-editor {
     caret-color: black; /* 커서 색상을 빨간색으로 변경 */
+}
+
+/* 표 셀 스타일 */
+.quill-container {
+    display: flex;
+}
+.quill-container body {
+    padding: 25px;
+}
+#bubble-container, #snow-container {
+    height: 150px;
+    margin-bottom: 10px;
+}
+.quill-panel {
+    flex: 1;
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+
+.ck-content {
+    height: 400px;
+    caret-color: black;
 }
 
 /* 반응형 스타일 */

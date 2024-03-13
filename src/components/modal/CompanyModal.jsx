@@ -17,6 +17,7 @@ export default function CompanyModal(props) {
 
     const [companyList, setCompanyList] = useState([]);
     const [selectInfo, setSelectInfo] = useState({});
+    const [columns, setColumns] = useState([]);
     const bodyRef = useRef(null);
 
     useEffect(() => {
@@ -36,25 +37,43 @@ export default function CompanyModal(props) {
         const resultData = await axiosFetch("/api/baseInfrm/client/client/totalListAll.do", requestData || {});
         const changeData = resultData.map((item) => {
             const pgNms = Object.keys(item).filter((key) =>  key.startsWith("pgNm") && item[key].trim() !== "").map((key) => item[key])
-            return {
-                cltId: item.cltId,
-                cltNm: item.cltNm,
-                [colName?.id]: item.cltId,
-                [colName?.name]: item.cltNm,
-                pgNms: pgNms.join(","), // 배열을 문자열로 변환
-                cltBusstype: item.cltBusstype,
-            };
+            if(colName && colName.id === "cltNm") {
+                return {
+                    cltId: item.cltId,
+                    cltNm: item.cltNm,
+                    pgNms: pgNms.join(","), // 배열을 문자열로 변환
+                    cltBusstype: item.cltBusstype,
+                };
+            } else if(colName && colName.id !== "cltNm") {
+                return {
+                    [colName?.id]: item.cltId,
+                    [colName?.name]: item.cltNm,
+                    pgNms: pgNms.join(","), // 배열을 문자열로 변환
+                    cltBusstype: item.cltBusstype,
+                };
+            }
         });
         setCompanyList(changeData);
     };
 
-    const columns = [
-        { header: "거래처아이디", col: "cltId", cellWidth: "0", notView: true },
-        { header: "거래처아이디", col: colName?.id, cellWidth: "0", notView: true },
-        { header: "거래처명", col: colName?.name || "cltNm", cellWidth: "150" },
-        { header: "품목그룹명", col: "pgNms", cellWidth: "170" },
-        { header: "업체유형", col: "cltBusstype", cellWidth: "180" },
-    ];
+    useEffect(() => {
+        if(colName && colName.id === "cltNm") {
+            setColumns([
+                { header: "거래처아이디", col: "cltId", cellWidth: "0", notView: true },
+                { header: "거래처명", col: "cltNm", cellWidth: "230" },
+                { header: "품목그룹명", col: "pgNms", cellWidth: "200" },
+                { header: "업체유형", col: "cltBusstype", cellWidth: "180" },
+            ])
+        } else if(colName && colName.id !== "cltNm") {
+            setColumns([
+                { header: "거래처아이디", col: "cltId", cellWidth: "0", notView: true },
+                { header: "거래처아이디", col: colName.id, cellWidth: "0", notView: true },
+                { header: "거래처명", col: colName.name, cellWidth: "150" },
+                { header: "품목그룹명", col: "pgNms", cellWidth: "170" },
+                { header: "업체유형", col: "cltBusstype", cellWidth: "180" },
+            ])
+        }
+    }, [colName])
 
     const conditionList = [
         {
@@ -86,22 +105,21 @@ export default function CompanyModal(props) {
 
     const onClick = (e) => {
         e.preventDefault();
-        if (colName?.id && colName?.name) {
-            setCompanyInfo({
-                [colName.id]: selectInfo[colName.id],
-                [colName.name]: selectInfo[colName.name]
-            });
-        } else {
+        if(colName && colName.id === "cltNm") {
             setCompanyInfo({
                 cltId: selectInfo.cltId,
                 cltNm: selectInfo.cltNm,
+            });
+        } else if(colName && colName.id !== "cltNm") {
+            setCompanyInfo({
+                [colName.id]: selectInfo[colName.id],
+                [colName.name]: selectInfo[colName.name]
             });
         }
         onClose();
     };
 
     const returnSelect = (value) => {
-        console.log(value);
         setSelectInfo((prev) => (prev.cltId !== value.cltId ? value : prev));
     };
 
@@ -111,7 +129,6 @@ export default function CompanyModal(props) {
             isOpen={isOpen}
             onRequestClose={onClose}
             contentLabel={title}
-            // style={{ content: { width, height, },}}
         >
             <div className="me-modal">
                 <div className="me-modal-container" style={{ width, height }}>
@@ -131,6 +148,9 @@ export default function CompanyModal(props) {
                                     customDatas={companyList}
                                     returnSelect={returnSelect}
                                     viewPageName={{ name: "거래처팝업", id: "거래처팝업" }}
+                                    isPageNation={true}
+                                    isSingleSelect={true}
+                                    isPageNationCombo={true}
                                 />
                             </div>
                         </div>

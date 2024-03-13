@@ -68,6 +68,34 @@ export default function AddModModal(props) {
         }
     }, [companyInfo]);
 
+    // useEffect(() => {
+    //     const updatedTableData = initializeTableData(data, list);
+    //     setTableData(updatedTableData);
+    //     setOriginTableData(updatedTableData);
+    //     setIsLoading(false);
+    // }, [list]);
+
+    //     /* list에는 있지만 넣어줄 데이터가 없을 때 조기값 설정 */
+    //     const initializeTableData = (datas, cols) => {
+    //         if (datas && datas.length > 0) {
+    //             const updatedData = datas.map((dataItem) => {
+    //                 const newData = { ...dataItem };
+    //                 cols.forEach((column) => {
+    //                     if (!newData.hasOwnProperty(column.col)) {
+    //                         newData[column.col] = ""; // 해당 변수가 없으면 빈 값으로 초기화
+    //                     }
+    //                     if (column.type === "select") {
+    //                         newData[column.col] = column.options[0].value; // 옵션의 첫 번째 값으로 초기화
+    //                     }
+    //                 });
+    //                 return newData;
+    //             });
+    //             return updatedData;
+    //         }
+    //         return [];
+    //     };
+
+
     //useEffect(() => {
     //    console.log(data, "data222");
     //}, [data]);
@@ -224,6 +252,7 @@ export default function AddModModal(props) {
                     <Number item={item} onChange={(e) => inputChange(e, "number")} value={data?.[item.col] ? data[item.col].toLocaleString() : ""} />
                 ) : item.type === "select" ? (
                     <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
+                    // <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ? data?.[item.col] : item.option[0].value || ""} />
                 ) : item.type === "radio" ? (
                     item.option &&
                     item.option.length > 0 && (
@@ -310,8 +339,8 @@ export default function AddModModal(props) {
                         <ProjectModal width={550} height={770} title="프로젝트 목록" onClose={() => setIsOpenModalProject(false)} returnInfo={setProjectInfo} />
                     )}
                     <CompanyModal
-                        width={500}
-                        height={550}
+                        width={700}
+                        height={600}
                         title="거래처 목록"
                         isOpen={isOpenModalCompany}
                         onClose={() => setIsOpenModalCompany(false)}

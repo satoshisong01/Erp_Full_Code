@@ -1,22 +1,28 @@
 import React, { useEffect, useState } from "react";
 
 /* 숫자 입력시 컴마 표현 */
-export default function Number({ onChange, value }) {
+export default function Number({ onChange, value, style }) {
     /*
      *  부모 예시
      *  <FormattedInput value={value} onChange={inputChange} />
      */
 
+
     const [viewValue, setViewValue] = useState("");
 
     useEffect(() => {
-        const formattedValue = value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        console.log("style:", style);
+    }, [style]);
+    useEffect(() => {
+        const stringValue = String(value);
+        const formattedValue = stringValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         setViewValue(formattedValue); // 콤마로 표시되는 값
     }, [value]);
 
     const inputChange = (e) => {
         const { value } = e.target;
-        const formattedValue = value.replace(/,/g, ""); // 콤마를 제거한 숫자 값
+        const stringValue = String(value);
+        const formattedValue = stringValue.replace(/,/g, ""); // 콤마를 제거한 숫자 값
         onChange(formattedValue);
     };
 
@@ -33,6 +39,7 @@ export default function Number({ onChange, value }) {
                 value={viewValue} // 콤마로 표시되는 값
                 onChange={inputChange} // 부모 컴포넌트로 전달
                 placeholder="숫자를 입력하세요"
+                style={style}
             />
         </div>
     );

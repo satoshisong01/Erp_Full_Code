@@ -44,6 +44,7 @@ export default function ProjectModal(props) {
 
     const columns = [
         { header: "프로젝트아이디", col: "poiId", notView: true },
+        { header: "비고", col: "poiDesc", notView: true },
         { header: "최종수정일", col: "lastModifyDate", notView: true },
         { header: "기준연도", col: "poiMonth", notView: true },
         { header: "프로젝트명", col: "poiNm", cellWidth: "213" },
@@ -95,6 +96,7 @@ export default function ProjectModal(props) {
                                 viewPageName={{ name: "프로젝트팝업", id: "프로젝트팝업" }}
                                 isPageNation={true}
                                 isSingleSelect={true}
+                                isPageNationCombo={true}
                             />
                         </div>
                     </div>

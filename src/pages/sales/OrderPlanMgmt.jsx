@@ -27,7 +27,7 @@ import SearchModal from "components/modal/SearchModal";
 function OrderPlanMgmt() {
     const sessionUser = sessionStorage.getItem("loginUser");
 
-    const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, unitPriceListRenew, setNameOfButton } =
+    const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, unitPriceListRenew, setNameOfButton, inquiryConditions } =
         useContext(PageContext);
     const [searchDates, setSearchDates] = useState([]); // 원가
     const [prmnPlanDatas, setPrmnPlanDatas] = useState([]); // 인건비
@@ -58,7 +58,6 @@ function OrderPlanMgmt() {
     useEffect(() => {
         setInnerPageName({ name: "원가버전조회", id: "OrderPlanMgmt" });
         setCurrentPageName({}); //inner와 pageName은 동시에 사용 X
-        fetchAllData();
         return () => {};
     }, []);
 
@@ -75,10 +74,32 @@ function OrderPlanMgmt() {
     }, [currentPageName]);
 
     useEffect(() => {
+        const infoIds = infoList.map(item => item.id);
         if (innerPageName.id === "OrderPlanMgmt") {
             fetchAllData();
+        } else if(infoIds.includes(innerPageName.id)) {
+            if(condition.poiId) {
+                fetchAllData(condition);
+            }
         }
     }, [innerPageName]);
+
+    useEffect(() => {
+        if (!inquiryConditions.poiId || !inquiryConditions.versionId) {
+            return;
+        }
+        setCondition((prev) => {
+            if (prev.poiId !== inquiryConditions.poiId) {
+                const newCondition = { ...inquiryConditions };
+                fetchAllData(newCondition);
+                return newCondition;
+            } else {
+                fetchAllData({ ...prev });
+                return prev;
+            }
+        });
+    }, [inquiryConditions]);
+
 
     const refresh = () => {
         if (condition.poiId && condition.versionId) {
@@ -102,6 +123,7 @@ function OrderPlanMgmt() {
 
     //인건비용임
     const compareData = (originData, updatedData) => {
+        if(originData?.length === 0 && updatedData?.length === 0) return;
         const filterData = updatedData.filter((data) => data.pmpMonth); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -127,12 +149,18 @@ function OrderPlanMgmt() {
             const isDel = deleteList(combinedAValues);
             if (isMod && isDel) {
                 alert("저장완료");
+                refresh(); //리프레쉬
+            } else {
+                alert("저장오류");
             }
         } else if (originDataLength === updatedDataLength) {
             upDateChange(filterData);
             const isMod = updateList(filterData);
             if (isMod) {
                 alert("저장완료");
+                refresh(); //리프레쉬
+            } else {
+                alert("저장오류");
             }
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
@@ -171,9 +199,12 @@ function OrderPlanMgmt() {
             const isAdd = addList(toAdds);
             if (isMod && isAdd) {
                 alert("저장완료");
+                refresh(); //리프레쉬
+            } else {
+                alert("저장오류");
             }
         }
-        refresh(); //리프레쉬
+        
     };
 
     const addList = async (addNewData) => {
@@ -183,10 +214,9 @@ function OrderPlanMgmt() {
         const url = `/api/baseInfrm/product/prmnPlan/addList.do`;
         const resultData = await axiosPost(url, addNewData);
         if (resultData) {
-            refresh();
             return true;
         } else {
-            refresh();
+            return false;
         }
     };
     const updateList = async (toUpdate) => {
@@ -201,10 +231,9 @@ function OrderPlanMgmt() {
         const url = `/api/baseInfrm/product/prmnPlan/editArrayList.do`;
         const resultData = await axiosUpdate(url, updatedData);
         if (resultData) {
-            refresh();
             return true;
         } else {
-            refresh();
+            return false;
         }
     };
 
@@ -212,10 +241,9 @@ function OrderPlanMgmt() {
         const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         if (resultData) {
-            refresh();
             return true;
         } else {
-            refresh();
+            return false;
         }
     };
 
@@ -267,7 +295,6 @@ function OrderPlanMgmt() {
     };
 
     const fetchAllData = async (requestData) => {
-        console.log("컨디션:", requestData);
         if (innerPageName.name === "원가버전조회") {
             const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", {
                 searchCondition: "",
@@ -276,7 +303,7 @@ function OrderPlanMgmt() {
             if (resultData && resultData.length > 0) {
                 setSearchDates(resultData);
             } else {
-                alert("데이터를 찾습니다...");
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setSearchDates([]);
             }
         } else if (innerPageName.name === "인건비") {
@@ -351,8 +378,8 @@ function OrderPlanMgmt() {
                     });
                     setPrmnPlanDatas(changeData);
                 }
-            } else {
-                alert("데이터를 찾습니다...");
+            } else if(resultData.length === 0){
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setPrmnPlanDatas([]);
                 setPrmnCalDatas([]);
             }
@@ -364,10 +391,9 @@ function OrderPlanMgmt() {
                 resultData.forEach((data) => {
                     pjbgPriceTotal += data.pjbgPrice;
                 });
-                console.log("조회 데이터:", resultData);
                 setPjbudgetCalDatas([{ pjbgPriceTotal }]);
             } else {
-                alert("데이터를 찾습니다...");
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setPjbudgetDatas([]);
                 setPjbudgetCalDatas([]);
             }
@@ -440,7 +466,7 @@ function OrderPlanMgmt() {
 
                 setPdOrdrCalDatas(groupedDataWithCalculations); //합계
             } else {
-                alert("데이터를 찾습니다...");
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setPdOrdrDatas([]);
                 setPdOrdrCalDatas([]);
             }
@@ -462,7 +488,7 @@ function OrderPlanMgmt() {
 
                 setOutCalDatas([calTotal]);
             } else {
-                alert("데이터를 찾습니다...");
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setOutsourcingDatas([]);
                 setOutCalDatas([]);
             }
@@ -481,7 +507,7 @@ function OrderPlanMgmt() {
                 });
                 setGeneralCalDatas([{ total, negoTotal, price }]);
             } else {
-                alert("데이터를 찾습니다...");
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setGeneralExpensesDatas([]);
                 setGeneralCalDatas([]);
             }
@@ -564,21 +590,21 @@ function OrderPlanMgmt() {
         fetchAllData(condition);
     };
 
-    const conditionInfo = (value) => {
-        if (!value.poiId || !value.versionId) {
-            return;
-        }
-        setCondition((prev) => {
-            if (prev.poiId !== value.poiId) {
-                const newCondition = { ...value };
-                fetchAllData(newCondition);
-                return newCondition;
-            } else {
-                fetchAllData({ ...prev });
-                return prev;
-            }
-        });
-    };
+    // const conditionInfo = (value) => {
+    //     if (!value.poiId || !value.versionId) {
+    //         return;
+    //     }
+    //     setCondition((prev) => {
+    //         if (prev.poiId !== value.poiId) {
+    //             const newCondition = { ...value };
+    //             fetchAllData(newCondition);
+    //             return newCondition;
+    //         } else {
+    //             fetchAllData({ ...prev });
+    //             return prev;
+    //         }
+    //     });
+    // };
 
     return (
         <>
@@ -643,7 +669,8 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
+                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
+                            <ApprovalFormSal initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable columns={columns.orderPlanMgmt.laborCal} customDatas={prmnCalDatas} hideCheckBox={true} isPageNation={true} />
                             </HideCard>
@@ -668,7 +695,8 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="third">
                         <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
+                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
+                            <ApprovalFormSal initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.purchaseCal}
@@ -699,7 +727,8 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="fourth">
                         <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
+                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
+                            <ApprovalFormSal initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.outCal}
@@ -730,7 +759,8 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="fifth">
                         <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
+                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
+                            <ApprovalFormSal initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.expensesCal}
@@ -759,7 +789,8 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="sixth">
                         <ul>
-                            <ApprovalFormSal returnData={conditionInfo} initial={condition} />
+                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
+                            <ApprovalFormSal initial={condition} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.generalCal}

@@ -8,6 +8,7 @@ import CompanyModal from "components/modal/CompanyModal";
 import ProductInfoModal from "components/modal/ProductInfoModal";
 import ProductGroupModal from "components/modal/ProductGroupModal";
 import EmployerInfoModal from "components/modal/EmployerInfoModal";
+import Number from "components/input/Number";
 
 const ReactDataTableDevCost = (props) => {
     const {
@@ -120,6 +121,7 @@ const ReactDataTableDevCost = (props) => {
                 options: column.options,
                 notView: column.notView,
                 require: column.require,
+                textAlign: column.textAlign,
             })),
         [columns]
     );
@@ -186,11 +188,11 @@ const ReactDataTableDevCost = (props) => {
         setCompanyInfo({});
     };
 
-    const handleChange = (e, rowIndex, accessor) => {
-        const { value } = e.target;
+    const handleChange = (e, row) => {
+        const { value, name } = e.target;
         // tableData를 복제하여 수정
         const updatedTableData = [...tableData];
-        updatedTableData[rowIndex][accessor] = value;
+        updatedTableData[row.index][name] = value;
         // 수정된 데이터로 tableData 업데이트
         setTableData(updatedTableData);
     };
@@ -415,6 +417,17 @@ const ReactDataTableDevCost = (props) => {
 
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
+    const textAlignStyle = (column) => {
+        switch (column.textAlign) {
+            case 'left':
+                return 'txt-left';
+            case 'right':
+                return 'txt-right';
+            default:
+                return 'txt-center';
+        }
+    }
+
     return (
         <div className={isPageNation ? "x-scroll" : "table-scroll"}>
             <table {...getTableProps()} className="table-styled" ref={tableRef} style={{ tableLayout: "auto", marginBottom: 20 }}>
@@ -454,7 +467,11 @@ const ReactDataTableDevCost = (props) => {
                                         }
 
                                         return (
-                                            <td {...cell.getCellProps()} className={cellIndex === 0 ? "first-column" : "other-column"} id="otherCol">
+                                            <td
+                                                {...cell.getCellProps()}
+                                                className={textAlignStyle(cell.column)}
+                                                // className={cellIndex === 0 ? "first-column" : "other-column"} id="otherCol"
+                                            >
                                                 {cell.column.id === "selection" ? (
                                                     cell.render("Cell")
                                                 ) : isEditing ? (
@@ -478,9 +495,18 @@ const ReactDataTableDevCost = (props) => {
                                                             type="text"
                                                             placeholder={`거래처명을 선택해 주세요.`}
                                                             value={tableData[row.index][cell.column.id] || ""}
-                                                            onChange={(e) => handleChange(e, row.index, cell.column.id)}
+                                                            onChange={(e) => handleChange(e, row)}
                                                             readOnly
                                                         />
+                                                    ) : cell.column.type === "number" ? (
+                                                        <Number
+                                                            value={tableData[row.index]?.[cell.column.id] || ""}
+                                                            onChange={(value) => handleChange({target: {value: value, name: cell.column.id}}, row)}
+                                                            style={{ textAlign: cell.column.textAlign || 'left' }}
+                                                        />
+
+                                                    ) : typeof cell.value === "number" ? (
+                                                        cell.value && cell.value.toLocaleString()
                                                     ) : (
                                                         cell.render("Cell")
                                                     )
