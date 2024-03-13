@@ -683,7 +683,7 @@ const ReactDataTable = (props) => {
                 <div>
                     {isPageNationCombo && (
                         <div className="flex-between mg-b-10">
-                            <div className="page-size">
+                            <div className="page-size" style={{width: 80}}>
                                 {/* <span className="table-title mg-r-10">데이터 수</span> */}
                                 <select className="select" id={uuidv4()} value={pageSize} onChange={(e) => pageSizeChange(e.target.value)}>
                                     {pageSizeOptions.map((size, index) => (

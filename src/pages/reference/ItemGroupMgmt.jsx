@@ -144,6 +144,9 @@ function ItemGroupMgmt() {
                         returnSelectRows={(data) => {
                             setSelectedRows(data);
                         }}
+                        isPageNation={true}
+                        isPageNationCombo={true}
+                        defaultPageSize={20}
                     />
                     {isOpenAdd && (
                         <AddModModal

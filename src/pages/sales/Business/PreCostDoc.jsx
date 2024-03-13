@@ -75,13 +75,16 @@ const PreCostDoc = () => {
         // URL에서 "data" 파라미터 읽기
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
-        const { label, poiId, poiNm, versionId, versionNum, sessionUserInfo, versionDesc } = data;
+        const { label, poiId, poiNm, poiDesc, versionId, versionNum, sessionUserInfo, versionDesc, type } = data;
         console.log("data:", data);
-        if(poiId && versionId) {
-            getSignData(poiId, versionId);
+        setProjectInfoToServer({ poiId, poiNm, poiDesc, versionId, versionNum, versionDesc });
+        
+        if(type !== "document") {  //결재용 화면일때
+            if(poiId && versionId) {
+                getSignData(poiId, versionId);
+            }
         }
         setTitle(label);
-        setProjectInfoToServer({ poiId, poiNm, versionId, versionNum, versionDesc });
         setUserInfo({ ...sessionUserInfo });
         if (poiId && versionId) {
             getInitData(poiId, versionId); //서버에서 데이터 호출

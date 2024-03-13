@@ -28,6 +28,7 @@ function ApprovalFormSal({ returnData, initial }) {
             setData((prev) => ({
                 ...prev,
                 versionId: emptyArr.find((info) => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
+                versionNum: emptyArr.find((info) => info.costAt === "Y")?.versionNum || emptyArr[0]?.versionNum,
                 option: emptyArr,
             }));
         }
@@ -38,9 +39,15 @@ function ApprovalFormSal({ returnData, initial }) {
     };
 
     const onSelectChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, innerText } = e.target;
+        const versionNum = innerText.split('\n')[0];
         if (value !== "default") {
-            setData((prev) => ({ ...prev, [name]: value }));
+            setData((prev) => ({
+                ...prev,
+                [name]: value,
+                ["versionNum"]: versionNum
+                
+            }));
         }
     };
 
@@ -48,7 +55,9 @@ function ApprovalFormSal({ returnData, initial }) {
         setData({
             poiId: value.poiId,
             poiNm: value.poiNm,
+            poiDesc: value.poiDesc,
             versionId: value.versionId,
+            versionNum: value.versionNum,
             poiMonth: value.poiMonth,
             poiBeginDt: value.poiBeginDt,
             poiManagerId: value.poiManagerId,
@@ -62,8 +71,10 @@ function ApprovalFormSal({ returnData, initial }) {
             alert("버전을 생성하세요.");
             return;
         }
-        setInquiryConditions({ ...data })
         returnData && returnData({ ...data });
+        if(inquiryConditions.poiId !== data.poiId) {
+            setInquiryConditions({...data})
+        }
     };
 
     return (
