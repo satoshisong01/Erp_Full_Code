@@ -72,40 +72,59 @@ const LaborCostDoc = () => {
         },
     ]);
 
+    //만단위 절사
+    function truncateToTenThousand(number) {
+        return Math.floor(number / 10000) * 10000;
+    }
+
     const [buyTable, setBuyTable] = useState([]);
 
     useEffect(() => {
         let calculatedCost = 0;
-        if (tableData[0]) {
-            if (costVisible) {
-                calculatedCost += tableData[0]?.slsmnAdmnsCost;
-            }
-
-            if (profitVisible) {
-                calculatedCost += tableData[0]?.slsmnEnterpriseProfit;
-            }
-
-            if (negoVisible) {
-                calculatedCost -= tableData[0]?.slsmnNego;
-            }
-
-            if (expensesVisible) {
-                calculatedCost += tableData[0]?.ctcExpenses;
-            }
-        }
-        if (tableDatas.length > 0) {
+        let countIndex = 0;
+        if (tableDatas[0]) {
             if (devVisible) {
+                //인건비
                 calculatedCost += devCost ? devCost : 0;
+                countIndex++;
             }
         }
         if (buyTable[0]) {
             if (buyVisible) {
+                //자재비
                 calculatedCost += buyTable[0]?.estAmount;
+                countIndex++;
+            }
+        }
+        if (tableData[0]) {
+            if (costVisible) {
+                //일반관리비
+                calculatedCost += tableData[0]?.slsmnAdmnsCost;
+                countIndex++;
+            }
+
+            if (profitVisible) {
+                //기업이윤
+                calculatedCost += tableData[0]?.slsmnEnterpriseProfit;
+                countIndex++;
+            }
+
+            if (negoVisible) {
+                //네고
+                calculatedCost -= tableData[0]?.slsmnNego;
+                countIndex++;
+            }
+
+            if (expensesVisible) {
+                //제경비
+                calculatedCost += tableData[0]?.ctcExpenses;
+                countIndex++;
             }
         }
 
-        setEtcCost(calculatedCost);
-    }, [negoVisible, profitVisible, costVisible, tableData, tableDatas, buyTable, expensesVisible]);
+        setEtcCost(truncateToTenThousand(calculatedCost));
+        setIndexNum(countIndex);
+    }, [negoVisible, profitVisible, costVisible, tableData, tableDatas, buyTable, devVisible, buyVisible, expensesVisible]);
 
     useEffect(() => {
         console.log("이거왜 계속 불러올까 🌠🌠🌠🌠");
@@ -113,18 +132,15 @@ const LaborCostDoc = () => {
         const data = JSON.parse(dataParameter);
         setProjectTitle(data.tableData[0].poiNm);
         setTableDatas(restructureData(data.tableData));
+        console.log(data.tableData, "초기데이터");
         setDevCost(calculateTotal(restructureData(data.tableData)));
         const { label, poiId, versionId } = data;
         setTitle(label);
-        console.log(poiId, versionId, "이거안받?");
         if (poiId && versionId) {
             fetchAllData(poiId, versionId);
-            console.log("이거왜 계속 불러올까 💥💥💥💥💥");
         }
         // 총 row 수
     }, []);
-
-    console.log(devCost);
 
     function calculateTotal(dataArray) {
         // 전체 합계를 저장할 변수를 초기화합니다.
@@ -144,13 +160,12 @@ const LaborCostDoc = () => {
     }
 
     const fetchAllData = async (poiId, versionId) => {
-        let resultDataCount = 0;
-        let resultData2Count = 0;
         const resultData = await axiosFetch("/api/cost/contract/totalListAll.do", {
             poiId: poiId,
             versionId: versionId,
             ctcType: "T",
         });
+        console.log(resultData);
         if (resultData.length === 0) {
             addData(poiId, versionId);
         } else {
@@ -170,7 +185,6 @@ const LaborCostDoc = () => {
             }));
 
             setTableData(updatedData);
-            resultDataCount++;
         }
         const resultData2 = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", {
             poiId: poiId,
@@ -179,9 +193,7 @@ const LaborCostDoc = () => {
         if (resultData2.length > 0) {
             setBuyTable(resultData2);
             console.log(resultData2, "구매견적불러오기");
-            resultData2Count++;
         }
-        setIndexNum(resultDataCount + resultData2Count);
     };
 
     const addData = async (poiId, versionId) => {
@@ -267,6 +279,14 @@ const LaborCostDoc = () => {
         }
     };
 
+    const handleKeyPress = (e) => {
+        // 엔터키가 눌렸을 때만 실행
+        if (e.key === "Enter") {
+            // updatedData 함수 호출
+            updatedData(tableData[0].ctcId, tableData[0].poiId, tableData[0].versionId, tableData);
+        }
+    };
+
     const printFn = () => {
         updatedData(tableData[0].ctcId, tableData[0].poiId, tableData[0].versionId, tableData);
         alert("출력합니다");
@@ -347,33 +367,71 @@ const LaborCostDoc = () => {
     function restructureData(data) {
         const result = [];
 
-        // 데이터를 순회하면서 pdiNm을 기준으로 객체들을 그룹화
+        // 데이터를 순회하면서 estPosition을 기준으로 객체들을 그룹화
         const groupedData = {};
         data.forEach((item) => {
-            if (!groupedData[item.pgNm]) {
-                groupedData[item.pgNm] = [];
+            if (!groupedData[item.estPosition]) {
+                groupedData[item.estPosition] = [];
             }
-            groupedData[item.pgNm].push(item);
+            groupedData[item.estPosition].push(item);
         });
 
         // 그룹화된 데이터를 원하는 형태로 재구성
-        for (const pgNm in groupedData) {
-            const estItem = groupedData[pgNm].map((item) => ({
-                estMmTotal: item.total,
-                estPosition: item.estPosition,
-                price: item.estUnitPrice,
-                total: item.total,
-                estDesc: item.estDesc,
-                pdiUnit: item.pdiUnit,
-            }));
+        for (const estPosition in groupedData) {
+            const estItems = groupedData[estPosition];
+            const mergedEstItem = mergeAndSumEstItem(estItems);
 
             result.push({
-                pgNm: pgNm,
-                estItem: estItem,
+                estItem: mergedEstItem,
             });
         }
 
         return result;
+    }
+
+    function mergeAndSumEstItem(items) {
+        const mergedItems = {};
+        items.forEach((item) => {
+            if (!mergedItems[item.estPosition]) {
+                mergedItems[item.estPosition] = {
+                    estMmTotal: 0,
+                    estPosition: item.estPosition,
+                    price: item.estUnitPrice,
+                    total: 0,
+                    estDesc: item.estDesc,
+                    pdiUnit: item.pdiUnit,
+                };
+            }
+            mergedItems[item.estPosition].estMmTotal += item.total; // 수정된 부분
+            mergedItems[item.estPosition].total += item.total;
+        });
+
+        return Object.values(mergedItems);
+    }
+
+    //직급합치기
+    function mergeDuplicatePositions(data) {
+        // 각 pgNm 별로 중복된 estPosition 항목을 병합
+        data.forEach((pg) => {
+            const itemMap = {}; // estPosition을 키로 하는 맵
+
+            // estItem 배열을 순회하며 중복된 estPosition 항목을 병합
+            pg.estItem.forEach((item) => {
+                if (itemMap[item.estPosition]) {
+                    // 이미 존재하는 estPosition인 경우, estMmTotal을 더함
+                    itemMap[item.estPosition].estMmTotal += item.estMmTotal;
+                } else {
+                    // 새로운 estPosition인 경우, itemMap에 추가
+                    itemMap[item.estPosition] = item;
+                }
+            });
+
+            // 중복된 estPosition을 병합한 결과를 estItem에 할당
+            pg.estItem = Object.values(itemMap);
+        });
+
+        // 수정된 데이터 반환
+        return data;
     }
 
     // URL에서 쿼리 문자열 파라미터를 읽는 함수
@@ -442,10 +500,12 @@ const LaborCostDoc = () => {
                                     <span className="boxTitle lastTitle">호:</span>
                                 </div>
                                 <input
+                                    style={{ border: "none" }}
                                     className="titleInput"
                                     type="text"
                                     value={tableData.length ? tableData[0].ctcNum : ""}
                                     onChange={(e) => handleChange(e, "ctcNum", 0)}
+                                    onKeyDown={handleKeyPress} // 엔터 키 감지를 위해 이벤트 리스너 추가
                                 />
                             </div>
                             <div className="leftBox">
@@ -460,6 +520,7 @@ const LaborCostDoc = () => {
                                     type="text"
                                     value={tableData.length ? tableData[0].ctcDateCreated : ""}
                                     onChange={(e) => handleChange(e, "ctcDateCreated", 0)}
+                                    onKeyDown={handleKeyPress} // 엔터 키 감지를 위해 이벤트 리스너 추가
                                 />
                             </div>
                             <div className="leftBox">
@@ -472,6 +533,7 @@ const LaborCostDoc = () => {
                                     type="text"
                                     value={tableData.length ? tableData[0].ctcReception : ""}
                                     onChange={(e) => handleChange(e, "ctcReception", 0)}
+                                    onKeyDown={handleKeyPress} // 엔터 키 감지를 위해 이벤트 리스너 추가
                                 />
                             </div>
                             <div className="leftBox">
@@ -484,6 +546,7 @@ const LaborCostDoc = () => {
                                     type="text"
                                     value={tableData.length ? tableData[0].ctcReference : ""}
                                     onChange={(e) => handleChange(e, "ctcReference", 0)}
+                                    onKeyDown={handleKeyPress} // 엔터 키 감지를 위해 이벤트 리스너 추가
                                 />
                             </div>
                             <div className="leftBox">
@@ -496,6 +559,7 @@ const LaborCostDoc = () => {
                                     type="text"
                                     value={tableData.length ? tableData[0].ctcSent : ""}
                                     onChange={(e) => handleChange(e, "ctcSent", 0)}
+                                    onKeyDown={handleKeyPress} // 엔터 키 감지를 위해 이벤트 리스너 추가
                                 />
                             </div>
                             <div className="leftBox">
@@ -509,6 +573,7 @@ const LaborCostDoc = () => {
                                     type="text"
                                     value={tableData.length ? tableData[0].ctcContact : ""}
                                     onChange={(e) => handleChange(e, "ctcContact", 0)}
+                                    onKeyDown={handleKeyPress} // 엔터 키 감지를 위해 이벤트 리스너 추가
                                 />
                             </div>
                             <p style={{ fontSize: "16px", fontWeight: "700" }}>아래와 같이 견적합니다</p>
@@ -563,6 +628,7 @@ const LaborCostDoc = () => {
                                     type="text"
                                     value={tableData.length ? tableData[0].ctcPaymentCondition : ""}
                                     onChange={(e) => handleChange(e, "ctcPaymentCondition", 0)}
+                                    onKeyDown={handleKeyPress} // 엔터 키 감지를 위해 이벤트 리스너 추가
                                 />
                             </div>
                             <div className="rightBox">
@@ -575,6 +641,7 @@ const LaborCostDoc = () => {
                                     type="text"
                                     value={tableData.length ? tableData[0].ctcDelivery : ""}
                                     onChange={(e) => handleChange(e, "ctcDelivery", 0)}
+                                    onKeyDown={handleKeyPress} // 엔터 키 감지를 위해 이벤트 리스너 추가
                                 />
                             </div>
                         </div>
@@ -654,7 +721,7 @@ const LaborCostDoc = () => {
                                         {/* 추가되는 제경비 항목 */}
                                         {buyVisible && (
                                             <tr className="tableTr">
-                                                <td className="tableRedPercentW">{indexNum}</td>
+                                                <td className="tableRedPercentW">{devVisible ? 2 : 1}</td>
                                                 <td className="tableWhiteItem" style={{ textAlign: "left" }}>
                                                     　자재비
                                                 </td>
@@ -671,7 +738,7 @@ const LaborCostDoc = () => {
                                         {expensesVisible && (
                                             <tr className="tableTr">
                                                 <td className="tableRedPercentW" style={{ borderTop: "none", borderBottom: "none" }}>
-                                                    {indexNum + 1}
+                                                    {devVisible && buyVisible ? 3 : devVisible || buyVisible ? 2 : 1}
                                                 </td>
                                                 <td className="tableWhiteItem" style={{ textAlign: "left", borderTop: "none", borderBottom: "none" }}>
                                                     　제경비
@@ -703,7 +770,21 @@ const LaborCostDoc = () => {
                                         )}
                                         {profitVisible && (
                                             <tr className="tableTr">
-                                                <td className="tableRedPercentW">{indexNum + 2}</td>
+                                                <td className="tableRedPercentW">
+                                                    {(() => {
+                                                        const trueCount = [devVisible, buyVisible, expensesVisible].filter(Boolean).length;
+                                                        switch (trueCount) {
+                                                            case 3:
+                                                                return 4;
+                                                            case 2:
+                                                                return 3;
+                                                            case 1:
+                                                                return 2;
+                                                            default:
+                                                                return 1;
+                                                        }
+                                                    })()}
+                                                </td>
                                                 <td className="tableWhiteItem" style={{ textAlign: "left" }}>
                                                     　기업이윤
                                                 </td>
@@ -723,7 +804,23 @@ const LaborCostDoc = () => {
                                         )}
                                         {costVisible && (
                                             <tr className="tableTr">
-                                                <td className="tableRedPercentW">{indexNum + 3}</td>
+                                                <td className="tableRedPercentW">
+                                                    {(() => {
+                                                        const trueCount = [devVisible, buyVisible, expensesVisible, profitVisible].filter(Boolean).length;
+                                                        switch (trueCount) {
+                                                            case 4:
+                                                                return 5;
+                                                            case 3:
+                                                                return 4;
+                                                            case 2:
+                                                                return 3;
+                                                            case 1:
+                                                                return 2;
+                                                            default:
+                                                                return 1;
+                                                        }
+                                                    })()}
+                                                </td>
                                                 <td className="tableWhiteItem" style={{ textAlign: "left" }}>
                                                     　일반관리비
                                                 </td>
@@ -739,7 +836,27 @@ const LaborCostDoc = () => {
                                         )}
                                         {negoVisible && (
                                             <tr className="tableTr negoTable">
-                                                <td className="tableRedPercentW">{indexNum + 4}</td>
+                                                <td className="tableRedPercentW">
+                                                    {(() => {
+                                                        const trueCount = [devVisible, buyVisible, expensesVisible, profitVisible, costVisible].filter(
+                                                            Boolean
+                                                        ).length;
+                                                        switch (trueCount) {
+                                                            case 5:
+                                                                return 6;
+                                                            case 4:
+                                                                return 5;
+                                                            case 3:
+                                                                return 4;
+                                                            case 2:
+                                                                return 3;
+                                                            case 1:
+                                                                return 2;
+                                                            default:
+                                                                return 1;
+                                                        }
+                                                    })()}
+                                                </td>
                                                 <td className="tableWhiteItem" style={{ textAlign: "left" }}>
                                                     　네고
                                                 </td>
@@ -866,6 +983,7 @@ const LaborCostDoc = () => {
                                 type="text"
                                 value={tableData.length ? tableData[0].ctcDesc : ""}
                                 onChange={(e) => handleChange(e, "ctcDesc", 0)}
+                                onKeyDown={handleKeyPress} // 엔터 키 감지를 위해 이벤트 리스너 추가
                             />
                         </div>
                     </div>

@@ -258,11 +258,11 @@ const DetailDoc = () => {
                                                 <td style={{ textAlign: "left" }}>{item.pdiNum}</td>
                                                 <td>{item.byDesc}</td>
                                                 <td style={{ textAlign: "center" }}>{item.byQunty}</td>
-                                                <td style={{ textAlign: "center" }}>{item.unit}</td>
-                                                <td style={{ textAlign: "right" }}>{item.consumerPrice}</td>
-                                                <td style={{ textAlign: "right" }}>{item.consumerAmount}</td>
-                                                <td style={{ textAlign: "right" }}>{item.unitPrice}</td>
-                                                <td style={{ textAlign: "right" }}>{item.amount}</td>
+                                                <td style={{ textAlign: "center" }}>{item.unit ? item.unit.toLocaleString() : ""}</td>
+                                                <td style={{ textAlign: "right" }}>{item.consumerPrice ? item.consumerPrice.toLocaleString() : ""}</td>
+                                                <td style={{ textAlign: "right" }}>{item.consumerAmount ? item.consumerAmount.toLocaleString() : ""}</td>
+                                                <td style={{ textAlign: "right" }}>{item.unitPrice ? item.unitPrice.toLocaleString() : ""}</td>
+                                                <td style={{ textAlign: "right" }}>{item.amount ? item.amount.toLocaleString() : ""}</td>
                                                 <td>{item.pdiMenufut_name}</td>
                                                 <td style={{ textAlign: "right" }}></td>
                                             </tr>
@@ -272,19 +272,19 @@ const DetailDoc = () => {
                                 {tableData2.length > 0 && (
                                     <React.Fragment>
                                         <tr>
-                                            <td colSpan={5} style={{ textAlign: "center", width: "10px" }}>
+                                            <th colSpan={5} style={{ textAlign: "center", width: "10px", fontWeight: "900" }}>
                                                 총계
-                                            </td>
-                                            <td colSpan={1} style={{ textAlign: "center", width: "90px" }}></td>
-                                            <td colSpan={1} style={{ textAlign: "right", width: "70px" }}>
-                                                {totalConsumerAmount}
-                                            </td>
-                                            <td colSpan={1} style={{ textAlign: "center", width: "70px" }}></td>
-                                            <td colSpan={1} style={{ textAlign: "right", width: "70px" }}>
-                                                {totalAmount}
-                                            </td>
-                                            <td colSpan={1} style={{ textAlign: "center", width: "70px" }}></td>
-                                            <td colSpan={1} style={{ textAlign: "center", width: "70px" }}></td>
+                                            </th>
+                                            <th colSpan={1} style={{ textAlign: "center", width: "90px" }}></th>
+                                            <th colSpan={1} style={{ textAlign: "right", width: "70px", fontWeight: "900" }}>
+                                                {totalConsumerAmount ? totalConsumerAmount.toLocaleString() : ""}
+                                            </th>
+                                            <th colSpan={1} style={{ textAlign: "center", width: "70px" }}></th>
+                                            <th colSpan={1} style={{ textAlign: "right", width: "70px", fontWeight: "900" }}>
+                                                {totalAmount ? totalAmount.toLocaleString() : ""}
+                                            </th>
+                                            <th colSpan={1} style={{ textAlign: "center", width: "70px" }}></th>
+                                            <th colSpan={1} style={{ textAlign: "center", width: "70px" }}></th>
                                         </tr>
                                     </React.Fragment>
                                 )}

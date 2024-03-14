@@ -48,12 +48,12 @@ const OrderSummaryDoc = () => {
         { header: "Item", col: "pgNm" },
         { header: "Modal", col: "pdiNum" },
         { header: "Description", col: "pdiStnd" },
-        { header: "Q'ty", col: "estBuyQunty" },
-        { header: "Amount", col: "amount" },
-        { header: "Amount2", col: "amount" },
-        { header: "Amount3", col: "amount" },
-        { header: "Amount4", col: "amount" },
-        { header: "Amount5", col: "amount" },
+        { header: "Q'ty", col: "estBuyQunty", className: "text-center" },
+        { header: "ConsumerPrice", col: "estConsumerUnitPrice", className: "text-right" },
+        { header: "ConsumerAmount", col: "estConsumerAmount", className: "text-right" },
+        { header: "UnitPrice", col: "estUnitPrice", className: "text-right" },
+        { header: "Amount", col: "estAmount", className: "text-right" },
+        { header: "Dc", col: "estDc", className: "text-right" },
         { header: "Remarks", col: "estBuyDesc" },
     ];
 
@@ -142,13 +142,13 @@ const OrderSummaryDoc = () => {
                                     Q'ty
                                 </th>
                                 <th colSpan={1} style={{ textAlign: "center", width: "60px" }}>
-                                    Consumer Price
+                                    ConsumerPrice
                                 </th>
                                 <th colSpan={1} style={{ textAlign: "center", width: "90px" }}>
-                                    Consumer Amount
+                                    ConsumerAmount
                                 </th>
                                 <th colSpan={1} style={{ textAlign: "center", width: "70px" }}>
-                                    Unit Price
+                                    UnitPrice
                                 </th>
                                 <th colSpan={1} style={{ textAlign: "center", width: "70px" }}>
                                     Amount
@@ -160,14 +160,14 @@ const OrderSummaryDoc = () => {
                                     Remarks (Maker)
                                 </th>
                             </tr>
-                            <tr>
+                            {/*<tr>
                                 {Columns.map((column, index) => {
                                     if (
                                         column.col === "pgNm" ||
-                                        column.col === "pdiNum" ||
-                                        column.col === "pdiStnd" ||
-                                        column.col === "estBuyQunty" ||
-                                        column.col === "amount" ||
+                                        //column.col === "pdiNum" ||
+                                        //column.col === "pdiStnd" ||
+                                        //column.col === "estBuyQunty" ||
+                                        //column.col === "amount" ||
                                         column.col === "estBuyDesc"
                                     ) {
                                         return null;
@@ -178,7 +178,7 @@ const OrderSummaryDoc = () => {
                                         </th>
                                     );
                                 })}
-                            </tr>
+                            </tr>*/}
                         </thead>
                         <tbody>
                             {tableData.map((rowData, rowIndex) => (
@@ -186,14 +186,34 @@ const OrderSummaryDoc = () => {
                                     {Columns.map((column, colIndex) => {
                                         const cellValue = rowData[column.col];
                                         const formattedValue = typeof cellValue === "number" ? cellValue.toLocaleString() : cellValue;
+                                        // column.className이 있으면 사용하고, 없으면 빈 문자열을 사용
+                                        const cellClass = column.className || "";
                                         return (
-                                            <td key={colIndex} className={column.className}>
+                                            <td key={colIndex} className={cellClass}>
                                                 {formattedValue}
                                             </td>
                                         );
                                     })}
                                 </tr>
                             ))}
+
+                            <tr style={{ backgroundColor: "rgb(239,239,239)" }}>
+                                <td colSpan={2} style={{ textAlign: "center", fontWeight: "800" }}>
+                                    H/W 총계
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td style={{ textAlign: "right", fontWeight: "800" }}>
+                                    {tableData[0]?.estConsumerAmount ? tableData[0]?.estConsumerAmount.toLocaleString() : ""}
+                                </td>
+                                <td></td>
+                                <td style={{ textAlign: "right", fontWeight: "800" }}>
+                                    {tableData[0]?.estAmount ? tableData[0]?.estAmount.toLocaleString() : ""}
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

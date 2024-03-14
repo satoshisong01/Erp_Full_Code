@@ -2,6 +2,19 @@ import axios from "axios";
 
 import CODE from "constants/code";
 
+function handleAxiosError(error) {
+    if (!error.response) {
+        alert("서버와의 연결에 실패했습니다.");
+        console.log(error);
+    } else if (error.response.status >= 400 && error.response.status < 500) {
+        alert("서버통신 에러: 클라이언트 오류가 발생했습니다.");
+    } else if (error.response.status >= 500) {
+        alert("서버통신 에러: 서버 내부 오류가 발생했습니다.");
+    } else {
+        alert("알 수 없는 오류가 발생했습니다.");
+    }
+}
+
 /* axios 데이터 통신 */
 export async function axiosFetch(url, requestData) {
     const headers = {
@@ -18,6 +31,7 @@ export async function axiosFetch(url, requestData) {
             return false;
         }
     } catch (error) {
+        //handleAxiosError(error);
         throw error;
     }
 }
@@ -45,6 +59,7 @@ export async function axiosFileUpload(url, files) {
             return false;
         }
     } catch (error) {
+        //handleAxiosError(error);
         throw error;
     }
 }
@@ -82,6 +97,7 @@ export async function axiosFileAddUpload(url, files, fileIdData) {
             return false;
         }
     } catch (error) {
+        //handleAxiosError(error);
         throw error;
     }
 }
@@ -102,6 +118,7 @@ export async function axiosUpdate(url, requestData) {
             return false;
         }
     } catch (error) {
+        //handleAxiosError(error);
         throw error;
     }
 }
@@ -125,6 +142,7 @@ export async function axiosDelete(url, requestData) {
             return false;
         }
     } catch (error) {
+        //handleAxiosError(error);
         throw error;
     }
 }
@@ -146,6 +164,7 @@ export async function axiosPost(url, requestData) {
         }
     } catch (error) {
         console.error("❌server error: ", error);
+        //handleAxiosError(error);
         throw error;
     }
 }
@@ -192,6 +211,7 @@ export async function axiosPostPersonel(url, requestData) {
         }
     } catch (error) {
         console.error("server error: ", error);
+        //handleAxiosError(error);
         throw error;
     }
 }
@@ -211,6 +231,7 @@ export async function axiosScan(url, requestData) {
             return response.data;
         }
     } catch (error) {
+        //handleAxiosError(error);
         console.error("server error: ", error);
         throw error;
     }
@@ -245,6 +266,7 @@ export async function axiosDownLoad(downloadUrl, requestData) {
 
         return true;
     } catch (error) {
+        //handleAxiosError(error);
         console.error("❌axiosDownLoad 에러: ", error);
         throw error;
     }
@@ -266,6 +288,7 @@ export async function axiosGet(url) {
             return false;
         }
     } catch (error) {
+        //handleAxiosError(error);
         throw error;
     }
 }

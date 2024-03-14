@@ -775,14 +775,14 @@ function Quotation() {
                                 <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave} />
                                 <AddButton label="결재요청" onClick={() => setIsSubmit(true)} disabled={!isSave} />
                             </div>
-                            <ApprovalFormCost sendInfo={approvalLine}>
-                                <div style={{ marginTop: "-55px", marginBottom: 55 }}>
+                            {/*<ApprovalFormCost sendInfo={approvalLine}>*/}
+                            {/*<div style={{ marginTop: "-55px", marginBottom: 55 }}>
                                     <h2>견적품의서</h2>
-                                </div>
-                                <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="견적품의서" />
-                                {/* <ToastUiEditor /> */}
-                                {/* <CKEditorComponent /> */}
-                                <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing} />
+                                </div>*/}
+                            {/*<ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="견적품의서" />*/}
+                            {/* <ToastUiEditor /> */}
+                            {/* <CKEditorComponent /> */}
+                            {/*<QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing} />
                                 <ApprovalLineModal
                                     width={670}
                                     height={500}
@@ -791,8 +791,8 @@ function Quotation() {
                                     isOpen={isOpenModalApproval}
                                     onClose={() => setIsOpenModalApproval(false)}
                                     returnData={(value) => returnData(value, "결재선")}
-                                />
-                            </ApprovalFormCost>
+                                />*/}
+                            {/*</ApprovalFormCost>*/}
                         </ul>
                     </div>
                 </div>

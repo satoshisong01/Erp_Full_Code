@@ -7,12 +7,8 @@ export default function Number({ onChange, value, style }) {
      *  <FormattedInput value={value} onChange={inputChange} />
      */
 
-
     const [viewValue, setViewValue] = useState("");
 
-    useEffect(() => {
-        console.log("style:", style);
-    }, [style]);
     useEffect(() => {
         const stringValue = String(value);
         const formattedValue = stringValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
