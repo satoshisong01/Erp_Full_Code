@@ -55,8 +55,8 @@ export default function ProductInfoModal(props) {
         { title: "품명", col: "pdiNm", type: "input" },
         { title: "모델명", col: "pdiNum", type: "input" },
         { title: "픔목그룹명", col: "pgNm", type: "input" },
-        { title: "제조사", col: "pdiMenufut", type: "input" },
-        { title: "판매사", col: "pdiSeller", type: "input" },
+        { title: "제조사", col: "pdiMenufut_name", type: "input" },
+        { title: "판매사", col: "pdiSeller_name", type: "input" },
         { title: "규격", col: "pdiStnd", type: "input" },
     ];
 
