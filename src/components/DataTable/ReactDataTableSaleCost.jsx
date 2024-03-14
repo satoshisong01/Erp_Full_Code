@@ -71,14 +71,30 @@ const ReactDataTableSaleCost = (props) => {
     };
 
     useEffect(() => {
-        if (customDatas && customDatas.length > 0) {
-            setTableData([...customDatas]);
-            setOriginTableData([...customDatas]);
-        } else {
-            setTableData([]);
-            setOriginTableData([]);
-        }
+        const updatedTableData = initializeTableData(customDatas, columns);
+        setTableData(updatedTableData);
+        setOriginTableData(updatedTableData);
     }, [customDatas]);
+
+    /* columns에는 있지만 넣어줄 데이터가 없을 때 초기값 설정 */
+    const initializeTableData = (datas, cols) => {
+        if (datas && datas.length > 0) {
+            const updatedData = datas.map((dataItem) => {
+                const newData = { ...dataItem };
+                cols.forEach((column) => {
+                    if (!newData.hasOwnProperty(column.col)) {
+                        newData[column.col] = ""; // 해당 변수가 없으면 빈 값으로 초기화
+                    }
+                    if (column.type === "select") {
+                        newData[column.col] = column.options[0].value; // 옵션의 첫 번째 값으로 초기화
+                    }
+                });
+                return newData;
+            });
+            return updatedData;
+        }
+        return [];
+    };
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
@@ -280,31 +296,43 @@ const ReactDataTableSaleCost = (props) => {
         console.log(addData, "영업관리비 추가!!");
         const url = `/api/baseInfrm/product/slsmnExpns/addList.do`;
         const resultData = await axiosPost(url, addData);
-        console.log(resultData, "💜addItem");
         if (resultData) {
-            customDatasRefresh && customDatasRefresh();
+            return true;
+        } else {
+            return false;
         }
     };
 
     const updateItem = async (toUpdate) => {
         const url = `/api/baseInfrm/product/slsmnExpns/editList.do`;
-        console.log(toUpdate, "💜updateItem");
         const resultData = await axiosUpdate(url, toUpdate);
-        console.log(resultData, "변경된거 맞음?");
-
         if (resultData) {
-            customDatasRefresh && customDatasRefresh();
+            return true;
+        } else {
+            return false;
         }
     };
 
     const deleteItem = async (removeItem) => {
         const url = `/api/baseInfrm/product/slsmnExpns/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        console.log(resultData, "지워진거맞음?");
-
         if (resultData) {
-            customDatasRefresh && customDatasRefresh();
+            return true;
+        } else {
+            return false;
         }
+    };
+
+    //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
+    const updateDataInOrigin = (originData, updatedData) => {
+        // 복제하여 새로운 배열 생성
+        const updatedArray = [...originData];
+        // updatedData의 길이만큼 반복하여 originData 갱신
+        for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
+            const updatedItem = updatedData[i];
+            updatedArray[i] = { ...updatedItem, slsmnExpnsId: updatedArray[i].slsmnExpnsId };
+        }
+        return updatedArray;
     };
 
     const compareData = (originData, updatedData) => {
@@ -315,20 +343,8 @@ const ReactDataTableSaleCost = (props) => {
         const updatedDataLength = filterData ? filterData.length : 0;
 
         if (originDataLength > updatedDataLength) {
-            //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
-            const updateDataInOrigin = (originData, updatedData) => {
-                // 복제하여 새로운 배열 생성
-                const updatedArray = [...originData];
-                // updatedData의 길이만큼 반복하여 originData 갱신
-                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
-                    const updatedItem = updatedData[i];
-                    updatedArray[i] = { ...updatedItem, slsmnExpnsId: updatedArray[i].slsmnExpnsId };
-                }
-                return updatedArray;
-            };
-
-            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
-            updateItem(firstRowUpdate); //수정
+            const firstRowUpdate = updateDataInOrigin(originData, filterData);
+            const isMod = updateItem(firstRowUpdate); //수정
 
             const delList = [];
             const delListTest = [];
@@ -336,22 +352,41 @@ const ReactDataTableSaleCost = (props) => {
                 delList.push(originData[i].slsmnExpnsId);
                 delListTest.push(originData[i]);
             }
-            deleteItem(delList); //삭제
+            const isDel = deleteItem(delList); //삭제
+
+            if (isMod && isDel) {
+                alert("저장완료");
+                customDatasRefresh && customDatasRefresh();
+                setOriginTableData([]);
+            }
         } else if (originDataLength === updatedDataLength) {
-            updateItem(filterData); //수정
+            const firstRowUpdate = updateDataInOrigin(originData, filterData);
+            const isMod = updateItem(firstRowUpdate); //수정
+            if (isMod) {
+                alert("저장완료");
+                customDatasRefresh && customDatasRefresh();
+                setOriginTableData([]);
+            }
         } else if (originDataLength < updatedDataLength) {
             const updateList = [];
 
             for (let i = 0; i < originDataLength; i++) {
                 updateList.push(filterData[i]);
             }
-            updateItem(updateList); //수정
+            const firstRowUpdate = updateDataInOrigin(originData, updateList);
+            const isMod = updateItem(firstRowUpdate); //수정
 
             const addList = [];
             for (let i = originDataLength; i < updatedDataLength; i++) {
                 addList.push(filterData[i]);
             }
-            addItem(addList); //추가
+            const isAdd = addItem(addList); //추가
+
+            if (isMod && isAdd) {
+                alert("저장완료");
+                customDatasRefresh && customDatasRefresh();
+                setOriginTableData([]);
+            }
         }
     };
 

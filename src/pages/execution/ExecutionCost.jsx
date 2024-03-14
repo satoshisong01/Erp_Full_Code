@@ -22,7 +22,8 @@ function ExecutionCost() {
     const [isOpenMod, setIsOpenMod] = useState(false);
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
     const [tableData, setTableData] = useState([]);
-    const [condition, setCondition] = useState({poiStatusExecute: "ALL"});
+    // const [condition, setCondition] = useState({poiStatusExecute: "ALL"});
+    const [condition, setCondition] = useState({});
 
     const onSearch = (value) => {
         if(value && value.poiStatus) {
@@ -30,7 +31,8 @@ function ExecutionCost() {
             setNameOfButton("refresh");
         } else {
             delete condition.poiStatus;
-            setCondition({...value, poiStatusExecute: "ALL"})
+            // setCondition({...value, poiStatusExecute: "ALL"})
+            setCondition({...value})
             setNameOfButton("refresh");
         }
     }

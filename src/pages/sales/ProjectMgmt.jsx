@@ -31,7 +31,8 @@ function ProjectMgmt() {
 
     useEffect(() => {
         if (currentPageName.id === "ProjectMgmt") {
-            fetchAllData({poiStatusBudget : "ALL"}); //맨처음에 부르기..
+            // fetchAllData({poiStatusBudget : "ALL"}); //맨처음에 부르기..
+            fetchAllData(); //맨처음에 부르기..
         }
     }, [currentPageName]);
 
@@ -91,7 +92,8 @@ function ProjectMgmt() {
     };
 
     const refresh = () => {
-        fetchAllData({poiStatusBudget : "ALL"});
+        // fetchAllData({poiStatusBudget : "ALL"});
+        fetchAllData();
     };
 
     const onSearch = (condition) => {

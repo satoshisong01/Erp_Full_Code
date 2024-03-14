@@ -121,6 +121,15 @@ function OrderPlanMgmt() {
         setCurrentPageName({});
     };
 
+    const updateDataInOrigin = (originData, updatedData) => {
+        const updatedArray = [...originData];
+        for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
+            const updatedItem = updatedData[i];
+            updatedArray[i] = { ...updatedItem, pmpMonth: updatedArray[i].pmpMonth, pmpMonth2: updatedArray[i].pmpMonth2 };
+        }
+        return updatedArray;
+    };
+
     //인건비용임
     const compareData = (originData, updatedData) => {
         if(originData?.length === 0 && updatedData?.length === 0) return;
@@ -129,15 +138,6 @@ function OrderPlanMgmt() {
         const updatedDataLength = filterData ? filterData.length : 0;
 
         if (originDataLength > updatedDataLength) {
-            const updateDataInOrigin = (originData, updatedData) => {
-                const updatedArray = [...originData];
-                for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
-                    const updatedItem = updatedData[i];
-                    updatedArray[i] = { ...updatedItem, pmpMonth: updatedArray[i].pmpMonth, pmpMonth2: updatedArray[i].pmpMonth2 };
-                }
-                return updatedArray;
-            };
-
             const firstRowUpdate = updateDataInOrigin(originData, updatedData);
             upDateChange(firstRowUpdate);
             const isMod = updateList(firstRowUpdate);
@@ -149,18 +149,13 @@ function OrderPlanMgmt() {
             const isDel = deleteList(combinedAValues);
             if (isMod && isDel) {
                 alert("저장완료");
-                refresh(); //리프레쉬
-            } else {
-                alert("저장오류");
             }
         } else if (originDataLength === updatedDataLength) {
-            upDateChange(filterData);
-            const isMod = updateList(filterData);
+            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
+            upDateChange(firstRowUpdate);
+            const isMod = updateList(firstRowUpdate);
             if (isMod) {
                 alert("저장완료");
-                refresh(); //리프레쉬
-            } else {
-                alert("저장오류");
             }
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
@@ -168,7 +163,9 @@ function OrderPlanMgmt() {
             for (let i = 0; i < originDataLength; i++) {
                 addUpdate.push(filterData[i]);
             }
-            const isMod = updateList(addUpdate);
+            const firstRowUpdate = updateDataInOrigin(originData, addUpdate);
+            upDateChange(firstRowUpdate);
+            const isMod = updateList(firstRowUpdate);
 
             for (let i = originDataLength; i < updatedDataLength; i++) {
                 const toAdd = { ...filterData[i] };
@@ -199,17 +196,16 @@ function OrderPlanMgmt() {
             const isAdd = addList(toAdds);
             if (isMod && isAdd) {
                 alert("저장완료");
-                refresh(); //리프레쉬
-            } else {
-                alert("저장오류");
             }
         }
+        refresh(); //리프레쉬
         
     };
 
     const addList = async (addNewData) => {
         addNewData.forEach((data) => {
             data.poiId = condition.poiId || "";
+            data.versionId = condition.versionId || "";
         });
         const url = `/api/baseInfrm/product/prmnPlan/addList.do`;
         const resultData = await axiosPost(url, addNewData);
@@ -222,6 +218,7 @@ function OrderPlanMgmt() {
     const updateList = async (toUpdate) => {
         toUpdate.forEach((data) => {
             data.poiId = condition.poiId || "";
+            data.versionId = condition.versionId || "";
         });
         const updatedData = toUpdate.map((obj) => {
             const { pmpId, ...rest } = obj;
@@ -645,7 +642,7 @@ function OrderPlanMgmt() {
                                     {/* <PopupButton targetUrl={URL.PreCostDoc} data={{ label: "사전원가서", ...selectedRows[0], sessionUserInfo: JSON.parse(sessionUser) }} /> */}
                                     <PopupButton
                                         targetUrl={URL.PreCostDoc}
-                                        data={{ label: "사전원가서", ...selectedRow, sessionUserInfo: JSON.parse(sessionUser) }}
+                                        data={{ label: "사전원가서", type: "document", ...selectedRow, sessionUserInfo: JSON.parse(sessionUser) }}
                                     />
                                     <AddButton label={"추가"} onClick={() => setIsOpenAdd(true)} />
                                     <ModButton label={"수정"} onClick={() => setIsOpenMod(true)} />
