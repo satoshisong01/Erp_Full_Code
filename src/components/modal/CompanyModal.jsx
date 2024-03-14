@@ -37,17 +37,26 @@ export default function CompanyModal(props) {
         const resultData = await axiosFetch("/api/baseInfrm/client/client/totalListAll.do", requestData || {});
         const changeData = resultData.map((item) => {
             const pgNms = Object.keys(item).filter((key) =>  key.startsWith("pgNm") && item[key].trim() !== "").map((key) => item[key])
-            if(colName && colName.id === "cltNm") {
+            if(colName) {
+                if(colName.id === "cltNm") {
+                    return {
+                        cltId: item.cltId,
+                        cltNm: item.cltNm,
+                        pgNms: pgNms.join(","), // 배열을 문자열로 변환
+                        cltBusstype: item.cltBusstype,
+                    };
+                } else {
+                    return {
+                        [colName?.id]: item.cltId,
+                        [colName?.name]: item.cltNm,
+                        pgNms: pgNms.join(","), // 배열을 문자열로 변환
+                        cltBusstype: item.cltBusstype,
+                    };
+                }
+            } else  {
                 return {
                     cltId: item.cltId,
                     cltNm: item.cltNm,
-                    pgNms: pgNms.join(","), // 배열을 문자열로 변환
-                    cltBusstype: item.cltBusstype,
-                };
-            } else if(colName && colName.id !== "cltNm") {
-                return {
-                    [colName?.id]: item.cltId,
-                    [colName?.name]: item.cltNm,
                     pgNms: pgNms.join(","), // 배열을 문자열로 변환
                     cltBusstype: item.cltBusstype,
                 };
@@ -57,19 +66,28 @@ export default function CompanyModal(props) {
     };
 
     useEffect(() => {
-        if(colName && colName.id === "cltNm") {
+        if(colName) {
+            if(colName.id === "cltNm") {
+                setColumns([
+                    { header: "거래처아이디", col: "cltId", cellWidth: "0", notView: true },
+                    { header: "거래처명", col: "cltNm", cellWidth: "230" },
+                    { header: "품목그룹명", col: "pgNms", cellWidth: "200" },
+                    { header: "업체유형", col: "cltBusstype", cellWidth: "180" },
+                ])
+            } else {
+                setColumns([
+                    { header: "거래처아이디", col: "cltId", cellWidth: "0", notView: true },
+                    { header: "거래처아이디", col: colName?.id, cellWidth: "0", notView: true },
+                    { header: "거래처명", col: colName?.name, cellWidth: "150" },
+                    { header: "품목그룹명", col: "pgNms", cellWidth: "170" },
+                    { header: "업체유형", col: "cltBusstype", cellWidth: "180" },
+                ])
+            }
+        } else {
             setColumns([
                 { header: "거래처아이디", col: "cltId", cellWidth: "0", notView: true },
                 { header: "거래처명", col: "cltNm", cellWidth: "230" },
                 { header: "품목그룹명", col: "pgNms", cellWidth: "200" },
-                { header: "업체유형", col: "cltBusstype", cellWidth: "180" },
-            ])
-        } else if(colName && colName.id !== "cltNm") {
-            setColumns([
-                { header: "거래처아이디", col: "cltId", cellWidth: "0", notView: true },
-                { header: "거래처아이디", col: colName.id, cellWidth: "0", notView: true },
-                { header: "거래처명", col: colName.name, cellWidth: "150" },
-                { header: "품목그룹명", col: "pgNms", cellWidth: "170" },
                 { header: "업체유형", col: "cltBusstype", cellWidth: "180" },
             ])
         }
@@ -105,15 +123,22 @@ export default function CompanyModal(props) {
 
     const onClick = (e) => {
         e.preventDefault();
-        if(colName && colName.id === "cltNm") {
+        if(colName) {
+            if(colName.id === "cltNm") {
+                setCompanyInfo({
+                    cltId: selectInfo.cltId,
+                    cltNm: selectInfo.cltNm,
+                });
+            } else {
+                setCompanyInfo({
+                    [colName?.id]: selectInfo[colName?.id],
+                    [colName?.name]: selectInfo[colName?.name]
+                });
+            }
+        } else {
             setCompanyInfo({
                 cltId: selectInfo.cltId,
                 cltNm: selectInfo.cltNm,
-            });
-        } else if(colName && colName.id !== "cltNm") {
-            setCompanyInfo({
-                [colName.id]: selectInfo[colName.id],
-                [colName.name]: selectInfo[colName.name]
             });
         }
         onClose();
