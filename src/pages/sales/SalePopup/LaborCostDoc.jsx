@@ -665,13 +665,33 @@ const LaborCostDoc = () => {
                                     <td className="table4-3">Unit Price</td>
                                     <td className="table4-3">Amount</td>
                                 </tr>
+                                {tableDatas.length > 0 && (
+                                    <React.Fragment>
+                                        {buyVisible && (
+                                            <tr className="tableTr">
+                                                <td className="tableRedPercentW">{1}</td>
+                                                <td className="tableWhiteItem" style={{ textAlign: "left" }}>
+                                                    　자재비
+                                                </td>
+                                                <td className="tableRedPercentW">1</td>
+                                                <td className="tableRedPercentW">lot</td>
+                                                <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                    　
+                                                </td>
+                                                <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                    {`${buyTable[0]?.estAmount ? buyTable[0].estAmount.toLocaleString() : ""}　`}
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </React.Fragment>
+                                )}
                                 {devVisible &&
                                     tableDatas.map((data, index) => (
                                         <React.Fragment key={index}>
                                             {index === 0 && (
                                                 <tr className="tableTr">
                                                     <td className="tableRedPercentW" style={{ borderBottom: "none" }}>
-                                                        {1}
+                                                        {buyVisible ? 2 : 1}
                                                     </td>
                                                     <td className="tableWhiteItem" style={{ textAlign: "left", borderBottom: "none" }}>
                                                         {"　개발인건비"}
@@ -725,22 +745,7 @@ const LaborCostDoc = () => {
                                 {tableDatas.length > 0 && (
                                     <React.Fragment>
                                         {/* 추가되는 제경비 항목 */}
-                                        {buyVisible && (
-                                            <tr className="tableTr">
-                                                <td className="tableRedPercentW">{devVisible ? 2 : 1}</td>
-                                                <td className="tableWhiteItem" style={{ textAlign: "left" }}>
-                                                    　자재비
-                                                </td>
-                                                <td className="tableRedPercentW">1</td>
-                                                <td className="tableRedPercentW">lot</td>
-                                                <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                    　
-                                                </td>
-                                                <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                    {`${buyTable[0]?.estAmount ? buyTable[0].estAmount.toLocaleString() : ""}　`}
-                                                </td>
-                                            </tr>
-                                        )}
+
                                         {expensesVisible && (
                                             <tr className="tableTr">
                                                 <td className="tableRedPercentW" style={{ borderTop: "none", borderBottom: "none" }}>

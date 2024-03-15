@@ -208,10 +208,10 @@ const DetailDoc = () => {
                                     <th colSpan={1} style={{ textAlign: "center", width: "200px" }}>
                                         Description
                                     </th>
-                                    <th colSpan={1} style={{ textAlign: "center", width: "10px" }}>
+                                    <th colSpan={1} style={{ textAlign: "center", width: "20px" }}>
                                         Q'ty
                                     </th>
-                                    <th colSpan={1} style={{ textAlign: "center", width: "10px" }}>
+                                    <th colSpan={1} style={{ textAlign: "center", width: "20px" }}>
                                         Unit
                                     </th>
                                     <th colSpan={1} style={{ textAlign: "center", width: "90px" }}>
