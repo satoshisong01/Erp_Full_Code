@@ -12,6 +12,7 @@ const LaborSummaryDoc = () => {
     const [tableData, setTableData] = useState([]);
     const [title, setTitle] = useState("");
     const [count, setCount] = useState(0);
+    const [tableTotal, setTableTotal] = useState([]);
 
     const pdfContentRef = useRef(null);
 
@@ -145,8 +146,19 @@ const LaborSummaryDoc = () => {
         setTableData(updatedTableData);
     }, []);
 
+    const total = {};
     useEffect(() => {
         findMaxCount(tableData);
+        tableData.forEach((item) => {
+            for (const key in item) {
+                if (typeof item[key] === "number") {
+                    // 이미 누적된 값이 있다면 더하고, 없다면 초기값으로 설정
+                    total[key] = (total[key] || 0) + item[key];
+                }
+            }
+        });
+        console.log(total);
+        setTableTotal(total);
     }, [tableData]);
 
     //숫자반환
@@ -294,11 +306,18 @@ const LaborSummaryDoc = () => {
                                             <td
                                                 key={colIndex}
                                                 rowSpan={rowData._rowSpans[column.col]} // 계산된 rowSpan 값 적용
-                                                style={{ border: "solid 1px gray" }}>
+                                                style={{
+                                                    border: "solid 1px gray",
+                                                    textAlign:
+                                                        column.col === "estPosition" || column.col === "pgNm" || column.col === "estDesc" ? "left" : "right", // textAlign 조건 추가
+                                                }}>
                                                 {column.col === "estDesc" ? (
                                                     <div
                                                         dangerouslySetInnerHTML={{
-                                                            __html: rowData[column.col] !== null && rowData[column.col] !== 0 ? rowData[column.col] : null,
+                                                            __html:
+                                                                rowData[column.col] !== null && rowData[column.col] !== 0
+                                                                    ? rowData[column.col].replace(/\\n/g, "<br>")
+                                                                    : null,
                                                         }}
                                                     />
                                                 ) : rowData[column.col] !== null && rowData[column.col] !== 0 ? (
@@ -309,6 +328,29 @@ const LaborSummaryDoc = () => {
                                     })}
                                 </tr>
                             ))}
+
+                            <tr>
+                                <th colSpan={2} style={{ textAlign: "center", width: "250px", border: "solid 1px gray" }}>
+                                    TOTAL
+                                </th>
+                                <th colSpan={1} rowSpan={0} style={{ textAlign: "right", width: "20px", border: "solid 1px gray" }}></th>
+                                {Object.entries(tableTotal).map(
+                                    ([key, value]) =>
+                                        key.startsWith("estMm") &&
+                                        key !== "estMm" && (
+                                            <th key={key} style={{ width: `${35}px`, textAlign: "right", border: "solid 1px gray" }}>
+                                                {value}
+                                            </th>
+                                        )
+                                )}
+                                <th colSpan={1} rowSpan={2} style={{ textAlign: "right", width: "20px", border: "solid 1px gray" }}>
+                                    {tableTotal.total}
+                                </th>
+                                <th colSpan={1} rowSpan={2} style={{ textAlign: "right", width: "50px", border: "solid 1px gray" }}></th>
+                                <th colSpan={1} rowSpan={2} style={{ textAlign: "right", width: "80px", border: "solid 1px gray" }}>
+                                    {tableTotal["amount"] ? tableTotal["amount"].toLocaleString() : ""}
+                                </th>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

@@ -1536,7 +1536,6 @@ table > thead {
     text-align: center;
 }
 
-
 /* quill-table.css */
 .ql-editor {
     caret-color: black; /* 커서 색상을 빨간색으로 변경 */
@@ -1549,7 +1548,8 @@ table > thead {
 .quill-container body {
     padding: 25px;
 }
-#bubble-container, #snow-container {
+#bubble-container,
+#snow-container {
     height: 150px;
     margin-bottom: 10px;
 }
@@ -1559,10 +1559,19 @@ table > thead {
     margin-right: 25px;
 }
 
-
 .ck-content {
     height: 400px;
     caret-color: black;
+}
+
+.toggleBtn {
+    margin-right: 5px;
+    border: solid 1px gray;
+    transition: transform 0.3s ease;
+}
+
+.toggleBtn:hover {
+    transform: scale(1.12);
 }
 
 /* 반응형 스타일 */

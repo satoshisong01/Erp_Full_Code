@@ -73,9 +73,9 @@ const LaborCostDoc = () => {
     ]);
 
     //만단위 절사
-    function truncateToTenThousand(number) {
-        return Math.floor(number / 10000) * 10000;
-    }
+    //function truncateToTenThousand(number) {
+    //    return Math.floor(number / 10000) * 10000;
+    //}
 
     const [buyTable, setBuyTable] = useState([]);
 
@@ -122,7 +122,7 @@ const LaborCostDoc = () => {
             }
         }
 
-        setEtcCost(truncateToTenThousand(calculatedCost));
+        setEtcCost(calculatedCost);
         setIndexNum(countIndex);
     }, [negoVisible, profitVisible, costVisible, tableData, tableDatas, buyTable, devVisible, buyVisible, expensesVisible]);
 
@@ -279,6 +279,11 @@ const LaborCostDoc = () => {
         }
     };
 
+    const handleChange3 = (e) => {
+        const { value } = e.target;
+        setEtcCost(value);
+    };
+
     const handleKeyPress = (e) => {
         // 엔터키가 눌렸을 때만 실행
         if (e.key === "Enter") {
@@ -389,6 +394,7 @@ const LaborCostDoc = () => {
         return result;
     }
 
+    //직급합치기
     function mergeAndSumEstItem(items) {
         const mergedItems = {};
         items.forEach((item) => {
@@ -410,29 +416,29 @@ const LaborCostDoc = () => {
     }
 
     //직급합치기
-    function mergeDuplicatePositions(data) {
-        // 각 pgNm 별로 중복된 estPosition 항목을 병합
-        data.forEach((pg) => {
-            const itemMap = {}; // estPosition을 키로 하는 맵
+    //function mergeDuplicatePositions(data) {
+    //    // 각 pgNm 별로 중복된 estPosition 항목을 병합
+    //    data.forEach((pg) => {
+    //        const itemMap = {}; // estPosition을 키로 하는 맵
 
-            // estItem 배열을 순회하며 중복된 estPosition 항목을 병합
-            pg.estItem.forEach((item) => {
-                if (itemMap[item.estPosition]) {
-                    // 이미 존재하는 estPosition인 경우, estMmTotal을 더함
-                    itemMap[item.estPosition].estMmTotal += item.estMmTotal;
-                } else {
-                    // 새로운 estPosition인 경우, itemMap에 추가
-                    itemMap[item.estPosition] = item;
-                }
-            });
+    //        // estItem 배열을 순회하며 중복된 estPosition 항목을 병합
+    //        pg.estItem.forEach((item) => {
+    //            if (itemMap[item.estPosition]) {
+    //                // 이미 존재하는 estPosition인 경우, estMmTotal을 더함
+    //                itemMap[item.estPosition].estMmTotal += item.estMmTotal;
+    //            } else {
+    //                // 새로운 estPosition인 경우, itemMap에 추가
+    //                itemMap[item.estPosition] = item;
+    //            }
+    //        });
 
-            // 중복된 estPosition을 병합한 결과를 estItem에 할당
-            pg.estItem = Object.values(itemMap);
-        });
+    //        // 중복된 estPosition을 병합한 결과를 estItem에 할당
+    //        pg.estItem = Object.values(itemMap);
+    //    });
 
-        // 수정된 데이터 반환
-        return data;
-    }
+    //    // 수정된 데이터 반환
+    //    return data;
+    //}
 
     // URL에서 쿼리 문자열 파라미터를 읽는 함수
     function getQueryParameterByName(name, url) {
@@ -923,51 +929,47 @@ const LaborCostDoc = () => {
                                             <td
                                                 className="table4-3White"
                                                 style={{ textAlign: "right", borderTop: "1px solid black", borderBottom: "1px solid black" }}>
-                                                {`${etcCost ? etcCost.toLocaleString() : ""}　`}
+                                                <input
+                                                    style={{ paddingRight: "15px" }}
+                                                    className="titleInput2"
+                                                    type="text"
+                                                    value={`${etcCost ? etcCost.toLocaleString() : ""}`}
+                                                    onChange={(e) => handleChange3(e)}
+                                                />
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td colSpan={6} style={{ textAlign: "right" }}>
+                                        <div style={{ display: "flex" }}>
+                                            <div className="toggleBtn">
                                                 <button id="devBtn" onClick={toggleDev}>
                                                     {devVisible ? "인건비 닫기" : "인건비 열기"}
                                                 </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={6} style={{ textAlign: "right" }}>
+                                            </div>
+                                            <div className="toggleBtn">
                                                 <button id="buyBtn" onClick={toggleBuy}>
                                                     {buyVisible ? "자재비 닫기" : "자재비 열기"}
                                                 </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={6} style={{ textAlign: "right" }}>
+                                            </div>
+                                            <div className="toggleBtn">
                                                 <button id="expensesBtn" onClick={toggleExpenses}>
                                                     {expensesVisible ? "제경비 닫기" : "제경비 열기"}
                                                 </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={6} style={{ textAlign: "right" }}>
+                                            </div>
+                                            <div className="toggleBtn">
                                                 <button id="negoBtn" onClick={toggleNego}>
                                                     {negoVisible ? "네고 닫기" : "네고 열기"}
                                                 </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={6} style={{ textAlign: "right" }}>
+                                            </div>
+                                            <div className="toggleBtn">
                                                 <button id="profitBtn" onClick={toggleProfit}>
                                                     {profitVisible ? "기업이윤 닫기" : "기업이윤 열기"}
                                                 </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={6} style={{ textAlign: "right" }}>
+                                            </div>
+                                            <div className="toggleBtn">
                                                 <button id="costBtn" onClick={toggleCost}>
                                                     {costVisible ? "관리비 닫기" : "관리비 열기"}
                                                 </button>
-                                            </td>
-                                        </tr>
+                                            </div>
+                                        </div>
                                     </React.Fragment>
                                 )}
                             </tbody>

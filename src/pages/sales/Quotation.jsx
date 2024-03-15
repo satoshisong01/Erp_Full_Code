@@ -348,6 +348,8 @@ function Quotation() {
                 const result = processResultData(resultData, condition);
                 setEstimate(result);
                 setestimateBool(true);
+            } else {
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
             }
         } else if (innerPageName.id === "orderBuying") {
             //구매비
@@ -379,6 +381,8 @@ function Quotation() {
                 // 상태 업데이트
                 setBuyIngInfo(updatedArray);
                 setBuyIngBool(true);
+            } else {
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
             }
         }
         //const resultDa2 = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", requestSearch);
@@ -738,9 +742,9 @@ function Quotation() {
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <PopupButton
-                                        clickBtn={buyIngBool}
-                                        targetUrl={URL.OrderBuyDoc}
-                                        data={{ label: "견 적 서", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
+                                        clickBtn={estimateBool}
+                                        targetUrl={URL.LaborCostDoc}
+                                        data={{ label: "견 적 서", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
                                     />
                                     <PopupButton
                                         clickBtn={buyIngBool}

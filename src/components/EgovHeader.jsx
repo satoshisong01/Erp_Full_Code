@@ -30,7 +30,7 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
     const accessRoleExecution = ["ROLE_USER", "ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"];
     const accessRoleSales = ["ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"];
     const accessRoleReference = ["ROLE_TEAM_MANAGER", "ROLE_MANAGER", "ROLE_ADMIN"];
-    const [signNumber, setSignNumber] = useState("0")
+    const [signNumber, setSignNumber] = useState("0");
 
     /** 라벨 선택 시 CSS 활성화 */
     useEffect(() => {
@@ -47,42 +47,53 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
     }, [lnbId, snbId]);
 
     useEffect(() => {
-        
-        if(loginUser && loginUser.id) {
+        if (loginUser && loginUser.uniqId) {
             fetchData(loginUser);
         }
         // const intervalId = setInterval(fetchData, 3600000); // 1시간
         // const intervalId = setInterval(fetchData, 10000); // 10ch
         const intervalId = setInterval(fetchData, 10 * 60 * 1000); // 10분
-    
+
         // 컴포넌트가 언마운트될 때 interval을 정리합니다.
         return () => clearInterval(intervalId);
     }, []);
 
     useEffect(() => {
-        if(loginUser && loginUser.id) {
+        if (loginUser && loginUser.uniqId) {
             fetchData(loginUser);
         }
-    }, [loginUser])
+    }, [loginUser]);
+
+    function handleAxiosError(error) {
+        if (!error.response) {
+            alert("서버와의 연결에 실패했습니다.");
+            console.log(error);
+        } else if (error.response.status >= 400 && error.response.status < 500) {
+            alert("서버통신 에러: 클라이언트 오류가 발생했습니다.");
+        } else if (error.response.status >= 500) {
+            alert("서버통신 에러: 서버 내부 오류가 발생했습니다.");
+        } else {
+            alert("알 수 없는 오류가 발생했습니다.");
+        }
+    }
 
     const fetchData = async (loginUser) => {
         try {
-            console.log(`📢${loginUser.uniqId}, ${sessionUserName}의 결재정보 10분 간격으로 요청중...`);
             // axios를 사용하여 서버에 GET 요청을 보냅니다.
-            const response = await axiosFetch("/api/system/signState/totalListAll.do", {sttApproverId: loginUser.uniqId, sttApproverAt: "진행"} || {});
-            if(response && response.length > 0) {
+            const response = await axiosFetch("/api/system/signState/totalListAll.do", { sttApproverId: loginUser.uniqId, sttApproverAt: "진행" } || {});
+            if (response && response.length > 0) {
                 console.log(`📢결재개수 ${response.length}`);
                 setSignNumber(response.length);
+                console.log(`📢${loginUser.uniqId}, ${sessionUserName}의 결재정보 10분 간격으로 요청중...`);
             } else {
                 console.log(`${loginUser.uniqId}, ${sessionUserName}의 결재정보를 불러오지 못함.`);
                 setSignNumber(0);
             }
         } catch (error) {
-            console.error('Error fetching data:', error);
+            //handleAxiosError(error);
+            console.error("Error fetching data:", error);
         }
     };
-    
-
 
     useEffect(() => {
         setActiveGnb(gnbLabel); //헤더 4중류 active
@@ -190,7 +201,10 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
                     {/* 로그아웃 : 로그인 정보 있을때 */}
                     {sessionUserId && (
                         <div className="table-buttons">
-                            <span className="person">{sessionUserName}({" "+signNumber+" "})</span>님이, 로그인하셨습니다.
+                            <span className="person">
+                                {sessionUserName}({" " + signNumber + " "})
+                            </span>
+                            님이, 로그인하셨습니다.
                             <AddButton label="로그아웃" onClick={logOutHandler} />
                             <PopupButton
                                 targetUrl={URL.MyInfo}

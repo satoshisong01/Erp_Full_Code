@@ -621,7 +621,7 @@ export const columns = {
             { header: "M+21", col: "estMm22", type: "input", cellWidth: "60" },
             { header: "M+22", col: "estMm23", type: "input", cellWidth: "60" },
             { header: "M+23", col: "estMm24", type: "input", cellWidth: "60" },
-            { header: "비고", col: "estDesc", type: "input", cellWidth: "209" },
+            { header: "비고", col: "estDesc", type: "estDesc", cellWidth: "209" },
         ],
         estimatePurchase: [
             //견적용 구매비
