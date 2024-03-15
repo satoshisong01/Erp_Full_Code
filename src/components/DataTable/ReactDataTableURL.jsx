@@ -12,6 +12,7 @@ import EmployerInfoModal from "components/modal/EmployerInfoModal";
 import BasicInput from "components/input/BasicInput";
 import "../../../src/css/componentCss/Code.css";
 import Number from "components/input/Number";
+import EstDesc from "components/input/EstDesc";
 
 /* 경비 테이블 */
 const ReactDataTableURL = (props) => {
@@ -351,47 +352,107 @@ const ReactDataTableURL = (props) => {
         초1: 400000,
     };
 
-    const onChangeInput = (e, preRow, accessor) => {
-        const { value } = e.target;
+    const onChangeInput = (e, preRow) => {
+        const { value, name } = e.target;
         const index = preRow.index;
+        const row = preRow.original;
         const updatedTableData = [...tableData];
 
+        console.log(row, "컬럼명확인");
+
+        //견적용 인건비
         if (innerPageName.id === "estimateLabor") {
-            //견적용 인건비
-            let price = 0;
             let total = 0;
+            let unitPrice = positionMapping[row.estPosition] || 0;
 
-            console.log(preRow.original.estPosition);
-            const positionCount = positionMapping[preRow.original.estPosition] || 0;
-
-            console.log(positionCount);
-
-            for (let i = 1; i <= 24; i++) {
-                let mKey = `estMm${i}`;
-                let mValue = preRow.original[mKey];
-                let mValueInt = parseInt(preRow.original[mKey], 10);
-
-                if (!isNaN(mValueInt) && !isNaN(mValue)) {
-                    total += mValueInt;
-                    price += positionCount * mValue;
+            if (
+                name === "estMm1" ||
+                name === "estMm2" ||
+                name === "estMm3" ||
+                name === "estMm4" ||
+                name === "estMm5" ||
+                name === "estMm6" ||
+                name === "estMm7" ||
+                name === "estMm8" ||
+                name === "estMm9" ||
+                name === "estMm10" ||
+                name === "estMm11" ||
+                name === "estMm12" ||
+                name === "estMm13" ||
+                name === "estMm14" ||
+                name === "estMm15" ||
+                name === "estMm16" ||
+                name === "estMm17" ||
+                name === "estMm18" ||
+                name === "estMm19" ||
+                name === "estMm20" ||
+                name === "estMm21" ||
+                name === "estMm22" ||
+                name === "estMm23" ||
+                name === "estMm24"
+            ) {
+                const preValue = row[name] ? parseInt(row[name]) : 0;
+                const preTotal = row["total"] ? parseInt(row["total"]) : 0;
+                if (preValue) {
+                    total = preTotal - preValue;
+                    total = total + parseInt(value);
+                } else {
+                    total = preTotal + parseInt(value);
                 }
+                updatedTableData[index]["total"] = total;
             }
 
-            updatedTableData[index]["price"] = price;
-            updatedTableData[index]["total"] = total;
-            updatedTableData[index]["estUnitPrice"] = positionCount;
-            updatedTableData[index][accessor] = value;
-        } else if (accessor === "pjbgTypeCode") {
+            if (
+                name === "estUnitPrice" ||
+                name === "estMm1" ||
+                name === "estMm2" ||
+                name === "estMm3" ||
+                name === "estMm4" ||
+                name === "estMm5" ||
+                name === "estMm6" ||
+                name === "estMm7" ||
+                name === "estMm8" ||
+                name === "estMm9" ||
+                name === "estMm10" ||
+                name === "estMm11" ||
+                name === "estMm12" ||
+                name === "estMm13" ||
+                name === "estMm14" ||
+                name === "estMm15" ||
+                name === "estMm16" ||
+                name === "estMm17" ||
+                name === "estMm18" ||
+                name === "estMm19" ||
+                name === "estMm20" ||
+                name === "estMm21" ||
+                name === "estMm22" ||
+                name === "estMm23" ||
+                name === "estMm24"
+            ) {
+                updatedTableData[index][name] = value;
+                updatedTableData[index]["price"] = row["estUnitPrice"] * row["total"];
+            }
+
+            //if (name === "estUnitPrice") {
+            //    updatedTableData[index]["price"] = row["estUnitPrice"] * row["total"];
+            //}
+
+            //updatedTableData[index]["price"] = totalPrice;
+            //console.log(unitPrice, "unitPrice");
+            console.log(value, "value");
+
+            updatedTableData[index][name] = value;
+        } else if (name === "pjbgTypeCode") {
             //경비목록 중복 방지
             const isDuplicate = updatedTableData.some((item) => item.pjbgTypeCode === value);
             if (isDuplicate) {
                 alert("해당 타입은 이미 존재합니다.");
-                updatedTableData[index][accessor] = "";
+                updatedTableData[index][name] = "";
             } else {
-                updatedTableData[index][accessor] = value;
+                updatedTableData[index][name] = value;
             }
         } else {
-            updatedTableData[index][accessor] = value;
+            updatedTableData[index][name] = value;
         }
 
         setTableData(updatedTableData);
@@ -409,10 +470,8 @@ const ReactDataTableURL = (props) => {
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
                 newRow[column.accessor] = condition.poiId || ""; // poiId를 항상 선택한놈으로 설정
-
             } else if (column.accessor === "versionId") {
                 newRow[column.accessor] = condition.versionId || "";
-
             } else if (column.accessor === "esntlId") {
                 //임시 업무회원 삭제해야함
                 newRow[column.accessor] = emUserInfo.uniqId;
@@ -445,7 +504,8 @@ const ReactDataTableURL = (props) => {
                 } else if (column.accessor === "pjbgTypeCode20") {
                     newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
                 }
-            } else if (current.id === "estimateLabor") { //견적>인건비
+            } else if (current.id === "estimateLabor") {
+                //견적>인건비
                 if (column.accessor === "estPosition") {
                     newRow[column.accessor] = "특1"; // useAt 항상 "Y"로 설정
                 }
@@ -477,7 +537,7 @@ const ReactDataTableURL = (props) => {
     const addItem = async (addData) => {
         const url = `/api/baseInfrm/product/pjbudget/addList.do`;
         const resultData = await axiosPost(url, addData);
-        if(resultData) {
+        if (resultData) {
             return true;
         } else {
             return false;
@@ -487,7 +547,7 @@ const ReactDataTableURL = (props) => {
     const updateItem = async (toUpdate) => {
         const url = `/api/baseInfrm/product/pjbudget/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
-        if(resultData) {
+        if (resultData) {
             return true;
         } else {
             return false;
@@ -497,7 +557,7 @@ const ReactDataTableURL = (props) => {
     const deleteItem = async (removeItem) => {
         const url = `/api/baseInfrm/product/pjbudget/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        if(resultData) {
+        if (resultData) {
             return true;
         } else {
             return false;
@@ -540,13 +600,13 @@ const ReactDataTableURL = (props) => {
                 delListTest.push(originData[i]);
             }
             const isDel = deleteItem(delList); //삭제
-            if(isMod && isDel) {
+            if (isMod && isDel) {
                 alert("저장완료");
             }
         } else if (originDataLength === updatedDataLength) {
             const firstRowUpdate = updateDataInOrigin(originData, filterData);
             const isMod = updateItem(firstRowUpdate); //수정
-            if(isMod) {
+            if (isMod) {
                 alert("저장완료");
             }
         } else if (originDataLength < updatedDataLength) {
@@ -562,7 +622,7 @@ const ReactDataTableURL = (props) => {
                 addList.push(filterData[i]);
             }
             const isAdd = addItem(addList); //추가
-            if(isMod && isAdd) {
+            if (isMod && isAdd) {
                 alert("저장완료");
             }
         }
@@ -597,16 +657,16 @@ const ReactDataTableURL = (props) => {
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
     const textAlignStyle = (column) => {
-        console.log("⭐경비:", column.textAlign);
+        //console.log("⭐경비:", column.textAlign);
         switch (column.textAlign) {
-            case 'left':
-                return 'txt-left';
-            case 'right':
-                return 'txt-right';
+            case "left":
+                return "txt-left";
+            case "right":
+                return "txt-right";
             default:
-                return 'txt-center';
+                return "txt-center";
         }
-    }
+    };
 
     return (
         <>
@@ -659,14 +719,14 @@ const ReactDataTableURL = (props) => {
                                                         cell.column.type === "input" ? (
                                                             <input
                                                                 id={cell.column.id}
-                                                                name={cell.column.col}
+                                                                name={cell.column.id}
                                                                 type="text"
                                                                 value={
                                                                     tableData[row.index]?.[cell.column.id] !== undefined
                                                                         ? tableData[row.index][cell.column.id]
                                                                         : ""
                                                                 }
-                                                                onChange={(e) => onChangeInput(e, row, cell.column.id)}
+                                                                onChange={(e) => onChangeInput(e, row)}
                                                             />
                                                         ) : cell.column.type === "desc" ? (
                                                             <input
@@ -758,10 +818,15 @@ const ReactDataTableURL = (props) => {
                                                         ) : cell.column.type === "number" ? (
                                                             <Number
                                                                 value={tableData[row.index]?.[cell.column.id] || ""}
-                                                                onChange={(value) => handleChange({target: {value: value, name: cell.column.id}}, row)}
-                                                                style={{ textAlign: cell.column.textAlign || 'left' }}
+                                                                onChange={(value) => handleChange({ target: { value: value, name: cell.column.id } }, row)}
+                                                                style={{ textAlign: cell.column.textAlign || "left" }}
                                                             />
-
+                                                        ) : cell.column.type === "estDesc" ? (
+                                                            <EstDesc
+                                                                value={tableData[row.index]?.[cell.column.id] || ""}
+                                                                onChange={(value) => handleChange({ target: { value: value, name: cell.column.id } }, row)}
+                                                                style={{ textAlign: cell.column.textAlign || "left" }}
+                                                            />
                                                         ) : cell.column.Header === "연월" && cell.value ? (
                                                             cell.value.substring(0, 7)
                                                         ) : cell.column.col === "pjbgDt" ? (

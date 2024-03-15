@@ -738,9 +738,9 @@ function Quotation() {
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <PopupButton
-                                        clickBtn={buyIngBool}
-                                        targetUrl={URL.OrderBuyDoc}
-                                        data={{ label: "견 적 서", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
+                                        clickBtn={estimateBool}
+                                        targetUrl={URL.LaborCostDoc}
+                                        data={{ label: "견 적 서", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
                                     />
                                     <PopupButton
                                         clickBtn={buyIngBool}
