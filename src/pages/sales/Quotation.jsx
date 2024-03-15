@@ -576,7 +576,7 @@ function Quotation() {
             return;
         }
         setCondition((prev) => {
-            if (prev.poiId !== inquiryConditions.poiId) {
+            if (prev.versionId !== inquiryConditions.versionId) {
                 const newCondition = { ...inquiryConditions };
                 fetchAllData(newCondition);
                 return newCondition;
@@ -770,19 +770,19 @@ function Quotation() {
                     <div className="third">
                         <ul>
                             <div className="form-buttons mg-b-20" style={{ maxWidth: 1400 }}>
-                                <PopupButtonReport targetUrl={URL.PreCostDoc} data={{ label: "견적품의서", type: "document", ...condition }} />
+                                <PopupButtonReport targetUrl={URL.PreCostDoc} data={{ label: "견적원가서", type: "document", ...condition }} />
                                 <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)} />
                                 <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave} />
                                 <AddButton label="결재요청" onClick={() => setIsSubmit(true)} disabled={!isSave} />
                             </div>
-                            {/*<ApprovalFormCost sendInfo={approvalLine}>*/}
-                            {/*<div style={{ marginTop: "-55px", marginBottom: 55 }}>
-                                    <h2>견적품의서</h2>
-                                </div>*/}
-                            {/*<ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="견적품의서" />*/}
-                            {/* <ToastUiEditor /> */}
-                            {/* <CKEditorComponent /> */}
-                            {/*<QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing} />
+                            <ApprovalFormCost sendInfo={approvalLine}>
+                                <div style={{ marginTop: "-55px", marginBottom: 55 }}>
+                                        <h2>견적서 승인 요청서</h2>
+                                    </div>
+                                <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="견적품의서" />
+                                {/* <ToastUiEditor /> */}
+                                {/* <CKEditorComponent /> */}
+                                <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing} />
                                 <ApprovalLineModal
                                     width={670}
                                     height={500}
@@ -791,8 +791,8 @@ function Quotation() {
                                     isOpen={isOpenModalApproval}
                                     onClose={() => setIsOpenModalApproval(false)}
                                     returnData={(value) => returnData(value, "결재선")}
-                                />*/}
-                            {/*</ApprovalFormCost>*/}
+                                />
+                            </ApprovalFormCost>
                         </ul>
                     </div>
                 </div>

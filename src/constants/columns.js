@@ -1881,7 +1881,7 @@ export const columns = {
                 ],
             },
             { items: [{ header: "코멘트", col: "sgnComent", type: "desc" }] },
-            { items: [{ header: "참조문서", type: "alink" }] },
+            // { items: [{ header: "참조문서", type: "alink" }] },
         ],
     },
 };
