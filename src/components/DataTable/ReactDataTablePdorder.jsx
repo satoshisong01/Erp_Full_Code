@@ -73,14 +73,30 @@ const ReactDataTablePdorder = (props) => {
     }, [isCancelTable]);
 
     useEffect(() => {
-        if (customDatas && customDatas.length > 0) {
-            setTableData([...customDatas]);
-            setOriginTableData([...customDatas]);
-        } else {
-            setTableData([]);
-            setOriginTableData([]);
-        }
+        const updatedTableData = initializeTableData(customDatas, columns);
+        setTableData(updatedTableData);
+        setOriginTableData(updatedTableData);
     }, [customDatas]);
+
+    /* columns에는 있지만 넣어줄 데이터가 없을 때 초기값 설정 */
+    const initializeTableData = (datas, cols) => {
+        if (datas && datas.length > 0) {
+            const updatedData = datas.map((dataItem) => {
+                const newData = { ...dataItem };
+                cols.forEach((column) => {
+                    if (!newData.hasOwnProperty(column.col)) {
+                        newData[column.col] = ""; // 해당 변수가 없으면 빈 값으로 초기화
+                    }
+                    if (column.type === "select") {
+                        newData[column.col] = column.options[0].value; // 옵션의 첫 번째 값으로 초기화
+                    }
+                });
+                return newData;
+            });
+            return updatedData;
+        }
+        return [];
+    };
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
@@ -99,11 +115,12 @@ const ReactDataTablePdorder = (props) => {
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
 
-            if (nameOfButton === "save" && innerPageName.id === "orderBuying") {
-                //견적>구매비
-                returnList(originTableData, tableData);
-            } else if (nameOfButton === "save") {
-                compareData(originTableData, tableData);
+            if (nameOfButton === "save") {
+                if(innerPageName.id === "orderBuying") { //견적>구매비
+                    returnList(originTableData, tableData);
+                } else {
+                    compareData(originTableData, tableData);
+                }
             } else if (nameOfButton === "load" && viewLoadDatas) {
                 setTableData(viewLoadDatas);
             } else if (nameOfButton === "deleteRow") {
@@ -293,10 +310,6 @@ const ReactDataTablePdorder = (props) => {
     const getFileData = (rowIndex) => {
         setFileIdData(tableData[rowIndex].atchFileId);
     };
-
-    useEffect(() => {
-        console.log(tableData, "@@@@@");
-    }, [tableData]);
 
     const setValueDataPdiNm = (rowIndex, selectedPdiNm) => {
         // 선택된 품명에 해당하는 데이터 찾기
@@ -545,8 +558,20 @@ const ReactDataTablePdorder = (props) => {
         });
     }
 
+    const updateDataInOrigin = (originData, filterData) => {
+        // 복제하여 새로운 배열 생성
+        const updatedArray = [...originData];
+        // updatedData의 길이만큼 반복하여 originData 갱신
+        for (let i = 0; i < Math.min(filterData.length, originData.length); i++) {
+            const updatedItem = filterData[i];
+            updatedArray[i] = { ...updatedItem, byId: updatedArray[i].byId };
+        }
+        return updatedArray;
+    };
+
     // 초기 데이터와 수정된 데이터를 비교하는 함수
     const compareData = (originData, updatedData) => {
+        if(originData?.length === 0 && updatedData?.length === 0) return;
         // const not = updatedData.filter((data) => !data.pdiId); //필수값 체크
         // if(not) {
         //     alert("품목을 선택하세요.("+not.length+")")
@@ -558,17 +583,6 @@ const ReactDataTablePdorder = (props) => {
 
         if (originDataLength > updatedDataLength) {
             //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
-            const updateDataInOrigin = (originData, filterData) => {
-                // 복제하여 새로운 배열 생성
-                const updatedArray = [...originData];
-                // updatedData의 길이만큼 반복하여 originData 갱신
-                for (let i = 0; i < Math.min(filterData.length, originData.length); i++) {
-                    const updatedItem = filterData[i];
-                    updatedArray[i] = { ...updatedItem, byId: updatedArray[i].byId };
-                }
-                return updatedArray;
-            };
-
             const firstRowUpdate = updateDataInOrigin(originData, filterData);
             const isMod = updateList(firstRowUpdate);
 
@@ -581,17 +595,14 @@ const ReactDataTablePdorder = (props) => {
                 alert("저장완료");
                 customDatasRefresh && customDatasRefresh();
                 setOriginTableData([]);
-            } else {
-                setOriginTableData(tableData);
             }
         } else if (originDataLength === updatedDataLength) {
-            const isMod = updateList(filterData);
+            const firstRowUpdate = updateDataInOrigin(originData, filterData);
+            const isMod = updateList(firstRowUpdate);
             if (isMod) {
                 alert("저장완료");
                 customDatasRefresh && customDatasRefresh();
                 setOriginTableData([]);
-            } else {
-                setOriginTableData(tableData);
             }
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
@@ -600,18 +611,19 @@ const ReactDataTablePdorder = (props) => {
                 const temp = { ...filterData[i] };
                 toUpdate.push(temp);
             }
-            const isMod = toUpdate.length > 0 && updateList(toUpdate);
+            const firstRowUpdate = updateDataInOrigin(originData, toUpdate);
+            const isMod = updateList(firstRowUpdate);
+
             for (let i = originDataLength; i < updatedDataLength; i++) {
                 const temp = { ...filterData[i] };
                 toAdds.push(temp);
             }
             const isAdd = addList(toAdds);
+
             if (isMod && isAdd) {
                 alert("저장완료");
                 customDatasRefresh && customDatasRefresh();
                 setOriginTableData([]);
-            } else {
-                setOriginTableData(tableData);
             }
         }
     };

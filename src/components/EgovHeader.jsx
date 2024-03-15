@@ -87,6 +87,7 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
                 console.log(`📢${loginUser.uniqId}, ${sessionUserName}의 결재정보 10분 간격으로 요청중...`);
             } else {
                 console.log(`${loginUser.uniqId}, ${sessionUserName}의 결재정보를 불러오지 못함.`);
+                setSignNumber(0);
             }
         } catch (error) {
             //handleAxiosError(error);

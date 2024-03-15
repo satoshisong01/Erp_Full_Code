@@ -148,7 +148,6 @@ const ReactDataTable = (props) => {
     //------------------------------------------------
 
     useEffect(() => {
-        // if(isCurrentPage()) {}
         setIsLoading(true);
         const updatedTableData = initializeTableData(customDatas, columns);
         setTableData(updatedTableData);
@@ -156,7 +155,7 @@ const ReactDataTable = (props) => {
         setIsLoading(false);
     }, [customDatas]);
 
-    /* columns에는 있지만 넣어줄 데이터가 없을 때 조기값 설정 */
+    /* columns에는 있지만 넣어줄 데이터가 없을 때 초기값 설정 */
     const initializeTableData = (datas, cols) => {
         if (datas && datas.length > 0) {
             const updatedData = datas.map((dataItem) => {

@@ -75,10 +75,6 @@ const ReactDataTableURL = (props) => {
         }
     }, []);
 
-    // useEffect(() => {
-    //     console.log("tableData:", tableData);
-    // }, [tableData]);
-
     useEffect(() => {
         if (isCurrentPage()) {
             setIsLoading(false);
@@ -86,8 +82,7 @@ const ReactDataTableURL = (props) => {
             setTableData(updatedTableData);
             setOriginTableData(updatedTableData);
         }
-        // }, [customDatas, columns, innerPageName]);
-    }, [customDatas, innerPageName]);
+    }, [customDatas]);
 
     /* columns에는 있지만 넣어줄 데이터가 없을 때 초기값 설정 */
     const initializeTableData = (datas, cols) => {
@@ -111,7 +106,6 @@ const ReactDataTableURL = (props) => {
         return [];
     };
 
-    /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
         if (currentPageName.id !== prevCurrentPageName.id || innerPageName.id !== prevInnerPageName.id) {
             // 현재 페이지와 이전 페이지가 같지 않다면
@@ -121,10 +115,7 @@ const ReactDataTableURL = (props) => {
         if (current.id !== currentPageName.id && current.id !== innerPageName.id) {
             return;
         }
-    }, [currentPageName, innerPageName, nameOfButton]);
 
-    useEffect(() => {
-        // console.log("경비 current:", current.name, "inner:", innerPageName.name, "current:",currentPageName.name);
         if (isCurrentPage()) {
             setIsEditing(editing !== undefined ? editing : isEditing); //테이블 상태 //inner tab일 때 테이블 조작
 
@@ -615,7 +606,8 @@ const ReactDataTableURL = (props) => {
             for (let i = 0; i < originDataLength; i++) {
                 updateList.push(filterData[i]);
             }
-            const isMod = updateItem(updateList); //수정
+            const firstRowUpdate = updateDataInOrigin(originData, updateList);
+            const isMod = updateItem(firstRowUpdate); //수정
 
             const addList = [];
             for (let i = originDataLength; i < updatedDataLength; i++) {

@@ -123,7 +123,6 @@ export const buyIngInfoCalculation = (list) => {
             byConsumerOutputRate: Math.round(byConsumerOutputRate),
         }
 
-        console.log("result::", result);
         return result;
     });
 
