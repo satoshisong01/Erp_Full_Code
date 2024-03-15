@@ -424,6 +424,10 @@ const ReactDataTableURL = (props) => {
                 updatedTableData[index]["price"] = row["estUnitPrice"] * row["total"];
             }
 
+            if (name === "estPosition") {
+                updatedTableData[index]["estUnitPrice"] = unitPrice;
+            }
+
             //if (name === "estUnitPrice") {
             //    updatedTableData[index]["price"] = row["estUnitPrice"] * row["total"];
             //}
