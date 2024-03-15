@@ -72,9 +72,7 @@ function ApprovalFormSal({ returnData, initial }) {
             return;
         }
         returnData && returnData({ ...data });
-        if(inquiryConditions.poiId !== data.poiId) {
-            setInquiryConditions({...data})
-        }
+        setInquiryConditions({...data})
     };
 
     return (

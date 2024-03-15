@@ -14,6 +14,7 @@ export default function ModalCondition({ conditionList, onSearch, refresh }) {
                 delete searchData[key]; //빈값 제외
             }
         });
+        console.log("searchData:", searchData);
         onSearch && onSearch(searchData);
     };
 

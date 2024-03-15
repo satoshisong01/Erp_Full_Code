@@ -34,7 +34,6 @@ export default function Number({ onChange, value, style }) {
                 type="text"
                 value={viewValue} // 콤마로 표시되는 값
                 onChange={inputChange} // 부모 컴포넌트로 전달
-                placeholder="숫자를 입력하세요"
                 style={style}
             />
         </div>

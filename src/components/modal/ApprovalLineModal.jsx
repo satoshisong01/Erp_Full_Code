@@ -24,7 +24,8 @@ export default function ApprovalLineModal(props) {
             type: "select",
             options: [
                 { label: "결재", value: "" },
-                { label: "통보", value: "통보" }, //통보일때만 전달
+                { label: "통보", value: "통보" },
+                { label: "합의", value: "합의" },
             ],
         },
         { header: "사용자명", col: "empNm", cellWidth: "120" },

@@ -17,7 +17,7 @@ function ApprovalFormReport({ returnData, type }) {
                 getVersionList({ poiId: data.poiId });
             } else if (data.versionId) {
                 returnData(data); //부모로 보내기
-                if(data.poiId !== inquiryConditions.poiId) {
+                if(data.versionId !== inquiryConditions.versionId) {
                     setInquiryConditions({...data})
                 }
             }

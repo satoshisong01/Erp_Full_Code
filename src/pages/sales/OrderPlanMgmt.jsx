@@ -89,7 +89,7 @@ function OrderPlanMgmt() {
             return;
         }
         setCondition((prev) => {
-            if (prev.poiId !== inquiryConditions.poiId) {
+            if (prev.versionId !== inquiryConditions.versionId) {
                 const newCondition = { ...inquiryConditions };
                 fetchAllData(newCondition);
                 return newCondition;
@@ -821,7 +821,7 @@ function OrderPlanMgmt() {
             {isOpenAdd && (
                 <AddModModal
                     width={500}
-                    height={250}
+                    height={300}
                     list={columns.orderPlanMgmt.versionAdd}
                     resultData={addVersionToServer}
                     onClose={() => setIsOpenAdd(false)}

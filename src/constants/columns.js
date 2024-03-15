@@ -594,7 +594,7 @@ export const columns = {
                 ],
             },
             { header: "합계", col: "total", cellWidth: "100" },
-            { header: "단가", col: "estUnitPrice", type: "input", cellWidth: "100" },
+            { header: "단가", col: "estUnitPrice", type: "number", cellWidth: "100" },
             { header: "금액", col: "price", cellWidth: "100" },
             { header: "positionCount", col: "positionCount", cellWidth: "0", notView: true },
             { header: "M+0", col: "estMm1", type: "input", cellWidth: "50" },

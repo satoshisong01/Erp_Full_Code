@@ -12,6 +12,8 @@ const URL = {
     MyInfo: "/MyInfo",
     ERROR: "/error",
 
+    SignDocument: "/signDocument",
+
     // ApprovalContainer: "/approvalContainer", //전자결재 페이지
     // EstimatePopupContainer: "/estimatePopupContainer",
     // CostStatement: "/costStatement", //전자결재 페이지

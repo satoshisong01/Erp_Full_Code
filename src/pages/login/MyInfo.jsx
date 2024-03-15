@@ -20,7 +20,6 @@ const MyInfo = () => {
     useEffect(() => {
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter).data;
-        console.log("회원정보 파라미터:", data);
         setFormData({
             empId: data.id,
             empNm: data.name,
@@ -48,11 +47,9 @@ const MyInfo = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("1.Form Data Submitted:", formData);
         const resultData = await axiosUpdate("/api/baseInfrm/member/employMember/edit.do", formData);
-        console.log("2.resultData", resultData);
         if (resultData) {
-            alert("값을 변경했습니다💚💚");
+            alert("값을 변경했습니다.");
         } else if (!resultData) {
             alert("수정 실패");
         }
@@ -69,9 +66,9 @@ const MyInfo = () => {
     const handlePasswordChange = (e) => {
         const { name, value } = e.target;
         if (name === "newPassword") {
-            setNewPassword(value);
+            setNewPassword(value.replace(/[ \t\n\r]+/g, ''));
         } else if (name === "confirmPassword") {
-            setConfirmPassword(value);
+            setConfirmPassword(value.replace(/[ \t\n\r]+/g, ''));
         }
     };
 
@@ -128,6 +125,7 @@ const MyInfo = () => {
                                 value={newPassword}
                                 onChange={handlePasswordChange}
                                 required
+                                placeholder="띄어쓰기는 입력되지 않습니다."
                             />
 
                             <label htmlFor="confirmPassword">
@@ -141,6 +139,7 @@ const MyInfo = () => {
                                 value={confirmPassword}
                                 onChange={handlePasswordChange}
                                 required
+                                placeholder="띄어쓰기는 입력되지 않습니다."
                             />
                             {!passwordsMatch && (
                                 <p className="cherry">비밀번호가 일치하지 않습니다.</p>

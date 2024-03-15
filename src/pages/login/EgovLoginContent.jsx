@@ -7,21 +7,13 @@ import CODE from "constants/code";
 import ReferenceInfo from "components/DataTable/function/ReferenceInfo";
 
 function EgovLoginContent(props) {
-    console.group("EgovLoginContent");
-    console.log("[Start] EgovLoginContent ------------------------------");
-    console.log("EgovLoginContent [props] : ", props);
-
     const navigate = useNavigate();
     const location = useLocation();
     console.log("EgovLoginContent [location] : ", location);
 
-    // const [userInfo, setUserInfo] = useState({ id: '', pw: 'default', userSe: 'GNR' });
     const [userInfo, setUserInfo] = useState({ id: "", pw: "default" });
-    // eslint-disable-next-line no-unused-vars
     const [loginVO, setLoginVO] = useState({});
-
     const [saveIDFlag, setSaveIDFlag] = useState(false); //true면 체크박스에 체크됨
-
     const checkRef = useRef(); //id 저장?
 
     const KEY_ID = "KEY_ID";
@@ -42,15 +34,11 @@ function EgovLoginContent(props) {
 
     useEffect(() => {
         //저장된 아이디 있는지 판단
-
         if (idFlag === null) {
             setSaveIDFlag(false);
             // eslint-disable-next-line react-hooks/exhaustive-deps
             idFlag = false;
         }
-
-        console.log("⭕⭕⭕ useEffect-idFlag:  ", idFlag);
-
         if (idFlag !== null) setSaveIDFlag(idFlag);
         if (idFlag === false) {
             localStorage.setItem(KEY_ID, "");
@@ -58,7 +46,6 @@ function EgovLoginContent(props) {
         } else {
             checkRef.current.className = "f_chk on";
         }
-
         let data = localStorage.getItem(KEY_ID);
         if (data !== null) setUserInfo({ ...userInfo, id: data });
     }, [idFlag]);
@@ -118,8 +105,17 @@ function EgovLoginContent(props) {
         }
     };
 
-    console.log("------------------------------EgovLoginContent [End]");
-    console.groupEnd("EgovLoginContent");
+    const handleIdChange = (e) => {
+        const value = e.target.value.replace(/[ \t\n\r]+/g, ''); // 입력값에서 공백 제거
+        console.log("아이디:", value);
+        setUserInfo({ ...userInfo, id: value });
+    };
+    
+    const handlePasswordChange = (e) => {
+        const value = e.target.value.replace(/[ \t\n\r]+/g, ''); // 입력값에서 공백 제거
+        console.log("패스워드:", value);
+        setUserInfo({ ...userInfo, pw: value });
+    };
 
     return (
         <div className="contents" id="contents">
@@ -143,7 +139,7 @@ function EgovLoginContent(props) {
                                     title="아이디"
                                     placeholder="아이디"
                                     value={userInfo?.id}
-                                    onChange={(e) => setUserInfo({ ...userInfo, id: e.target.value })}
+                                    onChange={handleIdChange}
                                     onKeyDown={handleKeyPress}
                                 />
                                 <input
@@ -151,7 +147,7 @@ function EgovLoginContent(props) {
                                     name=""
                                     title="비밀번호"
                                     placeholder="비밀번호"
-                                    onChange={(e) => setUserInfo({ ...userInfo, pw: e.target.value })}
+                                    onChange={handlePasswordChange}
                                     onKeyDown={handleKeyPress}
                                 />
                             </span>
