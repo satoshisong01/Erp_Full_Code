@@ -348,6 +348,8 @@ function Quotation() {
                 const result = processResultData(resultData, condition);
                 setEstimate(result);
                 setestimateBool(true);
+            } else {
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
             }
         } else if (innerPageName.id === "orderBuying") {
             //구매비
@@ -379,6 +381,8 @@ function Quotation() {
                 // 상태 업데이트
                 setBuyIngInfo(updatedArray);
                 setBuyIngBool(true);
+            } else {
+                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
             }
         }
         //const resultDa2 = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", requestSearch);

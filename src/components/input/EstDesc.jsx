@@ -65,7 +65,7 @@ export default function EstDesc({ onChange, value, style }) {
             {showPopup && (
                 <div className="popup" style={{ position: "absolute", zIndex: "999", width: "500px", height: "300px", top: "30%", left: "35%" }}>
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                        <textarea value={textareaValue} onChange={handleTextareaChange} style={{ height: "275px" }} />
+                        <textarea value={textareaValue} onChange={handleTextareaChange} style={{ height: "275px", caretColor: "black" }} />
                         <div style={{ display: "flex" }}>
                             <button style={{ width: "100%", border: "solid 1px gray" }} onClick={handleConfirm}>
                                 확인
