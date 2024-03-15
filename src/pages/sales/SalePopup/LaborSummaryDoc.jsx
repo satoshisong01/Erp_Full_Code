@@ -148,7 +148,6 @@ const LaborSummaryDoc = () => {
 
     const total = {};
     useEffect(() => {
-        findMaxCount(tableData);
         tableData.forEach((item) => {
             for (const key in item) {
                 if (typeof item[key] === "number") {
@@ -157,23 +156,29 @@ const LaborSummaryDoc = () => {
                 }
             }
         });
+
+        const estMmKeys = Object.keys(total).filter((key) => key.startsWith("estMm") && key !== "estMm");
+        const filledEstMmKeys = estMmKeys.filter((key) => total[key] !== null && total[key] !== 0);
+        const numberOfFilledEstMm = filledEstMmKeys.length;
+        console.log(numberOfFilledEstMm);
         console.log(total);
         setTableTotal(total);
+        setCount(numberOfFilledEstMm);
     }, [tableData]);
 
     //숫자반환
     function findMaxCount(data) {
+        console.log(data, "숫자반환 받아오는값");
         let maxCount = 0;
 
         // Iterate over each array in the data
         for (let i = 0; i < data.length; i++) {
             const currentArray = data[i];
             let count = 0;
-
+            console.log(currentArray);
             // Iterate over the properties of the current array
             for (let j = 1; j <= 24; j++) {
                 const propName = `estMm${j}`;
-
                 // Check if the property exists and has a non-null value
                 if (currentArray[propName] !== null && currentArray[propName] !== 0) {
                     count++;
@@ -187,7 +192,6 @@ const LaborSummaryDoc = () => {
         }
 
         console.log(maxCount);
-        setCount(maxCount);
         return maxCount;
     }
 
@@ -236,6 +240,8 @@ const LaborSummaryDoc = () => {
     };
 
     const processedTableData = processRowSpanData(tableData, Columns);
+
+    console.log(processedTableData, "변환?");
 
     return (
         <div className="precost-container">
@@ -337,7 +343,8 @@ const LaborSummaryDoc = () => {
                                 {Object.entries(tableTotal).map(
                                     ([key, value]) =>
                                         key.startsWith("estMm") &&
-                                        key !== "estMm" && (
+                                        key !== "estMm" &&
+                                        value !== 0 && (
                                             <th key={key} style={{ width: `${35}px`, textAlign: "right", border: "solid 1px gray" }}>
                                                 {value}
                                             </th>
