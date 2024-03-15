@@ -99,14 +99,14 @@ function OrderMgmt() {
     return (
         <>
             <div className="form-buttons mg-b-20" style={{ maxWidth: 1400 }}>
-                <PopupButtonNL targetUrl={URL.PreCostDoc} data={{ label: "수주보고서", type: "document", ...condition }} />
+                <PopupButtonNL targetUrl={URL.PreCostDoc} data={{ label: "수주원가서", type: "document", ...condition }} />
                 <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)} />
                 <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave} />
                 <AddButton label="결재요청" onClick={() => setIsSubmit(true)} disabled={!isSave} />
             </div>
             <ApprovalFormCost sendInfo={approvalLine}>
                 <div style={{ marginTop: "-55px", marginBottom: 55 }}>
-                    <h2 style={{ zIndex: "1" }}>수주보고서</h2>
+                    <h2 style={{ zIndex: "1" }}>수주/계약 보고서</h2>
                 </div>
                 {/* <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="수주보고서"/> */}
                 <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="수주보고서" />

@@ -101,7 +101,7 @@ function ProgressBox() {
             <SearchList conditionList={conditionList} />
             <HideCard title="결재진행 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
-                    <ViewButton label={"보기"} onClick={() => setIsOpenView(true)} />
+                    <ViewButton label={"전자결재"} onClick={() => setIsOpenView(true)} />
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTable

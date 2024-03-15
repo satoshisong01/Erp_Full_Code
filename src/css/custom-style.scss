@@ -1493,13 +1493,13 @@ td {
             // background-color: #e74c3c;
             border: 1px solid #ccc;
             border-bottom: none;
-            height: 30px;
+            height: 20px;
         }
 
         .box-2 {
             // background-color: #2ecc71;
             border: 1px solid #ccc;
-            height: 80px;
+            height: 60px;
         }
     }
 
@@ -1507,14 +1507,14 @@ td {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        width: 100px;
+        width: 85px;
         // color: #fff;
     }
 
     .box-3 {
         border: 1px solid #ccc;
-        width: 30px;
-        height: 110px; /* box-1과 box-2의 높이 합침 (100px + 100px + 10px 여백) */
+        width: 25px;
+        height: 80px; /* box-1과 box-2의 높이 합침 (100px + 100px + 10px 여백) */
         // background-color: #e74c3c;
         // color: #fff;
     }

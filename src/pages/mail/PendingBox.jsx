@@ -10,6 +10,8 @@ import RefreshButton from "components/button/RefreshButton";
 import { columns } from "constants/columns";
 import ViewButton from "components/button/ViewButton";
 import ViewModal from "components/modal/ViewModal";
+import PopupButtonSign from "components/button/PopupButtonSign";
+import URL from "constants/url";
 
 /** 전자결재-결재대기함(승인자기준) */
 function PendingBox() {
@@ -98,7 +100,9 @@ function PendingBox() {
             <SearchList conditionList={conditionList} />
             <HideCard title="결재대기 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
-                    <ViewButton label={"보기"} onClick={() => setIsOpenView(true)} />
+                {/* <PopupButtonNL targetUrl={URL.PreCostDoc} data={{ label: "수주보고서", type: "document", ...condition }} /> */}
+                    <PopupButtonSign targetUrl={URL.SignDocument} data={{ label: "전자결재" }}/>
+                    {/* <ViewButton label={"보기"} onClick={() => setIsOpenView(true)} /> */}
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTable
@@ -109,7 +113,7 @@ function PendingBox() {
                     isSingleSelect={true}
                 />
             </HideCard>
-            {isOpenView && (
+            {/* {isOpenView && (
                 <ViewModal
                     width={500}
                     height={250}
@@ -119,7 +123,7 @@ function PendingBox() {
                     onClose={() => setIsOpenView(false)}
                     title="접수자 승인"
                 />
-            )}
+            )} */}
         </>
     );
 }
