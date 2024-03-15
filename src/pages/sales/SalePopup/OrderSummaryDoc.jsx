@@ -12,6 +12,7 @@ const OrderSummaryDoc = () => {
     const [tableData, setTableData] = useState([]);
     const [title, setTitle] = useState("");
     const [count, setCount] = useState(0);
+    const [printBtn, setPrintBtn] = useState(false);
 
     const pdfContentRef = useRef(null);
 
@@ -32,16 +33,19 @@ const OrderSummaryDoc = () => {
     };
 
     const printFn = () => {
+        setPrintBtn(true); // printBtn 상태를 true로 변경
         alert("출력합니다");
-
-        // titleInput 클래스명을 가진 input 요소들의 border 값을 변경
-        const inputs = document.querySelectorAll(".titleInput");
-        inputs.forEach((input) => {
-            input.style.border = "none";
-        });
-        const printButton = document.getElementById("printButton");
-        printButton.style.display = "none"; // 프린트 버튼 숨기기
-        window.print();
+        setTimeout(() => {
+            // titleInput 클래스명을 가진 input 요소들의 border 값을 변경
+            const inputs = document.querySelectorAll(".titleInput");
+            inputs.forEach((input) => {
+                input.style.border = "none";
+            });
+            const printButton = document.getElementById("printButton");
+            printButton.style.display = "none"; // 프린트 버튼 숨기기
+            window.print();
+            setPrintBtn(false); // 출력이 끝나면 printBtn 상태를 다시 false로 변경
+        }, 1000); // 2초 후에 실행
     };
 
     const Columns = [
@@ -218,6 +222,12 @@ const OrderSummaryDoc = () => {
                     </table>
                 </div>
             </div>
+            <div style={{ marginBottom: printBtn ? "1000px" : "0px" }}></div>
+            {printBtn && (
+                <div className="precost-title" style={{ margin: "auto", marginBottom: "20px", fontSize: "25px", textAlign: "center" }}>
+                    {title}
+                </div>
+            )}
             <DetailDoc />
             <button id="printButton" onClick={() => printFn()} style={{ position: "fixed", top: "10px", right: "10px" }}>
                 <FontAwesomeIcon icon={faPrint} style={{ color: "red" }} />
