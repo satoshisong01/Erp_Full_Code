@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf, faPrint } from "@fortawesome/free-solid-svg-icons";
 import DetailDoc from "./DetailDoc";
 
-/* 구매상세내역 */
+/* 구매전체내역 */
 const OrderSummaryDoc = () => {
     const [tableData, setTableData] = useState([]);
     const [title, setTitle] = useState("");
@@ -81,7 +81,7 @@ const OrderSummaryDoc = () => {
         console.log(data, "3333");
         const { label } = data;
         setTitle(label);
-        const updatedTableData = data.tableData.map((rowData) => {
+        const updatedTableData = data.tableData2.map((rowData) => {
             let amount = 0;
             let estDesc = "";
             amount = rowData.price;
@@ -129,7 +129,7 @@ const OrderSummaryDoc = () => {
     return (
         <div className="precost-container">
             <div className="precost-title" style={{ margin: "auto", marginBottom: "20px", fontSize: "25px", textAlign: "center" }}>
-                {title}
+                구매전체내역
             </div>
             <div style={{ display: "flex", margin: "10px" }} ref={pdfContentRef}>
                 <div className="flex-column mg-t-20 mg-b-20">
@@ -222,13 +222,13 @@ const OrderSummaryDoc = () => {
                     </table>
                 </div>
             </div>
-            <div style={{ marginBottom: printBtn ? "1000px" : "0px" }}></div>
+            {/*<div style={{ marginBottom: printBtn ? "1000px" : "0px" }}></div>
             {printBtn && (
                 <div className="precost-title" style={{ margin: "auto", marginBottom: "20px", fontSize: "25px", textAlign: "center" }}>
                     {title}
                 </div>
             )}
-            <DetailDoc />
+            <DetailDoc />*/}
             <button id="printButton" onClick={() => printFn()} style={{ position: "fixed", top: "10px", right: "10px" }}>
                 <FontAwesomeIcon icon={faPrint} style={{ color: "red" }} />
                 (저장)출력

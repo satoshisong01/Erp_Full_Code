@@ -246,7 +246,7 @@ const LaborSummaryDoc = () => {
     return (
         <div className="precost-container">
             <div className="precost-title" style={{ margin: "auto", marginBottom: "20px", fontSize: "25px", textAlign: "center" }}>
-                {title}
+                인건비전체내역
             </div>
             <div style={{ display: "flex", margin: "10px" }} ref={pdfContentRef}>
                 <div className="flex-column mg-t-20 mg-b-20">

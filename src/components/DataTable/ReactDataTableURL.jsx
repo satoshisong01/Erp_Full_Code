@@ -334,8 +334,8 @@ const ReactDataTableURL = (props) => {
     }, [selectedFlatRows]);
 
     const positionMapping = {
-        특1: 1000000,
-        특2: 900000,
+        특2: 1000000,
+        특1: 900000,
         고1: 800000,
         고2: 700000,
         중: 600000,
@@ -354,7 +354,8 @@ const ReactDataTableURL = (props) => {
         //견적용 인건비
         if (innerPageName.id === "estimateLabor") {
             let total = 0;
-            let unitPrice = positionMapping[row.estPosition] || 0;
+            console.log(row.estPosition);
+            let unitPrice = positionMapping[value] || 0;
 
             if (
                 name === "estMm1" ||
@@ -425,7 +426,9 @@ const ReactDataTableURL = (props) => {
             }
 
             if (name === "estPosition") {
+                updatedTableData[index][name] = value;
                 updatedTableData[index]["estUnitPrice"] = unitPrice;
+                updatedTableData[index]["price"] = row["estUnitPrice"] * row["total"];
             }
 
             //if (name === "estUnitPrice") {
@@ -502,7 +505,7 @@ const ReactDataTableURL = (props) => {
             } else if (current.id === "estimateLabor") {
                 //견적>인건비
                 if (column.accessor === "estPosition") {
-                    newRow[column.accessor] = "특1"; // useAt 항상 "Y"로 설정
+                    newRow[column.accessor] = "특2"; // useAt 항상 "Y"로 설정
                 }
             }
 

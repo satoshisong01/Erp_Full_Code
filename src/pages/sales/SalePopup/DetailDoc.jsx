@@ -194,12 +194,15 @@ const DetailDoc = () => {
     return (
         <>
             <div className="precost-container">
+                <div className="precost-title" style={{ margin: "auto", marginBottom: "20px", fontSize: "25px", textAlign: "center" }}>
+                    구매상세내역
+                </div>
                 <div style={{ display: "flex", margin: "10px" }}>
                     <div className="flex-column mg-t-20 mg-b-20">
                         <table id="example" className="display">
                             <thead>
                                 <tr>
-                                    <th colSpan={1} style={{ textAlign: "center", width: "10px" }}>
+                                    <th colSpan={1} style={{ textAlign: "center", width: "30px" }}>
                                         no
                                     </th>
                                     <th colSpan={1} style={{ textAlign: "center", width: "200px" }}>
@@ -208,10 +211,10 @@ const DetailDoc = () => {
                                     <th colSpan={1} style={{ textAlign: "center", width: "200px" }}>
                                         Description
                                     </th>
-                                    <th colSpan={1} style={{ textAlign: "center", width: "20px" }}>
+                                    <th colSpan={1} style={{ textAlign: "center", width: "30px" }}>
                                         Q'ty
                                     </th>
-                                    <th colSpan={1} style={{ textAlign: "center", width: "20px" }}>
+                                    <th colSpan={1} style={{ textAlign: "center", width: "30px" }}>
                                         Unit
                                     </th>
                                     <th colSpan={1} style={{ textAlign: "center", width: "90px" }}>

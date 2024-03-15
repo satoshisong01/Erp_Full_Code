@@ -55,6 +55,7 @@ function Quotation() {
 
     const [estimateBool, setestimateBool] = useState(false);
     const [buyIngBool, setBuyIngBool] = useState(false);
+    const [detailBool, setDetailBool] = useState(false);
 
     //const [checkUpdate, setCheckUpdate] = useState(false);
 
@@ -706,7 +707,7 @@ function Quotation() {
                                     <PopupButton
                                         clickBtn={estimateBool}
                                         targetUrl={URL.LaborCostDoc}
-                                        data={{ label: "견 적 서", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
+                                        data={{ label: "갑 지", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
                                     />
                                     <PopupButton
                                         clickBtn={estimateBool}
@@ -744,12 +745,17 @@ function Quotation() {
                                     <PopupButton
                                         clickBtn={estimateBool}
                                         targetUrl={URL.LaborCostDoc}
-                                        data={{ label: "견 적 서", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
+                                        data={{ label: "갑 지", poiId: condition.poiId, versionId: condition.versionId, tableData: estimate }}
                                     />
                                     <PopupButton
                                         clickBtn={buyIngBool}
                                         targetUrl={URL.OrderSummaryDoc}
-                                        data={{ label: "상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
+                                        data={{ label: "상세내역", poiId: condition.poiId, versionId: condition.versionId, tableData2: buyIngInfo }}
+                                    />
+                                    <PopupButton
+                                        clickBtn={buyIngBool}
+                                        targetUrl={URL.DetailDoc}
+                                        data={{ label: "주요내역", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
                                     />
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
@@ -774,6 +780,17 @@ function Quotation() {
                     <div className="third">
                         <ul>
                             <div className="form-buttons mg-b-20" style={{ maxWidth: 1400 }}>
+                                <PopupButton
+                                    clickBtn={estimateBool}
+                                    targetUrl={URL.TotalDoc}
+                                    data={{
+                                        label: "견적서",
+                                        poiId: condition.poiId,
+                                        versionId: condition.versionId,
+                                        tableData: estimate,
+                                        tableData2: buyIngInfo,
+                                    }}
+                                />
                                 <PopupButtonReport targetUrl={URL.PreCostDoc} data={{ label: "견적원가서", type: "document", ...condition }} />
                                 <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)} />
                                 <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave} />
@@ -781,8 +798,8 @@ function Quotation() {
                             </div>
                             <ApprovalFormCost sendInfo={approvalLine}>
                                 <div style={{ marginTop: "-55px", marginBottom: 55 }}>
-                                        <h2>견적서 승인 요청서</h2>
-                                    </div>
+                                    <h2>견적서 승인 요청서</h2>
+                                </div>
                                 <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="견적품의서" />
                                 {/* <ToastUiEditor /> */}
                                 {/* <CKEditorComponent /> */}
