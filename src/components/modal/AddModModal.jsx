@@ -165,7 +165,6 @@ export default function AddModModal(props) {
     };
 
     const inputChange = (e, type) => {
-        console.log(e.target.value);
         const { value, name } = e.target;
         setData((prevData) => {
             return { ...prevData, [name]: value };
@@ -188,10 +187,6 @@ export default function AddModModal(props) {
         setIsOpenModalEmployerInfo(true);
         setColName(colName);
     };
-
-    //useEffect(() => {
-    //    console.log(colName, "컬");
-    //}, [colName]);
 
     const changeCompany = (id, name) => {
         //id=setver로 보내는값, name=테이블에띄어지는값

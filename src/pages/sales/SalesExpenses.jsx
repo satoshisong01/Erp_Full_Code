@@ -41,8 +41,6 @@ function SalesExpenses() {
     const [salesCostView, setSalesCostView] = useState([]); //영업 영업비
     const [salesCostTotal, setSalesCostTotal] = useState([{ totalPrice: 0 }]); // 구매합계
 
-    console.log(salesCostTotal);
-
     let totalPrice = 0;
 
     useEffect(() => {

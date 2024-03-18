@@ -5,21 +5,22 @@ import { axiosFetch } from "api/axiosFetch";
 import { v4 as uuidv4 } from "uuid";
 
 /** 영업 폼 */
-function ApprovalFormSal({ returnData, initial }) {
+function ApprovalFormSal({ returnData }) {
     const { innerPageName, setInquiryConditions, inquiryConditions } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
     useEffect(() => {
-        setData({ ...initial }); //초기화
-    }, [initial]);
+        if(inquiryConditions.poiId) { //전역정보 바뀔때
+            getVersionList({ poiId: inquiryConditions.poiId })
+        }
+    }, [inquiryConditions, innerPageName]);
 
     useEffect(() => {
-        if (data.poiId && !data.versionId) {
-            //선택된 버전정보가 없다면
+        if (data.poiId && !data.versionId) { //버전정보가 없을때
             getVersionList({ poiId: data.poiId });
         }
-    }, [data.poiId, innerPageName]);
+    }, [data]);
 
     const getVersionList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});
@@ -27,7 +28,8 @@ function ApprovalFormSal({ returnData, initial }) {
         if (emptyArr?.length > 0) {
             setData((prev) => ({
                 ...prev,
-                versionId: emptyArr.find((info) => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
+                ...inquiryConditions,
+                versionId: inquiryConditions.versionId ? inquiryConditions.versionId : emptyArr.find((info) => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
                 versionNum: emptyArr.find((info) => info.costAt === "Y")?.versionNum || emptyArr[0]?.versionNum,
                 option: emptyArr,
             }));
@@ -51,18 +53,15 @@ function ApprovalFormSal({ returnData, initial }) {
         }
     };
 
-    const onChange = (value) => {
+    const onChangeProject = (value) => {
         setData({
             poiId: value.poiId,
             poiNm: value.poiNm,
             poiDesc: value.poiDesc,
-            versionId: value.versionId,
-            versionNum: value.versionNum,
             poiMonth: value.poiMonth,
             poiBeginDt: value.poiBeginDt,
             poiManagerId: value.poiManagerId,
             poiSalmanagerId: value.poiSalmanagerId,
-            option: value.option,
         });
     };
 
@@ -100,7 +99,7 @@ function ApprovalFormSal({ returnData, initial }) {
                                         height={710}
                                         onClose={() => setIsOpenProjectModal(false)}
                                         title="프로젝트 목록"
-                                        returnInfo={onChange}
+                                        returnInfo={onChangeProject}
                                     />
                                 )}
                             </td>
@@ -113,13 +112,13 @@ function ApprovalFormSal({ returnData, initial }) {
                                     className="basic-input select"
                                     name="versionId"
                                     onChange={onSelectChange}
-                                    value={data.option?.length > 0 ? data.versionId : "default"}>
-                                    {data.option?.map((info, index) => (
+                                    value={data.versionId ? data.versionId : "default"}>
+                                    {data.option?.length > 0 && data.option.map((info, index) => (
                                         <option key={index} value={info.versionId}>
                                             {info.versionNum}
                                         </option>
                                     ))}
-                                    {!data.option && <option value="default">버전을 생성하세요.</option>}
+                                    {data.option?.length === 0 && <option value="default">버전을 생성하세요.</option>}
                                 </select>
                             </td>
                             <th>기준연도</th>
