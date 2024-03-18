@@ -22,6 +22,7 @@ function PendingBox() {
     const [isOpenView, setIsOpenView] = useState(false);
 
     const columnsList = [
+        { header: "결재아이디", col: "sgnId", notView: true },
         { header: "프로젝트아이디", col: "poiId", notView: true },
         { header: "버전아이디", col: "versionId", notView: true },
         { header: "수주아이디", col: "poId", notView: true },
@@ -68,7 +69,7 @@ function PendingBox() {
     ];
 
     useEffect(() => {
-        fetchAllData({ sttApproverId: localStorage.uniqId, sttApproverAt: "진행" });
+        fetchAllData({ sttApproverId: localStorage.uniqId });
     }, [currentPageName]);
 
     const fetchAllData = async (condition) => {
@@ -77,7 +78,7 @@ function PendingBox() {
     };
 
     const refresh = () => {
-        fetchAllData({ sttApproverId: localStorage.uniqId, sttApproverAt: "진행" });
+        fetchAllData({ sttApproverId: localStorage.uniqId });
     };
 
     const approvalToServer = async (data) => {
@@ -89,7 +90,8 @@ function PendingBox() {
     };
 
     const returnData = (row) => {
-        if (row.sttId && selectedRows.sttId !== row.sttId) {
+        console.log("사인아이디:", row);
+        if (row.sgnId && selectedRows.sgnId !== row.sgnId) {
             setSelectedRows(row);
         }
     };
@@ -101,7 +103,7 @@ function PendingBox() {
             <HideCard title="결재대기 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
                 {/* <PopupButtonNL targetUrl={URL.PreCostDoc} data={{ label: "수주보고서", type: "document", ...condition }} /> */}
-                    <PopupButtonSign targetUrl={URL.SignDocument} data={{ label: "전자결재" }}/>
+                    <PopupButtonSign targetUrl={URL.SignDocument} data={{ label: "전자결재", ...selectedRows }}/>
                     {/* <ViewButton label={"보기"} onClick={() => setIsOpenView(true)} /> */}
                     <RefreshButton onClick={refresh} />
                 </div>
