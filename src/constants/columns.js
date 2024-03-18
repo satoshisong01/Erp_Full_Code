@@ -1870,7 +1870,7 @@ export const columns = {
                 items: [
                     {
                         header: "결재처리",
-                        col: "sttState",
+                        col: "sttResult",
                         require: true,
                         type: "radio",
                         option: [
@@ -1880,7 +1880,7 @@ export const columns = {
                     },
                 ],
             },
-            { items: [{ header: "코멘트", col: "sgnComent", type: "desc" }] },
+            { items: [{ header: "코멘트", col: "sttComent", type: "desc" }] },
             // { items: [{ header: "참조문서", type: "alink" }] },
         ],
     },

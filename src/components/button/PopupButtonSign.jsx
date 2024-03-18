@@ -6,7 +6,7 @@ function PopupButtonSign({ targetUrl, data }) {
     const openPopup = () => {
         const url = `${targetUrl}?data=${encodeURIComponent(JSON.stringify(data))}`;
         console.log("⭐targetUrl", targetUrl, "data:", data);
-        const width = 1000;
+        const width = 1200;
         const height = 700;
         const left = window.screen.width / 2 - width / 2;
         const top = window.screen.height / 2 - height / 2;

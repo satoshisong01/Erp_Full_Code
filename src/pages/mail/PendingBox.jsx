@@ -12,6 +12,8 @@ import ViewButton from "components/button/ViewButton";
 import ViewModal from "components/modal/ViewModal";
 import PopupButtonSign from "components/button/PopupButtonSign";
 import URL from "constants/url";
+import BasicButton from "components/button/BasicButton";
+import ModButton from "components/button/ModButton";
 
 /** 전자결재-결재대기함(승인자기준) */
 function PendingBox() {
@@ -23,12 +25,22 @@ function PendingBox() {
 
     const columnsList = [
         { header: "결재아이디", col: "sgnId", notView: true },
+        { header: "기안자부서", col: "sgnSenderGroupNm", notView: true },
+        { header: "기안자직급", col: "sgnSenderPosNm", notView: true },
         { header: "프로젝트아이디", col: "poiId", notView: true },
         { header: "버전아이디", col: "versionId", notView: true },
+        { header: "버전명", col: "versionNum", notView: true },
         { header: "수주아이디", col: "poId", notView: true },
         { header: "결재아이디", col: "sttId", notView: true },
-        { header: "발신자아이디", col: "sgnSenderId", notView: true }, // == empId
-        { header: "수신자아이디", col: "sgnReceiverId", notView: true }, // == empId2
+        { header: "발신자아이디", col: "sgnSenderId", notView: true },
+        { header: "수신자아이디", col: "sgnReceiverId", notView: true },
+        { header: "고객사", col: "cltNm", notView: true },
+        { header: "영업대표", col: "poiSalmanagerId", notView: true },
+        { header: "담당자", col: "poiManagerId", notView: true },
+        { header: "납기시작일", col: "poiDueBeginDt", notView: true },
+        { header: "납기종료일", col: "poiDueEndDt", notView: true },
+        { header: "계약금(천원)", col: "orderTotal", notView: true },
+        { header: "요청일", col: "sngSignData", notView: true },
         { header: "프로젝트명", col: "poiNm", cellWidth: "350", textAlign: "left" },
         { header: "결재종류", col: "sgnType", cellWidth: "200" },
         { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
@@ -69,16 +81,19 @@ function PendingBox() {
     ];
 
     useEffect(() => {
-        fetchAllData({ sttApproverId: localStorage.uniqId });
+        if(currentPageName.id === "PendingBox") {
+            fetchAllData({ sttApproverId: localStorage.uniqId, sgnAt: "진행" });
+        }
     }, [currentPageName]);
 
     const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/system/signState/totalListAll.do", condition || {});
+        console.log("부른데이터:", resultData);
             setTableData(resultData);
     };
 
     const refresh = () => {
-        fetchAllData({ sttApproverId: localStorage.uniqId });
+        fetchAllData({ sttApproverId: localStorage.uniqId, sgnAt: "진행" });
     };
 
     const approvalToServer = async (data) => {
@@ -96,6 +111,25 @@ function PendingBox() {
         }
     };
 
+    const openPopup = () => {
+        if(selectedRows?.sgnId) {
+            const sendData = {
+                label: "전자결재",
+                ...selectedRows
+            }
+            const url = `${URL.SignDocument}?data=${encodeURIComponent(JSON.stringify(sendData))}`;
+            console.log("⭐url", URL.SignDocument, "sendData:", sendData);
+            const width = 1200;
+            const height = 700;
+            const left = window.screen.width / 2 - width / 2;
+            const top = window.screen.height / 2 - height / 2;
+            const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
+            window.open(url, "newWindow", windowFeatures);
+        } else {
+            alert("데이터를 선택해 주세요.")
+        }
+    };
+
     return (
         <>
             <Location pathList={locationPath.Approval} />
@@ -103,7 +137,8 @@ function PendingBox() {
             <HideCard title="결재대기 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
                 {/* <PopupButtonNL targetUrl={URL.PreCostDoc} data={{ label: "수주보고서", type: "document", ...condition }} /> */}
-                    <PopupButtonSign targetUrl={URL.SignDocument} data={{ label: "전자결재", ...selectedRows }}/>
+                    {/* <PopupButtonSign targetUrl={URL.SignDocument} data={{ label: "전자결재", ...selectedRows }}/> */}
+                    <ModButton label="전자결재" onClick={openPopup}/>
                     {/* <ViewButton label={"보기"} onClick={() => setIsOpenView(true)} /> */}
                     <RefreshButton onClick={refresh} />
                 </div>
