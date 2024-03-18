@@ -8,7 +8,7 @@ import { faFilePdf, faPrint } from "@fortawesome/free-solid-svg-icons";
 import DetailDoc from "./DetailDoc";
 
 /* 구매전체내역 */
-const OrderSummaryDoc = () => {
+const OrderSummaryDoc = ({ displayNone }) => {
     const [tableData, setTableData] = useState([]);
     const [title, setTitle] = useState("");
     const [count, setCount] = useState(0);
@@ -229,10 +229,12 @@ const OrderSummaryDoc = () => {
                 </div>
             )}
             <DetailDoc />*/}
-            <button id="printButton" onClick={() => printFn()} style={{ position: "fixed", top: "10px", right: "10px" }}>
-                <FontAwesomeIcon icon={faPrint} style={{ color: "red" }} />
-                (저장)출력
-            </button>
+            {!displayNone && (
+                <button id="printButton" onClick={() => printFn()} style={{ position: "fixed", top: "10px", right: "10px" }}>
+                    <FontAwesomeIcon icon={faPrint} style={{ color: "red" }} />
+                    (저장)출력
+                </button>
+            )}
         </div>
     );
 };

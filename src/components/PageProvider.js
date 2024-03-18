@@ -81,7 +81,11 @@ export function PageProvider({ children }) {
 
     const [atchFileId, setAtchFileId] = useState(""); //파일 단체ID
 
-    const [projectList, setProjectList] = useState({});
+    const [estimate, setEstimate] = useState([]);
+    const [buyIngInfo, setBuyIngInfo] = useState([]);
+
+    const [fileLength, setFileLength] = useState(0);
+    const [fileLCatch, setFileCatch] = useState(false);
 
     const contextValue = {
         isOpenModalPgNm,
@@ -172,6 +176,15 @@ export function PageProvider({ children }) {
 
         inquiryConditions,
         setInquiryConditions,
+        estimate,
+        setEstimate,
+        buyIngInfo,
+        setBuyIngInfo,
+        fileLength,
+        setFileLength,
+
+        fileLCatch,
+        setFileCatch,
     };
 
     return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>;

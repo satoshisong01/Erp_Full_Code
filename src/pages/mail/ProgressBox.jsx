@@ -66,7 +66,7 @@ function ProgressBox() {
     ];
 
     useEffect(() => {
-        fetchAllData({ sgnSenderId: localStorage.uniqId, sgnAt: "N" });
+        fetchAllData({ sgnSenderId: localStorage.uniqId, sgnAt: "진행" });
     }, [currentPageName]);
 
     const fetchAllData = async (condition) => {
@@ -77,7 +77,7 @@ function ProgressBox() {
     };
 
     const refresh = () => {
-        fetchAllData({ sgnSenderId: localStorage.uniqId, sgnAt: "N" });
+        fetchAllData({ sgnSenderId: localStorage.uniqId, sgnAt: "진행" });
     };
 
     const returnData = (row) => {

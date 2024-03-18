@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import QuillEditor from "components/QuillEditor";
-import { axiosPost } from "api/axiosFetch";
+import { axiosFetch, axiosPost } from "api/axiosFetch";
 import AddButton from "components/button/AddButton";
 import ApprovalLineModal from "components/modal/ApprovalLineModal";
 import ApprovalFormCost from "components/form/ApprovalFormCost";
@@ -8,6 +8,8 @@ import ApprovalFormReport from "components/form/ApprovalFormReport";
 import PopupButtonNL from "components/button/PopupButtonReport";
 import URL from "constants/url";
 import ApprovalFormSal from "components/form/ApprovalFormSal";
+import PopupButton from "components/button/PopupButton";
+import { ProcessResultDataRun } from "../../components/DataTable/function/ProcessResultData";
 
 /** 영업관리-수주관리-수주보고서 */
 function OrderMgmt() {
@@ -19,6 +21,9 @@ function OrderMgmt() {
 
     const [condition, setCondition] = useState({});
     const [isOpenModalApproval, setIsOpenModalApproval] = useState(false);
+
+    const [estimate, setEstimate] = useState([]);
+    const [buyIngInfo, setBuyIngInfo] = useState([]);
 
     const [approvalLine, setApprovalLine] = useState([]); //결재선
     const [isSave, setIsSave] = useState(false); //저장
@@ -35,10 +40,10 @@ function OrderMgmt() {
             setCondition((prev) => {
                 if (prev.poiId !== value.poiId) {
                     const newCondition = { ...value };
-                    // fetchAllData(newCondition);
+                    fetchAllData(newCondition);
                     return newCondition;
                 } else {
-                    // fetchAllData({ ...prev });
+                    fetchAllData({ ...prev });
                     return prev;
                 }
             });
@@ -90,6 +95,36 @@ function OrderMgmt() {
         setIsSubmit(false);
     };
 
+    const fetchAllData = async (condition) => {
+        //const requestSearch = {
+        //    poiId: condition.poiId,
+        //    useAt: "Y",
+        //};
+
+        const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
+        const resultData2 = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", condition || {});
+
+        if (resultData.length !== 0) {
+            const result = ProcessResultDataRun(resultData, condition);
+            setEstimate(result);
+        }
+
+        if (resultData2.length !== 0) {
+            const updatedData = { ...resultData2[0] }; // 첫 번째 객체만 수정한다고 가정합니다.
+            // estBuyQunty 값 변경
+            updatedData.estBuyQunty = 1;
+
+            // 수정된 데이터를 새 배열에 저장
+            const updatedArray = [...resultData2];
+            updatedArray[0] = updatedData;
+
+            // 상태 업데이트
+            setBuyIngInfo(updatedArray);
+        }
+        //const resultDa2 = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", requestSearch);
+        //const filteredData = filterData(updatedData);
+    };
+
     const writing = () => {
         if (isSave) {
             setIsSave(false); //내용 변경 중, 저장 버튼 활성화
@@ -99,6 +134,17 @@ function OrderMgmt() {
     return (
         <>
             <div className="form-buttons mg-b-20" style={{ maxWidth: 1400 }}>
+                <PopupButton
+                    clickBtn={true}
+                    targetUrl={URL.TotalDoc}
+                    data={{
+                        label: "견적서",
+                        poiId: condition.poiId,
+                        versionId: condition.versionId,
+                        tableData: estimate,
+                        tableData2: buyIngInfo,
+                    }}
+                />
                 <PopupButtonNL targetUrl={URL.PreCostDoc} data={{ label: "수주원가서", type: "document", ...condition }} />
                 <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)} />
                 <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave} />
