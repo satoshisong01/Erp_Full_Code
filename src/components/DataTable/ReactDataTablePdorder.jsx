@@ -158,10 +158,6 @@ const ReactDataTablePdorder = (props) => {
         }
     }, [newRowData]);
 
-    useEffect(() => {
-        console.log(tableData);
-    }, [tableData]);
-
     const {
         getTableProps,
         getTableBodyProps,

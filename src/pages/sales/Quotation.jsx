@@ -365,12 +365,8 @@ function Quotation() {
             setBuyIngInfo([]);
             setBuyIngBool(false);
             const resultData = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", condition || {});
-            console.log("조회안되느듯");
-            console.log(resultData);
-            console.log(condition.versionId);
 
             if (resultData.length !== 0) {
-                console.log(resultData, "상수로");
                 const updatedData = { ...resultData[0] }; // 첫 번째 객체만 수정한다고 가정합니다.
                 // estBuyQunty 값 변경
                 updatedData.estBuyQunty = 1;
@@ -391,7 +387,6 @@ function Quotation() {
     };
 
     const returnList = (originTableData, tableData) => {
-        console.log("타라고");
         if (innerPageName.id === "estimateLabor") {
             //인건비
             compareData(originTableData, tableData);
@@ -576,7 +571,6 @@ function Quotation() {
     };
 
     useEffect(() => {
-        console.log("inquiryConditions:", inquiryConditions);
         if (!inquiryConditions.poiId || !inquiryConditions.versionId) {
             return;
         }
@@ -698,7 +692,7 @@ function Quotation() {
                 <div className="list">
                     <div className="first">
                         <ul>
-                            <ApprovalFormSal initial={condition} />
+                            <ApprovalFormSal />
                             <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable columns={columnlabor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
                             </HideCard>
@@ -736,7 +730,7 @@ function Quotation() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalFormSal initial={condition} />
+                            <ApprovalFormSal />
                             {/* <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable columns={columnBuy} customDatas={buyView} defaultPageSize={5} hideCheckBox={true} />
                             </HideCard> */}

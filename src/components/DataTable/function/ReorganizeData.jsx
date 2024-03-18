@@ -63,7 +63,6 @@ export const ReorganizeManCost = (data) => {
     const filteredUsers = data.filter((data) => {
         return data.gupDesc === "인건비";
     });
-    console.log(filteredUsers);
     // reduce 함수를 사용하여 데이터 배열을 순회하면서 재구성된 결과를 구축합니다.
     return filteredUsers.reduce((acc, item) => {
         // 현재 아이템에서 속성들을 비구조화하여 가져옵니다.

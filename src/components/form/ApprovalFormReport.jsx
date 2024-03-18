@@ -6,38 +6,40 @@ import { v4 as uuidv4 } from "uuid";
 
 /** 조회 보고서용 */
 function ApprovalFormReport({ returnData, type }) {
-    const { innerPageName, inquiryConditions, setInquiryConditions } = useContext(PageContext);
+    const { innerPageName, currentPageName, inquiryConditions, setInquiryConditions } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
     useEffect(() => {
-        if(type === "수주보고서" || type === "견적품의서") {
+        if(inquiryConditions.poiId) { //전역정보 바뀔때
+            getVersionList({ poiId: inquiryConditions.poiId })
+        }
+    }, [inquiryConditions, innerPageName, currentPageName]);
+
+    useEffect(() => {
+        if(type === "수주보고서" || type === "견적품의서") { //영업
             if (data.poiId && !data.versionId) {
                 //선택된 버전정보가 없다면
                 getVersionList({ poiId: data.poiId });
             } else if (data.versionId) {
-                returnData(data); //부모로 보내기
+                returnData && returnData(data); //부모로 보내기
                 if(data.versionId !== inquiryConditions.versionId) {
                     setInquiryConditions({...data})
                 }
             }
-        } else {
-            returnData(data);
+        } else if(type === "완료보고서") { //실행
+            returnData && returnData(data);
         }
-    }, [data, innerPageName]);
-
-    useEffect(() => {
-        setData({...inquiryConditions});
-    }, [inquiryConditions])
+    }, [data]);
 
     const getVersionList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});
         const emptyArr = resultData && resultData.map(({ versionId, versionNum, versionDesc, costAt }) => ({ versionId, versionNum, versionDesc, costAt }));
         if (emptyArr?.length > 0) {
-            console.log("버전이름>>>>", emptyArr[0]?.versionNum);
             setData((prev) => ({
                 ...prev,
-                versionId: emptyArr.find((info) => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
+                ...inquiryConditions,
+                versionId: inquiryConditions.versionId ? inquiryConditions.versionId : emptyArr.find((info) => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
                 versionNum: emptyArr.find((info) => info.costAt === "Y")?.versionNum || emptyArr[0]?.versionNum,
                 option: emptyArr,
             }));
@@ -56,7 +58,7 @@ function ApprovalFormReport({ returnData, type }) {
         }
     };
 
-    const onChange = (value) => { //프로젝트변경
+    const onChangeProject = (value) => { //프로젝트변경
         setData({
             poiId: value.poiId,
             poiNm: value.poiNm,
@@ -65,10 +67,6 @@ function ApprovalFormReport({ returnData, type }) {
             poiBeginDt: value.poiBeginDt,
             poiManagerId: value.poiManagerId,
             poiSalmanagerId: value.poiSalmanagerId,
-            versionId: value.versionId,
-            versionNum: value.versionNum,
-            versionDesc: value.versionDesc,
-            option: value.option
         });
     };
 
@@ -97,7 +95,7 @@ function ApprovalFormReport({ returnData, type }) {
                                         height={710}
                                         onClose={() => setIsOpenProjectModal(false)}
                                         title="프로젝트 목록"
-                                        returnInfo={onChange}
+                                        returnInfo={onChangeProject}
                                     />
                                 )}
                             </td>
@@ -110,13 +108,13 @@ function ApprovalFormReport({ returnData, type }) {
                                     className="basic-input select"
                                     name="versionId"
                                     onChange={onSelectChange}
-                                    value={data.option?.length > 0 ? data.versionId : "default"}>
-                                    {data.option?.map((info, index) => (
+                                    value={data.versionId ? data.versionId : "default"}>
+                                    {data.option?.length > 0 && data.option.map((info, index) => (
                                         <option key={index} value={info.versionId}>
                                             {info.versionNum}
                                         </option>
                                     ))}
-                                    {!data.option && <option value="default">버전을 생성하세요.</option>}
+                                    {data.option?.length === 0 && <option value="default">버전을 생성하세요.</option>}
                                 </select>
                             </td>
                             <th>기준연도</th>
