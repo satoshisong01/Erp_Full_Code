@@ -9,6 +9,7 @@ import { PageContext } from "components/PageProvider";
 import { Resizable } from "re-resizable";
 import AntTree from "components/antTree/AntTree";
 import DelButton from "components/button/DelButton";
+import BasicButton from "components/button/BasicButton";
 
 Modal.setAppElement("#root"); // Set the root element for accessibility
 
@@ -201,6 +202,29 @@ export default function ApprovalLineModal(props) {
         setSgnType(value);
     }
 
+    useEffect(() => {
+        console.log("nodes:", nodes);
+    }, [nodes])
+
+    const sorting = () => {
+        const positionPriority = {
+            "사원": 1,
+            "주임": 2,
+            "대리": 3,
+            "과장": 4,
+            "차장": 5,
+            "부장": 6,
+            "팀장": 7,
+            "전무": 8,
+            "이사": 8,
+            "사장": 9,
+        };
+
+        const arr = [...nodes];
+        arr.sort((a, b) => positionPriority[a.posNm] - positionPriority[b.posNm]);
+        setNodes(arr);
+    }
+
     return (
         <Modal
             appElement={document.getElementById("root")}
@@ -272,6 +296,21 @@ export default function ApprovalLineModal(props) {
                                                     <option key="완료보고서" value="완료보고서"> 완료보고서 </option>
                                                 </select>
                                                 <DelButton label={"결재선 제외"} onClick={deleteData} />
+                                            </div>
+                                            <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10}}>
+                                                <div>
+                                                    {
+                                                        nodes.map((item, index) => (
+                                                            <span>
+                                                                {item.title}
+                                                                {index !== nodes.length - 1 && " > "}
+                                                            </span>
+                                                        ))
+                                                    }
+                                                </div>
+                                                <span>
+                                                    <BasicButton label="직급정렬" onClick={sorting}/>
+                                                </span>
                                             </div>
                                             <ReactDataTable
                                                 columns={columns}
