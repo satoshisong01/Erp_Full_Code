@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf, faPrint } from "@fortawesome/free-solid-svg-icons";
 import { axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 /* 갑지 */
-const LaborCostDoc = () => {
+const LaborCostDoc = ({ displayNone }) => {
     /* ⭐ 데이터 없을 시 초기화 필요 */
     const [title, setTitle] = useState("");
     const [projectTitle, setProjectTitle] = useState("");
@@ -130,6 +130,7 @@ const LaborCostDoc = () => {
         console.log("이거왜 계속 불러올까 🌠🌠🌠🌠");
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
+        console.log(data, "수주관리에선 못불러오나?");
         setProjectTitle(data.tableData[0].poiNm);
         setTableDatas(restructureData(data.tableData));
         console.log(data.tableData, "초기데이터");
@@ -980,7 +981,10 @@ const LaborCostDoc = () => {
                             </tbody>
                         </table>
                     </div>
-                    {typeof totalRows !== "undefined" && totalRows >= 10 && <div style={{ height: `${Math.max(200 - (totalRows - 10) * 20, 0)}px` }}></div>}
+                    {typeof totalRows !== "undefined" && totalRows >= 10 && !displayNone && (
+                        <div style={{ height: `${Math.max(200 - (totalRows - 10) * 20, 0)}px` }}></div>
+                    )}
+
                     <h3 className="projectName">특이사항</h3>
                     <div className="etcBox">
                         <div className="etcItems">
@@ -995,10 +999,12 @@ const LaborCostDoc = () => {
                         </div>
                     </div>
                 </body>
-                <button id="printButton" onClick={() => printFn()} style={{ position: "fixed", top: "10px", right: "10px" }}>
-                    <FontAwesomeIcon icon={faPrint} style={{ color: "red" }} />
-                    (저장)출력
-                </button>
+                {!displayNone && (
+                    <button id="printButton" onClick={() => printFn()} style={{ position: "fixed", top: "10px", right: "10px" }}>
+                        <FontAwesomeIcon icon={faPrint} style={{ color: "red" }} />
+                        (저장)출력
+                    </button>
+                )}
             </div>
         </>
     );

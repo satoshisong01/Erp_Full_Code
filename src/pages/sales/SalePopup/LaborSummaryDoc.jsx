@@ -8,7 +8,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
 /* 영업상세내역 */
-const LaborSummaryDoc = () => {
+const LaborSummaryDoc = ({ displayNone }) => {
     const [tableData, setTableData] = useState([]);
     const [title, setTitle] = useState("");
     const [count, setCount] = useState(0);
@@ -362,10 +362,12 @@ const LaborSummaryDoc = () => {
                     </table>
                 </div>
             </div>
-            <button id="printButton" onClick={() => printFn()} style={{ position: "fixed", top: "10px", right: "10px" }}>
-                <FontAwesomeIcon icon={faPrint} style={{ color: "red" }} />
-                (저장)출력
-            </button>
+            {!displayNone && (
+                <button id="printButton" onClick={() => printFn()} style={{ position: "fixed", top: "10px", right: "10px" }}>
+                    <FontAwesomeIcon icon={faPrint} style={{ color: "red" }} />
+                    (저장)출력
+                </button>
+            )}
         </div>
     );
 };

@@ -5,12 +5,14 @@ import OrderSummaryDoc from "./OrderSummaryDoc";
 import DetailDoc from "./DetailDoc";
 
 export default function TotalDoc() {
+    const displayNone = true;
+
     return (
         <div>
-            <LaborCostDoc />
-            <LaborSummaryDoc />
-            <OrderSummaryDoc />
-            <DetailDoc />
+            <LaborCostDoc displayNone={displayNone} />
+            <LaborSummaryDoc displayNone={displayNone} />
+            <OrderSummaryDoc displayNone={displayNone} />
+            <DetailDoc displayNone={displayNone} />
         </div>
     );
 }

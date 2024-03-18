@@ -10,7 +10,7 @@ import { buyIngInfoCalculation } from "components/DataTable/function/ReplaceData
 import "./PopUp.css";
 
 /* 갑지 */
-const DetailDoc = () => {
+const DetailDoc = ({ displayNone }) => {
     /* ⭐ 데이터 없을 시 초기화 필요 */
     const [title, setTitle] = useState("");
     const [projectTitle, setProjectTitle] = useState("");
@@ -308,10 +308,12 @@ const DetailDoc = () => {
                             />
                         </div>
                     </div>*/}
-                <button id="printButton" onClick={() => printFn()} style={{ position: "fixed", top: "10px", right: "10px" }}>
-                    <FontAwesomeIcon icon={faPrint} style={{ color: "red" }} />
-                    (저장)출력
-                </button>
+                {!displayNone && (
+                    <button id="printButton" onClick={() => printFn()} style={{ position: "fixed", top: "10px", right: "10px" }}>
+                        <FontAwesomeIcon icon={faPrint} style={{ color: "red" }} />
+                        (저장)출력
+                    </button>
+                )}
             </div>
         </>
     );
