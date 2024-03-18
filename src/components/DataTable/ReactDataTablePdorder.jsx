@@ -54,6 +54,7 @@ const ReactDataTablePdorder = (props) => {
         setIsOpenModalCompany,
         isOpenModalCompany,
         atchFileId,
+        fileLength,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -309,8 +310,21 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const getFileData = (rowIndex) => {
+        setRowIndex(rowIndex);
         setFileIdData(tableData[rowIndex].atchFileId);
     };
+
+    useEffect(() => {
+        // tableData가 존재하고, rowIndex가 tableData의 길이 내에 있는지 확인합니다.
+        if (tableData && rowIndex >= 0 && rowIndex < tableData.length) {
+            const updatedTableData = [...tableData];
+            console.log(fileLength, "fileLength");
+
+            // 안전하게 countFileId를 업데이트합니다.
+            updatedTableData[rowIndex]["countFileId"] = fileLength; // 파일 갯수
+            setTableData(updatedTableData);
+        }
+    }, [fileLength, rowIndex]); // useEffect의 의존성 배열을 업데이트했습니다.
 
     const setValueDataPdiNm = (rowIndex, selectedPdiNm) => {
         // 선택된 품명에 해당하는 데이터 찾기
@@ -699,6 +713,7 @@ const ReactDataTablePdorder = (props) => {
                                                     ) : isEditing ? (
                                                         cell.column.valueFix === true ? (
                                                             <input
+                                                                autoComplete="off"
                                                                 type="text"
                                                                 value={1}
                                                                 name={cell.column.id}
@@ -709,6 +724,7 @@ const ReactDataTablePdorder = (props) => {
                                                             />
                                                         ) : cell.column.type === "input" ? (
                                                             <input
+                                                                autoComplete="off"
                                                                 type="text"
                                                                 value={tableData[row.index]?.[cell.column.id] || cell.value || ""}
                                                                 name={cell.column.id}
@@ -718,6 +734,7 @@ const ReactDataTablePdorder = (props) => {
                                                             />
                                                         ) : cell.column.type === "select" ? (
                                                             <select
+                                                                autoComplete="off"
                                                                 name={cell.column.id}
                                                                 value={tableData[row.index]?.[cell.column.id] || cell.column.options[row.index].value || ""}
                                                                 onChange={(e) => handleChange(e, reportWebVitals)}>
@@ -744,6 +761,7 @@ const ReactDataTablePdorder = (props) => {
                                                         ) : cell.column.type === "productInfo" ? (
                                                             <div>
                                                                 <input
+                                                                    autoComplete="off"
                                                                     id={cell.column.id}
                                                                     name={cell.column.id}
                                                                     type="text"
@@ -776,6 +794,7 @@ const ReactDataTablePdorder = (props) => {
                                                         ) : cell.column.type === "company" ? (
                                                             <div>
                                                                 <input
+                                                                    autoComplete="off"
                                                                     className="buttonSelect"
                                                                     id={cell.column.id}
                                                                     name={cell.column.id}

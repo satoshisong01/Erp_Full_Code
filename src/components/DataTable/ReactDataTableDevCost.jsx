@@ -76,25 +76,25 @@ const ReactDataTableDevCost = (props) => {
         setOriginTableData(updatedTableData);
     }, [customDatas]);
 
-        /* columns에는 있지만 넣어줄 데이터가 없을 때 초기값 설정 */
-        const initializeTableData = (datas, cols) => {
-            if (datas && datas.length > 0) {
-                const updatedData = datas.map((dataItem) => {
-                    const newData = { ...dataItem };
-                    cols.forEach((column) => {
-                        if (!newData.hasOwnProperty(column.col)) {
-                            newData[column.col] = ""; // 해당 변수가 없으면 빈 값으로 초기화
-                        }
-                        if (column.type === "select") {
-                            newData[column.col] = column.options[0].value; // 옵션의 첫 번째 값으로 초기화
-                        }
-                    });
-                    return newData;
+    /* columns에는 있지만 넣어줄 데이터가 없을 때 초기값 설정 */
+    const initializeTableData = (datas, cols) => {
+        if (datas && datas.length > 0) {
+            const updatedData = datas.map((dataItem) => {
+                const newData = { ...dataItem };
+                cols.forEach((column) => {
+                    if (!newData.hasOwnProperty(column.col)) {
+                        newData[column.col] = ""; // 해당 변수가 없으면 빈 값으로 초기화
+                    }
+                    if (column.type === "select") {
+                        newData[column.col] = column.options[0].value; // 옵션의 첫 번째 값으로 초기화
+                    }
                 });
-                return updatedData;
-            }
-            return [];
-        };
+                return newData;
+            });
+            return updatedData;
+        }
+        return [];
+    };
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
@@ -345,7 +345,7 @@ const ReactDataTableDevCost = (props) => {
     const addItem = async (addData) => {
         const url = `/api/baseInfrm/product/devOutCost/addList.do`;
         const resultData = await axiosPost(url, addData);
-        if(resultData) {
+        if (resultData) {
             return true;
         } else {
             return false;
@@ -355,7 +355,7 @@ const ReactDataTableDevCost = (props) => {
     const updateItem = async (toUpdate) => {
         const url = `/api/baseInfrm/product/devOutCost/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
-        if(resultData) {
+        if (resultData) {
             return true;
         } else {
             return false;
@@ -365,14 +365,14 @@ const ReactDataTableDevCost = (props) => {
     const deleteItem = async (removeItem) => {
         const url = `/api/baseInfrm/product/devOutCost/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-        if(resultData) {
+        if (resultData) {
             return true;
         } else {
             return false;
         }
     };
 
-     //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
+    //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
     const updateDataInOrigin = (originData, updatedData) => {
         // 복제하여 새로운 배열 생성
         const updatedArray = [...originData];
@@ -401,7 +401,7 @@ const ReactDataTableDevCost = (props) => {
             }
             const isDel = deleteItem(delList); //삭제
 
-            if(isMod && isDel) {
+            if (isMod && isDel) {
                 alert("저장완료");
                 customDatasRefresh && customDatasRefresh();
                 setOriginTableData([]);
@@ -409,7 +409,7 @@ const ReactDataTableDevCost = (props) => {
         } else if (originDataLength === updatedDataLength) {
             const firstRowUpdate = updateDataInOrigin(originData, filterData);
             const isMod = updateItem(firstRowUpdate); //수정
-            if(isMod) {
+            if (isMod) {
                 alert("저장완료");
                 customDatasRefresh && customDatasRefresh();
                 setOriginTableData([]);
@@ -428,7 +428,7 @@ const ReactDataTableDevCost = (props) => {
                 addList.push(filterData[i]);
             }
             const isAdd = addItem(addList); //추가
-            if(isMod && isAdd) {
+            if (isMod && isAdd) {
                 alert("저장완료");
                 customDatasRefresh && customDatasRefresh();
                 setOriginTableData([]);
@@ -440,14 +440,14 @@ const ReactDataTableDevCost = (props) => {
 
     const textAlignStyle = (column) => {
         switch (column.textAlign) {
-            case 'left':
-                return 'txt-left';
-            case 'right':
-                return 'txt-right';
+            case "left":
+                return "txt-left";
+            case "right":
+                return "txt-right";
             default:
-                return 'txt-center';
+                return "txt-center";
         }
-    }
+    };
 
     return (
         <div className={isPageNation ? "x-scroll" : "table-scroll"}>
@@ -498,6 +498,7 @@ const ReactDataTableDevCost = (props) => {
                                                 ) : isEditing ? (
                                                     cell.column.type === "input" ? (
                                                         <input
+                                                            autoComplete="off"
                                                             type="text"
                                                             value={
                                                                 tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
@@ -509,6 +510,7 @@ const ReactDataTableDevCost = (props) => {
                                                         />
                                                     ) : cell.column.type === "company" ? (
                                                         <input
+                                                            autoComplete="off"
                                                             className="buttonSelect"
                                                             id={cell.column.id}
                                                             name={cell.column.id}
@@ -522,10 +524,9 @@ const ReactDataTableDevCost = (props) => {
                                                     ) : cell.column.type === "number" ? (
                                                         <Number
                                                             value={tableData[row.index]?.[cell.column.id] || ""}
-                                                            onChange={(value) => handleChange({target: {value: value, name: cell.column.id}}, row)}
-                                                            style={{ textAlign: cell.column.textAlign || 'left' }}
+                                                            onChange={(value) => handleChange({ target: { value: value, name: cell.column.id } }, row)}
+                                                            style={{ textAlign: cell.column.textAlign || "left" }}
                                                         />
-
                                                     ) : typeof cell.value === "number" ? (
                                                         cell.value && cell.value.toLocaleString()
                                                     ) : (

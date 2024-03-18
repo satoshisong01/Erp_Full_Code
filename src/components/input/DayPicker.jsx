@@ -46,7 +46,16 @@ export default function DayPicker({ name, value, onClick }) {
 
     return (
         <div ref={datePickerRef}>
-            <input id={uuidv4()} type="text" name={name} value={value || ""} onClick={() => setIsCalendarVisible(true)} readOnly className="basic-input" />
+            <input
+                autoComplete="off"
+                id={uuidv4()}
+                type="text"
+                name={name}
+                value={value || ""}
+                onClick={() => setIsCalendarVisible(true)}
+                readOnly
+                className="basic-input"
+            />
 
             {isCalendarVisible && (
                 <div ref={calendarRef} id={uuidv4()}>

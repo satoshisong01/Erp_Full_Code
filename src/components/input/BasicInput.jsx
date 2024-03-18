@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 export default function BasicInput({ item, onChange, onClick, value, readOnly }) {
     return (
         <input
+            autoComplete="off"
             id={uuidv4()}
             className="basic-input"
             name={item.col || ""}

@@ -46,6 +46,7 @@ export default function MonthPicker({ name, value, onClick }) {
 
     return (
         <DatePicker
+            autoComplete="off"
             id={uuidv4()}
             className="basic-input"
             name={name}

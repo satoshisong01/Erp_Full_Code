@@ -60,8 +60,8 @@ export default function EstDesc({ onChange, value, style }) {
 
     return (
         <div className="formatted-input">
-            <input type="text" value={value} onChange={inputChange} style={{ display: "none" }} />
-            <input type="text" value={viewValue} onChange={inputChange} style={style} onClick={togglePopup} />
+            <input autoComplete="off" type="text" value={value} onChange={inputChange} style={{ display: "none" }} />
+            <input autoComplete="off" type="text" value={viewValue} onChange={inputChange} style={style} onClick={togglePopup} />
             {showPopup && (
                 <div className="popup" style={{ position: "absolute", zIndex: "999", width: "500px", height: "300px", top: "30%", left: "35%" }}>
                     <div style={{ display: "flex", flexDirection: "column" }}>

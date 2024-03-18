@@ -502,16 +502,17 @@ const ReactDataTableURL = (props) => {
                 } else if (column.accessor === "pjbgTypeCode20") {
                     newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
                 }
-            } else if (current.id === "estimateLabor") {
+            }
+            //경비영업-경비목록 콤보박스 처리
+            else if (column.type === "select") {
+                newRow[column.accessor] = column.options[tableData.length]?.value ? column.options[tableData.length].value : "";
+            }
+            if (current.id === "estimateLabor") {
                 //견적>인건비
                 if (column.accessor === "estPosition") {
+                    console.log(column.accessor);
                     newRow[column.accessor] = "특2"; // useAt 항상 "Y"로 설정
                 }
-            }
-
-            //경비영업-경비목록 콤보박스 처리
-            if (column.type === "select") {
-                newRow[column.accessor] = column.options[tableData.length]?.value ? column.options[tableData.length].value : "";
             }
         });
 
@@ -717,6 +718,7 @@ const ReactDataTableURL = (props) => {
                                                     ) : isEditing ? (
                                                         cell.column.type === "input" ? (
                                                             <input
+                                                                autoComplete="off"
                                                                 id={cell.column.id}
                                                                 name={cell.column.id}
                                                                 type="text"
@@ -729,6 +731,7 @@ const ReactDataTableURL = (props) => {
                                                             />
                                                         ) : cell.column.type === "desc" ? (
                                                             <input
+                                                                autoComplete="off"
                                                                 type="text"
                                                                 value={
                                                                     tableData[row.index]?.[cell.column.id] !== undefined
@@ -749,6 +752,7 @@ const ReactDataTableURL = (props) => {
                                                         ) : cell.column.type === "productGroup" ? (
                                                             <div>
                                                                 <input
+                                                                    autoComplete="off"
                                                                     className="buttonSelect"
                                                                     id={cell.column.id}
                                                                     name={cell.column.col}
@@ -764,6 +768,7 @@ const ReactDataTableURL = (props) => {
                                                         ) : cell.column.type === "pgNm" ? (
                                                             <div>
                                                                 <input
+                                                                    autoComplete="off"
                                                                     className="buttonSelect"
                                                                     id={cell.column.id}
                                                                     name={cell.column.col}
@@ -778,6 +783,7 @@ const ReactDataTableURL = (props) => {
                                                             </div>
                                                         ) : cell.column.type === "select" ? (
                                                             <select
+                                                                autoComplete="off"
                                                                 name={cell.column.id}
                                                                 value={tableData[row.index]?.[cell.column.id] || ""}
                                                                 onChange={(e) => onChangeInput(e, row, cell.column.id)}>
@@ -790,6 +796,7 @@ const ReactDataTableURL = (props) => {
                                                         ) : cell.column.type === "company" ? (
                                                             <div>
                                                                 <input
+                                                                    autoComplete="off"
                                                                     className="buttonSelect"
                                                                     id={cell.column.id}
                                                                     name={cell.column.id}

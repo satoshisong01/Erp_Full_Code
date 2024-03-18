@@ -661,14 +661,14 @@ const ReactDataTable = (props) => {
 
     const textAlignStyle = (column) => {
         switch (column.textAlign) {
-            case 'left':
-                return 'txt-left';
-            case 'right':
-                return 'txt-right';
+            case "left":
+                return "txt-left";
+            case "right":
+                return "txt-right";
             default:
-                return 'txt-center';
+                return "txt-center";
         }
-    }
+    };
 
     return (
         <>
@@ -682,7 +682,7 @@ const ReactDataTable = (props) => {
                 <div>
                     {isPageNationCombo && (
                         <div className="flex-between mg-b-10">
-                            <div className="page-size" style={{width: 80}}>
+                            <div className="page-size" style={{ width: 80 }}>
                                 {/* <span className="table-title mg-r-10">데이터 수</span> */}
                                 <select className="select" id={uuidv4()} value={pageSize} onChange={(e) => pageSizeChange(e.target.value)}>
                                     {pageSizeOptions.map((size, index) => (
@@ -734,11 +734,7 @@ const ReactDataTable = (props) => {
                                                     }
 
                                                     return (
-                                                        <td
-                                                            {...cell.getCellProps()}
-                                                            className={textAlignStyle(cell.column)}
-                                                            id="otherCol"
-                                                        >
+                                                        <td {...cell.getCellProps()} className={textAlignStyle(cell.column)} id="otherCol">
                                                             {cell.column.id === "selection" ? (
                                                                 cell.render("Cell")
                                                             ) : isEditing ? (
@@ -752,6 +748,7 @@ const ReactDataTable = (props) => {
                                                                                 : cell.value || ""
                                                                         }
                                                                         name={cell.column.id}
+                                                                        autoComplete="off"
                                                                         onChange={(e) => handleChange(e, row, cell.column.id)}
                                                                     />
                                                                 ) : cell.column.type === "datePicker" ? (
@@ -760,6 +757,7 @@ const ReactDataTable = (props) => {
                                                                             name={cell.column.id}
                                                                             value={tableData[row.index]?.[cell.column.id]?.substring(0, 7) || ""}
                                                                             onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
+                                                                            autoComplete="off"
                                                                         />
                                                                     </div>
                                                                 ) : cell.column.type === "employerInfo" ? (
@@ -767,11 +765,13 @@ const ReactDataTable = (props) => {
                                                                         item={cell.column}
                                                                         onClick={() => changeEmployerInfo(cell.column.id, rowIndex)}
                                                                         value={tableData[row.index][cell.column.id] ?? ""}
+                                                                        autoComplete="off"
                                                                         readOnly
                                                                     />
                                                                 ) : cell.column.type === "dayPicker" ? (
                                                                     <DayPicker
                                                                         name={cell.column.id}
+                                                                        autoComplete="off"
                                                                         value={tableData[row.index][cell.column.id] ? tableData[row.index][cell.column.id] : ""}
                                                                         onClick={(data) => handleDateClick(data, cell.column.id, row.index)}
                                                                     />
@@ -788,12 +788,14 @@ const ReactDataTable = (props) => {
                                                                             value={tableData[rowIndex].pgNm || ""}
                                                                             onChange={(e) => handleChange(e, row, cell.column.id)}
                                                                             readOnly
+                                                                            autoComplete="off"
                                                                         />
                                                                     </div>
                                                                 ) : cell.column.type === "monthPicker" ? (
                                                                     <div className="box3-1 boxDate">
                                                                         <MonthPicker
                                                                             name={cell.column.id}
+                                                                            autoComplete="off"
                                                                             value={
                                                                                 tableData[row.index][cell.column.id]
                                                                                     ? tableData[row.index][cell.column.id].substring(0, 7)
@@ -806,6 +808,7 @@ const ReactDataTable = (props) => {
                                                                     <select
                                                                         key={cell.column.id + row.index}
                                                                         name={cell.column.id}
+                                                                        autoComplete="off"
                                                                         defaultValue={
                                                                             tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
                                                                                 ? tableData[row.index][cell.column.id]
@@ -833,7 +836,10 @@ const ReactDataTable = (props) => {
                                                             ) : typeof cell.value === "number" ? (
                                                                 cell.value && cell.value.toLocaleString()
                                                             ) : cell.column.id === "sgnDesc" ? (
-                                                                <div dangerouslySetInnerHTML={{ __html: tableData[cell.row.index]?.[cell.column.id] || "" }}></div>
+                                                                <div
+                                                                    dangerouslySetInnerHTML={{
+                                                                        __html: tableData[cell.row.index]?.[cell.column.id] || "",
+                                                                    }}></div>
                                                             ) : (
                                                                 cell.render("Cell") || ""
                                                             )}

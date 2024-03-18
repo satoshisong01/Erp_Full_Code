@@ -25,12 +25,14 @@ export default function Number({ onChange, value, style }) {
     return (
         <div className="formatted-input">
             <input
+                autoComplete="off"
                 type="text"
                 value={value} // 실제 입력된 숫자 값을 표시
                 onChange={() => {}} // 입력된 값이 변경되지 않도록 빈 함수를 사용
                 style={{ display: "none" }} // 화면 숨김
             />
             <input
+                autoComplete="off"
                 type="text"
                 value={viewValue} // 콤마로 표시되는 값
                 onChange={inputChange} // 부모 컴포넌트로 전달
