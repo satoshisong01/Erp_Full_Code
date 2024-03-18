@@ -14,8 +14,7 @@ Modal.setAppElement("#root"); // Set the root element for accessibility
 /* 파일업로드 모달 */
 export default function FileModal(props) {
     const { width, height, isOpen, title, onClose, fileIdData } = props;
-    const { setModalPageName, setIsModalTable, filePageName, setFilePageName, setFileLength, atchFileId, setFileCatch, setAtchFileId, innerPageName } =
-        useContext(PageContext);
+    const { setModalPageName, setIsModalTable, filePageName, setFilePageName, atchFileId, setAtchFileId, innerPageName } = useContext(PageContext);
     const [fileData, setFileData] = useState([]);
 
     const [fileList, setFileList] = useState([]);
@@ -40,8 +39,6 @@ export default function FileModal(props) {
         const resultData = await axiosFetch(url, { atchFileId: fileIdData });
         if (resultData) {
             console.log(resultData, "???리스트나와야하는디");
-            setFileLength(resultData.length);
-            console.log(resultData.length);
             const originTitle = resultData.map((item) => item.originalFileNm);
             const fileId = resultData.map((item) => item.fileId);
             setFileList(originTitle);
@@ -82,8 +79,6 @@ export default function FileModal(props) {
 
     const onClickSubmit = async () => {
         // 확인 버튼을 눌렀을 때에만 서버에 요청
-        console.log("???이거왜 계속눌림");
-        setFileCatch(true);
         if (fileIdData && fileIdData !== undefined) {
             console.log(fileData, "배열로 들어와서 변경해줘야함");
             console.log(fileIdData, "Id값들어오는걸보자");
@@ -123,7 +118,6 @@ export default function FileModal(props) {
             setFileList([]);
             onClose();
         }
-        setFileCatch(false);
     };
 
     const clickDownLoad = async (item, index, filedown) => {

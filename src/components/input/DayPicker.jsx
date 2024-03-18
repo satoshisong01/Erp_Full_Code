@@ -15,20 +15,28 @@ export default function DayPicker({ name, value, onClick }) {
         }
     };
 
+    const handleEscPress = (event) => {
+        if (event.keyCode === 27) {
+            setIsCalendarVisible(false);
+        }
+    };
+
     useEffect(() => {
-        //다른 곳 클릭 시 닫음
+        // 다른 곳 클릭 시 닫음
         document.addEventListener("click", handleOutsideClick);
+        document.addEventListener("keydown", handleEscPress);
         return () => {
             document.removeEventListener("click", handleOutsideClick);
+            document.removeEventListener("keydown", handleEscPress);
         };
     }, []);
 
     const onClickDay = (data) => {
-        onClick(fomatChange(data));
+        onClick(formatChange(data));
         setIsCalendarVisible(false);
     };
 
-    const fomatChange = (date) => {
+    const formatChange = (date) => {
         const year = date.getFullYear();
         const month = (date.getMonth() + 1).toString().padStart(2, "0");
         const day = date.getDate().toString().padStart(2, "0");
@@ -38,16 +46,7 @@ export default function DayPicker({ name, value, onClick }) {
 
     return (
         <div ref={datePickerRef}>
-            <input
-                id={uuidv4()}
-                type="text"
-                name={name}
-                value={value || ""}
-                onClick={() => setIsCalendarVisible(true)}
-                readOnly
-                className="basic-input"
-                style={{ backgroundColor: "#ccc" }}
-            />
+            <input id={uuidv4()} type="text" name={name} value={value || ""} onClick={() => setIsCalendarVisible(true)} readOnly className="basic-input" />
 
             {isCalendarVisible && (
                 <div ref={calendarRef} id={uuidv4()}>

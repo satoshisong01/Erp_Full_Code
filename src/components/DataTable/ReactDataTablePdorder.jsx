@@ -54,8 +54,6 @@ const ReactDataTablePdorder = (props) => {
         setIsOpenModalCompany,
         isOpenModalCompany,
         atchFileId,
-        fileLength,
-        fileLCatch,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -160,6 +158,10 @@ const ReactDataTablePdorder = (props) => {
             }
         }
     }, [newRowData]);
+
+    useEffect(() => {
+        console.log(tableData);
+    }, [tableData]);
 
     const {
         getTableProps,
@@ -307,23 +309,8 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const getFileData = (rowIndex) => {
-        console.log(rowIndex);
-        setRowIndex(rowIndex);
-        console.log(fileLength, "fileLength");
         setFileIdData(tableData[rowIndex].atchFileId);
     };
-
-    useEffect(() => {
-        // tableData가 존재하고, rowIndex가 tableData의 길이 내에 있는지 확인합니다.
-        if (tableData && rowIndex >= 0 && rowIndex < tableData.length) {
-            const updatedTableData = [...tableData];
-            console.log(fileLength, "fileLength");
-
-            // 안전하게 countFileId를 업데이트합니다.
-            updatedTableData[rowIndex]["countFileId"] = fileLength; // 파일 갯수
-            setTableData(updatedTableData);
-        }
-    }, [fileLength, rowIndex]); // useEffect의 의존성 배열을 업데이트했습니다.
 
     const setValueDataPdiNm = (rowIndex, selectedPdiNm) => {
         // 선택된 품명에 해당하는 데이터 찾기
@@ -386,11 +373,8 @@ const ReactDataTablePdorder = (props) => {
     const handleChange = (e, row) => {
         const { value, name } = e.target;
         const index = row.index;
-        console.log(index);
         const updatedTableData = [...tableData];
         updatedTableData[row.index][name] = value;
-
-        console.log(value, name);
 
         //실행
         if (currentPageName.name === "구매(재료비)") {
@@ -461,10 +445,6 @@ const ReactDataTablePdorder = (props) => {
                     updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits); //이익금
                     updatedTableData[index]["byStandardMargin"] = byStandardMargin; //이익률
                 }
-            } else if (name === "file") {
-                const countFileId = fileLength;
-                console.log(countFileId, "들어오긴하나");
-                updatedTableData[index]["countFileId"] = countFileId; //공급금액
             }
         }
         setTableData(updatedTableData);
@@ -785,7 +765,6 @@ const ReactDataTablePdorder = (props) => {
                                                                     id={cell.column.id}
                                                                     name={cell.column.id}
                                                                     className="basic-input"
-                                                                    onChange={(e) => handleChange(e, row)}
                                                                     onClick={() => {
                                                                         goSetting(row.index);
                                                                         getFileData(row.index);

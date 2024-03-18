@@ -47,7 +47,7 @@ export default function DeleteModal({ initialData, resultData, onClose, isOpen }
                     <button
                         type="button"
                         onClick={() => onConfirm("취소")}
-                        className="btn btn-primary btn btn-secondary btn-block"
+                        className="btn btn-primary btn-block"
                         style={{ color: "black", backgroundColor: "#f0f0f0", borderColor: "gray" }}>
                         취소
                     </button>
