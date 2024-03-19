@@ -10,6 +10,7 @@ import BasicButton from "components/button/BasicButton";
 import { ChangePrmnPlanData, buyIngInfoCalculation } from "components/DataTable/function/ReplaceDataFormat";
 import { PageContext } from "components/PageProvider";
 import { ProcessResultDataRun } from "components/DataTable/function/ProcessResultData";
+import PopupButton from "components/button/PopupButton";
 
 export default function SignDocument() {
     const sessionUser = sessionStorage.getItem("loginUser");
@@ -187,10 +188,6 @@ export default function SignDocument() {
                     sttPaymentDate: signInfo.sgnSigndate,
                     sgnDesc: signInfo.sgnDesc,
                 }];
-                const merge = [
-                    ...changeSign,
-                    ...arr
-                ];
                 const merge = [...changeSign, ...arr];
                 setApprovalData(merge);
                 const myData = stateResultData.find((item) => item.sttApproverAt === "진행" && item.sttApproverId === sessionUserUniqId);
@@ -369,10 +366,6 @@ export default function SignDocument() {
                             tableData2: buyIngInfo,
                         }}
                     />
-                    {/* <PopupButton
-                        targetUrl={URL.PreCostDoc}
-                        data={{ label: "견적원가서(보기)", type: "document" }}
-                    /> */}
                     {isMyTurn && <ViewButton label={"결재"} onClick={() => setIsOpenView(true)} />}
                 </div>
                 <div style={{ textAlign: "center", marginBottom: "-65px" }}>

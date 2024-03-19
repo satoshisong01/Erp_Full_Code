@@ -129,10 +129,8 @@ const LaborCostDoc = ({ displayNone }) => {
     useEffect(() => {
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
-        console.log(data, "수주관리에선 못불러오나?");
-        setProjectTitle(data.tableData[0].poiNm);
+        setProjectTitle(data.tableData[0]?.poiNm);
         setTableDatas(restructureData(data.tableData));
-        console.log(data.tableData, "초기데이터");
         setDevCost(calculateTotal(restructureData(data.tableData)));
         const { label, poiId, versionId } = data;
         setTitle(label);
