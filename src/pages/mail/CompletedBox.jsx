@@ -11,7 +11,6 @@ import ModButton from "components/button/ModButton";
 import URL from "constants/url";
 import { columns } from "constants/columns";
 import ViewModal from "components/modal/ViewModal";
-import ViewButton from "components/button/ViewButton";
 
 /** 전자결재-결재완료함 */
 function CompletedBox() {
@@ -22,17 +21,28 @@ function CompletedBox() {
     const [isOpenView, setIsOpenView] = useState(false);
 
     const columnsList = [
+        { header: "결재아이디", col: "sgnId", notView: true },
+        { header: "기안자부서", col: "sgnSenderGroupNm", notView: true },
+        { header: "기안자직급", col: "sgnSenderPosNm", notView: true },
         { header: "프로젝트아이디", col: "poiId", notView: true },
         { header: "버전아이디", col: "versionId", notView: true },
+        { header: "버전명", col: "versionNum", notView: true },
         { header: "수주아이디", col: "poId", notView: true },
-        { header: "결재아이디", col: "sgnId", notView: true },
+        { header: "결재아이디", col: "sttId", notView: true },
         { header: "발신자아이디", col: "sgnSenderId", notView: true },
         { header: "수신자아이디", col: "sgnReceiverId", notView: true },
-        { header: "프로젝트명", col: "poiNm", cellWidth: "350" },
+        { header: "고객사", col: "cltNm", notView: true },
+        { header: "영업대표", col: "poiSalmanagerId", notView: true },
+        { header: "담당자", col: "poiManagerId", notView: true },
+        { header: "납기시작일", col: "poiDueBeginDt", notView: true },
+        { header: "납기종료일", col: "poiDueEndDt", notView: true },
+        { header: "계약금(천원)", col: "orderTotal", notView: true },
+        { header: "요청일", col: "sngSignData", notView: true },
+        { header: "프로젝트명", col: "poiNm", cellWidth: "350", textAlign: "left" },
         { header: "결재종류", col: "sgnType", cellWidth: "200" },
         { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
-        { header: "기안일", col: "sgnSigndate", cellWidth: "100" },
-        { header: "코멘트", col: "sgnComent", cellWidth: "589" },
+        { header: "기안일", col: "sgnSigndate", cellWidth: "130" },
+        { header: "비고", col: "sgnDesc", cellWidth: "559", textAlign: "left" },
     ];
 
     const conditionList = [
@@ -97,13 +107,30 @@ function CompletedBox() {
         }
     };
 
+    const openPopup = () => {
+        if(selectedRows?.sgnId) {
+            const sendData = {
+                label: "전자결재",
+                ...selectedRows
+            }
+            const url = `${URL.SignDocument}?data=${encodeURIComponent(JSON.stringify(sendData))}`;
+            const width = 1200;
+            const height = 700;
+            const left = window.screen.width / 2 - width / 2;
+            const top = window.screen.height / 2 - height / 2;
+            const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
+            window.open(url, "completedBoxWindow", windowFeatures);
+        }
+    };
+
     return (
         <>
             <Location pathList={locationPath.Approval} />
             <SearchList conditionList={conditionList} />
             <HideCard title="결재완료 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
-                    <ViewButton label={"전자결재"} onClick={() => setIsOpenView(true)} />
+                    <ModButton label="전자결재" onClick={openPopup}/>
+                    {/* <ViewButton label={"전자결재"} onClick={() => setIsOpenView(true)} /> */}
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTable

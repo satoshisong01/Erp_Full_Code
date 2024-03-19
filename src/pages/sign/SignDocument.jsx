@@ -1,10 +1,8 @@
-import ApprovalFormCost from "components/form/ApprovalFormCost";
 import ViewModal from "components/modal/ViewModal";
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { columns } from "constants/columns";
 import ViewButton from "components/button/ViewButton";
-import PopupButton from "components/button/PopupButton";
 import URL from "constants/url";
 import { axiosFetch, axiosUpdate } from "api/axiosFetch";
 import SignStateLine from "components/SignStateLine";
@@ -17,7 +15,6 @@ export default function SignDocument() {
     const [title, setTitle] = useState("");
     const [projectInfo, setProjectInfo] = useState({}); //프로젝트정보
     const [approvalData, setApprovalData] = useState([]); //승인자목록
-    // const [signData, setSignData] = useState({}); //요청자
 
     function getQueryParameterByName(name, url) {
         if (!url) url = window.location.href;
@@ -37,19 +34,6 @@ export default function SignDocument() {
         const data = JSON.parse(dataParameter); //프로젝트정보있음
         console.log("⭐data:", data);
         setProjectInfo({...data});
-        // setProjectInfo({
-        //     sgnId: data.sgnId,
-        //     poiId: data.poiId,
-        //     poiNm: data.poiNm,
-        //     versionId: data.versionId,
-        //     versionNum: data.versionNum,
-        //     cltNm: data.cltNm,
-        //     poiSalmanagerId: data.poiSalmanagerId,
-        //     poiManagerId: data.poiManagerId,
-        //     poiDueBeginDt: data.poiDueBeginDt,
-        //     poiDueEndDt: data.poiDueEndDt,
-        //     orderTotal: data.orderTotal,
-        // });
 
         if(data.sgnType === "견적품의서") {
             setTitle("견적서 승인 요청서");
@@ -61,40 +45,18 @@ export default function SignDocument() {
             setTitle("완료보고서");
             setOpenUrl(URL.PostCostsDoc);
         }
-        // 사인상태 불러오기
-        // const temp = getSignData({sgnId: data.sgnId});
-        // console.log("이거왜없어~~", temp);
-        getSignStateData({sgnId: data.sgnId});
+        getData({sgnId: data.sgnId});
         
     }, []);
 
     const [isMyTurn, setIsMyTurn] = useState(false);
 
-    /* 결재정보 */
-    // const getSignData = async (requestData) => {
-    //     const resultData = await axiosFetch("/api/system/sign/totalListAll.do", requestData || {});
-    //     if (resultData) {
-    //         console.log("싸인>>>>>>", resultData);
-    //         let data = resultData[0];
-    //         data = {
-    //             sgnId: data.sgnId,
-    //             sgnSenderId: data.sgnSenderId, //발신자이름
-    //             sgnSenderPosNm: data.sgnSenderPosNm, //기안자직급
-    //             sgnSenderGroupNm: data.sgnSenderGroupNm, //기안자부서
-    //             sgnSigndate: data.sgnSigndate, //기안일
-    //             sgnReceiverId: data.sgnReceiverId, //수신자
-    //             sgnDesc: data.sgnDesc, //비고
-    //         }
-    //         return data
-    //     }
-    // }
-
     /* 결재상태정보 */
-    const getSignStateData = async (requestData) => {
+    const getData = async (requestData) => {
         const signResultData = await axiosFetch("/api/system/sign/totalListAll.do", requestData || {});
+        console.log("사인정보", signResultData);
         let signInfo = {};
         if (signResultData) {
-            console.log("1. 결재정보", signResultData);
             signInfo = {
                 sgnId: signResultData[0]?.sgnId,
                 sgnSenderId: signResultData[0]?.sgnSenderId, //발신자이름
@@ -104,10 +66,14 @@ export default function SignDocument() {
                 sgnReceiverId: signResultData[0]?.sgnReceiverId, //수신자
                 sgnDesc: signResultData[0]?.sgnDesc, //비고
             };
+            setProjectInfo(prev => ({
+                ...prev,
+                ...signInfo, //프로젝트 정보에 비고추가
+            }))
         }
     
         const stateResultData = await axiosFetch("/api/system/signState/totalListAll.do", requestData || {});
-        console.log("2. 결재상태정보:", stateResultData);
+        console.log("stateResultData:", stateResultData);
         if (stateResultData) {
             const arr = stateResultData.map(item => ({
                 sttId: item.sttId, //결재ID
@@ -115,7 +81,8 @@ export default function SignDocument() {
                 sttApproverNm: item.sttApproverNm, //승인자명
                 sttApproverPosNm: item.sttApproverPosNm, //직급
                 sttApproverGroupNm: item.sttApproverGroupNm, //부서
-                sttApproverAt: item.sttApproverAt, //상태
+                sttApproverAt: item.sttApproverAt, //승인자상태
+                sttResult: item.sttResult, //결재결과
                 sttComent: item.sttComent, //코멘트
                 sttPaymentDate: item.sttPaymentDate, //결재일 (오타 수정)
             }));
@@ -127,6 +94,7 @@ export default function SignDocument() {
                     sttApproverAt: "요청",
                     sttApproverGroupNm: signInfo.sgnSenderGroupNm,
                     sttPaymentDate: signInfo.sgnSigndate,
+                    sgnDesc: signInfo.sgnDesc,
                 }];
                 const merge = [
                     ...changeSign,
@@ -140,11 +108,6 @@ export default function SignDocument() {
     };
     
 
-    // const approvalLineData = [
-    //     {empNm: "유지수", posNm: "주임", state: "요청"},
-    //     {empNm: "손영훈", posNm: "PM", state: "승인"},
-    //     {empNm: "김준석", posNm: "팀장", state: "진행"},
-    // ]
     const projectColumns = [
         { header: "프로젝트명", name: "poiNm", colValue: 3, colspan: 2, style: { textAlign: "left" } },
         { header: "사전원가 버전", name: "versionNum", colValue: 3, colspan: 2, style: { textAlign: "left" } },
@@ -163,21 +126,14 @@ export default function SignDocument() {
     ];
 
     const signStateColumns = [ //승인자목록
-        // {header: "결재상태", name: "sttState", style: {width: "10%", textAlign: "center"}},
-        {header: "결재상태", name: "sttApproverAt", style: {width: "10%", textAlign: "center"}},
+        {header: "진행상태", name: "sttApproverAt", style: {width: "10%", textAlign: "center"}},
+        {header: "결재결과", name: "sttResult", style: {width: "10%", textAlign: "center"}},
         {header: "결재자", name: "sttApproverNm", style: {width: "10%", textAlign: "center"}},
         {header: "부서", name: "sttApproverGroupNm", style: {width: "10%", textAlign: "center"}},
         {header: "직급", name: "sttApproverPosNm", style: {width: "10%", textAlign: "center"}},
         {header: "결재일시", name: "sttPaymentDate", style: {width: "15%", textAlign: "center"}},
         {header: "코멘트", name: "sttComent", style: {width: "30%", textAlign: "left"}},
     ];
-
-
-    
-    // const approvalData = [
-    //     {sttState: "승인", empNm: "손영훈", posNm: "PM", groupNm: "PA팀", sttPaymentDate: "2024-03-14 17:35", sttComent: "승인 테스트"},
-    //     {sttState: "진행", empNm: "김준석", posNm: "팀장", groupNm: "PA팀", sttPaymentDate: "", sttComent: ""},
-    // ];
 
 
     /* 프로젝트 DOM 구성 */
@@ -196,7 +152,6 @@ export default function SignDocument() {
             if (column.colspan) {
                 currentRow.push(
                     <td key={uuidv4()} colSpan={column.colspan} style={{ textAlign: column.style.textAlign }}>
-                        {/* { column.name !== "salesTotal" ? data[column.name] : data[column.name].toLocaleString()} */}
                         { column.name !== "salesTotal" ? data[column.name] : data[column.name]}
                     </td>
                 );
@@ -215,7 +170,7 @@ export default function SignDocument() {
     
         tableRows.push(
             <tr key={uuidv4()} style={{ textAlign: "left" }}>
-                <td colSpan="6" dangerouslySetInnerHTML={{ __html: data.sgnDesc }} />
+                <td colSpan="6" dangerouslySetInnerHTML={{ __html: data.sgnDesc || "비고 없음" }} />
             </tr>
         );
     

@@ -2,14 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import { locationPath } from "constants/locationPath";
-import { axiosFetch, axiosUpdate } from "api/axiosFetch";
+import { axiosFetch } from "api/axiosFetch";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import HideCard from "components/HideCard";
 import { PageContext } from "components/PageProvider";
 import RefreshButton from "components/button/RefreshButton";
-import { columns } from "constants/columns";
-import ViewModal from "components/modal/ViewModal";
-import ViewButton from "components/button/ViewButton";
+import ModButton from "components/button/ModButton";
+import URL from "constants/url";
 
 /** 전자결재-결재진행함 */
 function ProgressBox() {
@@ -17,20 +16,30 @@ function ProgressBox() {
 
     const [tableData, setTableData] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
-    const [isOpenView, setIsOpenView] = useState(false);
 
     const columnsList = [
+        { header: "결재아이디", col: "sgnId", notView: true },
+        { header: "기안자부서", col: "sgnSenderGroupNm", notView: true },
+        { header: "기안자직급", col: "sgnSenderPosNm", notView: true },
         { header: "프로젝트아이디", col: "poiId", notView: true },
         { header: "버전아이디", col: "versionId", notView: true },
+        { header: "버전명", col: "versionNum", notView: true },
         { header: "수주아이디", col: "poId", notView: true },
-        { header: "결재아이디", col: "sgnId", notView: true },
-        { header: "발신자아이디", col: "sgnSenderId", notView: true }, // == empId
-        { header: "수신자아이디", col: "sgnReceiverId", notView: true }, // == empId2
-        { header: "프로젝트명", col: "poiNm", cellWidth: "350" },
+        { header: "결재아이디", col: "sttId", notView: true },
+        { header: "발신자아이디", col: "sgnSenderId", notView: true },
+        { header: "수신자아이디", col: "sgnReceiverId", notView: true },
+        { header: "고객사", col: "cltNm", notView: true },
+        { header: "영업대표", col: "poiSalmanagerId", notView: true },
+        { header: "담당자", col: "poiManagerId", notView: true },
+        { header: "납기시작일", col: "poiDueBeginDt", notView: true },
+        { header: "납기종료일", col: "poiDueEndDt", notView: true },
+        { header: "계약금(천원)", col: "orderTotal", notView: true },
+        { header: "요청일", col: "sngSignData", notView: true },
+        { header: "프로젝트명", col: "poiNm", cellWidth: "350", textAlign: "left" },
         { header: "결재종류", col: "sgnType", cellWidth: "200" },
         { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
-        { header: "기안일", col: "sgnSigndate", cellWidth: "100" },
-        { header: "비고", col: "sgnDesc", cellWidth: "589", textAlign: "left" },
+        { header: "기안일", col: "sgnSigndate", cellWidth: "130" },
+        { header: "비고", col: "sgnDesc", cellWidth: "559", textAlign: "left" },
     ];
 
     const conditionList = [
@@ -70,7 +79,7 @@ function ProgressBox() {
     }, [currentPageName]);
 
     const fetchAllData = async (condition) => {
-        const resultData = await axiosFetch("/api/system/signState/totalListAll.do", condition || {});
+        const resultData = await axiosFetch("/api/system/sign/totalListAll.do", condition || {});
         if (resultData) {
             setTableData(resultData);
         }
@@ -81,17 +90,24 @@ function ProgressBox() {
     };
 
     const returnData = (row) => {
-        console.log(row);
         if (row.sgnId && selectedRows.sgnId !== row.sgnId) {
             setSelectedRows(row);
         }
     };
 
-    const approvalToServer = async (data) => {
-        console.log(data);
-        const resultData = await axiosUpdate("/api/system/signState/edit.do", data);
-        if (resultData) {
-            alert("변경되었습니다.");
+    const openPopup = () => {
+        if(selectedRows?.sgnId) {
+            const sendData = {
+                label: "전자결재",
+                ...selectedRows
+            }
+            const url = `${URL.SignDocument}?data=${encodeURIComponent(JSON.stringify(sendData))}`;
+            const width = 1200;
+            const height = 700;
+            const left = window.screen.width / 2 - width / 2;
+            const top = window.screen.height / 2 - height / 2;
+            const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
+            window.open(url, "progressBoxWindow", windowFeatures);
         }
     };
 
@@ -101,7 +117,7 @@ function ProgressBox() {
             <SearchList conditionList={conditionList} />
             <HideCard title="결재진행 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
-                    <ViewButton label={"전자결재"} onClick={() => setIsOpenView(true)} />
+                    <ModButton label="전자결재" onClick={openPopup}/>
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTable
@@ -112,17 +128,6 @@ function ProgressBox() {
                     isSingleSelect={true}
                 />
             </HideCard>
-            {isOpenView && (
-                <ViewModal
-                    width={500}
-                    height={250}
-                    list={columns.approval.views}
-                    initialData={selectedRows}
-                    resultData={approvalToServer}
-                    onClose={() => setIsOpenView(false)}
-                    title="접수자 승인"
-                />
-            )}
         </>
     );
 }

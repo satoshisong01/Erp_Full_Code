@@ -2,17 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import { locationPath } from "constants/locationPath";
-import { axiosFetch, axiosUpdate } from "api/axiosFetch";
+import { axiosFetch } from "api/axiosFetch";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import HideCard from "components/HideCard";
 import { PageContext } from "components/PageProvider";
 import RefreshButton from "components/button/RefreshButton";
-import { columns } from "constants/columns";
-import ViewButton from "components/button/ViewButton";
-import ViewModal from "components/modal/ViewModal";
-import PopupButtonSign from "components/button/PopupButtonSign";
 import URL from "constants/url";
-import BasicButton from "components/button/BasicButton";
 import ModButton from "components/button/ModButton";
 
 /** 전자결재-결재대기함(승인자기준) */
@@ -21,7 +16,6 @@ function PendingBox() {
 
     const [tableData, setTableData] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
-    const [isOpenView, setIsOpenView] = useState(false);
 
     const columnsList = [
         { header: "결재아이디", col: "sgnId", notView: true },
@@ -88,7 +82,6 @@ function PendingBox() {
 
     const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/system/signState/totalListAll.do", condition || {});
-        console.log("부른데이터:", resultData);
             setTableData(resultData);
     };
 
@@ -96,16 +89,7 @@ function PendingBox() {
         fetchAllData({ sttApproverId: localStorage.uniqId, sgnAt: "진행" });
     };
 
-    const approvalToServer = async (data) => {
-        console.log(data);
-        const resultData = await axiosUpdate("/api/system/signState/edit.do", data);
-        if (resultData) {
-            alert("변경되었습니다.");
-        }
-    };
-
     const returnData = (row) => {
-        console.log("사인아이디:", row);
         if (row.sgnId && selectedRows.sgnId !== row.sgnId) {
             setSelectedRows(row);
         }
@@ -118,15 +102,12 @@ function PendingBox() {
                 ...selectedRows
             }
             const url = `${URL.SignDocument}?data=${encodeURIComponent(JSON.stringify(sendData))}`;
-            console.log("⭐url", URL.SignDocument, "sendData:", sendData);
             const width = 1200;
             const height = 700;
             const left = window.screen.width / 2 - width / 2;
             const top = window.screen.height / 2 - height / 2;
             const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
-            window.open(url, "newWindow", windowFeatures);
-        } else {
-            alert("데이터를 선택해 주세요.")
+            window.open(url, "pendingBoxWindow", windowFeatures);
         }
     };
 
@@ -150,17 +131,6 @@ function PendingBox() {
                     isSingleSelect={true}
                 />
             </HideCard>
-            {/* {isOpenView && (
-                <ViewModal
-                    width={500}
-                    height={250}
-                    list={columns.approval.views}
-                    initialData={selectedRows}
-                    resultData={approvalToServer}
-                    onClose={() => setIsOpenView(false)}
-                    title="접수자 승인"
-                />
-            )} */}
         </>
     );
 }
