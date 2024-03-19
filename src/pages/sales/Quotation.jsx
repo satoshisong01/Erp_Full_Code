@@ -280,7 +280,7 @@ function Quotation() {
             };
 
             const firstRowUpdate = updateDataInOrigin(originData, updatedData);
-            updateItem(firstRowUpdate); //수정
+            const isMod = updateItem(firstRowUpdate); //수정
 
             const originAValues = originData.map((item) => item.estIdList); //삭제할 id 추출
             const extraOriginData = originAValues.slice(updatedDataLength);
@@ -294,16 +294,22 @@ function Quotation() {
                 delListTest.push(originData[i]);
             }
 
-            deleteItem(flatArray); //삭제
+            const isDel = deleteItem(flatArray); //삭제
+            if (isMod && isDel) {
+                alert("저장완료");
+            }
         } else if (originDataLength === updatedDataLength) {
-            updateItem(filterData); //수정
+            const isMod = updateItem(filterData); //수정
+            if (isMod) {
+                alert("저장완료");
+            }
         } else if (originDataLength < updatedDataLength) {
             const updateList = [];
 
             for (let i = 0; i < originDataLength; i++) {
                 updateList.push(filterData[i]);
             }
-            updateItem(updateList); //수정
+            const isMod = updateItem(updateList); //수정
 
             const addLists = [];
 
@@ -313,7 +319,10 @@ function Quotation() {
                 addList.versionId = condition.versionId;
                 addLists.push(addList);
             }
-            addItem(addLists); //추가
+            const isAdd = addItem(addLists); //추가
+            if (isMod && isAdd) {
+                alert("저장완료");
+            }
         }
     };
 
@@ -340,21 +349,27 @@ function Quotation() {
             };
 
             const firstRowUpdate = updateDataInOrigin(originData, filterData);
-            updateItem2(firstRowUpdate);
+            const isMod = updateItem2(firstRowUpdate);
 
             const originAValues = originData.map((item) => item.estBuyId); //삭제할 id 추출
             const extraOriginData = originAValues.slice(updatedDataLength);
 
-            deleteItem2(extraOriginData);
+            const isDel = deleteItem2(extraOriginData);
+            if (isMod && isDel) {
+                alert("저장완료");
+            }
         } else if (originDataLength === updatedDataLength) {
-            updateItem2(filterData);
+            const isMod = updateItem2(filterData);
+            if (isMod) {
+                alert("저장완료");
+            }
         } else if (originDataLength < updatedDataLength) {
             const toUpdate = [];
             for (let i = 0; i < originDataLength; i++) {
                 const temp = { ...filterData[i] };
                 toUpdate.push(temp);
             }
-            updateItem2(toUpdate);
+            const isMod = updateItem2(toUpdate);
             const addLists = [];
 
             for (let i = originDataLength; i < updatedDataLength; i++) {
@@ -363,7 +378,10 @@ function Quotation() {
                 addList.versionId = condition.versionId;
                 addLists.push(addList);
             }
-            addItem2(addLists); //추가
+            const isAdd = addItem2(addLists); //추가
+            if (isMod && isAdd) {
+                alert("저장완료");
+            }
         }
     };
 

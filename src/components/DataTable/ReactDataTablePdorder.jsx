@@ -54,6 +54,7 @@ const ReactDataTablePdorder = (props) => {
         setIsOpenModalCompany,
         isOpenModalCompany,
         atchFileId,
+        setAtchFileId,
         fileLength,
     } = useContext(PageContext);
 
@@ -321,7 +322,11 @@ const ReactDataTablePdorder = (props) => {
             console.log(fileLength, "fileLength");
 
             // 안전하게 countFileId를 업데이트합니다.
-            updatedTableData[rowIndex]["countFileId"] = fileLength; // 파일 갯수
+            if (fileLength > 0) {
+                updatedTableData[rowIndex]["countFileId"] = fileLength; // 파일 갯수
+            } else {
+                updatedTableData[rowIndex]["countFileId"] = 0; // 파일 갯수
+            }
             setTableData(updatedTableData);
         }
     }, [fileLength, rowIndex]); // useEffect의 의존성 배열을 업데이트했습니다.
@@ -366,12 +371,12 @@ const ReactDataTablePdorder = (props) => {
             // 테이블 데이터를 복제
             const updatedTableData = [...tableData];
 
+            console.log(atchFileId);
             // 선택된 품명의 데이터로 해당 행(row)의 데이터 업데이트
             updatedTableData[rowIndex] = {
                 ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
                 atchFileId, // projectPdiNm 객체의 데이터로 업데이트
             };
-
             // 업데이트된 데이터로 tableData 업데이트
             setTableData(updatedTableData);
         }
