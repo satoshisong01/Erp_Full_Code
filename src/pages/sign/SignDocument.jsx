@@ -29,6 +29,8 @@ export default function SignDocument() {
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
+    const [openUrl, setOpenUrl] = useState("");
+
     useEffect(() => {
         // URL에서 "data" 파라미터 읽기
         const dataParameter = getQueryParameterByName("data");
@@ -51,12 +53,13 @@ export default function SignDocument() {
 
         if(data.sgnType === "견적품의서") {
             setTitle("견적서 승인 요청서");
-            // 종류별 견적서 보여줘야함!!!!!⭐⭐⭐⭐⭐⭐⭐⭐
-            // <PopupButtonReport targetUrl={URL.PreCostDoc} data={{ label: "견적원가서", type: "document", ...condition }} />
+            setOpenUrl(URL.PreCostDoc);
         } else if(data.sgnType === "수주보고서") {
             setTitle("수주/계약 보고서");
+            setOpenUrl(URL.PreCostDoc);
         } else if(data.sgnType === "완료보고서") {
             setTitle("완료보고서");
+            setOpenUrl(URL.PostCostsDoc);
         }
         // 사인상태 불러오기
         // const temp = getSignData({sgnId: data.sgnId});
@@ -277,26 +280,24 @@ export default function SignDocument() {
     };
 
     const openPopup = () => {
-        // URL.PreCostDoc
-        // const url = `${targetUrl}?data=${encodeURIComponent(JSON.stringify(data))}`;
-        // console.log("targetUrl", targetUrl, "size:", size);
-        // const width = size?.width || 1400;
-        // const height = size?.height || 700;
-        // const left = window.screen.width / 2 - width / 2;
-        // const top = window.screen.height / 2 - height / 2;
-        // const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
-        // window.open(url, "newWindow", windowFeatures);
+        const url = `${openUrl}?data=${encodeURIComponent(JSON.stringify(projectInfo))}`;
+        const width = 1400;
+        const height = 700;
+        const left = window.screen.width / 2 - width / 2;
+        const top = window.screen.height / 2 - height / 2;
+        const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
+        window.open(url, "newWindow2", windowFeatures);
     };
 
     return (
         <>
             <div style={{ width: '90%', margin: 'auto' }}>
                 <div className="table-buttons mg-t-10 mg-b-10">
-                    <BasicButton label="견적원가서" />
-                    <PopupButton
+                    <BasicButton label="견적원가서" onClick={openPopup}/>
+                    {/* <PopupButton
                         targetUrl={URL.PreCostDoc}
                         data={{ label: "견적원가서(보기)", type: "document" }}
-                    />
+                    /> */}
                     {isMyTurn && <ViewButton label={"결재"} onClick={() => setIsOpenView(true)} />}
                 </div>
                 <div style={{ textAlign: "center", marginBottom: "-65px" }}>

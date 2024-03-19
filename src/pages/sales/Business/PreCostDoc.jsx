@@ -16,8 +16,6 @@ const PreCostDoc = () => {
     const outsourcingTable = useRef(null); // 외주 테이블
     const laborTable = useRef(null); // 인건비 테이블
 
-    const [isOpenModalApproval, setIsOpenModalApproval] = useState(false); //결재선 팝업
-
     /* ⭐ 데이터 없을 시 초기화 필요 */
     const [coreTableData, setCoreTableData] = useState([{ data: [""], className: [""] }]); //손익계산서 데이터
     const [purchasingTableData, setPurchasingTableData] = useState([{ data: ["", "", ""], className: [] }]); //구매재료비
@@ -26,10 +24,6 @@ const PreCostDoc = () => {
     const [laborTableData, setLaborTableData] = useState([{ data: [""], className: [""] }]); //인건비
     const [projectInfoToServer, setProjectInfoToServer] = useState({});
     const [title, setTitle] = useState("");
-
-    const [approvalLine, setApprovalLine] = useState([]) //결재선
-    const [userInfo, setUserInfo] = useState({}) //로그인 유저 정보
-    const [isApproval, setIsApproval] = useState(false); //이미 결재정보가 있는지 확인
 
     /* 스타일 */
     const purStyle = { marginBottom: 20, maxHeight: 250 };
@@ -45,74 +39,19 @@ const PreCostDoc = () => {
         }
     };
 
-    
-    /* 결재선 저장 */
-    const returnData = (value) => {
-        const updated = [{uniqId: userInfo.uniqId, empNm: userInfo.name, posNm: userInfo.posNm}, ...value.approvalLine]
-        setApprovalLine(updated);
-    }
-
-    /* 결재요청 */
-    const submit = async () => {
-        const list = approvalLine.slice(1); //첫번째는 요청자라 제외
-        if(!projectInfoToServer.poiId || !projectInfoToServer.versionId) {
-            console.log("❌정보없음:", projectInfoToServer);
-            return;
-        } else if (!list || list.length === 0) {
-            console.log("❌결재선없음:", projectInfoToServer);
-            return;
-        }
-        const dataToSend = {
-            "poiId": projectInfoToServer.poiId,
-            "versionId": projectInfoToServer.versionId,
-            "sgnType": "사전원가서",
-            "sttApproverList": list
-        }
-            
-    }
-
     useEffect(() => {
         // URL에서 "data" 파라미터 읽기
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
-        const { label, poiId, poiNm, poiDesc, versionId, versionNum, sessionUserInfo, versionDesc, type } = data;
-        console.log("data:", data);
+        const { label, poiId, poiNm, poiDesc, versionId, versionNum, versionDesc } = data;
+        console.log("원가서 data:", data);
         setProjectInfoToServer({ poiId, poiNm, poiDesc, versionId, versionNum, versionDesc });
         
-        if(type !== "document") {  //결재용 화면일때
-            if(poiId && versionId) {
-                getSignData(poiId, versionId);
-            }
-        }
         setTitle(label);
-        setUserInfo({ ...sessionUserInfo });
         if (poiId && versionId) {
             getInitData(poiId, versionId); //서버에서 데이터 호출
         }
     }, []);
-
-    const getSignData = async (poiId, versionId) => {
-        console.log("poiId:", poiId);
-        console.log("versionId:", versionId);
-        const signData = await axiosFetch("/api/system/signState/totalListAll.do", { poiId, versionId });
-        console.log("1.signData:", signData);
-        if(signData && signData.length > 0) {
-            const receiveInfo = signData.map(item => {
-                return {
-                    // versionId: item.versionId, // 버전정보
-                    posNm: item.posNm, // 직급
-                    // sgnSenderId: item.sgnSenderId, // 요청자
-                    // sgnSenderNm: item.sgnSenderNm, // 요청자 이름
-                    empNm: item.sttApproverNm, // 진행자
-                    sttApproverId: item.sttApproverId, // 진행자
-                    state: item.sttApproverAt // 진행자 상태
-                };
-            });
-            console.log("2.newArr:", receiveInfo);
-            setApprovalLine(receiveInfo);
-            setIsApproval(true);
-        }
-    }
 
     // URL에서 쿼리 문자열 파라미터를 읽는 함수
     function getQueryParameterByName(name, url) {
@@ -124,10 +63,6 @@ const PreCostDoc = () => {
         if (!results[2]) return "";
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
-
-    // useEffect(() => {
-    //     console.log("projectInfoToServer:", projectInfoToServer);
-    // }, [projectInfoToServer]);
 
     const infoColumns = [
         [
@@ -241,7 +176,7 @@ const PreCostDoc = () => {
             budgetList, //경비목록
             budgetTotalPrice, //경비 총 합
             outLaborList, //개발외주비 목록
-            outLaborTotalMM, //개발외주비  총 mm
+            outLaborTotalMM, //개발외주비 총 mm
             outLaborTotalPrice, //개발외주비 총 합
 
             //구매데이터..
@@ -302,7 +237,7 @@ const PreCostDoc = () => {
         if (outLaborList) {
             const updatedOutData = outLaborList.map((item) => {
                 return {
-                    data: [item.cltNm, item.devOutMm, item.devOutPrice],
+                    data: [item.cltNm, item.devOutMm, item.devOutPrice*item.devOutMm],
                     className: ["", "", ""],
                 };
             });
@@ -383,13 +318,15 @@ const PreCostDoc = () => {
             }
         });
 
-        // const salesBudgetIn = 110260622; // 수주액>자체용역⭐
         const salesBudgetOut = 0; // 수주액>외주⭐
         // const purchaseTotalPrice = 0; //구매 총 합 //현재없음⭐
         const excOutPurchase = 0; // 재료비>외주 //현재없음⭐
-
+        //buyingTotalPrice -- 실행구매
         /* 손익계산서 변수들 */
-        const salesOrderTotal = salesBudgetIn + salesBudgetOut + 0 + legalTotalPrice - negoTotalPrice; // 수주액 row 합
+        //자체용역+외주+구매+판관비-네고
+        console.log("🎄🎄수주액쪽-자체용역:", salesBudgetIn,"외주:",  salesBudgetOut, "구매:", salesBudgetHS, "판관비:", legalTotalPrice, "네고:", negoTotalPrice);
+        const salesOrderTotal = (salesBudgetIn + salesBudgetOut + salesBudgetHS + legalTotalPrice) - negoTotalPrice; // 수주액 row 합
+        console.log("🎄🎄수주액:", salesOrderTotal);
         const purchaseTotal = 0; // 재료비 row 합 // 인건비 사전원가서에서는 필요없는 항목
         const laborTotal = laborTotalPrice + outLaborTotalPrice; // 인건비 row 합
         const chargeTotal = budgetTotalPrice; // 경비 row 합
@@ -808,49 +745,46 @@ const PreCostDoc = () => {
                     </>
                 }
             </div> */}
-            <ApprovalFormCost sendInfo={approvalLine}>
-                <div className="precost-container">
-                    <button onClick={handlePrintButtonClick} className="pdfBtn">
-                        PDF로 다운로드
-                    </button>
-                    <div className="flex-column mg-b-20">
-                        <div className="precost-title" style={{ margin: "auto", marginBottom: "20px", fontSize: "23px" }}>
-                            {title}
+            <div className="precost-container">
+                <button onClick={handlePrintButtonClick} className="pdfBtn">
+                    PDF로 다운로드
+                </button>
+                <div className="flex-column mg-b-20">
+                    <div className="precost-title" style={{ margin: "auto", marginBottom: "20px", fontSize: "23px" }}>
+                        {title}
+                    </div>
+                    <FormDataTable formTableColumns={infoColumns} useStatus={false} />
+                    <div className="precost-title">1.손익계산서</div>
+                    <BasicDataTable columns={coreColumns} data={coreTableData} datatableRef={coreTable} />
+
+                    <div className="empty" />
+
+                    <div className="precost-title">2.직접원가 내역</div>
+                    <div className="wrap">
+                        <div style={{ flex: 4 }}>
+                            <BasicDataTable
+                                columns={purchasingColumns}
+                                data={purchasingTableData}
+                                datatableRef={purchasingTable}
+                                tableSize={purStyle}
+                                subtitle="재료비"
+                            />
+                            <BasicDataTable
+                                columns={outsourcingColumns}
+                                data={outTableData}
+                                datatableRef={outsourcingTable}
+                                tableSize={purStyle}
+                                subtitle="개발외주비"
+                            />
+                            <BasicDataTable columns={laborColumns} data={laborTableData} datatableRef={laborTable} subtitle="인건비" />
                         </div>
-                        <FormDataTable formTableColumns={infoColumns} useStatus={false} />
-                        <div className="precost-title">1.손익계산서</div>
-                        <BasicDataTable columns={coreColumns} data={coreTableData} datatableRef={coreTable} />
-
-                        <div className="empty" />
-
-                        <div className="precost-title">2.직접원가 내역</div>
-                        <div className="wrap">
-                            <div style={{ flex: 4 }}>
-                                <BasicDataTable
-                                    columns={purchasingColumns}
-                                    data={purchasingTableData}
-                                    datatableRef={purchasingTable}
-                                    tableSize={purStyle}
-                                    subtitle="재료비"
-                                />
-                                <BasicDataTable
-                                    columns={outsourcingColumns}
-                                    data={outTableData}
-                                    datatableRef={outsourcingTable}
-                                    tableSize={purStyle}
-                                    subtitle="개발외주비"
-                                />
-                                <BasicDataTable columns={laborColumns} data={laborTableData} datatableRef={laborTable} subtitle="인건비" />
-                            </div>
-                            <div style={{ flex: 0.5 }} />
-                            <div style={{ flex: 5.5 }}>
-                                <BasicDataTable columns={chargeColumns} data={chargeTableData} datatableRef={chargeTable} tableSize={chargeStyle} subtitle="경비" />
-                            </div>
+                        <div style={{ flex: 0.5 }} />
+                        <div style={{ flex: 5.5 }}>
+                            <BasicDataTable columns={chargeColumns} data={chargeTableData} datatableRef={chargeTable} tableSize={chargeStyle} subtitle="경비" />
                         </div>
                     </div>
                 </div>
-            </ApprovalFormCost>
-            <ApprovalLineModal width={670} height={500} title="결재선" type={title} isOpen={isOpenModalApproval} onClose={() => setIsOpenModalApproval(false)} returnData={returnData}/>
+            </div>
         </div>
     );
 };
