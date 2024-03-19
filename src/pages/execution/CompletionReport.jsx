@@ -100,7 +100,7 @@ function CompletionReport() {
                 <div style={{marginTop: "-55px", marginBottom: 55}}>
                     <h2>완료보고서</h2>
                 </div>
-                <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="완료보고서"/>
+                {/* <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="완료보고서"/> */}
                 <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing}/>
                 <ApprovalLineModal width={670} height={500} title="결재선" type="완료보고서" isOpen={isOpenModalApproval} onClose={() => setIsOpenModalApproval(false)} returnData={(value) => returnData(value, "결재선")}/>
             </ApprovalFormCost>

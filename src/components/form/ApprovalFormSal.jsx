@@ -5,20 +5,25 @@ import { axiosFetch } from "api/axiosFetch";
 import { v4 as uuidv4 } from "uuid";
 
 /** 영업 폼 */
-function ApprovalFormSal({ returnData }) {
-    const { innerPageName, setInquiryConditions, inquiryConditions } = useContext(PageContext);
+function ApprovalFormSal({ returnData, viewPageName }) {
+    const { innerPageName, setInquiryConditions, inquiryConditions, currentPageName } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
     useEffect(() => {
-        if(inquiryConditions.poiId) { //전역정보 바뀔때
-            getVersionList({ poiId: inquiryConditions.poiId })
+        console.log("currentPageName:", currentPageName.id, "innerPageName:", innerPageName.id, "viewPageName:", viewPageName?.id);
+        if(currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) { //현재페이지일때
+            if(inquiryConditions.poiId) { //전역정보 바뀔때
+                getVersionList({ poiId: inquiryConditions.poiId })
+            }
         }
-    }, [inquiryConditions, innerPageName]);
+    }, [inquiryConditions, innerPageName, currentPageName, viewPageName]);
 
     useEffect(() => {
-        if (data.poiId && !data.versionId) { //버전정보가 없을때
-            getVersionList({ poiId: data.poiId });
+        if(currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) { //현재페이지일때
+            if (data.poiId && !data.versionId) { //버전정보가 없을때
+                getVersionList({ poiId: data.poiId });
+            }
         }
     }, [data]);
 
@@ -126,10 +131,29 @@ function ApprovalFormSal({ returnData }) {
                             <th>최종 수정일</th>
                             <td>{data.lastModifyDate}</td>
                             <td width={80} style={{ textAlign: "center" }}>
-                                <button type="button" className="table-btn table-btn-default" onClick={onClick}>
-                                    조회
-                                </button>
+                                {(currentPageName.id === "OrderMgmt" || innerPageName.id === "proposal") ? 
+                                    <button type="button" className="table-btn table-btn-default" onClick={onClick}>
+                                        내용저장
+                                    </button>
+                                    :
+                                    <button type="button" className="table-btn table-btn-default" onClick={onClick}>
+                                        조회
+                                    </button>
+                                }
                             </td>
+
+                            {/* <td width={80} style={{ textAlign: "center" }}>
+                                {currentPageName?.id === "OrderMgmt" || innerPageName?.id === "proposal" && 
+                                    <button type="button" className="table-btn table-btn-default" onClick={onClick}>
+                                        내용저장
+                                    </button>
+                                }
+                                {currentPageName?.id !== "OrderMgmt" || innerPageName?.id === "proposal" && 
+                                    <button type="button" className="table-btn table-btn-default" onClick={onClick}>
+                                        조회
+                                    </button>
+                                }
+                            </td> */}
                         </tr>
                     </tbody>
                 </table>

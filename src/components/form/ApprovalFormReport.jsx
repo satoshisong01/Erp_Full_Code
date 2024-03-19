@@ -5,16 +5,19 @@ import { axiosFetch } from "api/axiosFetch";
 import { v4 as uuidv4 } from "uuid";
 
 /** 조회 보고서용 */
-function ApprovalFormReport({ returnData, type }) {
-    const { innerPageName, currentPageName, inquiryConditions, setInquiryConditions } = useContext(PageContext);
+function ApprovalFormReport({ returnData, type, viewPageName }) {
+    const { innerPageName, currentPageName, inquiryConditions } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
     useEffect(() => {
-        if(inquiryConditions.poiId) { //전역정보 바뀔때
-            getVersionList({ poiId: inquiryConditions.poiId })
+        if(innerPageName?.id === viewPageName?.id || currentPageName?.id === viewPageName?.id) { //현재페이지일때
+            if(inquiryConditions.poiId) { //전역정보 바뀔때
+                getVersionList({ poiId: inquiryConditions.poiId })
+            }
         }
     }, [inquiryConditions, innerPageName, currentPageName]);
+
 
     useEffect(() => {
         if(type === "수주보고서" || type === "견적품의서") { //영업
@@ -23,9 +26,6 @@ function ApprovalFormReport({ returnData, type }) {
                 getVersionList({ poiId: data.poiId });
             } else if (data.versionId) {
                 returnData && returnData(data); //부모로 보내기
-                if(data.versionId !== inquiryConditions.versionId) {
-                    setInquiryConditions({...data})
-                }
             }
         } else if(type === "완료보고서") { //실행
             returnData && returnData(data);

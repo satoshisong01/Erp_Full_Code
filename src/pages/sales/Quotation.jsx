@@ -637,6 +637,7 @@ function Quotation() {
         } else if (type === "조회") {
             setCondition((prev) => {
                 if (prev.poiId !== value.poiId) {
+                    setIsSave(true);
                     const newCondition = { ...value };
                     return newCondition;
                 } else {
@@ -715,7 +716,7 @@ function Quotation() {
                 <div className="list">
                     <div className="first">
                         <ul>
-                            <ApprovalFormSal />
+                            <ApprovalFormSal viewPageName={{ name: "인건비", id: "estimateLabor" }}/>
                             <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable columns={columnlabor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
                             </HideCard>
@@ -753,7 +754,7 @@ function Quotation() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalFormSal />
+                            <ApprovalFormSal viewPageName={{ name: "구매비", id: "orderBuying" }}/>
                             {/* <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable columns={columnBuy} customDatas={buyView} defaultPageSize={5} hideCheckBox={true} />
                             </HideCard> */}
@@ -810,14 +811,17 @@ function Quotation() {
                                 />
                                 <PopupButtonReport targetUrl={URL.PreCostDoc} data={{ label: "견적원가서", type: "document", ...condition }} />
                                 <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)} />
-                                <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave} />
+                                {/* <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave} /> */}
                                 <AddButton label="결재요청" onClick={() => setIsSubmit(true)} disabled={!isSave} />
                             </div>
                             <ApprovalFormCost sendInfo={approvalLine}>
                                 <div style={{ marginTop: "-55px", marginBottom: 55 }}>
                                     <h2>견적서 승인 요청서</h2>
                                 </div>
-                                <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="견적품의서" />
+                                {/* <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="견적품의서" /> */}
+                                {/* { name: "품의서", id: "proposal" }, */}
+                                {/* <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="견적품의서" /> */}
+                                <ApprovalFormSal returnData={(value) => returnData(value, "조회")} viewPageName={{ name: "품의서", id: "proposal" }}/>
                                 {/* <ToastUiEditor /> */}
                                 {/* <CKEditorComponent /> */}
                                 <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing} />

@@ -666,8 +666,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="second">
                         <ul>
-                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
-                            <ApprovalFormSal />
+                            <ApprovalFormSal viewPageName={{ name: "인건비", id: "labor" }}/>
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable columns={columns.orderPlanMgmt.laborCal} customDatas={prmnCalDatas} hideCheckBox={true} isPageNation={true} />
                             </HideCard>
@@ -693,7 +692,7 @@ function OrderPlanMgmt() {
                     <div className="third">
                         <ul>
                             {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
-                            <ApprovalFormSal />
+                            <ApprovalFormSal viewPageName={{ name: "구매(재료비)", id: "buying" }}/>
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.purchaseCal}
@@ -724,8 +723,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="fourth">
                         <ul>
-                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
-                            <ApprovalFormSal />
+                            <ApprovalFormSal viewPageName={{ name: "개발외주비", id: "outsourcing" }}/>
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.outCal}
@@ -756,8 +754,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="fifth">
                         <ul>
-                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
-                            <ApprovalFormSal />
+                            <ApprovalFormSal viewPageName={{ name: "경비", id: "budget" }}/>
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.expensesCal}
@@ -787,7 +784,7 @@ function OrderPlanMgmt() {
                     <div className="sixth">
                         <ul>
                             {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
-                            <ApprovalFormSal />
+                            <ApprovalFormSal viewPageName={{ name: "영업관리비", id: "general" }}/>
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.generalCal}

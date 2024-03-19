@@ -10,6 +10,7 @@ import URL from "constants/url";
 import ApprovalFormSal from "components/form/ApprovalFormSal";
 import PopupButton from "components/button/PopupButton";
 import { ProcessResultDataRun } from "../../components/DataTable/function/ProcessResultData";
+import { PageContext } from "components/PageProvider";
 
 /** 영업관리-수주관리-수주보고서 */
 function OrderMgmt() {
@@ -18,7 +19,7 @@ function OrderMgmt() {
     const uniqId = JSON.parse(sessionUser)?.uniqId;
     const posNm = JSON.parse(sessionUser)?.posNm;
     //posNm도 있어야함.. 직급정보
-
+    const { setInquiryConditions } = useContext(PageContext);
     const [condition, setCondition] = useState({});
     const [isOpenModalApproval, setIsOpenModalApproval] = useState(false);
 
@@ -36,13 +37,15 @@ function OrderMgmt() {
             setApprovalLine(updated);
         } else if (type === "비고") {
             setContent(value);
-        } else if (type === "조회") {
+        } else if (type === "저장") {
             setCondition((prev) => {
-                if (prev.poiId !== value.poiId) {
+                if (prev.versionId !== value.versionId) {
                     const newCondition = { ...value };
                     fetchAllData(newCondition);
+                    setIsSave(true);
                     return newCondition;
-                } else {
+                }
+                else {
                     fetchAllData({ ...prev });
                     return prev;
                 }
@@ -95,12 +98,8 @@ function OrderMgmt() {
         setIsSubmit(false);
     };
 
+    /* 견적서 */
     const fetchAllData = async (condition) => {
-        //const requestSearch = {
-        //    poiId: condition.poiId,
-        //    useAt: "Y",
-        //};
-
         const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
         const resultData2 = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", condition || {});
 
@@ -147,7 +146,7 @@ function OrderMgmt() {
                 />
                 <PopupButtonNL targetUrl={URL.PreCostDoc} data={{ label: "수주원가서", type: "document", ...condition }} />
                 <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)} />
-                <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave} />
+                {/* <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave} /> */}
                 <AddButton label="결재요청" onClick={() => setIsSubmit(true)} disabled={!isSave} />
             </div>
             <ApprovalFormCost sendInfo={approvalLine}>
@@ -155,7 +154,7 @@ function OrderMgmt() {
                     <h2 style={{ zIndex: "1" }}>수주/계약 보고서</h2>
                 </div>
                 {/* <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="수주보고서"/> */}
-                <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="수주보고서" />
+                <ApprovalFormSal returnData={(value) => returnData(value, "저장")} viewPageName={{ name: "수주보고서", id: "OrderMgmt" }} />
                 <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing} />
                 <ApprovalLineModal
                     width={670}
