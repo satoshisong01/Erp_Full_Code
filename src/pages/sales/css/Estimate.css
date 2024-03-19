@@ -50,14 +50,14 @@
 .titleLeft {
     display: flex;
     flex-direction: column;
-    min-width: 300px;
-    max-width: 310px;
-    margin-left: 10%;
+    min-width: 390px;
+    max-width: 400px;
+    margin-left: 5%;
 }
 
 .leftBox {
     display: flex;
-    width: 300px;
+    width: 400px;
     margin-top: 15px;
 }
 

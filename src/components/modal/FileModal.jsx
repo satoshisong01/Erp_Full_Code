@@ -40,7 +40,8 @@ export default function FileModal(props) {
         const resultData = await axiosFetch(url, { atchFileId: fileIdData });
         if (resultData) {
             console.log(resultData, "???리스트나와야하는디");
-            console.log(resultData.length);
+            console.log(resultData.length, "데이터의 길이");
+            setFileLength(resultData.length);
             const originTitle = resultData.map((item) => item.originalFileNm);
             const fileId = resultData.map((item) => item.fileId);
             setFileList(originTitle);
@@ -80,7 +81,6 @@ export default function FileModal(props) {
     };
 
     const onClickSubmit = async () => {
-        setFileLength(0);
         // 확인 버튼을 눌렀을 때에만 서버에 요청
         if (fileIdData && fileIdData !== undefined) {
             console.log(fileData, "배열로 들어와서 변경해줘야함");

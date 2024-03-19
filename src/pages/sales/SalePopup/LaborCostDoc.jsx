@@ -130,8 +130,8 @@ const LaborCostDoc = ({ displayNone }) => {
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
         setProjectTitle(data.tableData[0]?.poiNm);
-        setTableDatas(restructureData(data.tableData));
-        setDevCost(calculateTotal(restructureData(data.tableData)));
+        setTableDatas(sortEstItems(restructureData(data.tableData)));
+        setDevCost(calculateTotal(sortEstItems(restructureData(data.tableData))));
         const { label, poiId, versionId } = data;
         setTitle(label);
         if (poiId && versionId) {
@@ -479,6 +479,29 @@ const LaborCostDoc = ({ displayNone }) => {
         return result;
     }
 
+    //순서변경
+    function sortEstItems(data) {
+        // estPosition 값에 따른 우선 순위 정의
+        const order = ["특2", "특1", "고2", "고1", "중", "초2", "초1"];
+
+        // 주어진 estPosition의 우선 순위를 반환하는 함수
+        function getPositionPriority(estPosition) {
+            const index = order.indexOf(estPosition);
+            return index === -1 ? order.length : index; // 목록에 없는 경우 가장 낮은 우선 순위
+        }
+
+        // 비교 함수: estPosition에 따라 정렬
+        function compare(a, b) {
+            const aPriority = getPositionPriority(a.estItem[0].estPosition);
+            const bPriority = getPositionPriority(b.estItem[0].estPosition);
+
+            return aPriority - bPriority;
+        }
+
+        // 데이터 정렬
+        return data.sort(compare);
+    }
+
     function numberWithCommas(x) {
         if (!x) return ""; // 값이 없을 경우 빈 문자열 반환
         const number = typeof x === "string" ? parseFloat(x.replace(/,/g, "")) : parseFloat(x);
@@ -504,7 +527,6 @@ const LaborCostDoc = ({ displayNone }) => {
                                     <span className="boxTitle lastTitle">호:</span>
                                 </div>
                                 <input
-                                    style={{ border: "none" }}
                                     className="titleInput"
                                     type="text"
                                     value={tableData.length ? tableData[0].ctcNum : ""}
@@ -676,7 +698,7 @@ const LaborCostDoc = ({ displayNone }) => {
                                                 <td className="table4-3White" style={{ textAlign: "right" }}>
                                                     　
                                                 </td>
-                                                <td className="table4-3White" style={{ textAlign: "right" }}>
+                                                <td className="table4-3White" style={{ textAlign: "right", fontWeight: 800, fontSize: "20px" }}>
                                                     {`${buyTable[0]?.estAmount ? buyTable[0].estAmount.toLocaleString() : ""}　`}
                                                 </td>
                                             </tr>
@@ -701,7 +723,9 @@ const LaborCostDoc = ({ displayNone }) => {
                                                         {"Lot"}
                                                     </td>
                                                     <td className="table4-3White" style={{ borderBottom: "none" }}></td>
-                                                    <td className="table4-3White" style={{ textAlign: "right", borderBottom: "none" }}>
+                                                    <td
+                                                        className="table4-3White"
+                                                        style={{ textAlign: "right", borderBottom: "none", fontWeight: 800, fontSize: "20px" }}>
                                                         {`${devCost.toLocaleString()}　`}
                                                     </td>
                                                 </tr>
@@ -933,7 +957,7 @@ const LaborCostDoc = ({ displayNone }) => {
                                                 className="table4-3White"
                                                 style={{ textAlign: "right", borderTop: "1px solid black", borderBottom: "1px solid black" }}>
                                                 <input
-                                                    style={{ paddingRight: "15px" }}
+                                                    style={{ paddingRight: "15px", fontWeight: 800, fontSize: "20px" }}
                                                     className="titleInput2"
                                                     type="text"
                                                     value={`${etcCost ? etcCost.toLocaleString() : ""}`}
@@ -991,7 +1015,6 @@ const LaborCostDoc = ({ displayNone }) => {
                                 type="text"
                                 value={tableData.length ? tableData[0].ctcDesc : ""}
                                 onChange={(e) => handleChange(e, "ctcDesc", 0)}
-                                onKeyDown={handleKeyPress} // 엔터 키 감지를 위해 이벤트 리스너 추가
                             />
                         </div>
                     </div>
