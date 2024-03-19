@@ -11,6 +11,7 @@ import { ChangePrmnPlanData, buyIngInfoCalculation } from "components/DataTable/
 import { PageContext } from "components/PageProvider";
 import { ProcessResultDataRun } from "components/DataTable/function/ProcessResultData";
 import PopupButton from "components/button/PopupButton";
+import ModButton from "components/button/ModButton";
 
 export default function SignDocument() {
     const sessionUser = sessionStorage.getItem("loginUser");
@@ -140,6 +141,7 @@ export default function SignDocument() {
     }, []);
 
     const [isMyTurn, setIsMyTurn] = useState(false);
+    const [isCancel, setIsCancel] = useState(false);
 
     /* 결재상태정보 */
     const getData = async (requestData) => {
@@ -150,7 +152,7 @@ export default function SignDocument() {
             console.log("1. 결재정보", signResultData);
             signInfo = {
                 sgnId: signResultData[0]?.sgnId,
-                sgnSenderId: signResultData[0]?.sgnSenderId, //발신자이름
+                sgnSenderId: signResultData[0]?.sgnSenderNm, //발신자이름
                 sgnSenderPosNm: signResultData[0]?.sgnSenderPosNm, //기안자직급
                 sgnSenderGroupNm: signResultData[0]?.sgnSenderGroupNm, //기안자부서
                 sgnSigndate: signResultData[0]?.sgnSigndate, //기안일
@@ -349,10 +351,18 @@ export default function SignDocument() {
         window.open(url, "newWindow2", windowFeatures);
     };
 
+    const cancel = () => {
+        const willApprove = window.confirm("결재를 회수 하시겠습니까?");
+        if(willApprove) {
+            // submit();
+        }
+    }
+
     return (
         <>
             <div style={{ width: "90%", margin: "auto" }}>
                 <div className="table-buttons mg-t-10 mg-b-10">
+                    {isCancel && <BasicButton label="결재회수" onClick={cancel}/>}
                     <BasicButton label="견적원가서" onClick={openPopup} />
                     <PopupButton
                         onClick={openPopup2}

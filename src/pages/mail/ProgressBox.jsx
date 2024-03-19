@@ -37,7 +37,8 @@ function ProgressBox() {
         { header: "요청일", col: "sngSignData", notView: true },
         { header: "프로젝트명", col: "poiNm", cellWidth: "350", textAlign: "left" },
         { header: "결재종류", col: "sgnType", cellWidth: "200" },
-        { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
+        // { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
+        { header: "기안자", col: "empNm", cellWidth: "100" },
         { header: "기안일", col: "sgnSigndate", cellWidth: "130" },
         { header: "비고", col: "sgnDesc", cellWidth: "559", textAlign: "left" },
     ];
@@ -80,6 +81,7 @@ function ProgressBox() {
 
     const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/system/sign/totalListAll.do", condition || {});
+        console.log("resultData:", resultData);
         if (resultData) {
             setTableData(resultData);
         }
@@ -111,6 +113,14 @@ function ProgressBox() {
         }
     };
 
+    
+    const cancel = () => {
+        const willApprove = window.confirm("결재를 회수 하시겠습니까?");
+        if(willApprove) {
+            // submit();
+        }
+    }
+
     return (
         <>
             <Location pathList={locationPath.Approval} />
@@ -118,6 +128,7 @@ function ProgressBox() {
             <HideCard title="결재진행 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
                     <ModButton label="전자결재" onClick={openPopup}/>
+                    <ModButton label="회수" onClick={cancel}/>
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTable
