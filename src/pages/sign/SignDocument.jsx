@@ -29,8 +29,7 @@ export default function SignDocument() {
     const [buyView, setBuyView] = useState([]); // 영업구매비
     const [buyIngBool, setBuyIngBool] = useState(false);
     const [poiVersionId, setPoiVersion] = useState({});
-
-    console.log(poiVersionId, "poiVersionId");
+    const [clickBtn, setClickBtn] = useState(false);
 
     const fetchAllData = async (poiVersionId) => {
         //const requestSearch = {
@@ -38,6 +37,7 @@ export default function SignDocument() {
         //    useAt: "Y",
         //};
         //인건비
+        console.log(poiVersionId, "하나로뭉침?");
         const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", poiVersionId || {});
         const viewResult = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", { poiId: poiVersionId.poiId }); //계획조회
         if (viewResult && viewResult.length > 0) {
@@ -100,12 +100,6 @@ export default function SignDocument() {
         }
     };
 
-    useEffect(() => {
-        if (poiVersionId) {
-            fetchAllData(poiVersionId);
-        }
-    }, [poiVersionId]);
-
     function getQueryParameterByName(name, url) {
         if (!url) url = window.location.href;
         name = name.replace(/[\[\]]/g, "\\$&");
@@ -123,7 +117,8 @@ export default function SignDocument() {
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter); //프로젝트정보있음
         console.log("⭐data:", data);
-        setProjectInfo({...data});
+        setProjectInfo({ ...data });
+        fetchAllData({ poiId: data.poiId, versionId: data.versionId });
 
         if (data.sgnType === "견적품의서") {
             setTitle("견적서 승인 요청서");
@@ -135,8 +130,13 @@ export default function SignDocument() {
             setTitle("완료보고서");
             setOpenUrl(URL.PostCostsDoc);
         }
-        getData({sgnId: data.sgnId});
-        
+        getData({ sgnId: data.sgnId });
+        const timer = setTimeout(() => {
+            setClickBtn(true);
+        }, 3800);
+
+        // 컴포넌트가 언마운트될 때 타이머를 정리
+        return () => clearTimeout(timer);
     }, []);
 
     const [isMyTurn, setIsMyTurn] = useState(false);
@@ -148,7 +148,6 @@ export default function SignDocument() {
         let signInfo = {};
         if (signResultData) {
             console.log("1. 결재정보", signResultData);
-            setPoiVersion({ poiId: signResultData[0]?.poiId, versionId: signResultData[0]?.versionId });
             signInfo = {
                 sgnId: signResultData[0]?.sgnId,
                 sgnSenderId: signResultData[0]?.sgnSenderId, //발신자이름
@@ -158,10 +157,10 @@ export default function SignDocument() {
                 sgnReceiverId: signResultData[0]?.sgnReceiverId, //수신자
                 sgnDesc: signResultData[0]?.sgnDesc, //비고
             };
-            setProjectInfo(prev => ({
+            setProjectInfo((prev) => ({
                 ...prev,
                 ...signInfo, //프로젝트 정보에 비고추가
-            }))
+            }));
         }
 
         const stateResultData = await axiosFetch("/api/system/signState/totalListAll.do", requestData || {});
@@ -178,16 +177,18 @@ export default function SignDocument() {
                 sttComent: item.sttComent, //코멘트
                 sttPaymentDate: item.sttPaymentDate, //결재일 (오타 수정)
             }));
-    
-            if(signInfo) {
-                const changeSign = [{
-                    sttApproverNm: signInfo.sgnSenderId,
-                    sttApproverPosNm: signInfo.sgnSenderPosNm,
-                    sttApproverAt: "요청",
-                    sttApproverGroupNm: signInfo.sgnSenderGroupNm,
-                    sttPaymentDate: signInfo.sgnSigndate,
-                    sgnDesc: signInfo.sgnDesc,
-                }];
+
+            if (signInfo) {
+                const changeSign = [
+                    {
+                        sttApproverNm: signInfo.sgnSenderId,
+                        sttApproverPosNm: signInfo.sgnSenderPosNm,
+                        sttApproverAt: "요청",
+                        sttApproverGroupNm: signInfo.sgnSenderGroupNm,
+                        sttPaymentDate: signInfo.sgnSigndate,
+                        sgnDesc: signInfo.sgnDesc,
+                    },
+                ];
                 const merge = [...changeSign, ...arr];
                 setApprovalData(merge);
                 const myData = stateResultData.find((item) => item.sttApproverAt === "진행" && item.sttApproverId === sessionUserUniqId);
@@ -195,7 +196,6 @@ export default function SignDocument() {
             }
         }
     };
-    
 
     const projectColumns = [
         { header: "프로젝트명", name: "poiNm", colValue: 3, colspan: 2, style: { textAlign: "left" } },
@@ -214,16 +214,16 @@ export default function SignDocument() {
         { header: "계약금(천원)", name: "salesTotal", colValue: 2, colspan: 1, style: { textAlign: "center" } },
     ];
 
-    const signStateColumns = [ //승인자목록
-        {header: "진행상태", name: "sttApproverAt", style: {width: "10%", textAlign: "center"}},
-        {header: "결재결과", name: "sttResult", style: {width: "10%", textAlign: "center"}},
-        {header: "결재자", name: "sttApproverNm", style: {width: "10%", textAlign: "center"}},
-        {header: "부서", name: "sttApproverGroupNm", style: {width: "10%", textAlign: "center"}},
-        {header: "직급", name: "sttApproverPosNm", style: {width: "10%", textAlign: "center"}},
-        {header: "결재일시", name: "sttPaymentDate", style: {width: "15%", textAlign: "center"}},
-        {header: "코멘트", name: "sttComent", style: {width: "30%", textAlign: "left"}},
+    const signStateColumns = [
+        //승인자목록
+        { header: "진행상태", name: "sttApproverAt", style: { width: "10%", textAlign: "center" } },
+        { header: "결재결과", name: "sttResult", style: { width: "10%", textAlign: "center" } },
+        { header: "결재자", name: "sttApproverNm", style: { width: "10%", textAlign: "center" } },
+        { header: "부서", name: "sttApproverGroupNm", style: { width: "10%", textAlign: "center" } },
+        { header: "직급", name: "sttApproverPosNm", style: { width: "10%", textAlign: "center" } },
+        { header: "결재일시", name: "sttPaymentDate", style: { width: "15%", textAlign: "center" } },
+        { header: "코멘트", name: "sttComent", style: { width: "30%", textAlign: "left" } },
     ];
-
 
     /* 프로젝트 DOM 구성 */
     function generateProjectTable(columns, data) {
@@ -239,7 +239,7 @@ export default function SignDocument() {
             if (column.colspan) {
                 currentRow.push(
                     <td key={uuidv4()} colSpan={column.colspan} style={{ textAlign: column.style.textAlign }}>
-                        { column.name !== "salesTotal" ? data[column.name] : data[column.name]}
+                        {column.name !== "salesTotal" ? data[column.name] : data[column.name]}
                     </td>
                 );
             }
@@ -335,8 +335,8 @@ export default function SignDocument() {
         const url = `${URL.TotalDoc}?data=${encodeURIComponent(
             JSON.stringify({
                 label: "견적서",
-                poiId: poiVersionId.poiId,
-                versionId: poiVersionId.versionId,
+                poiId: projectInfo.poiId,
+                versionId: projectInfo.versionId,
                 tableData: estimate,
                 tableData2: buyIngInfo,
             })
@@ -356,12 +356,12 @@ export default function SignDocument() {
                     <BasicButton label="견적원가서" onClick={openPopup} />
                     <PopupButton
                         onClick={openPopup2}
-                        clickBtn={poiVersionId.poiId ? true : false}
+                        clickBtn={clickBtn}
                         targetUrl={URL.TotalDoc}
                         data={{
                             label: "견적서",
-                            poiId: poiVersionId.poiId,
-                            versionId: poiVersionId.versionId,
+                            poiId: projectInfo.poiId,
+                            versionId: projectInfo.versionId,
                             tableData: estimate,
                             tableData2: buyIngInfo,
                         }}
