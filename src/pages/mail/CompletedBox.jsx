@@ -27,7 +27,7 @@ function CompletedBox() {
         { header: "수주아이디", col: "poId", notView: true },
         { header: "결재아이디", col: "sgnId", notView: true },
         { header: "발신자아이디", col: "sgnSenderId", notView: true },
-        { header: "수신자아이디", col: "sgnReceiverId", notView: true }, 
+        { header: "수신자아이디", col: "sgnReceiverId", notView: true },
         { header: "프로젝트명", col: "poiNm", cellWidth: "350" },
         { header: "결재종류", col: "sgnType", cellWidth: "200" },
         { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
@@ -68,10 +68,11 @@ function CompletedBox() {
     ];
 
     useEffect(() => {
-        fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "완료" });
+        fetchAllData({ sttApproverIdAndSgnSenderId: localStorage.uniqId, sgnAt: "완료" });
     }, [currentPageName]);
 
     const fetchAllData = async (condition) => {
+        console.log(condition);
         const resultData = await axiosFetch("/api/system/signState/totalListAll.do", condition || {});
         if (resultData) {
             setTableData(resultData);
@@ -79,7 +80,7 @@ function CompletedBox() {
     };
 
     const refresh = () => {
-        fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "완료" });
+        fetchAllData({ sttApproverIdAndSgnSenderId: localStorage.uniqId, sgnAt: "완료" });
     };
 
     const returnData = (row) => {
