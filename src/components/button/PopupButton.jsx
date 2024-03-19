@@ -3,7 +3,7 @@ import "../../css/componentCss/CodeUtilBtn.css";
 import { PageContext } from "components/PageProvider";
 
 /* URl에 해당하는 화면을 새창으로 띄어주고 data를 넘겨주는 버튼 */
-function PopupButton({ targetUrl, data, size, clickBtn }) {
+function PopupButton({ targetUrl, data, size, clickBtn, onClick }) {
     const openPopup = () => {
         const url = `${targetUrl}?data=${encodeURIComponent(JSON.stringify(data))}`;
         console.log("targetUrl", targetUrl, "size:", size);
@@ -40,7 +40,7 @@ function PopupButton({ targetUrl, data, size, clickBtn }) {
     const buttonClassName = `table-btn table-btn-primary${disabled ? " disabled" : ""}`;
 
     return (
-        <button onClick={openPopup} className={buttonClassName} disabled={disabled}>
+        <button onClick={onClick ? onClick : openPopup} className={buttonClassName} disabled={disabled}>
             {data.label}
         </button>
     );

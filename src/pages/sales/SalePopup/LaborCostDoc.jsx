@@ -127,7 +127,6 @@ const LaborCostDoc = ({ displayNone }) => {
     }, [negoVisible, profitVisible, costVisible, tableData, tableDatas, buyTable, devVisible, buyVisible, expensesVisible]);
 
     useEffect(() => {
-        console.log("이거왜 계속 불러올까 🌠🌠🌠🌠");
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter);
         console.log(data, "수주관리에선 못불러오나?");

@@ -1,5 +1,5 @@
 import ViewModal from "components/modal/ViewModal";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { columns } from "constants/columns";
 import ViewButton from "components/button/ViewButton";
@@ -7,6 +7,9 @@ import URL from "constants/url";
 import { axiosFetch, axiosUpdate } from "api/axiosFetch";
 import SignStateLine from "components/SignStateLine";
 import BasicButton from "components/button/BasicButton";
+import { ChangePrmnPlanData, buyIngInfoCalculation } from "components/DataTable/function/ReplaceDataFormat";
+import { PageContext } from "components/PageProvider";
+import { ProcessResultDataRun } from "components/DataTable/function/ProcessResultData";
 
 export default function SignDocument() {
     const sessionUser = sessionStorage.getItem("loginUser");
@@ -15,6 +18,92 @@ export default function SignDocument() {
     const [title, setTitle] = useState("");
     const [projectInfo, setProjectInfo] = useState({}); //프로젝트정보
     const [approvalData, setApprovalData] = useState([]); //승인자목록
+    // const [signData, setSignData] = useState({}); //요청자
+    const { unitPriceListRenew } = useContext(PageContext);
+
+    const [estimate, setEstimate] = useState([]);
+    const [buyIngInfo, setBuyIngInfo] = useState([]);
+    const [budgetMgmtView, setBudgetMgmtView] = useState([]); // 영업인건비
+    const [estimateBool, setestimateBool] = useState(false);
+    const [buyView, setBuyView] = useState([]); // 영업구매비
+    const [buyIngBool, setBuyIngBool] = useState(false);
+    const [poiVersionId, setPoiVersion] = useState({});
+
+    console.log(poiVersionId, "poiVersionId");
+
+    const fetchAllData = async (poiVersionId) => {
+        //const requestSearch = {
+        //    poiId: poiVersionId.poiId,
+        //    useAt: "Y",
+        //};
+        //인건비
+        const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", poiVersionId || {});
+        const viewResult = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", { poiId: poiVersionId.poiId }); //계획조회
+        if (viewResult && viewResult.length > 0) {
+            const changeData = ChangePrmnPlanData(viewResult);
+            changeData.forEach((Item) => {
+                const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
+                const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
+                if (matchingAItem) {
+                    let totalPrice = 0;
+                    for (let i = 1; i <= 14; i++) {
+                        const gupPriceKey = `gupPrice${i}`;
+                        const pmpmmPositionCodeKey = `pmpmmPositionCode${i}`;
+                        if (matchingAItem[gupPriceKey]) {
+                            totalPrice += matchingAItem[gupPriceKey] * Item[pmpmmPositionCodeKey];
+                        }
+                    }
+                    Item.totalPrice = totalPrice;
+                }
+            });
+            setBudgetMgmtView(changeData);
+        }
+
+        setEstimate([]);
+        setestimateBool(false);
+        if (resultData.length !== 0) {
+            const result = ProcessResultDataRun(resultData, poiVersionId);
+            setEstimate(result);
+            setestimateBool(true);
+        } else {
+            //alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
+        }
+
+        //구매비
+        const viewResult2 = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", poiVersionId);
+        console.log("영업원가 구매 조회:", viewResult2);
+        if (viewResult2 && viewResult2.length > 0) {
+            const calData = buyIngInfoCalculation(viewResult2);
+            console.log("영업원가 구매 폼변화:", calData);
+            setBuyView(calData);
+        }
+
+        setBuyIngInfo([]);
+        setBuyIngBool(false);
+        const resultData2 = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", poiVersionId || {});
+
+        if (resultData2.length !== 0) {
+            const updatedData = { ...resultData2[0] }; // 첫 번째 객체만 수정한다고 가정합니다.
+            // estBuyQunty 값 변경
+            updatedData.estBuyQunty = 1;
+
+            // 수정된 데이터를 새 배열에 저장
+            const updatedArray = [...resultData2];
+            updatedArray[0] = updatedData;
+
+            // 상태 업데이트
+            setBuyIngInfo(updatedArray);
+            setBuyIngBool(true);
+        } else {
+            alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
+        }
+    };
+
+    useEffect(() => {
+        if (poiVersionId) {
+            fetchAllData(poiVersionId);
+        }
+    }, [poiVersionId]);
 
     function getQueryParameterByName(name, url) {
         if (!url) url = window.location.href;
@@ -35,13 +124,13 @@ export default function SignDocument() {
         console.log("⭐data:", data);
         setProjectInfo({...data});
 
-        if(data.sgnType === "견적품의서") {
+        if (data.sgnType === "견적품의서") {
             setTitle("견적서 승인 요청서");
             setOpenUrl(URL.PreCostDoc);
-        } else if(data.sgnType === "수주보고서") {
+        } else if (data.sgnType === "수주보고서") {
             setTitle("수주/계약 보고서");
             setOpenUrl(URL.PreCostDoc);
-        } else if(data.sgnType === "완료보고서") {
+        } else if (data.sgnType === "완료보고서") {
             setTitle("완료보고서");
             setOpenUrl(URL.PostCostsDoc);
         }
@@ -57,6 +146,8 @@ export default function SignDocument() {
         console.log("사인정보", signResultData);
         let signInfo = {};
         if (signResultData) {
+            console.log("1. 결재정보", signResultData);
+            setPoiVersion({ poiId: signResultData[0]?.poiId, versionId: signResultData[0]?.versionId });
             signInfo = {
                 sgnId: signResultData[0]?.sgnId,
                 sgnSenderId: signResultData[0]?.sgnSenderId, //발신자이름
@@ -71,11 +162,11 @@ export default function SignDocument() {
                 ...signInfo, //프로젝트 정보에 비고추가
             }))
         }
-    
+
         const stateResultData = await axiosFetch("/api/system/signState/totalListAll.do", requestData || {});
         console.log("stateResultData:", stateResultData);
         if (stateResultData) {
-            const arr = stateResultData.map(item => ({
+            const arr = stateResultData.map((item) => ({
                 sttId: item.sttId, //결재ID
                 sttApproverId: item.sttApproverId, //승인자ID
                 sttApproverNm: item.sttApproverNm, //승인자명
@@ -100,8 +191,9 @@ export default function SignDocument() {
                     ...changeSign,
                     ...arr
                 ];
+                const merge = [...changeSign, ...arr];
                 setApprovalData(merge);
-                const myData = stateResultData.find(item => item.sttApproverAt === "진행" && item.sttApproverId === sessionUserUniqId);
+                const myData = stateResultData.find((item) => item.sttApproverAt === "진행" && item.sttApproverId === sessionUserUniqId);
                 myData ? setIsMyTurn(true) : setIsMyTurn(false);
             }
         }
@@ -119,7 +211,7 @@ export default function SignDocument() {
         { header: "고객사", name: "cltNm", colValue: 2, colspan: 1, style: { textAlign: "center" } },
         { header: "영업대표", name: "poiSalmanagerId", colValue: 2, colspan: 1, style: { textAlign: "center" } },
         { header: "담당자", name: "poiManagerId", colValue: 2, colspan: 1, style: { textAlign: "center" } },
-        
+
         { header: "납기시작일", name: "poiDueBeginDt", colValue: 2, colspan: 1, style: { textAlign: "center" } },
         { header: "납기종료일", name: "poiDueEndDt", colValue: 2, colspan: 1, style: { textAlign: "center" } },
         { header: "계약금(천원)", name: "salesTotal", colValue: 2, colspan: 1, style: { textAlign: "center" } },
@@ -141,14 +233,12 @@ export default function SignDocument() {
         const tableRows = [];
         let currentRow = [];
         let currentColValueSum = 0;
-    
+
         for (let i = 0; i < columns.length; i++) {
             const column = columns[i];
-    
-            currentRow.push(
-                <th key={uuidv4()}>{column.header}</th>
-            );
-    
+
+            currentRow.push(<th key={uuidv4()}>{column.header}</th>);
+
             if (column.colspan) {
                 currentRow.push(
                     <td key={uuidv4()} colSpan={column.colspan} style={{ textAlign: column.style.textAlign }}>
@@ -156,33 +246,29 @@ export default function SignDocument() {
                     </td>
                 );
             }
-    
+
             currentColValueSum += column.colValue;
-    
+
             if (currentColValueSum === 6 || i === columns.length - 1) {
-                tableRows.push(
-                    <tr key={uuidv4()}>{currentRow}</tr>
-                );
+                tableRows.push(<tr key={uuidv4()}>{currentRow}</tr>);
                 currentRow = [];
                 currentColValueSum = 0;
             }
         }
-    
+
         tableRows.push(
             <tr key={uuidv4()} style={{ textAlign: "left" }}>
                 <td colSpan="6" dangerouslySetInnerHTML={{ __html: data.sgnDesc || "비고 없음" }} />
             </tr>
         );
-    
+
         return (
             <table className="table-styled" style={{ border: "solid 1px #ddd", margin: "auto" }}>
-                <tbody>
-                    {tableRows}
-                </tbody>
+                <tbody>{tableRows}</tbody>
             </table>
         );
     }
-        
+
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
     const [isOpenView, setIsOpenView] = useState(false);
 
@@ -194,7 +280,9 @@ export default function SignDocument() {
                 <thead>
                     <tr>
                         {columns.map((column, index) => (
-                            <th key={index} style={column.style}>{column.header}</th>
+                            <th key={index} style={column.style}>
+                                {column.header}
+                            </th>
                         ))}
                     </tr>
                 </thead>
@@ -202,7 +290,9 @@ export default function SignDocument() {
                     {newArray.map((row, index) => (
                         <tr key={index}>
                             {columns.map((column, columnIndex) => (
-                                <td key={columnIndex} style={column.style}>{row[column.name]}</td>
+                                <td key={columnIndex} style={column.style}>
+                                    {row[column.name]}
+                                </td>
                             ))}
                         </tr>
                     ))}
@@ -212,23 +302,23 @@ export default function SignDocument() {
     }
 
     const approvalToServer = async (value) => {
-        const sameInfo = approvalData.find(app => app.sttApproverId === sessionUserUniqId); //승인자목록==로그인유저
+        const sameInfo = approvalData.find((app) => app.sttApproverId === sessionUserUniqId); //승인자목록==로그인유저
 
         const requestData = {
             sttResult: value.sttResult,
             sttComent: value.sttComent,
-            sttId: sameInfo.sttId
-        }
+            sttId: sameInfo.sttId,
+        };
 
         const resultData = await axiosUpdate("/api/system/signState/edit.do", requestData || {});
-        if(resultData) {
-            alert("완료되었습니다.")
+        if (resultData) {
+            alert("완료되었습니다.");
             closePopup();
         } else {
             closePopup();
             return alert("error");
         }
-    }
+    };
 
     const closePopup = () => {
         window.close(); //현재창닫기
@@ -244,11 +334,41 @@ export default function SignDocument() {
         window.open(url, "newWindow2", windowFeatures);
     };
 
+    const openPopup2 = () => {
+        const url = `${URL.TotalDoc}?data=${encodeURIComponent(
+            JSON.stringify({
+                label: "견적서",
+                poiId: poiVersionId.poiId,
+                versionId: poiVersionId.versionId,
+                tableData: estimate,
+                tableData2: buyIngInfo,
+            })
+        )}`;
+        const width = 1400;
+        const height = 700;
+        const left = window.screen.width / 2 - width / 2;
+        const top = window.screen.height / 2 - height / 2;
+        const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
+        window.open(url, "newWindow2", windowFeatures);
+    };
+
     return (
         <>
-            <div style={{ width: '90%', margin: 'auto' }}>
+            <div style={{ width: "90%", margin: "auto" }}>
                 <div className="table-buttons mg-t-10 mg-b-10">
-                    <BasicButton label="견적원가서" onClick={openPopup}/>
+                    <BasicButton label="견적원가서" onClick={openPopup} />
+                    <PopupButton
+                        onClick={openPopup2}
+                        clickBtn={poiVersionId.poiId ? true : false}
+                        targetUrl={URL.TotalDoc}
+                        data={{
+                            label: "견적서",
+                            poiId: poiVersionId.poiId,
+                            versionId: poiVersionId.versionId,
+                            tableData: estimate,
+                            tableData2: buyIngInfo,
+                        }}
+                    />
                     {/* <PopupButton
                         targetUrl={URL.PreCostDoc}
                         data={{ label: "견적원가서(보기)", type: "document" }}
@@ -256,12 +376,10 @@ export default function SignDocument() {
                     {isMyTurn && <ViewButton label={"결재"} onClick={() => setIsOpenView(true)} />}
                 </div>
                 <div style={{ textAlign: "center", marginBottom: "-65px" }}>
-                        <h3>{title}</h3>
+                    <h3>{title}</h3>
                 </div>
                 <SignStateLine signStateData={approvalData}>
-                    <div style={{ textAlign: "center" }}>
-                        {generateProjectTable(projectColumns, projectInfo)}
-                    </div>
+                    <div style={{ textAlign: "center" }}>{generateProjectTable(projectColumns, projectInfo)}</div>
 
                     <br />
                     <br />
