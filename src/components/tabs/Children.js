@@ -37,6 +37,7 @@ import ProgressBox from "pages/mail/ProgressBox";
 import CompletedBox from "pages/mail/CompletedBox";
 import MenuInfo from "pages/system/menuMgmt/MenuInfo";
 import ReturnBox from "pages/mail/ReturnBox";
+import CancelBox from "pages/mail/CancelBox";
 
 
 
@@ -270,6 +271,13 @@ export const mail = [
         path: URL.ReturnBox,
         component: <ReturnBox />,
         label: "결재반려함",
+        pLabel: "전자결재",
+     },
+    {
+        id: "CancelBox",
+        path: URL.CancelBox,
+        component: <CancelBox/>,
+        label: "결재회수함",
         pLabel: "전자결재",
      },
 ];
