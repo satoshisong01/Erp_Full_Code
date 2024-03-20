@@ -126,12 +126,13 @@ function ProjectMgmt() {
                         setSelectedRows(data);
                     }}
                     isPageNation={true}
+                    isSingleSelect={true}
                 />
             </HideCard>
             {isOpenAdd && (
                 <AddModModal
                     width={500}
-                    height={420}
+                    height={480}
                     list={columns.projectMgmt.addMod}
                     resultData={addToServer}
                     onClose={() => setIsOpenAdd(false)}
@@ -141,7 +142,7 @@ function ProjectMgmt() {
             {isOpenMod && (
                 <AddModModal
                     width={500}
-                    height={420}
+                    height={480}
                     list={columns.projectMgmt.addMod}
                     initialData={selectedRows}
                     resultData={modifyToServer}

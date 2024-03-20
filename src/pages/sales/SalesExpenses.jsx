@@ -55,16 +55,16 @@ function SalesExpenses() {
         { header: "사용여부", col: "deleteAt", notView: true },
         { header: "삭제여부", col: "useAt", notView: true },
         { header: "타입코드", col: "pjbgTypeCode", notView: true },
-        { header: "내용", col: "pjbgDesc", cellWidth: "740" },
-        { header: "금액", col: "pjbgPrice", cellWidth: "300" },
+        { header: "내용", col: "pjbgDesc", cellWidth: "933" },
+        { header: "금액", col: "pjbgPrice", cellWidth: "441" },
     ];
     const columnsData = [
         { header: "프로젝트ID", col: "poiId", notView: true },
         { header: "사용여부", col: "deleteAt", notView: true },
         { header: "삭제여부", col: "useAt", notView: true },
         { header: "타입코드", col: "pjbgTypeCode", notView: true },
-        { header: "내용", col: "pjbgDesc", cellWidth: "740", type: "input" },
-        { header: "금액", col: "pjbgPrice", cellWidth: "300", type: "input", require: true },
+        { header: "내용", col: "pjbgDesc", cellWidth: "900", type: "input" },
+        { header: "금액", col: "pjbgPrice", cellWidth: "441", type: "input", require: true },
     ];
 
     const totalColumns = [

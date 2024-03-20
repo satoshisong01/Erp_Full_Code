@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import { locationPath } from "constants/locationPath";
-import { axiosFetch } from "api/axiosFetch";
+import { axiosFetch, axiosUpdate } from "api/axiosFetch";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import HideCard from "components/HideCard";
 import { PageContext } from "components/PageProvider";
@@ -40,6 +40,7 @@ function ProgressBox() {
         // { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
         { header: "기안자", col: "empNm", cellWidth: "100" },
         { header: "기안일", col: "sgnSigndate", cellWidth: "130" },
+        { header: "결재상태", col: "sgnAt", cellWidth: "130" },
         { header: "비고", col: "sgnDesc", cellWidth: "559", textAlign: "left" },
     ];
 
@@ -47,7 +48,7 @@ function ProgressBox() {
         { title: "프로젝트명", colName: "clCode", type: "input" },
         {
             title: "결재종류",
-            colName: "empNm",
+            colName: "sgnType",
             type: "select",
             option: [
                 { value: "", label: "전체" },
@@ -81,9 +82,15 @@ function ProgressBox() {
 
     const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/system/sign/totalListAll.do", condition || {});
-        console.log("resultData:", resultData);
         if (resultData) {
             setTableData(resultData);
+        }
+    };
+
+    const isRefresh = () => {
+        const willApprove = window.confirm("새로고침 하시겠습니까?");
+        if(willApprove) {
+            fetchAllData({ sgnSenderId: localStorage.uniqId, sgnAt: "진행" });
         }
     };
 
@@ -114,10 +121,20 @@ function ProgressBox() {
     };
 
     
-    const cancel = () => {
+    const cancel = async () => {
         const willApprove = window.confirm("결재를 회수 하시겠습니까?");
         if(willApprove) {
-            // submit();
+            if(selectedRows?.sgnId) {
+                const requestData = {
+                    sgnId: selectedRows.sgnId,
+                    sgnAt: "회수"
+                }
+                const resultData = await axiosUpdate("/api/system/sign/edit.do", requestData || {});
+                if(resultData) {
+                    alert("회수완료");
+                    refresh();
+                }
+            }
         }
     }
 
@@ -129,7 +146,7 @@ function ProgressBox() {
                 <div className="table-buttons mg-t-10 mg-b-10">
                     <ModButton label="전자결재" onClick={openPopup}/>
                     <ModButton label="회수" onClick={cancel}/>
-                    <RefreshButton onClick={refresh} />
+                    <RefreshButton onClick={isRefresh} />
                 </div>
                 <ReactDataTable
                     columns={columnsList}

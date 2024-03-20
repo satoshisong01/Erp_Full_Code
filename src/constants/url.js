@@ -79,6 +79,7 @@ const URL = {
     ProgressBox: "/mail/progressBox", //전자결재>결재진행함
     CompletedBox: "/mail/completedBox", //전자결재>결재완료함
     ReturnBox: "/mail/returnBox", //전자결재>결재반려함
+    CancelBox: "/mail/cancel", //전자결재>결재회수함
 
     //SYSTEM 시스템관리
     System: "/system", //시스템관리
