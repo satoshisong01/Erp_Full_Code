@@ -488,21 +488,25 @@ function OrderPlanMgmt() {
             }
         } else if (innerPageName.name === "영업관리비") {
             const resultData = await axiosFetch("/api/baseInfrm/product/slsmnExpns/totalListAll.do", requestData);
+            const resultDataTotal = await axiosFetch("/api/cost/contract/totalQuotation.do", requestData);
+            console.log(resultDataTotal);
             if (resultData && resultData.length > 0) {
+                console.log(resultData, "영업관리비");
                 setGeneralExpensesDatas(resultData);
                 // slsmnEnterpriseProfit 기업이윤, slsmnAdmnsCost 일반관리비, slsmnNego 네고
-                let total = 0; //판관비
-                let negoTotal = 0; //네고
-                let price = 0; //네고
-                resultData.forEach((data) => {
-                    total += data.slsmnEnterpriseProfit + data.slsmnAdmnsCost;
-                    negoTotal += data.slsmnNego;
-                    price = total + negoTotal;
-                });
-                setGeneralCalDatas([{ total, negoTotal, price }]);
             } else {
                 alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setGeneralExpensesDatas([]);
+            }
+            if (resultDataTotal) {
+                console.log(resultDataTotal, "값이있는데 이거왜안뜰까");
+                let total = Math.round(resultDataTotal.legalTotalPrice / 10) * 10; // 판관비를 10의 자리까지 반올림
+                let negoTotal = Math.round(resultDataTotal.slsmnNego / 10) * 10; // 네고를 10의 자리까지 반올림
+                let companyMargin = Math.round(resultDataTotal.slsmnEnterpriseProfit / 10) * 10; // 기업이윤을 10의 자리까지 반올림
+                let nomalCost = Math.round(resultDataTotal.slsmnAdmnsCost / 10) * 10; // 일반관리비를 10의 자리까지 반올림
+                //let price = 15; //네고
+                setGeneralCalDatas([{ total, negoTotal, companyMargin, nomalCost }]);
+            } else {
                 setGeneralCalDatas([]);
             }
         }

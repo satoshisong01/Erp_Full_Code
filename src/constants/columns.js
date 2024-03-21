@@ -522,8 +522,10 @@ export const columns = {
         generalCal: [
             // 영업관리비합계
             // { header: "금액", col: "price", cellWidth: "458" },
-            { header: "판관비", col: "total", cellWidth: "687" },
-            { header: "네고", col: "negoTotal", cellWidth: "687" },
+            { header: "기업이윤", col: "companyMargin", cellWidth: "343" },
+            { header: "일반관리비", col: "nomalCost", cellWidth: "343" },
+            { header: "판관비", col: "total", cellWidth: "344" },
+            { header: "네고", col: "negoTotal", cellWidth: "344" },
         ],
         purchase: [
             // 구매비
@@ -548,8 +550,8 @@ export const columns = {
             { header: "원가", col: "estimatedCost", cellWidth: "100", textAlign: "right" },
             { header: "이익금", col: "plannedProfits", cellWidth: "100", textAlign: "right" },
             // { header: "이익률", col: "plannedProfitMargin", cellWidth: "60" },
-            { header: "이익률", col: "byStandardMargin", cellWidth: "100", type: "input", require: true, textAlign: "center" },
-            { header: "소비자가 산출률", col: "byConsumerOutputRate", cellWidth: "130", type: "input", require: true, textAlign: "center" },
+            { header: "이익률", col: "byStandardMargin", cellWidth: "100", type: "number", require: true, textAlign: "center" },
+            { header: "소비자가 산출률", col: "byConsumerOutputRate", cellWidth: "130", type: "number", require: true, textAlign: "center" },
             { header: "첨부파일", col: "file", cellWidth: "70", type: "file" },
             { header: "비고", col: "byDesc", cellWidth: "300", type: "input", textAlign: "left" },
         ],
@@ -625,9 +627,9 @@ export const columns = {
         ],
         estimatePurchase: [
             //견적용 구매비
-            { header: "품목그룹", col: "pgNm", cellWidth: "120" },
-            { header: "모델명", col: "pdiNum", cellWidth: "150", type: "productInfo", require: true },
-            { header: "품목 규격", col: "pdiStnd", cellWidth: "200" },
+            { header: "품목그룹", col: "pgNm", cellWidth: "120", type: "input" },
+            { header: "모델명", col: "pdiNum", cellWidth: "150", type: "input", require: true },
+            { header: "품목 규격", col: "pdiStnd", cellWidth: "200", type: "input" },
             { header: "수량", col: "estBuyQunty", cellWidth: "100" },
             { header: "소비자 단가", col: "estConsumerUnitPrice", cellWidth: "100", type: "number" },
             { header: "소비자 금액", col: "estConsumerAmount", cellWidth: "100", type: "number" },

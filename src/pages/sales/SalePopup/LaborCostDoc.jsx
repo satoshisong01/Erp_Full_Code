@@ -845,7 +845,10 @@ const LaborCostDoc = ({ displayNone }) => {
                                                     -　
                                                 </td>
                                                 <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                    {`${Math.round((buyTable[0]?.estAmount ? buyTable[0]?.estAmount : 0 + devCost) * 0.1).toLocaleString()}　`}
+                                                    {`${Math.round(
+                                                        ((buyTable[0]?.estAmount ? buyTable[0]?.estAmount : 0) + devCost) *
+                                                            (tableData[0].slsmnEnterpriseProfit * 0.01)
+                                                    ).toLocaleString()}　`}
                                                 </td>
                                             </tr>
                                         )}
@@ -880,9 +883,11 @@ const LaborCostDoc = ({ displayNone }) => {
                                                 </td>
                                                 <td className="table4-3White" style={{ textAlign: "right" }}>
                                                     {`${Math.round(
-                                                        (buyTable[0]?.estAmount
-                                                            ? buyTable[0]?.estAmount
-                                                            : 0 + devCost + (buyTable[0]?.estAmount + devCost) * 0.1) * 0.05
+                                                        ((buyTable[0]?.estAmount ? buyTable[0]?.estAmount : 0) +
+                                                            devCost +
+                                                            ((buyTable[0]?.estAmount ? buyTable[0]?.estAmount : 0) + devCost) *
+                                                                (tableData[0].slsmnEnterpriseProfit * 0.01)) *
+                                                            (tableData[0]?.slsmnAdmnsCost * 0.01)
                                                     ).toLocaleString()}　`}
                                                 </td>
                                             </tr>

@@ -394,17 +394,16 @@ const ReactDataTableSaleCost = (props) => {
     //------------------------------- 초기값과 비교하는 코드
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
-
     const textAlignStyle = (column) => {
         switch (column.textAlign) {
-            case 'left':
-                return 'txt-left';
-            case 'right':
-                return 'txt-right';
+            case "left":
+                return "txt-left";
+            case "right":
+                return "txt-right";
             default:
-                return 'txt-center';
+                return "txt-center";
         }
-    }
+    };
 
     return (
         <div className={isPageNation ? "x-scroll" : "table-scroll"}>
@@ -441,7 +440,6 @@ const ReactDataTableSaleCost = (props) => {
                                             // notView가 true인 경우, 셀을 출력하지 않음
                                             return null;
                                         }
-
                                         return (
                                             <td
                                                 {...cell.getCellProps()}
@@ -465,10 +463,9 @@ const ReactDataTableSaleCost = (props) => {
                                                     ) : cell.column.type === "number" ? (
                                                         <Number
                                                             value={tableData[row.index]?.[cell.column.id] || ""}
-                                                            onChange={(value) => onChangeInput({target: {value: value, name: cell.column.id}}, row)}
-                                                            style={{ textAlign: cell.column.textAlign || 'left' }}
+                                                            onChange={(value) => onChangeInput({ target: { value: value, name: cell.column.id } }, row)}
+                                                            style={{ textAlign: cell.column.textAlign || "left" }}
                                                         />
-
                                                     ) : (
                                                         cell.render("Cell")
                                                     )
