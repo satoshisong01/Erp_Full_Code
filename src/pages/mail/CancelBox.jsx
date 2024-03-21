@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Location from "components/Location/Location";
 import SearchList from "components/SearchList";
 import { locationPath } from "constants/locationPath";
-import { axiosFetch, axiosUpdate } from "api/axiosFetch";
+import { axiosFetch } from "api/axiosFetch";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import HideCard from "components/HideCard";
 import { PageContext } from "components/PageProvider";
@@ -10,8 +10,8 @@ import RefreshButton from "components/button/RefreshButton";
 import ModButton from "components/button/ModButton";
 import URL from "constants/url";
 
-/** 전자결재-결재진행함 */
-function ProgressBox() {
+/** 전자결재-결재회수함 */
+function CancelBox() {
     const { currentPageName } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
@@ -37,10 +37,8 @@ function ProgressBox() {
         { header: "요청일", col: "sngSignData", notView: true },
         { header: "프로젝트명", col: "poiNm", cellWidth: "350", textAlign: "left" },
         { header: "결재종류", col: "sgnType", cellWidth: "200" },
-        // { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
-        { header: "기안자", col: "empNm", cellWidth: "100" },
+        { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
         { header: "기안일", col: "sgnSigndate", cellWidth: "130" },
-        { header: "결재상태", col: "sgnAt", cellWidth: "130" },
         { header: "비고", col: "sgnDesc", cellWidth: "559", textAlign: "left" },
     ];
 
@@ -48,7 +46,7 @@ function ProgressBox() {
         { title: "프로젝트명", colName: "clCode", type: "input" },
         {
             title: "결재종류",
-            colName: "sgnType",
+            colName: "empNm",
             type: "select",
             option: [
                 { value: "", label: "전체" },
@@ -77,25 +75,18 @@ function ProgressBox() {
     ];
 
     useEffect(() => {
-        fetchAllData({ sgnSenderId: localStorage.uniqId, sgnAt: "진행" });
+        fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "회수" });
     }, [currentPageName]);
 
     const fetchAllData = async (condition) => {
-        const resultData = await axiosFetch("/api/system/sign/totalListAll.do", condition || {});
+        const resultData = await axiosFetch("/api/system/signState/totalListAll.do", condition || {});
         if (resultData) {
             setTableData(resultData);
         }
     };
 
-    const isRefresh = () => {
-        const willApprove = window.confirm("새로고침 하시겠습니까?");
-        if(willApprove) {
-            fetchAllData({ sgnSenderId: localStorage.uniqId, sgnAt: "진행" });
-        }
-    };
-
     const refresh = () => {
-        fetchAllData({ sgnSenderId: localStorage.uniqId, sgnAt: "진행" });
+        fetchAllData({ sgnSenderId: localStorage.uniqId, sttApproverId: localStorage.uniqId, sgnAt: "회수" });
     };
 
     const returnData = (row) => {
@@ -116,42 +107,23 @@ function ProgressBox() {
             const left = window.screen.width / 2 - width / 2;
             const top = window.screen.height / 2 - height / 2;
             const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
-            window.open(url, "progressBoxWindow", windowFeatures);
+            window.open(url, "cancelBoxWindow", windowFeatures);
         }
     };
-
-    
-    const cancel = async () => {
-        const willApprove = window.confirm("결재를 회수 하시겠습니까?");
-        if(willApprove) {
-            if(selectedRows?.sgnId) {
-                const requestData = {
-                    sgnId: selectedRows.sgnId,
-                    sgnAt: "회수"
-                }
-                const resultData = await axiosUpdate("/api/system/sign/edit.do", requestData || {});
-                if(resultData) {
-                    alert("회수완료");
-                    refresh();
-                }
-            }
-        }
-    }
 
     return (
         <>
             <Location pathList={locationPath.Approval} />
             <SearchList conditionList={conditionList} />
-            <HideCard title="결재진행 목록" color="back-lightblue" className="mg-b-40">
+            <HideCard title="결재회수 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
                     <ModButton label="전자결재" onClick={openPopup}/>
-                    <ModButton label="회수" onClick={cancel}/>
-                    <RefreshButton onClick={isRefresh} />
+                    <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTable
                     columns={columnsList}
                     customDatas={tableData}
-                    viewPageName={{ name: "결재진행함", id: "ProgressBox" }}
+                    viewPageName={{ name: "결재회수함", id: "CancelBox" }}
                     returnSelect={returnData}
                     isSingleSelect={true}
                 />
@@ -160,4 +132,4 @@ function ProgressBox() {
     );
 }
 
-export default ProgressBox;
+export default CancelBox;

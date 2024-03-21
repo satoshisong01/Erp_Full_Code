@@ -162,7 +162,7 @@ const ReactDataTablePdorder = (props) => {
     }, [newRowData]);
 
     useEffect(() => {
-        console.log(tableData);
+        console.log("tableData:", tableData);
     }, [tableData]);
 
     const {
@@ -406,6 +406,7 @@ const ReactDataTablePdorder = (props) => {
 
         //영업
         if (innerPageName.name === "구매(재료비)") {
+            console.log("name:", name);
             // 원단가, 기준이익율, 소비자가산출률, 수량
             if (name === "byQunty" || name === "byUnitPrice" || name === "byStandardMargin" || name === "byConsumerOutputRate") {
                 if (row.original.byUnitPrice && row.original.byStandardMargin && row.original.byConsumerOutputRate && row.original.byQunty) {
@@ -459,6 +460,7 @@ const ReactDataTablePdorder = (props) => {
                 if (row.original.unitPrice && row.original.byUnitPrice) {
                     //이익율
                     const byStandardMargin = row.original.unitPrice !== 0 ? 100 - Math.round(100 / (row.original.unitPrice / row.original.byUnitPrice)) : 0;
+                    console.log("소비자단가 수정시 byStandardMargin:", byStandardMargin);
                     updatedTableData[index]["consumerAmount"] = consumerAmount; //소비자금액
                     // 소비자가산출률 = (공급단가/소비자단가) * 100
                     updatedTableData[index]["byConsumerOutputRate"] = Math.round((row.original.unitPrice / row.original.byConsumerUnitPrice) * 100); //소비자가산출률
