@@ -5,54 +5,65 @@ import { axiosFetch } from "api/axiosFetch";
 import { v4 as uuidv4 } from "uuid";
 
 /** 영업 폼 */
-function ApprovalFormSal({ returnData, viewPageName }) {
+function ApprovalFormSal({ viewPageName, returnData }) {
     const { innerPageName, setInquiryConditions, inquiryConditions, currentPageName } = useContext(PageContext);
     const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
+    const [isInquiry, setIsInquiry] = useState(true); //연속 조회방지
 
     useEffect(() => {
-        if (currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) {
-            //현재페이지일때
-            if (inquiryConditions.poiId) {
-                //전역정보 바뀔때
-                getVersionList({ poiId: inquiryConditions.poiId });
+        if(currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) { //현재페이지일때
+            if(inquiryConditions.poiId && inquiryConditions.versionId && isInquiry) { //전역정보 바뀔때
+                getVersionList({ poiId: inquiryConditions.poiId }, "again")
             }
+        } else {
+            setIsInquiry(true); //페이지 바뀌면 다시 조회 가능하게 변경
         }
-    }, [inquiryConditions, innerPageName, currentPageName, viewPageName]);
+    }, [inquiryConditions, innerPageName, currentPageName]);
 
     useEffect(() => {
-        if (currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) {
-            //현재페이지일때
-            if (data.poiId && !data.versionId) {
-                //버전정보가 없을때
-                getVersionList({ poiId: data.poiId });
-            }
+        if(currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) { //현재페이지일때
+            if(data.versionId) return;
+            getVersionList({ poiId: data.poiId }, "first");
         }
     }, [data]);
 
-    const getVersionList = async (requestData) => {
-        const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});
-        const emptyArr = resultData && resultData.map(({ versionId, versionNum, versionDesc, costAt }) => ({ versionId, versionNum, versionDesc, costAt }));
-        if (emptyArr?.length > 0) {
+    const getVersionList = async (requestData, type) => {
+        if (type === "first") { //맨처음조회
+            const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});
+            const emptyArr = resultData && resultData.map(({ versionId, versionNum, versionDesc, costAt }) => ({ versionId, versionNum, versionDesc, costAt }));
+            if (!resultData || resultData.length === 0) {
+                alert("버전 정보가 없습니다.");
+                return;
+            }
             setData((prev) => ({
-                ...prev,
-                ...inquiryConditions,
-                versionId: inquiryConditions.versionId
-                    ? inquiryConditions.versionId
-                    : emptyArr.find((info) => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
+                ...prev, //onChangeProject() 데이터 유지
+                versionId: emptyArr.find((info) => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
                 versionNum: emptyArr.find((info) => info.costAt === "Y")?.versionNum || emptyArr[0]?.versionNum,
                 option: emptyArr,
             }));
-        }
-        if (!resultData || resultData.length === 0) {
-            returnData && returnData({});
-            alert("버전 정보가 없습니다.");
+            setIsInquiry(false);
+
+        } else if( type==="again" ) { //버전 재조회
+            const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});
+            const emptyArr = resultData && resultData.map(({ versionId, versionNum, versionDesc, costAt }) => ({ versionId, versionNum, versionDesc, costAt }));
+            if (!resultData || resultData.length === 0) {
+                alert("버전 정보가 없습니다.");
+                return;
+            }
+            setData({
+                poiId: inquiryConditions?.poiId,
+                poiNm: inquiryConditions?.poiNm,
+                versionId: inquiryConditions?.versionId,
+                versionNum: inquiryConditions?.versionNum,
+                option: emptyArr,
+            });
         }
     };
 
     const onSelectChange = (e) => {
-        const { name, value, innerText } = e.target;
-        const versionNum = innerText.split("\n")[0];
+        const { name, value } = e.target;
+        const versionNum = e.target.options[e.target.selectedIndex].text;
         if (value !== "default") {
             setData((prev) => ({
                 ...prev,
@@ -62,7 +73,7 @@ function ApprovalFormSal({ returnData, viewPageName }) {
         }
     };
 
-    const onChangeProject = (value) => {
+    const onChangeProject = (value) => { //프로젝트변경
         setData({
             poiId: value.poiId,
             poiNm: value.poiNm,
@@ -75,12 +86,14 @@ function ApprovalFormSal({ returnData, viewPageName }) {
     };
 
     const onClick = () => {
-        if (!data.versionId) {
-            alert("버전을 생성하세요.");
-            return;
+        if(currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) { //현재페이지일때
+            if(!data.versionId) {
+                alert("버전을 생성하세요.");
+                return;
+            }
+            setInquiryConditions({...data})
+            returnData && returnData({...data});
         }
-        returnData && returnData({ ...data });
-        setInquiryConditions({ ...data });
     };
 
     return (
@@ -146,19 +159,6 @@ function ApprovalFormSal({ returnData, viewPageName }) {
                                     </button>
                                 )}
                             </td>
-
-                            {/* <td width={80} style={{ textAlign: "center" }}>
-                                {currentPageName?.id === "OrderMgmt" || innerPageName?.id === "proposal" && 
-                                    <button type="button" className="table-btn table-btn-default" onClick={onClick}>
-                                        내용저장
-                                    </button>
-                                }
-                                {currentPageName?.id !== "OrderMgmt" || innerPageName?.id === "proposal" && 
-                                    <button type="button" className="table-btn table-btn-default" onClick={onClick}>
-                                        조회
-                                    </button>
-                                }
-                            </td> */}
                         </tr>
                     </tbody>
                 </table>

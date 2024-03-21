@@ -35,7 +35,6 @@ function Quotation() {
         setInnerPageName,
         setCurrentPageName,
         setNameOfButton,
-        inquiryConditions,
         unitPriceListRenew,
     } = useContext(PageContext);
     const [infoList, setInfoList] = useState([
@@ -67,26 +66,16 @@ function Quotation() {
     }, []);
 
     useEffect(() => {
-        if (inquiryConditions.poiId) {
-            fetchAllData(inquiryConditions);
-        }
-    }, [innerPageName]);
-
-    useEffect(() => {
         if (currentPageName.id === "Quotation") {
             const activeTab = document.querySelector(".mini_board_3 .tab li a.on"); //마지막으로 활성화 된 탭
             if (activeTab) {
                 const activeTabInfo = infoList.find((data) => data.name === activeTab.textContent.trim());
                 setInnerPageName({ ...activeTabInfo });
                 setCurrentPageName({});
-                fetchAllData();
+                // fetchAllData();
             }
         }
     }, [currentPageName]);
-
-    useEffect(() => {
-        fetchAllData(condition);
-    }, []);
 
     const columnlabor = [
         //인건비
@@ -170,11 +159,6 @@ function Quotation() {
     //};
 
     const fetchAllData = async (condition) => {
-        //const requestSearch = {
-        //    poiId: condition.poiId,
-        //    useAt: "Y",
-        //};
-        console.log(condition);
         if (innerPageName.id === "estimateLabor" || innerPageName.id === "proposal") {
             //인건비
             const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
@@ -211,10 +195,8 @@ function Quotation() {
         } else if (innerPageName.id === "orderBuying" || innerPageName.id === "proposal") {
             //구매비
             const viewResult = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", condition);
-            console.log("영업원가 구매 조회:", viewResult);
             if (viewResult && viewResult.length > 0) {
                 const calData = buyIngInfoCalculation(viewResult);
-                console.log("영업원가 구매 폼변화:", calData);
                 setBuyView(calData);
             }
 
@@ -248,14 +230,9 @@ function Quotation() {
             compareData(originTableData, tableData);
         } else if (innerPageName.id === "orderBuying") {
             //구매비
-
-            console.log("??11111");
-
             if (tableData[0].estBuyId === null) {
                 addItem2(tableData);
-                console.log("????????");
             } else {
-                console.log("??");
                 compareData2(originTableData, tableData);
                 console.log(originTableData, "originTableData");
                 console.log(tableData, "tableData");
@@ -409,7 +386,6 @@ function Quotation() {
     };
 
     const deleteItem2 = async (removeItem) => {
-        console.log("삭제를왜타지", removeItem);
         const url = `/api/estimate/buy/estCostBuy/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
 
@@ -444,22 +420,6 @@ function Quotation() {
         }
     };
 
-    useEffect(() => {
-        if (!inquiryConditions.poiId || !inquiryConditions.versionId) {
-            return;
-        }
-        setCondition((prev) => {
-            if (prev.versionId !== inquiryConditions.versionId) {
-                const newCondition = { ...inquiryConditions };
-                fetchAllData(newCondition);
-                return newCondition;
-            } else {
-                fetchAllData({ ...prev });
-                return prev;
-            }
-        });
-    }, [inquiryConditions]);
-
     /* 품의서 */
     const sessionUser = sessionStorage.getItem("loginUser");
     const sessionUserName = JSON.parse(sessionUser)?.name;
@@ -468,13 +428,13 @@ function Quotation() {
 
     const [isOpenModalApproval, setIsOpenModalApproval] = useState(false);
     const [approvalLine, setApprovalLine] = useState([]); //결재선
-    const [isSave, setIsSave] = useState(true); //저장
+    const [isProgress, setIsProgress] = useState(true); //저장
     const [isSubmit, setIsSubmit] = useState(false); //결재요청
     const [content, setContent] = useState(""); //결재 비고내용
 
     const writing = () => {
-        if (isSave) {
-            setIsSave(false); //내용 변경 중, 저장 버튼 활성화
+        if (!isProgress) {
+            setIsProgress(true); //내용 변경 중
         }
     };
 
@@ -486,12 +446,14 @@ function Quotation() {
         } else if (type === "비고") {
             setContent(value);
         } else if (type === "조회") {
-            setIsSave(true);
+            setIsProgress(false); //내용저장(진행) 완료
             setCondition((prev) => {
-                if (prev.poiId !== value.poiId) {
+                if (prev.versionId !== value.versionId) {
                     const newCondition = { ...value };
+                    fetchAllData(newCondition);
                     return newCondition;
                 } else {
+                    fetchAllData({ ...prev });
                     return prev;
                 }
             });
@@ -508,7 +470,6 @@ function Quotation() {
     }, [isSubmit]);
 
     const submit = async () => {
-        console.log("야!!!!!!!!!!!!!");
         const list = approvalLine.slice(1); //첫번째는 요청자라 제외
 
         if (!condition || !condition.poiId) {
@@ -538,15 +499,11 @@ function Quotation() {
         const resultData = await axiosPost("/api/system/signState/add.do", dataTosend);
         if (resultData) {
             alert("요청 완료되었습니다.");
-            setIsSave(false); //결재요청 버튼 비활성화
+            setIsProgress(true); //결재요청 버튼 비활성화
             setApprovalLine([]);
         }
         setIsSubmit(false);
     };
-
-    useEffect(() => {
-        console.log(buyIngInfo);
-    }, [buyIngInfo]);
 
     return (
         <>
@@ -568,7 +525,7 @@ function Quotation() {
                 <div className="list">
                     <div className="first">
                         <ul>
-                            <ApprovalFormSal viewPageName={{ name: "인건비", id: "estimateLabor" }} />
+                            <ApprovalFormSal returnData={(value) => returnData(value, "조회")} viewPageName={{ name: "인건비", id: "estimateLabor" }} />
                             <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable columns={columnlabor} customDatas={budgetMgmtView} defaultPageSize={5} hideCheckBox={true} />
                             </HideCard>
@@ -606,7 +563,7 @@ function Quotation() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalFormSal viewPageName={{ name: "구매비", id: "orderBuying" }} />
+                            <ApprovalFormSal returnData={(value) => returnData(value, "조회")} viewPageName={{ name: "구매비", id: "orderBuying" }} />
                             {/* <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable columns={columnBuy} customDatas={buyView} defaultPageSize={5} hideCheckBox={true} />
                             </HideCard> */}
@@ -651,7 +608,7 @@ function Quotation() {
                         <ul>
                             <div className="form-buttons mg-b-20" style={{ maxWidth: 1400 }}>
                                 <PopupButton
-                                    clickBtn={isSave}
+                                    clickBtn={isProgress}
                                     targetUrl={URL.TotalDoc}
                                     data={{
                                         label: "견적서",
@@ -661,17 +618,20 @@ function Quotation() {
                                         tableData2: buyIngInfo,
                                     }}
                                 />
-                                <PopupButtonReport targetUrl={URL.PreCostDoc} data={{ label: "견적원가서", type: "document", ...condition }} />
+                                <PopupButton
+                                    clickBtn={isProgress}
+                                    targetUrl={URL.PreCostDoc}
+                                    data={{ label: "견적원가서", type: "document", ...condition }}
+                                />
                                 <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)} />
-                                {/* <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave} /> */}
-                                <AddButton label="결재요청" onClick={() => setIsSubmit(true)} />
+                                <AddButton label="결재요청" onClick={() => setIsSubmit(true)}  disabled={isProgress}/>
                             </div>
                             <ApprovalFormCost sendInfo={approvalLine}>
                                 <div style={{ marginTop: "-55px", marginBottom: 55 }}>
                                     <h2>견적서 승인 요청서</h2>
                                 </div>
                                 <ApprovalFormSal returnData={(value) => returnData(value, "조회")} viewPageName={{ name: "품의서", id: "proposal" }} />
-                                <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing} />
+                                <QuillEditor isProgress={isProgress} returnData={(value) => returnData(value, "비고")} writing={writing} />
                                 <ApprovalLineModal
                                     width={670}
                                     height={500}

@@ -164,6 +164,14 @@ const PreCostDoc = () => {
     };
 
     const getInitData = async (poiId, versionId) => {
+        if(!poiId ) {
+            alert("프로젝트 아이디 없음, 조회 실패");
+            return;
+        }
+        if(!versionId) {
+            alert("버전 아이디 없음")
+            return;
+        }
         const resultData = await axiosFetch("/api/calculate/cost/totalListAll.do", { poiId, versionId });
         const {
             projectInfoToServer, //수주정보

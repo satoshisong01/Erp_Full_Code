@@ -202,10 +202,6 @@ export default function ApprovalLineModal(props) {
         setSgnType(value);
     }
 
-    useEffect(() => {
-        console.log("nodes:", nodes);
-    }, [nodes])
-
     const sorting = () => {
         const positionPriority = {
             "사원": 1,

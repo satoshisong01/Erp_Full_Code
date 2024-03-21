@@ -9,7 +9,7 @@ import Quill from 'quill'; // Quill 라이브러리 임포트
 
 Quill.register('modules/table', Table);
 
-const QuillEditor = ({ isSave, returnData, writing }) => {
+const QuillEditor = ({ isProgress, returnData, writing }) => {
     const defaultContent = `
             <p>✔️ 변경계약인 경우</p>
             <ul>
@@ -43,12 +43,13 @@ const QuillEditor = ({ isSave, returnData, writing }) => {
     const [content, setContent] = useState(defaultContent);
 
     useEffect(() => {
-        if (isSave) {
+        if (!isProgress) {
             returnData && returnData(content);
-        } else {
-            setContent(defaultContent); //초기화
         }
-    }, [isSave]);
+        // else {
+        //     setContent(defaultContent); //초기화
+        // }
+    }, [isProgress]);
 
     useEffect(() => {
         writing && writing(content);
