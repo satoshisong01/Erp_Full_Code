@@ -15,11 +15,13 @@ import ModButton from "components/button/ModButton";
 
 export default function SignDocument() {
     const sessionUser = sessionStorage.getItem("loginUser");
+    const sessionUserName = JSON.parse(sessionUser)?.name;
     const sessionUserUniqId = JSON.parse(sessionUser)?.uniqId;
 
     const [title, setTitle] = useState("");
     const [projectInfo, setProjectInfo] = useState({}); //프로젝트정보
     const [approvalData, setApprovalData] = useState([]); //승인자목록
+    const [documentName, setDocumentName] = useState("사전원가서")
     // const [signData, setSignData] = useState({}); //요청자
     const { unitPriceListRenew } = useContext(PageContext);
 
@@ -73,10 +75,8 @@ export default function SignDocument() {
 
         //구매비
         const viewResult2 = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", poiVersionId);
-        console.log("영업원가 구매 조회:", viewResult2);
         if (viewResult2 && viewResult2.length > 0) {
             const calData = buyIngInfoCalculation(viewResult2);
-            console.log("영업원가 구매 폼변화:", calData);
             setBuyView(calData);
         }
 
@@ -117,18 +117,21 @@ export default function SignDocument() {
         // URL에서 "data" 파라미터 읽기
         const dataParameter = getQueryParameterByName("data");
         const data = JSON.parse(dataParameter); //프로젝트정보있음
-        console.log("⭐data:", data);
         setProjectInfo({ ...data });
         fetchAllData({ poiId: data.poiId, versionId: data.versionId });
 
         if (data.sgnType === "견적품의서") {
             setTitle("견적서 승인 요청서");
+            setDocumentName("견적원가서")
             setOpenUrl(URL.PreCostDoc);
         } else if (data.sgnType === "수주보고서") {
             setTitle("수주/계약 보고서");
+            setDocumentName("수주원가서")
+            setDocumentName("수주원가서")
             setOpenUrl(URL.PreCostDoc);
         } else if (data.sgnType === "완료보고서") {
             setTitle("완료보고서");
+            setDocumentName("사후정산서")
             setOpenUrl(URL.PostCostsDoc);
         }
         getData({ sgnId: data.sgnId });
@@ -146,13 +149,11 @@ export default function SignDocument() {
     /* 결재상태정보 */
     const getData = async (requestData) => {
         const signResultData = await axiosFetch("/api/system/sign/totalListAll.do", requestData || {});
-        console.log("사인정보", signResultData);
         let signInfo = {};
         if (signResultData) {
-            console.log("1. 결재정보", signResultData);
             signInfo = {
                 sgnId: signResultData[0]?.sgnId,
-                sgnSenderId: signResultData[0]?.sgnSenderNm, //발신자이름
+                sgnSenderNm: signResultData[0]?.sgnSenderNm, //발신자이름
                 sgnSenderPosNm: signResultData[0]?.sgnSenderPosNm, //기안자직급
                 sgnSenderGroupNm: signResultData[0]?.sgnSenderGroupNm, //기안자부서
                 sgnSigndate: signResultData[0]?.sgnSigndate, //기안일
@@ -163,10 +164,13 @@ export default function SignDocument() {
                 ...prev,
                 ...signInfo, //프로젝트 정보에 비고추가
             }));
+
+            if(signInfo.sgnSenderNm === sessionUserName) { //요청자와 로그인유저가 같으면
+                setIsCancel(true)//회수가능
+            }
         }
 
         const stateResultData = await axiosFetch("/api/system/signState/totalListAll.do", requestData || {});
-        console.log("stateResultData:", stateResultData);
         if (stateResultData) {
             const arr = stateResultData.map((item) => ({
                 sttId: item.sttId, //결재ID
@@ -183,7 +187,7 @@ export default function SignDocument() {
             if (signInfo) {
                 const changeSign = [
                     {
-                        sttApproverNm: signInfo.sgnSenderId,
+                        sttApproverNm: signInfo.sgnSenderNm,
                         sttApproverPosNm: signInfo.sgnSenderPosNm,
                         sttApproverAt: "요청",
                         sttApproverGroupNm: signInfo.sgnSenderGroupNm,
@@ -300,6 +304,79 @@ export default function SignDocument() {
         );
     }
 
+    const closePopup = () => {
+        window.close(); //현재창닫기
+    };
+
+    const openPopup = () => {
+            if(!projectInfo.versionId) {
+                alert("삭제된 버전이거나 또는 통신오류 입니다. ");
+                return;
+            } else {
+                const url = `${openUrl}?data=${encodeURIComponent(JSON.stringify(projectInfo))}`;
+                const width = 1400;
+                const height = 700;
+                const left = window.screen.width / 2 - width / 2;
+                const top = window.screen.height / 2 - height / 2;
+                const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
+                window.open(url, "signWindow", windowFeatures);
+            }
+    };
+    
+    // const openPopup = async () => {
+    //     try {
+    //         const versionExists = await isVersion();
+    //         if (versionExists) {
+    //             const url = `${openUrl}?data=${encodeURIComponent(JSON.stringify(projectInfo))}`;
+    //             const width = 1400;
+    //             const height = 700;
+    //             const left = window.screen.width / 2 - width / 2;
+    //             const top = window.screen.height / 2 - height / 2;
+    //             const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
+    //             window.open(url, "signWindow", windowFeatures);
+    //         } else {
+    //             alert("삭제된 버전이거나 또는 통신오류 입니다. ");
+    //         }
+    //     } catch (error) {
+    //         console.error("버전 확인 중 오류가 발생했습니다:", error);
+    //     }
+    // };
+    
+    // const isVersion = async () => {
+    //     try {
+    //         const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", { poiId: projectInfo.poiId } || {});
+    //         const flag = resultData.find(item => item.versionId === projectInfo.versionId);
+    //         return !!flag;
+    //     } catch (error) {
+    //         console.error("버전 확인 중 오류가 발생했습니다:", error);
+    //         return false;
+    //     }
+    // };
+    
+
+    const openPopup2 = () => {
+        if(!projectInfo.versionId) {
+            alert("삭제된 버전이거나 또는 통신오류 입니다. ");
+            return;
+        } else {
+            const url = `${URL.TotalDoc}?data=${encodeURIComponent(
+                JSON.stringify({
+                    label: "견적서",
+                    poiId: projectInfo.poiId,
+                    versionId: projectInfo.versionId,
+                    tableData: estimate,
+                    tableData2: buyIngInfo,
+                })
+            )}`;
+            const width = 1400;
+            const height = 700;
+            const left = window.screen.width / 2 - width / 2;
+            const top = window.screen.height / 2 - height / 2;
+            const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
+            window.open(url, "estimateWindow", windowFeatures);
+        }
+    };
+
     const approvalToServer = async (value) => {
         const sameInfo = approvalData.find((app) => app.sttApproverId === sessionUserUniqId); //승인자목록==로그인유저
 
@@ -319,42 +396,20 @@ export default function SignDocument() {
         }
     };
 
-    const closePopup = () => {
-        window.close(); //현재창닫기
-    };
-
-    const openPopup = () => {
-        const url = `${openUrl}?data=${encodeURIComponent(JSON.stringify(projectInfo))}`;
-        const width = 1400;
-        const height = 700;
-        const left = window.screen.width / 2 - width / 2;
-        const top = window.screen.height / 2 - height / 2;
-        const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
-        window.open(url, "newWindow2", windowFeatures);
-    };
-
-    const openPopup2 = () => {
-        const url = `${URL.TotalDoc}?data=${encodeURIComponent(
-            JSON.stringify({
-                label: "견적서",
-                poiId: projectInfo.poiId,
-                versionId: projectInfo.versionId,
-                tableData: estimate,
-                tableData2: buyIngInfo,
-            })
-        )}`;
-        const width = 1400;
-        const height = 700;
-        const left = window.screen.width / 2 - width / 2;
-        const top = window.screen.height / 2 - height / 2;
-        const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
-        window.open(url, "newWindow2", windowFeatures);
-    };
-
-    const cancel = () => {
+    const cancel = async () => {
         const willApprove = window.confirm("결재를 회수 하시겠습니까?");
         if(willApprove) {
-            // submit();
+            if(projectInfo?.sgnId) {
+                const requestData = {
+                    sgnId: projectInfo.sgnId,
+                    sgnAt: "회수"
+                }
+                const resultData = await axiosUpdate("/api/system/sign/edit.do", requestData || {});
+                if(resultData) {
+                    alert("회수완료");
+                    closePopup();
+                }
+            }
         }
     }
 
@@ -362,8 +417,8 @@ export default function SignDocument() {
         <>
             <div style={{ width: "90%", margin: "auto" }}>
                 <div className="table-buttons mg-t-10 mg-b-10">
-                    {isCancel && <BasicButton label="결재회수" onClick={cancel}/>}
-                    <BasicButton label="견적원가서" onClick={openPopup} />
+                    {isCancel && <BasicButton label="회수" onClick={cancel}/>}
+                    <BasicButton label={documentName} onClick={openPopup} />
                     <PopupButton
                         onClick={openPopup2}
                         clickBtn={clickBtn}

@@ -27,7 +27,7 @@ import SearchModal from "components/modal/SearchModal";
 function OrderPlanMgmt() {
     const sessionUser = sessionStorage.getItem("loginUser");
 
-    const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, unitPriceListRenew, setNameOfButton, inquiryConditions } =
+    const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, unitPriceListRenew, setNameOfButton } =
         useContext(PageContext);
     const [searchDates, setSearchDates] = useState([]); // 원가
     const [prmnPlanDatas, setPrmnPlanDatas] = useState([]); // 인건비
@@ -68,44 +68,32 @@ function OrderPlanMgmt() {
                 const activeTabInfo = infoList.find((data) => data.name === activeTab.textContent);
                 setInnerPageName({ ...activeTabInfo });
                 setCurrentPageName({});
-                fetchAllData();
+                // fetchAllData();
             }
         }
     }, [currentPageName]);
 
     useEffect(() => {
-        const infoIds = infoList.map(item => item.id);
+        // const infoIds = infoList.map(item => item.id);
         if (innerPageName.id === "OrderPlanMgmt") {
             fetchAllData();
-        } else if(infoIds.includes(innerPageName.id)) {
-            if(condition.poiId) {
-                fetchAllData(condition);
-            }
         }
+        // else if(infoIds.includes(innerPageName.id)) {
+        //     if(condition.poiId) {
+        //         fetchAllData(condition);
+        //     }
+        // }
     }, [innerPageName]);
-
-    useEffect(() => {
-        if (!inquiryConditions.poiId || !inquiryConditions.versionId) {
-            return;
-        }
-        setCondition((prev) => {
-            if (prev.versionId !== inquiryConditions.versionId) {
-                const newCondition = { ...inquiryConditions };
-                fetchAllData(newCondition);
-                return newCondition;
-            } else {
-                fetchAllData({ ...prev });
-                return prev;
-            }
-        });
-    }, [inquiryConditions]);
 
 
     const refresh = () => {
-        if (condition.poiId && condition.versionId) {
-            fetchAllData(condition);
-        } else {
-            fetchAllData();
+        const willApprove = window.confirm("새로고침 하시겠습니까?");
+        if(willApprove) {
+            if (condition.poiId && condition.versionId) {
+                fetchAllData(condition);
+            } else {
+                fetchAllData();
+            }
         }
     };
 
@@ -583,29 +571,24 @@ function OrderPlanMgmt() {
         }
     };
 
-    const onSearch = (condition) => {
-        fetchAllData(condition);
-    };
-
-    // const conditionInfo = (value) => {
-    //     if (!value.poiId || !value.versionId) {
-    //         return;
-    //     }
-    //     setCondition((prev) => {
-    //         if (prev.poiId !== value.poiId) {
-    //             const newCondition = { ...value };
-    //             fetchAllData(newCondition);
-    //             return newCondition;
-    //         } else {
-    //             fetchAllData({ ...prev });
-    //             return prev;
-    //         }
-    //     });
-    // };
+    const getData = (value) => {
+        if (!value.poiId || !value.versionId) {
+            return;
+        }
+        setCondition((prev) => {
+            if (prev.versionId !== value.versionId) {
+                const newCondition = { ...value };
+                fetchAllData(newCondition);
+                return newCondition;
+            } else {
+                fetchAllData({ ...prev });
+                return prev;
+            }
+        });
+    }
 
     return (
         <>
-            {/* <Location pathList={locationPath.OrderPlanMgmt} /> */}
             <div className="common_board_style mini_board_1">
                 <ul className="tab">
                     <li
@@ -636,10 +619,9 @@ function OrderPlanMgmt() {
                 <div className="list">
                     <div className="first">
                         <ul>
-                            <SearchList conditionList={columns.orderPlanMgmt.versionCondition} onSearch={onSearch} />
+                            <SearchList conditionList={columns.orderPlanMgmt.versionCondition} onSearch={(value) => fetchAllData(value)} />
                             <HideCard title="원가 버전 목록" color="back-lightblue" className="mg-b-40">
                                 <div className="table-buttons mg-t-10 mg-b-10">
-                                    {/* <PopupButton targetUrl={URL.PreCostDoc} data={{ label: "사전원가서", ...selectedRows[0], sessionUserInfo: JSON.parse(sessionUser) }} /> */}
                                     <PopupButton
                                         targetUrl={URL.PreCostDoc}
                                         data={{ label: "사전원가서", type: "document", ...selectedRow, sessionUserInfo: JSON.parse(sessionUser) }}
@@ -654,9 +636,6 @@ function OrderPlanMgmt() {
                                     customDatas={searchDates}
                                     viewPageName={{ name: "원가버전조회", id: "OrderPlanMgmt" }}
                                     customDatasRefresh={refresh}
-                                    // returnSelectRows={(data) => {
-                                    //     setSelectedRows(data);
-                                    // }}
                                     returnSelect={(data) => setSelectedRow(data)}
                                     isPageNation={true}
                                     isSingleSelect={true}
@@ -666,7 +645,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalFormSal viewPageName={{ name: "인건비", id: "labor" }}/>
+                            <ApprovalFormSal returnData={getData} viewPageName={{ name: "인건비", id: "labor" }}/>
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable columns={columns.orderPlanMgmt.laborCal} customDatas={prmnCalDatas} hideCheckBox={true} isPageNation={true} />
                             </HideCard>
@@ -691,8 +670,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="third">
                         <ul>
-                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
-                            <ApprovalFormSal viewPageName={{ name: "구매(재료비)", id: "buying" }}/>
+                            <ApprovalFormSal returnData={getData} viewPageName={{ name: "구매(재료비)", id: "buying" }}/>
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.purchaseCal}
@@ -723,7 +701,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="fourth">
                         <ul>
-                            <ApprovalFormSal viewPageName={{ name: "개발외주비", id: "outsourcing" }}/>
+                            <ApprovalFormSal returnData={getData} viewPageName={{ name: "개발외주비", id: "outsourcing" }}/>
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.outCal}
@@ -754,7 +732,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="fifth">
                         <ul>
-                            <ApprovalFormSal viewPageName={{ name: "경비", id: "budget" }}/>
+                            <ApprovalFormSal returnData={getData} viewPageName={{ name: "경비", id: "budget" }}/>
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.expensesCal}
@@ -783,8 +761,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="sixth">
                         <ul>
-                            {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
-                            <ApprovalFormSal viewPageName={{ name: "영업관리비", id: "general" }}/>
+                            <ApprovalFormSal returnData={getData} viewPageName={{ name: "영업관리비", id: "general" }}/>
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.generalCal}

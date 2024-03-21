@@ -30,7 +30,7 @@ function PopupButton({ targetUrl, data, size, clickBtn, onClick }) {
                 setDisabled(false);
             } else {
                 setDisabled(true);
-                if (clickBtn) {
+                if (!clickBtn) {
                     setDisabled(false);
                 }
             }
