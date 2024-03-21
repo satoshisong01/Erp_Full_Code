@@ -424,13 +424,13 @@ const ReactDataTablePdorder = (props) => {
                     // 6.이익금 : 공급금액 - 원가
                     const plannedProfits = planAmount - estimatedCost;
 
-                    updatedTableData[index]["estimatedCost"] = Math.round(estimatedCost);
-                    updatedTableData[index]["unitPrice"] = Math.round(unitPrice);
+                    updatedTableData[index]["estimatedCost"] = Math.round(estimatedCost / 10) * 10;
+                    updatedTableData[index]["unitPrice"] = Math.round(unitPrice / 10) * 10;
                     updatedTableData[index]["atchFileId"] = atchFileId;
-                    updatedTableData[index]["planAmount"] = Math.round(planAmount);
-                    updatedTableData[index]["byConsumerUnitPrice"] = Math.round(byConsumerUnitPrice * 100);
-                    updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount * 100);
-                    updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits);
+                    updatedTableData[index]["planAmount"] = Math.round(planAmount / 10) * 10;
+                    updatedTableData[index]["byConsumerUnitPrice"] = Math.round((byConsumerUnitPrice * 100) / 10) * 10;
+                    updatedTableData[index]["consumerAmount"] = Math.round((consumerAmount * 100) / 10) * 10;
+                    updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits / 10) * 10;
                 }
             }
             //공급단가 수정 시 - 이익률, 이익금, 공급금액, 소비자단가, 소비자금액, 소비자가산출률 변동
@@ -444,10 +444,10 @@ const ReactDataTablePdorder = (props) => {
                     const byConsumerUnitPrice = division(row.original.unitPrice, row.original.byConsumerOutputRate);
                     const consumerAmount = row.original.byQunty * byConsumerUnitPrice;
                     updatedTableData[index]["byStandardMargin"] = byStandardMargin; //이익률
-                    updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits); //이익금
-                    updatedTableData[index]["planAmount"] = planAmount; //공급금액
-                    updatedTableData[index]["byConsumerUnitPrice"] = Math.round(byConsumerUnitPrice * 100); //소비자단가
-                    updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount * 100); //소비자금액
+                    updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits / 10) * 10; //이익금
+                    updatedTableData[index]["planAmount"] = Math.round(planAmount / 10) * 10; //공급금액
+                    updatedTableData[index]["byConsumerUnitPrice"] = Math.round((byConsumerUnitPrice * 100) / 10) * 10; //소비자단가
+                    updatedTableData[index]["consumerAmount"] = Math.round((consumerAmount * 100) / 10) * 10; //소비자금액
                 }
             }
             //소비자단가 수정 시 - 소비자금액, 소비자가산출률, 이익금, 이익률 변동
@@ -461,10 +461,10 @@ const ReactDataTablePdorder = (props) => {
                     //이익율
                     const byStandardMargin = row.original.unitPrice !== 0 ? 100 - Math.round(100 / (row.original.unitPrice / row.original.byUnitPrice)) : 0;
                     console.log("소비자단가 수정시 byStandardMargin:", byStandardMargin);
-                    updatedTableData[index]["consumerAmount"] = consumerAmount; //소비자금액
+                    updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount / 10) * 10; //소비자금액
                     // 소비자가산출률 = (공급단가/소비자단가) * 100
                     updatedTableData[index]["byConsumerOutputRate"] = Math.round((row.original.unitPrice / row.original.byConsumerUnitPrice) * 100); //소비자가산출률
-                    updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits); //이익금
+                    updatedTableData[index]["plannedProfits"] = Math.round(plannedProfits / 10) * 10; //이익금
                     updatedTableData[index]["byStandardMargin"] = byStandardMargin; //이익률
                 }
             }
@@ -824,7 +824,7 @@ const ReactDataTablePdorder = (props) => {
                                                             </div>
                                                         ) : cell.column.type === "number" ? (
                                                             <Number
-                                                                value={tableData[row.index]?.[cell.column.id] || ""}
+                                                                value={tableData[row.index]?.[cell.column.id] || "0"}
                                                                 onChange={(value) => handleChange({ target: { value: value, name: cell.column.id } }, row)}
                                                                 style={{ textAlign: cell.column.textAlign || "left" }}
                                                             />
