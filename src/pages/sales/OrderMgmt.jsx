@@ -42,6 +42,7 @@ function OrderMgmt() {
                     fetchAllData(newCondition); //견적서
                     return newCondition;
                 } else {
+                } else {
                     fetchAllData({ ...prev });
                     return prev;
                 }

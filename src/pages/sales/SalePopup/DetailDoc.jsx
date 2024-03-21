@@ -205,7 +205,7 @@ const DetailDoc = ({ displayNone }) => {
                                     <th colSpan={1} style={{ textAlign: "center", width: "30px" }}>
                                         no
                                     </th>
-                                    <th colSpan={1} style={{ textAlign: "center", width: "200px" }}>
+                                    <th colSpan={1} style={{ textAlign: "center", width: "160px" }}>
                                         Item Name
                                     </th>
                                     <th colSpan={1} style={{ textAlign: "center", width: "200px" }}>
@@ -217,16 +217,16 @@ const DetailDoc = ({ displayNone }) => {
                                     <th colSpan={1} style={{ textAlign: "center", width: "30px" }}>
                                         Unit
                                     </th>
-                                    <th colSpan={1} style={{ textAlign: "center", width: "90px" }}>
+                                    <th colSpan={1} style={{ textAlign: "center", width: "70px" }}>
                                         Consumer Price
                                     </th>
-                                    <th colSpan={1} style={{ textAlign: "center", width: "70px" }}>
+                                    <th colSpan={1} style={{ textAlign: "center", width: "120px" }}>
                                         Consumer Amount
                                     </th>
                                     <th colSpan={1} style={{ textAlign: "center", width: "70px" }}>
                                         Unit Price
                                     </th>
-                                    <th colSpan={1} style={{ textAlign: "center", width: "70px" }}>
+                                    <th colSpan={1} style={{ textAlign: "center", width: "120px" }}>
                                         Amount
                                     </th>
                                     <th colSpan={1} style={{ textAlign: "center", width: "70px" }}>

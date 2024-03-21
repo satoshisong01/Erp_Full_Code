@@ -27,8 +27,16 @@ import SearchModal from "components/modal/SearchModal";
 function OrderPlanMgmt() {
     const sessionUser = sessionStorage.getItem("loginUser");
 
-    const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, unitPriceListRenew, setNameOfButton } =
-        useContext(PageContext);
+    const {
+        currentPageName,
+        innerPageName,
+        setPrevInnerPageName,
+        setInnerPageName,
+        setCurrentPageName,
+        unitPriceListRenew,
+        setNameOfButton,
+        inquiryConditions,
+    } = useContext(PageContext);
     const [searchDates, setSearchDates] = useState([]); // 원가
     const [prmnPlanDatas, setPrmnPlanDatas] = useState([]); // 인건비
     const [prmnCalDatas, setPrmnCalDatas] = useState([]); // 인건비합계
@@ -120,7 +128,7 @@ function OrderPlanMgmt() {
 
     //인건비용임
     const compareData = (originData, updatedData) => {
-        if(originData?.length === 0 && updatedData?.length === 0) return;
+        if (originData?.length === 0 && updatedData?.length === 0) return;
         const filterData = updatedData.filter((data) => data.pmpMonth); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -187,7 +195,6 @@ function OrderPlanMgmt() {
             }
         }
         refresh(); //리프레쉬
-        
     };
 
     const addList = async (addNewData) => {
@@ -363,7 +370,7 @@ function OrderPlanMgmt() {
                     });
                     setPrmnPlanDatas(changeData);
                 }
-            } else if(resultData.length === 0){
+            } else if (resultData.length === 0) {
                 alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setPrmnPlanDatas([]);
                 setPrmnCalDatas([]);
@@ -410,7 +417,9 @@ function OrderPlanMgmt() {
                     group.profits = group.planAmount - group.estimatedCost;
                     // 이익률: (공급금액-원가)/원가*100
                     const temp2 = group.planAmount !== 0 ? ((group.planAmount - group.estimatedCost) / group.planAmount) * 100 : 0;
-                    group.margin = Math.round(temp2) + " %";
+                    console.log(temp2);
+                    //group.margin = Math.round(temp2) + " %";
+                    group.margin = temp2.toFixed(2) + " %"; //소숫점 1자리까지
                     return group;
                 });
 

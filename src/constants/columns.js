@@ -531,7 +531,7 @@ export const columns = {
             { header: "프로젝트아이디", col: "poiId", notView: true },
             { header: "판매사아이디", col: "pdiSeller", notView: true },
             { header: "제조사아이디", col: "pdiMenufut", notView: true },
-            { header: "품명", col: "pdiNm", cellWidth: "200", type: "productInfo", require: true, textAlign: "left" },
+            { header: "품명", col: "pdiNm", cellWidth: "200", type: "productInfo", require: true, textAlign: "pdiNm" },
             { header: "품목그룹명", col: "pgNm", cellWidth: "150", textAlign: "left" },
             { header: "모델명", col: "pdiNum", cellWidth: "150", textAlign: "left" },
             { header: "판매사", col: "pdiSeller_name", cellWidth: "150", textAlign: "left" },

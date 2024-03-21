@@ -68,8 +68,7 @@ function ApprovalFormSal({ viewPageName, returnData }) {
             setData((prev) => ({
                 ...prev,
                 [name]: value,
-                ["versionNum"]: versionNum
-                
+                versionNum: versionNum,
             }));
         }
     };
@@ -136,11 +135,12 @@ function ApprovalFormSal({ viewPageName, returnData }) {
                                     name="versionId"
                                     onChange={onSelectChange}
                                     value={data.versionId ? data.versionId : "default"}>
-                                    {data.option?.length > 0 && data.option.map((info, index) => (
-                                        <option key={index} value={info.versionId}>
-                                            {info.versionNum}
-                                        </option>
-                                    ))}
+                                    {data.option?.length > 0 &&
+                                        data.option.map((info, index) => (
+                                            <option key={index} value={info.versionId}>
+                                                {info.versionNum}
+                                            </option>
+                                        ))}
                                     {data.option?.length === 0 && <option value="default">버전을 생성하세요.</option>}
                                 </select>
                             </td>
@@ -149,15 +149,15 @@ function ApprovalFormSal({ viewPageName, returnData }) {
                             <th>최종 수정일</th>
                             <td>{data.lastModifyDate}</td>
                             <td width={80} style={{ textAlign: "center" }}>
-                                {(currentPageName.id === "OrderMgmt" || innerPageName.id === "proposal") ? 
+                                {currentPageName.id === "OrderMgmt" || innerPageName.id === "proposal" ? (
                                     <button type="button" className="table-btn table-btn-default" onClick={onClick}>
                                         내용저장
                                     </button>
-                                    :
+                                ) : (
                                     <button type="button" className="table-btn table-btn-default" onClick={onClick}>
                                         조회
                                     </button>
-                                }
+                                )}
                             </td>
                         </tr>
                     </tbody>

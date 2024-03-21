@@ -280,11 +280,10 @@ const ReactDataTablePdorder = (props) => {
     };
 
     //선택된 항목 순서(인덱스)별
-    const [countIndex, setCountIndex] = useState(0);
 
     useEffect(() => {
         if (isCurrentPage() && Object.keys(projectPdiNm).length > 0) {
-            setValueDataPdiNm(countIndex, projectPdiNm);
+            setValueDataPdiNm(rowIndex, projectPdiNm);
             setProjectPdiNm({});
         }
     }, [projectPdiNm]);
@@ -307,11 +306,13 @@ const ReactDataTablePdorder = (props) => {
     }, [pdiNmList]);
 
     const goSetting = (rowIndex) => {
-        setCountIndex(rowIndex);
+        setRowIndex(rowIndex);
     };
 
     const getFileData = (rowIndex) => {
         setRowIndex(rowIndex);
+        console.log(rowIndex, "인덱스");
+        console.log(tableData[rowIndex].atchFileId);
         setFileIdData(tableData[rowIndex].atchFileId);
     };
 
@@ -385,7 +386,7 @@ const ReactDataTablePdorder = (props) => {
     useEffect(() => {
         // if (isCurrentPage() && Object.keys(atchFileId).length > 0) {
         if (isCurrentPage() && atchFileId) {
-            setFileList(countIndex, atchFileId);
+            setFileList(rowIndex, atchFileId);
         }
     }, [atchFileId]);
 
@@ -662,6 +663,8 @@ const ReactDataTablePdorder = (props) => {
 
     const textAlignStyle = (column) => {
         switch (column.textAlign) {
+            case "pdiNm":
+                return "pdiNm";
             case "left":
                 return "txt-left";
             case "right":
@@ -683,9 +686,16 @@ const ReactDataTablePdorder = (props) => {
                                         // notView가 true인 경우, 헤더 셀을 출력하지 않음
                                         return null;
                                     }
+                                    //console.log(columnIndex, "로그?");
+                                    let className = "";
+                                    if (columnIndex === 0) {
+                                        className = "first-column";
+                                    } else if (columnIndex === 5) {
+                                        className = "pdiNm";
+                                    }
 
                                     return (
-                                        <th {...column.getHeaderProps(column.getSortByToggleProps())} className={columnIndex === 0 ? "first-column" : ""}>
+                                        <th {...column.getHeaderProps(column.getSortByToggleProps())} className={className}>
                                             {column.render("Header")}
                                             <div {...column.getResizerProps()} className={`resizer ${column.isResizing ? "isResizing" : ""}`} />
                                             <span style={{ color: "red", margin: 0 }}>{column.require === true ? "*" : ""}</span>
@@ -791,7 +801,6 @@ const ReactDataTablePdorder = (props) => {
                                                                     name={cell.column.id}
                                                                     className="basic-input"
                                                                     onClick={() => {
-                                                                        goSetting(row.index);
                                                                         getFileData(row.index);
                                                                         setIsOpenModalFile(true);
                                                                     }}>
