@@ -1532,6 +1532,21 @@ table > thead {
 .txt-left {
     text-align: left;
 }
+
+.pdiNm {
+    text-align: left;
+    position: sticky !important;
+    z-index: 99999 !important;
+    left: 0 !important;
+    background-color: white;
+}
+
+#pdiNm {
+    text-align: left;
+    position: sticky;
+    z-index: 999;
+    left: 0;
+}
 .txt-right {
     text-align: right;
 }
@@ -1575,6 +1590,12 @@ table > thead {
 
 .toggleBtn:hover {
     transform: scale(1.12);
+}
+
+.poiNm-style {
+    text-align: left;
+    position: sticky;
+    z-index: 999;
 }
 
 /* 반응형 스타일 */

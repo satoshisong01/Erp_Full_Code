@@ -27,8 +27,16 @@ import SearchModal from "components/modal/SearchModal";
 function OrderPlanMgmt() {
     const sessionUser = sessionStorage.getItem("loginUser");
 
-    const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, unitPriceListRenew, setNameOfButton, inquiryConditions } =
-        useContext(PageContext);
+    const {
+        currentPageName,
+        innerPageName,
+        setPrevInnerPageName,
+        setInnerPageName,
+        setCurrentPageName,
+        unitPriceListRenew,
+        setNameOfButton,
+        inquiryConditions,
+    } = useContext(PageContext);
     const [searchDates, setSearchDates] = useState([]); // 원가
     const [prmnPlanDatas, setPrmnPlanDatas] = useState([]); // 인건비
     const [prmnCalDatas, setPrmnCalDatas] = useState([]); // 인건비합계
@@ -74,11 +82,11 @@ function OrderPlanMgmt() {
     }, [currentPageName]);
 
     useEffect(() => {
-        const infoIds = infoList.map(item => item.id);
+        const infoIds = infoList.map((item) => item.id);
         if (innerPageName.id === "OrderPlanMgmt") {
             fetchAllData();
-        } else if(infoIds.includes(innerPageName.id)) {
-            if(condition.poiId) {
+        } else if (infoIds.includes(innerPageName.id)) {
+            if (condition.poiId) {
                 fetchAllData(condition);
             }
         }
@@ -99,7 +107,6 @@ function OrderPlanMgmt() {
             }
         });
     }, [inquiryConditions]);
-
 
     const refresh = () => {
         if (condition.poiId && condition.versionId) {
@@ -132,7 +139,7 @@ function OrderPlanMgmt() {
 
     //인건비용임
     const compareData = (originData, updatedData) => {
-        if(originData?.length === 0 && updatedData?.length === 0) return;
+        if (originData?.length === 0 && updatedData?.length === 0) return;
         const filterData = updatedData.filter((data) => data.pmpMonth); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -199,7 +206,6 @@ function OrderPlanMgmt() {
             }
         }
         refresh(); //리프레쉬
-        
     };
 
     const addList = async (addNewData) => {
@@ -375,7 +381,7 @@ function OrderPlanMgmt() {
                     });
                     setPrmnPlanDatas(changeData);
                 }
-            } else if(resultData.length === 0){
+            } else if (resultData.length === 0) {
                 alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setPrmnPlanDatas([]);
                 setPrmnCalDatas([]);
@@ -422,7 +428,9 @@ function OrderPlanMgmt() {
                     group.profits = group.planAmount - group.estimatedCost;
                     // 이익률: (공급금액-원가)/원가*100
                     const temp2 = group.planAmount !== 0 ? ((group.planAmount - group.estimatedCost) / group.planAmount) * 100 : 0;
-                    group.margin = Math.round(temp2) + " %";
+                    console.log(temp2);
+                    //group.margin = Math.round(temp2) + " %";
+                    group.margin = temp2.toFixed(2) + " %"; //소숫점 1자리까지
                     return group;
                 });
 
@@ -666,7 +674,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="second">
                         <ul>
-                            <ApprovalFormSal viewPageName={{ name: "인건비", id: "labor" }}/>
+                            <ApprovalFormSal viewPageName={{ name: "인건비", id: "labor" }} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable columns={columns.orderPlanMgmt.laborCal} customDatas={prmnCalDatas} hideCheckBox={true} isPageNation={true} />
                             </HideCard>
@@ -692,7 +700,7 @@ function OrderPlanMgmt() {
                     <div className="third">
                         <ul>
                             {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
-                            <ApprovalFormSal viewPageName={{ name: "구매(재료비)", id: "buying" }}/>
+                            <ApprovalFormSal viewPageName={{ name: "구매(재료비)", id: "buying" }} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.purchaseCal}
@@ -723,7 +731,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="fourth">
                         <ul>
-                            <ApprovalFormSal viewPageName={{ name: "개발외주비", id: "outsourcing" }}/>
+                            <ApprovalFormSal viewPageName={{ name: "개발외주비", id: "outsourcing" }} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.outCal}
@@ -754,7 +762,7 @@ function OrderPlanMgmt() {
                     </div>
                     <div className="fifth">
                         <ul>
-                            <ApprovalFormSal viewPageName={{ name: "경비", id: "budget" }}/>
+                            <ApprovalFormSal viewPageName={{ name: "경비", id: "budget" }} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.expensesCal}
@@ -784,7 +792,7 @@ function OrderPlanMgmt() {
                     <div className="sixth">
                         <ul>
                             {/* <ApprovalFormSal returnData={conditionInfo} initial={condition} /> */}
-                            <ApprovalFormSal viewPageName={{ name: "영업관리비", id: "general" }}/>
+                            <ApprovalFormSal viewPageName={{ name: "영업관리비", id: "general" }} />
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
                                 <ReactDataTable
                                     columns={columns.orderPlanMgmt.generalCal}

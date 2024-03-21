@@ -11,17 +11,20 @@ function ApprovalFormSal({ returnData, viewPageName }) {
     const [data, setData] = useState({ poiId: "", poiNm: "", versionId: "", option: [] });
 
     useEffect(() => {
-        console.log("currentPageName:", currentPageName.id, "innerPageName:", innerPageName.id, "viewPageName:", viewPageName?.id);
-        if(currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) { //현재페이지일때
-            if(inquiryConditions.poiId) { //전역정보 바뀔때
-                getVersionList({ poiId: inquiryConditions.poiId })
+        if (currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) {
+            //현재페이지일때
+            if (inquiryConditions.poiId) {
+                //전역정보 바뀔때
+                getVersionList({ poiId: inquiryConditions.poiId });
             }
         }
     }, [inquiryConditions, innerPageName, currentPageName, viewPageName]);
 
     useEffect(() => {
-        if(currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) { //현재페이지일때
-            if (data.poiId && !data.versionId) { //버전정보가 없을때
+        if (currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) {
+            //현재페이지일때
+            if (data.poiId && !data.versionId) {
+                //버전정보가 없을때
                 getVersionList({ poiId: data.poiId });
             }
         }
@@ -34,26 +37,27 @@ function ApprovalFormSal({ returnData, viewPageName }) {
             setData((prev) => ({
                 ...prev,
                 ...inquiryConditions,
-                versionId: inquiryConditions.versionId ? inquiryConditions.versionId : emptyArr.find((info) => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
+                versionId: inquiryConditions.versionId
+                    ? inquiryConditions.versionId
+                    : emptyArr.find((info) => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
                 versionNum: emptyArr.find((info) => info.costAt === "Y")?.versionNum || emptyArr[0]?.versionNum,
                 option: emptyArr,
             }));
         }
         if (!resultData || resultData.length === 0) {
-            returnData && returnData({})
+            returnData && returnData({});
             alert("버전 정보가 없습니다.");
         }
     };
 
     const onSelectChange = (e) => {
         const { name, value, innerText } = e.target;
-        const versionNum = innerText.split('\n')[0];
+        const versionNum = innerText.split("\n")[0];
         if (value !== "default") {
             setData((prev) => ({
                 ...prev,
                 [name]: value,
-                ["versionNum"]: versionNum
-                
+                versionNum: versionNum,
             }));
         }
     };
@@ -71,12 +75,12 @@ function ApprovalFormSal({ returnData, viewPageName }) {
     };
 
     const onClick = () => {
-        if(!data.versionId) {
+        if (!data.versionId) {
             alert("버전을 생성하세요.");
             return;
         }
         returnData && returnData({ ...data });
-        setInquiryConditions({...data})
+        setInquiryConditions({ ...data });
     };
 
     return (
@@ -118,11 +122,12 @@ function ApprovalFormSal({ returnData, viewPageName }) {
                                     name="versionId"
                                     onChange={onSelectChange}
                                     value={data.versionId ? data.versionId : "default"}>
-                                    {data.option?.length > 0 && data.option.map((info, index) => (
-                                        <option key={index} value={info.versionId}>
-                                            {info.versionNum}
-                                        </option>
-                                    ))}
+                                    {data.option?.length > 0 &&
+                                        data.option.map((info, index) => (
+                                            <option key={index} value={info.versionId}>
+                                                {info.versionNum}
+                                            </option>
+                                        ))}
                                     {data.option?.length === 0 && <option value="default">버전을 생성하세요.</option>}
                                 </select>
                             </td>
@@ -131,15 +136,15 @@ function ApprovalFormSal({ returnData, viewPageName }) {
                             <th>최종 수정일</th>
                             <td>{data.lastModifyDate}</td>
                             <td width={80} style={{ textAlign: "center" }}>
-                                {(currentPageName.id === "OrderMgmt" || innerPageName.id === "proposal") ? 
+                                {currentPageName.id === "OrderMgmt" || innerPageName.id === "proposal" ? (
                                     <button type="button" className="table-btn table-btn-default" onClick={onClick}>
                                         내용저장
                                     </button>
-                                    :
+                                ) : (
                                     <button type="button" className="table-btn table-btn-default" onClick={onClick}>
                                         조회
                                     </button>
-                                }
+                                )}
                             </td>
 
                             {/* <td width={80} style={{ textAlign: "center" }}>

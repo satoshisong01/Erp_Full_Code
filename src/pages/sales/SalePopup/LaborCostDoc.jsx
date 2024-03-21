@@ -77,6 +77,17 @@ const LaborCostDoc = ({ displayNone }) => {
     //    return Math.floor(number / 10000) * 10000;
     //}
 
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        // 월은 0부터 시작하므로 1을 더해주어야 합니다.
+        // `.slice(-2)`는 결과값이 항상 두 자리가 되도록 해줍니다. (예: '01', '02')
+        const month = `0${today.getMonth() + 1}`.slice(-2);
+        const day = `0${today.getDate()}`.slice(-2);
+
+        return `${year}-${month}-${day}`;
+    };
+
     const [buyTable, setBuyTable] = useState([]);
 
     useEffect(() => {
@@ -170,7 +181,7 @@ const LaborCostDoc = ({ displayNone }) => {
             // 각 항목의 ctcDateCreated와 ctcSent를 수정합니다.
             const updatedData = resultData.map((item) => ({
                 ...item,
-                ctcDateCreated: item.ctcDateCreated ? item.ctcDateCreated : item.poiBeginDt || "", // ctcDateCreated가 유효한 값이면 사용, 그렇지 않으면 poiBeginDt 사용
+                ctcDateCreated: item.ctcDateCreated ? item.ctcDateCreated : getTodayDate() || "", // ctcDateCreated가 유효한 값이면 사용, 그렇지 않으면 poiBeginDt 사용
                 ctcSent: item.ctcSent ? item.ctcSent : item.lastModifiedIdBy || "", // ctcSent가 유효한 값이면 사용, 그렇지 않으면 lastModifiedIdBy 사용
                 ctcPaymentCondition: item.ctcPaymentCondition ? item.ctcPaymentCondition : "고객사 지급기준에 준함",
                 ctcDelivery: item.ctcDelivery ? item.ctcDelivery : "계약 후 5 개월",
@@ -184,6 +195,7 @@ const LaborCostDoc = ({ displayNone }) => {
 
             setTableData(updatedData);
         }
+        console.log(poiId, versionId);
         const resultData2 = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", {
             poiId: poiId,
             versionId: versionId,
@@ -699,7 +711,7 @@ const LaborCostDoc = ({ displayNone }) => {
                                                     　
                                                 </td>
                                                 <td className="table4-3White" style={{ textAlign: "right", fontWeight: 800, fontSize: "20px" }}>
-                                                    {`${buyTable[0]?.estAmount ? buyTable[0].estAmount.toLocaleString() : ""}　`}
+                                                    {`${buyTable[0]?.estAmount ? buyTable[0]?.estAmount.toLocaleString() : ""}　`}
                                                 </td>
                                             </tr>
                                         )}
@@ -819,7 +831,13 @@ const LaborCostDoc = ({ displayNone }) => {
                                                     })()}
                                                 </td>
                                                 <td className="tableWhiteItem" style={{ textAlign: "left" }}>
-                                                    　기업이윤
+                                                    　기업이윤{" "}
+                                                    {`${
+                                                        tableData.length && tableData[0].slsmnEnterpriseProfit
+                                                            ? tableData[0].slsmnEnterpriseProfit.toLocaleString()
+                                                            : ""
+                                                    }`}
+                                                    (%)
                                                 </td>
                                                 <td className="tableRedPercentW">-</td>
                                                 <td className="tableRedPercentW">-</td>
@@ -827,11 +845,7 @@ const LaborCostDoc = ({ displayNone }) => {
                                                     -　
                                                 </td>
                                                 <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                    {`${
-                                                        tableData.length && tableData[0].slsmnEnterpriseProfit
-                                                            ? tableData[0].slsmnEnterpriseProfit.toLocaleString()
-                                                            : ""
-                                                    }　`}
+                                                    {`${Math.round((buyTable[0]?.estAmount ? buyTable[0]?.estAmount : 0 + devCost) * 0.1).toLocaleString()}　`}
                                                 </td>
                                             </tr>
                                         )}
@@ -855,7 +869,9 @@ const LaborCostDoc = ({ displayNone }) => {
                                                     })()}
                                                 </td>
                                                 <td className="tableWhiteItem" style={{ textAlign: "left" }}>
-                                                    　일반관리비
+                                                    　일반관리비{" "}
+                                                    {`${tableData.length && tableData[0].slsmnAdmnsCost ? tableData[0].slsmnAdmnsCost.toLocaleString() : ""}`}
+                                                    (%)
                                                 </td>
                                                 <td className="tableRedPercentW">-</td>
                                                 <td className="tableRedPercentW">-</td>
@@ -863,7 +879,11 @@ const LaborCostDoc = ({ displayNone }) => {
                                                     -　
                                                 </td>
                                                 <td className="table4-3White" style={{ textAlign: "right" }}>
-                                                    {`${tableData.length && tableData[0].slsmnAdmnsCost ? tableData[0].slsmnAdmnsCost.toLocaleString() : ""}　`}
+                                                    {`${Math.round(
+                                                        (buyTable[0]?.estAmount
+                                                            ? buyTable[0]?.estAmount
+                                                            : 0 + devCost + (buyTable[0]?.estAmount + devCost) * 0.1) * 0.05
+                                                    ).toLocaleString()}　`}
                                                 </td>
                                             </tr>
                                         )}
@@ -951,7 +971,7 @@ const LaborCostDoc = ({ displayNone }) => {
                                                     borderTop: "1px solid black",
                                                     borderBottom: "1px solid black",
                                                 }}>
-                                                만단위 절사
+                                                {/*만단위 절사*/}
                                             </td>
                                             <td
                                                 className="table4-3White"

@@ -44,8 +44,7 @@ function OrderMgmt() {
                     fetchAllData(newCondition);
                     setIsSave(true);
                     return newCondition;
-                }
-                else {
+                } else {
                     fetchAllData({ ...prev });
                     return prev;
                 }
@@ -134,7 +133,7 @@ function OrderMgmt() {
         <>
             <div className="form-buttons mg-b-20" style={{ maxWidth: 1400 }}>
                 <PopupButton
-                    clickBtn={true}
+                    clickBtn={isSave}
                     targetUrl={URL.TotalDoc}
                     data={{
                         label: "견적서",
