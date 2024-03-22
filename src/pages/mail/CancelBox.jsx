@@ -96,14 +96,30 @@ function CancelBox() {
     };
 
     const openPopup = () => {
-        if(selectedRows?.sgnId) {
+        if (selectedRows?.sgnId) {
             const sendData = {
                 label: "전자결재",
-                ...selectedRows
-            }
+                ...selectedRows,
+            };
             const url = `${URL.SignDocument}?data=${encodeURIComponent(JSON.stringify(sendData))}`;
             const width = 1200;
             const height = 700;
+            const left = window.screen.width / 2 - width / 2;
+            const top = window.screen.height / 2 - height / 2;
+            const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
+            window.open(url, "cancelBoxWindow", windowFeatures);
+        }
+    };
+
+    const openPopup2 = () => {
+        if (selectedRows?.sgnId) {
+            const sendData = {
+                label: "재기안",
+                ...selectedRows,
+            };
+            const url = `${URL.OrderMgmt}?data=${encodeURIComponent(JSON.stringify(sendData))}`;
+            const width = 1400;
+            const height = 800;
             const left = window.screen.width / 2 - width / 2;
             const top = window.screen.height / 2 - height / 2;
             const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
@@ -117,7 +133,8 @@ function CancelBox() {
             <SearchList conditionList={conditionList} />
             <HideCard title="결재회수 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
-                    <ModButton label="전자결재" onClick={openPopup}/>
+                    <ModButton label="전자결재" onClick={openPopup} />
+                    <ModButton label="재기안" onClick={openPopup2} />
                     <RefreshButton onClick={refresh} />
                 </div>
                 <ReactDataTable

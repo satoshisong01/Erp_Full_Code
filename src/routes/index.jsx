@@ -94,6 +94,7 @@ import OrderSummaryDoc from "pages/sales/SalePopup/OrderSummaryDoc";
 import DetailDoc from "pages/sales/SalePopup/DetailDoc";
 import TotalDoc from "pages/sales/SalePopup/TotalDoc";
 import SignDocument from "pages/sign/SignDocument";
+import OrderMgmt from "pages/sales/OrderMgmt";
 import CancelBox from "pages/mail/CancelBox";
 
 // 에러 페이지와 같은 상단(EgovHeader) 소스가 제외된 페이지에서 ui.js의 햄버거버튼 작동오류가 발생한다.
@@ -294,6 +295,8 @@ const RootRoutes = () => {
                 <Route path={URL.MyInfo} element={<MyInfo />} />
                 {/* 새창(팝업) : 결재정보 */}
                 <Route path={URL.SignDocument} element={<SignDocument />} />
+                {/* 새창(팝업) : 수주관리 */}
+                <Route path={URL.OrderMgmt} element={<OrderMgmt />} />
             </Routes>
         );
     }

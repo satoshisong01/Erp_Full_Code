@@ -64,7 +64,7 @@ const URL = {
     Quotation: "/sales/quotation", //영업관리>견적관리
     InvoiceMgmt: "/sales/invoice", //영업관리>세금계산서발행관리
     ElectronicTaxInvoice: "/sales/tax", //영업관리>전자세금계산서
-    OrderMgmt: "/sales/order", //영업관리>수주관리
+    OrderMgmt: "/sales/orderMgmt", //영업관리>수주관리
 
     //EXECUTION 실행관리
     Execution: "/execution", //실행관리

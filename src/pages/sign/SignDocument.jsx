@@ -21,7 +21,7 @@ export default function SignDocument() {
     const [title, setTitle] = useState("");
     const [projectInfo, setProjectInfo] = useState({}); //프로젝트정보
     const [approvalData, setApprovalData] = useState([]); //승인자목록
-    const [documentName, setDocumentName] = useState("사전원가서")
+    const [documentName, setDocumentName] = useState("사전원가서");
     // const [signData, setSignData] = useState({}); //요청자
     const { unitPriceListRenew } = useContext(PageContext);
 
@@ -40,7 +40,6 @@ export default function SignDocument() {
         //    useAt: "Y",
         //};
         //인건비
-        console.log(poiVersionId, "하나로뭉침?");
         const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", poiVersionId || {});
         const viewResult = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", { poiId: poiVersionId.poiId }); //계획조회
         if (viewResult && viewResult.length > 0) {
@@ -122,16 +121,16 @@ export default function SignDocument() {
 
         if (data.sgnType === "견적품의서") {
             setTitle("견적서 승인 요청서");
-            setDocumentName("견적원가서")
+            setDocumentName("견적원가서");
             setOpenUrl(URL.PreCostDoc);
         } else if (data.sgnType === "수주보고서") {
             setTitle("수주/계약 보고서");
-            setDocumentName("수주원가서")
-            setDocumentName("수주원가서")
+            setDocumentName("수주원가서");
+            setDocumentName("수주원가서");
             setOpenUrl(URL.PreCostDoc);
         } else if (data.sgnType === "완료보고서") {
             setTitle("완료보고서");
-            setDocumentName("사후정산서")
+            setDocumentName("사후정산서");
             setOpenUrl(URL.PostCostsDoc);
         }
         getData({ sgnId: data.sgnId });
@@ -165,8 +164,9 @@ export default function SignDocument() {
                 ...signInfo, //프로젝트 정보에 비고추가
             }));
 
-            if(signInfo.sgnSenderNm === sessionUserName) { //요청자와 로그인유저가 같으면
-                setIsCancel(true)//회수가능
+            if (signInfo.sgnSenderNm === sessionUserName) {
+                //요청자와 로그인유저가 같으면
+                setIsCancel(true); //회수가능
             }
         }
 
@@ -309,20 +309,20 @@ export default function SignDocument() {
     };
 
     const openPopup = () => {
-            if(!projectInfo.versionId) {
-                alert("삭제된 버전이거나 또는 통신오류 입니다. ");
-                return;
-            } else {
-                const url = `${openUrl}?data=${encodeURIComponent(JSON.stringify(projectInfo))}`;
-                const width = 1400;
-                const height = 700;
-                const left = window.screen.width / 2 - width / 2;
-                const top = window.screen.height / 2 - height / 2;
-                const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
-                window.open(url, "signWindow", windowFeatures);
-            }
+        if (!projectInfo.versionId) {
+            alert("삭제된 버전이거나 또는 통신오류 입니다. ");
+            return;
+        } else {
+            const url = `${openUrl}?data=${encodeURIComponent(JSON.stringify(projectInfo))}`;
+            const width = 1400;
+            const height = 700;
+            const left = window.screen.width / 2 - width / 2;
+            const top = window.screen.height / 2 - height / 2;
+            const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes`;
+            window.open(url, "signWindow", windowFeatures);
+        }
     };
-    
+
     // const openPopup = async () => {
     //     try {
     //         const versionExists = await isVersion();
@@ -341,7 +341,7 @@ export default function SignDocument() {
     //         console.error("버전 확인 중 오류가 발생했습니다:", error);
     //     }
     // };
-    
+
     // const isVersion = async () => {
     //     try {
     //         const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", { poiId: projectInfo.poiId } || {});
@@ -352,10 +352,9 @@ export default function SignDocument() {
     //         return false;
     //     }
     // };
-    
 
     const openPopup2 = () => {
-        if(!projectInfo.versionId) {
+        if (!projectInfo.versionId) {
             alert("삭제된 버전이거나 또는 통신오류 입니다. ");
             return;
         } else {
@@ -398,26 +397,26 @@ export default function SignDocument() {
 
     const cancel = async () => {
         const willApprove = window.confirm("결재를 회수 하시겠습니까?");
-        if(willApprove) {
-            if(projectInfo?.sgnId) {
+        if (willApprove) {
+            if (projectInfo?.sgnId) {
                 const requestData = {
                     sgnId: projectInfo.sgnId,
-                    sgnAt: "회수"
-                }
+                    sgnAt: "회수",
+                };
                 const resultData = await axiosUpdate("/api/system/sign/edit.do", requestData || {});
-                if(resultData) {
+                if (resultData) {
                     alert("회수완료");
                     closePopup();
                 }
             }
         }
-    }
+    };
 
     return (
         <>
             <div style={{ width: "90%", margin: "auto" }}>
                 <div className="table-buttons mg-t-10 mg-b-10">
-                    {isCancel && <BasicButton label="회수" onClick={cancel}/>}
+                    {isCancel && <BasicButton label="회수" onClick={cancel} />}
                     <BasicButton label={documentName} onClick={openPopup} />
                     <PopupButton
                         onClick={openPopup2}

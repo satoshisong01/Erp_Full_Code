@@ -28,15 +28,8 @@ import { ProcessResultDataRun } from "../../components/DataTable/function/Proces
 
 /** 영업관리-견적관리 */
 function Quotation() {
-    const {
-        currentPageName,
-        innerPageName,
-        setPrevInnerPageName,
-        setInnerPageName,
-        setCurrentPageName,
-        setNameOfButton,
-        unitPriceListRenew,
-    } = useContext(PageContext);
+    const { currentPageName, innerPageName, setPrevInnerPageName, setInnerPageName, setCurrentPageName, setNameOfButton, unitPriceListRenew } =
+        useContext(PageContext);
     const [infoList, setInfoList] = useState([
         { name: "인건비", id: "estimateLabor" },
         { name: "구매비", id: "orderBuying" },
@@ -137,7 +130,7 @@ function Quotation() {
 
     const refresh = () => {
         const willApprove = window.confirm("새로고침 하시겠습니까?");
-        if(willApprove) {
+        if (willApprove) {
             if (condition.poiId && condition.versionId) {
                 fetchAllData(condition);
             } else {
@@ -618,13 +611,9 @@ function Quotation() {
                                         tableData2: buyIngInfo,
                                     }}
                                 />
-                                <PopupButton
-                                    clickBtn={isProgress}
-                                    targetUrl={URL.PreCostDoc}
-                                    data={{ label: "견적원가서", type: "document", ...condition }}
-                                />
+                                <PopupButton clickBtn={isProgress} targetUrl={URL.PreCostDoc} data={{ label: "견적원가서", type: "document", ...condition }} />
                                 <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)} />
-                                <AddButton label="결재요청" onClick={() => setIsSubmit(true)}  disabled={isProgress}/>
+                                <AddButton label="결재요청" onClick={() => setIsSubmit(true)} disabled={isProgress} />
                             </div>
                             <ApprovalFormCost sendInfo={approvalLine}>
                                 <div style={{ marginTop: "-55px", marginBottom: 55 }}>

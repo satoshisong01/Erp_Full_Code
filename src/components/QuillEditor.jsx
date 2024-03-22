@@ -4,12 +4,12 @@ import "react-quill/dist/quill.snow.css"; // Quill 스타일 시트 임포트
 import "../css/custom-style.scss";
 // import * as QuillTableUI from 'quill-table-ui'
 import "quill-table-ui/dist/index.css"; // quill-table-ui의 스타일 시트 임포트
-import Table from 'quill-table-module'; // Quill Table 모듈 임포트
-import Quill from 'quill'; // Quill 라이브러리 임포트
+import Table from "quill-table-module"; // Quill Table 모듈 임포트
+import Quill from "quill"; // Quill 라이브러리 임포트
 
-Quill.register('modules/table', Table);
+Quill.register("modules/table", Table);
 
-const QuillEditor = ({ isProgress, returnData, writing }) => {
+const QuillEditor = ({ isProgress, returnData, writing, readContent }) => {
     const defaultContent = `
             <p>✔️ 변경계약인 경우</p>
             <ul>
@@ -43,6 +43,12 @@ const QuillEditor = ({ isProgress, returnData, writing }) => {
     const [content, setContent] = useState(defaultContent);
 
     useEffect(() => {
+        if (readContent) {
+            setContent(readContent);
+        }
+    }, [readContent]);
+
+    useEffect(() => {
         if (!isProgress) {
             returnData && returnData(content);
         }
@@ -66,9 +72,10 @@ const QuillEditor = ({ isProgress, returnData, writing }) => {
             toolbar: [
                 ["bold", "italic", "underline", "strike"],
                 [{ list: "ordered" }, { list: "bullet" }],
-                [{ table: true }]
-                // ['link', 'image', 'video'],
-                ["clean"],
+                [{ table: true }][
+                    // ['link', 'image', 'video'],
+                    "clean"
+                ],
             ],
             // tableUI: true,
             // table: true,
@@ -76,7 +83,23 @@ const QuillEditor = ({ isProgress, returnData, writing }) => {
                 matchVisual: false,
             },
         },
-        formats: ["header", "font", "size", "bold", "italic", "underline", "strike", "blockquote", "list", "bullet", "indent", "link", "image", "video", 'table'],
+        formats: [
+            "header",
+            "font",
+            "size",
+            "bold",
+            "italic",
+            "underline",
+            "strike",
+            "blockquote",
+            "list",
+            "bullet",
+            "indent",
+            "link",
+            "image",
+            "video",
+            "table",
+        ],
     };
 
     // const modules = {
@@ -97,7 +120,6 @@ const QuillEditor = ({ isProgress, returnData, writing }) => {
     //     "bullet",
     //     "table",
     //   ];
-    
 
     return (
         <ReactQuill
