@@ -32,15 +32,6 @@ function OrderMgmt() {
 
     const [projectInfo, setProjectInfo] = useState({}); //프로젝트정보
 
-    const [approvalData, setApprovalData] = useState([]); //승인자목록
-    const [isMyTurn, setIsMyTurn] = useState(false);
-
-    const [documentName, setDocumentName] = useState("사전원가서");
-    const [title, setTitle] = useState("");
-    const [openUrl, setOpenUrl] = useState("");
-    const [isCancel, setIsCancel] = useState(false);
-    const [clickBtn, setClickBtn] = useState(false);
-
     //재기안으로 받은 데이터
     function getQueryParameterByName(name, url) {
         if (!url) url = window.location.href;
@@ -59,28 +50,8 @@ function OrderMgmt() {
         setProjectInfo({ ...data });
         if (data) {
             fetchAllData({ poiId: data.poiId, versionId: data.versionId });
-            if (data.sgnType === "견적품의서") {
-                setTitle("견적서 승인 요청서");
-                setDocumentName("견적원가서");
-                setOpenUrl(URL.PreCostDoc);
-            } else if (data.sgnType === "수주보고서") {
-                setTitle("수주/계약 보고서");
-                setDocumentName("수주원가서");
-                setDocumentName("수주원가서");
-                setOpenUrl(URL.PreCostDoc);
-            } else if (data.sgnType === "완료보고서") {
-                setTitle("완료보고서");
-                setDocumentName("사후정산서");
-                setOpenUrl(URL.PostCostsDoc);
-            }
             getData({ sgnId: data.sgnId });
         }
-        const timer = setTimeout(() => {
-            setClickBtn(true);
-        }, 3800);
-
-        // 컴포넌트가 언마운트될 때 타이머를 정리
-        return () => clearTimeout(timer);
     }, []);
 
     const getData = async (requestData) => {
@@ -89,22 +60,17 @@ function OrderMgmt() {
         if (signResultData) {
             signInfo = {
                 sgnId: signResultData[0]?.sgnId,
-                sgnSenderNm: signResultData[0]?.sgnSenderNm, //발신자이름
+                sgnSenderNm: signResultData[0]?.sgnSenderNm, //기안자이름
                 sgnSenderPosNm: signResultData[0]?.sgnSenderPosNm, //기안자직급
                 sgnSenderGroupNm: signResultData[0]?.sgnSenderGroupNm, //기안자부서
-                sgnSigndate: signResultData[0]?.sgnSigndate, //기안일
-                sgnReceiverId: signResultData[0]?.sgnReceiverId, //수신자
-                sgnDesc: signResultData[0]?.sgnDesc, //비고
+                // sgnSigndate: signResultData[0]?.sgnSigndate, //기안일
+                // sgnReceiverId: signResultData[0]?.sgnReceiverId, //수신자
+                // sgnDesc: signResultData[0]?.sgnDesc, //비고
             };
             setProjectInfo((prev) => ({
                 ...prev,
                 ...signInfo, //프로젝트 정보에 비고추가
             }));
-
-            if (signInfo.sgnSenderNm === sessionUserName) {
-                //요청자와 로그인유저가 같으면
-                setIsCancel(true); //회수가능
-            }
         }
 
         const stateResultData = await axiosFetch("/api/system/signState/totalListAll.do", requestData || {});
@@ -115,10 +81,10 @@ function OrderMgmt() {
                 sttApproverNm: item.sttApproverNm, //승인자명
                 sttApproverPosNm: item.sttApproverPosNm, //직급
                 sttApproverGroupNm: item.sttApproverGroupNm, //부서
-                sttApproverAt: item.sttApproverAt, //승인자상태
-                sttResult: item.sttResult, //결재결과
-                sttComent: item.sttComent, //코멘트
-                sttPaymentDate: item.sttPaymentDate, //결재일 (오타 수정)
+                // sttApproverAt: item.sttApproverAt, //승인자상태
+                // sttResult: item.sttResult, //결재결과
+                // sttComent: item.sttComent, //코멘트
+                // sttPaymentDate: item.sttPaymentDate, //결재일 (오타 수정)
             }));
 
             if (signInfo) {
@@ -133,62 +99,10 @@ function OrderMgmt() {
                     },
                 ];
                 const merge = [...changeSign, ...arr];
-                setApprovalData(merge);
-                const myData = stateResultData.find((item) => item.sttApproverAt === "진행" && item.sttApproverId === uniqId);
-                myData ? setIsMyTurn(true) : setIsMyTurn(false);
+                setApprovalLine(merge);
             }
         }
     };
-    //    const signResultData = await axiosFetch("/api/system/sign/totalListAll.do", requestData || {});
-    //    let signInfo = {};
-    //    if (signResultData) {
-    //        signInfo = {
-    //            sgnId: signResultData[0]?.sgnId,
-    //            sgnSenderNm: signResultData[0]?.sgnSenderNm, //발신자이름
-    //            sgnSenderPosNm: signResultData[0]?.sgnSenderPosNm, //기안자직급
-    //            sgnSenderGroupNm: signResultData[0]?.sgnSenderGroupNm, //기안자부서
-    //            sgnSigndate: signResultData[0]?.sgnSigndate, //기안일
-    //            sgnReceiverId: signResultData[0]?.sgnReceiverId, //수신자
-    //            sgnDesc: signResultData[0]?.sgnDesc, //비고
-    //        };
-    //        setProjectInfo((prev) => ({
-    //            ...prev,
-    //            ...signInfo, //프로젝트 정보에 비고추가
-    //        }));
-    //    }
-
-    //    const stateResultData = await axiosFetch("/api/system/signState/totalListAll.do", requestData || {});
-    //    if (stateResultData) {
-    //        const arr = stateResultData.map((item) => ({
-    //            sttId: item.sttId, //결재ID
-    //            sttApproverId: item.sttApproverId, //승인자ID
-    //            sttApproverNm: item.sttApproverNm, //승인자명
-    //            sttApproverPosNm: item.sttApproverPosNm, //직급
-    //            sttApproverGroupNm: item.sttApproverGroupNm, //부서
-    //            sttApproverAt: item.sttApproverAt, //승인자상태
-    //            sttResult: item.sttResult, //결재결과
-    //            sttComent: item.sttComent, //코멘트
-    //            sttPaymentDate: item.sttPaymentDate, //결재일 (오타 수정)
-    //        }));
-
-    //        if (signInfo) {
-    //            const changeSign = [
-    //                {
-    //                    sttApproverNm: signInfo.sgnSenderNm,
-    //                    sttApproverPosNm: signInfo.sgnSenderPosNm,
-    //                    sttApproverAt: "요청",
-    //                    sttApproverGroupNm: signInfo.sgnSenderGroupNm,
-    //                    sttPaymentDate: signInfo.sgnSigndate,
-    //                    sgnDesc: signInfo.sgnDesc,
-    //                },
-    //            ];
-    //            const merge = [...changeSign, ...arr];
-    //            setApprovalData(merge);
-    //            const myData = stateResultData.find((item) => item.sttApproverAt === "진행" && item.sttApproverId === uniqId);
-    //            myData ? setIsMyTurn(true) : setIsMyTurn(false);
-    //        }
-    //    }
-    //};
 
     const returnData = (value, type) => {
         if (type === "결재선") {
@@ -299,38 +213,35 @@ function OrderMgmt() {
                 />
                 <PopupButton clickBtn={isProgress} targetUrl={URL.PreCostDoc} data={{ label: "수주원가서", type: "document", ...condition }} />
                 <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)} />
-                {/* <AddButton label="저장" onClick={() => setIsSave(true)} disabled={isSave} /> */}
                 <AddButton label="결재요청" onClick={() => setIsSubmit(true)} />
             </div>
-            <SignStateLine signStateData={approvalData} />
-            <ApprovalFormCost sendInfo={approvalLine}>
-                <div style={{ marginTop: "-55px", marginBottom: 55 }}>
-                    <h2 style={{ zIndex: "1" }}>
-                        {projectInfo?.sgnType === "수주보고서"
-                            ? "수주/계약 보고서"
-                            : projectInfo?.sgnType === "견적품의서"
-                            ? "견적서 승인 요청서"
-                            : "수주/계약 보고서"}
-                    </h2>
-                </div>
-                {/* <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="수주보고서"/> */}
-                {projectInfo.poiId ? (
-                    <ApprovalFormSal2 projectInfo={projectInfo ? projectInfo : ""} returnData={(value) => returnData(value, "조회")} />
-                ) : (
-                    <ApprovalFormSal returnData={(value) => returnData(value, "조회")} viewPageName={{ name: "수주보고서", id: "OrderMgmt" }} />
-                )}
+            <SignStateLine signStateData={approvalLine} />
+            <div style={{ marginTop: "-55px", marginBottom: 55 }}>
+                <h2 style={{ zIndex: "1" }}>
+                    {projectInfo?.sgnType === "수주보고서"
+                        ? "수주/계약 보고서"
+                        : projectInfo?.sgnType === "견적품의서"
+                        ? "견적서 승인 요청서"
+                        : "수주/계약 보고서"}
+                </h2>
+            </div>
+            {/* <ApprovalFormReport returnData={(value) => returnData(value, "조회")} type="수주보고서"/> */}
+            {projectInfo.poiId ? (
+                <ApprovalFormSal2 projectInfo={projectInfo ? projectInfo : ""} returnData={(value) => returnData(value, "조회")} />
+            ) : (
+                <ApprovalFormSal returnData={(value) => returnData(value, "조회")} viewPageName={{ name: "수주보고서", id: "OrderMgmt" }} />
+            )}
 
-                <QuillEditor isProgress={isProgress} returnData={(value) => returnData(value, "비고")} writing={writing} readContent={projectInfo.sgnDesc} />
-                <ApprovalLineModal
-                    width={670}
-                    height={500}
-                    title="결재선"
-                    type="수주보고서"
-                    isOpen={isOpenModalApproval}
-                    onClose={() => setIsOpenModalApproval(false)}
-                    returnData={(value) => returnData(value, "결재선")}
-                />
-            </ApprovalFormCost>
+            <QuillEditor isProgress={isProgress} returnData={(value) => returnData(value, "비고")} writing={writing} readContent={projectInfo.sgnDesc} />
+            <ApprovalLineModal
+                width={670}
+                height={500}
+                title="결재선"
+                type="수주보고서"
+                isOpen={isOpenModalApproval}
+                onClose={() => setIsOpenModalApproval(false)}
+                returnData={(value) => returnData(value, "결재선")}
+            />
         </>
     );
 }

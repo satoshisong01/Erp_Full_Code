@@ -4,7 +4,6 @@ import React from "react";
 function SignStateLine(props) {
     const {
         children, //자식
-        signData, //요청자
         signStateData, //승인자목록
     } = props;
 

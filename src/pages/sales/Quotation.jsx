@@ -25,6 +25,7 @@ import PopupButtonReport from "components/button/PopupButtonReport";
 import ReactDataTable from "components/DataTable/ReactDataTable";
 import { ChangePrmnPlanData, buyIngInfoCalculation, division } from "components/DataTable/function/ReplaceDataFormat";
 import { ProcessResultDataRun } from "../../components/DataTable/function/ProcessResultData";
+import SignStateLine from "components/SignStateLine";
 
 /** 영업관리-견적관리 */
 function Quotation() {
@@ -615,22 +616,21 @@ function Quotation() {
                                 <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)} />
                                 <AddButton label="결재요청" onClick={() => setIsSubmit(true)} disabled={isProgress} />
                             </div>
-                            <ApprovalFormCost sendInfo={approvalLine}>
-                                <div style={{ marginTop: "-55px", marginBottom: 55 }}>
-                                    <h2>견적서 승인 요청서</h2>
-                                </div>
-                                <ApprovalFormSal returnData={(value) => returnData(value, "조회")} viewPageName={{ name: "품의서", id: "proposal" }} />
-                                <QuillEditor isProgress={isProgress} returnData={(value) => returnData(value, "비고")} writing={writing} />
-                                <ApprovalLineModal
-                                    width={670}
-                                    height={500}
-                                    title="결재선"
-                                    type="견적품의서"
-                                    isOpen={isOpenModalApproval}
-                                    onClose={() => setIsOpenModalApproval(false)}
-                                    returnData={(value) => returnData(value, "결재선")}
-                                />
-                            </ApprovalFormCost>
+                            <SignStateLine signStateData={approvalLine} />
+                            <div style={{ marginTop: "-55px", marginBottom: 55 }}>
+                                <h2>견적서 승인 요청서</h2>
+                            </div>
+                            <ApprovalFormSal returnData={(value) => returnData(value, "조회")} viewPageName={{ name: "품의서", id: "proposal" }} />
+                            <QuillEditor isProgress={isProgress} returnData={(value) => returnData(value, "비고")} writing={writing} />
+                            <ApprovalLineModal
+                                width={670}
+                                height={500}
+                                title="결재선"
+                                type="견적품의서"
+                                isOpen={isOpenModalApproval}
+                                onClose={() => setIsOpenModalApproval(false)}
+                                returnData={(value) => returnData(value, "결재선")}
+                            />
                         </ul>
                     </div>
                 </div>
