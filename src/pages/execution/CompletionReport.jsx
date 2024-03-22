@@ -10,6 +10,7 @@ import ApprovalFormSal from "components/form/ApprovalFormSal";
 import PopupButton from "components/button/PopupButton";
 import { ProcessResultDataRun } from "../../components/DataTable/function/ProcessResultData";
 import { PageContext } from "components/PageProvider";
+import SignStateLine from "components/SignStateLine";
 
 /** 실행관리-완료보고서 */
 function CompletionReport() {
@@ -140,22 +141,21 @@ function CompletionReport() {
                 <AddButton label="결재선" onClick={() => setIsOpenModalApproval(true)} />
                 <AddButton label="결재요청" onClick={() => setIsSubmit(true)} disabled={isSave} />
             </div>
-            <ApprovalFormCost sendInfo={approvalLine}>
-                <div style={{ marginTop: "-55px", marginBottom: 55 }}>
-                    <h2 style={{ zIndex: "1" }}>완료 보고서</h2>
-                </div>
-                <ApprovalFormSal returnData={(value) => returnData(value, "저장")} viewPageName={{ name: "완료보고서", id: "CompletionReport" }} />
-                <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing} />
-                <ApprovalLineModal
-                    width={670}
-                    height={500}
-                    title="결재선"
-                    type="완료보고서"
-                    isOpen={isOpenModalApproval}
-                    onClose={() => setIsOpenModalApproval(false)}
-                    returnData={(value) => returnData(value, "결재선")}
-                />
-            </ApprovalFormCost>
+            <SignStateLine signStateData={approvalLine} />
+            <div style={{ marginTop: "-55px", marginBottom: 55 }}>
+                <h2 style={{ zIndex: "1" }}>완료 보고서</h2>
+            </div>
+            <ApprovalFormSal returnData={(value) => returnData(value, "저장")} viewPageName={{ name: "완료보고서", id: "CompletionReport" }} />
+            <QuillEditor isSave={isSave} returnData={(value) => returnData(value, "비고")} writing={writing} />
+            <ApprovalLineModal
+                width={670}
+                height={500}
+                title="결재선"
+                type="완료보고서"
+                isOpen={isOpenModalApproval}
+                onClose={() => setIsOpenModalApproval(false)}
+                returnData={(value) => returnData(value, "결재선")}
+            />
         </>
     );
 }
