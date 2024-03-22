@@ -46,6 +46,7 @@ export default function AddModModal(props) {
     const [isOpenModalProductGroup, setIsOpenModalProductGroup] = useState(false); //품목그룹목록
     const [isOpenModalEmployerInfo, setIsOpenModalEmployerInfo] = useState(false); //업무회원목록
     const [colName, setColName] = useState({ name: "", id: "" });
+    const [dateValue, setDateValue] = useState("");
 
     useEffect(() => {
         // me-modal-body의 높이를 동적 계산
@@ -94,7 +95,6 @@ export default function AddModModal(props) {
     //         }
     //         return [];
     //     };
-
 
     //useEffect(() => {
     //    console.log(data, "data222");
@@ -159,6 +159,7 @@ export default function AddModModal(props) {
                 return newErrors;
             });
         } else {
+            console.log(data, "저장할 데이터");
             resultData(data); //데이터 부모로 전송
             onClose();
         }
@@ -179,6 +180,7 @@ export default function AddModModal(props) {
 
     const dateClick = (date, col) => {
         setData((prevData) => {
+            // 빈 문자열로 컬럼 값을 업데이트
             return { ...prevData, [col]: date };
         });
     };
@@ -195,6 +197,12 @@ export default function AddModModal(props) {
         setColName({ id: id, name: name });
     };
 
+    // x 버튼을 누를 때 처리
+    const handleClearDate = (event, col) => {
+        event.preventDefault(); // 기본 이벤트 막기
+        dateClick("", col); // 날짜 클리어를 위해 빈 문자열 전달
+    };
+
     const renderField = (item, index, data) => (
         <div className="row-group" key={index}>
             <div className="left">
@@ -205,7 +213,10 @@ export default function AddModModal(props) {
                 {item.type === "input" ? (
                     <BasicInput item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
                 ) : item.type === "dayPicker" ? (
-                    <DayPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
+                    <div style={{ display: "flex" }}>
+                        <DayPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
+                        <button onClick={(event) => handleClearDate(event, item.col)}>x</button>
+                    </div>
                 ) : item.type === "monthPicker" ? (
                     <MonthPicker name={item.col} onClick={(e) => dateClick(e, item.col)} value={data?.[item.col] ?? ""} placeholder={item.placeholder} />
                 ) : item.type === "yearPicker" ? (
@@ -247,8 +258,8 @@ export default function AddModModal(props) {
                     <Number item={item} onChange={(e) => inputChange(e, "number")} value={data?.[item.col] ? data[item.col].toLocaleString() : ""} />
                 ) : item.type === "select" ? (
                     <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
-                    // <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ? data?.[item.col] : item.option[0].value || ""} />
-                ) : item.type === "radio" ? (
+                ) : // <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ? data?.[item.col] : item.option[0].value || ""} />
+                item.type === "radio" ? (
                     item.option &&
                     item.option.length > 0 && (
                         <div className="radio-container">
