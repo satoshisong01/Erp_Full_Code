@@ -12,6 +12,8 @@ import { ProcessResultDataRun } from "../../components/DataTable/function/Proces
 import { PageContext } from "components/PageProvider";
 import ApprovalFormSal2 from "components/form/ApprovalFormSal2";
 import SignStateLine from "components/SignStateLine";
+import ViewModal from "components/modal/ViewModal";
+import { columns } from "constants/columns";
 
 /** 영업관리-수주관리-수주보고서 */
 function OrderMgmt() {
@@ -96,6 +98,7 @@ function OrderMgmt() {
                         sttApproverGroupNm: signInfo.sgnSenderGroupNm,
                         sttPaymentDate: signInfo.sgnSigndate,
                         sgnDesc: signInfo.sgnDesc,
+                        sgnComment: signInfo.sgnComment,
                     },
                 ];
                 const merge = [...changeSign, ...arr];
@@ -125,16 +128,17 @@ function OrderMgmt() {
         }
     };
 
-    useEffect(() => {
-        if (isSubmit) {
-            const willApprove = window.confirm("결재 요청 하시겠습니까?");
-            if (willApprove) {
-                submit();
-            }
-        }
-    }, [isSubmit]);
+    //useEffect(() => {
+    //    const handleSubmission = async () => {
+    //        if (isSubmit) {
+    //            setIsSubmit(false); // isSubmit 상태를 다시 false로 설정
+    //        }
+    //    };
 
-    const submit = async () => {
+    //    handleSubmission();
+    //}, [isSubmit]);
+
+    const submit = async (inputComment) => {
         const list = approvalLine.slice(1); //첫번째는 요청자라 제외
 
         if (!condition || !condition.poiId) {
@@ -157,13 +161,20 @@ function OrderMgmt() {
             poiId: condition.poiId,
             versionId: condition.versionId,
             sgnDesc: content,
+            sgnComment: inputComment.sttComent,
+            sgnTitle: inputComment.sgnTitle,
             sgnType: "수주보고서",
             sttApproverList: list,
         };
 
+        console.log(dataTosend, "저장된거좀볼까");
+
         const resultData = await axiosPost("/api/system/signState/add.do", dataTosend);
+        console.log(resultData, dataTosend, "보내는폼");
         if (resultData) {
             alert("요청 완료되었습니다.");
+            //if(inner)
+            closePopup();
             setIsProgress(true); //결재요청 버튼 비활성화
             setApprovalLine([]);
         }
@@ -191,10 +202,19 @@ function OrderMgmt() {
         }
     };
 
+    const closePopup = () => {
+        window.close(); //현재창닫기
+    };
+
     const writing = () => {
         if (!isProgress) {
             setIsProgress(true); //내용 변경 중
         }
+    };
+
+    const approvalToServer = async (value) => {
+        await submit(value); // submit 함수 호출 및 value 전달
+        setIsSubmit(false); // isSubmit 상태를 다시 false로 설정
     };
 
     return (
@@ -242,6 +262,16 @@ function OrderMgmt() {
                 onClose={() => setIsOpenModalApproval(false)}
                 returnData={(value) => returnData(value, "결재선")}
             />
+            {isSubmit && (
+                <ViewModal
+                    width={500}
+                    height={250}
+                    list={columns.approval.comment}
+                    resultData={approvalToServer}
+                    title="결재처리"
+                    onClose={() => setIsSubmit(false)}
+                />
+            )}
         </>
     );
 }

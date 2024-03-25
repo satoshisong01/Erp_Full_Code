@@ -35,11 +35,14 @@ function CancelBox() {
         { header: "납기종료일", col: "poiDueEndDt", notView: true },
         { header: "계약금(천원)", col: "orderTotal", notView: true },
         { header: "요청일", col: "sngSignData", notView: true },
-        { header: "프로젝트명", col: "poiNm", cellWidth: "350", textAlign: "left" },
-        { header: "결재종류", col: "sgnType", cellWidth: "200" },
-        { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
+        { header: "결재제목", col: "sgnTitle", cellWidth: "300", textAlign: "left" },
+        { header: "프로젝트명", col: "poiNm", cellWidth: "250", textAlign: "left" },
+        { header: "결재종류", col: "sgnType", cellWidth: "100" },
+        { header: "기안자", col: "sgnSenderNm", cellWidth: "70" },
         { header: "기안일", col: "sgnSigndate", cellWidth: "130" },
-        { header: "비고", col: "sgnDesc", cellWidth: "559", textAlign: "left" },
+        { header: "결재상태", col: "sgnAt", cellWidth: "70" },
+        { header: "비고", col: "sgnDesc", cellWidth: "559", textAlign: "left", notView: true },
+        { header: "코멘트", col: "sgnComment", cellWidth: "419", textAlign: "left" },
     ];
 
     const conditionList = [

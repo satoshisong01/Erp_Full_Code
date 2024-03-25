@@ -35,13 +35,14 @@ function ProgressBox() {
         { header: "납기종료일", col: "poiDueEndDt", notView: true },
         { header: "계약금(천원)", col: "orderTotal", notView: true },
         { header: "요청일", col: "sngSignData", notView: true },
-        { header: "프로젝트명", col: "poiNm", cellWidth: "350", textAlign: "left" },
-        { header: "결재종류", col: "sgnType", cellWidth: "200" },
-        // { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
-        { header: "기안자", col: "empNm", cellWidth: "100" },
+        { header: "결재제목", col: "sgnTitle", cellWidth: "300", textAlign: "left" },
+        { header: "프로젝트명", col: "poiNm", cellWidth: "250", textAlign: "left" },
+        { header: "결재종류", col: "sgnType", cellWidth: "100" },
+        { header: "기안자", col: "sgnSenderNm", cellWidth: "70" },
         { header: "기안일", col: "sgnSigndate", cellWidth: "130" },
-        { header: "결재상태", col: "sgnAt", cellWidth: "130" },
-        { header: "비고", col: "sgnDesc", cellWidth: "559", textAlign: "left" },
+        { header: "결재상태", col: "sgnAt", cellWidth: "70" },
+        { header: "비고", col: "sgnDesc", cellWidth: "559", textAlign: "left", notView: true },
+        { header: "코멘트", col: "sgnComment", cellWidth: "419", textAlign: "left" },
     ];
 
     const conditionList = [
@@ -89,7 +90,7 @@ function ProgressBox() {
 
     const isRefresh = () => {
         const willApprove = window.confirm("새로고침 하시겠습니까?");
-        if(willApprove) {
+        if (willApprove) {
             fetchAllData({ sgnSenderId: localStorage.uniqId, sgnAt: "진행" });
         }
     };
@@ -105,11 +106,11 @@ function ProgressBox() {
     };
 
     const openPopup = () => {
-        if(selectedRows?.sgnId) {
+        if (selectedRows?.sgnId) {
             const sendData = {
                 label: "전자결재",
-                ...selectedRows
-            }
+                ...selectedRows,
+            };
             const url = `${URL.SignDocument}?data=${encodeURIComponent(JSON.stringify(sendData))}`;
             const width = 1200;
             const height = 700;
@@ -120,23 +121,22 @@ function ProgressBox() {
         }
     };
 
-    
     const cancel = async () => {
         const willApprove = window.confirm("결재를 회수 하시겠습니까?");
-        if(willApprove) {
-            if(selectedRows?.sgnId) {
+        if (willApprove) {
+            if (selectedRows?.sgnId) {
                 const requestData = {
                     sgnId: selectedRows.sgnId,
-                    sgnAt: "회수"
-                }
+                    sgnAt: "회수",
+                };
                 const resultData = await axiosUpdate("/api/system/sign/edit.do", requestData || {});
-                if(resultData) {
+                if (resultData) {
                     alert("회수완료");
                     refresh();
                 }
             }
         }
-    }
+    };
 
     return (
         <>
@@ -144,8 +144,8 @@ function ProgressBox() {
             <SearchList conditionList={conditionList} />
             <HideCard title="결재진행 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
-                    <ModButton label="전자결재" onClick={openPopup}/>
-                    <ModButton label="회수" onClick={cancel}/>
+                    <ModButton label="전자결재" onClick={openPopup} />
+                    <ModButton label="회수" onClick={cancel} />
                     <RefreshButton onClick={isRefresh} />
                 </div>
                 <ReactDataTable

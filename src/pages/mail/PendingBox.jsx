@@ -35,11 +35,14 @@ function PendingBox() {
         { header: "납기종료일", col: "poiDueEndDt", notView: true },
         { header: "계약금(천원)", col: "orderTotal", notView: true },
         { header: "요청일", col: "sngSignData", notView: true },
-        { header: "프로젝트명", col: "poiNm", cellWidth: "350", textAlign: "left" },
-        { header: "결재종류", col: "sgnType", cellWidth: "200" },
-        { header: "기안자", col: "sgnSenderNm", cellWidth: "100" },
+        { header: "결재제목", col: "sgnTitle", cellWidth: "300", textAlign: "left" },
+        { header: "프로젝트명", col: "poiNm", cellWidth: "250", textAlign: "left" },
+        { header: "결재종류", col: "sgnType", cellWidth: "100" },
+        { header: "기안자", col: "sgnSenderNm", cellWidth: "70" },
         { header: "기안일", col: "sgnSigndate", cellWidth: "130" },
-        { header: "비고", col: "sgnDesc", cellWidth: "559", textAlign: "left" },
+        { header: "결재상태", col: "sgnAt", cellWidth: "70" },
+        { header: "비고", col: "sgnDesc", cellWidth: "559", textAlign: "left", notView: true },
+        { header: "코멘트", col: "sgnComment", cellWidth: "419", textAlign: "left" },
     ];
 
     const conditionList = [
@@ -75,14 +78,15 @@ function PendingBox() {
     ];
 
     useEffect(() => {
-        if(currentPageName.id === "PendingBox") {
+        if (currentPageName.id === "PendingBox") {
             fetchAllData({ sttApproverId: localStorage.uniqId, sgnAt: "진행" });
         }
     }, [currentPageName]);
 
     const fetchAllData = async (condition) => {
         const resultData = await axiosFetch("/api/system/signState/totalListAll.do", condition || {});
-            setTableData(resultData);
+        console.log(resultData);
+        setTableData(resultData);
     };
 
     const refresh = () => {
@@ -96,11 +100,11 @@ function PendingBox() {
     };
 
     const openPopup = () => {
-        if(selectedRows?.sgnId) {
+        if (selectedRows?.sgnId) {
             const sendData = {
                 label: "전자결재",
-                ...selectedRows
-            }
+                ...selectedRows,
+            };
             const url = `${URL.SignDocument}?data=${encodeURIComponent(JSON.stringify(sendData))}`;
             const width = 1200;
             const height = 700;
@@ -117,9 +121,9 @@ function PendingBox() {
             <SearchList conditionList={conditionList} />
             <HideCard title="결재대기 목록" color="back-lightblue" className="mg-b-40">
                 <div className="table-buttons mg-t-10 mg-b-10">
-                {/* <PopupButtonNL targetUrl={URL.PreCostDoc} data={{ label: "수주보고서", type: "document", ...condition }} /> */}
+                    {/* <PopupButtonNL targetUrl={URL.PreCostDoc} data={{ label: "수주보고서", type: "document", ...condition }} /> */}
                     {/* <PopupButtonSign targetUrl={URL.SignDocument} data={{ label: "전자결재", ...selectedRows }}/> */}
-                    <ModButton label="전자결재" onClick={openPopup}/>
+                    <ModButton label="전자결재" onClick={openPopup} />
                     {/* <ViewButton label={"보기"} onClick={() => setIsOpenView(true)} /> */}
                     <RefreshButton onClick={refresh} />
                 </div>

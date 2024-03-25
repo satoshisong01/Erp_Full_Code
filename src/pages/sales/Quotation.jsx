@@ -26,6 +26,7 @@ import ReactDataTable from "components/DataTable/ReactDataTable";
 import { ChangePrmnPlanData, buyIngInfoCalculation, division } from "components/DataTable/function/ReplaceDataFormat";
 import { ProcessResultDataRun } from "../../components/DataTable/function/ProcessResultData";
 import SignStateLine from "components/SignStateLine";
+import ViewModal from "components/modal/ViewModal";
 
 /** 영업관리-견적관리 */
 function Quotation() {
@@ -454,16 +455,20 @@ function Quotation() {
         }
     };
 
-    useEffect(() => {
-        if (isSubmit) {
-            const willApprove = window.confirm("결재 요청 하시겠습니까?");
-            if (willApprove) {
-                submit();
-            }
-        }
-    }, [isSubmit]);
+    //useEffect(() => {
+    //    if (isSubmit) {
+    //        const willApprove = window.confirm("결재 요청 하시겠습니까?");
+    //        if (willApprove) {
+    //            submit();
+    //        }
+    //    }
+    //}, [isSubmit]);
 
-    const submit = async () => {
+    const closePopup = () => {
+        window.close(); //현재창닫기
+    };
+
+    const submit = async (inputComment) => {
         const list = approvalLine.slice(1); //첫번째는 요청자라 제외
 
         if (!condition || !condition.poiId) {
@@ -486,6 +491,8 @@ function Quotation() {
             poiId: condition.poiId,
             versionId: condition.versionId,
             sgnDesc: content,
+            sgnComment: inputComment.sttComent,
+            sgnTitle: inputComment.sgnTitle,
             sgnType: "견적품의서",
             sttApproverList: list,
         };
@@ -493,10 +500,16 @@ function Quotation() {
         const resultData = await axiosPost("/api/system/signState/add.do", dataTosend);
         if (resultData) {
             alert("요청 완료되었습니다.");
+            closePopup();
             setIsProgress(true); //결재요청 버튼 비활성화
             setApprovalLine([]);
         }
         setIsSubmit(false);
+    };
+
+    const approvalToServer = async (value) => {
+        await submit(value); // submit 함수 호출 및 value 전달
+        setIsSubmit(false); // isSubmit 상태를 다시 false로 설정
     };
 
     return (
@@ -636,6 +649,16 @@ function Quotation() {
                 </div>
             </div>
             <SearchModal returnData={(condition) => fetchAllData(condition)} onClose={() => setIsOpenSearch(false)} isOpen={isOpenSearch} />
+            {isSubmit && (
+                <ViewModal
+                    width={500}
+                    height={260}
+                    list={columns.approval.comment}
+                    resultData={approvalToServer}
+                    title="결재처리"
+                    onClose={() => setIsSubmit(false)}
+                />
+            )}
             {/*</div>
             )}*/}
         </>
