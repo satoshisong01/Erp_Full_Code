@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 function EgovFooter() {
     return (
@@ -7,10 +6,9 @@ function EgovFooter() {
             <div className="inner">
                 <div className="info" style={{textAlign: 'center'}}>
                     <p>
-                        대표문의메일 : egovframeexample@gmail.com  <span className="m_hide">|</span><br className="m_show" />  대표전화 : 0000-0000 (000-0000-0000)<br />
-                        호환성확인 : 000-0000-0000  |  교육문의 : 0000-0000-0000
+                        대표문의메일 : MASTER@meccatech.co.kr  <span className="m_hide">|</span><br className="m_show" />  대표전화 : 031-376-7567
                     </p>
-                    <p className="copy">Copyright © 2021 Ministry Of The Interior And Safety. All Rights Reserved.</p>
+                    <p className="copy"> 18467 경기도 화성시 동탄대로 636-3 메가비즈타워 C동 13층</p>
                 </div>
             </div>
         </div>
