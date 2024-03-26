@@ -178,9 +178,9 @@ function Quotation() {
                 const result = ProcessResultDataRun(resultData, condition);
                 setEstimate(result);
                 setestimateBool(true);
-                return { result: true, versionNum: condition.versionNum }
+                return { result: true, versionNum: condition.versionNum };
             } else {
-                return { result: false, versionNum: condition.versionNum }
+                return { result: false, versionNum: condition.versionNum };
             }
         } else if (innerPageName.id === "orderBuying" || innerPageName.id === "proposal") {
             //구매비
@@ -206,9 +206,9 @@ function Quotation() {
                 // 상태 업데이트
                 setBuyIngInfo(updatedArray);
                 setBuyIngBool(true);
-                return { result: true, versionNum: condition.versionNum }
+                return { result: true, versionNum: condition.versionNum };
             } else {
-                return { result: false, versionNum: condition.versionNum }
+                return { result: false, versionNum: condition.versionNum };
             }
         }
         //const resultDa2 = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", requestSearch);
@@ -221,9 +221,9 @@ function Quotation() {
             if (resultData.length !== 0) {
                 const result = ProcessResultDataRun(resultData, condition);
                 setCopiedLabor(result);
-                return { result: true, versionNum: condition.versionNum }
+                return { result: true, versionNum: condition.versionNum };
             } else {
-                return { result: false, versionNum: condition.versionNum }
+                return { result: false, versionNum: condition.versionNum };
             }
         } else if (innerPageName.id === "orderBuying" || innerPageName.id === "proposal") {
             //구매비
@@ -239,9 +239,9 @@ function Quotation() {
 
                 // 상태 업데이트
                 setCopiedBuy(updatedArray);
-                return { result: true, versionNum: condition.versionNum }
+                return { result: true, versionNum: condition.versionNum };
             } else {
-                return { result: false, versionNum: condition.versionNum }
+                return { result: false, versionNum: condition.versionNum };
             }
         }
     };
@@ -326,7 +326,8 @@ function Quotation() {
     //구매비
     const compareData2 = (originData, updatedData) => {
         setRemind2(0);
-        const filterData = updatedData.filter((data) => data.pgId); //필수값 체크
+        const filterData = updatedData;
+        //const filterData = updatedData.filter((data) => data.pgId); //필수값 체크
 
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -375,15 +376,15 @@ function Quotation() {
         }
     };
 
-    const [remind, setRemind] = useState(0) //refresh 시점 알림
-    const [remind2, setRemind2] = useState(0) //refresh 시점 알림
+    const [remind, setRemind] = useState(0); //refresh 시점 알림
+    const [remind2, setRemind2] = useState(0); //refresh 시점 알림
 
     const addItem2 = async (addData) => {
         const url = `api/estimate/buy/estCostBuy/addList.do`;
         const resultData = await axiosPost(url, addData);
         if (resultData) {
             console.log("구매비 추가 완료");
-            setRemind2(remind+1);
+            setRemind2(remind + 1);
         }
     };
 
@@ -392,8 +393,8 @@ function Quotation() {
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData) {
             console.log("구매비 수정 완료");
-            setRemind2(remind+1);
-            if(type) {
+            setRemind2(remind + 1);
+            if (type) {
                 console.log("조건2일때 set2");
                 setRemind2(2);
             }
@@ -405,7 +406,7 @@ function Quotation() {
         const resultData = await axiosDelete(url, removeItem);
         if (resultData) {
             console.log("구매비 삭제 완료");
-            setRemind2(remind+1);
+            setRemind2(remind + 1);
         }
     };
 
@@ -413,7 +414,7 @@ function Quotation() {
         const url = `/api/estimate/personnel/estimateCostMM/addArrayList.do`;
         const resultData = await axiosPost(url, addData);
         if (resultData) {
-            setRemind(remind+1);
+            setRemind(remind + 1);
             console.log("인건비 추가 완료");
         }
     };
@@ -422,9 +423,9 @@ function Quotation() {
         const url = `/api/estimate/personnel/estimateCostMM/editArrayList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData) {
-            setRemind(remind+1);
+            setRemind(remind + 1);
             console.log("인건비 수정 완료");
-            if(type) {
+            if (type) {
                 console.log("조건2일때 set2");
                 setRemind(2);
             }
@@ -436,16 +437,16 @@ function Quotation() {
         const resultData = await axiosDelete(url, removeItem);
         if (resultData) {
             console.log("인건비 삭제 완료");
-            setRemind(remind+1);
+            setRemind(remind + 1);
         }
     };
 
     useEffect(() => {
         console.log("remind:", remind);
-        if(remind >= 2 || remind2 >= 2) {
+        if (remind >= 2 || remind2 >= 2) {
             refresh();
         }
-    }, [remind, remind2])
+    }, [remind, remind2]);
 
     /* 품의서 */
     const sessionUser = sessionStorage.getItem("loginUser");
@@ -467,7 +468,7 @@ function Quotation() {
 
     useEffect(() => {
         console.log("❤️ ", condition);
-    }, [condition])
+    }, [condition]);
     const [copiedLabor, setCopiedLabor] = useState([]); //복제 인건비
     const [copiedBuy, setCopiedBuy] = useState([]); //복제 구매비
     const [isCopied, setIsCopied] = useState(false);
@@ -482,7 +483,7 @@ function Quotation() {
         } else if (type === "조회") {
             setIsProgress(false); //내용저장(진행) 완료
 
-            if (!value.view.poiId || !value.view.versionId && !value.save.poiId || !value.save.versionId) {
+            if (!value.view.poiId || (!value.view.versionId && !value.save.poiId) || !value.save.versionId) {
                 return;
             }
             setCondition({ ...value.save });
@@ -490,19 +491,21 @@ function Quotation() {
             if (value.view.versionId === value.save.versionId) {
                 setIsCopied(false);
                 const fetchResult = await fetchAllData({ ...value.save });
-                if(fetchResult.result) {
-                    alert(fetchResult.versionNum+" 데이터를 가져옵니다.")
+                if (fetchResult.result) {
+                    alert(fetchResult.versionNum + " 데이터를 가져옵니다.");
                 } else {
-                    alert(fetchResult.versionNum+" 데이터가 없습니다.")
+                    alert(fetchResult.versionNum + " 데이터가 없습니다.");
                 }
-            } else if (value.view.versionId !== value.save.versionId) { //복제 할때
+            } else if (value.view.versionId !== value.save.versionId) {
+                //복제 할때
                 setIsCopied(true);
                 await fetchAllData({ ...value.save });
                 const copiedResult = await fetchAllCopied({ ...value.view });
-                if(copiedResult.result) { //복제 데이터가 있을 때
-                    alert(copiedResult.versionNum+" 데이터를 가져옵니다.");
+                if (copiedResult.result) {
+                    //복제 데이터가 있을 때
+                    alert(copiedResult.versionNum + " 데이터를 가져옵니다.");
                 } else {
-                    alert(copiedResult.versionNum+" 데이터가 없습니다.")
+                    alert(copiedResult.versionNum + " 데이터가 없습니다.");
                 }
             }
         }
