@@ -16,7 +16,7 @@ import AddModModal from "components/modal/AddModModal";
 
 /** 기준정보관리-거래처관리-고객사 */
 function CustomerMgmt() {
-    const { setNameOfButton } = useContext(PageContext);
+    const { setNameOfButton, currentPageName } = useContext(PageContext);
     const itemDetailMgmtTable = useRef(null);
     const [returnKeyWord, setReturnKeyWord] = useState("");
     const [isOpenAdd, setIsOpenAdd] = useState(false);
@@ -270,16 +270,9 @@ function CustomerMgmt() {
         setReturnKeyWord(value);
     };
 
-    const addBtn = [""];
-
-    const [length, setLength] = useState(0);
-    const setLengthSelectRow = (length) => {
-        setLength(length);
-    };
-
     useEffect(() => {
         fetchAllData();
-    }, []);
+    }, [currentPageName]);
 
     const refresh = () => {
         fetchAllData();
@@ -385,13 +378,15 @@ function CustomerMgmt() {
                         returnSelect={returnData}
                         suffixUrl="/baseInfrm/client/client/type/c"
                         tableRef={itemDetailMgmtTable}
-                        setLengthSelectRow={setLengthSelectRow}
                         viewPageName={{ name: "고객사", id: "CustomerMgmt" }}
+                        isPageNation={true}
+                        isPageNationCombo={true}
+                        defaultPageSize={20}
                     />
                     {isOpenAdd && (
                         <AddModModal
                             width={500}
-                            height={560}
+                            height={420}
                             list={columns.reference.Customer}
                             resultData={addToServer}
                             onClose={() => setIsOpenAdd(false)}
@@ -401,7 +396,7 @@ function CustomerMgmt() {
                     {isOpenMod && (
                         <AddModModal
                             width={500}
-                            height={560}
+                            height={420}
                             list={columns.reference.Customer}
                             initialData={selectedRows}
                             resultData={modifyToServer}

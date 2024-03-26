@@ -38,7 +38,7 @@ export default function EmployerInfoModal(props) {
             return {
                 ...item,
                 uniqId: item.uniqId,
-                [colName]: item.empNm,
+                [colName.id]: item.empNm,
                 posNm: item.posNm,
                 orgNm: item.orgNm,
             };
@@ -48,14 +48,14 @@ export default function EmployerInfoModal(props) {
 
     const columns = [
         { header: "고유아이디", col: "uniqId", notView: true },
-        { header: "사용자명", col: colName || "empNm", cellWidth: "180" },
+        { header: "사용자명", col: colName.id || "empNm", cellWidth: "180" },
         { header: "직급", col: "posNm", cellWidth: "180" },
         // { header: "부서", col: "orgNm", cellWidth: "150" },
         { header: "부서", col: "groupNm", cellWidth: "150" },
     ];
 
     const conditionList = [
-        { title: "사용자명", col: colName || "empNm", type: "input" },
+        { title: "사용자명", col: colName.id || "empNm", type: "input" },
         { title: "직급", col: "posNm", type: "input" },
     ];
 

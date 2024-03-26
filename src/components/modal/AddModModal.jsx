@@ -23,12 +23,10 @@ export default function AddModModal(props) {
     const { width, height, list, onClose, resultData, title, initialData } = props;
     const {
         companyInfo,
-        pdiNmList,
         projectPdiNm,
         projectPgNm,
         emUserInfo,
         setCompanyInfo,
-        setPdiNmList,
         setProjectPdiNm,
         setProjectPgNm,
         setEmUserInfo,
@@ -59,7 +57,6 @@ export default function AddModModal(props) {
     }, [height]);
 
     useEffect(() => {
-        //console.log(companyInfo, "두개받나");
         //거래처
         if (Object.keys(companyInfo).length > 0) {
             setData((prevData) => {
@@ -69,36 +66,6 @@ export default function AddModModal(props) {
         }
     }, [companyInfo]);
 
-    // useEffect(() => {
-    //     const updatedTableData = initializeTableData(data, list);
-    //     setTableData(updatedTableData);
-    //     setOriginTableData(updatedTableData);
-    //     setIsLoading(false);
-    // }, [list]);
-
-    //     /* list에는 있지만 넣어줄 데이터가 없을 때 조기값 설정 */
-    //     const initializeTableData = (datas, cols) => {
-    //         if (datas && datas.length > 0) {
-    //             const updatedData = datas.map((dataItem) => {
-    //                 const newData = { ...dataItem };
-    //                 cols.forEach((column) => {
-    //                     if (!newData.hasOwnProperty(column.col)) {
-    //                         newData[column.col] = ""; // 해당 변수가 없으면 빈 값으로 초기화
-    //                     }
-    //                     if (column.type === "select") {
-    //                         newData[column.col] = column.options[0].value; // 옵션의 첫 번째 값으로 초기화
-    //                     }
-    //                 });
-    //                 return newData;
-    //             });
-    //             return updatedData;
-    //         }
-    //         return [];
-    //     };
-
-    //useEffect(() => {
-    //    console.log(data, "data222");
-    //}, [data]);
 
     useEffect(() => {
         //품목
@@ -133,7 +100,6 @@ export default function AddModModal(props) {
     useEffect(() => {
         //권한그룹
         if (Object.keys(authorGroupInfo).length > 0) {
-            console.log("authorGroupInfo:", authorGroupInfo);
             setData((prevData) => {
                 return { ...prevData, ...authorGroupInfo };
             });
@@ -185,16 +151,21 @@ export default function AddModModal(props) {
         });
     };
 
-    const changeEmployerInfo = (colName) => {
+    const changeEmployerInfo = (id) => { //되고있어??
+        setColName({id: id, name: ""});
         setIsOpenModalEmployerInfo(true);
-        setColName(colName);
     };
 
     const changeCompany = (id, name) => {
         //id=setver로 보내는값, name=테이블에띄어지는값
-        //console.log(id, name, "후후");
-        setIsOpenModalCompany(true);
         setColName({ id: id, name: name });
+        setIsOpenModalCompany(true);
+    };
+
+    const changeGroup = (id, name) => {
+        console.log(id, name, "후후");
+        setColName({ id: id, name: name });
+        setIsOpenModalProductGroup(true);
     };
 
     // x 버튼을 누를 때 처리
@@ -284,7 +255,8 @@ export default function AddModModal(props) {
                     />
                 ) : item.type === "productGroup" ? (
                     <>
-                        <BasicInput item={item} onClick={() => setIsOpenModalProductGroup(true)} value={data?.[item.col] ?? ""} readOnly />
+                        {/* <BasicInput item={item} onClick={() => setIsOpenModalProductGroup(true)} value={data?.[item.col] ?? ""} readOnly /> */}
+                        <BasicInput item={item} onClick={() => changeGroup(item.col, `${item.col}_name`)} value={data?.[item.col] ?? ""} readOnly />
                     </>
                 ) : item.type === "employerInfo" ? (
                     // <BasicInput item={item} onClick={() => setIsOpenModalEmployerInfo(true)} value={data?.[item.col] ?? ""} readOnly />
@@ -365,6 +337,7 @@ export default function AddModModal(props) {
                         title="품목그룹 목록"
                         isOpen={isOpenModalProductGroup}
                         onClose={() => setIsOpenModalProductGroup(false)}
+                        colName={colName}
                     />
                     <EmployerInfoModal
                         width={600}

@@ -257,8 +257,6 @@ function PartnerMgmt() {
         setReturnKeyWord(value);
     };
 
-    const addBtn = [""];
-
     const [length, setLength] = useState(0);
     const setLengthSelectRow = (length) => {
         setLength(length);
@@ -281,6 +279,9 @@ function PartnerMgmt() {
                 tableRef={itemDetailMgmtTable}
                 setLengthSelectRow={setLengthSelectRow}
                 viewPageName={{ name: "협력사", id: "PartnerMgmt" }}
+                isPageNation={true}
+                isPageNationCombo={true}
+                defaultPageSize={20}
             />
         </>
     );

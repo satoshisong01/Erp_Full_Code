@@ -15,7 +15,7 @@ import DeleteModal from "components/modal/DeleteModal";
 
 /** 기준정보관리-품목관리-품목그룹관리 */
 function ItemGroupMgmt() {
-    const { setNameOfButton } = useContext(PageContext);
+    const { setNameOfButton, currentPageName } = useContext(PageContext);
     const [selectedRows, setSelectedRows] = useState([]); //그리드에서 선택된 row 데이터
     const itemGroupMgmtTable = useRef(null);
     const [isOpenAdd, setIsOpenAdd] = useState(false);
@@ -32,7 +32,7 @@ function ItemGroupMgmt() {
 
     useEffect(() => {
         fetchAllData();
-    }, []);
+    }, [currentPageName]);
 
     const refresh = () => {
         fetchAllData();
