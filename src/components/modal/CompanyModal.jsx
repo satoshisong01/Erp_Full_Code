@@ -13,7 +13,7 @@ Modal.setAppElement("#root"); // Set the root element for accessibility
 /* 회사목록 목록 모달 */
 export default function CompanyModal(props) {
     const { width, height, isOpen, title, onClose, colName } = props;
-    const { setCompanyInfo, setProjectPdiNm, setModalPageName, setIsModalTable } = useContext(PageContext);
+    const { setCompanyInfo, setModalPageName, setIsModalTable } = useContext(PageContext);
 
     const [companyList, setCompanyList] = useState([]);
     const [selectInfo, setSelectInfo] = useState({});
@@ -30,6 +30,7 @@ export default function CompanyModal(props) {
         return () => {
             setIsModalTable(false);
             setModalPageName("");
+            setSelectInfo({}); //초기화
         };
     }, [isOpen]);
 
@@ -120,6 +121,7 @@ export default function CompanyModal(props) {
     const onSearch = (value) => {
         getCompanyList(value);
     };
+
 
     const onClick = (e) => {
         e.preventDefault();
