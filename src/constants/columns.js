@@ -229,6 +229,292 @@ export const columns = {
                 items: [{ header: "품목그룹명", col: "pgNm", require: true, type: "input" }],
             },
         ],
+        laborRateAdd: [
+            {
+                items: [
+                    { header: "기준연도", col: "peBaseDate", require: true, type: "input" },
+                    { header: "회사목록", col: "cltNm", type: "company", require: true },
+                ],
+            },
+            {
+                items: [
+                    { header: "특2", col: "peLv7", require: true, type: "input" },
+                    { header: "특1", col: "peLv6", require: true, type: "input" },
+                ],
+            },
+            {
+                items: [
+                    { header: "고2", col: "peLv5", require: true, type: "input" },
+                    { header: "고1", col: "peLv4", require: true, type: "input" },
+                ],
+            },
+            {
+                items: [
+                    { header: "중", col: "peLv3", require: true, type: "input" },
+                    { header: "초2", col: "peLv2", require: true, type: "input" },
+                ],
+            },
+            {
+                items: [
+                    { header: "초1", col: "peLv1", require: true, type: "input" },
+                    { header: "제경비", col: "peDesc", require: true, type: "input" },
+                ],
+            },
+        ],
+        GradeWageAdd: [
+            {
+                items: [
+                    { header: "기준연도", col: "gupBaseDate", require: true, type: "input" },
+                    { header: "직책", col: "guppName", cellWidth: "450", type: "input", textAlign: "center" },
+                ],
+            },
+            {
+                items: [{ header: "단가", col: "gupPrice", cellWidth: "500", type: "input", textAlign: "right" }],
+            },
+        ],
+        GradeWageExpAdd: [
+            {
+                items: [
+                    { header: "기준연도", col: "gupBaseDate", require: true, type: "input" },
+                    { header: "직책", col: "guppName", cellWidth: "450", type: "input", textAlign: "center" },
+                ],
+            },
+
+            {
+                items: [
+                    { header: "기준명", col: "gupDesc", cellWidth: "350", type: "input", textAlign: "left" },
+                    { header: "단가", col: "gupPrice", cellWidth: "500", type: "input", textAlign: "right" },
+                ],
+            },
+        ],
+        CostIndex: [
+            {
+                items: [
+                    { header: "기준연도", col: "cbMonth", require: true, type: "input" },
+                    { header: "분류코드", col: "cbTypeCode", cellWidth: "450", type: "input", textAlign: "center" },
+                ],
+            },
+
+            {
+                items: [
+                    { header: "비용처명", col: "cbName", cellWidth: "350", type: "input", textAlign: "left" },
+                    { header: "비율", col: "cbPer", cellWidth: "500", type: "input", textAlign: "right" },
+                ],
+            },
+        ],
+        Customer: [
+            {
+                items: [
+                    {
+                        header: "거래처명",
+                        col: "cltNm",
+                        cellWidth: "150",
+                        modify: true,
+                        add: true,
+                        require: true,
+                        type: "input",
+                        textAlign: "left",
+                    },
+                    {
+                        header: "대표자",
+                        col: "cltOwnrnm",
+                        cellWidth: "100",
+                        type: "input",
+                        modify: true,
+                        add: true,
+                    },
+                ],
+            },
+            {
+                items: [
+                    {
+                        header: "거래처타입",
+                        col: "cltType",
+                        cellWidth: "0",
+                        type: "select",
+                        enable: false,
+                        placeholder: "거래처타입을 선택해 주세요.",
+                        option: [
+                            { label: "---거래처타입 선택---", value: "---거래처타입 선택---" },
+                            { label: "고객사", value: "C" },
+                            { label: "협력사", value: "P" },
+                        ],
+                        modify: true,
+                        add: true,
+                        require: true,
+                        notView: true,
+                    },
+                    {
+                        header: "업태",
+                        type: "input",
+                        col: "cltBusstype",
+                        cellWidth: "200",
+                        modify: true,
+                        add: true,
+                        textAlign: "left",
+                    },
+                ],
+            },
+            {
+                items: [
+                    {
+                        header: "사업자번호",
+                        col: "cltBussnum",
+                        type: "input",
+                        cellWidth: "120",
+                        modify: true,
+                        add: true,
+                    },
+                    {
+                        header: "법인번호",
+                        type: "input",
+                        col: "cltCprtnum",
+                        cellWidth: "120",
+                        modify: true,
+                        add: true,
+                    },
+                ],
+            },
+            {
+                items: [
+                    {
+                        header: "주소",
+                        col: "cltAddr",
+                        type: "input",
+                        cellWidth: "300",
+                        modify: true,
+                        add: true,
+                        textAlign: "left",
+                    },
+                    {
+                        header: "회사번호",
+                        col: "cltTelno",
+                        type: "input",
+                        cellWidth: "120",
+                        modify: true,
+                        add: true,
+                    },
+                ],
+            },
+            {
+                items: [
+                    {
+                        header: "FAX번호",
+                        col: "cltFaxnum",
+                        type: "input",
+                        cellWidth: "120",
+                        modify: true,
+                        add: true,
+                    },
+                    {
+                        header: "이메일",
+                        col: "cltEmail",
+                        cellWidth: "200",
+                        type: "input",
+                        modify: true,
+                        add: true,
+                        textAlign: "left",
+                    },
+                ],
+            },
+            {
+                items: [
+                    {
+                        header: "기업회원ID",
+                        col: "esntlId",
+                        cellWidth: "100",
+                        type: "input",
+                        modify: true,
+                        add: true,
+                        require: true,
+                    },
+                    {
+                        header: "품목그룹명",
+                        col: "pgNm",
+                        cellWidth: "140",
+                        modify: true,
+                        add: true,
+                        type: "productGroup",
+                        require: true,
+                        textAlign: "left",
+                    },
+                ],
+            },
+            {
+                items: [
+                    {
+                        header: "품목그룹명2",
+                        col: "pgNm2",
+                        cellWidth: "140",
+                        modify: true,
+                        type: "productGroup",
+                        add: true,
+                        require: true,
+                        textAlign: "left",
+                    },
+                    {
+                        header: "품목그룹명3",
+                        col: "pgNm3",
+                        cellWidth: "140",
+                        modify: true,
+                        type: "productGroup",
+                        add: true,
+                        require: true,
+                        textAlign: "left",
+                    },
+                ],
+            },
+            {
+                items: [
+                    {
+                        header: "품목그룹명4",
+                        col: "pgNm4",
+                        cellWidth: "140",
+                        modify: true,
+                        add: true,
+                        type: "productGroup",
+                        require: true,
+                        textAlign: "left",
+                    },
+                    {
+                        header: "품목그룹명5",
+                        col: "pgNm5",
+                        cellWidth: "140",
+                        modify: true,
+                        add: true,
+                        type: "productGroup",
+                        require: true,
+                        textAlign: "left",
+                    },
+                ],
+            },
+            {
+                items: [
+                    //{
+                    //    header: "품목ID",
+                    //    col: "pdiId",
+                    //    cellWidth: "0",
+                    //    enable: false,
+                    //    modify: false,
+                    //    add: true,
+                    //    selectOption: true,
+                    //    notView: true,
+                    //    listItem: "pdiId",
+                    //    addListURL: "/baseInfrm/product/productInfo",
+                    //},
+                    {
+                        header: "비고",
+                        col: "cltDesc",
+                        cellWidth: "200",
+                        modify: true,
+                        type: "input",
+                        add: true,
+                        require: true,
+                        textAlign: "left",
+                    },
+                ],
+            },
+        ],
     },
     /* 영업관리 */
     projectMgmt: {
