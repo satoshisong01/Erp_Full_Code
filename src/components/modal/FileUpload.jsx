@@ -17,7 +17,7 @@ const FileUpload = ({ onFileSelect }) => {
             console.log("Accepted Files:", acceptedFiles);
 
             if (onFileSelect && acceptedFiles.length > 0) {
-                onFileSelect(acceptedFiles);
+                onFileSelect(acceptedFiles); //부모로 콜백
                 setUploadedFiles(acceptedFiles);
             }
         },

@@ -32,6 +32,8 @@ const ReactDataTableURL = (props) => {
         returnList,
         condition,
         isPageNation,
+        copiedDatas, //복제할 데이터
+        isCopied, //복제 데이터가 있는지
     } = props;
     const {
         prevCurrentPageName,
@@ -73,16 +75,27 @@ const ReactDataTableURL = (props) => {
         if (tableRef) {
             setCurrentTable(tableRef);
         }
+        return () => { //초기화
+            setTableData([]);
+            setOriginTableData([]);
+        };
     }, []);
 
     useEffect(() => {
-        if (isCurrentPage()) {
-            setIsLoading(false);
-            const updatedTableData = initializeTableData(customDatas, columns);
-            setTableData(updatedTableData);
-            setOriginTableData(updatedTableData);
+        if(isCopied) {
+            // console.log("1. 복제 TRUE - custom:", customDatas, "copied", copiedDatas);
+            const copied = initializeTableData(copiedDatas, columns);
+            const custom = initializeTableData(customDatas, columns);
+            setOriginTableData(custom); //저장할 테이블
+            setTableData(copied?.length > 0 ? copied : []); //복제할 테이블
+        } else {
+            // console.log("2. 복제 FALSE - custom:", customDatas, "copied", copiedDatas);
+            const custom = initializeTableData(customDatas, columns);
+            const copyCustom = JSON.parse(JSON.stringify(custom)); //깊은 복사
+            setOriginTableData(custom); //원본 데이터
+            setTableData(copyCustom); //수정 데이터
         }
-    }, [customDatas]);
+    }, [isCopied, customDatas, copiedDatas]);
 
     /* columns에는 있지만 넣어줄 데이터가 없을 때 초기값 설정 */
     const initializeTableData = (datas, cols) => {
@@ -240,7 +253,6 @@ const ReactDataTableURL = (props) => {
         const updatedTableData = [...tableData];
         updatedTableData[row.index][name] = value;
         // 수정된 데이터로 tableData 업데이트
-        console.log(value);
         setTableData(updatedTableData);
     };
 
@@ -348,13 +360,9 @@ const ReactDataTableURL = (props) => {
         const index = preRow.index;
         const row = preRow.original;
         const updatedTableData = [...tableData];
-
-        console.log(row, "컬럼명확인");
-
         //견적용 인건비
         if (innerPageName.id === "estimateLabor") {
             let total = 0;
-            console.log(row.estPosition);
             let unitPrice = positionMapping[value] || 0;
 
             if (
@@ -431,14 +439,6 @@ const ReactDataTableURL = (props) => {
                 updatedTableData[index]["price"] = row["estUnitPrice"] * row["total"];
             }
 
-            //if (name === "estUnitPrice") {
-            //    updatedTableData[index]["price"] = row["estUnitPrice"] * row["total"];
-            //}
-
-            //updatedTableData[index]["price"] = totalPrice;
-            //console.log(unitPrice, "unitPrice");
-            console.log(value, "value");
-
             updatedTableData[index][name] = value;
         } else if (name === "pjbgTypeCode") {
             //경비목록 중복 방지
@@ -467,12 +467,12 @@ const ReactDataTableURL = (props) => {
         const newRow = {};
         columnsConfig.forEach((column) => {
             if (column.accessor === "poiId") {
-                newRow[column.accessor] = condition.poiId || ""; // poiId를 항상 선택한놈으로 설정
+                newRow[column.accessor] = condition?.poiId || ""; // poiId를 항상 선택한놈으로 설정
             } else if (column.accessor === "versionId") {
-                newRow[column.accessor] = condition.versionId || "";
+                newRow[column.accessor] = condition?.versionId || "";
             } else if (column.accessor === "esntlId") {
                 //임시 업무회원 삭제해야함
-                newRow[column.accessor] = emUserInfo.uniqId;
+                newRow[column.accessor] = emUserInfo?.uniqId;
             }
             // else if (column.accessor === "pjbgTypeCode19") {
             //     newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
@@ -510,7 +510,6 @@ const ReactDataTableURL = (props) => {
             if (current.id === "estimateLabor") {
                 //견적>인건비
                 if (column.accessor === "estPosition") {
-                    console.log(column.accessor);
                     newRow[column.accessor] = "특2"; // useAt 항상 "Y"로 설정
                 }
             }
@@ -601,12 +600,16 @@ const ReactDataTableURL = (props) => {
             const isDel = deleteItem(delList); //삭제
             if (isMod && isDel) {
                 alert("저장완료");
+                setOriginTableData([]);
+                customDatasRefresh && customDatasRefresh();
             }
         } else if (originDataLength === updatedDataLength) {
             const firstRowUpdate = updateDataInOrigin(originData, filterData);
             const isMod = updateItem(firstRowUpdate); //수정
             if (isMod) {
                 alert("저장완료");
+                setOriginTableData([]);
+                customDatasRefresh && customDatasRefresh();
             }
         } else if (originDataLength < updatedDataLength) {
             const updateList = [];
@@ -624,11 +627,10 @@ const ReactDataTableURL = (props) => {
             const isAdd = addItem(addList); //추가
             if (isMod && isAdd) {
                 alert("저장완료");
+                setOriginTableData([]);
+                customDatasRefresh && customDatasRefresh();
             }
         }
-
-        setOriginTableData([]);
-        customDatasRefresh && customDatasRefresh();
     };
 
     // const [totalPrice, setTotalPrice] = useState(0);

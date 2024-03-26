@@ -50,20 +50,12 @@ export const ChangePrmnPlanData = (data, poiId) => {
                 pmpDesc: item.pmpDesc
             };
         }
-
         groupedData[key].pmpId.push(item.pmpId);
-
-        // 포지션에 해당하는 번호를 가져오고, 해당 위치에 pmpmmNum을 저장
         const positionNumber = positionMapping[item.pmpmmPositionCode];
-        //console.log(positionNumber, "🥱🥱🥱🥱");
-        //console.log(item.pmpmmPositionCode, "🆗🆗🆗🆗");
 
         if (positionNumber) {
             const pmpmmNumKey = `pmpmmPositionCode${positionNumber}`;
             groupedData[key][pmpmmNumKey] = item.pmpmmNum;
-
-            //console.log(groupedData[key][pmpmmNumKey], "💚💚💚💚💚");
-
             groupedData[key].total += item.pmpmmNum;
         }
     });
@@ -135,3 +127,69 @@ export const division = (value1, value2) => {
     }
     return value1 / value2;
 };
+
+export const calculateTotalBuy = (list) => {
+    const groupedData = list.reduce((result, current) => {
+        const existingGroup = result.find((group) => group.pdiSeller === current.pdiSeller && group.pgNm === current.pgNm); //제조사, 품목그룹
+        if (existingGroup) {
+            existingGroup.estimatedCost += current.estimatedCost; //원가
+            existingGroup.consumerAmount += current.consumerAmount; //소비자금액
+            existingGroup.planAmount += current.planAmount; //공급금액
+            existingGroup.byQunty += current.byQunty; //수량
+        } else {
+            result.push({ ...current });
+        }
+        return result;
+    }, []);
+
+    //합산의 네고율, 이익금, 이익율 구하기
+    const groupedDataWithCalculations = groupedData.map((group) => {
+        // 할인율: (1 - (공급금액 / 소비자금액)) * 100
+        const temp1 = group.planAmount !== 0 ? (group.planAmount / group.consumerAmount - 1) * -100 : 0;
+        group.nego = Math.round(temp1) + " %";
+        // 이익금: 공급금액 - 원가
+        group.profits = group.planAmount - group.estimatedCost;
+        // 이익률: (공급금액-원가)/원가*100
+        const temp2 = group.planAmount !== 0 ? ((group.planAmount - group.estimatedCost) / group.planAmount) * 100 : 0;
+        //group.margin = Math.round(temp2) + " %";
+        group.margin = temp2.toFixed(2) + " %"; //소숫점 1자리까지
+        return group;
+    });
+
+    //마지막 토탈 행 구하기
+    const totals = groupedDataWithCalculations.reduce(
+        (sums, group) => {
+            sums.estimatedCost += group.estimatedCost || 0;
+            sums.consumerAmount += group.consumerAmount || 0;
+            sums.planAmount += group.planAmount || 0;
+            sums.profits += group.profits || 0;
+            sums.byQunty += group.byQunty;
+            sums.margin = 0;
+            return sums;
+        },
+        {
+            estimatedCost: 0,
+            consumerAmount: 0,
+            planAmount: 0,
+            nego: 0,
+            profits: 0,
+            margin: 0,
+            byQunty: 0,
+        }
+    );
+
+    groupedDataWithCalculations.push({
+        pgNm: "TOTAL",
+        pdiSeller: "",
+        consumerAmount: totals.consumerAmount, //소비자금액
+        planAmount: totals.planAmount, //공급금액
+        nego: totals.planAmount !== 0 ? Math.round((totals.planAmount / totals.consumerAmount - 1) * -100) + " %" : 0 + " %", //네고율
+        estimatedCost: totals.estimatedCost, //원가
+        profits: totals.profits, //이익금
+        // 마진 = (이익금/공급금액)*100
+        margin: totals.planAmount !== 0 ? Math.round((totals.profits / totals.planAmount) * 100) + " %" : 0 + " %", //이익율
+        byQunty: totals.byQunty,
+    });
+
+    return groupedDataWithCalculations;
+}

@@ -15,15 +15,10 @@ import SearchModal from "components/modal/SearchModal";
 import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
 import PopupButton from "components/button/PopupButton";
 import URL from "constants/url";
-import ApprovalFormReport from "components/form/ApprovalFormReport";
 import ApprovalLineModal from "components/modal/ApprovalLineModal";
-import ApprovalFormCost from "components/form/ApprovalFormCost";
-import CKEditorComponent from "components/CKEditorComponent";
-import ToastUiEditor from "components/ToastUiEditor";
 import QuillEditor from "components/QuillEditor";
-import PopupButtonReport from "components/button/PopupButtonReport";
 import ReactDataTable from "components/DataTable/ReactDataTable";
-import { ChangePrmnPlanData, buyIngInfoCalculation, division } from "components/DataTable/function/ReplaceDataFormat";
+import { ChangePrmnPlanData, buyIngInfoCalculation } from "components/DataTable/function/ReplaceDataFormat";
 import { ProcessResultDataRun } from "../../components/DataTable/function/ProcessResultData";
 import SignStateLine from "components/SignStateLine";
 import ViewModal from "components/modal/ViewModal";
@@ -130,7 +125,7 @@ function Quotation() {
         setCurrentPageName({});
     };
 
-    const refresh = () => {
+    const isRefresh = () => {
         const willApprove = window.confirm("새로고침 하시겠습니까?");
         if (willApprove) {
             if (condition.poiId && condition.versionId) {
@@ -140,24 +135,23 @@ function Quotation() {
             }
         }
     };
-
-    //estMonth(월 숫자를 잘라다가 새롭게 estMm을 만듦)
-    //const updateEstMmProperty = (data) => {
-    //    data.forEach((item) => {
-    //        const estMonth = item.estMonth;
-    //        if (estMonth) {
-    //            //const paddedMonth = estMonth;
-    //            item[`estMm${estMonth}`] = item.estMm;
-    //        }
-    //    });
-    //    return data;
-    //};
+    const refresh = () => {
+        console.log("리프레시 시작 ㅎㅎ");
+        setRemind(0);
+        setRemind2(0);
+        if (condition.poiId && condition.versionId) {
+            fetchAllData(condition);
+        } else {
+            fetchAllData();
+        }
+        console.log("리프레시 종료 ㅎㅎ");
+    };
 
     const fetchAllData = async (condition) => {
         if (innerPageName.id === "estimateLabor" || innerPageName.id === "proposal") {
             //인건비
             const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
-            const viewResult = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", { poiId: condition.poiId }); //계획조회
+            const viewResult = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", { poiId: condition?.poiId || "" }); //계획조회
             if (viewResult && viewResult.length > 0) {
                 const changeData = ChangePrmnPlanData(viewResult);
                 changeData.forEach((Item) => {
@@ -184,8 +178,9 @@ function Quotation() {
                 const result = ProcessResultDataRun(resultData, condition);
                 setEstimate(result);
                 setestimateBool(true);
+                return { result: true, versionNum: condition.versionNum }
             } else {
-                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
+                return { result: false, versionNum: condition.versionNum }
             }
         } else if (innerPageName.id === "orderBuying" || innerPageName.id === "proposal") {
             //구매비
@@ -211,12 +206,44 @@ function Quotation() {
                 // 상태 업데이트
                 setBuyIngInfo(updatedArray);
                 setBuyIngBool(true);
+                return { result: true, versionNum: condition.versionNum }
             } else {
-                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
+                return { result: false, versionNum: condition.versionNum }
             }
         }
         //const resultDa2 = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", requestSearch);
         //const filteredData = filterData(updatedData);
+    };
+    const fetchAllCopied = async (condition) => {
+        if (innerPageName.id === "estimateLabor" || innerPageName.id === "proposal") {
+            //인건비
+            const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
+            if (resultData.length !== 0) {
+                const result = ProcessResultDataRun(resultData, condition);
+                setCopiedLabor(result);
+                return { result: true, versionNum: condition.versionNum }
+            } else {
+                return { result: false, versionNum: condition.versionNum }
+            }
+        } else if (innerPageName.id === "orderBuying" || innerPageName.id === "proposal") {
+            //구매비
+            const resultData = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", condition || {});
+            if (resultData.length !== 0) {
+                const updatedData = { ...resultData[0] }; // 첫 번째 객체만 수정한다고 가정합니다.
+                // estBuyQunty 값 변경
+                updatedData.estBuyQunty = 1;
+
+                // 수정된 데이터를 새 배열에 저장
+                const updatedArray = [...resultData];
+                updatedArray[0] = updatedData;
+
+                // 상태 업데이트
+                setCopiedBuy(updatedArray);
+                return { result: true, versionNum: condition.versionNum }
+            } else {
+                return { result: false, versionNum: condition.versionNum }
+            }
+        }
     };
 
     const returnList = (originTableData, tableData) => {
@@ -229,19 +256,23 @@ function Quotation() {
                 addItem2(tableData);
             } else {
                 compareData2(originTableData, tableData);
-                console.log(originTableData, "originTableData");
-                console.log(tableData, "tableData");
-                //setCheckUpdate(false);
             }
         }
     };
 
+    //인건비
     const compareData = (originData, updatedData) => {
-        const filterData = updatedData.filter((data) => data.poiId); //pmpMonth가 없는 데이터 제외
+        setRemind(0);
+        console.log("❤️ updatedData:", updatedData);
+        const filterData = updatedData.filter((data) => data.pgId);
+
+        console.log("❤️ originData:", originData, "filterData:", filterData);
+
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
 
         if (originDataLength > updatedDataLength) {
+            console.log("조건1");
             //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
             const updateDataInOrigin = (originData, updatedData) => {
                 // 복제하여 새로운 배열 생성
@@ -254,8 +285,8 @@ function Quotation() {
                 return updatedArray;
             };
 
-            const firstRowUpdate = updateDataInOrigin(originData, updatedData);
-            const isMod = updateItem(firstRowUpdate); //수정
+            const firstRowUpdate = updateDataInOrigin(originData, filterData);
+            updateItem(firstRowUpdate); //수정
 
             const originAValues = originData.map((item) => item.estIdList); //삭제할 id 추출
             const extraOriginData = originAValues.slice(updatedDataLength);
@@ -269,40 +300,33 @@ function Quotation() {
                 delListTest.push(originData[i]);
             }
 
-            const isDel = deleteItem(flatArray); //삭제
-            if (isMod && isDel) {
-                alert("저장완료");
-            }
+            deleteItem(flatArray); //삭제
         } else if (originDataLength === updatedDataLength) {
-            const isMod = updateItem(filterData); //수정
-            if (isMod) {
-                alert("저장완료");
-            }
+            console.log("조건2");
+            updateItem(filterData, "same"); //수정
         } else if (originDataLength < updatedDataLength) {
+            console.log("조건3");
             const updateList = [];
 
             for (let i = 0; i < originDataLength; i++) {
                 updateList.push(filterData[i]);
             }
-            const isMod = updateItem(updateList); //수정
-
+            updateItem(updateList); //수정
             const addLists = [];
-
             for (let i = originDataLength; i < updatedDataLength; i++) {
                 const addList = { ...filterData[i] };
                 addList.poiId = condition.poiId;
                 addList.versionId = condition.versionId;
                 addLists.push(addList);
             }
-            const isAdd = addItem(addLists); //추가
-            if (isMod && isAdd) {
-                alert("저장완료");
-            }
+            addItem(addLists); //추가
         }
     };
 
+    //구매비
     const compareData2 = (originData, updatedData) => {
-        const filterData = updatedData.filter((data) => data.pdiId); //필수값 체크
+        setRemind2(0);
+        const filterData = updatedData.filter((data) => data.pgId); //필수값 체크
 
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -324,27 +348,21 @@ function Quotation() {
             };
 
             const firstRowUpdate = updateDataInOrigin(originData, filterData);
-            const isMod = updateItem2(firstRowUpdate);
+            updateItem2(firstRowUpdate);
 
             const originAValues = originData.map((item) => item.estBuyId); //삭제할 id 추출
             const extraOriginData = originAValues.slice(updatedDataLength);
 
-            const isDel = deleteItem2(extraOriginData);
-            if (isMod && isDel) {
-                alert("저장완료");
-            }
+            deleteItem2(extraOriginData);
         } else if (originDataLength === updatedDataLength) {
-            const isMod = updateItem2(filterData);
-            if (isMod) {
-                alert("저장완료");
-            }
+            updateItem2(filterData, "same");
         } else if (originDataLength < updatedDataLength) {
             const toUpdate = [];
             for (let i = 0; i < originDataLength; i++) {
                 const temp = { ...filterData[i] };
                 toUpdate.push(temp);
             }
-            const isMod = updateItem2(toUpdate);
+            updateItem2(toUpdate);
             const addLists = [];
 
             for (let i = originDataLength; i < updatedDataLength; i++) {
@@ -353,39 +371,41 @@ function Quotation() {
                 addList.versionId = condition.versionId;
                 addLists.push(addList);
             }
-            const isAdd = addItem2(addLists); //추가
-            if (isMod && isAdd) {
-                alert("저장완료");
-            }
+            addItem2(addLists); //추가
         }
     };
 
+    const [remind, setRemind] = useState(0) //refresh 시점 알림
+    const [remind2, setRemind2] = useState(0) //refresh 시점 알림
+
     const addItem2 = async (addData) => {
-        console.log(addData, "추가해주나?");
         const url = `api/estimate/buy/estCostBuy/addList.do`;
         const resultData = await axiosPost(url, addData);
         if (resultData) {
-            refresh();
-            //setCheckUpdate(true);
+            console.log("구매비 추가 완료");
+            setRemind2(remind+1);
         }
     };
 
-    const updateItem2 = async (toUpdate) => {
-        console.log(toUpdate, "업데이트 데이터");
+    const updateItem2 = async (toUpdate, type) => {
         const url = `/api/estimate/buy/estCostBuy/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
-
         if (resultData) {
-            refresh();
+            console.log("구매비 수정 완료");
+            setRemind2(remind+1);
+            if(type) {
+                console.log("조건2일때 set2");
+                setRemind2(2);
+            }
         }
     };
 
     const deleteItem2 = async (removeItem) => {
         const url = `/api/estimate/buy/estCostBuy/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-
         if (resultData) {
-            refresh();
+            console.log("구매비 삭제 완료");
+            setRemind2(remind+1);
         }
     };
 
@@ -393,27 +413,39 @@ function Quotation() {
         const url = `/api/estimate/personnel/estimateCostMM/addArrayList.do`;
         const resultData = await axiosPost(url, addData);
         if (resultData) {
-            refresh();
+            setRemind(remind+1);
+            console.log("인건비 추가 완료");
         }
     };
 
-    const updateItem = async (toUpdate) => {
+    const updateItem = async (toUpdate, type) => {
         const url = `/api/estimate/personnel/estimateCostMM/editArrayList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
-
         if (resultData) {
-            refresh();
+            setRemind(remind+1);
+            console.log("인건비 수정 완료");
+            if(type) {
+                console.log("조건2일때 set2");
+                setRemind(2);
+            }
         }
     };
 
     const deleteItem = async (removeItem) => {
         const url = `/api/estimate/personnel/estimateCostMM/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
-
         if (resultData) {
-            refresh();
+            console.log("인건비 삭제 완료");
+            setRemind(remind+1);
         }
     };
+
+    useEffect(() => {
+        console.log("remind:", remind);
+        if(remind >= 2 || remind2 >= 2) {
+            refresh();
+        }
+    }, [remind, remind2])
 
     /* 품의서 */
     const sessionUser = sessionStorage.getItem("loginUser");
@@ -433,8 +465,15 @@ function Quotation() {
         }
     };
 
+    useEffect(() => {
+        console.log("❤️ ", condition);
+    }, [condition])
+    const [copiedLabor, setCopiedLabor] = useState([]); //복제 인건비
+    const [copiedBuy, setCopiedBuy] = useState([]); //복제 구매비
+    const [isCopied, setIsCopied] = useState(false);
+
     /* 견적품의서 프로젝트 정보 */
-    const returnData = (value, type) => {
+    const returnData = async (value, type) => {
         if (type === "결재선") {
             const updated = [{ uniqId: uniqId, empNm: sessionUserName, posNm }, ...value.approvalLine];
             setApprovalLine(updated);
@@ -442,27 +481,32 @@ function Quotation() {
             setContent(value);
         } else if (type === "조회") {
             setIsProgress(false); //내용저장(진행) 완료
-            setCondition((prev) => {
-                if (prev.versionId !== value.versionId) {
-                    const newCondition = { ...value };
-                    fetchAllData(newCondition);
-                    return newCondition;
+
+            if (!value.view.poiId || !value.view.versionId && !value.save.poiId || !value.save.versionId) {
+                return;
+            }
+            setCondition({ ...value.save });
+
+            if (value.view.versionId === value.save.versionId) {
+                setIsCopied(false);
+                const fetchResult = await fetchAllData({ ...value.save });
+                if(fetchResult.result) {
+                    alert(fetchResult.versionNum+" 데이터를 가져옵니다.")
                 } else {
-                    fetchAllData({ ...prev });
-                    return prev;
+                    alert(fetchResult.versionNum+" 데이터가 없습니다.")
                 }
-            });
+            } else if (value.view.versionId !== value.save.versionId) { //복제 할때
+                setIsCopied(true);
+                await fetchAllData({ ...value.save });
+                const copiedResult = await fetchAllCopied({ ...value.view });
+                if(copiedResult.result) { //복제 데이터가 있을 때
+                    alert(copiedResult.versionNum+" 데이터를 가져옵니다.");
+                } else {
+                    alert(copiedResult.versionNum+" 데이터가 없습니다.")
+                }
+            }
         }
     };
-
-    //useEffect(() => {
-    //    if (isSubmit) {
-    //        const willApprove = window.confirm("결재 요청 하시겠습니까?");
-    //        if (willApprove) {
-    //            submit();
-    //        }
-    //    }
-    //}, [isSubmit]);
 
     const closePopup = () => {
         window.close(); //현재창닫기
@@ -551,7 +595,7 @@ function Quotation() {
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
                                     <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
-                                    <RefreshButton onClick={refresh} />
+                                    <RefreshButton onClick={isRefresh} />
                                 </div>
                                 <ReactDataTableURL
                                     editing={true}
@@ -563,7 +607,8 @@ function Quotation() {
                                         setSelectedRows(data);
                                     }}
                                     customDatasRefresh={refresh}
-                                    condition={condition}
+                                    copiedDatas={copiedLabor}
+                                    isCopied={isCopied}
                                 />
                             </HideCard>
                         </ul>
@@ -571,9 +616,6 @@ function Quotation() {
                     <div className="second">
                         <ul>
                             <ApprovalFormSal returnData={(value) => returnData(value, "조회")} viewPageName={{ name: "구매비", id: "orderBuying" }} />
-                            {/* <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
-                                <ReactDataTable columns={columnBuy} customDatas={buyView} defaultPageSize={5} hideCheckBox={true} />
-                            </HideCard> */}
                             <HideCard title="계획 등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <PopupButton
@@ -592,9 +634,8 @@ function Quotation() {
                                         data={{ label: "주요내역", poiId: condition.poiId, versionId: condition.versionId, tableData: buyIngInfo }}
                                     />
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
-                                    <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
                                     <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
-                                    <RefreshButton onClick={refresh} />
+                                    <RefreshButton onClick={isRefresh} />
                                 </div>
                                 <ReactDataTablePdorder
                                     editing={true}
@@ -607,6 +648,8 @@ function Quotation() {
                                     }}
                                     customDatasRefresh={refresh}
                                     condition={condition}
+                                    copiedDatas={copiedBuy}
+                                    isCopied={isCopied}
                                 />
                             </HideCard>
                         </ul>

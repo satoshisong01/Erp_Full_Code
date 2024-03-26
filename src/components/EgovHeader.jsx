@@ -10,7 +10,6 @@ import { axiosFetch, axiosGet } from "../api/axiosFetch";
 import { PageContext } from "./PageProvider";
 import { v4 as uuidv4 } from "uuid";
 import PopupButton from "./button/PopupButton";
-import BasicButton from "./button/BasicButton";
 import AddButton from "./button/AddButton";
 import ReferenceInfo from "./DataTable/function/ReferenceInfo";
 
@@ -47,8 +46,10 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
     }, [lnbId, snbId]);
 
     useEffect(() => {
-        if (loginUser && loginUser.uniqId) {
-            fetchData(loginUser);
+        const user = JSON.parse(sessionUser);
+        if (user && user.uniqId) {
+            console.log("user:", user.name);
+            fetchData(user);
         }
         // const intervalId = setInterval(fetchData, 3600000); // 1시간
         // const intervalId = setInterval(fetchData, 10000); // 10ch
@@ -77,16 +78,15 @@ function EgovHeader({ loginUser, onChangeLogin, lnbLabel, snbLabel, lnbId, snbId
         }
     }
 
-    const fetchData = async (loginUser) => {
+    const fetchData = async (user) => {
         try {
             // axios를 사용하여 서버에 GET 요청을 보냅니다.
-            const response = await axiosFetch("/api/system/signState/totalListAll.do", { sttApproverId: loginUser.uniqId, sttApproverAt: "진행" } || {});
+            const response = await axiosFetch("/api/system/signState/totalListAll.do", { sgnAt: "진행", sttApproverId: user.uniqId, sttApproverAt: "진행" } || {});
+            console.log("결재 데이터 response:", response);
             if (response && response.length > 0) {
-                console.log(`📢결재개수 ${response.length}`);
                 setSignNumber(response.length);
-                console.log(`📢${loginUser.uniqId}, ${sessionUserName}의 결재정보 10분 간격으로 요청중...`);
             } else {
-                console.log(`${loginUser.uniqId}, ${sessionUserName}의 결재정보를 불러오지 못함.`);
+                console.log(`${user.uniqId}, ${user.naem}의 결재정보를 불러오지 못함.`);
                 setSignNumber(0);
             }
         } catch (error) {

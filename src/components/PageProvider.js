@@ -79,13 +79,13 @@ export function PageProvider({ children }) {
 
     const [filePageName, setFilePageName] = useState([]);
 
-    const [atchFileId, setAtchFileId] = useState(""); //파일 단체ID
-
     const [estimate, setEstimate] = useState([]);
     const [buyIngInfo, setBuyIngInfo] = useState([]);
-
-    const [fileLength, setFileLength] = useState(0);
-    const [fileLCatch, setFileCatch] = useState(false);
+    
+    const [atchFileId, setAtchFileId] = useState(""); //파일 부모ID
+    const [fileInfo, setFileInfo] = useState(""); //파일 부모+자식정보
+    const [fileLength, setFileLength] = useState(0); //파일 길이
+    const [fileLCatch, setFileCatch] = useState(false); //파일 ???
 
     const contextValue = {
         isOpenModalPgNm,
@@ -185,6 +185,7 @@ export function PageProvider({ children }) {
 
         fileLCatch,
         setFileCatch,
+        fileInfo, setFileInfo
     };
 
     return <PageContext.Provider value={contextValue}>{children}</PageContext.Provider>;

@@ -28,6 +28,8 @@ const ReactDataTableSaleCost = (props) => {
         returnSelectRows,
         condition,
         isPageNation,
+        copiedDatas, //복제할 데이터
+        isCopied, //복제 데이터가 있는지
     } = props;
     const {
         prevCurrentPageName,
@@ -71,10 +73,20 @@ const ReactDataTableSaleCost = (props) => {
     };
 
     useEffect(() => {
-        const updatedTableData = initializeTableData(customDatas, columns);
-        setTableData(updatedTableData);
-        setOriginTableData(updatedTableData);
-    }, [customDatas]);
+        if(isCopied) {
+            // console.log("1. 복제 TRUE - custom:", customDatas, "copied", copiedDatas);
+            const copied = initializeTableData(copiedDatas, columns);
+            const custom = initializeTableData(customDatas, columns);
+            setOriginTableData(custom); //저장할 테이블
+            setTableData(copied?.length > 0 ? copied : []); //복제할 테이블
+        } else {
+            // console.log("2. 복제 FALSE - custom:", customDatas, "copied", copiedDatas);
+            const custom = initializeTableData(customDatas, columns);
+            const copyCustom = JSON.parse(JSON.stringify(custom)); //깊은 복사
+            setOriginTableData(custom); //원본 데이터
+            setTableData(copyCustom); //수정 데이터
+        }
+    }, [isCopied, customDatas, copiedDatas]);
 
     /* columns에는 있지만 넣어줄 데이터가 없을 때 초기값 설정 */
     const initializeTableData = (datas, cols) => {
