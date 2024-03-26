@@ -3,9 +3,7 @@ import Modal from "react-modal";
 import "../../components/modal/ModalCss.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faFileLines, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { axiosDelete, axiosDownLoad, axiosFetch, axiosFileAddUpload, axiosFileUpload } from "api/axiosFetch";
-import ReactDataTable from "components/DataTable/ReactDataTable";
-import ModalSearchList from "components/ModalCondition";
+import { axiosDelete, axiosDownLoad, axiosFileAddUpload, axiosFileUpload } from "api/axiosFetch";
 import { PageContext } from "components/PageProvider";
 import FileUpload from "./FileUpload";
 
@@ -13,49 +11,15 @@ Modal.setAppElement("#root"); // Set the root element for accessibility
 
 /* 파일업로드 모달 */
 export default function FileModal(props) {
-    const { width, height, isOpen, title, onClose, fileIdData } = props;
-    const { setModalPageName, setIsModalTable, filePageName, setFilePageName, setFileLength, atchFileId, setFileCatch, setAtchFileId, innerPageName } =
-        useContext(PageContext);
-    const [fileData, setFileData] = useState([]);
-
-    const [fileList, setFileList] = useState([]);
-    const [filedown, setFileDown] = useState("");
-
+    const { width, height, isOpen, title, onClose, tableFileInfo } = props;
+    const { setModalPageName, setIsModalTable, setFilePageName, setFileInfo, fileInfo } = useContext(PageContext);
+    const [uploadFileData, setUploadFileData] = useState([]);
     const bodyRef = useRef(null);
-
-    useEffect(() => {
-        if (innerPageName.name !== "원가버전조회" && innerPageName.name !== undefined) {
-            if (fileIdData && fileIdData.length > 0) {
-                fetchAllData();
-            } else {
-                setFileList([]);
-            }
-        } else {
-        }
-    }, [isOpen, fileIdData]);
-
-    const fetchAllData = async () => {
-        console.log(fileIdData, "??? 값이없을텐데");
-        const url = `/file/totalListAll.do`;
-        const resultData = await axiosFetch(url, { atchFileId: fileIdData });
-        if (resultData) {
-            console.log(resultData, "???리스트나와야하는디");
-            console.log(resultData.length, "데이터의 길이");
-            setFileLength(resultData.length);
-            const originTitle = resultData.map((item) => item.originalFileNm);
-            const fileId = resultData.map((item) => item.fileId);
-            setFileList(originTitle);
-            setFileDown(fileId);
-        } else if (!resultData) {
-            return;
-        }
-    };
 
     useEffect(() => {
         if (isOpen) {
             setFilePageName("첨부파일팝업");
             setIsModalTable(true);
-            setAtchFileId(""); //초기화
         }
         return () => {
             setIsModalTable(false);
@@ -73,81 +37,90 @@ export default function FileModal(props) {
         }
     }, [height]);
 
+    /* 업로드된 파일 저장 */
     const onFileSelect = (acceptedFiles) => {
-        console.log("Accepted Files:", acceptedFiles);
-        console.log("Type of Accepted Files:", typeof acceptedFiles);
-        setFileData(acceptedFiles);
-        console.log(typeof fileData, "타입좀보자");
+        console.log("업로드파일:", acceptedFiles);
+        setUploadFileData(acceptedFiles);
     };
 
+    /* 확인 시, 파일 서버에 저장 */
     const onClickSubmit = async () => {
-        // 확인 버튼을 눌렀을 때에만 서버에 요청
-        if (fileIdData && fileIdData !== undefined) {
-            console.log(fileData, "배열로 들어와서 변경해줘야함");
-            console.log(fileIdData, "Id값들어오는걸보자");
-
-            const url = `/file/upload.do`;
+        console.log("tableFileInfo:", tableFileInfo);
+        if (tableFileInfo && tableFileInfo !== undefined) { //기존부모에 새로운 자식 추가
             try {
-                const result = await axiosFileAddUpload(url, fileData, fileIdData);
+                // console.log("💜 uploadFileData:", uploadFileData, "tableFileInfo.parentId:", tableFileInfo.parentId);
+                // const result = await axiosFileAddUpload(`/file/upload.do`, uploadFileData, tableFileInfo.parentId);
+                const result = await axiosFileAddUpload(`/file/upload.do`, uploadFileData, tableFileInfo.parentId);
                 if (result) {
-                    // Handle success
-                    console.log("File uploaded successfully:", result);
-                    setAtchFileId(result[0].atchFileId);
-                    setFileLength(result.length);
+                    console.log("💜 새로운자식추가:", result);
+                    // console.log("0.파일이 저장된 정보:", result);
+                    const children = result.map(item => ({
+                        originalFileNm: item.originalFileNm,
+                        fileId: item.fileId
+                    }))
+                    // setFileInfo(prev => ({ //전역변수 저장
+                    //     parentId: result[0].atchFileId,
+                    //     childFile: {...prev.childFile, ...children},
+                    //     fileLength: result.length
+                    // }))
+                    setFileInfo(result[0].atchFileId); //임시
                 } else {
-                    // Handle failure
                     console.error("File upload failed.");
                 }
-                setFileData([]);
             } catch (error) {
                 console.error("Error uploading file:", error);
             }
-            setFileList([]);
+            setUploadFileData([]); //초기화
             onClose();
-        } else {
-            console.log("Id가없으면 이쪽으로 들어옴");
-            const url = `/file/upload.do`;
+        } else { // 최초 저장
             try {
-                const result = await axiosFileUpload(url, fileData);
+                const result = await axiosFileUpload(`/file/upload.do`, uploadFileData);
                 if (result) {
-                    // Handle success
-                    console.log("File uploaded successfully:", result);
-                    setAtchFileId(result[0].atchFileId);
-                    setFileLength(result.length);
+                    console.log("💜 최초저장:", result);
+                    const children = result.map(item => ({
+                        originalFileNm: item.originalFileNm,
+                        fileId: item.fileId
+                    }))
+                    setFileInfo(result[0].atchFileId);//임시
+                    // setFileInfo({ //전역변수 저장
+                    //     parentId: result[0].atchFileId,
+                    //     childFile: children,
+                    //     fileLength: result.length
+                    // })
                 } else {
-                    // Handle failure
                     console.error("File upload failed.");
                 }
             } catch (error) {
                 console.error("Error uploading file:", error);
             }
-            setFileList([]);
+            setUploadFileData([]); //초기화
             onClose();
         }
-        setFileData([]);
-        setFileCatch(false);
     };
 
-    const clickDownLoad = async (item, index, filedown) => {
-        const url = `/file/download.do`;
+    useEffect(() => {
+        console.log("💜 전역변수 저장: ", fileInfo);
+    }, [fileInfo])
+
+    /* 파일업로드 */
+    const clickDownLoad = async (row) => {
         try {
-            const result = await axiosDownLoad(url, { fileId: filedown[index] });
+            const result = await axiosDownLoad(`/file/download.do`, { fileId: row.fileId });
             if (result) {
-                alert(`${item}파일이 다운로드 되었습니다`);
+                alert(`${row.originalFileNm}파일이 다운로드 되었습니다`);
             }
         } catch (error) {
             console.error("Error");
         }
     };
 
-    const clickDelete = async (item, index, filedown) => {
-        const url = `/file/removeCompletely.do`;
-        console.log(filedown);
+    /* 파일삭제 */
+    const clickDelete = async (row) => {
         try {
-            const result = await axiosDelete(url, { fileId: filedown[index] });
+            const result = await axiosDelete(`/file/removeCompletely.do`, { fileId: row.fileId });
+            console.log("💜 파일삭제:", result);
             if (result) {
-                alert(`${item}파일이 삭제 되었습니다`);
-                fetchAllData();
+                alert(`${row.originalFileNm}파일이 삭제 되었습니다`);
             }
         } catch (error) {
             console.error("Error");
@@ -160,7 +133,8 @@ export default function FileModal(props) {
             isOpen={isOpen}
             onRequestClose={onClose}
             contentLabel={title}
-            style={{ content: { width, height } }}>
+            style={{ content: { width, height } }}
+        >
             <div className="me-modal">
                 <div className="me-modal-container" style={{ width, height }}>
                     <div className="me-modal-inner">
@@ -173,24 +147,25 @@ export default function FileModal(props) {
 
                         <div className="me-modal-body" ref={bodyRef}>
                             <div className="body-area" style={{ gap: 0 }}>
-                                <FileUpload fileList={fileList} onFileSelect={onFileSelect} />
+                                {/* 파일 업로드 */}
+                                <FileUpload onFileSelect={onFileSelect} />
                             </div>
                             <div>
-                                {fileList.map((item, index) => (
+                                {tableFileInfo?.childFile?.map((row, index) => (
                                     <div style={{ display: "flex" }}>
                                         <button
                                             className="fileBtn"
                                             onClick={() => {
-                                                clickDownLoad(item, index, filedown);
+                                                clickDownLoad(row);
                                             }}
                                             key={index}>
                                             <FontAwesomeIcon icon={faFileLines} style={{ fontSize: "23px", marginRight: "20px" }} />
-                                            {item}
+                                            {row.originalFileNm}
                                         </button>
                                         <button
                                             className="xBtn"
                                             onClick={() => {
-                                                clickDelete(item, index, filedown);
+                                                clickDelete(row);
                                             }}
                                             key={index}>
                                             <FontAwesomeIcon icon={faXmark} style={{ fontSize: "23px" }} />

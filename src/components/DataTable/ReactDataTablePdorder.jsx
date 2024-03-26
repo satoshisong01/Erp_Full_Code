@@ -30,6 +30,8 @@ const ReactDataTablePdorder = (props) => {
         suffixUrl,
         condition, //poiId와 같은 조회에 필요한 조건
         isPageNation,
+        copiedDatas, //복제할 데이터
+        isCopied, //복제 데이터가 있는지
     } = props;
     const {
         pdiNmList,
@@ -53,20 +55,17 @@ const ReactDataTablePdorder = (props) => {
         setProjectPdiNm,
         setIsOpenModalCompany,
         isOpenModalCompany,
-        atchFileId,
-        setAtchFileId,
-        fileLength,
+        fileInfo,
     } = useContext(PageContext);
 
     const [tableData, setTableData] = useState([]);
     const [originTableData, setOriginTableData] = useState([]);
-    const pageSizeOptions = [5, 10, 15, 20, 30, 50, 100];
     const [isEditing, setIsEditing] = useState(false);
     const [current, setCurrent] = useState(viewPageName); //==viewPageName
     const [rowIndex, setRowIndex] = useState(0);
     const [isOpenModalProductInfo, setIsOpenModalProductInfo] = useState(false); //품목정보목록
     const [isOpenModalFile, setIsOpenModalFile] = useState(false); //첨부파일업로드
-    const [fileIdData, setFileIdData] = useState([]);
+    const [tableFileInfo, setTableFileInfo] = useState("");
 
     //취소시에 오리지널 테이블로 돌아감
     useEffect(() => {
@@ -75,10 +74,29 @@ const ReactDataTablePdorder = (props) => {
     }, [isCancelTable]);
 
     useEffect(() => {
-        const updatedTableData = initializeTableData(customDatas, columns);
-        setTableData(updatedTableData);
-        setOriginTableData(updatedTableData);
-    }, [customDatas]);
+        return () => { //초기화
+            setTableData([]);
+            setOriginTableData([]);
+        };
+    }, []);
+
+
+
+    useEffect(() => {
+        if(isCopied) {
+            // console.log("1. 복제 TRUE - custom:", customDatas, "copied", copiedDatas);
+            const copied = initializeTableData(copiedDatas, columns);
+            const custom = initializeTableData(customDatas, columns);
+            setOriginTableData(custom); //저장할 테이블
+            setTableData(copied?.length > 0 ? copied : []); //복제할 테이블
+        } else {
+            // console.log("2. 복제 FALSE - custom:", customDatas, "copied", copiedDatas);
+            const custom = initializeTableData(customDatas, columns);
+            const copyCustom = JSON.parse(JSON.stringify(custom)); //깊은 복사
+            setOriginTableData(custom); //원본 데이터
+            setTableData(copyCustom); //수정 데이터
+        }
+    }, [isCopied, customDatas, copiedDatas]);
 
     /* columns에는 있지만 넣어줄 데이터가 없을 때 초기값 설정 */
     const initializeTableData = (datas, cols) => {
@@ -160,10 +178,6 @@ const ReactDataTablePdorder = (props) => {
             }
         }
     }, [newRowData]);
-
-    useEffect(() => {
-        console.log("tableData:", tableData);
-    }, [tableData]);
 
     const {
         getTableProps,
@@ -310,27 +324,10 @@ const ReactDataTablePdorder = (props) => {
     };
 
     const getFileData = (rowIndex) => {
-        setRowIndex(rowIndex);
-        console.log(rowIndex, "인덱스");
-        console.log(tableData[rowIndex].atchFileId);
-        setFileIdData(tableData[rowIndex].atchFileId);
+        setRowIndex(rowIndex); //index저장
+        setTableFileInfo(tableData[rowIndex].atchFileId);
+        setIsOpenModalFile(true);
     };
-
-    useEffect(() => {
-        // tableData가 존재하고, rowIndex가 tableData의 길이 내에 있는지 확인합니다.
-        if (tableData && rowIndex >= 0 && rowIndex < tableData.length) {
-            const updatedTableData = [...tableData];
-            console.log(fileLength, "fileLength");
-
-            // 안전하게 countFileId를 업데이트합니다.
-            if (fileLength > 0) {
-                updatedTableData[rowIndex]["countFileId"] = fileLength; // 파일 갯수
-            } else {
-                updatedTableData[rowIndex]["countFileId"] = 0; // 파일 갯수
-            }
-            setTableData(updatedTableData);
-        }
-    }, [fileLength, rowIndex]); // useEffect의 의존성 배열을 업데이트했습니다.
 
     const setValueDataPdiNm = (rowIndex, selectedPdiNm) => {
         // 선택된 품명에 해당하는 데이터 찾기
@@ -366,29 +363,14 @@ const ReactDataTablePdorder = (props) => {
         }
     };
 
-    const setFileList = (rowIndex, atchFileId) => {
-        // 선택된 품명에 해당하는 데이터 찾기
-        if (atchFileId) {
-            // 테이블 데이터를 복제
+    useEffect(() => {
+        if(fileInfo) {
             const updatedTableData = [...tableData];
-
-            console.log(atchFileId);
-            // 선택된 품명의 데이터로 해당 행(row)의 데이터 업데이트
-            updatedTableData[rowIndex] = {
-                ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
-                atchFileId, // projectPdiNm 객체의 데이터로 업데이트
-            };
-            // 업데이트된 데이터로 tableData 업데이트
+            updatedTableData[rowIndex].atchFileId = fileInfo;
             setTableData(updatedTableData);
         }
-    };
+    }, [fileInfo]);
 
-    useEffect(() => {
-        // if (isCurrentPage() && Object.keys(atchFileId).length > 0) {
-        if (isCurrentPage() && atchFileId) {
-            setFileList(rowIndex, atchFileId);
-        }
-    }, [atchFileId]);
 
     const handleChange = (e, row) => {
         const { value, name } = e.target;
@@ -406,7 +388,6 @@ const ReactDataTablePdorder = (props) => {
 
         //영업
         if (innerPageName.name === "구매(재료비)") {
-            console.log("name:", name);
             // 원단가, 기준이익율, 소비자가산출률, 수량
             if (name === "byQunty" || name === "byUnitPrice" || name === "byStandardMargin" || name === "byConsumerOutputRate") {
                 if (row.original.byUnitPrice && row.original.byStandardMargin && row.original.byConsumerOutputRate && row.original.byQunty) {
@@ -426,7 +407,6 @@ const ReactDataTablePdorder = (props) => {
 
                     updatedTableData[index]["estimatedCost"] = Math.round(estimatedCost / 10) * 10;
                     updatedTableData[index]["unitPrice"] = Math.round(unitPrice / 10) * 10;
-                    updatedTableData[index]["atchFileId"] = atchFileId;
                     updatedTableData[index]["planAmount"] = Math.round(planAmount / 10) * 10;
                     updatedTableData[index]["byConsumerUnitPrice"] = Math.round((byConsumerUnitPrice * 100) / 10) * 10;
                     updatedTableData[index]["consumerAmount"] = Math.round((consumerAmount * 100) / 10) * 10;
@@ -460,7 +440,6 @@ const ReactDataTablePdorder = (props) => {
                 if (row.original.unitPrice && row.original.byUnitPrice) {
                     //이익율
                     const byStandardMargin = row.original.unitPrice !== 0 ? 100 - Math.round(100 / (row.original.unitPrice / row.original.byUnitPrice)) : 0;
-                    console.log("소비자단가 수정시 byStandardMargin:", byStandardMargin);
                     updatedTableData[index]["consumerAmount"] = Math.round(consumerAmount / 10) * 10; //소비자금액
                     // 소비자가산출률 = (공급단가/소비자단가) * 100
                     updatedTableData[index]["byConsumerOutputRate"] = Math.round((row.original.unitPrice / row.original.byConsumerUnitPrice) * 100); //소비자가산출률
@@ -800,11 +779,9 @@ const ReactDataTablePdorder = (props) => {
                                                                     id={cell.column.id}
                                                                     name={cell.column.id}
                                                                     className="basic-input"
-                                                                    onClick={() => {
-                                                                        getFileData(row.index);
-                                                                        setIsOpenModalFile(true);
-                                                                    }}>
-                                                                    {tableData[row.index].countFileId || "0"}
+                                                                    onClick={() => { getFileData(row.index) }}
+                                                                >
+                                                                    {tableData[row.index]?.atchFileId?.fileLength || "0"}
                                                                 </button>
                                                             </div>
                                                         ) : cell.column.type === "company" ? (
@@ -860,7 +837,7 @@ const ReactDataTablePdorder = (props) => {
             {isOpenModalPgNm && <ModalPagePgNm rowIndex={rowIndex} onClose={() => setIsOpenModalPgNm(false)} />}
             {isOpenModalCompany && <ModalPageCompany rowIndex={rowIndex} onClose={() => setIsOpenModalCompany(false)} />}
             <ProductInfoModal width={900} height={770} title="품목정보 목록" isOpen={isOpenModalProductInfo} onClose={() => setIsOpenModalProductInfo(false)} />
-            <FileModal fileIdData={fileIdData} width={600} height={330} title="첨부파일" isOpen={isOpenModalFile} onClose={() => setIsOpenModalFile(false)} />
+            <FileModal tableFileInfo={tableFileInfo} width={600} height={330} title="첨부파일" isOpen={isOpenModalFile} onClose={() => setIsOpenModalFile(false)} />
         </>
     );
 };

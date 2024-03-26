@@ -3,9 +3,7 @@ import { axiosDelete, axiosFetch, axiosPost, axiosScan, axiosUpdate } from "api/
 import { useTable, usePagination, useSortBy, useRowSelect, useFilters, useBlockLayout, useResizeColumns } from "react-table";
 import { PageContext } from "components/PageProvider";
 import DeleteModal from "components/modal/DeleteModal";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import ko from "date-fns/locale/ko"; // 한국어 로케일 설정
 import ModalPagePgNm from "components/modal/ModalPagePgNm";
 import "react-calendar/dist/Calendar.css";
 import { v4 as uuidv4 } from "uuid";
@@ -40,6 +38,8 @@ const ReactDataTable = (props) => {
         isPageNationCombo, //페이지네이션 콤보박스
         realTime, //부모로 실시간 데이터 전달
         isSingleSelect, //단일 체크박스 선택 여부
+        copiedDatas, //복제할 데이터
+        isCopied, //복제 데이터가 있는지
     } = props;
     const {
         nameOfButton,
@@ -97,7 +97,6 @@ const ReactDataTable = (props) => {
         } else {
             updatedTableData[index][colName] = date;
         }
-
         setTableData(updatedTableData);
     };
 
@@ -107,6 +106,7 @@ const ReactDataTable = (props) => {
     const calendarRef = useRef(null);
 
     useEffect(() => {
+        // console.log("🎈tableData:", tableData);
         if (isCurrentPage() && tableData && tableData.length > 0 && realTime) {
             realTime(tableData);
         }
@@ -142,18 +142,29 @@ const ReactDataTable = (props) => {
             toggleAllRowsSelected(false);
             setSelectRow(0);
             setModalLengthSelectRow(0);
+            setTableData([]);
+            setOriginTableData([]);
         };
     }, []);
 
     //------------------------------------------------
 
     useEffect(() => {
-        setIsLoading(true);
-        const updatedTableData = initializeTableData(customDatas, columns);
-        setTableData(updatedTableData);
-        setOriginTableData(updatedTableData);
+        if(isCopied) {
+            // console.log("1. 복제 TRUE - custom:", customDatas, "copied", copiedDatas);
+            const copied = initializeTableData(copiedDatas, columns);
+            const custom = initializeTableData(customDatas, columns);
+            setOriginTableData(custom); //저장할 테이블
+            setTableData(copied?.length > 0 ? copied : []); //복제할 테이블
+        } else {
+            // console.log("2. 복제 FALSE - custom:", customDatas, "copied", copiedDatas);
+            const custom = initializeTableData(customDatas, columns);
+            const copyCustom = JSON.parse(JSON.stringify(custom)); //깊은 복사
+            setOriginTableData(custom); //원본 데이터
+            setTableData(copyCustom); //수정 데이터
+        }
         setIsLoading(false);
-    }, [customDatas]);
+    }, [isCopied, customDatas, copiedDatas]);
 
     /* columns에는 있지만 넣어줄 데이터가 없을 때 초기값 설정 */
     const initializeTableData = (datas, cols) => {
@@ -196,15 +207,7 @@ const ReactDataTable = (props) => {
                 returnList && returnList(originTableData, tableData);
             } else if (nameOfButton === "load" && viewLoadDatas) {
                 setTableData([...viewLoadDatas]);
-            }
-            setNameOfButton(""); //초기화
-        }
-    }, [innerPageName, editing, nameOfButton, currentPageName, customDatas]);
-
-    /* table의 button 클릭 시 해당하는 함수 실행 */
-    useEffect(() => {
-        if (isCurrentPage()) {
-            if (nameOfButton === "refresh") {
+            } else if (nameOfButton === "refresh") {
                 refreshClick();
             } else if (nameOfButton === "delete") {
                 deleteClick();
@@ -221,7 +224,7 @@ const ReactDataTable = (props) => {
             }
             setNameOfButton(""); //초기화
         }
-    }, [innerPageName, nameOfButton, currentPageName, condition]);
+    }, [innerPageName, editing, nameOfButton, currentPageName]);
 
     useEffect(() => {
         if (isCurrentPage()) {
@@ -539,28 +542,30 @@ const ReactDataTable = (props) => {
 
     /* 새로운 빈 row 추가 */
     const onAddRow = () => {
-        const newRow = {};
-        columnsConfig.forEach((column) => {
-            if (column.accessor === "poiId") {
-                newRow[column.accessor] = condition.poiId || ""; // poiId를 항상 SLSP로 설정
-            } else if (column.accessor === "typeCode") {
-                newRow[column.accessor] = "MM"; // poiId를 항상 SLSP로 설정
-            } else if (column.accessor === "modeCode") {
-                newRow[column.accessor] = "BUDGET"; // poiId를 항상 SLSP로 설정
-            } else if (column.accessor === "esntlId") {
-                newRow[column.accessor] = ""; // poiId를 항상 SLSP로 설정
-            } else {
-                newRow[column.accessor] = null; // 다른 열은 초기화
-            }
-            if (column.type === "select") {
-                newRow[column.accessor] = column.options[0].value; //콤보박스 초기화
-            }
-        });
-
-        setTableData((prevData) => {
-            const newData = [...prevData, { ...newRow }];
-            return newData;
-        });
+        if(isCurrentPage) {
+            const newRow = {};
+            columnsConfig.forEach((column) => {
+                if (column.accessor === "poiId") {
+                    newRow[column.accessor] = condition.poiId || ""; // poiId를 항상 SLSP로 설정
+                } else if (column.accessor === "typeCode") {
+                    newRow[column.accessor] = "MM"; // poiId를 항상 SLSP로 설정
+                } else if (column.accessor === "modeCode") {
+                    newRow[column.accessor] = "BUDGET"; // poiId를 항상 SLSP로 설정
+                } else if (column.accessor === "esntlId") {
+                    newRow[column.accessor] = ""; // poiId를 항상 SLSP로 설정
+                } else {
+                    newRow[column.accessor] = null; // 다른 열은 초기화
+                }
+                if (column.type === "select") {
+                    newRow[column.accessor] = column.options[0].value; //콤보박스 초기화
+                }
+            });
+    
+            setTableData((prevData) => {
+                const newData = [...prevData, { ...newRow }];
+                return newData;
+            });
+        }
     };
 
     /* 데이터 테이블 UI에서 ROW 삭제 */

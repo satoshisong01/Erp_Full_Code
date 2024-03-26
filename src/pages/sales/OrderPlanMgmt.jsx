@@ -3,7 +3,7 @@ import ReactDataTable from "components/DataTable/ReactDataTable";
 import { PageContext } from "components/PageProvider";
 import { axiosDelete, axiosFetch, axiosPost, axiosUpdate } from "api/axiosFetch";
 import ReactDataTableURL from "components/DataTable/ReactDataTableURL";
-import { ChangePrmnPlanData, buyIngInfoCalculation, division } from "components/DataTable/function/ReplaceDataFormat";
+import { ChangePrmnPlanData, buyIngInfoCalculation, division, calculateTotalBuy, } from "components/DataTable/function/ReplaceDataFormat";
 import RefreshButton from "components/button/RefreshButton";
 import { columns } from "constants/columns";
 import ReactDataTablePdorder from "components/DataTable/ReactDataTablePdorder";
@@ -35,7 +35,6 @@ function OrderPlanMgmt() {
         setCurrentPageName,
         unitPriceListRenew,
         setNameOfButton,
-        inquiryConditions,
     } = useContext(PageContext);
     const [searchDates, setSearchDates] = useState([]); // 원가
     const [prmnPlanDatas, setPrmnPlanDatas] = useState([]); // 인건비
@@ -70,6 +69,10 @@ function OrderPlanMgmt() {
     }, []);
 
     useEffect(() => {
+        console.log("조회 조건:", condition);
+    }, [condition]);
+
+    useEffect(() => {
         if (currentPageName.id === "OrderPlanMgmt") {
             const activeTab = document.querySelector(".mini_board_1 .tab li a.on"); //마지막으로 활성화 된 탭
             if (activeTab) {
@@ -84,6 +87,7 @@ function OrderPlanMgmt() {
     useEffect(() => {
         // const infoIds = infoList.map(item => item.id);
         if (innerPageName.id === "OrderPlanMgmt") {
+            setIsCopied(false);
             fetchAllData();
         }
         // else if(infoIds.includes(innerPageName.id)) {
@@ -93,16 +97,33 @@ function OrderPlanMgmt() {
         // }
     }, [innerPageName]);
 
-
-    const refresh = () => {
+    const isRefresh = () => {
         const willApprove = window.confirm("새로고침 하시겠습니까?");
         if(willApprove) {
+            setIsCopied(false);
+            console.log("새로고침 시작..........", new Date());
+            if (condition.poiId && condition.versionId) {
+                console.log("버튼을 클릭하여 리프레쉬");
+                fetchAllData(condition);
+            } else {
+                fetchAllData();
+            }
+            console.log("새로고침 끝..........", new Date());
+        }
+    };
+
+    const refresh = () => {
+        setIsCopied(false);
+        setRemind(0);
+        console.log("자동 새로고침 시작..........", new Date());
+        // setTimeout(() => {
             if (condition.poiId && condition.versionId) {
                 fetchAllData(condition);
             } else {
                 fetchAllData();
             }
-        }
+        // }, 2000); // 2초 후에 실행
+        console.log("자동 새로고침 끝..........", new Date());
     };
 
     const returnList = (originTableData, tableData) => {
@@ -118,16 +139,31 @@ function OrderPlanMgmt() {
     };
 
     const updateDataInOrigin = (originData, updatedData) => {
-        const updatedArray = [...originData];
+        const updatedArray = [];
         for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
             const updatedItem = updatedData[i];
-            updatedArray[i] = { ...updatedItem, pmpMonth: updatedArray[i].pmpMonth, pmpMonth2: updatedArray[i].pmpMonth2 };
+            updatedArray[i] = { ...updatedItem, pmpMonth: originData[i].pmpMonth, pmpMonth2: updatedData[i].pmpMonth };
         }
         return updatedArray;
     };
 
-    //인건비용임
+    const addDayToPmpMonth = (data) => {
+        data.forEach((item) => {
+            const date = item.pmpMonth?.split('-'); // 비구조화 할당을 이용하여 연도와 월을 추출
+            const date2 = item.pmpMonth2?.split('-'); // 비구조화 할당을 이용하여 연도와 월을 추출
+            if (date) {
+                item.pmpMonth = `${date[0]}-${date[1]}-01`;
+            }
+            if (date2) {
+                item.pmpMonth2 = `${date2[0]}-${date2[1]}-01`;
+            }
+        });
+    };
+
+    const [remind, setRemind] = useState(0) //refresh 시점 알림
+    //인건비용
     const compareData = (originData, updatedData) => {
+        setRemind(0);
         if (originData?.length === 0 && updatedData?.length === 0) return;
         const filterData = updatedData.filter((data) => data.pmpMonth); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
@@ -136,23 +172,20 @@ function OrderPlanMgmt() {
         if (originDataLength > updatedDataLength) {
             const firstRowUpdate = updateDataInOrigin(originData, updatedData);
             upDateChange(firstRowUpdate);
-            const isMod = updateList(firstRowUpdate);
+            addDayToPmpMonth(firstRowUpdate);
+            updateList(firstRowUpdate);
 
             const originAValues = originData.map((item) => item.pmpId);
             const extraOriginData = originAValues.slice(updatedDataLength);
             const combinedAValues = extraOriginData.reduce((acc, current) => acc.concat(current), []);
 
-            const isDel = deleteList(combinedAValues);
-            if (isMod && isDel) {
-                alert("저장완료");
-            }
+            deleteList(combinedAValues);
+
         } else if (originDataLength === updatedDataLength) {
             const firstRowUpdate = updateDataInOrigin(originData, updatedData);
             upDateChange(firstRowUpdate);
-            const isMod = updateList(firstRowUpdate);
-            if (isMod) {
-                alert("저장완료");
-            }
+            addDayToPmpMonth(firstRowUpdate);
+            updateList(firstRowUpdate, "same");
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
             const addUpdate = [];
@@ -161,7 +194,8 @@ function OrderPlanMgmt() {
             }
             const firstRowUpdate = updateDataInOrigin(originData, addUpdate);
             upDateChange(firstRowUpdate);
-            const isMod = updateList(firstRowUpdate);
+            addDayToPmpMonth(firstRowUpdate);
+            updateList(firstRowUpdate);
 
             for (let i = originDataLength; i < updatedDataLength; i++) {
                 const toAdd = { ...filterData[i] };
@@ -180,62 +214,80 @@ function OrderPlanMgmt() {
 
                 toAdds.push(toAdd);
             }
-            const addDayToPmpMonth = (data) => {
-                data.forEach((item) => {
-                    const pmpMonth = item.pmpMonth;
-                    if (pmpMonth) {
-                        item.pmpMonth = `${pmpMonth}-01`;
-                    }
-                });
-            };
             addDayToPmpMonth(toAdds);
-            const isAdd = addList(toAdds);
-            if (isMod && isAdd) {
-                alert("저장완료");
-            }
+            addList(toAdds);
         }
-        refresh(); //리프레쉬
     };
+
+    useEffect(() => {
+        console.log("remind:", remind);
+        if(remind >= 2) {
+            refresh();
+        }
+    }, [remind])
 
     const addList = async (addNewData) => {
-        addNewData.forEach((data) => {
-            data.poiId = condition.poiId || "";
-            data.versionId = condition.versionId || "";
-        });
-        const url = `/api/baseInfrm/product/prmnPlan/addList.do`;
-        const resultData = await axiosPost(url, addNewData);
-        if (resultData) {
-            return true;
-        } else {
-            return false;
+        console.log("추가시작..........", new Date());
+        if(!condition.poiId || !condition.versionId) {
+            console.log("프로젝트 또는 버전 정보 ERROR");
+            return;
+        }
+        if(addNewData?.length > 0) {
+            addNewData.forEach((data) => {
+                data.poiId = condition.poiId ;
+                data.versionId = condition.versionId;
+                // delete data.pmpId
+                data.pmpId = null;
+            });
+            console.log("인건비 추가: ", addNewData);
+            const resultData = await axiosPost(`/api/baseInfrm/product/prmnPlan/addList.do`, addNewData);
+            console.log("추가끝..........", new Date());
+            if (resultData) {
+                setRemind(remind+1);
+            }
         }
     };
-    const updateList = async (toUpdate) => {
-        toUpdate.forEach((data) => {
-            data.poiId = condition.poiId || "";
-            data.versionId = condition.versionId || "";
-        });
-        const updatedData = toUpdate.map((obj) => {
-            const { pmpId, ...rest } = obj;
-            return rest;
-        });
-
-        const url = `/api/baseInfrm/product/prmnPlan/editArrayList.do`;
-        const resultData = await axiosUpdate(url, updatedData);
-        if (resultData) {
-            return true;
-        } else {
-            return false;
+    const updateList = async (toUpdate, type) => {
+        console.log("수정시작..........", new Date());
+        if(!condition.poiId || !condition.versionId) {
+            console.log("프로젝트 또는 버전 정보 ERROR");
+            return;
+        }
+        if(toUpdate?.length > 0) {
+            toUpdate.forEach((data) => {
+                data.poiId = condition.poiId;
+                data.versionId = condition.versionId;
+            });
+            const updatedData = toUpdate.map((obj) => {
+                const { pmpId, ...rest } = obj;
+                return rest;
+            });
+    
+            console.log("인건비 수정:", updatedData);
+            const resultData = await axiosUpdate(`/api/baseInfrm/product/prmnPlan/editArrayList.do`, updatedData);
+            console.log("수정끝..........", new Date());
+            if (resultData) {
+                setRemind(remind+1);
+                if(type) {
+                    setRemind(2);
+                }
+            }
         }
     };
 
     const deleteList = async (removeItem) => {
-        const url = `/api/baseInfrm/product/prmnPlan/removeAll.do`;
-        const resultData = await axiosDelete(url, removeItem);
-        if (resultData) {
-            return true;
-        } else {
-            return false;
+        console.log("삭제시작..........", new Date());
+        if(!condition.poiId || !condition.versionId) {
+            console.log("프로젝트 또는 버전 정보 ERROR");
+            return;
+        }
+        if(removeItem?.length > 0) {
+            console.log("인건비 삭제:", removeItem, condition);
+            const resultData = await axiosDelete(`/api/baseInfrm/product/prmnPlan/removeAll.do`, removeItem);
+            console.log("삭제끝..........", new Date());
+            if (resultData) {
+                setRemind(remind+1);
+            }
         }
     };
 
@@ -295,13 +347,14 @@ function OrderPlanMgmt() {
             if (resultData && resultData.length > 0) {
                 setSearchDates(resultData);
             } else {
-                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
+                alert(requestData.versionNum+"의 데이터가 없습니다.");
                 setSearchDates([]);
             }
         } else if (innerPageName.name === "인건비") {
             const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
             if (resultData && resultData.length > 0) {
                 const changeData = ChangePrmnPlanData(resultData, condition.poiId);
+                console.log("인건비 조회:", changeData);
                 let total = 0,
                     mm1 = 0,
                     mm9 = 0,
@@ -322,7 +375,8 @@ function OrderPlanMgmt() {
                         mm14 += Item.pmpmmPositionCode14;
                     });
                     total = mm1 + mm9 + mm10 + mm11 + mm12 + mm13 + mm14;
-                    setPrmnCalDatas([
+
+                    setPrmnCalDatas([ //합계
                         {
                             type: "M/M",
                             total,
@@ -369,11 +423,14 @@ function OrderPlanMgmt() {
                         }
                     });
                     setPrmnPlanDatas(changeData);
+                } else {
+                    alert("프로젝트 기준연도가 해당하는 급별단가가 없습니다.");
                 }
+                return { result: true, versionNum: requestData.versionNum }
             } else if (resultData.length === 0) {
-                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setPrmnPlanDatas([]);
                 setPrmnCalDatas([]);
+                return { result: false, versionNum: requestData.versionNum }
             }
         } else if (innerPageName.name === "경비") {
             const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
@@ -384,85 +441,24 @@ function OrderPlanMgmt() {
                     pjbgPriceTotal += data.pjbgPrice;
                 });
                 setPjbudgetCalDatas([{ pjbgPriceTotal }]);
+                return { result: true, versionNum: requestData.versionNum }
             } else {
-                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setPjbudgetDatas([]);
                 setPjbudgetCalDatas([]);
+                return { result: false, versionNum: requestData.versionNum }
             }
         } else if (innerPageName.name === "구매(재료비)") {
             const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
             if (resultData && resultData.length > 0) {
                 const calData = buyIngInfoCalculation(resultData);
                 setPdOrdrDatas(calData);
-
-                const groupedData = calData.reduce((result, current) => {
-                    const existingGroup = result.find((group) => group.pdiSeller === current.pdiSeller && group.pgNm === current.pgNm); //제조사, 품목그룹
-                    if (existingGroup) {
-                        existingGroup.estimatedCost += current.estimatedCost; //원가
-                        existingGroup.consumerAmount += current.consumerAmount; //소비자금액
-                        existingGroup.planAmount += current.planAmount; //공급금액
-                        existingGroup.byQunty += current.byQunty; //수량
-                    } else {
-                        result.push({ ...current });
-                    }
-                    return result;
-                }, []);
-
-                //합산의 네고율, 이익금, 이익율 구하기
-                const groupedDataWithCalculations = groupedData.map((group) => {
-                    // 할인율: (1 - (공급금액 / 소비자금액)) * 100
-                    const temp1 = group.planAmount !== 0 ? (group.planAmount / group.consumerAmount - 1) * -100 : 0;
-                    group.nego = Math.round(temp1) + " %";
-                    // 이익금: 공급금액 - 원가
-                    group.profits = group.planAmount - group.estimatedCost;
-                    // 이익률: (공급금액-원가)/원가*100
-                    const temp2 = group.planAmount !== 0 ? ((group.planAmount - group.estimatedCost) / group.planAmount) * 100 : 0;
-                    console.log(temp2);
-                    //group.margin = Math.round(temp2) + " %";
-                    group.margin = temp2.toFixed(2) + " %"; //소숫점 1자리까지
-                    return group;
-                });
-
-                //마지막 토탈 행 구하기
-                const totals = groupedDataWithCalculations.reduce(
-                    (sums, group) => {
-                        sums.estimatedCost += group.estimatedCost || 0;
-                        sums.consumerAmount += group.consumerAmount || 0;
-                        sums.planAmount += group.planAmount || 0;
-                        sums.profits += group.profits || 0;
-                        sums.byQunty += group.byQunty;
-                        sums.margin = 0;
-                        return sums;
-                    },
-                    {
-                        estimatedCost: 0,
-                        consumerAmount: 0,
-                        planAmount: 0,
-                        nego: 0,
-                        profits: 0,
-                        margin: 0,
-                        byQunty: 0,
-                    }
-                );
-
-                groupedDataWithCalculations.push({
-                    pgNm: "TOTAL",
-                    pdiSeller: "",
-                    consumerAmount: totals.consumerAmount, //소비자금액
-                    planAmount: totals.planAmount, //공급금액
-                    nego: totals.planAmount !== 0 ? Math.round((totals.planAmount / totals.consumerAmount - 1) * -100) + " %" : 0 + " %", //네고율
-                    estimatedCost: totals.estimatedCost, //원가
-                    profits: totals.profits, //이익금
-                    // 마진 = (이익금/공급금액)*100
-                    margin: totals.planAmount !== 0 ? Math.round((totals.profits / totals.planAmount) * 100) + " %" : 0 + " %", //이익율
-                    byQunty: totals.byQunty,
-                });
-
-                setPdOrdrCalDatas(groupedDataWithCalculations); //합계
+                const calTotalData = calculateTotalBuy(calData);
+                setPdOrdrCalDatas(calTotalData); //합계
+                return { result: true, versionNum: requestData.versionNum }
             } else {
-                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setPdOrdrDatas([]);
                 setPdOrdrCalDatas([]);
+                return { result: false, versionNum: requestData.versionNum }
             }
         } else if (innerPageName.name === "개발외주비") {
             const resultData = await axiosFetch("/api/baseInfrm/product/devOutCost/totalListAll.do", requestData);
@@ -481,25 +477,17 @@ function OrderPlanMgmt() {
                 );
 
                 setOutCalDatas([calTotal]);
+                return { result: true, versionNum: requestData.versionNum }
             } else {
-                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
                 setOutsourcingDatas([]);
                 setOutCalDatas([]);
+                return { result: false, versionNum: requestData.versionNum }
             }
         } else if (innerPageName.name === "영업관리비") {
             const resultData = await axiosFetch("/api/baseInfrm/product/slsmnExpns/totalListAll.do", requestData);
             const resultDataTotal = await axiosFetch("/api/cost/contract/totalQuotation.do", requestData);
-            console.log(resultDataTotal);
-            if (resultData && resultData.length > 0) {
-                console.log(resultData, "영업관리비");
-                setGeneralExpensesDatas(resultData);
-                // slsmnEnterpriseProfit 기업이윤, slsmnAdmnsCost 일반관리비, slsmnNego 네고
-            } else {
-                alert("데이터가 없습니다.\n데이터를 입력해 주세요.");
-                setGeneralExpensesDatas([]);
-            }
+
             if (resultDataTotal) {
-                console.log(resultDataTotal, "값이있는데 이거왜안뜰까");
                 let total = Math.round(resultDataTotal.legalTotalPrice / 10) * 10; // 판관비를 10의 자리까지 반올림
                 let negoTotal = Math.round(resultDataTotal.slsmnNego / 10) * 10; // 네고를 10의 자리까지 반올림
                 let companyMargin = Math.round(resultDataTotal.slsmnEnterpriseProfit / 10) * 10; // 기업이윤을 10의 자리까지 반올림
@@ -508,6 +496,94 @@ function OrderPlanMgmt() {
                 setGeneralCalDatas([{ total, negoTotal, companyMargin, nomalCost }]);
             } else {
                 setGeneralCalDatas([]);
+            }
+
+            if (resultData && resultData.length > 0) {
+                setGeneralExpensesDatas(resultData);
+                return { result: true, versionNum: requestData.versionNum }
+            } else {
+                setGeneralExpensesDatas([]);
+                return { result: false, versionNum: requestData.versionNum }
+            }
+        }
+    };
+
+    const [copiedLabor, setCopiedLabor] = useState([]); //복제 인건비
+    const [copiedBuy, setCopiedBuy] = useState([]); //복제 구매비
+    const [copiedOut, setCopiedOut] = useState([]); //복제 외주비
+    const [copiedPjbudget, setCopiedPjbudget] = useState([]); //복제 경비
+    const [copiedSales, setCopiedSales] = useState([]); //복제 영업관리비
+    const [isCopied, setIsCopied] = useState(false);
+
+    const fetchAllCopied = async (requestData) => {
+        if (innerPageName.name === "인건비") {
+            const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
+            if (resultData && resultData.length > 0) {
+                const changeData = ChangePrmnPlanData(resultData, condition.poiId);
+                console.log("복제할 인건비 조회:", changeData);
+                const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === requestData.poiMonth);
+                if (matchingAItem) {
+                    changeData.forEach((Item) => {
+                        const yearFromPmpMonth = Item.pmpMonth.slice(0, 4);
+                        const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === yearFromPmpMonth);
+                        if (matchingAItem) {
+                            let totalPrice = 0;
+                            for (let i = 1; i <= 14; i++) {
+                                const gupPriceKey = `gupPrice${i}`;
+                                const pmpmmPositionCodeKey = `pmpmmPositionCode${i}`;
+                                if (matchingAItem[gupPriceKey]) {
+                                    totalPrice += matchingAItem[gupPriceKey] * Item[pmpmmPositionCodeKey];
+                                }
+                            }
+                            Item.totalPrice = totalPrice;
+                        }
+                    });
+                    setCopiedLabor(changeData);
+                }
+                return { result: true, versionNum: requestData.versionNum }
+            } else if (resultData.length === 0) {
+                setCopiedLabor([]);
+                return { result: false, versionNum: requestData.versionNum }
+            }
+        } else if (innerPageName.name === "경비") {
+            const resultData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", requestData);
+            if (resultData && resultData.length > 0) {
+                setCopiedPjbudget(resultData);
+                return { result: true, versionNum: requestData.versionNum }
+            } else {
+                setCopiedPjbudget([]);
+                return { result: false, versionNum: requestData.versionNum }
+            }
+        } else if (innerPageName.name === "구매(재료비)") {
+            const resultData = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", requestData);
+            if (resultData && resultData.length > 0) {
+                const calData = buyIngInfoCalculation(resultData);
+                setCopiedBuy(calData);
+                return { result: true, versionNum: requestData.versionNum }
+            } else {
+                setCopiedBuy([]);
+                return { result: false, versionNum: requestData.versionNum }
+            }
+        } else if (innerPageName.name === "개발외주비") {
+            const resultData = await axiosFetch("/api/baseInfrm/product/devOutCost/totalListAll.do", requestData);
+            if (resultData && resultData.length > 0) {
+                resultData.forEach((data) => {
+                    data.price = data.devOutMm * data.devOutPrice; // 계산된 값을 데이터에 추가
+                });
+                setCopiedOut(resultData);
+                return { result: true, versionNum: requestData.versionNum }
+            } else {
+                setCopiedOut([]);
+                return { result: false, versionNum: requestData.versionNum }
+            }
+        } else if (innerPageName.name === "영업관리비") {
+            const resultData = await axiosFetch("/api/baseInfrm/product/slsmnExpns/totalListAll.do", requestData);
+            if (resultData && resultData.length > 0) {
+                setCopiedSales(resultData);
+                return { result: true, versionNum: requestData.versionNum }
+            } else {
+                setCopiedSales([]);
+                return { result: false, versionNum: requestData.versionNum }
             }
         }
     };
@@ -535,14 +611,8 @@ function OrderPlanMgmt() {
 
     const [deleteNames, setDeleteNames] = useState([]); //삭제할 Name 목록
 
-    // useEffect(() => {
-    //     if (innerPageName.name === "원가버전조회") {
-    //         selectedRows && setDeleteNames(selectedRows.map((row) => row.versionNum));
-    //     }
-    // }, [selectedRows, innerPageName]);
     useEffect(() => {
         if (innerPageName.name === "원가버전조회") {
-            // selectedRow && setDeleteNames(selectedRows.map((row) => row.versionNum));
             selectedRow && setDeleteNames([selectedRow.versionNum]);
         }
     }, [selectedRow, innerPageName]);
@@ -551,7 +621,6 @@ function OrderPlanMgmt() {
         if (value === "임시삭제") {
             /* 임시삭제 코드 구현 */
         } else if (value === "영구삭제") {
-            // const poiNms = selectedRows.map((row) => row.versionId);
             const poiNms = selectedRow.versionId;
             const url = `/api/baseInfrm/product/versionControl/removeAll.do`;
             const resultData = await axiosDelete(url, [poiNms]);
@@ -584,21 +653,45 @@ function OrderPlanMgmt() {
         }
     };
 
-    const getData = (value) => {
-        if (!value.poiId || !value.versionId) {
+    const getData = async (value) => {
+        if (!value.view.poiId || !value.view.versionId && !value.save.poiId || !value.save.versionId) {
             return;
         }
-        setCondition((prev) => {
-            if (prev.versionId !== value.versionId) {
-                const newCondition = { ...value };
-                fetchAllData(newCondition);
-                return newCondition;
+
+        setCondition({ ...value.save });
+
+        if (value.view.versionId === value.save.versionId) {
+            setIsCopied(false);
+            console.log("조회 시작..........", new Date());
+            const fetchResult = await fetchAllData({ ...value.save });
+            console.log("조회 끝..........", new Date());
+            if(fetchResult.result) {
+                alert(fetchResult.versionNum+" 데이터를 가져옵니다.")
             } else {
-                fetchAllData({ ...prev });
-                return prev;
+                alert(fetchResult.versionNum+" 데이터가 없습니다.")
             }
-        });
+        } else if (value.view.versionId !== value.save.versionId) { //복제 할때
+            setIsCopied(true);
+            console.log("조회 시작..........", new Date());
+            await fetchAllData({ ...value.save });
+            console.log("조회 끝..........", new Date());
+            console.log("버전 조회 시작..........", new Date());
+            const copiedResult = await fetchAllCopied({ ...value.view });
+            console.log("버전 조회 끝..........", new Date());
+            if(copiedResult.result) { //복제 데이터가 있을 때
+                alert(copiedResult.versionNum+" 데이터를 가져옵니다.");
+            } else {
+                alert(copiedResult.versionNum+" 데이터가 없습니다.")
+            }
+        }
     }
+
+    const searchGetData = (request) => {
+        setIsCopied(false);
+        fetchAllData(request);
+    }
+
+    
 
     return (
         <>
@@ -632,7 +725,7 @@ function OrderPlanMgmt() {
                 <div className="list">
                     <div className="first">
                         <ul>
-                            <SearchList conditionList={columns.orderPlanMgmt.versionCondition} onSearch={(value) => fetchAllData(value)} />
+                            <SearchList conditionList={columns.orderPlanMgmt.versionCondition} onSearch={(value) => searchGetData(value)} />
                             <HideCard title="원가 버전 목록" color="back-lightblue" className="mg-b-40">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <PopupButton
@@ -660,14 +753,20 @@ function OrderPlanMgmt() {
                         <ul>
                             <ApprovalFormSal returnData={getData} viewPageName={{ name: "인건비", id: "labor" }}/>
                             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
-                                <ReactDataTable columns={columns.orderPlanMgmt.laborCal} customDatas={prmnCalDatas} hideCheckBox={true} isPageNation={true} />
+                                <ReactDataTable
+                                    columns={columns.orderPlanMgmt.laborCal}
+                                    customDatas={prmnCalDatas}
+                                    hideCheckBox={true}
+                                    isPageNation={true}
+                                    // viewPageName={{ name: "인건비", id: "labor" }}
+                                />
                             </HideCard>
                             <HideCard title="등록/수정" color="back-lightblue">
                                 <div className="table-buttons mg-t-10 mg-b-10">
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
                                     <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
-                                    <RefreshButton onClick={refresh} />
+                                    <RefreshButton onClick={isRefresh} />
                                 </div>
                                 <ReactDataTable
                                     editing={true}
@@ -677,6 +776,8 @@ function OrderPlanMgmt() {
                                     viewPageName={{ name: "인건비", id: "labor" }}
                                     customDatasRefresh={refresh}
                                     condition={condition}
+                                    copiedDatas={copiedLabor}
+                                    isCopied={isCopied}
                                 />
                             </HideCard>
                         </ul>
@@ -690,6 +791,7 @@ function OrderPlanMgmt() {
                                     customDatas={pdOrdrCalDatas}
                                     hideCheckBox={true}
                                     isSpecialRow={true}
+                                    // viewPageName={{ name: "구매(재료비)", id: "buying" }}
                                 />
                             </HideCard>
                             <HideCard title="등록/수정" color="back-lightblue">
@@ -698,7 +800,7 @@ function OrderPlanMgmt() {
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
                                     <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
-                                    <RefreshButton onClick={refresh} />
+                                    <RefreshButton onClick={isRefresh} />
                                 </div>
                                 <ReactDataTablePdorder
                                     editing={true}
@@ -708,6 +810,8 @@ function OrderPlanMgmt() {
                                     suffixUrl="/baseInfrm/product/buyIngInfo"
                                     customDatasRefresh={refresh}
                                     condition={condition}
+                                    copiedDatas={copiedBuy}
+                                    isCopied={isCopied}
                                 />
                             </HideCard>
                         </ul>
@@ -722,6 +826,7 @@ function OrderPlanMgmt() {
                                     hideCheckBox={true}
                                     condition={condition}
                                     isPageNation={true}
+                                    // viewPageName={{ name: "개발외주비", id: "outsourcing" }}
                                 />
                             </HideCard>
                             <HideCard title="등록/수정" color="back-lightblue">
@@ -729,7 +834,7 @@ function OrderPlanMgmt() {
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
                                     <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
-                                    <RefreshButton onClick={refresh} />
+                                    <RefreshButton onClick={isRefresh} />
                                 </div>
                                 <ReactDataTableDevCost
                                     editing={true}
@@ -739,6 +844,8 @@ function OrderPlanMgmt() {
                                     viewPageName={{ name: "개발외주비", id: "outsourcing" }}
                                     customDatasRefresh={refresh}
                                     condition={condition}
+                                    copiedDatas={copiedOut}
+                                    isCopied={isCopied}
                                 />
                             </HideCard>
                         </ul>
@@ -752,6 +859,7 @@ function OrderPlanMgmt() {
                                     customDatas={pjbudgetCalDatas}
                                     hideCheckBox={true}
                                     isPageNation={true}
+                                    // viewPageName={{ name: "경비", id: "budget" }}
                                 />
                             </HideCard>
                             <HideCard title="등록/수정" color="back-lightblue">
@@ -759,7 +867,7 @@ function OrderPlanMgmt() {
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
                                     <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
-                                    <RefreshButton onClick={refresh} />
+                                    <RefreshButton onClick={isRefresh} />
                                 </div>
                                 <ReactDataTableURL
                                     editing={true}
@@ -768,6 +876,8 @@ function OrderPlanMgmt() {
                                     viewPageName={{ name: "경비", id: "budget" }}
                                     customDatasRefresh={refresh}
                                     condition={condition}
+                                    copiedDatas={copiedPjbudget}
+                                    isCopied={isCopied}
                                 />
                             </HideCard>
                         </ul>
@@ -782,6 +892,7 @@ function OrderPlanMgmt() {
                                     hideCheckBox={true}
                                     condition={condition}
                                     isPageNation={true}
+                                    // viewPageName={{ name: "영업관리비", id: "general" }}
                                 />
                             </HideCard>
                             <HideCard title="등록/수정" color="back-lightblue">
@@ -789,7 +900,7 @@ function OrderPlanMgmt() {
                                     <SaveButton label={"저장"} onClick={() => setNameOfButton("save")} />
                                     <AddButton label={"추가"} onClick={() => setNameOfButton("addRow")} />
                                     <DelButton label={"삭제"} onClick={() => setNameOfButton("deleteRow")} />
-                                    <RefreshButton onClick={refresh} />
+                                    <RefreshButton onClick={isRefresh} />
                                 </div>
                                 <ReactDataTableSaleCost
                                     editing={true}
@@ -799,6 +910,8 @@ function OrderPlanMgmt() {
                                     viewPageName={{ name: "영업관리비", id: "general" }}
                                     customDatasRefresh={refresh}
                                     condition={condition}
+                                    copiedDatas={copiedSales}
+                                    isCopied={isCopied}
                                 />
                             </HideCard>
                         </ul>
@@ -828,7 +941,8 @@ function OrderPlanMgmt() {
             )}
             <DeleteModal initialData={deleteNames} resultData={deleteToServer} onClose={() => setIsOpenDel(false)} isOpen={isOpenDel} />
             <SearchModal
-                returnData={(companyInfo) => fetchAllData({ ...companyInfo, ...condition })}
+                // returnData={(companyInfo) => fetchAllData({ ...companyInfo, ...condition })}
+                returnData={(companyInfo) => searchGetData({ ...companyInfo, ...condition })}
                 onClose={() => setIsOpenSearch(false)}
                 isOpen={isOpenSearch}
                 width={350}

@@ -69,7 +69,7 @@ export const ReorganizeManCost = (data) => {
         const { gupBaseDate, gupDesc, guppName, gupId, gupType, gupPrice } = item;
 
         // gupBaseDate 배열에서 연도를 추출합니다.
-        const year = gupBaseDate.slice(0, 4);
+        const year = gupBaseDate?.slice(0, 4);
         // 찾은 데이터의 인덱스
         // gupDesc를 기반으로 누적 배열에서 그룹의 인덱스를 찾습니다.
         const foundIndex = acc.findIndex((group) => group && group.year === year);
