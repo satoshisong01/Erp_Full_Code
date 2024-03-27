@@ -138,6 +138,7 @@ function Quotation() {
     const refresh = () => {
         setRemind(0);
         setRemind2(0);
+        console.log("다시 조회 중.......");
         if (condition.poiId && condition.versionId) {
             fetchAllData(condition);
         } else {
@@ -348,7 +349,7 @@ function Quotation() {
 
             deleteItem2(extraOriginData);
         } else if (originDataLength === updatedDataLength) {
-            updateItem2(filterData, "same");
+            updateItem2(filterData);
         } else if (originDataLength < updatedDataLength) {
             const toUpdate = [];
             for (let i = 0; i < originDataLength; i++) {
@@ -375,18 +376,17 @@ function Quotation() {
         const url = `api/estimate/buy/estCostBuy/addList.do`;
         const resultData = await axiosPost(url, addData);
         if (resultData) {
-            setRemind2(remind + 1);
+            console.log("구매비 추가완료");
+            setRemind2(2);
         }
     };
 
-    const updateItem2 = async (toUpdate, type) => {
+    const updateItem2 = async (toUpdate) => {
         const url = `/api/estimate/buy/estCostBuy/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData) {
-            setRemind2(remind + 1);
-            if (type) {
-                setRemind2(2);
-            }
+            console.log("구매비 수정완료");
+            setRemind2(2);
         }
     };
 
@@ -394,7 +394,8 @@ function Quotation() {
         const url = `/api/estimate/buy/estCostBuy/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         if (resultData) {
-            setRemind2(remind + 1);
+            console.log("구매비 삭제완료");
+            setRemind2(2);
         }
     };
 
@@ -475,24 +476,26 @@ function Quotation() {
             }
             setCondition({ ...value.save });
 
-            if (value.view.versionId === value.save.versionId) {
-                setIsCopied(false);
-                const fetchResult = await fetchAllData({ ...value.save });
-                if (fetchResult.result) {
-                    alert(fetchResult.versionNum + " 데이터를 가져옵니다.");
-                } else {
-                    alert(fetchResult.versionNum + " 데이터가 없습니다.");
-                }
-            } else if (value.view.versionId !== value.save.versionId) {
-                //복제 할때
-                setIsCopied(true);
-                await fetchAllData({ ...value.save });
-                const copiedResult = await fetchAllCopied({ ...value.view });
-                if (copiedResult.result) {
-                    //복제 데이터가 있을 때
-                    alert(copiedResult.versionNum + " 데이터를 가져옵니다.");
-                } else {
-                    alert(copiedResult.versionNum + " 데이터가 없습니다.");
+            if(innerPageName.name !== "품의서") {
+                if (value.view.versionId === value.save.versionId) {
+                    setIsCopied(false);
+                    const fetchResult = await fetchAllData({ ...value.save });
+                    if (fetchResult.result) {
+                        alert(fetchResult.versionNum + " 데이터를 가져옵니다.");
+                    } else {
+                        alert(fetchResult.versionNum + " 데이터가 없습니다.");
+                    }
+                } else if (value.view.versionId !== value.save.versionId) {
+                    //복제 할때
+                    setIsCopied(true);
+                    await fetchAllData({ ...value.save });
+                    const copiedResult = await fetchAllCopied({ ...value.view });
+                    if (copiedResult.result) {
+                        //복제 데이터가 있을 때
+                        alert(copiedResult.versionNum + " 데이터를 가져옵니다.");
+                    } else {
+                        alert(copiedResult.versionNum + " 데이터가 없습니다.");
+                    }
                 }
             }
         }
@@ -668,14 +671,14 @@ function Quotation() {
                             </div>
                             <ApprovalFormSal returnData={(value) => returnData(value, "조회")} viewPageName={{ name: "품의서", id: "proposal" }} />
                             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <h3 style={{ display: "block" }}>제목 :</h3>
                                 <input
                                     type="text"
                                     value={title}
                                     returnData={(value) => returnData(value, "비고")}
                                     onChange={handleChange}
-                                    placeholder="제목을 입력하세요"
-                                    style={{ width: "95%", height: "35px" }}
+                                    placeholder="제목을 입력하세요."
+                                    className="basic-input mg-b-10"
+                                    style={{  borderRadius: 0, height: "45px", padding: "7px" }}
                                 />
                             </div>
                             <QuillEditor isProgress={isProgress} returnData={(value) => returnData(value, "비고")} writing={writing} />

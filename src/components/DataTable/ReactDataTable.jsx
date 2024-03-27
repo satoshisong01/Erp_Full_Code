@@ -152,39 +152,45 @@ const ReactDataTable = (props) => {
     useEffect(() => {
         if(isCopied) {
             // console.log("1. 복제 TRUE - custom:", customDatas, "copied", copiedDatas);
-            const copied = initializeTableData(copiedDatas, columns);
-            const custom = initializeTableData(customDatas, columns);
-            setOriginTableData(custom); //저장할 테이블
-            setTableData(copied?.length > 0 ? copied : []); //복제할 테이블
+            // const copied = initializeTableData(copiedDatas, columns);
+            // const custom = initializeTableData(customDatas, columns);
+            // setOriginTableData(JSON.parse(JSON.stringify(custom))); //저장할 테이블
+            // setTableData(JSON.parse(JSON.stringify(copied))); //복제할 테이블
+            setOriginTableData(JSON.parse(JSON.stringify(customDatas))); //저장할 테이블
+            setTableData(JSON.parse(JSON.stringify(copiedDatas))); //복제할 테이블
         } else {
             // console.log("2. 복제 FALSE - custom:", customDatas, "copied", copiedDatas);
-            const custom = initializeTableData(customDatas, columns);
-            const copyCustom = JSON.parse(JSON.stringify(custom)); //깊은 복사
-            setOriginTableData(custom); //원본 데이터
-            setTableData(copyCustom); //수정 데이터
+            // const custom = initializeTableData(customDatas, columns);
+            // setOriginTableData(JSON.parse(JSON.stringify(custom))); //원본 데이터
+            // setTableData(JSON.parse(JSON.stringify(custom))); //수정 데이터
+            setOriginTableData(JSON.parse(JSON.stringify(customDatas))); //원본 데이터
+            setTableData(JSON.parse(JSON.stringify(customDatas))); //수정 데이터
         }
         setIsLoading(false);
     }, [isCopied, customDatas, copiedDatas]);
 
     /* columns에는 있지만 넣어줄 데이터가 없을 때 초기값 설정 */
-    const initializeTableData = (datas, cols) => {
-        if (datas && datas.length > 0) {
-            const updatedData = datas.map((dataItem) => {
-                const newData = { ...dataItem };
-                cols.forEach((column) => {
-                    if (!newData.hasOwnProperty(column.col)) {
-                        newData[column.col] = ""; // 해당 변수가 없으면 빈 값으로 초기화
-                    }
-                    if (column.type === "select") {
-                        newData[column.col] = column.options[0].value; // 옵션의 첫 번째 값으로 초기화
-                    }
-                });
-                return newData;
-            });
-            return updatedData;
-        }
-        return [];
-    };
+    // const initializeTableData = (datas, cols) => {
+    //     console.log("cols:", cols);
+    //     if (datas && datas.length > 0) {
+    //         const updatedData = datas.map((dataItem) => {
+    //             const newData = { ...dataItem };
+    //             cols.forEach((column) => {
+    //                 if (!newData.hasOwnProperty(column.col)) {
+    //                     newData[column.col] = ""; // 해당 변수가 없으면 빈 값으로 초기화
+    //                 }
+    //                 if (column.type === "select") {
+    //                     console.log("셀렉트>>>>>>>>>>>>>>>>>>>>>", column.col);
+    //                     console.log("셀렉트>>>>>>>>>>>>>>>>>>>>>", column.options[0].value);
+    //                     newData[column.col] = column.options[0].value; // 옵션의 첫 번째 값으로 초기화
+    //                 }
+    //             });
+    //             return newData;
+    //         });
+    //         return updatedData;
+    //     }
+    //     return [];
+    // };
 
     /* tab에서 컴포넌트 화면 변경 시 초기화  */
     useEffect(() => {
@@ -814,12 +820,9 @@ const ReactDataTable = (props) => {
                                                                         key={cell.column.id + row.index}
                                                                         name={cell.column.id}
                                                                         autoComplete="off"
-                                                                        defaultValue={
-                                                                            tableData[row.index] && tableData[row.index][cell.column.id] !== undefined
-                                                                                ? tableData[row.index][cell.column.id]
-                                                                                : ""
-                                                                        }
-                                                                        onChange={(e) => handleChange(e, row, cell.column.id)}>
+                                                                        defaultValue={tableData[row.index][cell.column.id] || ""}
+                                                                        onChange={(e) => handleChange(e, row, cell.column.id)}
+                                                                    >
                                                                         {cell.column.options.map((option, index) => (
                                                                             <option key={cell.column.id + index} value={option.value}>
                                                                                 {option.label}
