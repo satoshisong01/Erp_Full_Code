@@ -358,15 +358,6 @@ const ReactDataTableDevCost = (props) => {
         });
     };
 
-    useEffect(() => {
-        if(remind >= 2) {
-            setRemind(0);
-            alert("저장 완료");
-            customDatasRefresh && customDatasRefresh();
-            setOriginTableData([]);
-        }
-    }, [remind])
-
     const addItem = async (addData) => {
         const url = `/api/baseInfrm/product/devOutCost/addList.do`;
         const resultData = await axiosPost(url, addData);
@@ -407,6 +398,16 @@ const ReactDataTableDevCost = (props) => {
     };
 
     const [remind, setRemind] = useState(0) //refresh 시점 알림
+
+    useEffect(() => {
+        if(remind >= 2) {
+            setRemind(0);
+            alert("저장 완료");
+            customDatasRefresh && customDatasRefresh();
+            setOriginTableData([]);
+        }
+    }, [remind])
+
     
     const compareData = (originData, updatedData) => {
         setRemind(0);
