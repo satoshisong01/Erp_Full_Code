@@ -66,6 +66,10 @@ export default function AddModModal(props) {
         }
     }, [companyInfo]);
 
+    useEffect(() => {
+        console.log("data:", data);
+    }, [data])
+
 
     useEffect(() => {
         //품목
@@ -158,6 +162,7 @@ export default function AddModModal(props) {
 
     const changeCompany = (id, name) => {
         //id=setver로 보내는값, name=테이블에띄어지는값
+        console.log("컴패니>>>>>>>>>>>>>>>>>>>>>>", id, name);
         setColName({ id: id, name: name });
         setIsOpenModalCompany(true);
     };
@@ -199,6 +204,7 @@ export default function AddModModal(props) {
                             onClick={() => {
                                 changeCompany(item.col, `${item.col}_name`);
                             }}
+                            // value={data?.[`${item.col}_name`] ? data[`${item.col}_name`] : data?.[item.col]}
                             value={data?.[`${item.col}_name`] ? data[`${item.col}_name`] : data?.[item.col]}
                             readOnly
                         />

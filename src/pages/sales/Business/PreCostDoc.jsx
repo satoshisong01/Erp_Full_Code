@@ -132,7 +132,7 @@ const PreCostDoc = () => {
             return "자재/소모품";
         } else if (code === "EXPNS06") {
             return "국내출장비";
-        } else if (code === "EXPNS07 ") {
+        } else if (code === "EXPNS07") {
             return "시내교통비";
         } else if (code === "EXPNS08") {
             return "PJT 파견비";
