@@ -31,7 +31,12 @@ function OrderMgmt() {
     const [isProgress, setIsProgress] = useState(true); //저장
     const [isSubmit, setIsSubmit] = useState(false); //결재요청
     const [content, setContent] = useState(""); //결재 비고내용
+    const [title, setTitle] = useState("");
 
+    // 입력창에 변화가 있을 때마다 호출될 함수입니다.
+    const handleChange = (event) => {
+        setTitle(event.target.value);
+    };
     const [projectInfo, setProjectInfo] = useState({}); //프로젝트정보
 
     //재기안으로 받은 데이터
@@ -65,9 +70,9 @@ function OrderMgmt() {
                 sgnSenderNm: signResultData[0]?.sgnSenderNm, //기안자이름
                 sgnSenderPosNm: signResultData[0]?.sgnSenderPosNm, //기안자직급
                 sgnSenderGroupNm: signResultData[0]?.sgnSenderGroupNm, //기안자부서
-                // sgnSigndate: signResultData[0]?.sgnSigndate, //기안일
-                // sgnReceiverId: signResultData[0]?.sgnReceiverId, //수신자
-                // sgnDesc: signResultData[0]?.sgnDesc, //비고
+                //sgnSigndate: signResultData[0]?.sgnSigndate, //기안일
+                //sgnReceiverId: signResultData[0]?.sgnReceiverId, //수신자
+                //sgnDesc: signResultData[0]?.sgnDesc, //비고
             };
             setProjectInfo((prev) => ({
                 ...prev,
@@ -83,10 +88,10 @@ function OrderMgmt() {
                 sttApproverNm: item.sttApproverNm, //승인자명
                 sttApproverPosNm: item.sttApproverPosNm, //직급
                 sttApproverGroupNm: item.sttApproverGroupNm, //부서
-                // sttApproverAt: item.sttApproverAt, //승인자상태
-                // sttResult: item.sttResult, //결재결과
-                // sttComent: item.sttComent, //코멘트
-                // sttPaymentDate: item.sttPaymentDate, //결재일 (오타 수정)
+                //sttApproverAt: item.sttApproverAt, //승인자상태
+                //sttResult: item.sttResult, //결재결과
+                //sttComent: item.sttComent, //코멘트
+                //sttPaymentDate: item.sttPaymentDate, //결재일 (오타 수정)
             }));
 
             if (signInfo) {
@@ -162,15 +167,12 @@ function OrderMgmt() {
             versionId: condition.versionId,
             sgnDesc: content,
             sgnComment: inputComment.sttComent,
-            sgnTitle: inputComment.sgnTitle,
+            sgnTitle: title,
             sgnType: "수주보고서",
             sttApproverList: list,
         };
 
-        console.log(dataTosend, "저장된거좀볼까");
-
         const resultData = await axiosPost("/api/system/signState/add.do", dataTosend);
-        console.log(resultData, dataTosend, "보내는폼");
         if (resultData) {
             alert("요청 완료되었습니다.");
             //if(inner)
@@ -251,7 +253,17 @@ function OrderMgmt() {
             ) : (
                 <ApprovalFormSal returnData={(value) => returnData(value, "조회")} viewPageName={{ name: "수주보고서", id: "OrderMgmt" }} />
             )}
-
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <h3 style={{ display: "block" }}>제목 :</h3>
+                <input
+                    type="text"
+                    value={title}
+                    returnData={(value) => returnData(value, "비고")}
+                    onChange={handleChange}
+                    placeholder="제목을 입력하세요"
+                    style={{ width: "95%", height: "35px" }}
+                />
+            </div>
             <QuillEditor isProgress={isProgress} returnData={(value) => returnData(value, "비고")} writing={writing} readContent={projectInfo.sgnDesc} />
             <ApprovalLineModal
                 width={670}
@@ -265,7 +277,7 @@ function OrderMgmt() {
             {isSubmit && (
                 <ViewModal
                     width={500}
-                    height={250}
+                    height={220}
                     list={columns.approval.comment}
                     resultData={approvalToServer}
                     title="결재처리"
