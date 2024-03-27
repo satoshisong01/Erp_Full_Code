@@ -442,7 +442,12 @@ function Quotation() {
     const [isProgress, setIsProgress] = useState(true); //저장
     const [isSubmit, setIsSubmit] = useState(false); //결재요청
     const [content, setContent] = useState(""); //결재 비고내용
+    const [title, setTitle] = useState("");
 
+    // 입력창에 변화가 있을 때마다 호출될 함수입니다.
+    const handleChange = (event) => {
+        setTitle(event.target.value);
+    };
     const writing = () => {
         if (!isProgress) {
             setIsProgress(true); //내용 변경 중
@@ -460,6 +465,8 @@ function Quotation() {
             setApprovalLine(updated);
         } else if (type === "비고") {
             setContent(value);
+        } else if (type === "제목") {
+            setTitle(value);
         } else if (type === "조회") {
             setIsProgress(false); //내용저장(진행) 완료
 
@@ -519,7 +526,7 @@ function Quotation() {
             versionId: condition.versionId,
             sgnDesc: content,
             sgnComment: inputComment.sttComent,
-            sgnTitle: inputComment.sgnTitle,
+            sgnTitle: title,
             sgnType: "견적품의서",
             sttApproverList: list,
         };
@@ -660,6 +667,17 @@ function Quotation() {
                                 <h2>견적서 승인 요청서</h2>
                             </div>
                             <ApprovalFormSal returnData={(value) => returnData(value, "조회")} viewPageName={{ name: "품의서", id: "proposal" }} />
+                            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                <h3 style={{ display: "block" }}>제목 :</h3>
+                                <input
+                                    type="text"
+                                    value={title}
+                                    returnData={(value) => returnData(value, "비고")}
+                                    onChange={handleChange}
+                                    placeholder="제목을 입력하세요"
+                                    style={{ width: "95%", height: "35px" }}
+                                />
+                            </div>
                             <QuillEditor isProgress={isProgress} returnData={(value) => returnData(value, "비고")} writing={writing} />
                             <ApprovalLineModal
                                 width={670}
@@ -678,7 +696,7 @@ function Quotation() {
             {isSubmit && (
                 <ViewModal
                     width={500}
-                    height={260}
+                    height={220}
                     list={columns.approval.comment}
                     resultData={approvalToServer}
                     title="결재처리"

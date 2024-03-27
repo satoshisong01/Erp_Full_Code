@@ -507,7 +507,7 @@ export const columns = {
                         col: "cltDesc",
                         cellWidth: "200",
                         modify: true,
-                        type: "input",
+                        type: "desc",
                         add: true,
                         require: true,
                         textAlign: "left",
@@ -2172,7 +2172,7 @@ export const columns = {
             // { items: [{ header: "참조문서", type: "alink" }] },
         ],
         comment: [
-            { items: [{ header: "결재제목", col: "sgnTitle", type: "input" }] },
+            //{ items: [{ header: "결재제목", col: "sgnTitle", type: "input" }] },
             { items: [{ header: "코멘트", col: "sttComent", type: "desc" }] },
             // { items: [{ header: "참조문서", type: "alink" }] },
         ],
