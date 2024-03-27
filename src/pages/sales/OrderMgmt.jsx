@@ -112,20 +112,21 @@ function OrderMgmt() {
         }
     };
 
-
     const returnData = (value, type) => {
         if (type === "결재선") {
             const updated = [{ uniqId: uniqId, empNm: sessionUserName, posNm }, ...value.approvalLine];
             setApprovalLine(updated);
         } else if (type === "비고") {
             setContent(value);
+        } else if (type === "제목") {
+            setTitle(value);
         } else if (type === "조회") {
             setIsProgress(false); //내용저장(진행) 완료0
             setCondition((prev) => {
                 // if (prev.versionId !== value.versionId) {
-                    const newCondition = { ...value.save };
-                    fetchAllData(newCondition); //견적서
-                    return newCondition;
+                const newCondition = { ...value.save };
+                fetchAllData(newCondition); //견적서
+                return newCondition;
                 // } else {
                 //     fetchAllData({ ...prev });
                 //     return prev;
@@ -252,17 +253,17 @@ function OrderMgmt() {
             {/* {projectInfo.poiId ? (
                 <ApprovalFormSal2 projectInfo={projectInfo ? projectInfo : ""} returnData={(value) => returnData(value, "조회")} />
             ) : ( */}
-                <ApprovalFormSal returnData={(value) => returnData(value, "조회")} viewPageName={{ name: "수주보고서", id: "OrderMgmt" }} />
+            <ApprovalFormSal returnData={(value) => returnData(value, "조회")} viewPageName={{ name: "수주보고서", id: "OrderMgmt" }} />
             {/* )} */}
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <input
                     type="text"
                     value={title}
-                    returnData={(value) => returnData(value, "비고")}
+                    returnData={(value) => returnData(value, "제목")}
                     onChange={handleChange}
                     placeholder="제목을 입력하세요."
                     className="basic-input mg-b-10"
-                    style={{  borderRadius: 0, height: "45px", padding: "7px" }}
+                    style={{ borderRadius: 0, height: "45px", padding: "7px" }}
                 />
             </div>
             <QuillEditor isProgress={isProgress} returnData={(value) => returnData(value, "비고")} writing={writing} readContent={projectInfo.sgnDesc} />

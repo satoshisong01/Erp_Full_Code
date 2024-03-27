@@ -476,7 +476,7 @@ function Quotation() {
             }
             setCondition({ ...value.save });
 
-            if(innerPageName.name !== "품의서") {
+            if (innerPageName.name !== "품의서") {
                 if (value.view.versionId === value.save.versionId) {
                     setIsCopied(false);
                     const fetchResult = await fetchAllData({ ...value.save });
@@ -674,11 +674,11 @@ function Quotation() {
                                 <input
                                     type="text"
                                     value={title}
-                                    returnData={(value) => returnData(value, "비고")}
+                                    returnData={(value) => returnData(value, "제목")}
                                     onChange={handleChange}
                                     placeholder="제목을 입력하세요."
                                     className="basic-input mg-b-10"
-                                    style={{  borderRadius: 0, height: "45px", padding: "7px" }}
+                                    style={{ borderRadius: 0, height: "45px", padding: "7px" }}
                                 />
                             </div>
                             <QuillEditor isProgress={isProgress} returnData={(value) => returnData(value, "비고")} writing={writing} />
