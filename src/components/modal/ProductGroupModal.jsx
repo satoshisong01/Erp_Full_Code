@@ -60,7 +60,10 @@ export default function ProductGroupModal(props) {
     };
 
     const onClick = () => {
-        setProjectPgNm({[colName.id || "pgNm"]:groupInfo.pgNm})
+        setProjectPgNm({
+            ...groupInfo,
+            [colName?.id || "pgNm"]:groupInfo.pgNm //거래처의 경우 Id에 pgNm값을 받음
+        })
         onClose();
     };
 
