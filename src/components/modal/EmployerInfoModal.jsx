@@ -13,7 +13,7 @@ Modal.setAppElement("#root"); // Set the root element for accessibility
 /* 업무회원 목록 모달 */
 export default function EmployerInfoModal(props) {
     const { width, height, isOpen, title, onClose, colName } = props;
-    const { setModalPageName, setIsModalTable, setEmUserInfo, emUserInfo } = useContext(PageContext);
+    const { setModalPageName, setIsModalTable, setEmUserInfo } = useContext(PageContext);
 
     const [employerInfoList, setEmployerInfoList] = useState([]);
     const bodyRef = useRef(null);
@@ -33,12 +33,11 @@ export default function EmployerInfoModal(props) {
 
     const getEmployerList = async (requestData) => {
         const resultData = await axiosFetch("/api/baseInfrm/member/employMember/totalListAll.do", requestData || {});
-        console.log(resultData, "🎉🎉🎉🎉결과값");
         const modifiedResultData = resultData.map((item) => {
             return {
                 ...item,
                 uniqId: item.uniqId,
-                [colName.id]: item.empNm,
+                [colName?.id || "empNm"]: item.empNm,
                 posNm: item.posNm,
                 orgNm: item.orgNm,
             };
@@ -48,14 +47,14 @@ export default function EmployerInfoModal(props) {
 
     const columns = [
         { header: "고유아이디", col: "uniqId", notView: true },
-        { header: "사용자명", col: colName.id || "empNm", cellWidth: "180" },
+        { header: "사용자명", col: colName?.id || "empNm", cellWidth: "180" },
         { header: "직급", col: "posNm", cellWidth: "180" },
         // { header: "부서", col: "orgNm", cellWidth: "150" },
         { header: "부서", col: "groupNm", cellWidth: "150" },
     ];
 
     const conditionList = [
-        { title: "사용자명", col: colName.id || "empNm", type: "input" },
+        { title: "사용자명", col: colName?.id || "empNm", type: "input" },
         { title: "직급", col: "posNm", type: "input" },
     ];
 
