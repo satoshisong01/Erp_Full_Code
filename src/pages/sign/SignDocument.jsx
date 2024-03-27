@@ -32,7 +32,7 @@ export default function SignDocument() {
     const [buyView, setBuyView] = useState([]); // 영업구매비
     const [buyIngBool, setBuyIngBool] = useState(false);
     const [poiVersionId, setPoiVersion] = useState({});
-    const [clickBtn, setClickBtn] = useState(false);
+    const [clickBtn, setClickBtn] = useState(true);
 
     const fetchAllData = async (poiVersionId) => {
         //const requestSearch = {
@@ -135,7 +135,7 @@ export default function SignDocument() {
         }
         getData({ sgnId: data.sgnId });
         const timer = setTimeout(() => {
-            setClickBtn(true);
+            setClickBtn(false);
         }, 3800);
 
         // 컴포넌트가 언마운트될 때 타이머를 정리
