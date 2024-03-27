@@ -536,19 +536,18 @@ const ReactDataTableURL = (props) => {
         const url = `/api/baseInfrm/product/pjbudget/addList.do`;
         const resultData = await axiosPost(url, addData);
         if (resultData) {
-            return true;
-        } else {
-            return false;
+            setRemind(remind+1);
         }
     };
 
-    const updateItem = async (toUpdate) => {
+    const updateItem = async (toUpdate, type) => {
         const url = `/api/baseInfrm/product/pjbudget/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData) {
-            return true;
-        } else {
-            return false;
+            setRemind(remind+1);
+            if(type) {
+                setRemind(2);
+            }
         }
     };
 
@@ -556,9 +555,7 @@ const ReactDataTableURL = (props) => {
         const url = `/api/baseInfrm/product/pjbudget/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         if (resultData) {
-            return true;
-        } else {
-            return false;
+            setRemind(remind+1);
         }
     };
 
@@ -582,14 +579,26 @@ const ReactDataTableURL = (props) => {
         return updatedArray;
     };
 
+    const [remind, setRemind] = useState(0);
+
+    useEffect(() => {
+        if(remind >= 2) {
+            setRemind(0);
+            alert("저장 완료");
+            customDatasRefresh && customDatasRefresh();
+            setOriginTableData([]);
+        }
+    }, [remind])
+
     const compareData = (originData, updatedData) => {
+        setRemind(0);
         const filterData = updatedData.filter((data) => data.pjbgTypeCode); //pmpMonth가 없는 데이터 제외
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
 
         if (originDataLength > updatedDataLength) {
             const firstRowUpdate = updateDataInOrigin(originData, filterData);
-            const isMod = updateItem(firstRowUpdate); //수정
+            updateItem(firstRowUpdate); //수정
 
             const delList = [];
             const delListTest = [];
@@ -597,20 +606,10 @@ const ReactDataTableURL = (props) => {
                 delList.push(originData[i].pjbgId);
                 delListTest.push(originData[i]);
             }
-            const isDel = deleteItem(delList); //삭제
-            if (isMod && isDel) {
-                alert("저장완료");
-                setOriginTableData([]);
-                customDatasRefresh && customDatasRefresh();
-            }
+            deleteItem(delList); //삭제
         } else if (originDataLength === updatedDataLength) {
             const firstRowUpdate = updateDataInOrigin(originData, filterData);
-            const isMod = updateItem(firstRowUpdate); //수정
-            if (isMod) {
-                alert("저장완료");
-                setOriginTableData([]);
-                customDatasRefresh && customDatasRefresh();
-            }
+            updateItem(firstRowUpdate, "same"); //수정
         } else if (originDataLength < updatedDataLength) {
             const updateList = [];
 
@@ -618,18 +617,13 @@ const ReactDataTableURL = (props) => {
                 updateList.push(filterData[i]);
             }
             const firstRowUpdate = updateDataInOrigin(originData, updateList);
-            const isMod = updateItem(firstRowUpdate); //수정
+            updateItem(firstRowUpdate); //수정
 
             const addList = [];
             for (let i = originDataLength; i < updatedDataLength; i++) {
                 addList.push(filterData[i]);
             }
-            const isAdd = addItem(addList); //추가
-            if (isMod && isAdd) {
-                alert("저장완료");
-                setOriginTableData([]);
-                customDatasRefresh && customDatasRefresh();
-            }
+            addItem(addList); //추가
         }
     };
 

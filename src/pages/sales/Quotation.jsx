@@ -136,7 +136,6 @@ function Quotation() {
         }
     };
     const refresh = () => {
-        console.log("리프레시 시작 ㅎㅎ");
         setRemind(0);
         setRemind2(0);
         if (condition.poiId && condition.versionId) {
@@ -144,7 +143,6 @@ function Quotation() {
         } else {
             fetchAllData();
         }
-        console.log("리프레시 종료 ㅎㅎ");
     };
 
     const fetchAllData = async (condition) => {
@@ -263,16 +261,12 @@ function Quotation() {
     //인건비
     const compareData = (originData, updatedData) => {
         setRemind(0);
-        console.log("❤️ updatedData:", updatedData);
         const filterData = updatedData.filter((data) => data.pgId);
-
-        console.log("❤️ originData:", originData, "filterData:", filterData);
 
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
 
         if (originDataLength > updatedDataLength) {
-            console.log("조건1");
             //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
             const updateDataInOrigin = (originData, updatedData) => {
                 // 복제하여 새로운 배열 생성
@@ -302,10 +296,8 @@ function Quotation() {
 
             deleteItem(flatArray); //삭제
         } else if (originDataLength === updatedDataLength) {
-            console.log("조건2");
             updateItem(filterData, "same"); //수정
         } else if (originDataLength < updatedDataLength) {
-            console.log("조건3");
             const updateList = [];
 
             for (let i = 0; i < originDataLength; i++) {
@@ -383,7 +375,6 @@ function Quotation() {
         const url = `api/estimate/buy/estCostBuy/addList.do`;
         const resultData = await axiosPost(url, addData);
         if (resultData) {
-            console.log("구매비 추가 완료");
             setRemind2(remind + 1);
         }
     };
@@ -392,10 +383,8 @@ function Quotation() {
         const url = `/api/estimate/buy/estCostBuy/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData) {
-            console.log("구매비 수정 완료");
             setRemind2(remind + 1);
             if (type) {
-                console.log("조건2일때 set2");
                 setRemind2(2);
             }
         }
@@ -405,7 +394,6 @@ function Quotation() {
         const url = `/api/estimate/buy/estCostBuy/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         if (resultData) {
-            console.log("구매비 삭제 완료");
             setRemind2(remind + 1);
         }
     };
@@ -415,7 +403,6 @@ function Quotation() {
         const resultData = await axiosPost(url, addData);
         if (resultData) {
             setRemind(remind + 1);
-            console.log("인건비 추가 완료");
         }
     };
 
@@ -424,9 +411,7 @@ function Quotation() {
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData) {
             setRemind(remind + 1);
-            console.log("인건비 수정 완료");
             if (type) {
-                console.log("조건2일때 set2");
                 setRemind(2);
             }
         }
@@ -436,13 +421,11 @@ function Quotation() {
         const url = `/api/estimate/personnel/estimateCostMM/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         if (resultData) {
-            console.log("인건비 삭제 완료");
             setRemind(remind + 1);
         }
     };
 
     useEffect(() => {
-        console.log("remind:", remind);
         if (remind >= 2 || remind2 >= 2) {
             refresh();
         }
@@ -466,9 +449,6 @@ function Quotation() {
         }
     };
 
-    useEffect(() => {
-        console.log("❤️ ", condition);
-    }, [condition]);
     const [copiedLabor, setCopiedLabor] = useState([]); //복제 인건비
     const [copiedBuy, setCopiedBuy] = useState([]); //복제 구매비
     const [isCopied, setIsCopied] = useState(false);

@@ -69,10 +69,6 @@ function OrderPlanMgmt() {
     }, []);
 
     useEffect(() => {
-        console.log("조회 조건:", condition);
-    }, [condition]);
-
-    useEffect(() => {
         if (currentPageName.id === "OrderPlanMgmt") {
             const activeTab = document.querySelector(".mini_board_1 .tab li a.on"); //마지막으로 활성화 된 탭
             if (activeTab) {
@@ -101,21 +97,17 @@ function OrderPlanMgmt() {
         const willApprove = window.confirm("새로고침 하시겠습니까?");
         if(willApprove) {
             setIsCopied(false);
-            console.log("새로고침 시작..........", new Date());
             if (condition.poiId && condition.versionId) {
-                console.log("버튼을 클릭하여 리프레쉬");
                 fetchAllData(condition);
             } else {
                 fetchAllData();
             }
-            console.log("새로고침 끝..........", new Date());
         }
     };
 
     const refresh = () => {
         setIsCopied(false);
         setRemind(0);
-        console.log("자동 새로고침 시작..........", new Date());
         // setTimeout(() => {
             if (condition.poiId && condition.versionId) {
                 fetchAllData(condition);
@@ -123,7 +115,6 @@ function OrderPlanMgmt() {
                 fetchAllData();
             }
         // }, 2000); // 2초 후에 실행
-        console.log("자동 새로고침 끝..........", new Date());
     };
 
     const returnList = (originTableData, tableData) => {
@@ -220,14 +211,13 @@ function OrderPlanMgmt() {
     };
 
     useEffect(() => {
-        console.log("remind:", remind);
         if(remind >= 2) {
+            alert("저장 완료");
             refresh();
         }
     }, [remind])
 
     const addList = async (addNewData) => {
-        console.log("추가시작..........", new Date());
         if(!condition.poiId || !condition.versionId) {
             console.log("프로젝트 또는 버전 정보 ERROR");
             return;
@@ -239,18 +229,14 @@ function OrderPlanMgmt() {
                 // delete data.pmpId
                 data.pmpId = null;
             });
-            console.log("인건비 추가: ", addNewData);
             const resultData = await axiosPost(`/api/baseInfrm/product/prmnPlan/addList.do`, addNewData);
-            console.log("추가끝..........", new Date());
             if (resultData) {
                 setRemind(remind+1);
             }
         }
     };
     const updateList = async (toUpdate, type) => {
-        console.log("수정시작..........", new Date());
         if(!condition.poiId || !condition.versionId) {
-            console.log("프로젝트 또는 버전 정보 ERROR");
             return;
         }
         if(toUpdate?.length > 0) {
@@ -263,9 +249,7 @@ function OrderPlanMgmt() {
                 return rest;
             });
     
-            console.log("인건비 수정:", updatedData);
             const resultData = await axiosUpdate(`/api/baseInfrm/product/prmnPlan/editArrayList.do`, updatedData);
-            console.log("수정끝..........", new Date());
             if (resultData) {
                 setRemind(remind+1);
                 if(type) {
@@ -276,15 +260,12 @@ function OrderPlanMgmt() {
     };
 
     const deleteList = async (removeItem) => {
-        console.log("삭제시작..........", new Date());
         if(!condition.poiId || !condition.versionId) {
             console.log("프로젝트 또는 버전 정보 ERROR");
             return;
         }
         if(removeItem?.length > 0) {
-            console.log("인건비 삭제:", removeItem, condition);
             const resultData = await axiosDelete(`/api/baseInfrm/product/prmnPlan/removeAll.do`, removeItem);
-            console.log("삭제끝..........", new Date());
             if (resultData) {
                 setRemind(remind+1);
             }
@@ -354,7 +335,6 @@ function OrderPlanMgmt() {
             const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
             if (resultData && resultData.length > 0) {
                 const changeData = ChangePrmnPlanData(resultData, condition.poiId);
-                console.log("인건비 조회:", changeData);
                 let total = 0,
                     mm1 = 0,
                     mm9 = 0,
@@ -520,7 +500,6 @@ function OrderPlanMgmt() {
             const resultData = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", requestData);
             if (resultData && resultData.length > 0) {
                 const changeData = ChangePrmnPlanData(resultData, condition.poiId);
-                console.log("복제할 인건비 조회:", changeData);
                 const matchingAItem = unitPriceListRenew.find((aItem) => aItem.year === requestData.poiMonth);
                 if (matchingAItem) {
                     changeData.forEach((Item) => {
@@ -662,9 +641,7 @@ function OrderPlanMgmt() {
 
         if (value.view.versionId === value.save.versionId) {
             setIsCopied(false);
-            console.log("조회 시작..........", new Date());
             const fetchResult = await fetchAllData({ ...value.save });
-            console.log("조회 끝..........", new Date());
             if(fetchResult.result) {
                 alert(fetchResult.versionNum+" 데이터를 가져옵니다.")
             } else {
@@ -672,12 +649,8 @@ function OrderPlanMgmt() {
             }
         } else if (value.view.versionId !== value.save.versionId) { //복제 할때
             setIsCopied(true);
-            console.log("조회 시작..........", new Date());
             await fetchAllData({ ...value.save });
-            console.log("조회 끝..........", new Date());
-            console.log("버전 조회 시작..........", new Date());
             const copiedResult = await fetchAllCopied({ ...value.view });
-            console.log("버전 조회 끝..........", new Date());
             if(copiedResult.result) { //복제 데이터가 있을 때
                 alert(copiedResult.versionNum+" 데이터를 가져옵니다.");
             } else {

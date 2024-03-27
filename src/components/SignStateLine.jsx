@@ -12,8 +12,6 @@ function SignStateLine(props) {
         return datePart;
     };
 
-    console.log(signStateData, "왜암것두없지");
-
     //최초 결재선은 서버에 데이터가 없기에 0번째(요청자 에만 "요청"을 추가해줬음)
     if (Array.isArray(signStateData) && signStateData.length > 0) {
         if (typeof signStateData[0] === "object" && signStateData[0] !== null) {
@@ -22,8 +20,6 @@ function SignStateLine(props) {
             }
         }
     }
-
-    console.log(signStateData, "왜암것두없지2222");
 
     return (
         <>

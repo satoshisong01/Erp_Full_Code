@@ -338,7 +338,7 @@ const ReactDataTablePdorder = (props) => {
             console.log(updatedTableData);
             // 선택된 품명의 데이터로 해당 행(row)의 데이터 업데이트
             updatedTableData[rowIndex] = {
-                // ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
+                ...updatedTableData[rowIndex], // 다른 속성들을 그대로 유지
                 ...selectedPdiNm, // projectPdiNm 객체의 데이터로 업데이트
                 byUnitPrice: selectedPdiNm.pupUnitPrice, //품목단가
             };
@@ -464,6 +464,17 @@ const ReactDataTablePdorder = (props) => {
         return value1 / value2;
     };
 
+    const [remind, setRemind] = useState(0) //refresh 시점 알림
+
+    useEffect(() => {
+        if(remind >= 2) {
+            setRemind(0);
+            alert("저장 완료");
+            customDatasRefresh && customDatasRefresh();
+            setOriginTableData([]);
+        }
+    }, [remind])
+
     const addList = async (addNewData) => {
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(addNewData)) return;
         if (!condition || condition.poiId === undefined) {
@@ -495,13 +506,11 @@ const ReactDataTablePdorder = (props) => {
         const url = `/api${suffixUrl}/addList.do`;
         const resultData = await axiosPost(url, addNewData);
         if (resultData) {
-            return true;
-        } else {
-            return false;
+            setRemind(remind+1);
         }
     };
 
-    const updateList = async (toUpdate) => {
+    const updateList = async (toUpdate, type) => {
         if (!isCurrentPage() && !suffixUrl && !Array.isArray(toUpdate)) return;
         if (currentPageName.id === "PurchasingMgmtPlan") {
             //실행-계획구매
@@ -526,9 +535,10 @@ const ReactDataTablePdorder = (props) => {
         const url = `/api${suffixUrl}/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData) {
-            return true;
-        } else {
-            return false;
+            setRemind(remind+1);
+            if(type) {
+                setRemind(2);
+            }
         }
     };
     const deleteList = async (removeItem) => {
@@ -538,17 +548,13 @@ const ReactDataTablePdorder = (props) => {
             const url = `/api${changeUrl}/removeAll.do`;
             const resultData = await axiosDelete(url, removeItem);
             if (resultData) {
-                return true;
-            } else {
-                return false;
+                setRemind(remind+1);
             }
         } else {
             const url = `/api${suffixUrl}/removeAll.do`;
             const resultData = await axiosDelete(url, removeItem);
             if (resultData) {
-                return true;
-            } else {
-                return false;
+                setRemind(remind+1);
             }
         }
     };
@@ -573,12 +579,8 @@ const ReactDataTablePdorder = (props) => {
 
     // 초기 데이터와 수정된 데이터를 비교하는 함수
     const compareData = (originData, updatedData) => {
+        setRemind(0);
         if (originData?.length === 0 && updatedData?.length === 0) return;
-        // const not = updatedData.filter((data) => !data.pdiId); //필수값 체크
-        // if(not) {
-        //     alert("품목을 선택하세요.("+not.length+")")
-        //     return;
-        // }
         const filterData = updatedData.filter((data) => data.pdiId);
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
@@ -586,26 +588,16 @@ const ReactDataTablePdorder = (props) => {
         if (originDataLength > updatedDataLength) {
             //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
             const firstRowUpdate = updateDataInOrigin(originData, filterData);
-            const isMod = updateList(firstRowUpdate);
+            updateList(firstRowUpdate);
 
             const originAValues = originData.map((item) => item.byId); //삭제할 id 추출
             const extraOriginData = originAValues.slice(updatedDataLength);
 
-            const isDel = deleteList(removeDuplicates(extraOriginData));
+            deleteList(removeDuplicates(extraOriginData));
 
-            if (isMod && isDel) {
-                alert("저장완료");
-                customDatasRefresh && customDatasRefresh();
-                setOriginTableData([]);
-            }
         } else if (originDataLength === updatedDataLength) {
             const firstRowUpdate = updateDataInOrigin(originData, filterData);
-            const isMod = updateList(firstRowUpdate);
-            if (isMod) {
-                alert("저장완료");
-                customDatasRefresh && customDatasRefresh();
-                setOriginTableData([]);
-            }
+            updateList(firstRowUpdate, "same");
         } else if (originDataLength < updatedDataLength) {
             const toAdds = [];
             const toUpdate = [];
@@ -614,19 +606,13 @@ const ReactDataTablePdorder = (props) => {
                 toUpdate.push(temp);
             }
             const firstRowUpdate = updateDataInOrigin(originData, toUpdate);
-            const isMod = updateList(firstRowUpdate);
+            updateList(firstRowUpdate);
 
             for (let i = originDataLength; i < updatedDataLength; i++) {
                 const temp = { ...filterData[i] };
                 toAdds.push(temp);
             }
-            const isAdd = addList(toAdds);
-
-            if (isMod && isAdd) {
-                alert("저장완료");
-                customDatasRefresh && customDatasRefresh();
-                setOriginTableData([]);
-            }
+            addList(toAdds);
         }
     };
 
