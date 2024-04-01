@@ -13,7 +13,7 @@ Modal.setAppElement("#root"); // Set the root element for accessibility
 /* 품목그룹정보 목록 모달 */
 export default function ProductGroupModal(props) {
     const { width, height, isOpen, title, onClose, colName } = props;
-    const { setModalPageName, setIsModalTable, setProjectPgNm, setPgNmList } = useContext(PageContext);
+    const { setModalPageName, setIsModalTable, setProjectPgNm, setPgNmList, projectPgNm } = useContext(PageContext);
 
     const [productInfoList, setProductInfoList] = useState([]);
     const bodyRef = useRef(null);
@@ -59,8 +59,16 @@ export default function ProductGroupModal(props) {
         getProductInfoList(value);
     };
 
+    useEffect(() => {
+        console.log(projectPgNm);
+    }, [projectPgNm]);
+
     const onClick = () => {
-        setProjectPgNm({[colName.id || "pgNm"]:groupInfo.pgNm})
+        console.log("colName:", colName);
+        setProjectPgNm({
+            ...groupInfo,
+            [colName?.id || "pgNm"]: groupInfo.pgNm, //거래처에서 ID값을 이름으로 받음
+        });
         onClose();
     };
 

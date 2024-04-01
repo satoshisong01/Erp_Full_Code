@@ -62,10 +62,18 @@ function Quotation() {
                 const activeTabInfo = infoList.find((data) => data.name === activeTab.textContent.trim());
                 setInnerPageName({ ...activeTabInfo });
                 setCurrentPageName({});
-                // fetchAllData();
             }
         }
     }, [currentPageName]);
+
+    useEffect(() => {
+        console.log(condition, "제발...");
+
+        if (innerPageName.id === "proposal") {
+            console.log("제발...");
+            fetchAllData(condition);
+        }
+    }, [innerPageName, condition]);
 
     const columnlabor = [
         //인건비
@@ -147,9 +155,10 @@ function Quotation() {
     };
 
     const fetchAllData = async (condition) => {
-        if (innerPageName.id === "estimateLabor" || innerPageName.id === "proposal") {
+        if (innerPageName.id === "estimateLabor") {
             //인건비
             const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
+
             const viewResult = await axiosFetch("/api/baseInfrm/product/prmnPlan/totalListAll.do", { poiId: condition?.poiId || "" }); //계획조회
             if (viewResult && viewResult.length > 0) {
                 const changeData = ChangePrmnPlanData(viewResult);
@@ -177,11 +186,11 @@ function Quotation() {
                 const result = ProcessResultDataRun(resultData, condition);
                 setEstimate(result);
                 setestimateBool(true);
-                return { result: true, versionNum: condition.versionNum };
+                return { result: true, versionNum: condition?.versionNum };
             } else {
-                return { result: false, versionNum: condition.versionNum };
+                return { result: false, versionNum: condition?.versionNum };
             }
-        } else if (innerPageName.id === "orderBuying" || innerPageName.id === "proposal") {
+        } else if (innerPageName.id === "orderBuying") {
             //구매비
             const viewResult = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", condition);
             if (viewResult && viewResult.length > 0) {
@@ -209,12 +218,14 @@ function Quotation() {
             } else {
                 return { result: false, versionNum: condition.versionNum };
             }
+        } else if (innerPageName.id === "proposal") {
+            const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
         }
         //const resultDa2 = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", requestSearch);
         //const filteredData = filterData(updatedData);
     };
     const fetchAllCopied = async (condition) => {
-        if (innerPageName.id === "estimateLabor" || innerPageName.id === "proposal") {
+        if (innerPageName.id === "proposal" || innerPageName.id === "estimateLabor") {
             //인건비
             const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
             if (resultData.length !== 0) {
@@ -224,7 +235,7 @@ function Quotation() {
             } else {
                 return { result: false, versionNum: condition.versionNum };
             }
-        } else if (innerPageName.id === "orderBuying" || innerPageName.id === "proposal") {
+        } else if (innerPageName.id === "proposal" || innerPageName.id === "orderBuying") {
             //구매비
             const resultData = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", condition || {});
             if (resultData.length !== 0) {
@@ -251,7 +262,7 @@ function Quotation() {
             compareData(originTableData, tableData);
         } else if (innerPageName.id === "orderBuying") {
             //구매비
-            if (tableData[0].estBuyId === null) {
+            if (tableData[0]?.estBuyId === null) {
                 addItem2(tableData);
             } else {
                 compareData2(originTableData, tableData);
@@ -262,10 +273,14 @@ function Quotation() {
     //인건비
     const compareData = (originData, updatedData) => {
         setRemind(0);
-        const filterData = updatedData.filter((data) => data.pgId);
+        console.log(originData, updatedData, "originData, updatedData");
+        const filterData = updatedData;
 
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
+
+        console.log(originDataLength, "originDataLength");
+        console.log(updatedDataLength, "updatedDataLength");
 
         if (originDataLength > updatedDataLength) {
             //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
@@ -299,6 +314,7 @@ function Quotation() {
         } else if (originDataLength === updatedDataLength) {
             updateItem(filterData, "same"); //수정
         } else if (originDataLength < updatedDataLength) {
+            console.log("여기타야함 추가");
             const updateList = [];
 
             for (let i = 0; i < originDataLength; i++) {
@@ -400,6 +416,7 @@ function Quotation() {
     };
 
     const addItem = async (addData) => {
+        console.log(addData, "서버에 추가되는것것");
         const url = `/api/estimate/personnel/estimateCostMM/addArrayList.do`;
         const resultData = await axiosPost(url, addData);
         if (resultData) {
@@ -408,6 +425,7 @@ function Quotation() {
     };
 
     const updateItem = async (toUpdate, type) => {
+        console.log(toUpdate, "수정하는값 보내기");
         const url = `/api/estimate/personnel/estimateCostMM/editArrayList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData) {
@@ -452,6 +470,7 @@ function Quotation() {
     const writing = () => {
         if (!isProgress) {
             setIsProgress(true); //내용 변경 중
+            fetchAllData(condition);
         }
     };
 

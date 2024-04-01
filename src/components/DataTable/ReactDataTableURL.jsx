@@ -75,14 +75,15 @@ const ReactDataTableURL = (props) => {
         if (tableRef) {
             setCurrentTable(tableRef);
         }
-        return () => { //초기화
+        return () => {
+            //초기화
             setTableData([]);
             setOriginTableData([]);
         };
     }, []);
 
     useEffect(() => {
-        if(isCopied) {
+        if (isCopied) {
             // console.log("1. 복제 TRUE - custom:", customDatas, "copied", copiedDatas);
             const copied = initializeTableData(copiedDatas, columns);
             const custom = initializeTableData(customDatas, columns);
@@ -436,7 +437,7 @@ const ReactDataTableURL = (props) => {
             if (name === "estPosition") {
                 updatedTableData[index][name] = value;
                 updatedTableData[index]["estUnitPrice"] = unitPrice;
-                updatedTableData[index]["price"] = row["estUnitPrice"] * row["total"];
+                updatedTableData[index]["price"] = row["estUnitPrice"] * (row["total"] ? row["total"] : 0);
             }
 
             updatedTableData[index][name] = value;
@@ -510,7 +511,7 @@ const ReactDataTableURL = (props) => {
             if (current.id === "estimateLabor") {
                 //견적>인건비
                 if (column.accessor === "estPosition") {
-                    newRow[column.accessor] = "특2"; // useAt 항상 "Y"로 설정
+                    newRow[column.accessor] = "선택"; // useAt 항상 "Y"로 설정
                 }
             }
         });
@@ -536,7 +537,7 @@ const ReactDataTableURL = (props) => {
         const url = `/api/baseInfrm/product/pjbudget/addList.do`;
         const resultData = await axiosPost(url, addData);
         if (resultData) {
-            setRemind(remind+1);
+            setRemind(remind + 1);
         }
     };
 
@@ -544,8 +545,8 @@ const ReactDataTableURL = (props) => {
         const url = `/api/baseInfrm/product/pjbudget/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData) {
-            setRemind(remind+1);
-            if(type) {
+            setRemind(remind + 1);
+            if (type) {
                 setRemind(2);
             }
         }
@@ -555,7 +556,7 @@ const ReactDataTableURL = (props) => {
         const url = `/api/baseInfrm/product/pjbudget/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         if (resultData) {
-            setRemind(remind+1);
+            setRemind(remind + 1);
         }
     };
 
@@ -582,13 +583,13 @@ const ReactDataTableURL = (props) => {
     const [remind, setRemind] = useState(0);
 
     useEffect(() => {
-        if(remind >= 2) {
+        if (remind >= 2) {
             setRemind(0);
             alert("저장 완료");
             customDatasRefresh && customDatasRefresh();
             setOriginTableData([]);
         }
-    }, [remind])
+    }, [remind]);
 
     const compareData = (originData, updatedData) => {
         setRemind(0);

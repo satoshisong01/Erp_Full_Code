@@ -296,7 +296,6 @@ function CustomerMgmt() {
             lockAt: "Y",
             useAt: "Y",
             deleteAt: "N",
-            gupType: "G",
         };
         const resultData = await axiosPost(url, dataToSend);
         console.log(resultData);
