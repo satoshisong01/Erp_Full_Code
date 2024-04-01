@@ -64,10 +64,9 @@ export default function ProductGroupModal(props) {
     }, [projectPgNm]);
 
     const onClick = () => {
-        console.log("colName:", colName);
         setProjectPgNm({
             ...groupInfo,
-            [colName?.id || "pgNm"]: groupInfo.pgNm, //거래처에서 ID값을 이름으로 받음
+            [colName?.id || "pgNm"]: groupInfo.pgNm, //거래처의 경우 Id에 pgNm값을 받음
         });
         onClose();
     };

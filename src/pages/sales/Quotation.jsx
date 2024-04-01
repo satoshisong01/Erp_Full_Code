@@ -96,35 +96,6 @@ function Quotation() {
         { header: "사원", col: "pmpmmPositionCode14", cellWidth: "170", type: "input" },
     ];
 
-    const columnBuy = [
-        // 구매비
-        { header: "구매아이디", col: "byId", notView: true },
-        { header: "프로젝트아이디", col: "poiId", notView: true },
-        { header: "판매사아이디", col: "pdiSeller", notView: true },
-        { header: "제조사아이디", col: "pdiMenufut", notView: true },
-        { header: "품명", col: "pdiNm", cellWidth: "200", type: "productInfo", require: true, textAlign: "left" },
-        { header: "품목그룹명", col: "pgNm", cellWidth: "150", textAlign: "left" },
-        { header: "모델명", col: "pdiNum", cellWidth: "150", textAlign: "left" },
-        { header: "판매사", col: "pdiSeller_name", cellWidth: "150", textAlign: "left" },
-        { header: "제조사", col: "pdiMenufut_name", cellWidth: "150", textAlign: "left" },
-        { header: "규격", col: "pdiStnd", cellWidth: "200", textAlign: "left" },
-        { header: "수량", col: "byQunty", cellWidth: "50", type: "input", require: true, textAlign: "center" },
-        { header: "단위", col: "pdiUnit", cellWidth: "50" },
-        // { header: "소비자 단가", col: "consumerPrice", cellWidth: "100", type: "input" },
-        { header: "소비자 단가", col: "byConsumerUnitPrice", cellWidth: "100", type: "number", textAlign: "right" },
-        { header: "소비자 금액", col: "consumerAmount", cellWidth: "130", textAlign: "right" },
-        { header: "공급단가", col: "unitPrice", cellWidth: "100", type: "number", textAlign: "right" },
-        { header: "공급금액", col: "planAmount", cellWidth: "130", textAlign: "right" },
-        { header: "원단가", col: "byUnitPrice", cellWidth: "100", type: "number", require: true, textAlign: "right" },
-        { header: "원가", col: "estimatedCost", cellWidth: "100", textAlign: "right" },
-        { header: "이익금", col: "plannedProfits", cellWidth: "100", textAlign: "right" },
-        // { header: "이익률", col: "plannedProfitMargin", cellWidth: "60" },
-        { header: "이익률", col: "byStandardMargin", cellWidth: "100", type: "input", require: true, textAlign: "center" },
-        { header: "소비자가 산출률", col: "byConsumerOutputRate", cellWidth: "130", type: "input", require: true, textAlign: "center" },
-        { header: "첨부파일", col: "file", cellWidth: "70", type: "file" },
-        { header: "비고", col: "byDesc", cellWidth: "300", type: "input", textAlign: "left" },
-    ];
-
     const changeTabs = (name, id) => {
         setInnerPageName((prev) => {
             setPrevInnerPageName({ ...prev });
@@ -146,7 +117,6 @@ function Quotation() {
     const refresh = () => {
         setRemind(0);
         setRemind2(0);
-        console.log("다시 조회 중.......");
         if (condition.poiId && condition.versionId) {
             fetchAllData(condition);
         } else {
@@ -155,7 +125,25 @@ function Quotation() {
     };
 
     const fetchAllData = async (condition) => {
-        if (innerPageName.id === "estimateLabor") {
+        if (innerPageName.id === "proposal") {
+            //품의서
+            const laborResult = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {}); //견적서용 인건비조회
+            if (laborResult.length !== 0) {
+                const result = ProcessResultDataRun(laborResult, condition);
+                setEstimate(result);
+                setestimateBool(true);
+            }
+            const buyResult = await axiosFetch("/api/estimate/buy/estCostBuy/totalListAll.do", condition || {}); //견적서용 구매비조회
+            if (buyResult.length !== 0) {
+                const updatedData = { ...buyResult[0] }; // 첫 번째 객체만 수정한다고 가정합니다.
+                updatedData.estBuyQunty = 1;
+                const updatedArray = [...buyResult];
+                updatedArray[0] = updatedData;
+                setBuyIngInfo(updatedArray);
+                setBuyIngBool(true);
+            }
+        } else if (innerPageName.id === "estimateLabor") {
+            //인건비
             //인건비
             const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
 
@@ -192,6 +180,7 @@ function Quotation() {
             }
         } else if (innerPageName.id === "orderBuying") {
             //구매비
+            //구매비
             const viewResult = await axiosFetch("/api/baseInfrm/product/buyIngInfo/totalListAll.do", condition);
             if (viewResult && viewResult.length > 0) {
                 const calData = buyIngInfoCalculation(viewResult);
@@ -221,8 +210,6 @@ function Quotation() {
         } else if (innerPageName.id === "proposal") {
             const resultData = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", condition || {});
         }
-        //const resultDa2 = await axiosFetch("/api/estimate/personnel/estimateCostMM/totalListAll.do", requestSearch);
-        //const filteredData = filterData(updatedData);
     };
     const fetchAllCopied = async (condition) => {
         if (innerPageName.id === "proposal" || innerPageName.id === "estimateLabor") {
@@ -341,9 +328,6 @@ function Quotation() {
         const originDataLength = originData ? originData.length : 0;
         const updatedDataLength = filterData ? filterData.length : 0;
 
-        console.log(originDataLength);
-        console.log(updatedDataLength);
-
         if (originDataLength > updatedDataLength) {
             //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
             const updateDataInOrigin = (originData, filterData) => {
@@ -392,7 +376,6 @@ function Quotation() {
         const url = `api/estimate/buy/estCostBuy/addList.do`;
         const resultData = await axiosPost(url, addData);
         if (resultData) {
-            console.log("구매비 추가완료");
             setRemind2(2);
         }
     };
@@ -401,7 +384,6 @@ function Quotation() {
         const url = `/api/estimate/buy/estCostBuy/editList.do`;
         const resultData = await axiosUpdate(url, toUpdate);
         if (resultData) {
-            console.log("구매비 수정완료");
             setRemind2(2);
         }
     };
@@ -410,7 +392,6 @@ function Quotation() {
         const url = `/api/estimate/buy/estCostBuy/removeAll.do`;
         const resultData = await axiosDelete(url, removeItem);
         if (resultData) {
-            console.log("구매비 삭제완료");
             setRemind2(2);
         }
     };

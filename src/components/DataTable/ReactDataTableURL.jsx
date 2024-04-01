@@ -84,13 +84,11 @@ const ReactDataTableURL = (props) => {
 
     useEffect(() => {
         if (isCopied) {
-            // console.log("1. 복제 TRUE - custom:", customDatas, "copied", copiedDatas);
             const copied = initializeTableData(copiedDatas, columns);
             const custom = initializeTableData(customDatas, columns);
             setOriginTableData(custom); //저장할 테이블
             setTableData(copied?.length > 0 ? copied : []); //복제할 테이블
         } else {
-            // console.log("2. 복제 FALSE - custom:", customDatas, "copied", copiedDatas);
             const custom = initializeTableData(customDatas, columns);
             const copyCustom = JSON.parse(JSON.stringify(custom)); //깊은 복사
             setOriginTableData(custom); //원본 데이터
@@ -248,15 +246,6 @@ const ReactDataTableURL = (props) => {
         setProjectPdiNm({});
     };
 
-    const handleChange = (e, row) => {
-        const { value, name } = e.target;
-        // tableData를 복제하여 수정
-        const updatedTableData = [...tableData];
-        updatedTableData[row.index][name] = value;
-        // 수정된 데이터로 tableData 업데이트
-        setTableData(updatedTableData);
-    };
-
     const {
         getTableProps,
         getTableBodyProps,
@@ -356,6 +345,18 @@ const ReactDataTableURL = (props) => {
         초1: 400000,
     };
 
+    const isExistNumber = (value) => {
+        if (value === null || value === undefined) {
+            return false;
+        }
+        const number = parseInt(value);
+        if (!isNaN(number)) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     const onChangeInput = (e, preRow) => {
         const { value, name } = e.target;
         const index = preRow.index;
@@ -363,97 +364,45 @@ const ReactDataTableURL = (props) => {
         const updatedTableData = [...tableData];
         //견적용 인건비
         if (innerPageName.id === "estimateLabor") {
-            let total = 0;
-            let unitPrice = positionMapping[value] || 0;
-
             if (
-                name === "estMm1" ||
-                name === "estMm2" ||
-                name === "estMm3" ||
-                name === "estMm4" ||
-                name === "estMm5" ||
-                name === "estMm6" ||
-                name === "estMm7" ||
-                name === "estMm8" ||
-                name === "estMm9" ||
-                name === "estMm10" ||
-                name === "estMm11" ||
-                name === "estMm12" ||
-                name === "estMm13" ||
-                name === "estMm14" ||
-                name === "estMm15" ||
-                name === "estMm16" ||
-                name === "estMm17" ||
-                name === "estMm18" ||
-                name === "estMm19" ||
-                name === "estMm20" ||
-                name === "estMm21" ||
-                name === "estMm22" ||
-                name === "estMm23" ||
-                name === "estMm24"
+                name !== "pgNm" &&
+                name !== "estPosition" &&
+                name !== "total" &&
+                name !== "price" &&
+                name !== "positionCount" &&
+                name !== "estDesc" &&
+                name !== "estUnitPrice"
             ) {
-                const preValue = row[name] ? parseInt(row[name]) : 0;
-                const preTotal = row["total"] ? parseInt(row["total"]) : 0;
-                if (preValue) {
-                    total = preTotal - preValue;
-                    total = total + parseInt(value);
-                } else {
-                    total = preTotal + parseInt(value);
-                }
-                updatedTableData[index]["total"] = total;
+                const preMMTotal = isExistNumber(row.total) ? parseInt(row.total) : 0; //mm합계
+                const preMMValue = isExistNumber(row[name]) ? parseInt(row[name]) : 0; //현재컬럼의 이전 mm값
+                const preEstUnitPrice = isExistNumber(row.estUnitPrice) ? parseInt(row.estUnitPrice) : 0; //단가
+                const curValue = isExistNumber(value) ? parseInt(value) : 0; //현재 mm값
+                const total = preMMTotal - preMMValue + curValue;
+
+                updatedTableData[index]["total"] = total; //mm 합계
+                updatedTableData[index]["price"] = preEstUnitPrice * total; //금액
+            } else if (name === "estPosition") {
+                //직급 combobox
+                let positionUnitPrice = positionMapping[value] || 0;
+                updatedTableData[index]["estUnitPrice"] = positionUnitPrice;
+                const preMMTotal = isExistNumber(row.total) ? parseInt(row.total) : 0;
+                updatedTableData[index]["price"] = positionUnitPrice * preMMTotal;
+            } else if (name === "estUnitPrice") {
+                //단가 입력시
+                const preMMTotal = isExistNumber(row.total) ? parseInt(row.total) : 0;
+                const curValue = isExistNumber(value) ? parseInt(value) : 0; //현재 mm값
+                updatedTableData[index]["price"] = preMMTotal * curValue; //금액변동
             }
 
-            if (
-                name === "estUnitPrice" ||
-                name === "estMm1" ||
-                name === "estMm2" ||
-                name === "estMm3" ||
-                name === "estMm4" ||
-                name === "estMm5" ||
-                name === "estMm6" ||
-                name === "estMm7" ||
-                name === "estMm8" ||
-                name === "estMm9" ||
-                name === "estMm10" ||
-                name === "estMm11" ||
-                name === "estMm12" ||
-                name === "estMm13" ||
-                name === "estMm14" ||
-                name === "estMm15" ||
-                name === "estMm16" ||
-                name === "estMm17" ||
-                name === "estMm18" ||
-                name === "estMm19" ||
-                name === "estMm20" ||
-                name === "estMm21" ||
-                name === "estMm22" ||
-                name === "estMm23" ||
-                name === "estMm24"
-            ) {
-                updatedTableData[index][name] = value;
-                updatedTableData[index]["price"] = row["estUnitPrice"] * row["total"];
-            }
-
-            if (name === "estPosition") {
-                updatedTableData[index][name] = value;
-                updatedTableData[index]["estUnitPrice"] = unitPrice;
-                updatedTableData[index]["price"] = row["estUnitPrice"] * (row["total"] ? row["total"] : 0);
-            }
-
-            updatedTableData[index][name] = value;
-        } else if (name === "pjbgTypeCode") {
             //경비목록 중복 방지
+        } else if (name === "pjbgTypeCode") {
             const isDuplicate = updatedTableData.some((item) => item.pjbgTypeCode === value);
             if (isDuplicate) {
                 alert("해당 타입은 이미 존재합니다.");
                 updatedTableData[index][name] = "";
-            } else {
-                updatedTableData[index][name] = value;
             }
-        } else {
-            updatedTableData[index][name] = value;
         }
-
+        updatedTableData[index][name] = value;
         setTableData(updatedTableData);
     };
 
@@ -475,9 +424,6 @@ const ReactDataTableURL = (props) => {
                 //임시 업무회원 삭제해야함
                 newRow[column.accessor] = emUserInfo?.uniqId;
             }
-            // else if (column.accessor === "pjbgTypeCode19") {
-            //     newRow[column.accessor] = 0; // pjbgTypeCode 항상 "EXPNS10"로 설정
-            // }
 
             if (current.name === "경비실행") {
                 if (column.accessor === "modeCode") {
@@ -654,7 +600,6 @@ const ReactDataTableURL = (props) => {
     const visibleColumnCount = headerGroups[0].headers.filter((column) => !column.notView).length;
 
     const textAlignStyle = (column) => {
-        //console.log("⭐경비:", column.textAlign);
         switch (column.textAlign) {
             case "left":
                 return "txt-left";
@@ -758,7 +703,7 @@ const ReactDataTableURL = (props) => {
                                                                     type="text"
                                                                     placeholder={`품명을 선택해 주세요.`}
                                                                     value={tableData[row.index].pdiNm || ""}
-                                                                    onChange={(e) => handleChange(e, row)}
+                                                                    onChange={(e) => onChangeInput(e, row)}
                                                                     readOnly
                                                                 />
                                                             </div>
@@ -774,7 +719,7 @@ const ReactDataTableURL = (props) => {
                                                                     type="text"
                                                                     placeholder={`품목그룹을 선택해 주세요.`}
                                                                     value={tableData[row.index].pgNm || ""}
-                                                                    onChange={(e) => handleChange(e, row)}
+                                                                    onChange={(e) => onChangeInput(e, row)}
                                                                     readOnly
                                                                 />
                                                             </div>
@@ -783,7 +728,7 @@ const ReactDataTableURL = (props) => {
                                                                 autoComplete="off"
                                                                 name={cell.column.id}
                                                                 value={tableData[row.index]?.[cell.column.id] || ""}
-                                                                onChange={(e) => onChangeInput(e, row, cell.column.id)}>
+                                                                onChange={(e) => onChangeInput(e, row)}>
                                                                 {cell.column.options.map((option, index) => (
                                                                     <option key={index} value={option.value || ""}>
                                                                         {option.label}
@@ -801,7 +746,7 @@ const ReactDataTableURL = (props) => {
                                                                     type="text"
                                                                     placeholder={`거래처명을 선택해 주세요.`}
                                                                     value={tableData[row.index][cell.column.id] || ""}
-                                                                    onChange={(e) => handleChange(e, row)}
+                                                                    onChange={(e) => onChangeInput(e, row)}
                                                                     readOnly
                                                                 />
                                                             </div>
@@ -821,13 +766,13 @@ const ReactDataTableURL = (props) => {
                                                         ) : cell.column.type === "number" ? (
                                                             <Number
                                                                 value={tableData[row.index]?.[cell.column.id] || ""}
-                                                                onChange={(value) => handleChange({ target: { value: value, name: cell.column.id } }, row)}
+                                                                onChange={(value) => onChangeInput({ target: { value: value, name: cell.column.id } }, row)}
                                                                 style={{ textAlign: cell.column.textAlign || "left" }}
                                                             />
                                                         ) : cell.column.type === "estDesc" ? (
                                                             <EstDesc
                                                                 value={tableData[row.index]?.[cell.column.id] || ""}
-                                                                onChange={(value) => handleChange({ target: { value: value, name: cell.column.id } }, row)}
+                                                                onChange={(value) => onChangeInput({ target: { value: value, name: cell.column.id } }, row)}
                                                                 style={{ textAlign: cell.column.textAlign || "left" }}
                                                             />
                                                         ) : cell.column.Header === "연월" && cell.value ? (
