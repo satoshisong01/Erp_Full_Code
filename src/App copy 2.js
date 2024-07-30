@@ -9,7 +9,7 @@ const App = () => {
     const dataTableRef = useRef(null);
 
     const headers = {
-        Authorization: process.env.REACT_APP_POST,
+        Authorization: localStorage.jToken,
     };
 
     const initializeDataTable = () => {
@@ -17,11 +17,7 @@ const App = () => {
             // DataTable 객체가 없을 때만 초기화
             dataTableRef.current = $("#dataTable").DataTable({
                 data: data,
-                columns: [
-                    { title: "clCode" },
-                    { title: "clCodeDc" },
-                    { title: "clCodeNm" },
-                ],
+                columns: [{ title: "clCode" }, { title: "clCodeDc" }, { title: "clCodeNm" }],
             });
         }
     };
@@ -35,11 +31,7 @@ const App = () => {
         };
 
         axios
-            .post(
-                "http://192.168.0.162:8888/api/system/code/clCode/listAll.do",
-                requestData,
-                options
-            )
+            .post("http://192.168.0.162:8888/api/system/code/clCode/listAll.do", requestData, options)
             .then((response) => {
                 console.log(response);
                 setData(response.data.result.resultData);

@@ -211,7 +211,7 @@ function ExpenseMgmtPlan() {
     /* 중복방지 */
     const validate = (datas) => {
         const seen = new Set();
-        
+
         for (const data of datas) {
             //${data.pjbgBeginDt.substring(0, 7)}
             const key = `${data.pjbgDt.substring(0, 7)}-${data.esntlId}`; //연월, 출장인이 같으면 중복
@@ -223,26 +223,26 @@ function ExpenseMgmtPlan() {
             }
             seen.add(key);
         }
-            
+
         return false; // 중복 데이터 없음
-    }
+    };
 
     const compareData = (originData, updatedData) => {
         const isDuplicateData = validate(updatedData); // 중복방지
 
-        if(!isDuplicateData) {
+        if (!isDuplicateData) {
             const filterData = updatedData.filter((data) => data.poiId); //pmpMonth가 없는 데이터 제외
             const originDataLength = originData ? originData.length : 0;
             const updatedDataLength = filterData ? filterData.length : 0;
-    
+
             if (originDataLength > updatedDataLength) {
                 console.log(originDataLength, "originDataLength");
                 console.log(updatedDataLength, "updatedDataLength");
-    
+
                 //이전 id값은 유지하면서 나머지 값만 변경해주는 함수
                 const updateDataInOrigin = (originData, updatedData) => {
                     const updatedArray = [...originData];
-    
+
                     for (let i = 0; i < Math.min(updatedData.length, originData.length); i++) {
                         const updatedItem = updatedData[i];
                         console.log(updatedItem, "길이가궁금");
@@ -258,13 +258,13 @@ function ExpenseMgmtPlan() {
                             pjbgId20: updatedArray[i].pjbgId20,
                         };
                     }
-    
+
                     return updatedArray;
                 };
-    
+
                 const firstRowUpdate = updateDataInOrigin(originData, updatedData);
                 updateItem(firstRowUpdate); //수정
-    
+
                 const delList = [];
                 const delListTest = [];
                 for (let i = updatedDataLength; i < originDataLength; i++) {
@@ -276,16 +276,16 @@ function ExpenseMgmtPlan() {
                 updateItem(filterData); //수정
             } else if (originDataLength < updatedDataLength) {
                 const updateList = [];
-    
+
                 for (let i = 0; i < originDataLength; i++) {
                     updateList.push(filterData[i]);
                 }
                 updateItem(updateList); //수정
-    
+
                 const addList = [];
                 for (let i = originDataLength; i < updatedDataLength; i++) {
                     const newItem = filterData[i];
-    
+
                     // Add default value for esntlId if it doesn't exist
                     if (!newItem.esntlId) {
                         newItem.esntlId = "";
@@ -394,20 +394,23 @@ function ExpenseMgmtPlan() {
         const viewData = await axiosFetch("/api/baseInfrm/product/pjbudget/totalListAll.do", condition);
         const updatedViewData = updatePjbgType(viewData);
 
-
         setPjbudgetDatasView(updatedViewData || []);
-
 
         if (resultData && resultData.length > 0) {
             const updatedData = processResultData(resultData, condition);
             setBudgetMgmt(updatedData);
-            
-            
+
             const calDatas = updatedData.reduce((result, current) => {
-                const existingGroup = result.find(item => item.pjbgDt === current.pjbgDt);
-                if(existingGroup) {
+                const existingGroup = result.find((item) => item.pjbgDt === current.pjbgDt);
+                if (existingGroup) {
                     existingGroup.pjbgDt = current.pjbgDt;
-                    existingGroup.total += current.pjbgTypeCode1 + current.pjbgTypeCode2 + current.pjbgTypeCode3 + current.pjbgTypeCode4 + current.pjbgTypeCode5 + current.pjbgTypeCode20;
+                    existingGroup.total +=
+                        current.pjbgTypeCode1 +
+                        current.pjbgTypeCode2 +
+                        current.pjbgTypeCode3 +
+                        current.pjbgTypeCode4 +
+                        current.pjbgTypeCode5 +
+                        current.pjbgTypeCode20;
                     existingGroup.pjbgTypeCode1 += current.pjbgTypeCode1; //교통비
                     existingGroup.pjbgTypeCode2 += current.pjbgTypeCode2; //숙박비
                     existingGroup.pjbgTypeCode3 += current.pjbgTypeCode3; //일비/파견비
@@ -415,30 +418,41 @@ function ExpenseMgmtPlan() {
                     existingGroup.pjbgTypeCode5 += current.pjbgTypeCode5; //자재/소모품외
                     existingGroup.pjbgTypeCode20 += current.pjbgTypeCode20; //기타
                 } else {
-                    result.push({ ...current, total: current.pjbgTypeCode1 + current.pjbgTypeCode2 + current.pjbgTypeCode3 + current.pjbgTypeCode4 + current.pjbgTypeCode5 + current.pjbgTypeCode20 });
+                    result.push({
+                        ...current,
+                        total:
+                            current.pjbgTypeCode1 +
+                            current.pjbgTypeCode2 +
+                            current.pjbgTypeCode3 +
+                            current.pjbgTypeCode4 +
+                            current.pjbgTypeCode5 +
+                            current.pjbgTypeCode20,
+                    });
                 }
 
                 return result;
-            }, [])
+            }, []);
 
-            const total = calDatas.reduce((acc, item) => {
-                acc.pjbgDt = "TOTAL";
-                acc.total += item.total;
-                acc.pjbgTypeCode1 += item.pjbgTypeCode1;
-                acc.pjbgTypeCode2 += item.pjbgTypeCode2;
-                acc.pjbgTypeCode3 += item.pjbgTypeCode3;
-                acc.pjbgTypeCode4 += item.pjbgTypeCode4;
-                acc.pjbgTypeCode5 += item.pjbgTypeCode5;
-                acc.pjbgTypeCode20 += item.pjbgTypeCode20;
-                return acc;
-            }, { pjbgDt: "", total: 0, pjbgTypeCode1: 0, pjbgTypeCode2: 0, pjbgTypeCode3: 0, pjbgTypeCode4: 0, pjbgTypeCode5: 0, pjbgTypeCode20: 0 });
+            const total = calDatas.reduce(
+                (acc, item) => {
+                    acc.pjbgDt = "TOTAL";
+                    acc.total += item.total;
+                    acc.pjbgTypeCode1 += item.pjbgTypeCode1;
+                    acc.pjbgTypeCode2 += item.pjbgTypeCode2;
+                    acc.pjbgTypeCode3 += item.pjbgTypeCode3;
+                    acc.pjbgTypeCode4 += item.pjbgTypeCode4;
+                    acc.pjbgTypeCode5 += item.pjbgTypeCode5;
+                    acc.pjbgTypeCode20 += item.pjbgTypeCode20;
+                    return acc;
+                },
+                { pjbgDt: "", total: 0, pjbgTypeCode1: 0, pjbgTypeCode2: 0, pjbgTypeCode3: 0, pjbgTypeCode4: 0, pjbgTypeCode5: 0, pjbgTypeCode20: 0 }
+            );
 
-            calDatas.push({...total})
+            calDatas.push({ ...total });
 
             setCal(calDatas);
-
         } else {
-            alert("no data");
+            alert("데이터를 찾습니다...");
             setBudgetMgmt([]);
         }
     };
@@ -448,10 +462,17 @@ function ExpenseMgmtPlan() {
             <Location pathList={locationPath.ExpenseMgmt} />
             <ApprovalFormExe returnData={conditionInfo} />
             <HideCard title="계획 조회" color="back-lightblue" className="mg-b-40">
-                <ReactDataTable columns={columnExpensesView} customDatas={pjbudgetDatasView} defaultPageSize={5} hideCheckBox={true} isPageNation={true}/>
+                <ReactDataTable columns={columnExpensesView} customDatas={pjbudgetDatasView} defaultPageSize={5} hideCheckBox={true} isPageNation={true} />
             </HideCard>
             <HideCard title="합계" color="back-lightblue" className="mg-b-40">
-                <ReactDataTable columns={columns.expenseMgmt.cal} customDatas={cal} defaultPageSize={5} hideCheckBox={true} isPageNation={true} isSpecialRow={true}/>
+                <ReactDataTable
+                    columns={columns.expenseMgmt.cal}
+                    customDatas={cal}
+                    defaultPageSize={5}
+                    hideCheckBox={true}
+                    isPageNation={true}
+                    isSpecialRow={true}
+                />
             </HideCard>
             <HideCard title="등록/수정" color="back-lightblue">
                 <div className="table-buttons mg-t-10 mg-b-10">

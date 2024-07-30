@@ -42,8 +42,7 @@ function CompletionReport() {
                     const newCondition = { ...value };
                     fetchAllData(newCondition);
                     return newCondition;
-                }
-                else {
+                } else {
                     fetchAllData({ ...prev });
                     return prev;
                 }

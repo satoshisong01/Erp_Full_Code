@@ -38,19 +38,14 @@ export default function ViewModal(props) {
         e.preventDefault(); // 기본 동작 방지
         if (initialData.sgnType === "사전원가서") {
             openPopup(URL.PreCostDoc, { ...initialData, label: "사전원가서", sessionUserInfo: JSON.parse(sessionUser) });
-
         } else if (initialData.sgnType === "수주보고서") {
             openPopup(URL.PreCostDoc, { ...initialData, label: "수주보고서", sessionUserInfo: JSON.parse(sessionUser) });
-
         } else if (initialData.sgnType === "실행예산서") {
             openPopup(URL.ExecutionCostsDoc, { ...initialData, label: "실행예산서", sessionUserInfo: JSON.parse(sessionUser) });
-
         } else if (initialData.sgnType === "사후정산서") {
             openPopup(URL.PostCostsDoc, { ...initialData, label: "사후정산서", sessionUserInfo: JSON.parse(sessionUser) });
-
         } else if (initialData.sgnType === "완료보고서") {
             openPopup(URL.PostCostsDoc, { ...initialData, label: "완료보고서", sessionUserInfo: JSON.parse(sessionUser) });
-            
         }
     };
 
@@ -143,6 +138,7 @@ export default function ViewModal(props) {
             });
         } else {
             const mergedData = { ...initialData, ...data };
+            console.log(mergedData);
             resultData(mergedData); //데이터 부모로 전송
             onClose();
         }
@@ -179,7 +175,7 @@ export default function ViewModal(props) {
                 ) : item.type === "select" ? (
                     <BasicSelect item={item} onChange={inputChange} value={data?.[item.col] ?? ""} />
                 ) : item.type === "alink" ? (
-                    <ModButton label={initialData.sgnType+"(클릭)"} onClick={onClickLink} report={true} />
+                    <ModButton label={initialData.sgnType + "(클릭)"} onClick={onClickLink} report={true} />
                 ) : item.type === "radio" ? (
                     item.option &&
                     item.option.length > 0 && (

@@ -77,6 +77,7 @@ function GradeWageLaborCost2() {
             year: addData.gupBaseDate,
             gupBaseDate: addData.gupBaseDate,
         };
+        console.log(dataToSend, "이게서버로가는데");
         const resultData = await axiosPost(url, dataToSend);
         console.log(resultData);
         if (resultData) {

@@ -13,9 +13,11 @@ function ApprovalFormSal({ viewPageName, returnData }) {
     const [isInquiry, setIsInquiry] = useState(true); //연속 조회방지
 
     useEffect(() => {
-        if(currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) { //현재페이지일때
-            if(inquiryConditions.poiId && inquiryConditions.versionId && isInquiry) { //전역정보 바뀔때
-                getVersionList({ poiId: inquiryConditions.poiId }, "again")
+        if (currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) {
+            //현재페이지일때
+            if (inquiryConditions.poiId && inquiryConditions.versionId && isInquiry) {
+                //전역정보 바뀔때
+                getVersionList({ poiId: inquiryConditions.poiId }, "again");
             }
         } else {
             setIsInquiry(true); //페이지 바뀌면 다시 조회 가능하게 변경
@@ -23,15 +25,16 @@ function ApprovalFormSal({ viewPageName, returnData }) {
     }, [inquiryConditions, innerPageName, currentPageName]);
 
     useEffect(() => {
-        if(currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) { //현재페이지일때
-            console.log("⭐ data:", data);
-            if(data.versionId) return;
+        if (currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) {
+            //현재페이지일때
+            if (data.versionId) return;
             getVersionList({ poiId: data.poiId }, "first");
         }
     }, [data]);
 
     const getVersionList = async (requestData, type) => {
-        if (type === "first") { //맨처음조회
+        if (type === "first") {
+            //맨처음조회
             const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});
             const emptyArr = resultData && resultData.map(({ versionId, versionNum, versionDesc, costAt }) => ({ versionId, versionNum, versionDesc, costAt }));
             if (!resultData || resultData.length === 0) {
@@ -49,10 +52,10 @@ function ApprovalFormSal({ viewPageName, returnData }) {
                 versionId: emptyArr.find((info) => info.costAt === "Y")?.versionId || emptyArr[0]?.versionId,
                 versionNum: emptyArr.find((info) => info.costAt === "Y")?.versionNum || emptyArr[0]?.versionNum,
                 option: emptyArr,
-            })
+            });
             setIsInquiry(false);
-
-        } else if( type==="again" ) { //버전 재조회
+        } else if (type === "again") {
+            //버전 재조회
             const resultData = await axiosFetch("/api/baseInfrm/product/versionControl/totalListAll.do", requestData || {});
             const emptyArr = resultData && resultData.map(({ versionId, versionNum, versionDesc, costAt }) => ({ versionId, versionNum, versionDesc, costAt }));
             if (!resultData || resultData.length === 0) {
@@ -66,7 +69,7 @@ function ApprovalFormSal({ viewPageName, returnData }) {
             setView({
                 ...inquiryConditions.view,
                 option: emptyArr,
-            })
+            });
         }
     };
 
@@ -94,7 +97,8 @@ function ApprovalFormSal({ viewPageName, returnData }) {
         }
     };
 
-    const onChangeProject = (value) => { //프로젝트변경
+    const onChangeProject = (value) => {
+        //프로젝트변경
         setData({
             poiId: value.poiId,
             poiNm: value.poiNm,
@@ -107,13 +111,14 @@ function ApprovalFormSal({ viewPageName, returnData }) {
     };
 
     const onClick = () => {
-        if(currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) { //현재페이지일때
-            if(!data.versionId) {
+        if (currentPageName?.id === viewPageName?.id || innerPageName?.id === viewPageName?.id) {
+            //현재페이지일때
+            if (!data.versionId) {
                 alert("버전을 생성하세요.");
                 return;
             }
-            setInquiryConditions({...data, view: view})
-            returnData && returnData({ save: data, view: view});
+            setInquiryConditions({ ...data, view: view });
+            returnData && returnData({ save: data, view: view });
         }
     };
 
@@ -151,15 +156,14 @@ function ApprovalFormSal({ viewPageName, returnData }) {
                             <th>
                                 <span className="cherry">*</span> 저장 버전
                             </th>
-                            <td style={{textAlign: "center"}}>
+                            <td style={{ textAlign: "center" }}>
                                 <select
                                     id={uuidv4()}
                                     className="basic-input select"
                                     name="versionId"
                                     onChange={onSelectChange}
                                     value={data.versionId ? data.versionId : "default"}
-                                    style={{marginRight: 10, height: 32}}
-                                >
+                                    style={{ marginRight: 10, height: 32 }}>
                                     {data.option?.length > 0 &&
                                         data.option.map((info, index) => (
                                             <option key={index} value={info.versionId}>
@@ -170,26 +174,25 @@ function ApprovalFormSal({ viewPageName, returnData }) {
                                 </select>
                             </td>
                             <th>조회 버전</th>
-                            <td style={{textAlign: "center"}}>
+                            <td style={{ textAlign: "center" }}>
                                 <select
                                     id={uuidv4()}
                                     className="basic-input select"
                                     name="versionId"
                                     onChange={onSelectCopiedVersion}
                                     value={view.versionId ? view.versionId : "default"}
-                                    style={{marginRight: 10, height: 32}}
-                                >
-                                        {view.option?.length > 0 &&
-                                            view.option.map((info, index) => (
-                                                <option key={index} value={info.versionId}>
-                                                    {info.versionNum}
-                                                </option>
-                                            ))}
-                                        {view.option?.length === 0 && <option value="default">버전을 생성하세요.</option>}
+                                    style={{ marginRight: 10, height: 32 }}>
+                                    {view.option?.length > 0 &&
+                                        view.option.map((info, index) => (
+                                            <option key={index} value={info.versionId}>
+                                                {info.versionNum}
+                                            </option>
+                                        ))}
+                                    {view.option?.length === 0 && <option value="default">버전을 생성하세요.</option>}
                                 </select>
                             </td>
                             <td width={100} style={{ textAlign: "center" }}>
-                            {currentPageName.id === "OrderMgmt" || innerPageName.id === "proposal" ? (
+                                {currentPageName.id === "OrderMgmt" || innerPageName.id === "proposal" ? (
                                     <button type="button" className="table-btn table-btn-default" onClick={onClick}>
                                         내용저장
                                     </button>
